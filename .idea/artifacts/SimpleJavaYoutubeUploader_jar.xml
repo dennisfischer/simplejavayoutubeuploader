@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="SimpleJavaYoutubeUploader:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SimpleJavaYoutubeUploader_jar</output-path>
+    <root id="root">
+      <element id="archive" name="SimpleJavaYoutubeUploader.jar">
+        <element id="module-output" name="SimpleJavaYoutubeUploader" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/log4j.properties" />
+          <element id="directory" name="services">
+            <element id="dir-copy" path="$PROJECT_DIR$/src/META-INF/services" />
+          </element>
+        </element>
+        <element id="module-output" name="Utilities" />
+      </element>
+    </root>
+  </artifact>
+</component>

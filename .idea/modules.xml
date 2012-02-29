@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CorePlugin/CorePlugin.iml" filepath="$PROJECT_DIR$/CorePlugin/CorePlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Images/Images.iml" filepath="$PROJECT_DIR$/Images/Images.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" filepath="$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" filepath="$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Utilities/Utilities.iml" filepath="$PROJECT_DIR$/Utilities/Utilities.iml" />
+    </modules>
+  </component>
+</project>
+

@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Application">
+    <output-path>$PROJECT_DIR$/../Application</output-path>
+    <root id="root">
+      <element id="directory" name="plugins">
+        <element id="artifact" artifact-name="CorePlugin:jar" />
+        <element id="artifact" artifact-name="SystemTrayPlugin:jar" />
+      </element>
+      <element id="directory" name="libs">
+        <element id="library" level="project" name="repositories" />
+        <element id="artifact" artifact-name="Images:jar" />
+        <element id="artifact" artifact-name="Utilities:jar" />
+      </element>
+      <element id="artifact" artifact-name="SimpleJavaYoutubeUploader:jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/README.txt" />
+    </root>
+  </artifact>
+</component>

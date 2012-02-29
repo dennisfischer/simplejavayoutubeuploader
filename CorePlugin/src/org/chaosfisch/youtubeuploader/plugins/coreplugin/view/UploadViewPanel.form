@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel">
+  <grid id="51fbe" binding="uploadPanel" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="1" y="12" width="1881" height="420"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="27dc6" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="4fbc8" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="0" column="0" row-span="4" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0"/>
+            </constraints>
+            <properties/>
+            <border type="etched" title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" title-key="border.upload"/>
+            <children>
+              <component id="804db" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <labelFor value="1d85e"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.file"/>
+                </properties>
+              </component>
+              <component id="51d37" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <labelFor value="867c4"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.title"/>
+                </properties>
+              </component>
+              <component id="afda7" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <labelFor value="c5775"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.category"/>
+                </properties>
+              </component>
+              <component id="24b4c" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <labelFor value="f1f15"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.description"/>
+                  <verticalAlignment value="0"/>
+                  <verticalTextPosition value="1"/>
+                </properties>
+              </component>
+              <component id="b0226" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <labelFor value="478ba"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.tags"/>
+                  <verticalAlignment value="0"/>
+                  <verticalTextPosition value="0"/>
+                </properties>
+              </component>
+              <component id="53173" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <font/>
+                  <labelFor value="dc9b"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.playlist"/>
+                </properties>
+              </component>
+              <component id="362ac" class="javax.swing.JButton" binding="searchFile">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/folder_explore.png"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.searchFile"/>
+                </properties>
+              </component>
+              <component id="1d85e" class="javax.swing.JComboBox" binding="fileList">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <model/>
+                </properties>
+              </component>
+              <component id="c5775" class="javax.swing.JComboBox" binding="categoryList">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="Games"/>
+                    <item value="Film"/>
+                    <item value="Autos"/>
+                    <item value="Music"/>
+                    <item value="Animals"/>
+                    <item value="Sports"/>
+                    <item value="Travel"/>
+                    <item value="Comedy"/>
+                    <item value="People"/>
+                    <item value="News"/>
+                    <item value="Entertainment"/>
+                    <item value="Education"/>
+                    <item value="Howto"/>
+                    <item value="Tech"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="867c4" class="javax.swing.JTextField" binding="titleTextField">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="dc9b" class="javax.swing.JComboBox" binding="playlistList">
+                <constraints>
+                  <grid row="13" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <scrollpane id="f1f15">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="730b9" class="javax.swing.JTextArea" binding="descriptionTextArea">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <rows value="10"/>
+                      <wrapStyleWord value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="478ba">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="4a338" class="javax.swing.JTextArea" binding="tagsTextArea">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <rows value="10"/>
+                      <text value=""/>
+                      <wrapStyleWord value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="68dcd" class="javax.swing.JButton" binding="submit">
+                <constraints>
+                  <grid row="14" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.5" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/add.png"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.submit"/>
+                </properties>
+              </component>
+              <component id="fc127" class="javax.swing.JButton" binding="reset">
+                <constraints>
+                  <grid row="14" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.5" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/cancel.png"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.reset"/>
+                </properties>
+              </component>
+              <component id="8a9d4" class="javax.swing.JCheckBox" binding="playlistCheckBox">
+                <constraints>
+                  <grid row="13" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <component id="571a2" class="javax.swing.JSeparator">
+            <constraints>
+              <grid row="0" column="1" row-span="4" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0" ipadx="5" ipady="5"/>
+            </constraints>
+            <properties>
+              <orientation value="1"/>
+            </properties>
+          </component>
+          <grid id="2f4b" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="1" column="2" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="3.0" weighty="3.0"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="e240b" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0" ipadx="100"/>
+                </constraints>
+                <properties/>
+                <border type="etched" title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" title-key="border.preset">
+                  <font/>
+                  <title-color color="-16777216"/>
+                </border>
+                <children>
+                  <component id="65849" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="452b2"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.preset"/>
+                    </properties>
+                  </component>
+                  <component id="c9287" class="javax.swing.JCheckBox" binding="autotitelCheckBox" default-binding="true">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="checkbox.autotitle"/>
+                    </properties>
+                  </component>
+                  <component id="34d5b" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="b2b07"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.nummer"/>
+                    </properties>
+                  </component>
+                  <component id="bb8db" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="665a1"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.defaultdir"/>
+                    </properties>
+                  </component>
+                  <component id="452b2" class="javax.swing.JComboBox" binding="presetList">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model/>
+                    </properties>
+                  </component>
+                  <component id="3f332" class="javax.swing.JTextField" binding="autotitleTextField">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="b2b07" class="javax.swing.JSpinner" binding="numberModifierSpinner">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="665a1" class="javax.swing.JTextField" binding="defaultdirTextField">
+                    <constraints>
+                      <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="72f33" class="javax.swing.JButton" binding="defaultdirSearch">
+                    <constraints>
+                      <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <icon value="youtubeuploader/resources/images/folder_explore.png"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.defaultdirSearch"/>
+                    </properties>
+                  </component>
+                  <component id="b0970" class="javax.swing.JButton" binding="deletePreset">
+                    <constraints>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <icon value="youtubeuploader/resources/images/delete.png"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="c8be0" class="javax.swing.JButton" binding="savePreset">
+                    <constraints>
+                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <icon value="youtubeuploader/resources/images/save.png"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <component id="5d1ab" class="javax.swing.JSeparator">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="8" vsize-policy="6" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0" ipady="10"/>
+                </constraints>
+                <properties>
+                  <orientation value="0"/>
+                </properties>
+              </component>
+              <grid id="e890e" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0"/>
+                </constraints>
+                <properties/>
+                <border type="etched" title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" title-key="border.permissions"/>
+                <children>
+                  <component id="aee2e" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="dfb71"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.comments"/>
+                    </properties>
+                  </component>
+                  <component id="a3d56" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="38315"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.videorespone"/>
+                    </properties>
+                  </component>
+                  <component id="5da2c" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="207fc"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.visibility"/>
+                    </properties>
+                  </component>
+                  <component id="a52e0" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="ffaa"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.accounts"/>
+                    </properties>
+                  </component>
+                  <component id="ffaa" class="javax.swing.JComboBox" binding="accountList">
+                    <constraints>
+                      <grid row="7" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model/>
+                    </properties>
+                  </component>
+                  <component id="dfb71" class="javax.swing.JComboBox" binding="commentList">
+                    <constraints>
+                      <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model>
+                        <item value="Erlaubt"/>
+                        <item value="Moderiert"/>
+                        <item value="Verweigert"/>
+                      </model>
+                    </properties>
+                  </component>
+                  <component id="38315" class="javax.swing.JComboBox" binding="videoresponseList">
+                    <constraints>
+                      <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model>
+                        <item value="Erlaubt"/>
+                        <item value="Moderiert"/>
+                        <item value="Verweigert"/>
+                      </model>
+                    </properties>
+                  </component>
+                  <component id="6b3ad" class="javax.swing.JButton" binding="deleteAccount">
+                    <constraints>
+                      <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <icon value="youtubeuploader/resources/images/delete.png"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="16369" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.permissions"/>
+                    </properties>
+                  </component>
+                  <component id="6ee0f" class="javax.swing.JCheckBox" binding="kommentareBewertenCheckBox" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <selected value="true"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="checkbox.commentvote"/>
+                    </properties>
+                  </component>
+                  <component id="9cbb1" class="javax.swing.JCheckBox" binding="bewertenCheckBox" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <selected value="true"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="checkbox.rate"/>
+                    </properties>
+                  </component>
+                  <component id="6404" class="javax.swing.JCheckBox" binding="mobileCheckBox" default-binding="true">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <selected value="true"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="checkbox.mobile"/>
+                    </properties>
+                  </component>
+                  <component id="4ae96" class="javax.swing.JCheckBox" binding="embedCheckBox">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <selected value="true"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="checkbox.embed"/>
+                    </properties>
+                  </component>
+                  <component id="207fc" class="javax.swing.JComboBox" binding="visibilityList">
+                    <constraints>
+                      <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model>
+                        <item value="Öffentlich"/>
+                        <item value="Nicht gelistet"/>
+                        <item value="Privat"/>
+                      </model>
+                    </properties>
+                  </component>
+                  <component id="84777" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="e8a73"/>
+                      <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="label.starttime"/>
+                    </properties>
+                  </component>
+                  <component id="e8a73" class="javax.swing.JSpinner" binding="startzeitpunktSpinner" default-binding="true">
+                    <constraints>
+                      <grid row="8" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <inspectionSuppressions>
+    <suppress inspection="NoLabelFor" id="dc9b"/>
+    <suppress inspection="NoLabelFor" id="730b9"/>
+    <suppress inspection="NoLabelFor" id="4a338"/>
+    <suppress inspection="NoLabelFor" id="3f332"/>
+  </inspectionSuppressions>
+</form>

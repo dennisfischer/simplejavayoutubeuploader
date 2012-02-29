@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel">
+  <grid id="27dc6" binding="queuePanel" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="37" y="122" width="2000" height="627"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="293df">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="29" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="7fd6d" class="javax.swing.JTable" binding="queueTable">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="709e" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="25" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="98300" class="javax.swing.JButton" binding="startenButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.start"/>
+            </properties>
+          </component>
+          <component id="3d2f9" class="javax.swing.JButton" binding="stoppenButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.stop"/>
+            </properties>
+          </component>
+          <component id="ef2ac" class="javax.swing.JButton" binding="arrowDown">
+            <constraints>
+              <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/arrow_down.png"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="14c8c" class="javax.swing.JComboBox" binding="queueFinishedList">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="Nichts tun"/>
+                <item value="Anwendung beenden"/>
+                <item value="Herunterfahren"/>
+                <item value="Ruhezustand"/>
+              </model>
+            </properties>
+          </component>
+          <component id="269e1" class="javax.swing.JButton" binding="arrowUp">
+            <constraints>
+              <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/arrow_up.png"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="def7a" class="javax.swing.JButton" binding="arrowTop">
+            <constraints>
+              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/arrow-double-up.png"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="e1285" class="javax.swing.JButton" binding="arrowBottom">
+            <constraints>
+              <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/arrow-double-down.png"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="171bf" class="javax.swing.JComboBox" binding="queueViewList">
+            <constraints>
+              <grid row="0" column="25" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="Alle"/>
+                <item value="Hochgeladen"/>
+                <item value="In Warteschlange"/>
+              </model>
+            </properties>
+          </component>
+          <component id="c810b" class="javax.swing.JButton" binding="editButton">
+            <constraints>
+              <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <icon value="youtubeuploader/resources/images/pencil.png"/>
+              <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.edit"/>
+            </properties>
+          </component>
+          <component id="9e8e4" class="javax.swing.JButton" binding="deleteButton">
+            <constraints>
+              <grid row="0" column="24" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/delete.png"/>
+              <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.delete"/>
+            </properties>
+          </component>
+          <component id="8d681" class="javax.swing.JButton" binding="abortButton">
+            <constraints>
+              <grid row="0" column="26" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <icon value="youtubeuploader/resources/images/cancel.png"/>
+              <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.abort"/>
+            </properties>
+          </component>
+          <component id="d5350" class="javax.swing.JSpinner" binding="speedLimitSpinner">
+            <constraints>
+              <grid row="0" column="27" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="44952" class="javax.swing.JSpinner" binding="maxUploadsSpinner">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties/>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <inspectionSuppressions>
+    <suppress inspection="NoLabelFor" id="293df"/>
+    <suppress inspection="NoLabelFor" id="14c8c"/>
+    <suppress inspection="NoLabelFor" id="171bf"/>
+    <suppress inspection="NoLabelFor" id="db09b"/>
+    <suppress inspection="NoLabelFor" id="d5350"/>
+    <suppress inspection="NoLabelFor" id="44952"/>
+  </inspectionSuppressions>
+</form>

@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Class-Path: Update.jar Update.jar Update.jar EventBus.jar bsaf-1.9.jar
+  log4j-1.2.16.jar mail.jar JSingleInstance.jar JTattoo.jar dsn.jar im
+ ap.jar mailapi.jar pop3.jar smtp.jar hsqldb-2.2.5.jar hsqldb.jar aopa
+ lliance.jar guice-3.0.jar guice-assistedinject-3.0.jar guice-grapher-
+ 3.0.jar guice-jmx-3.0.jar guice-jndi-3.0.jar guice-multibindings-3.0.
+ jar guice-persist-3.0.jar guice-servlet-3.0.jar guice-spring-3.0.jar 
+ guice-struts2-plugin-3.0.jar guice-throwingproviders-3.0.jar javax.in
+ ject.jar google-collect-1.0-rc1.jar gdata-core-1.0.jar gdata-client-1
+ .0.jar gdata-youtube-2.0.jar gdata-analytics-2.1.jar gdata-analytics-
+ meta-2.1.jar gdata-appsforyourdomain-1.0.jar gdata-appsforyourdomain-
+ meta-1.0.jar gdata-base-1.0.jar gdata-blogger-2.0.jar gdata-blogger-m
+ eta-2.0.jar gdata-books-1.0.jar gdata-books-meta-1.0.jar gdata-calend
+ ar-2.0.jar gdata-calendar-meta-2.0.jar gdata-client-1.0.jar gdata-cli
+ ent-meta-1.0.jar gdata-codesearch-2.0.jar gdata-codesearch-meta-2.0.j
+ ar gdata-contacts-3.0.jar gdata-contacts-meta-3.0.jar gdata-core-1.0.
+ jar gdata-docs-3.0.jar gdata-docs-meta-3.0.jar gdata-finance-2.0.jar 
+ gdata-finance-meta-2.0.jar gdata-gtt-2.0.jar gdata-gtt-meta-2.0.jar g
+ data-health-2.0.jar gdata-health-meta-2.0.jar gdata-maps-2.0.jar gdat
+ a-maps-meta-2.0.jar gdata-media-1.0.jar gdata-photos-2.0.jar gdata-ph
+ otos-meta-2.0.jar gdata-projecthosting-2.1.jar gdata-projecthosting-m
+ eta-2.1.jar gdata-sidewiki-2.0.jar gdata-sidewiki-meta-2.0.jar gdata-
+ sites-2.0.jar gdata-sites-meta-2.0.jar gdata-spreadsheet-3.0.jar gdat
+ a-spreadsheet-meta-3.0.jar gdata-webmastertools-2.0.jar gdata-webmast
+ ertools-meta-2.0.jar gdata-youtube-2.0.jar gdata-youtube-meta-2.0.jar
+  hibernate-commons-annotations-4.0.1.Final.jar antlr-2.7.7.jar common
+ s-collections-3.2.1.jar hibernate-entitymanager-4.0.1.Final.jar hiber
+ nate-envers-4.0.1.Final.jar hibernate-core-4.0.1.Final.jar hibernate-
+ jpa-2.0-api-1.0.1.Final.jar dom4j-1.6.1.jar javassist-3.15.0-GA.jar j
+ boss-logging-3.1.0.CR2.jar jboss-transaction-api_1.1_spec-1.0.0.Final
+ .jar
+
