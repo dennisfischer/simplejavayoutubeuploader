@@ -48,6 +48,7 @@
       <root url="jar://$PROJECT_DIR$/../repositories/hibernate-release-4.0.1.Final/lib/required/jboss-transaction-api_1.1_spec-1.0.0.Final.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/filedrop-1.1/filedrop.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/xstream/xstream-1.4.2.jar!/" />
+      <root url="file://$PROJECT_DIR$/../repositories/Substance" />
     </CLASSES>
     <JAVADOC>
       <root url="file://$PROJECT_DIR$/../repositories/apache-log4j-1.2.16/site/apidocs" />
@@ -98,5 +99,6 @@
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/../repositories" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/../repositories/gdataapijava/gdata-src.java-1.46.0/gdata/java/lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../repositories/Substance" recursive="false" />
   </library>
 </component>

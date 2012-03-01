@@ -49,10 +49,9 @@ import java.awt.event.*;
 
 public class SystemTrayPlugin implements Pluggable
 {
-	@Inject private PluginService pluginService;
-	@Inject @Named("mainFrame")
-	private         JFrame        mainFrame;
-	private         TrayIcon      trayIcon;
+	@Inject private                     PluginService pluginService;
+	@Inject @Named("mainFrame") private JFrame        mainFrame;
+	private                             TrayIcon      trayIcon;
 	private static final String MESSAGE = "onMessage";
 
 	public SystemTrayPlugin()

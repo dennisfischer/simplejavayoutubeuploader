@@ -242,7 +242,6 @@
                 <properties/>
                 <border type="etched" title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" title-key="border.preset">
                   <font/>
-                  <title-color color="-16777216"/>
                 </border>
                 <children>
                   <component id="65849" class="javax.swing.JLabel">

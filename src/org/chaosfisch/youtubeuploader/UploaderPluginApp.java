@@ -33,6 +33,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import org.apache.log4j.PropertyConfigurator;
 import org.chaosfisch.plugin.JARFileFilter;
+import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.util.ClasspathLoader;
 
 import javax.swing.*;
@@ -51,24 +52,21 @@ public class UploaderPluginApp
 		ClasspathLoader.loadLibaries(new File("./").listFiles(new JARFileFilter()));
 		ClasspathLoader.loadLibaries(new File("./libs/").listFiles(new JARFileFilter()));
 		ClasspathLoader.loadLibaries(new File("./plugins/").listFiles(new JARFileFilter()));
-		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
 
 		PropertyConfigurator.configure(getClass().getResource("/META-INF/log4j.properties"));
-		ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
-		Injector injector = Guice.createInjector(modules);
-
-		PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
-		pluginMainFrame.run();
+		final ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override public void run()
+			{
+				Injector injector = Guice.createInjector(modules);
+				PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
+				DesignManager designManager = injector.getInstance(DesignManager.class);
+				designManager.run();
+				designManager.changeDesign("SubstanceGraphiteGlassLookAndFeel");
+				pluginMainFrame.run();
+			}
+		});
 	}
 
 	/**

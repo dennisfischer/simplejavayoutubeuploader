@@ -74,7 +74,6 @@ public class PluginMainFrame extends JComponent
 		initComponents();
 		initPlugins();
 		showFrame();
-		repaintLaf();
 	}
 
 	private void showFrame()
@@ -84,21 +83,6 @@ public class PluginMainFrame extends JComponent
 		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png")));
 		mainFrame.add(tabbedPane);
 		mainFrame.setVisible(true);
-	}
-
-	private void repaintLaf()
-	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (!(mainFrame == null)) {
-					SwingUtilities.updateComponentTreeUI(mainFrame.getRootPane());
-					mainFrame.pack();
-				}
-			}
-		});
 	}
 
 	private void initPlugins()
