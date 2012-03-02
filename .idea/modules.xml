@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CorePlugin/CorePlugin.iml" filepath="$PROJECT_DIR$/CorePlugin/CorePlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DirectoryPlugin/DirectoryPlugin.iml" filepath="$PROJECT_DIR$/DirectoryPlugin/DirectoryPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/Images/Images.iml" filepath="$PROJECT_DIR$/Images/Images.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" filepath="$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" />
       <module fileurl="file://$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" filepath="$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" />

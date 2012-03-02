@@ -60,7 +60,7 @@ public class PresetServiceImpl implements PresetService
 
 		session.save(presetEntry);
 		session.getTransaction().commit();
-		EventBus.publish(PresetEvents.PRESET_ENTRY_ADDED, presetEntry);
+		EventBus.publish(PRESET_ENTRY_ADDED, presetEntry);
 		return presetEntry;
 	}
 

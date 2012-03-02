@@ -32,6 +32,10 @@ import java.util.List;
  */
 public interface QueueService
 {
+	public static final String QUEUE_ENTRY_ADDED   = "queueEntryAdded";
+	public static final String QUEUE_ENTRY_REMOVED = "queueEntryRemoved";
+	public static final String EDIT_QUEUE_ENTRY    = "editQueueEntry";
+
 	QueueEntry createQueueEntry(QueueEntry queueEntry);
 
 	QueueEntry deleteQueueEntry(QueueEntry queueEntry);

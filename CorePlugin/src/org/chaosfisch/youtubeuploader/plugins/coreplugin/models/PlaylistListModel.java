@@ -22,7 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.services.PlaylistEvents;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -131,19 +131,19 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistEvents.PLAYLIST_ENTRY_ADDED)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
 	public void onPlaylistAdded(final String topic, final Object o)
 	{
 		this.addPlaylistEntry((PlaylistEntry) o);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistEvents.PLAYLIST_ENTRY_REMOVED)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
 	public void onPlaylistRemoved(final String topic, final Object o)
 	{
 		this.removePlaylistEntry((PlaylistEntry) o);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistEvents.PLAYLIST_ENTRY_UPDATED)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdated(final String topic, final Object o)
 	{
 		this.playlistEntries.set(this.getSelectedIndex(), (PlaylistEntry) o);

@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService
 		session.getTransaction().begin();
 		session.delete(accountEntry);
 		session.getTransaction().commit();
-		EventBus.publish(AccountEvents.ACCOUNT_ENTRY_REMOVED, accountEntry);
+		EventBus.publish(ACCOUNT_ENTRY_REMOVED, accountEntry);
 		return accountEntry;
 	}
 
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService
 		}
 		session.save(accountEntry);
 		session.getTransaction().commit();
-		EventBus.publish(AccountEvents.ACCOUNT_ENTRY_ADDED, accountEntry);
+		EventBus.publish(ACCOUNT_ENTRY_ADDED, accountEntry);
 		return accountEntry;
 	}
 
@@ -93,7 +93,7 @@ public class AccountServiceImpl implements AccountService
 		session.getTransaction().begin();
 		session.update(accountEntry);
 		session.getTransaction().commit();
-		EventBus.publish(AccountEvents.ACCOUNT_ENTRY_UPDATED, accountEntry);
+		EventBus.publish(ACCOUNT_ENTRY_UPDATED, accountEntry);
 		return accountEntry;
 	}
 

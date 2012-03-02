@@ -32,6 +32,9 @@ import java.util.List;
  */
 public interface PresetService
 {
+	public static final String PRESET_ENTRY_ADDED   = "presetEntryAdded";
+	public static final String PRESET_ENTRY_REMOVED = "presetEntryRemoved";
+
 	PresetEntry createPresetEntry(PresetEntry presetEntry);
 
 	PresetEntry deletePresetEntry(PresetEntry presetEntry);

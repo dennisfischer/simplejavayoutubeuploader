@@ -28,8 +28,12 @@ package org.chaosfisch.youtubeuploader.util;
  */
 
 import com.google.inject.Provider;
+import org.chaosfisch.youtubeuploader.db.HibernateMappingExtension;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.util.List;
+import java.util.ServiceLoader;
 
 public class SessionFactoryProvider implements Provider<SessionFactory>
 {
@@ -40,12 +44,15 @@ public class SessionFactoryProvider implements Provider<SessionFactory>
 	{
 		try {
 			// Create the SessionFactory from hibernate.cfg.xml
-			final Configuration configuration = new Configuration().configure(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/resources/hibernate.cfg.xml"));
-			configuration.addURL(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/db/hbm/AccountEntry.hbm.xml"));
-			configuration.addURL(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/db/hbm/QueueEntry.hbm.xml"));
-			configuration.addURL(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/db/hbm/PresetEntry.hbm.xml"));
-			configuration.addURL(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/db/hbm/DirectoryEntry.hbm.xml"));
-			configuration.addURL(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/db/hbm/PlaylistEntry.hbm.xml"));
+			final Configuration configuration = new Configuration().configure(SessionFactoryProvider.class.getResource("/org/chaosfisch/youtubeuploader/resources/hibernate.cfg.xml")); //NON-NLS
+
+			final ServiceLoader<HibernateMappingExtension> hibernateMappingExtensions = ServiceLoader.load(HibernateMappingExtension.class);
+			for (final List<String> list : hibernateMappingExtensions) {
+				for (final String mapConfigFile : list) {
+					configuration.addURL(SessionFactoryProvider.class.getResource(mapConfigFile));
+				}
+			}
+
 			return configuration.buildSessionFactory();
 		} catch (Throwable ex) {
 			// Make sure you log the exception, as it might be swallowed

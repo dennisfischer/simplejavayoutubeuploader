@@ -157,7 +157,7 @@ public class PlaylistServiceImpl implements PlaylistService
 			try {
 				ytService.insert(feedUrl, newEntry);
 
-				EventBus.publish(PlaylistEvents.PLAYLIST_ENTRY_ADDED, playlistEntry);
+				EventBus.publish(PLAYLIST_ENTRY_ADDED, playlistEntry);
 
 				final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>();
 				accountEntries.add(playlistEntry.getAccount());
@@ -242,11 +242,11 @@ public class PlaylistServiceImpl implements PlaylistService
 		session.getTransaction().begin();
 		session.update(playlistEntry);
 		session.getTransaction().commit();
-		EventBus.publish(PlaylistEvents.PLAYLIST_ENTRY_UPDATED, playlistEntry);
+		EventBus.publish(PLAYLIST_ENTRY_UPDATED, playlistEntry);
 		return playlistEntry;
 	}
 
-	@EventTopicSubscriber(topic = AccountEvents.ACCOUNT_ENTRY_ADDED)
+	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
 	public void onAccountAdded(final String topic, final Object o)
 	{
 		final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>();

@@ -17,18 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.db;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 11.01.12
- * Time: 22:09
+ * Date: 02.03.12
+ * Time: 09:35
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("HardCodedStringLiteral")
-public class PresetEvents
+public class HibernateMappingExtensionImpl extends HibernateMappingExtension
 {
-	public static final String PRESET_ENTRY_ADDED   = "presetEntryAdded";
-	public static final String PRESET_ENTRY_REMOVED = "presetEntryRemoved";
+	public HibernateMappingExtensionImpl()
+	{
+		super();
+
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/AccountEntry.hbm.xml"); //NON-NLS
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/QueueEntry.hbm.xml");	//NON-NLS
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PresetEntry.hbm.xml"); //NON-NLS
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/DirectoryEntry.hbm.xml"); //NON-NLS
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PlaylistEntry.hbm.xml"); //NON-NLS
+	}
 }

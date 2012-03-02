@@ -23,7 +23,7 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.services.PlaylistEvents;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import java.util.ResourceBundle;
 
@@ -142,7 +142,7 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		return this.playlistNumber;
 	}
 
-	@EventTopicSubscriber(topic = PlaylistEvents.PLAYLIST_ENTRY_UPDATED)
+	@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdate(final String topic, final Object o)
 	{
 		final PlaylistEntry playlistEntry = (PlaylistEntry) o;

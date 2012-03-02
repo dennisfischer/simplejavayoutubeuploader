@@ -151,7 +151,6 @@ public class PluginMainFrame extends JComponent
 
 			}
 		});
-		settingsMenuItem.setEnabled(false);
 		JMenuItem wikiMenuItem = new JMenuItem("Wiki");
 		wikiMenuItem.addActionListener(new ActionListener()
 		{
@@ -162,9 +161,9 @@ public class PluginMainFrame extends JComponent
 					try {
 						Desktop.getDesktop().browse(new URI(resourceBundle.getString("wikiURI")));
 					} catch (IOException e1) {
-						e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
-						e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						e1.printStackTrace();
 					}
 				}
 			}
@@ -179,9 +178,9 @@ public class PluginMainFrame extends JComponent
 					try {
 						Desktop.getDesktop().browse(new URI(resourceBundle.getString("changeLog")));
 					} catch (IOException e1) {
-						e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
-						e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						e1.printStackTrace();
 					}
 				}
 			}
@@ -199,11 +198,21 @@ public class PluginMainFrame extends JComponent
 			}
 		});
 
+		JMenuItem pluginMenuItem = new JMenuItem("Plugins");
+		pluginMenuItem.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(ActionEvent e)
+			{
+
+			}
+		});
+
 		JMenu helpMenu = new JMenu("Hilfe");
 		helpMenu.add(settingsMenuItem);
 		helpMenu.add(wikiMenuItem);
 		helpMenu.add(changelogMenuItem);
 		helpMenu.add(aboutMenuItem);
+		helpMenu.add(pluginMenuItem);
 		menuBar.add(helpMenu);
 	}
 

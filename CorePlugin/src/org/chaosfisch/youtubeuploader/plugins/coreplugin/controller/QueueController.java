@@ -25,7 +25,6 @@ import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.services.QueueEvents;
 import org.chaosfisch.youtubeuploader.services.QueuePosition;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
@@ -123,7 +122,7 @@ public class QueueController
 
 	public void editEntry(final QueueEntry queueEntityAt)
 	{
-		EventBus.publish(QueueEvents.EDIT_QUEUE_ENTRY, queueEntityAt);
+		EventBus.publish(QueueService.EDIT_QUEUE_ENTRY, queueEntityAt);
 	}
 
 	public QueueTableModel getQueueList()

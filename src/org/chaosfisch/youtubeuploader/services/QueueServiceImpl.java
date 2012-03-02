@@ -76,7 +76,7 @@ public class QueueServiceImpl implements QueueService
 
 		session.save(queueEntry);
 		session.getTransaction().commit();
-		EventBus.publish(QueueEvents.QUEUE_ENTRY_ADDED, queueEntry);
+		EventBus.publish(QUEUE_ENTRY_ADDED, queueEntry);
 		return queueEntry;
 	}
 
@@ -142,7 +142,7 @@ public class QueueServiceImpl implements QueueService
 		session.getTransaction().begin();
 		session.delete(queueEntry);
 		session.getTransaction().commit();
-		EventBus.publish(QueueEvents.QUEUE_ENTRY_REMOVED, queueEntry);
+		EventBus.publish(QUEUE_ENTRY_REMOVED, queueEntry);
 		return queueEntry;
 	}
 

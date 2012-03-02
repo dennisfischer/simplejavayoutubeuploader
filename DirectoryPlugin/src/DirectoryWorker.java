@@ -17,14 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
-
 import com.google.inject.Inject;
 import org.chaosfisch.util.BetterSwingWorker;
+import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.Mimetype;
 import org.chaosfisch.youtubeuploader.services.DirectoryService;
 
 import java.io.File;

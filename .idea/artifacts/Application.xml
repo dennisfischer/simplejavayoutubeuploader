@@ -5,6 +5,7 @@
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
         <element id="artifact" artifact-name="SystemTrayPlugin:jar" />
+        <element id="artifact" artifact-name="DirectoryPlugin:jar" />
       </element>
       <element id="directory" name="libs">
         <element id="library" level="project" name="repositories" />
@@ -12,8 +13,8 @@
         <element id="artifact" artifact-name="Utilities:jar" />
       </element>
       <element id="artifact" artifact-name="SimpleJavaYoutubeUploader:jar" />
-      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ.txt" />
-      <element id="file-copy" path="$PROJECT_DIR$/README.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
+      <element id="file-copy" path="$PROJECT_DIR$/README" />
     </root>
   </artifact>
 </component>

@@ -27,8 +27,8 @@ import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadProgress;
-import org.chaosfisch.youtubeuploader.services.QueueEvents;
 import org.chaosfisch.youtubeuploader.services.QueuePosition;
+import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
@@ -258,13 +258,13 @@ public class QueueTableModel extends AbstractTableModel
 		this.fireTableDataChanged();
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueEvents.QUEUE_ENTRY_ADDED)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
 	public void onQueueEntryAdded(final String topic, final Object o)
 	{
 		this.addQueueEntry((QueueEntry) o);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueEvents.QUEUE_ENTRY_REMOVED)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
 	public void onQueueEntryRemoved(final String topic, final Object o)
 	{
 		this.removeQueueEntry((QueueEntry) o);

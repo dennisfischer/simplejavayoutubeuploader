@@ -10,7 +10,6 @@
           </element>
         </element>
         <element id="module-output" name="SystemTrayPlugin" />
-        <element id="module-output" name="Images" />
       </element>
     </root>
   </artifact>

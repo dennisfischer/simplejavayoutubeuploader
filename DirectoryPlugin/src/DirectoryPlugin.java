@@ -17,19 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+import org.chaosfisch.plugin.Pluggable;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 10.01.12
- * Time: 22:02
+ * Date: 02.03.12
+ * Time: 17:00
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("HardCodedStringLiteral")
-public class AccountEvents
+public class DirectoryPlugin implements Pluggable
 {
-	public static final String ACCOUNT_ENTRY_ADDED   = "accountEntryAdded";
-	public static final String ACCOUNT_ENTRY_REMOVED = "accountEntryRemoved";
-	public static final String ACCOUNT_ENTRY_UPDATED = "accountEntryUpdated";
+	@Override public void init()
+	{
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override public void onStart()
+	{
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override public void onEnd()
+	{
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
 }

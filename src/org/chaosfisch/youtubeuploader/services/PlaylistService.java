@@ -34,6 +34,10 @@ import java.util.List;
  */
 public interface PlaylistService
 {
+	public static final String PLAYLIST_ENTRY_ADDED   = "playlistEntryAdded";
+	public static final String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved";
+	public static final String PLAYLIST_ENTRY_UPDATED = "playlistEntryUpdated";
+
 	void synchronizePlaylists(Collection<AccountEntry> accountEntries);
 
 	void createPlaylist(PlaylistEntry playlistEntry);

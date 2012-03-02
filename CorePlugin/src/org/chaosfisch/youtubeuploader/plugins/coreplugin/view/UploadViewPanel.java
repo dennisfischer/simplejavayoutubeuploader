@@ -34,7 +34,7 @@ import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
-import org.chaosfisch.youtubeuploader.services.QueueEvents;
+import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -447,7 +447,7 @@ public final class UploadViewPanel
 		return this.uploadPanel;
 	}
 
-	@EventTopicSubscriber(topic = QueueEvents.EDIT_QUEUE_ENTRY)
+	@EventTopicSubscriber(topic = QueueService.EDIT_QUEUE_ENTRY)
 	public void onEditQueueEntry(final String topic, final Object o)
 	{
 		final QueueEntry queueEntry = (QueueEntry) o;

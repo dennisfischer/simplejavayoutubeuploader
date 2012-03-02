@@ -17,19 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.db;
+
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 06.01.12
- * Time: 22:55
+ * Date: 02.03.12
+ * Time: 09:32
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("HardCodedStringLiteral")
-public class QueueEvents
+public abstract class HibernateMappingExtension extends ArrayList<String>
 {
-	public static final String QUEUE_ENTRY_ADDED   = "queueEntryAdded";
-	public static final String QUEUE_ENTRY_REMOVED = "queueEntryRemoved";
-	public static final String EDIT_QUEUE_ENTRY    = "editQueueEntry";
+
 }

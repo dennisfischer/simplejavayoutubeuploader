@@ -32,6 +32,10 @@ import java.util.List;
  */
 public interface AccountService
 {
+	public static final String ACCOUNT_ENTRY_ADDED   = "accountEntryAdded";
+	public static final String ACCOUNT_ENTRY_REMOVED = "accountEntryRemoved";
+	public static final String ACCOUNT_ENTRY_UPDATED = "accountEntryUpdated";
+
 	AccountEntry createAccountEntry(AccountEntry accountEntry);
 
 	AccountEntry deleteAccountEntry(AccountEntry accountEntry);

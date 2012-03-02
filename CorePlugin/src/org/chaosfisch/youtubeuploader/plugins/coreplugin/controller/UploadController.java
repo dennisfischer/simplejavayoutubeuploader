@@ -35,6 +35,7 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
+import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.db.AccountEntry;
 import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
@@ -43,7 +44,6 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.AccountListModel
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PlaylistListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.Mimetype;
 import org.chaosfisch.youtubeuploader.services.AccountService;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.PresetService;
