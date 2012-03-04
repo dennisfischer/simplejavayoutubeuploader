@@ -25,10 +25,10 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import org.chaosfisch.plugin.PluginManager;
 import org.chaosfisch.plugin.PluginService;
-import org.chaosfisch.youtubeuploader.MainFrame;
 import org.chaosfisch.youtubeuploader.util.PluginManagerImpl;
 import org.chaosfisch.youtubeuploader.util.PluginServiceImpl;
 import org.chaosfisch.youtubeuploader.util.logger.Log4JTypeListener;
+import org.chaosfisch.youtubeuploader.view.MainFrame;
 
 import javax.swing.*;
 

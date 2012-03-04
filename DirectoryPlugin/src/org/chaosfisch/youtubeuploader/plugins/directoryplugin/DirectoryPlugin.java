@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader;/*
+package org.chaosfisch.youtubeuploader.plugins.directoryplugin;/*
  * Copyright (c) 2012, Dennis Fischer
  *
  * This is free software; you can redistribute it and/or modify it
@@ -36,20 +36,26 @@ package org.chaosfisch.youtubeuploader;/*
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-import javax.swing.*;
+import org.chaosfisch.plugin.Pluggable;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 27.02.12
- * Time: 09:08
+ * Date: 02.03.12
+ * Time: 17:00
  * To change this template use File | Settings | File Templates.
  */
-public class MainFrame extends JFrame
+public class DirectoryPlugin implements Pluggable
 {
-
-	public MainFrame()
+	@Override public void init()
 	{
-		super();
+	}
+
+	@Override public void onStart()
+	{
+	}
+
+	@Override public void onEnd()
+	{
 	}
 }

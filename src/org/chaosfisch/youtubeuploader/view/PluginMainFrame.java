@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader;
+package org.chaosfisch.youtubeuploader.view;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;

@@ -17,29 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-import org.chaosfisch.plugin.Pluggable;
+package org.chaosfisch.youtubeuploader.view;
+
+import javax.swing.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 02.03.12
- * Time: 17:00
+ * Date: 27.02.12
+ * Time: 09:08
  * To change this template use File | Settings | File Templates.
  */
-public class DirectoryPlugin implements Pluggable
+public class MainFrame extends JFrame
 {
-	@Override public void init()
-	{
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
 
-	@Override public void onStart()
+	public MainFrame()
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
-
-	@Override public void onEnd()
-	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		super();
 	}
 }

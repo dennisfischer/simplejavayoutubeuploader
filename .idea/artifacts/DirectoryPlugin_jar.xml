@@ -5,6 +5,9 @@
       <element id="archive" name="DirectoryPlugin.jar">
         <element id="directory" name="META-INF">
           <element id="file-copy" path="$PROJECT_DIR$/DirectoryPlugin/src/META-INF/MANIFEST.MF" />
+          <element id="directory" name="services">
+            <element id="dir-copy" path="$PROJECT_DIR$/DirectoryPlugin/src/META-INF/services" />
+          </element>
         </element>
         <element id="module-output" name="DirectoryPlugin" />
       </element>

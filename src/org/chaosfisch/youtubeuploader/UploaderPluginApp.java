@@ -35,6 +35,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.chaosfisch.plugin.JARFileFilter;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.util.ClasspathLoader;
+import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
 
 import javax.swing.*;
 import java.io.File;
