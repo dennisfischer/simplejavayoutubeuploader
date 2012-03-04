@@ -29,16 +29,29 @@ import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 
 public class SystemTrayPlugin implements Pluggable
 {
-	@Inject private                     PluginService pluginService;
-	@Inject @Named("mainFrame") private JFrame        mainFrame;
-	private                             TrayIcon      trayIcon;
-	private static final String MESSAGE = "onMessage";
+	@Inject private                             PluginService pluginService;
+	@Inject @Named(value = "mainFrame") private JFrame        mainFrame;
+	private                                     TrayIcon      trayIcon;
+	private static final String MESSAGE = "onMessage"; //NON-NLS
+
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/systemtrayplugin/resources/systemtrayplugin.properties"); //NON-NLS
 
 	public SystemTrayPlugin()
 	{
+	}
+
+	@Override public String getAuthor()
+	{
+		return "CHAOSFISCH"; //NON-NLS
+	}
+
+	@Override public String getName()
+	{
+		return "SystemTray Plugin"; //NON-NLS
 	}
 
 	@Override
@@ -53,10 +66,10 @@ public class SystemTrayPlugin implements Pluggable
 			return;
 		}
 
-		final Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png"));
+		final Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png")); //NON-NLS
 
 		final PopupMenu popup = new PopupMenu();
-		final MenuItem itemOpen = new MenuItem("Öffnen");
+		final MenuItem itemOpen = new MenuItem(this.resourceBundle.getString("openApplicationLabel"));
 		itemOpen.addActionListener(new ActionListener()
 		{
 
@@ -70,7 +83,7 @@ public class SystemTrayPlugin implements Pluggable
 				SystemTrayPlugin.this.mainFrame.setAlwaysOnTop(false);
 			}
 		});
-		final MenuItem itemEnd = new MenuItem("Ende");
+		final MenuItem itemEnd = new MenuItem(this.resourceBundle.getString("closeApplicationLabel"));
 		itemEnd.addActionListener(new ActionListener()
 		{
 
@@ -82,7 +95,7 @@ public class SystemTrayPlugin implements Pluggable
 		});
 		popup.add(itemOpen);
 		popup.add(itemEnd);
-		this.trayIcon = new TrayIcon(image, "Simple Java Youtube Uploader", popup);
+		this.trayIcon = new TrayIcon(image, this.mainFrame.getTitle(), popup);
 		this.trayIcon.setImageAutoSize(true);
 		this.trayIcon.addMouseListener(new MouseInputAdapter()
 		{
@@ -106,7 +119,8 @@ public class SystemTrayPlugin implements Pluggable
 				@Override
 				public void windowIconified(final WindowEvent e)
 				{
-					SystemTrayPlugin.this.trayIcon.displayMessage("Information", "Die Anwendung wurde minimiert und läuft im Hintergrund weiter!", TrayIcon.MessageType.INFO);
+					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"),
+							SystemTrayPlugin.this.resourceBundle.getString("applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
 					SystemTrayPlugin.this.mainFrame.setVisible(false);
 				}
 			});
@@ -126,6 +140,6 @@ public class SystemTrayPlugin implements Pluggable
 	@EventTopicSubscriber(topic = SystemTrayPlugin.MESSAGE)
 	public void onMessage(final String topic, final Object o)
 	{
-		this.trayIcon.displayMessage("Information", o.toString(), TrayIcon.MessageType.INFO);
+		this.trayIcon.displayMessage(this.resourceBundle.getString("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
 	}
 }

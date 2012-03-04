@@ -39,8 +39,8 @@ import java.util.ServiceLoader;
 public class DesignManager
 {
 	private final Map<String, Design> designMap = new HashMap<String, Design>();
-	@Inject @Named("mainFrame") private JFrame mainFrame;
-	@InjectLogger private               Logger logger;
+	@SuppressWarnings("DuplicateStringLiteralInspection") @Inject @Named(value = "mainFrame") private JFrame mainFrame;
+	@InjectLogger private                                                                             Logger logger;
 
 	public DesignManager()
 	{
@@ -48,15 +48,16 @@ public class DesignManager
 
 	public void run()
 	{
-		this.logger.debug("Loading designMaps");
+		this.logger.debug("Loading designMaps"); //NON-NLS
 		final ServiceLoader<DesignMap> designServiceLoader = ServiceLoader.load(DesignMap.class);
-		this.logger.debug("Parsing designMaps");
+		this.logger.debug("Parsing designMaps"); //NON-NLS
 		for (final DesignMap mapList : designServiceLoader) {
-			this.logger.debug("Parsing designs of designMap");
+			this.logger.debug("Parsing designs of designMap"); //NON-NLS
 			for (final Design design : mapList) {
-				this.logger.debug("Design found");
+				this.logger.debug("Design found"); //NON-NLS
 				if (design.getShortName() != null && design.getName() != null && this.classExists(design.getLaF())) {
-					this.logger.debug("Adding Design " + design.getShortName());
+					//noinspection StringConcatenation
+					this.logger.debug("Adding Design " + design.getShortName()); //NON-NLS
 					this.designMap.put(design.getShortName(), design);
 				}
 			}
@@ -76,9 +77,11 @@ public class DesignManager
 
 	public void changeDesign(final String design)
 	{
-		this.logger.debug("Changing design to " + design);
+		//noinspection StringConcatenation
+		this.logger.debug("Changing design to " + design); //NON-NLS
 		if (!this.designMap.containsKey(design)) {
-			this.logger.debug("Design not found: " + design);
+			//noinspection StringConcatenation
+			this.logger.debug("Design not found: " + design); //NON-NLS
 			return;
 		}
 
@@ -98,16 +101,16 @@ public class DesignManager
 					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 				}
 
-				if (!(mainFrame == null)) {
+				if (!(DesignManager.this.mainFrame == null)) {
 
-					SwingUtilities.updateComponentTreeUI(mainFrame);
-					mainFrame.pack();
+					SwingUtilities.updateComponentTreeUI(DesignManager.this.mainFrame);
+					DesignManager.this.mainFrame.pack();
 				}
 			}
 		});
 	}
 
-	public void crossPlatformDesign()
+	void crossPlatformDesign()
 	{
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

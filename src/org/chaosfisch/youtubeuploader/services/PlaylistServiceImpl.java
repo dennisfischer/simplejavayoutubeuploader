@@ -103,7 +103,8 @@ public class PlaylistServiceImpl implements PlaylistService
 						session.getTransaction().begin();
 						for (final PlaylistLinkEntry linkEntry : feed.getEntries()) {
 
-							final PlaylistEntry entrySearch = (PlaylistEntry) session.createCriteria(PlaylistEntry.class).add(Restrictions.eq("playlistKey", linkEntry.getPlaylistId())).uniqueResult();
+							final PlaylistEntry entrySearch = (PlaylistEntry) session.createCriteria(PlaylistEntry.class).add(Restrictions.eq("playlistKey", //NON-NLS
+									linkEntry.getPlaylistId())).uniqueResult();
 
 							if (entrySearch == null) {
 								final PlaylistEntry playlistEntity = new PlaylistEntry();
@@ -133,7 +134,7 @@ public class PlaylistServiceImpl implements PlaylistService
 			@Override
 			protected void onDone()
 			{
-				EventBus.publish("playlistsSynchronized", null);
+				EventBus.publish("playlistsSynchronized", null); //NON-NLS
 			}
 		}.execute();
 	}
@@ -218,8 +219,8 @@ public class PlaylistServiceImpl implements PlaylistService
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		@SuppressWarnings("DuplicateStringLiteralInspection") final List returnList = session.createCriteria(PlaylistEntry.class).addOrder(Order.asc("name")).add(Restrictions.eq("account",
-				accountEntry)).list(); //NON-NLS NON-NLS
+		@SuppressWarnings("DuplicateStringLiteralInspection") final List returnList = session.createCriteria(PlaylistEntry.class).addOrder(Order.asc("name")).add(Restrictions.eq("account", //NON-NLS
+				accountEntry)).list();
 		session.getTransaction().commit();
 		return returnList;
 	}
@@ -231,7 +232,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		session.getTransaction().begin();
 		session.refresh(accountEntry);
 		//noinspection StringConcatenation
-		session.createQuery("DELETE FROM PlaylistEntry WHERE ACCOUNT = " + accountEntry.getIdentity()).executeUpdate();
+		session.createQuery("DELETE FROM PlaylistEntry WHERE ACCOUNT = " + accountEntry.getIdentity()).executeUpdate(); //NON-NLS
 		session.getTransaction().commit();
 	}
 

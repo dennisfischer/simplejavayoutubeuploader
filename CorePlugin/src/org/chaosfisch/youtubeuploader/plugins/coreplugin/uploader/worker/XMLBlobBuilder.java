@@ -51,7 +51,7 @@ class XMLBlobBuilder
 	public String buildXMLBlob()
 	{
 
-		final String blob = "<yt:accessControl action='embed' permission ='" + this.booleanToPermissionString(this.queueEntry.isEmbed()) +
+		return "<yt:accessControl action='embed' permission ='" + this.booleanToPermissionString(this.queueEntry.isEmbed()) +
 				"' " +
 				"/>" +
 				"<yt:accessControl action='rate' permission='" + this.booleanToPermissionString(this.queueEntry.isRate()) + "'/>" + "<yt:accessControl action='syndicate' permission='" +
@@ -62,7 +62,6 @@ class XMLBlobBuilder
 				()) +
 				"'/>" +
 				"<yt:accessControl action='list' permission='" + this.booleanToPermissionString(!this.queueEntry.isUnlisted()) + "'/>";
-		return blob;
 	}
 
 	/**

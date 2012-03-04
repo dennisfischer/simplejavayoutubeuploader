@@ -29,38 +29,39 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
  * Time: 22:21
  * To change this template use File | Settings | File Templates.
  */
-public class SubstanceLookAndFeels extends DesignMap
+class SubstanceLookAndFeels extends DesignMap
 {
 	public SubstanceLookAndFeels()
 	{
 		super();
 
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel", "SubstanceAutumnLookAndFeel", "Substance Autumn"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel", "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel", "SubstanceBusinessBlueSteelLookAndFeel", "Substance Buisness Blue Steel"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel", "SubstanceBusinessLookAndFeel", "Substance Buisness"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel", "SubstanceChallengerDeepLookAndFeel", "Substance Challenger Deep"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel", "SubstanceCremeCoffeeLookAndFeel", "Substance Creme Coffee"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel", "SubstanceCremeLookAndFeel", "Substance Creme"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel", "SubstanceDustCoffeeLookAndFeel", "Substance Dust Coffee"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel", "SubstanceDustLookAndFeel", "Substance Dust"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel", "SubstanceEmeraldDuskLookAndFeel", "Substance Emerald Dusk"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel", "SubstanceGeminiLookAndFeel", "Substance Gemini"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel", "SubstanceGraphiteAquaLookAndFeel", "Substance Graphite Aqua"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel", "SubstanceGraphiteGlassLookAndFeel", "Substance Graphite Glass"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel", "SubstanceGraphiteLookAndFeel", "Substance Graphite"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel", "SubstanceMagellanLookAndFeel", "Substance Magellan"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel", "SubstanceMarinerLookAndFeel", "Substance Mariner"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel", "SubstanceMistAquaLookAndFeel", "Substance Mist Aqua"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel", "SubstanceMistSilverLookAndFeel", "Substance Mist Silver"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel", "SubstanceModerateLookAndFeel", "Substance Moderate"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel", "SubstanceNebulaBrickWallLookAndFeel", "Substance Nebula Brick"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel", "SubstanceNebulaLookAndFeel", "Substance Nebula"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel", "SubstanceOfficeBlack2007LookAndFeel", "Substance Office Black 2007"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel", "SubstanceOfficeBlue2007LookAndFeel", "Substance Office Blue 2007"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel", "SubstanceOfficeSilver2007LookAndFeel", "Substance Office Silver 2007"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel", "SubstanceRavenLookAndFeel", "Substance Raven"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel", "SubstanceSaharaLookAndFeel", "Substance Sahara"));
-		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel", "SubstanceTwilightLookAndFeel", "Substance Twilight"));
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel", "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel", "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel", "SubstanceBusinessBlueSteelLookAndFeel", "Substance Buisness Blue Steel")); //NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel", "SubstanceBusinessLookAndFeel", "Substance Buisness")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel", "SubstanceChallengerDeepLookAndFeel", "Substance Challenger Deep")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel", "SubstanceCremeCoffeeLookAndFeel", "Substance Creme Coffee")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel", "SubstanceCremeLookAndFeel", "Substance Creme")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel", "SubstanceDustCoffeeLookAndFeel", "Substance Dust Coffee")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel", "SubstanceDustLookAndFeel", "Substance Dust")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel", "SubstanceEmeraldDuskLookAndFeel", "Substance Emerald Dusk")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel", "SubstanceGeminiLookAndFeel", "Substance Gemini")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel", "SubstanceGraphiteAquaLookAndFeel", "Substance Graphite Aqua")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel", "SubstanceGraphiteGlassLookAndFeel", "Substance Graphite Glass")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel", "SubstanceGraphiteLookAndFeel", "Substance Graphite")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel", "SubstanceMagellanLookAndFeel", "Substance Magellan")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel", "SubstanceMarinerLookAndFeel", "Substance Mariner")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel", "SubstanceMistAquaLookAndFeel", "Substance Mist Aqua")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel", "SubstanceMistSilverLookAndFeel", "Substance Mist Silver")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel", "SubstanceModerateLookAndFeel", "Substance Moderate")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel", "SubstanceNebulaBrickWallLookAndFeel", "Substance Nebula Brick")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel", "SubstanceNebulaLookAndFeel", "Substance Nebula")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel", "SubstanceOfficeBlack2007LookAndFeel", "Substance Office Black 2007")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel", "SubstanceOfficeBlue2007LookAndFeel", "Substance Office Blue 2007")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel", "SubstanceOfficeSilver2007LookAndFeel", "Substance Office Silver 2007")); //NON-NLS
+		// NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel", "SubstanceRavenLookAndFeel", "Substance Raven")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel", "SubstanceSaharaLookAndFeel", "Substance Sahara")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel", "SubstanceTwilightLookAndFeel", "Substance Twilight")); //NON-NLS NON-NLS
 	}
 }                                                                       

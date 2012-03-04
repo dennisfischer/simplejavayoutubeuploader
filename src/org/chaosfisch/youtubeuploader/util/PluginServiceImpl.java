@@ -59,11 +59,11 @@ public class PluginServiceImpl implements PluginService
 	@Override
 	public void registerExtension(final String type, final ExtensionPoint extension)
 	{
-		this.logger.debug("Extension registered, type: " + type);
+		//noinspection StringConcatenation
+		this.logger.debug("Extension registered, type: " + type); //NON-NLS
 		if (!this.extensionPointMap.containsKey(type)) {
 			this.extensionPointMap.put(type, new Vector<ExtensionPoint>());
 		}
-		logger.debug("Thread: " + this.toString());
 		this.extensionPointMap.get(type).add(extension);
 	}
 
@@ -72,7 +72,6 @@ public class PluginServiceImpl implements PluginService
 		if (this.extensionPointMap.containsKey(extensionType)) {
 			return this.extensionPointMap.get(extensionType);
 		}
-		logger.debug("Thread: " + this.toString());
 		return new Vector<ExtensionPoint>();
 	}
 

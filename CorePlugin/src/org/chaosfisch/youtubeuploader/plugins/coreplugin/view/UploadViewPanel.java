@@ -124,7 +124,7 @@ public final class UploadViewPanel
 		this.startzeitpunktSpinner.setEditor(timeEditor);
 		this.startzeitpunktSpinner.setValue(new Date());
 
-		this.fileSearchMenuItem = new JMenuItem("Datei(en) öffnen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
+		this.fileSearchMenuItem = new JMenuItem("Datei(en) öffnen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
 		this.fileSearchMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -323,7 +323,7 @@ public final class UploadViewPanel
 		fileChooser.setAcceptAllFileFilterUsed(true);
 		fileChooser.setDragEnabled(true);
 		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home"));
+		final File directory = new File(System.getProperty("user.home")); //NON-NLS
 		fileChooser.setCurrentDirectory(directory);
 		final PresetEntry selectedPreset = (PresetEntry) this.presetList.getSelectedItem();
 		//noinspection CallToStringEquals
@@ -501,7 +501,7 @@ public final class UploadViewPanel
 		//noinspection CallToStringEquals
 		if (this.fileList.getItemCount() > 0 && this.titleTextField.getText().equals("")) {
 			//noinspection MagicCharacter,DuplicateStringLiteralInspection
-			this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
+			this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
 					this.fileList.getSelectedItem().toString().lastIndexOf('.')));
 		}
 	}

@@ -96,7 +96,7 @@ public class OldPresetEntry
 
 	public void setAutotitle_format(final String autotitle_format)
 	{
-		this.autotitle_format = autotitle_format.replaceAll("%playlist%", "{playlist}").replaceAll("%number%", "{nummer}");
+		this.autotitle_format = autotitle_format.replaceAll("%playlist%", "{playlist}").replaceAll("%number%", "{nummer}"); //NON-NLS NON-NLS NON-NLS NON-NLS
 	}
 
 	public String getDefault_dir()

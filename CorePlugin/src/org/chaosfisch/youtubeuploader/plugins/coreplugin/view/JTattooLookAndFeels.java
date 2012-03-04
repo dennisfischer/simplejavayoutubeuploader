@@ -29,23 +29,23 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
  * Time: 18:11
  * To change this template use File | Settings | File Templates.
  */
-public class JTattooLookAndFeels extends DesignMap
+class JTattooLookAndFeels extends DesignMap
 {
 	public JTattooLookAndFeels()
 	{
 		super();
 
-		this.add(new DesignImpl("com.jtattoo.plaf.acryl.AcrylLookAndFeel", "AcrylLookAndFeel", "Acryl"));
-		this.add(new DesignImpl("com.jtattoo.plaf.aero.AeroLookAndFeel", "AeroLookAndFeel", "Aero"));
-		this.add(new DesignImpl("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel", "AlumuniumLookAndFeel", "Aluminium"));
-		this.add(new DesignImpl("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel", "BernsteinLookAndFeel", "Bernstein"));
-		this.add(new DesignImpl("com.jtattoo.plaf.fast.FastLookAndFeel", "FastLookAndFeel", "Fast"));
-		this.add(new DesignImpl("com.jtattoo.plaf.graphite.GraphiteLookAndFeel", "GraphiteLookAndFeel", "Graphite"));
-		this.add(new DesignImpl("com.jtattoo.plaf.hifi.HiFiLookAndFeel", "HiFiLookAndFeel", "Hifi"));
-		this.add(new DesignImpl("com.jtattoo.plaf.luna.LunaLookAndFeel", "LunaLookAndFeel", "Luna"));
-		this.add(new DesignImpl("com.jtattoo.plaf.mcwin.McWinLookAndFeel", "McWinLookAndFeel", "McWin"));
-		this.add(new DesignImpl("com.jtattoo.plaf.mint.MintLookAndFeel", "MintLookAndFeel", "Mint"));
-		this.add(new DesignImpl("com.jtattoo.plaf.noire.NoireLookAndFeel", "NoireLookAndFeel", "Noire"));
-		this.add(new DesignImpl("com.jtattoo.plaf.smart.SmartLookAndFeel", "SmartLookAndFeel", "Smart"));
+		this.add(new DesignImpl("com.jtattoo.plaf.acryl.AcrylLookAndFeel", "AcrylLookAndFeel", "Acryl")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.aero.AeroLookAndFeel", "AeroLookAndFeel", "Aero")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel", "AlumuniumLookAndFeel", "Aluminium")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel", "BernsteinLookAndFeel", "Bernstein")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.fast.FastLookAndFeel", "FastLookAndFeel", "Fast")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.graphite.GraphiteLookAndFeel", "GraphiteLookAndFeel", "Graphite")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.hifi.HiFiLookAndFeel", "HiFiLookAndFeel", "Hifi")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.luna.LunaLookAndFeel", "LunaLookAndFeel", "Luna")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.mcwin.McWinLookAndFeel", "McWinLookAndFeel", "McWin")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.mint.MintLookAndFeel", "MintLookAndFeel", "Mint")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.noire.NoireLookAndFeel", "NoireLookAndFeel", "Noire")); //NON-NLS NON-NLS
+		this.add(new DesignImpl("com.jtattoo.plaf.smart.SmartLookAndFeel", "SmartLookAndFeel", "Smart")); //NON-NLS NON-NLS
 	}
 }

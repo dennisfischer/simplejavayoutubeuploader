@@ -33,6 +33,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,8 +55,9 @@ public class MenuViewPanel
 
 	private JMenuItem addPresetMenuItem;
 	private JMenuItem addAccountMenuItem;
-	private JMenuItem showDirectoriesMenuItem;
 	private JMenuItem addPlaylistMenuItem;
+
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/menuView.properties"); //NON-NLS
 
 	@Inject
 	public MenuViewPanel(final UploadController uploadController, final AccountService accountService, final PresetService presetService, final PlaylistService playlistService)
@@ -69,7 +71,7 @@ public class MenuViewPanel
 
 	private void initMenuComponents()
 	{
-		final JMenuItem importAccountMenuItem = new JMenuItem("Accounts");
+		final JMenuItem importAccountMenuItem = new JMenuItem(this.resourceBundle.getString("menu.accounts"));
 		importAccountMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -79,7 +81,7 @@ public class MenuViewPanel
 			}
 		});
 
-		final JMenuItem importPresetMenuItem = new JMenuItem("Presets");
+		final JMenuItem importPresetMenuItem = new JMenuItem(this.resourceBundle.getString("menu.presets"));
 		importPresetMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -88,7 +90,7 @@ public class MenuViewPanel
 				MenuViewPanel.this.uploadController.importPreset();
 			}
 		});
-		final JMenuItem importQueueMenuItem = new JMenuItem("Warteschlange");
+		final JMenuItem importQueueMenuItem = new JMenuItem(this.resourceBundle.getString("menu.queue"));
 		importQueueMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -98,7 +100,7 @@ public class MenuViewPanel
 			}
 		});
 
-		final JMenuItem exportAccountMenuItem = new JMenuItem("Accounts");
+		final JMenuItem exportAccountMenuItem = new JMenuItem(this.resourceBundle.getString("menu.accounts"));
 		exportAccountMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -107,7 +109,7 @@ public class MenuViewPanel
 				MenuViewPanel.this.uploadController.exportAccount();
 			}
 		});
-		final JMenuItem exportPresetMenuItem = new JMenuItem("Presets");
+		final JMenuItem exportPresetMenuItem = new JMenuItem(this.resourceBundle.getString("menu.presets"));
 		exportPresetMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -116,7 +118,7 @@ public class MenuViewPanel
 				MenuViewPanel.this.uploadController.exportPreset();
 			}
 		});
-		final JMenuItem exportQueueMenuItem = new JMenuItem("Warteschlange");
+		final JMenuItem exportQueueMenuItem = new JMenuItem(this.resourceBundle.getString("menu.queue"));
 		exportQueueMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -126,7 +128,7 @@ public class MenuViewPanel
 			}
 		});
 
-		this.addAccountMenuItem = new JMenuItem("Account hinzufügen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/key_add.png")));
+		this.addAccountMenuItem = new JMenuItem("Account hinzufügen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/key_add.png"))); //NON-NLS
 		this.addAccountMenuItem.addActionListener(new ActionListener()
 		{
 			@SuppressWarnings("CallToStringEquals") @Override
@@ -135,10 +137,11 @@ public class MenuViewPanel
 				final JTextField nameTextField = new JTextField("");
 				final JPasswordField passwordField = new JPasswordField("");
 
-				final Object[] message = new Object[]{"Account:", nameTextField, "Password:", passwordField};
+				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField,
+						MenuViewPanel.this.resourceBundle.getString("accountDialog.passwordLabel"), passwordField};
 
 				while (true) {
-					final int result = JOptionPane.showConfirmDialog(null, message, "Account hinzufügen", JOptionPane.OK_CANCEL_OPTION);
+					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("accountDialog.addAccountLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
 						if (!nameTextField.getText().equals("")) {
 
@@ -162,120 +165,140 @@ public class MenuViewPanel
 					}
 				}
 			}
-		});
+		}
 
-		this.addPlaylistMenuItem = new JMenuItem("Playlist hinzufügen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/table_add.png")));
-		this.addPlaylistMenuItem.addActionListener(new ActionListener()
-		{
-			@SuppressWarnings("CallToStringEquals") @Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				final JTextField nameTextField = new JTextField("");
-				final JTextArea descriptionTextArea = new JTextArea("");
-				descriptionTextArea.setLineWrap(true);
+		);
 
-				final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
-				scrollPane.setPreferredSize(new Dimension(350, 150));
-				final Object[] message = new Object[]{"Playlistname:", nameTextField, "Beschreibung:", scrollPane};
+		this.addPlaylistMenuItem = new JMenuItem(this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
+				new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/table_add.png"))); //NON-NLS
+		this.addPlaylistMenuItem.addActionListener(new
 
-				while (true) {
-					final int result = JOptionPane.showConfirmDialog(null, message, "Playlist hinzufügen", JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.OK_OPTION) {
-						if (nameTextField.getText().equals("")) {
-							nameTextField.setBackground(Color.RED);
-							continue;
+				ActionListener()
+				{
+					@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+					{
+						final JTextField nameTextField = new JTextField("");
+						final JTextArea descriptionTextArea = new JTextArea("");
+						descriptionTextArea.setLineWrap(true);
+
+						final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
+						scrollPane.setPreferredSize(new Dimension(350, 150));
+						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField,
+								MenuViewPanel.this.resourceBundle.getString("playlistDialog.descriptionLabel"), scrollPane};
+
+						while (true) {
+							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
+									JOptionPane.OK_CANCEL_OPTION);
+							if (result == JOptionPane.OK_OPTION) {
+								if (nameTextField.getText().equals("")) {
+									nameTextField.setBackground(Color.RED);
+									continue;
+								}
+								nameTextField.setBackground(Color.WHITE);
+								if (descriptionTextArea.getText().equals("")) {
+									descriptionTextArea.setBackground(Color.RED);
+									continue;
+								}
+								descriptionTextArea.setBackground(Color.WHITE);
+
+								final PlaylistEntry playlistEntry = new PlaylistEntry();
+								playlistEntry.setName(nameTextField.getText());
+								playlistEntry.setSummary(descriptionTextArea.getText());
+								playlistEntry.setAccount((AccountEntry) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem());
+								if (playlistEntry.getAccount() != null) {
+									MenuViewPanel.this.playlistService.createPlaylist(playlistEntry);
+									break;
+								}
+							} else {
+								break;
+							}
 						}
-						nameTextField.setBackground(Color.WHITE);
-						if (descriptionTextArea.getText().equals("")) {
-							descriptionTextArea.setBackground(Color.RED);
-							continue;
-						}
-						descriptionTextArea.setBackground(Color.WHITE);
-
-						final PlaylistEntry playlistEntry = new PlaylistEntry();
-						playlistEntry.setName(nameTextField.getText());
-						playlistEntry.setSummary(descriptionTextArea.getText());
-						playlistEntry.setAccount((AccountEntry) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem());
-						if (playlistEntry.getAccount() != null) {
-							MenuViewPanel.this.playlistService.createPlaylist(playlistEntry);
-							break;
-						}
-					} else {
-						break;
 					}
 				}
-			}
-		});
 
-		this.addPresetMenuItem = new JMenuItem("Preset hinzufügen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/report_add.png")));
-		this.addPresetMenuItem.addActionListener(new ActionListener()
-		{
-			@SuppressWarnings("CallToStringEquals") @Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				final JTextField nameTextField = new JTextField("");
+		);
 
-				final Object[] message = new Object[]{"Presetname:", nameTextField};
+		this.addPresetMenuItem = new
 
-				while (true) {
-					final int result = JOptionPane.showConfirmDialog(null, message, "Preset hinzufügen", JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.OK_OPTION) {
-						if (!nameTextField.getText().equals("")) {
-							final PresetEntry presetEntry = new PresetEntry();
-							presetEntry.setName(nameTextField.getText());
-							MenuViewPanel.this.presetService.createPresetEntry(presetEntry);
-							break;
-						} else {
-							nameTextField.setBackground(Color.RED);
+				JMenuItem(this.resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/report_add.png"))); //NON-NLS
+		this.addPresetMenuItem.addActionListener(new
+
+				ActionListener()
+				{
+					@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+					{
+						final JTextField nameTextField = new JTextField("");
+
+						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField};
+
+						while (true) {
+							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
+							if (result == JOptionPane.OK_OPTION) {
+								if (!nameTextField.getText().equals("")) {
+									final PresetEntry presetEntry = new PresetEntry();
+									presetEntry.setName(nameTextField.getText());
+									MenuViewPanel.this.presetService.createPresetEntry(presetEntry);
+									break;
+								} else {
+									nameTextField.setBackground(Color.RED);
+								}
+							} else {
+								break;
+							}
 						}
-					} else {
-						break;
 					}
 				}
-			}
-		});
 
-		this.showDirectoriesMenuItem = new JMenuItem("Ordnerüberwachung", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
-		this.showDirectoriesMenuItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
+		);
 
-			}
-		});
-		this.showDirectoriesMenuItem.setEnabled(false);
+		final JMenuItem importOldAccountItem = new JMenuItem(this.resourceBundle.getString("menu.accounts"));
+		importOldAccountItem.addActionListener(new
 
-		final JMenuItem importOldAccountItem = new JMenuItem("Accounts");
-		importOldAccountItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				MenuViewPanel.this.uploadController.importOldAccount();
-			}
-		});
+				ActionListener()
+				{
+					@Override public void actionPerformed(final ActionEvent e)
+					{
+						MenuViewPanel.this.uploadController.importOldAccount();
+					}
+				}
 
-		final JMenuItem importOldPresetMenuItem = new JMenuItem("Presets");
-		importOldPresetMenuItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				MenuViewPanel.this.uploadController.importOldPreset();
-			}
-		});
+		);
 
-		this.importMenu = new JMenu("Importieren");
+		final JMenuItem importOldPresetMenuItem = new JMenuItem(this.resourceBundle.getString("menu.presets"));
+		importOldPresetMenuItem.addActionListener(new
+
+				ActionListener()
+				{
+					@Override public void actionPerformed(final ActionEvent e)
+					{
+						MenuViewPanel.this.uploadController.importOldPreset();
+					}
+				}
+
+		);
+
+		this.importMenu = new
+
+				JMenu(this.resourceBundle.getString("importMenuItemLabel")
+
+		);
 		this.importMenu.add(importAccountMenuItem);
 		this.importMenu.add(importPresetMenuItem);
 		this.importMenu.add(importQueueMenuItem);
 
-		this.importOldMenu = new JMenu("Import alter Dateien");
+		this.importOldMenu = new
+
+				JMenu(this.resourceBundle.getString("importOldMenuItemLabel")
+
+		);
 		this.importOldMenu.add(importOldAccountItem);
 		this.importOldMenu.add(importOldPresetMenuItem);
 
-		this.exportMenu = new JMenu("Exportieren");
+		this.exportMenu = new
+
+				JMenu(this.resourceBundle.getString("exportMenuItemLabel")
+
+		);
 		this.exportMenu.add(exportAccountMenuItem);
 		this.exportMenu.add(exportPresetMenuItem);
 		this.exportMenu.add(exportQueueMenuItem);
@@ -288,6 +311,6 @@ public class MenuViewPanel
 
 	public JMenuItem[] getEditMenuItems()
 	{
-		return new JMenuItem[]{this.addAccountMenuItem, this.addPresetMenuItem, this.addPlaylistMenuItem, this.showDirectoriesMenuItem};
+		return new JMenuItem[]{this.addAccountMenuItem, this.addPresetMenuItem, this.addPlaylistMenuItem};
 	}
 }

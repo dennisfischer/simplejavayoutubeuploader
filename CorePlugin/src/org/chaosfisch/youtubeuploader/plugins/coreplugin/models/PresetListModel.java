@@ -64,7 +64,7 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 		return this.presetEntries.get(index);
 	}
 
-	public void addPresetEntry(final PresetEntry presetEntry)
+	void addPresetEntry(final PresetEntry presetEntry)
 	{
 		this.presetEntries.add(presetEntry);
 		this.fireIntervalAdded(this, 0, this.getSize());

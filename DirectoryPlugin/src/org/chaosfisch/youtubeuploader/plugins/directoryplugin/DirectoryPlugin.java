@@ -47,6 +47,16 @@ import org.chaosfisch.plugin.Pluggable;
  */
 public class DirectoryPlugin implements Pluggable
 {
+	@Override public String getName()
+	{
+		return "Ordnerüberwachungsplugin"; //NON-NLS
+	}
+
+	@Override public String getAuthor()
+	{
+		return "CHAOSFISCH"; //NON-NLS
+	}
+
 	@Override public void init()
 	{
 	}

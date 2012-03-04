@@ -82,7 +82,7 @@ public class ClasspathLoader
 
 			Method method = null;
 			try {
-				method = sysLoaderClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+				method = sysLoaderClass.getDeclaredMethod("addURL", new Class[]{URL.class}); //NON-NLS
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			}

@@ -39,14 +39,14 @@ import javax.swing.*;
  * Time: 17:33
  * To change this template use File | Settings | File Templates.
  */
-public class PluginModule extends AbstractModule
+class PluginModule extends AbstractModule
 {
 	@Override
 	protected void configure()
 	{
 		this.bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
 		this.bind(PluginService.class).toInstance(new PluginServiceImpl());
-		this.bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(MainFrame.class).in(Singleton.class);
+		this.bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(MainFrame.class).in(Singleton.class); //NON-NLS
 		this.bindListener(Matchers.any(), new Log4JTypeListener());
 	}
 }

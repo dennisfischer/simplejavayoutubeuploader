@@ -50,8 +50,8 @@ public class PresetServiceImpl implements PresetService
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
 		final Query temp;
-		temp = session.createQuery("Select Count(*) From PresetEntry Where name = :name");
-		temp.setParameter("name", presetEntry.getName());
+		temp = session.createQuery("Select Count(*) From PresetEntry Where name = :name"); //NON-NLS
+		temp.setParameter("name", presetEntry.getName()); //NON-NLS
 
 		if ((Long) temp.uniqueResult() > 0) {
 			session.getTransaction().commit();

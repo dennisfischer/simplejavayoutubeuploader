@@ -42,7 +42,7 @@ import java.util.List;
  * Time: 22:20
  * To change this template use File | Settings | File Templates.
  */
-public class ImportManager
+class ImportManager
 {
 	private final XStream        xStream;
 	private final AccountService accountService;
@@ -56,7 +56,7 @@ public class ImportManager
 		this.accountService = accountService;
 		this.presetService = presetService;
 		this.queueService = queueService;
-		xStream.alias("entries", List.class);
+		xStream.alias("entries", List.class); //NON-NLS
 	}
 
 	public void importAccount()
@@ -111,7 +111,7 @@ public class ImportManager
 		}
 
 		//noinspection DuplicateStringLiteralInspection
-		this.xStream.alias("entry", OldAccountEntry.class);
+		this.xStream.alias("entry", OldAccountEntry.class); //NON-NLS
 		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(file);
 
 		for (final Object account : accounts) {
@@ -136,7 +136,7 @@ public class ImportManager
 			return;
 		}
 		//noinspection DuplicateStringLiteralInspection
-		this.xStream.alias("entry", OldPresetEntry.class);
+		this.xStream.alias("entry", OldPresetEntry.class); //NON-NLS
 		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(file);
 
 		for (final Object preset : presets) {
@@ -169,7 +169,7 @@ public class ImportManager
 		fileChooser.setAcceptAllFileFilterUsed(true);
 		fileChooser.setDragEnabled(true);
 		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home"));
+		final File directory = new File(System.getProperty("user.home")); //NON-NLS
 		fileChooser.setCurrentDirectory(directory);
 
 		final int result = fileChooser.showOpenDialog(null);

@@ -73,8 +73,8 @@ public class AccountServiceImpl implements AccountService
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
 		final Query temp;
-		temp = session.createQuery("Select Count(*) From AccountEntry Where name = :name");
-		temp.setParameter("name", accountEntry.getName());
+		temp = session.createQuery("Select Count(*) From AccountEntry Where name = :name"); //NON-NLS
+		temp.setParameter("name", accountEntry.getName()); //NON-NLS
 
 		if ((Long) temp.uniqueResult() > 0) {
 			session.getTransaction().commit();

@@ -86,10 +86,10 @@ public final class QueueViewPanel
 		this.stoppenButton.setEnabled(false);
 
 		this.speedLimitSpinner.setModel(new SpinnerNumberModel(0, 0, 10000, 10));
-		this.speedLimitSpinner.setEditor(new JSpinner.NumberEditor(this.speedLimitSpinner, "Max: # kb/s"));
+		this.speedLimitSpinner.setEditor(new JSpinner.NumberEditor(this.speedLimitSpinner, "Max: # kb/s")); //NON-NLS
 
 		this.maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		this.maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(this.maxUploadsSpinner, "Max: # Uploads"));
+		this.maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(this.maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
 	}
 
 	private void initListeners()

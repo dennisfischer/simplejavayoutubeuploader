@@ -26,7 +26,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
  * Time: 20:32
  * To change this template use File | Settings | File Templates.
  */
-public class UploaderException extends Exception
+class UploaderException extends Exception
 {
 	public UploaderException(final String message)
 	{

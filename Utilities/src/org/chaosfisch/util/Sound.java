@@ -31,7 +31,7 @@ import java.io.IOException;
  * Time: 10:25
  * To change this template use File | Settings | File Templates.
  */
-public class Sound
+class Sound
 {
 
 	public static void playFile(final String file)

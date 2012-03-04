@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
  * Time: 15:19
  * To change this template use File | Settings | File Templates.
  */
-public class Log4JMembersInjector<T> implements MembersInjector<T>
+class Log4JMembersInjector<T> implements MembersInjector<T>
 {
 	private final Field  field;
 	private final Logger logger;

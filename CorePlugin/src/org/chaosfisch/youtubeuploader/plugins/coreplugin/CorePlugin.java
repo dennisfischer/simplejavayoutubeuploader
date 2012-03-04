@@ -21,7 +21,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.apache.log4j.Logger;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
@@ -30,7 +29,6 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
-import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,19 +38,27 @@ import java.util.ResourceBundle;
 public class CorePlugin implements Pluggable
 {
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
-	private               Uploader      uploader;
-	@InjectLogger private Logger        logger;
-	@Inject private       PluginService pluginService;
-	@Inject               Injector      injector;
+	private         Uploader      uploader;
+	@Inject private PluginService pluginService;
+	@Inject         Injector      injector;
 
 	public CorePlugin()
 	{
 	}
 
+	@Override public String getName()
+	{
+		return "Coreplugin"; //NON-NLS
+	}
+
+	@Override public String getAuthor()
+	{
+		return "CHAOSFISCH"; //NON-NLS
+	}
+
 	@Override
 	public void init()
 	{
-		this.logger.debug("Coreplugin init called");
 		this.uploader = this.injector.getInstance(Uploader.class);
 		if (!GraphicsEnvironment.isHeadless()) {
 			final UploadViewPanel uploadViewPanel = this.injector.getInstance(UploadViewPanel.class);
@@ -73,21 +79,20 @@ public class CorePlugin implements Pluggable
 			}.execute();
 
 			if (this.pluginService != null) {
-				this.logger.debug("Registering extensions");
-				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("uploadTab.title"), uploadViewPanel.getJPanel()));
-				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel()));
+				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("uploadTab.title"), uploadViewPanel.getJPanel())); //NON-NLS
+				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel())); //NON-NLS
 
 				for (final JMenuItem menuItem : uploadViewPanel.getFileMenuItem()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem));
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				for (final JMenu menu : menuViewPanel.getFileMenus()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu));
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu)); //NON-NLS
 				}
 				for (final JMenuItem menuItem : menuViewPanel.getEditMenuItems()) {
-					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem));
+					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				final QueueController queueController = queueViewPanel.getQueueController();
-				this.pluginService.registerExtension("exit", queueController.uploadExitPoint());
+				this.pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS
 			}
 		}
 	}

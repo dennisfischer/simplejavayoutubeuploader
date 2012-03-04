@@ -32,9 +32,9 @@ import java.util.List;
  */
 public interface AccountService
 {
-	public static final String ACCOUNT_ENTRY_ADDED   = "accountEntryAdded";
-	public static final String ACCOUNT_ENTRY_REMOVED = "accountEntryRemoved";
-	public static final String ACCOUNT_ENTRY_UPDATED = "accountEntryUpdated";
+	public static final String ACCOUNT_ENTRY_ADDED   = "accountEntryAdded"; //NON-NLS
+	public static final String ACCOUNT_ENTRY_REMOVED = "accountEntryRemoved"; //NON-NLS
+	public static final String ACCOUNT_ENTRY_UPDATED = "accountEntryUpdated"; //NON-NLS
 
 	AccountEntry createAccountEntry(AccountEntry accountEntry);
 

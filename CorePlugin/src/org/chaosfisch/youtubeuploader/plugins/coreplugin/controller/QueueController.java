@@ -29,6 +29,7 @@ import org.chaosfisch.youtubeuploader.services.QueuePosition;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
+import java.util.ResourceBundle;
 
 public class QueueController
 {
@@ -44,6 +45,8 @@ public class QueueController
 	private final QueueTableModel queueList;
 	private final QueueService    queueService;
 	private final Uploader        uploader;
+
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView.properties"); //NON-NLS
 
 	@Inject
 	public QueueController(final QueueTableModel queueTableModel, final QueueService queueService, final Uploader uploader)
@@ -153,7 +156,7 @@ public class QueueController
 			public boolean canExit()
 			{
 				if (QueueController.this.uploader.isRunning()) {
-					final int result = JOptionPane.showConfirmDialog(null, "Uploads laufen noch!! Soll die Anwendung wirklich beendet werden?", UIManager.getString("OptionPane.titleText"),
+					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"), //NON-NLS
 							JOptionPane.YES_NO_OPTION);
 					return result == 0;
 				}

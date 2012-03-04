@@ -27,4 +27,8 @@ public interface Pluggable
 	void onStart();
 
 	void onEnd();
+
+	String getName();
+
+	String getAuthor();
 }

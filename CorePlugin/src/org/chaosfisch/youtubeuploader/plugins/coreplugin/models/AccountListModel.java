@@ -64,7 +64,7 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 		return this.accountEntries.get(index);
 	}
 
-	public void addAccountEntry(final AccountEntry accountEntry)
+	void addAccountEntry(final AccountEntry accountEntry)
 	{
 		this.accountEntries.add(accountEntry);
 		this.fireIntervalAdded(this, 0, this.getSize());
@@ -91,7 +91,7 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 		return new ArrayList<AccountEntry>(this.accountEntries);
 	}
 
-	public void removeAccountEntry(final AccountEntry accountEntry)
+	void removeAccountEntry(final AccountEntry accountEntry)
 	{
 		this.accountEntries.remove(accountEntry);
 		this.fireContentsChanged(this, 0, this.getSize());

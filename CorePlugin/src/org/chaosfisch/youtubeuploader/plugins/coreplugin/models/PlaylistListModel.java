@@ -65,7 +65,7 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 		return this.playlistEntries.get(index);
 	}
 
-	public void addPlaylistEntry(final PlaylistEntry playlistEntry)
+	void addPlaylistEntry(final PlaylistEntry playlistEntry)
 	{
 		this.playlistEntries.add(playlistEntry);
 		this.fireIntervalAdded(this, 0, this.getSize());
@@ -92,7 +92,7 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 		return new ArrayList<PlaylistEntry>(this.playlistEntries);
 	}
 
-	public void removePlaylistEntry(final PlaylistEntry playlistEntry)
+	void removePlaylistEntry(final PlaylistEntry playlistEntry)
 	{
 		this.playlistEntries.remove(playlistEntry);
 		this.fireContentsChanged(this, 0, this.getSize());
@@ -150,7 +150,7 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
-	public int getSelectedIndex()
+	int getSelectedIndex()
 	{
 		return this.selectedRow;
 	}

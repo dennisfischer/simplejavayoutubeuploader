@@ -26,7 +26,7 @@ package org.chaosfisch.youtubeuploader.db;
  * Time: 09:35
  * To change this template use File | Settings | File Templates.
  */
-public class HibernateMappingExtensionImpl extends HibernateMappingExtension
+class HibernateMappingExtensionImpl extends HibernateMappingExtension
 {
 	public HibernateMappingExtensionImpl()
 	{

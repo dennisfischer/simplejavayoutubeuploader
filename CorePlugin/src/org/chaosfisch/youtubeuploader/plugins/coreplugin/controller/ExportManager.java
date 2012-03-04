@@ -39,10 +39,9 @@ import java.util.List;
  * Time: 22:20
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("StringConcatenation")
-public class ExportManager
+@SuppressWarnings("StringConcatenation") class ExportManager
 {
-	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"; //NON-NLS
 	private final XStream        xStream;
 	private final AccountService accountService;
 	private final PresetService  presetService;
@@ -55,13 +54,13 @@ public class ExportManager
 		this.accountService = accountService;
 		this.presetService = presetService;
 		this.queueService = queueService;
-		xStream.alias("entries", List.class);
+		xStream.alias("entries", List.class); //NON-NLS
 	}
 
 	@SuppressWarnings("DuplicateStringLiteralInspection")
 	public void exportAccount()
 	{
-		final File file = this.showSaveDialog("account");
+		final File file = this.showSaveDialog("account"); //NON-NLS
 		if (file == null) {
 			return;
 		}
@@ -92,7 +91,7 @@ public class ExportManager
 
 	public void exportPreset()
 	{
-		final File file = this.showSaveDialog("preset");
+		final File file = this.showSaveDialog("preset"); //NON-NLS
 		if (file == null) {
 			return;
 		}
@@ -123,7 +122,7 @@ public class ExportManager
 
 	public void exportQueue()
 	{
-		final File file = this.showSaveDialog("queue");
+		final File file = this.showSaveDialog("queue"); //NON-NLS
 		if (file == null) {
 			return;
 		}
@@ -151,15 +150,15 @@ public class ExportManager
 		}
 	}
 
-	public File showSaveDialog(final String name)
+	File showSaveDialog(final String name)
 	{
 		final JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setAcceptAllFileFilterUsed(true);
 		fileChooser.setDragEnabled(true);
 		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home"));
+		final File directory = new File(System.getProperty("user.home")); //NON-NLS
 		fileChooser.setCurrentDirectory(directory);
-		fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml"));
+		fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml")); //NON-NLS NON-NLS
 
 		final int result = fileChooser.showSaveDialog(null);
 

@@ -37,12 +37,13 @@ import java.util.ResourceBundle;
 
 public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 {
-	private       String         formatString   = "";
-	private       String         playlistName   = "";
-	private       int            playlistNumber = 0;
-	private       int            number         = 0;
-	private       String         fileName       = "";
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.uploadView"); //NON-NLS
+	private              String         formatString      = "";
+	private              String         playlistName      = "";
+	private              int            playlistNumber    = 0;
+	private              int            number            = 0;
+	private              String         fileName          = "";
+	private final        ResourceBundle resourceBundle    = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.uploadView"); //NON-NLS
+	private static final String         AUTOTITLE_CHANGED = "autoTitleChanged"; //NON-NLS
 
 	public AutoTitleGeneratorImpl()
 	{
@@ -124,8 +125,8 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		//noinspection CallToStringEquals
 		if (this.fileName != null && !this.fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
-			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.file"), this.fileName.substring(this.fileName.lastIndexOf(System.getProperty("file.separator")) + 1,
-					this.fileName.lastIndexOf('.'))); //NON-NLS
+			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.file"), this.fileName.substring(this.fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
+					this.fileName.lastIndexOf('.')));
 		}
 		return formated;
 	}
@@ -142,13 +143,13 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		return this.playlistNumber;
 	}
 
-	@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
+	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdate(final String topic, final Object o)
 	{
 		final PlaylistEntry playlistEntry = (PlaylistEntry) o;
 		if (playlistEntry.getName().equals(this.playlistName)) {
 			this.setPlaylistNumber(playlistEntry.getNumber());
-			EventBus.publish("autoTitleChanged", this.gernerate());
+			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());
 		}
 	}
 }

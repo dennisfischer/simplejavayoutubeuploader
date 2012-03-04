@@ -31,6 +31,7 @@ import org.chaosfisch.youtubeuploader.services.QueuePosition;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.table.AbstractTableModel;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -61,7 +62,7 @@ public class QueueTableModel extends AbstractTableModel
 		this.queueEntries.addAll(l);
 	}
 
-	public void addQueueEntry(final QueueEntry q)
+	void addQueueEntry(final QueueEntry q)
 	{
 		this.queueEntries.add(q);
 		this.fireTableDataChanged();
@@ -277,8 +278,8 @@ public class QueueTableModel extends AbstractTableModel
 		if (this.queueEntries.contains(queueEntry)) {
 			final int index = this.queueEntries.indexOf(queueEntry);
 			this.setValueAt(queueEntry.getStarted().getTime(), index, 3);
-			this.setValueAt("Starte Upload...", index, 5);
-			EventBus.publish("updateQueueEntry", queueEntry);
+			this.setValueAt(this.resourceBundle.getString("uploadStarting"), index, 5);
+			EventBus.publish("updateQueueEntry", queueEntry); //NON-NLS
 		}
 	}
 
@@ -312,9 +313,8 @@ public class QueueTableModel extends AbstractTableModel
 
 				this.setValueAt(eta, index, 4);
 				//noinspection StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation
-				this.setValueAt("Upload: " + (int) uploadProgress.getTotalBytesUploaded() / 1048576 + " MB / " + (int) uploadProgress.getFileSize() / 1048576 + " MB -- " + (int) (speed * 1000) +
-						" " +
-						"kb/s", index, 5);
+				this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadProgressMessage"), (int) uploadProgress.getTotalBytesUploaded() / 1048576,
+						(int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
 				this.setValueAt(percent, index, 6);
 			}
 		}
@@ -327,7 +327,7 @@ public class QueueTableModel extends AbstractTableModel
 		if (this.queueEntries.contains(uploadFailed.getQueueEntry())) {
 			final int index = this.queueEntries.indexOf(uploadFailed.getQueueEntry());
 			//noinspection StringConcatenation
-			this.setValueAt("Fehlgeschlagen: " + uploadFailed.getMessage(), index, 5);
+			this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
 		}
 	}
 }

@@ -32,7 +32,7 @@ import org.hibernate.SessionFactory;
  * Time: 20:17
  * To change this template use File | Settings | File Templates.
  */
-public class DatabaseModule extends AbstractModule
+class DatabaseModule extends AbstractModule
 {
 	@Override
 	protected void configure()

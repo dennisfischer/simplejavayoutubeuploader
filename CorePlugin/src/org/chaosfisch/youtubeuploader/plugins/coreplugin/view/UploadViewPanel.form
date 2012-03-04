@@ -90,7 +90,7 @@
               </component>
               <component id="362ac" class="javax.swing.JButton" binding="searchFile">
                 <constraints>
-                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
@@ -100,7 +100,7 @@
               </component>
               <component id="1d85e" class="javax.swing.JComboBox" binding="fileList">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
@@ -109,7 +109,7 @@
               </component>
               <component id="c5775" class="javax.swing.JComboBox" binding="categoryList">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
@@ -133,7 +133,7 @@
               </component>
               <component id="867c4" class="javax.swing.JTextField" binding="titleTextField">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="1" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
@@ -144,14 +144,14 @@
               </component>
               <component id="dc9b" class="javax.swing.JComboBox" binding="playlistList">
                 <constraints>
-                  <grid row="13" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="13" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties/>
               </component>
               <scrollpane id="f1f15">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="2" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0"/>
                 </constraints>
                 <properties/>
@@ -169,7 +169,7 @@
               </scrollpane>
               <scrollpane id="478ba">
                 <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="5" column="2" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0"/>
                 </constraints>
                 <properties/>
@@ -188,8 +188,8 @@
               </scrollpane>
               <component id="68dcd" class="javax.swing.JButton" binding="submit">
                 <constraints>
-                  <grid row="14" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.5" weighty="0.0"/>
+                  <grid row="14" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
                   <icon value="youtubeuploader/resources/images/add.png"/>
@@ -198,8 +198,8 @@
               </component>
               <component id="fc127" class="javax.swing.JButton" binding="reset">
                 <constraints>
-                  <grid row="14" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.5" weighty="0.0"/>
+                  <grid row="14" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
                   <icon value="youtubeuploader/resources/images/cancel.png"/>
@@ -208,19 +208,31 @@
               </component>
               <component id="8a9d4" class="javax.swing.JCheckBox" binding="playlistCheckBox">
                 <constraints>
-                  <grid row="13" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
                   <text value=""/>
                 </properties>
               </component>
+              <hspacer id="12e13">
+                <constraints>
+                  <grid row="14" column="0" row-span="1" col-span="3" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="f997">
+                <constraints>
+                  <grid row="14" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
             </children>
           </grid>
           <component id="571a2" class="javax.swing.JSeparator">
             <constraints>
               <grid row="0" column="1" row-span="4" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-              <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="1.0" ipadx="5" ipady="5"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.2" ipadx="3" ipady="3"/>
             </constraints>
             <properties>
               <orientation value="1"/>
@@ -228,16 +240,16 @@
           </component>
           <grid id="2f4b" layout-manager="GridBagLayout">
             <constraints>
-              <grid row="1" column="2" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
-              <gridbag top="3" left="3" bottom="3" right="3" weightx="3.0" weighty="3.0"/>
+              <grid row="1" column="2" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="3.0"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
               <grid id="e240b" layout-manager="GridBagLayout">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
-                  <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0" ipadx="100"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0"/>
                 </constraints>
                 <properties/>
                 <border type="etched" title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" title-key="border.preset">
@@ -294,7 +306,7 @@
                   </component>
                   <component id="3f332" class="javax.swing.JTextField" binding="autotitleTextField">
                     <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                      <grid row="1" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
@@ -305,7 +317,7 @@
                   </component>
                   <component id="b2b07" class="javax.swing.JSpinner" binding="numberModifierSpinner">
                     <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
                     </constraints>
                     <properties/>
@@ -315,7 +327,7 @@
                       <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
-                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <text value=""/>
@@ -323,8 +335,8 @@
                   </component>
                   <component id="72f33" class="javax.swing.JButton" binding="defaultdirSearch">
                     <constraints>
-                      <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                      <grid row="3" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <icon value="youtubeuploader/resources/images/folder_explore.png"/>
@@ -333,8 +345,8 @@
                   </component>
                   <component id="b0970" class="javax.swing.JButton" binding="deletePreset">
                     <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <icon value="youtubeuploader/resources/images/delete.png"/>
@@ -343,20 +355,32 @@
                   </component>
                   <component id="c8be0" class="javax.swing.JButton" binding="savePreset">
                     <constraints>
-                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
+                      <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <icon value="youtubeuploader/resources/images/save.png"/>
                       <text value=""/>
                     </properties>
                   </component>
+                  <hspacer id="22498">
+                    <constraints>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                  </hspacer>
+                  <hspacer id="cf970">
+                    <constraints>
+                      <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                  </hspacer>
                 </children>
               </grid>
               <component id="5d1ab" class="javax.swing.JSeparator">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="8" vsize-policy="6" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0" ipady="10"/>
+                  <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0" ipadx="3" ipady="3"/>
                 </constraints>
                 <properties>
                   <orientation value="0"/>
@@ -364,7 +388,7 @@
               </component>
               <grid id="e890e" layout-manager="GridBagLayout">
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag top="3" left="3" bottom="3" right="3" weightx="5.0" weighty="5.0"/>
                 </constraints>
                 <properties/>
@@ -530,7 +554,7 @@
                   <component id="e8a73" class="javax.swing.JSpinner" binding="startzeitpunktSpinner" default-binding="true">
                     <constraints>
                       <grid row="8" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="3" left="3" bottom="3" right="3" weightx="0.0" weighty="0.0"/>
+                      <gridbag top="3" left="3" bottom="3" right="3" weightx="1.0" weighty="0.0"/>
                     </constraints>
                     <properties/>
                   </component>

@@ -33,7 +33,7 @@ public class OldAccountEntry
 {
 	private String name;
 	private String password;
-	private String secret = "6#+p~*a.ZKC@2?{dkfV){xk(hS7FEHkZJtKJ|.WWWyvg9rM%Z%-W{w]e";
+	private String secret = "6#+p~*a.ZKC@2?{dkfV){xk(hS7FEHkZJtKJ|.WWWyvg9rM%Z%-W{w]e"; //NON-NLS
 
 	public String getName()
 	{
