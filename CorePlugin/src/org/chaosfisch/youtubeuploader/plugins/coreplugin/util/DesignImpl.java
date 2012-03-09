@@ -55,4 +55,9 @@ public class DesignImpl implements Design
 	{
 		return this.shortName;
 	}
+
+	@Override public String toString()
+	{
+		return this.getName();
+	}
 }

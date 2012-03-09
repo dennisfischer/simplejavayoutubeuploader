@@ -29,7 +29,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
  * Time: 18:11
  * To change this template use File | Settings | File Templates.
  */
-class JTattooLookAndFeels extends DesignMap
+public class JTattooLookAndFeels extends DesignMap
 {
 	public JTattooLookAndFeels()
 	{

@@ -57,7 +57,7 @@ public class MenuViewPanel
 	private JMenuItem addAccountMenuItem;
 	private JMenuItem addPlaylistMenuItem;
 
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/menuView.properties"); //NON-NLS
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.menuView"); //NON-NLS
 
 	@Inject
 	public MenuViewPanel(final UploadController uploadController, final AccountService accountService, final PresetService presetService, final PlaylistService playlistService)
@@ -137,8 +137,8 @@ public class MenuViewPanel
 				final JTextField nameTextField = new JTextField("");
 				final JPasswordField passwordField = new JPasswordField("");
 
-				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField,
-						MenuViewPanel.this.resourceBundle.getString("accountDialog.passwordLabel"), passwordField};
+				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("accountDialog" +
+						".passwordLabel"), passwordField};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("accountDialog.addAccountLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -169,8 +169,8 @@ public class MenuViewPanel
 
 		);
 
-		this.addPlaylistMenuItem = new JMenuItem(this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
-				new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/table_add.png"))); //NON-NLS
+		this.addPlaylistMenuItem = new JMenuItem(this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/table_add" +
+				".png"))); //NON-NLS
 		this.addPlaylistMenuItem.addActionListener(new
 
 				ActionListener()
@@ -183,12 +183,11 @@ public class MenuViewPanel
 
 						final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
 						scrollPane.setPreferredSize(new Dimension(350, 150));
-						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField,
-								MenuViewPanel.this.resourceBundle.getString("playlistDialog.descriptionLabel"), scrollPane};
+						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("playlistDialog" +
+								".descriptionLabel"), scrollPane};
 
 						while (true) {
-							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
-									JOptionPane.OK_CANCEL_OPTION);
+							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
 							if (result == JOptionPane.OK_OPTION) {
 								if (nameTextField.getText().equals("")) {
 									nameTextField.setBackground(Color.RED);

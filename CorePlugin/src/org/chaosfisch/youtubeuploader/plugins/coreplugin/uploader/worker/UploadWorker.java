@@ -32,7 +32,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
-import org.chaosfisch.youtubeuploader.services.YTServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.YTServiceImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

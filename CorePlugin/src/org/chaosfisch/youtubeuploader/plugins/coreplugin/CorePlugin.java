@@ -40,7 +40,7 @@ public class CorePlugin implements Pluggable
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
 	private         Uploader      uploader;
 	@Inject private PluginService pluginService;
-	@Inject         Injector      injector;
+	@Inject private Injector      injector;
 
 	public CorePlugin()
 	{
@@ -65,18 +65,6 @@ public class CorePlugin implements Pluggable
 			uploadViewPanel.run();
 			final MenuViewPanel menuViewPanel = this.injector.getInstance(MenuViewPanel.class);
 			final QueueViewPanel queueViewPanel = this.injector.getInstance(QueueViewPanel.class);
-			new SwingWorker<Void, Void>()
-			{
-				@Override
-				protected Void doInBackground() throws Exception
-				{
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.setVisible(false);
-					//noinspection UnusedAssignment
-					fileChooser = null;
-					return null;
-				}
-			}.execute();
 
 			if (this.pluginService != null) {
 				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("uploadTab.title"), uploadViewPanel.getJPanel())); //NON-NLS

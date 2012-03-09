@@ -30,7 +30,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator
  * Time: 20:29
  * To change this template use File | Settings | File Templates.
  */
-class UtilModule extends AbstractModule
+public class UtilModule extends AbstractModule
 {
 	@Override
 	protected void configure()

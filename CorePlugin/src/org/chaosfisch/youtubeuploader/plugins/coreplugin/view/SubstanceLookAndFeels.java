@@ -29,7 +29,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
  * Time: 22:21
  * To change this template use File | Settings | File Templates.
  */
-class SubstanceLookAndFeels extends DesignMap
+public class SubstanceLookAndFeels extends DesignMap
 {
 	public SubstanceLookAndFeels()
 	{

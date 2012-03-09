@@ -46,7 +46,7 @@ public class QueueController
 	private final QueueService    queueService;
 	private final Uploader        uploader;
 
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView.properties"); //NON-NLS
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
 
 	@Inject
 	public QueueController(final QueueTableModel queueTableModel, final QueueService queueService, final Uploader uploader)

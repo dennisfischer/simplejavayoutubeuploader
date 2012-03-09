@@ -146,8 +146,10 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdated(final String topic, final Object o)
 	{
-		this.playlistEntries.set(this.getSelectedIndex(), (PlaylistEntry) o);
-		this.fireContentsChanged(this, 0, this.getSize());
+		if (this.getSelectedIndex() != -1 && this.playlistEntries.size() >= this.getSelectedIndex()) {
+			this.playlistEntries.set(this.getSelectedIndex(), (PlaylistEntry) o);
+			this.fireContentsChanged(this, 0, this.getSize());
+		}
 	}
 
 	int getSelectedIndex()

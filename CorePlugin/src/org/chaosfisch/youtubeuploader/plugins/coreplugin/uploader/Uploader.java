@@ -26,6 +26,7 @@ import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadWorker;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
@@ -105,8 +106,7 @@ public class Uploader
 
 					try {
 						Thread.sleep(QUEUE_SLEEPTIME);
-					} catch (InterruptedException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+					} catch (InterruptedException ignored) {
 					}
 				}
 			}
@@ -148,7 +148,7 @@ public class Uploader
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = UPLOAD_FAILED)
 	public void onUploadJobFailed(final String topic, final Object o)
 	{
-		this.uploadFinished((QueueEntry) o);
+		this.uploadFinished(((UploadFailed) o).getQueueEntry());
 	}
 
 	private void uploadFinished(final QueueEntry queueEntry)
