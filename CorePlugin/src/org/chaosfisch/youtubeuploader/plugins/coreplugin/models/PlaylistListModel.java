@@ -27,6 +27,7 @@ import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,8 +40,8 @@ import java.util.List;
 public class PlaylistListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final ArrayList<PlaylistEntry> playlistEntries = new ArrayList<PlaylistEntry>();
-	private       int                      selectedRow     = 0;
+	private final LinkedList<PlaylistEntry> playlistEntries = new LinkedList<PlaylistEntry>();
+	private       int                       selectedRow     = 0;
 
 	public PlaylistListModel()
 	{

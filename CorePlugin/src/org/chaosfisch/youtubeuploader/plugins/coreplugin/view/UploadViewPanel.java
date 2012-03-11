@@ -351,38 +351,38 @@ public final class UploadViewPanel
 			this.fileList.setBackground(lightRed);
 			return;
 		}
-		this.fileList.setBackground(Color.white);
+		this.fileList.setBackground(null);
 
 		if (this.titleTextField.getText().length() < 5 || this.titleTextField.getText().length() > 100) {
 			this.titleTextField.setBackground(lightRed);
 			return;
 		}
-		this.titleTextField.setBackground(Color.white);
+		this.titleTextField.setBackground(null);
 
 		if (this.categoryList.getSelectedIndex() == -1) {
 			this.categoryList.setBackground(lightRed);
 			return;
 		}
-		this.categoryList.setBackground(Color.white);
+		this.categoryList.setBackground(null);
 
 		if (this.descriptionTextArea.getText().length() < 5 || this.descriptionTextArea.getText().length() > 5000) {
 			this.descriptionTextArea.setBackground(lightRed);
 			return;
 		}
 
-		this.descriptionTextArea.setBackground(Color.white);
+		this.descriptionTextArea.setBackground(null);
 
 		if (this.tagsTextArea.getText().length() < 2 || this.tagsTextArea.getText().length() > 700 || !TagParser.validate(this.tagsTextArea.getText())) {
 			this.tagsTextArea.setBackground(lightRed);
 			return;
 		}
-		this.tagsTextArea.setBackground(Color.white);
+		this.tagsTextArea.setBackground(null);
 
 		if (this.accountList.getSelectedItem() == null) {
 			this.accountList.setBackground(lightRed);
 			return;
 		}
-		this.accountList.setBackground(Color.white);
+		this.accountList.setBackground(null);
 		PlaylistEntry playlistEntry = null;
 		if (this.playlistCheckBox.isSelected()) {
 			playlistEntry = (PlaylistEntry) this.playlistList.getSelectedItem();
@@ -501,7 +501,8 @@ public final class UploadViewPanel
 		//noinspection CallToStringEquals
 		if (this.fileList.getItemCount() > 0 && this.titleTextField.getText().equals("")) {
 			//noinspection MagicCharacter,DuplicateStringLiteralInspection
-			this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
+			this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
+					//NON-NLS
 					this.fileList.getSelectedItem().toString().lastIndexOf('.')));
 		}
 	}

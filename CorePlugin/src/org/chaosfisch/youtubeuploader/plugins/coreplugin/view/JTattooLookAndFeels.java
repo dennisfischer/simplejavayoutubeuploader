@@ -43,7 +43,6 @@ public class JTattooLookAndFeels extends DesignMap
 		this.add(new DesignImpl("com.jtattoo.plaf.graphite.GraphiteLookAndFeel", "GraphiteLookAndFeel", "Graphite")); //NON-NLS NON-NLS
 		this.add(new DesignImpl("com.jtattoo.plaf.hifi.HiFiLookAndFeel", "HiFiLookAndFeel", "Hifi")); //NON-NLS NON-NLS
 		this.add(new DesignImpl("com.jtattoo.plaf.luna.LunaLookAndFeel", "LunaLookAndFeel", "Luna")); //NON-NLS NON-NLS
-		this.add(new DesignImpl("com.jtattoo.plaf.mcwin.McWinLookAndFeel", "McWinLookAndFeel", "McWin")); //NON-NLS NON-NLS
 		this.add(new DesignImpl("com.jtattoo.plaf.mint.MintLookAndFeel", "MintLookAndFeel", "Mint")); //NON-NLS NON-NLS
 		this.add(new DesignImpl("com.jtattoo.plaf.noire.NoireLookAndFeel", "NoireLookAndFeel", "Noire")); //NON-NLS NON-NLS
 		this.add(new DesignImpl("com.jtattoo.plaf.smart.SmartLookAndFeel", "SmartLookAndFeel", "Smart")); //NON-NLS NON-NLS

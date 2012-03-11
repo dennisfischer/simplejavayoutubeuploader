@@ -26,6 +26,7 @@ import org.chaosfisch.youtubeuploader.services.PresetService;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,8 +39,8 @@ import java.util.List;
 public class PresetListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final ArrayList<PresetEntry> presetEntries = new ArrayList<PresetEntry>();
-	private       int                    selectedRow   = 0;
+	private final LinkedList<PresetEntry> presetEntries = new LinkedList<PresetEntry>();
+	private       int                     selectedRow   = 0;
 
 	public PresetListModel()
 	{

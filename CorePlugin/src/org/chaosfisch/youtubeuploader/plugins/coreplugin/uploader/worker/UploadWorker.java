@@ -285,14 +285,13 @@ public class UploadWorker extends BetterSwingWorker
 
 	private String uploadMetaData(final String metaData, final String filePath) throws UploaderException
 	{
-		final OutputStreamWriter outStreamWriter;
 		try {
 			final HttpURLConnection urlConnection = this.getGDataUrlConnection(INITIAL_UPLOAD_URL);
 			urlConnection.setRequestMethod("POST");
 			urlConnection.setDoOutput(true);
 			urlConnection.setRequestProperty(Uploader.CONTENT_TYPE, "application/atom+xml; charset=UTF-8");
 			urlConnection.setRequestProperty("Slug", filePath);
-			outStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8");
+			final OutputStreamWriter outStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8");
 			outStreamWriter.write(metaData);
 			outStreamWriter.close();
 			final int responseCode = urlConnection.getResponseCode();
@@ -318,12 +317,7 @@ public class UploadWorker extends BetterSwingWorker
 
 	private String uploadChunk(final File fileToUpload, final String uploadUrl, final long startByte, final long endByte) throws UploaderException
 	{
-		final InputStream fileStream;
 		final int chunk = (int) (endByte - startByte + 1);
-		final int bufferSize = 1024;
-		final byte[] buffer = new byte[bufferSize];
-		int bytesRead;
-		long totalRead = 0;
 		final HttpURLConnection urlConnection = this.getGDataUrlConnection(uploadUrl);
 		try {
 			urlConnection.setRequestMethod("PUT");
@@ -337,6 +331,7 @@ public class UploadWorker extends BetterSwingWorker
 
 		//Log operation
 		Logger.getLogger(Thread.currentThread().getName()).info(String.format("Uploaded %d bytes so far, using PUT method.", (int) this.totalBytesUploaded));
+		final InputStream fileStream;
 		try {
 			fileStream = new BufferedInputStream(new FileInputStream(fileToUpload));
 			final long skipped = fileStream.skip(startByte);
@@ -354,6 +349,10 @@ public class UploadWorker extends BetterSwingWorker
 
 			outputStream = new ThrottledOutputStream(urlConnection.getOutputStream(), this.speedLimit);
 			//Write Chunk
+			final int bufferSize = 1024;
+			final byte[] buffer = new byte[bufferSize];
+			int bytesRead;
+			long totalRead = 0;
 			while ((bytesRead = fileStream.read(buffer, 0, bufferSize)) != -1) {
 
 				//Upload bytes in buffer
@@ -590,7 +589,7 @@ public class UploadWorker extends BetterSwingWorker
 		this.speedLimit = Integer.parseInt(o.toString());
 	}
 
-	class ResumeInfo
+	static class ResumeInfo
 	{
 
 		public long   nextByteToUpload;

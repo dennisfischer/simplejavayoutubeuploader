@@ -26,6 +26,7 @@ import org.chaosfisch.youtubeuploader.services.AccountService;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,8 +39,8 @@ import java.util.List;
 public class AccountListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>();
-	private       int                     selectedRow    = 0;
+	private final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
+	private       int                      selectedRow    = 0;
 
 	public AccountListModel()
 	{

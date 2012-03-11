@@ -37,9 +37,9 @@ public class TagParser
 	public static String parseAll(String input)
 	{
 
-		String parsedOutput = "";
 		input = input.trim();
 
+		String parsedOutput = "";
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
 				case BLOCK_DELIMITER:
