@@ -69,7 +69,7 @@ public class UploadController
 
 	@Inject
 	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator,
-							final PlaylistService playlistService)
+	                        final PlaylistService playlistService)
 	{
 		this.accountService = accountService;
 		this.presetService = presetService;
@@ -116,9 +116,7 @@ public class UploadController
 
 	public void changeAutotitlePlaylist(final Object item)
 	{
-		final PlaylistEntry playlistEntry = (PlaylistEntry) item;
-		this.autoTitleGenerator.setPlaylistName(playlistEntry.getName());
-		this.autoTitleGenerator.setPlaylistNumber(playlistEntry.getNumber());
+		this.autoTitleGenerator.setPlaylist((PlaylistEntry) item);
 		this.updateAutotitle();
 	}
 
@@ -153,8 +151,8 @@ public class UploadController
 	}
 
 	public void submitUpload(final AccountEntry accountEntry, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file,
-							 final boolean commentvote, final boolean mobile, final PlaylistEntry playlistEntry, final String tags, final String title, final short videoresponse, final short visibility,
-							 final Date starttime)
+	                         final boolean commentvote, final boolean mobile, final PlaylistEntry playlistEntry, final String tags, final String title, final short videoresponse,
+	                         final short visibility, final Date starttime)
 	{
 		final QueueEntry queueEntity = new QueueEntry();
 		queueEntity.setAccount(accountEntry);

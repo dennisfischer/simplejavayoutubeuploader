@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="library" name="repositories" level="project" />
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
+    <orderEntry type="module" module-name="CorePlugin" />
   </component>
 </module>
 

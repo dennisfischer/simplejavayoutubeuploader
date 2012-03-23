@@ -25,6 +25,8 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import org.chaosfisch.plugin.PluginManager;
 import org.chaosfisch.plugin.PluginService;
+import org.chaosfisch.youtubeuploader.controller.PluginController;
+import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.util.PluginManagerImpl;
 import org.chaosfisch.youtubeuploader.util.PluginServiceImpl;
 import org.chaosfisch.youtubeuploader.util.logger.Log4JTypeListener;
@@ -39,7 +41,7 @@ import javax.swing.*;
  * Time: 17:33
  * To change this template use File | Settings | File Templates.
  */
-class PluginModule extends AbstractModule
+public class PluginModule extends AbstractModule
 {
 	@Override
 	protected void configure()
@@ -47,6 +49,8 @@ class PluginModule extends AbstractModule
 		this.bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
 		this.bind(PluginService.class).toInstance(new PluginServiceImpl());
 		this.bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(MainFrame.class).in(Singleton.class); //NON-NLS
+		this.bind(DesignManager.class).in(Singleton.class);
+		this.bind(PluginController.class).in(Singleton.class);
 		this.bindListener(Matchers.any(), new Log4JTypeListener());
 	}
 }

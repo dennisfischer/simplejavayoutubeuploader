@@ -11,7 +11,6 @@
         </element>
         <element id="module-output" name="DirectoryPlugin" />
       </element>
-      <element id="library" level="project" name="repositories" />
     </root>
   </artifact>
 </component>

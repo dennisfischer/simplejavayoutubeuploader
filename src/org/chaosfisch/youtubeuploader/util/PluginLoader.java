@@ -25,7 +25,7 @@ import org.chaosfisch.plugin.Pluggable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -37,7 +37,7 @@ public class PluginLoader
 	public List<Pluggable> loadPlugins(File plugDir) throws IOException
 	{
 		ServiceLoader<Pluggable> pluggableServiceLoader = ServiceLoader.load(Pluggable.class);
-		List<Pluggable> pluggableList = new ArrayList<Pluggable>();
+		List<Pluggable> pluggableList = new LinkedList<Pluggable>();
 		for (Pluggable pluggable : pluggableServiceLoader) {
 			pluggableList.add(injector.getInstance(pluggable.getClass()));
 			pluggable = null;

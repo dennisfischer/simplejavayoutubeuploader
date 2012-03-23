@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.youtube.PlaylistLinkEntry;
@@ -33,6 +33,9 @@ import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.youtubeuploader.db.AccountEntry;
 import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.services.AccountService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.YTService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -41,8 +44,8 @@ import org.hibernate.criterion.Restrictions;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -160,7 +163,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 				EventBus.publish(PLAYLIST_ENTRY_ADDED, playlistEntry);
 
-				final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>();
+				final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
 				accountEntries.add(playlistEntry.getAccount());
 				this.synchronizePlaylists(accountEntries);
 			} catch (IOException e) {
@@ -177,7 +180,6 @@ public class PlaylistServiceImpl implements PlaylistService
 	public void addLatestVideoToPlaylist(final PlaylistEntry playlistEntry)
 	{
 
-		VideoFeed videoFeed = null;
 		URL feedUrl = null;
 		try {
 			feedUrl = new URL("http://gdata.youtube.com/feeds/api/users/default/uploads"); //NON-NLS
@@ -188,6 +190,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		final YTService ytService = playlistEntry.getAccount().getYoutubeServiceManager();
 		try {
 			ytService.authenticate();
+			VideoFeed videoFeed = null;
 			try {
 				videoFeed = ytService.getFeed(feedUrl, VideoFeed.class);
 			} catch (IOException e) {
@@ -195,9 +198,8 @@ public class PlaylistServiceImpl implements PlaylistService
 			} catch (ServiceException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			}
-			final List<VideoEntry> videoFeedEntries;
 			if (videoFeed != null) {
-				videoFeedEntries = videoFeed.getEntries();
+				final List<VideoEntry> videoFeedEntries = videoFeed.getEntries();
 
 				final VideoEntry update = videoFeedEntries.get(0);
 				final com.google.gdata.data.youtube.PlaylistEntry entry = new com.google.gdata.data.youtube.PlaylistEntry(update);
@@ -250,7 +252,7 @@ public class PlaylistServiceImpl implements PlaylistService
 	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
 	public void onAccountAdded(final String topic, final Object o)
 	{
-		final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>();
+		final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
 		accountEntries.add((AccountEntry) o);
 		this.synchronizePlaylists(accountEntries);
 	}

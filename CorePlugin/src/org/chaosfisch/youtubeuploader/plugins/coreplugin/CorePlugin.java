@@ -29,6 +29,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,13 +38,25 @@ import java.util.ResourceBundle;
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
 public class CorePlugin implements Pluggable
 {
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
-	private         Uploader      uploader;
-	@Inject private PluginService pluginService;
-	@Inject private Injector      injector;
+	private static final String[]       DEPENDENCIES   = new String[0];
+	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
+	private         Uploader        uploader;
+	@Inject private PluginService   pluginService;
+	@Inject private Injector        injector;
+	@Inject private SettingsService settingService;
 
 	public CorePlugin()
 	{
+	}
+
+	@Override public boolean canBeDisabled()
+	{
+		return false;
+	}
+
+	@Override public String[] getDependencies()
+	{
+		return DEPENDENCIES;
 	}
 
 	@Override public String getName()
@@ -60,6 +73,11 @@ public class CorePlugin implements Pluggable
 	public void init()
 	{
 		this.uploader = this.injector.getInstance(Uploader.class);
+
+		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 10, 500, 10));
+		spinner.setEditor(new JSpinner.NumberEditor(spinner, "# MB"));
+
+		this.settingService.addSpinner("coreplugin.general.CHUNK_SIZE", "CHUNK Size:", spinner);
 		if (!GraphicsEnvironment.isHeadless()) {
 			final UploadViewPanel uploadViewPanel = this.injector.getInstance(UploadViewPanel.class);
 			uploadViewPanel.run();

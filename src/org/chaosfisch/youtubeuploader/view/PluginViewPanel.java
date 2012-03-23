@@ -19,18 +19,36 @@
 
 package org.chaosfisch.youtubeuploader.view;
 
-import javax.swing.*;
+import com.google.inject.Inject;
+import org.chaosfisch.plugin.Pluggable;
+import org.chaosfisch.youtubeuploader.controller.PluginController;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 03.03.12
- * Time: 22:34
- * To change this template use File | Settings | File Templates.
- */
-public class PluginViewPanel
+import javax.swing.*;
+import java.util.List;
+
+public class PluginViewPanel extends JDialog
 {
-	private JTable  table1;
-	private JButton button1;
-	private JButton button2;
+	private JPanel          contentPane;
+	private JTable          pluginTable;
+	private JButton         addButton;
+	private JButton         removeButton;
+	private List<Pluggable> pluggableList;
+
+	private @Inject PluginController pluginController;
+
+	public PluginViewPanel()
+	{
+		this.setContentPane(this.contentPane);
+		this.setModal(true);
+	}
+
+	public void run()
+	{
+		this.pluginTable.setModel(this.pluginController.getPluginTableModel(this.pluggableList));
+	}
+
+	public void setPluggableList(final List<Pluggable> pluggableList)
+	{
+		this.pluggableList = pluggableList;
+	}
 }

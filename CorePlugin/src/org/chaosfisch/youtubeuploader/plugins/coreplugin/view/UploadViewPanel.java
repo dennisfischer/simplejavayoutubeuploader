@@ -35,6 +35,7 @@ import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.services.QueueService;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -42,6 +43,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
 public final class UploadViewPanel
@@ -102,6 +104,8 @@ public final class UploadViewPanel
 		this.controller.getPresetListModel().addPresetEntryList(this.controller.getPresetService().getAllPresetEntry());
 
 		this.controller.synchronizePlaylists(this.controller.getAccountListModel().getAccountList());
+
+		AutoCompleteDecorator.decorate(this.autotitleTextField, Arrays.asList("{playlist}", "{file}", "{nummer}"), false);//NON-NLS
 	}
 
 	private void initComponents()
@@ -172,8 +176,9 @@ public final class UploadViewPanel
 					presetEntry.setRate(UploadViewPanel.this.bewertenCheckBox.isSelected());
 					presetEntry.setVideoresponse((short) UploadViewPanel.this.videoresponseList.getSelectedIndex());
 					presetEntry.setVisibility((short) UploadViewPanel.this.visibilityList.getSelectedIndex());
+					presetEntry.setAccount((AccountEntry) UploadViewPanel.this.accountList.getSelectedItem());
 
-					if (UploadViewPanel.this.controller.getPlaylistListModel().hasPlaylistentryAt(0) && UploadViewPanel.this.playlistCheckBox.isSelected()) {
+					if (UploadViewPanel.this.playlistCheckBox.isSelected()) {
 						presetEntry.setPlaylist((PlaylistEntry) UploadViewPanel.this.playlistList.getSelectedItem());
 					}
 					UploadViewPanel.this.controller.savePreset(presetEntry);
@@ -419,9 +424,15 @@ public final class UploadViewPanel
 			this.videoresponseList.setSelectedIndex(selectedPreset.getVideoresponse());
 			this.visibilityList.setSelectedIndex(selectedPreset.getVisibility());
 
+			if (selectedPreset.getAccount() != null) {
+				this.accountList.setSelectedItem(selectedPreset.getAccount());
+			}
 			if (selectedPreset.getPlaylist() != null) {
 				this.presetList.setSelectedItem(selectedPreset.getPlaylist());
+				System.out.println(selectedPreset.getPlaylist().getName());
 			}
+			this.controller.changeAutotitleCheckbox(this.autotitelCheckBox.isSelected());
+			this.controller.changeAutotitleFormat(this.autotitleTextField.getText());
 		} else {
 			this.autotitelCheckBox.setSelected(false);
 			this.autotitleTextField.setText("");
@@ -438,7 +449,6 @@ public final class UploadViewPanel
 			this.videoresponseList.setSelectedIndex(0);
 			this.visibilityList.setSelectedIndex(0);
 		}
-		this.titleTextField.setText("");
 		this.startzeitpunktSpinner.setValue(new Date());
 	}
 

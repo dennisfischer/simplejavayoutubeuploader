@@ -25,13 +25,12 @@
 
 <hibernate-mapping package="org.chaosfisch.youtubeuploader.db.hbm">
 
-	<class name="org.chaosfisch.youtubeuploader.db.DirectoryEntry" table="DIRECTORIES" schema="PUBLIC">
+	<class name="org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry" table="DIRECTORIES" schema="PUBLIC">
 		<id name="identity" type="int" column="identity">
 			<generator class="org.hibernate.id.IdentityGenerator"/>
 		</id>
 		<property name="directory" type="java.lang.String" column="DIRECTORY"/>
 		<property name="active" type="boolean" column="active"/>
-		<many-to-one name="account" lazy="false" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
 		<many-to-one name="preset" lazy="false" class="org.chaosfisch.youtubeuploader.db.PresetEntry"/>
 	</class>
 

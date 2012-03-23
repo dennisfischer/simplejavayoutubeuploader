@@ -17,72 +17,58 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.db;
+package org.chaosfisch.youtubeuploader.services.settingsservice.impl;
+
+import javax.swing.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 07.01.12
- * Time: 18:33
+ * Date: 07.03.12
+ * Time: 18:52
  * To change this template use File | Settings | File Templates.
  */
-public class DirectoryEntry
+public class SettingsViewComponent
 {
-	private transient int     identity;
-	private           String  directory;
-	private           boolean active;
+	private String     label;
+	private JComponent component;
+	private String     uniqueKey;
 
-	public boolean isActive()
+	public SettingsViewComponent(final String uniqueKey, final String label, final JComponent component)
 	{
-		return this.active;
+		this.uniqueKey = uniqueKey;
+		this.label = label;
+		this.component = component;
 	}
 
-	public void setActive(final boolean active)
+	public JComponent getComponent()
 	{
-		this.active = active;
+		return this.component;
 	}
 
-	public String getDirectory()
+	public void setComponent(final JComponent component)
 	{
-		return this.directory;
+		this.component = component;
 	}
 
-	public void setDirectory(final String directory)
+	public String getUniqueKey()
 	{
-		this.directory = directory;
+		return this.uniqueKey;
 	}
 
-	public int getIdentity()
+	public void setUniqueKey(final String uniqueKey)
 	{
-		return this.identity;
+		this.uniqueKey = uniqueKey;
 	}
 
-	public void setIdentity(final int identity)
+	public String getLabel()
 	{
-		this.identity = identity;
+		return this.label;
 	}
 
-	private AccountEntry account;
-
-	public AccountEntry getAccount()
+	public void setLabel(final String label)
 	{
-		return this.account;
-	}
-
-	public void setAccount(final AccountEntry account)
-	{
-		this.account = account;
-	}
-
-	private PresetEntry preset;
-
-	public PresetEntry getPreset()
-	{
-		return this.preset;
-	}
-
-	public void setPreset(final PresetEntry preset)
-	{
-		this.preset = preset;
+		this.label = label;
 	}
 }
+

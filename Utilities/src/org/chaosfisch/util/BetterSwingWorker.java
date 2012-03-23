@@ -43,8 +43,7 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 	{
 		try {
 			this.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (InterruptedException ignored) {
 		} catch (ExecutionException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}

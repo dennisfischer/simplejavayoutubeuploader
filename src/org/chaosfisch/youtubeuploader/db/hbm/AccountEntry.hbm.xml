@@ -36,10 +36,6 @@
 			<key/>
 			<one-to-many class="org.chaosfisch.youtubeuploader.db.QueueEntry"/>
 		</set>
-		<set name="directories" lazy="false" inverse="true">
-			<key/>
-			<one-to-many class="org.chaosfisch.youtubeuploader.db.DirectoryEntry"/>
-		</set>
 		<set name="playlists" lazy="false" inverse="true">
 			<key/>
 			<one-to-many class="org.chaosfisch.youtubeuploader.db.PlaylistEntry"/>

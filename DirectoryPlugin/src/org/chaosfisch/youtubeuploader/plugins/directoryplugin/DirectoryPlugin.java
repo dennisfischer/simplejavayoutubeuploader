@@ -36,7 +36,17 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin;/*
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
+import org.chaosfisch.plugin.PluginService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.view.DirectoryViewPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,6 +57,20 @@ import org.chaosfisch.plugin.Pluggable;
  */
 public class DirectoryPlugin implements Pluggable
 {
+	private static final String[] DEPENDENCIES = new String[0];
+	@Inject private PluginService pluginService;
+	@Inject private Injector      injector;
+
+	@Override public boolean canBeDisabled()
+	{
+		return true;
+	}
+
+	@Override public String[] getDependencies()
+	{
+		return DEPENDENCIES;
+	}
+
 	@Override public String getName()
 	{
 		return "Ordnerüberwachungsplugin"; //NON-NLS
@@ -63,6 +87,21 @@ public class DirectoryPlugin implements Pluggable
 
 	@Override public void onStart()
 	{
+
+		final JMenuItem menuItem = new JMenuItem("Ordnerüberwachung", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
+		menuItem.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				final DirectoryViewPanel directoryViewPanel = DirectoryPlugin.this.injector.getInstance(DirectoryViewPanel.class);
+				directoryViewPanel.run();
+				directoryViewPanel.pack();
+				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
+				directoryViewPanel.setTitle("Ordnerüberwachung");
+				directoryViewPanel.setVisible(true);
+			}
+		});
+		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 	}
 
 	@Override public void onEnd()

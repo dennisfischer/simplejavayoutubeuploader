@@ -330,50 +330,50 @@ public class QueueTableModel extends AbstractTableModel
 			this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
 		}
 	}
-}
 
-class QueueEntryList extends ArrayList<QueueEntry>
-{
-	@Override
-	public int indexOf(final Object o)
+	class QueueEntryList extends ArrayList<QueueEntry>
 	{
-		final QueueEntry queueEntry = (QueueEntry) o;
-		if (o == null) {
-			for (int i = 0; i < this.size(); i++)
-				if (this.get(i) == null) {
-					return i;
-				}
-		} else {
-			for (int i = 0; i < this.size(); i++)
-				if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
-					return i;
-				}
+		@Override
+		public int indexOf(final Object o)
+		{
+			final QueueEntry queueEntry = (QueueEntry) o;
+			if (o == null) {
+				for (int i = 0; i < this.size(); i++)
+					if (this.get(i) == null) {
+						return i;
+					}
+			} else {
+				for (int i = 0; i < this.size(); i++)
+					if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
+						return i;
+					}
+			}
+			return -1;
 		}
-		return -1;
-	}
 
-	/**
-	 * Returns the index of the last occurrence of the specified element
-	 * in this list, or -1 if this list does not contain the element.
-	 * More formally, returns the highest index <tt>i</tt> such that
-	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-	 * or -1 if there is no such index.
-	 */
-	@Override
-	public int lastIndexOf(final Object o)
-	{
-		final QueueEntry queueEntry = (QueueEntry) o;
-		if (o == null) {
-			for (int i = this.size() - 1; i >= 0; i--)
-				if (this.get(i) == null) {
-					return i;
-				}
-		} else {
-			for (int i = this.size() - 1; i >= 0; i--)
-				if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
-					return i;
-				}
+		/**
+		 * Returns the index of the last occurrence of the specified element
+		 * in this list, or -1 if this list does not contain the element.
+		 * More formally, returns the highest index <tt>i</tt> such that
+		 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+		 * or -1 if there is no such index.
+		 */
+		@Override
+		public int lastIndexOf(final Object o)
+		{
+			final QueueEntry queueEntry = (QueueEntry) o;
+			if (o == null) {
+				for (int i = this.size() - 1; i >= 0; i--)
+					if (this.get(i) == null) {
+						return i;
+					}
+			} else {
+				for (int i = this.size() - 1; i >= 0; i--)
+					if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
+						return i;
+					}
+			}
+			return -1;
 		}
-		return -1;
 	}
 }

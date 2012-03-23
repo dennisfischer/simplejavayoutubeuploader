@@ -50,23 +50,21 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		AnnotationProcessor.process(this);
 	}
 
-	public AutoTitleGeneratorImpl(final String formatString, final String playlistName, final int playlistNumber, final int number)
+	public AutoTitleGeneratorImpl(final String formatString, final PlaylistEntry playlistEntry, final int number)
 	{
 		this.formatString = formatString;
-		this.playlistName = playlistName;
-		this.playlistNumber = playlistNumber;
 		this.number = number;
 		this.fileName = null;
+		this.setPlaylist(playlistEntry);
 		AnnotationProcessor.process(this);
 	}
 
-	public AutoTitleGeneratorImpl(final String formatString, final String playlistName, final int playlistNumber, final int number, final String fileName)
+	public AutoTitleGeneratorImpl(final String formatString, final PlaylistEntry playlistEntry, final int number, final String fileName)
 	{
 		this.formatString = formatString;
-		this.playlistName = playlistName;
-		this.playlistNumber = playlistNumber;
 		this.number = number;
 		this.fileName = fileName;
+		this.setPlaylist(playlistEntry);
 	}
 
 	@Override
@@ -82,30 +80,6 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	}
 
 	@Override
-	public String getPlaylistName()
-	{
-		return this.playlistName;
-	}
-
-	@Override
-	public void setPlaylistName(final String playlistName)
-	{
-		this.playlistName = playlistName;
-	}
-
-	@Override
-	public int getNumber()
-	{
-		return this.number;
-	}
-
-	@Override
-	public void setNumber(final int number)
-	{
-		this.number = number;
-	}
-
-	@Override
 	public String getFileName()
 	{
 		return this.fileName;
@@ -115,6 +89,17 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	public void setFileName(final String fileName)
 	{
 		this.fileName = fileName;
+	}
+
+	@Override public void setPlaylist(final PlaylistEntry playlist)
+	{
+		this.playlistName = playlist.getName();
+		this.playlistNumber = playlist.getNumber();
+	}
+
+	@Override public void setNumber(final int number)
+	{
+		this.number = number;
 	}
 
 	@Override
@@ -131,24 +116,12 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		return formated;
 	}
 
-	@Override
-	public void setPlaylistNumber(final int playlistNumber)
-	{
-		this.playlistNumber = playlistNumber;
-	}
-
-	@Override
-	public int getPlaylistNumber()
-	{
-		return this.playlistNumber;
-	}
-
 	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdate(final String topic, final Object o)
 	{
 		final PlaylistEntry playlistEntry = (PlaylistEntry) o;
 		if (playlistEntry.getName().equals(this.playlistName)) {
-			this.setPlaylistNumber(playlistEntry.getNumber());
+			this.setPlaylist(playlistEntry);
 			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());
 		}
 	}

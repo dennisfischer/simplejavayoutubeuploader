@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.systemtrayplugin;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
@@ -33,15 +34,27 @@ import java.util.ResourceBundle;
 
 public class SystemTrayPlugin implements Pluggable
 {
+	private static final String[] DEPENDENCIES = new String[0];
 	@Inject private                             PluginService pluginService;
 	@Inject @Named(value = "mainFrame") private JFrame        mainFrame;
 	private                                     TrayIcon      trayIcon;
-	private static final String MESSAGE = "onMessage"; //NON-NLS
+	public static final String MESSAGE = "onMessage"; //NON-NLS
 
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("/org/chaosfisch/youtubeuploader/plugins/systemtrayplugin/resources/systemtrayplugin.properties"); //NON-NLS
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.systemtrayplugin.resources.systemtrayplugin"); //NON-NLS
 
 	public SystemTrayPlugin()
 	{
+		AnnotationProcessor.process(this);
+	}
+
+	@Override public boolean canBeDisabled()
+	{
+		return true;
+	}
+
+	@Override public String[] getDependencies()
+	{
+		return DEPENDENCIES;
 	}
 
 	@Override public String getAuthor()

@@ -36,6 +36,8 @@ import java.net.URLClassLoader;
  */
 public class ClasspathLoader
 {
+	private static final URL[] URLS = new URL[0];
+
 	public static void loadLibaries(final File[] plugJars)
 	{
 
@@ -56,7 +58,7 @@ public class ClasspathLoader
 	{
 
 		if (files == null) {
-			return new URL[0];
+			return URLS;
 		}
 		final URL[] urls = new URL[files.length];
 		for (int i = 0; i < files.length; i++) {
@@ -78,10 +80,10 @@ public class ClasspathLoader
 		final URL u = jar.toURI().toURL();
 		final ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
 		if (sysLoader instanceof URLClassLoader) {
-			final Class sysLoaderClass = URLClassLoader.class;
 
 			Method method = null;
 			try {
+				final Class sysLoaderClass = URLClassLoader.class;
 				method = sysLoaderClass.getDeclaredMethod("addURL", new Class[]{URL.class}); //NON-NLS
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

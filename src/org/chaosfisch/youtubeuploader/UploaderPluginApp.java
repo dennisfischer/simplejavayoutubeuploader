@@ -34,6 +34,7 @@ import com.google.inject.Module;
 import org.apache.log4j.PropertyConfigurator;
 import org.chaosfisch.plugin.JARFileFilter;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 import org.chaosfisch.youtubeuploader.util.ClasspathLoader;
 import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
 
@@ -44,27 +45,36 @@ import java.util.ServiceLoader;
 /**
  * The main class of the application.
  */
-@SuppressWarnings("ALL")
 public class UploaderPluginApp
 {
 
-	public UploaderPluginApp(String[] args)
+	public UploaderPluginApp(final String[] args)
 	{
-		ClasspathLoader.loadLibaries(new File("./").listFiles(new JARFileFilter()));
-		ClasspathLoader.loadLibaries(new File("./libs/").listFiles(new JARFileFilter()));
-		ClasspathLoader.loadLibaries(new File("./plugins/").listFiles(new JARFileFilter()));
+		final JARFileFilter fileFilter = new JARFileFilter();
+		ClasspathLoader.loadLibaries(new File("./").listFiles(fileFilter));
+		ClasspathLoader.loadLibaries(new File("./libs/").listFiles(fileFilter)); //NON-NLS
+		ClasspathLoader.loadLibaries(new File("./plugins/").listFiles(fileFilter)); //NON-NLS
 
-		PropertyConfigurator.configure(getClass().getResource("/META-INF/log4j.properties"));
+		PropertyConfigurator.configure(this.getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
 		final ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
+
+		final Injector injector = Guice.createInjector(modules);
+		//TODO this uses ~6 MB memory
+		final SettingsService settingsService = injector.getInstance(SettingsService.class);
+		final DesignManager designManager = injector.getInstance(DesignManager.class);
+		//TODO this uses ~5 MB memory
+		designManager.run();
+		//TODO this uses ~10 MB memory
+		designManager.changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));//NON-NLS
+
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override public void run()
 			{
-				Injector injector = Guice.createInjector(modules);
-				PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
-				DesignManager designManager = injector.getInstance(DesignManager.class);
-				designManager.run();
-				designManager.changeDesign("SubstanceGraphiteGlassLookAndFeel");
+
+				//TODO this uses ~40 MB memory
+				final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
+				//TODO this uses ~7 MB memory
 				pluginMainFrame.run();
 			}
 		});
@@ -73,7 +83,7 @@ public class UploaderPluginApp
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		new UploaderPluginApp(args);
 	}

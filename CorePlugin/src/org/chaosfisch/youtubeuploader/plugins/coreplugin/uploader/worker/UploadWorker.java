@@ -56,11 +56,11 @@ import java.util.Date;
 @SuppressWarnings({"HardCodedStringLiteral", "StringConcatenation", "DuplicateStringLiteralInspection"})
 public class UploadWorker extends BetterSwingWorker
 {
-	private static final String  INITIAL_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String INITIAL_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	/**
 	 * Max size for each upload chunk
 	 */
-	private static final int     DEFAULT_CHUNK_SIZE = 1024 * 1024 * 10;
+	private final int DEFAULT_CHUNK_SIZE;
 	private static final int     MAX_RETRIES        = 4;
 	private static final int     BACKOFF            = 5; // base of exponential backoff
 	private              double  fileSize           = 0;
@@ -76,11 +76,12 @@ public class UploadWorker extends BetterSwingWorker
 	private       int             speedLimit;
 
 	@Inject
-	public UploadWorker(final QueueEntry queueEntry, final PlaylistService playlistService, final int speedLimit)
+	public UploadWorker(final QueueEntry queueEntry, final PlaylistService playlistService, final int speedLimit, final int chunkSize)
 	{
 		this.queueEntry = queueEntry;
 		this.playlistService = playlistService;
 		this.speedLimit = speedLimit;
+		this.DEFAULT_CHUNK_SIZE = chunkSize;
 		AnnotationProcessor.process(this);
 	}
 
@@ -186,7 +187,7 @@ public class UploadWorker extends BetterSwingWorker
 
 			try {
 				videoId = this.uploadChunk(fileToUpload, uploadUrl, this.start, end);
-				this.bytesToUpload -= DEFAULT_CHUNK_SIZE;
+				this.bytesToUpload -= this.DEFAULT_CHUNK_SIZE;
 				this.start = end + 1;
 				// clear this counter as we had a succesfull upload
 				this.numberOfRetries = 0;
@@ -275,8 +276,8 @@ public class UploadWorker extends BetterSwingWorker
 	private long generateEndBytes(final long start, final double bytesToUpload)
 	{
 		final long end;
-		if (bytesToUpload - DEFAULT_CHUNK_SIZE > 0) {
-			end = start + DEFAULT_CHUNK_SIZE - 1;
+		if (bytesToUpload - this.DEFAULT_CHUNK_SIZE > 0) {
+			end = start + this.DEFAULT_CHUNK_SIZE - 1;
 		} else {
 			end = start + (int) bytesToUpload - 1;
 		}

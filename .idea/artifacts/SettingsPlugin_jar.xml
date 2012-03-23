@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact name="SettingsPlugin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SettingsPlugin_jar</output-path>
+    <root id="root">
+      <element id="archive" name="SettingsPlugin.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/SettingsPlugin/src/META-INF/MANIFEST.MF" />
+          <element id="directory" name="services">
+            <element id="dir-copy" path="$PROJECT_DIR$/SettingsPlugin/src/META-INF/services" />
+          </element>
+        </element>
+        <element id="module-output" name="SettingsPlugin" />
+      </element>
+    </root>
+  </artifact>
+</component>

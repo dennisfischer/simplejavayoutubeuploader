@@ -17,11 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
-import org.chaosfisch.youtubeuploader.db.AccountEntry;
+import org.chaosfisch.youtubeuploader.db.PresetEntry;
+import org.chaosfisch.youtubeuploader.services.PresetService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,84 +33,68 @@ import java.util.List;
  * Created by IntelliJ IDEA.
  * User: Dennis
  * Date: 10.01.12
- * Time: 19:36
+ * Time: 22:13
  * To change this template use File | Settings | File Templates.
  */
-public class AccountServiceImpl implements AccountService
+public class PresetServiceImpl implements PresetService
 {
-
 	private final SessionFactory sessionFactory;
 
 	@Inject
-	public AccountServiceImpl(final SessionFactory sessionFactory)
+	public PresetServiceImpl(final SessionFactory sessionFactory)
 	{
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
-	public AccountEntry deleteAccountEntry(final AccountEntry accountEntry)
+	public PresetEntry createPresetEntry(final PresetEntry presetEntry)
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		session.delete(accountEntry);
-		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_REMOVED, accountEntry);
-		return accountEntry;
-	}
-
-	@Override
-	public List getAllAccountEntry()
-	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final List returnList = session.createQuery("select a from AccountEntry as a order by name").list(); //NON-NLS
-		session.getTransaction().commit();
-		return returnList;
-	}
-
-	@Override
-	public AccountEntry createAccountEntry(final AccountEntry accountEntry)
-	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final Query temp;
-		temp = session.createQuery("Select Count(*) From AccountEntry Where name = :name"); //NON-NLS
-		temp.setParameter("name", accountEntry.getName()); //NON-NLS
+		final Query temp = session.createQuery("Select Count(*) From PresetEntry Where name = :name");
+		temp.setParameter("name", presetEntry.getName()); //NON-NLS
 
 		if ((Long) temp.uniqueResult() > 0) {
 			session.getTransaction().commit();
 			return null;
 		}
-		session.save(accountEntry);
+
+		session.save(presetEntry);
 		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_ADDED, accountEntry);
-		return accountEntry;
+		EventBus.publish(PRESET_ENTRY_ADDED, presetEntry);
+		return presetEntry;
 	}
 
-	@Override
-	public AccountEntry updateAccountEntry(final AccountEntry accountEntry)
+	public PresetEntry deletePresetEntry(final PresetEntry presetEntry)
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		session.update(accountEntry);
+		session.delete(presetEntry);
 		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_UPDATED, accountEntry);
-		return accountEntry;
+		return presetEntry;
 	}
 
-	@Override
-	public AccountEntry findAccountEntry(final int identifier)
-	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		return (AccountEntry) session.load(AccountEntry.class, identifier);
-	}
-
-	@Override
-	public void refreshAccount(final AccountEntry accountEntry)
+	public PresetEntry updatePresetEntry(final PresetEntry presetEntry)
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		session.refresh(accountEntry);
+		session.update(presetEntry);
 		session.getTransaction().commit();
+		return presetEntry;
+	}
+
+	@Override
+	public List getAllPresetEntry()
+	{
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		final List returnList = session.createQuery("select p from PresetEntry as p order by name").list(); //NON-NLS
+		session.getTransaction().commit();
+		return returnList;
+	}
+
+	public PresetEntry findPresetEntry(final int identifier)
+	{
+		final Session session = this.sessionFactory.getCurrentSession();
+		return (PresetEntry) session.load(PresetEntry.class, identifier);
 	}
 }

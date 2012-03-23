@@ -19,8 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.db;
 
-import java.util.Collection;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -30,22 +28,24 @@ import java.util.Collection;
  */
 public class PresetEntry
 {
-	private           boolean autotitle;
-	private           String  autotitleFormat;
-	private           String  category;
-	private           short   comment;
-	private           boolean commentvote;
-	private           String  defaultDir;
-	private           String  description;
-	private           boolean embed;
-	private           String  keywords;
-	private           boolean mobile;
-	private           String  name;
-	private           short   numberModifier;
-	private           short   videoresponse;
-	private           short   visibility;
-	private transient int     identity;
-	private           boolean rate;
+	private           boolean       autotitle;
+	private           String        autotitleFormat;
+	private           String        category;
+	private           short         comment;
+	private           boolean       commentvote;
+	private           String        defaultDir;
+	private           String        description;
+	private           boolean       embed;
+	private           String        keywords;
+	private           boolean       mobile;
+	private           String        name;
+	private           short         numberModifier;
+	private           short         videoresponse;
+	private           short         visibility;
+	private           boolean       rate;
+	private transient int           identity;
+	private transient AccountEntry  account;
+	private transient PlaylistEntry playlist;
 
 	public boolean isRate()
 	{
@@ -207,24 +207,10 @@ public class PresetEntry
 		this.autotitle = autotitle;
 	}
 
-	private transient Collection<DirectoryEntry> directories;
-
-	public Collection<DirectoryEntry> getDirectories()
-	{
-		return this.directories;
-	}
-
-	public void setDirectories(final Collection<DirectoryEntry> directories)
-	{
-		this.directories = directories;
-	}
-
 	public String toString()
 	{
 		return this.getName();
 	}
-
-	private PlaylistEntry playlist;
 
 	public PlaylistEntry getPlaylist()
 	{
@@ -234,5 +220,15 @@ public class PresetEntry
 	public void setPlaylist(final PlaylistEntry playlist)
 	{
 		this.playlist = playlist;
+	}
+
+	public AccountEntry getAccount()
+	{
+		return this.account;
+	}
+
+	public void setAccount(final AccountEntry account)
+	{
+		this.account = account;
 	}
 }

@@ -20,8 +20,8 @@
 package org.chaosfisch.youtubeuploader.designmanager;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import org.apache.log4j.Logger;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;
@@ -38,9 +38,9 @@ import java.util.ServiceLoader;
  */
 public class DesignManager
 {
-	private final Map<String, Design> designMap = new HashMap<String, Design>();
-	@SuppressWarnings("DuplicateStringLiteralInspection") @Inject @Named(value = "mainFrame") private JFrame mainFrame;
-	@InjectLogger private                                                                             Logger logger;
+	private final Map<String, Design> designMap = new HashMap<String, Design>(50);
+	@InjectLogger private Logger          logger;
+	@Inject               SettingsService settingsService;
 
 	public DesignManager()
 	{
@@ -51,18 +51,20 @@ public class DesignManager
 		this.logger.debug("Loading designMaps"); //NON-NLS
 		final ServiceLoader<DesignMap> designServiceLoader = ServiceLoader.load(DesignMap.class);
 		this.logger.debug("Parsing designMaps"); //NON-NLS
+		final DefaultComboBoxModel desingListModel = new DefaultComboBoxModel();
 		for (final DesignMap mapList : designServiceLoader) {
 			this.logger.debug("Parsing designs of designMap"); //NON-NLS
 			for (final Design design : mapList) {
 				this.logger.debug("Design found"); //NON-NLS
 				if (design.getShortName() != null && design.getName() != null && this.classExists(design.getLaF())) {
 					//noinspection StringConcatenation
-					this.logger.debug("Adding Design " + design.getShortName()); //NON-NLS
-					this.designMap.put(design.getShortName(), design);
+					this.logger.debug("Adding Design " + design.getName()); //NON-NLS
+					this.designMap.put(design.getName(), design);
+					desingListModel.addElement(design);
 				}
 			}
 		}
-		this.crossPlatformDesign();
+		this.settingsService.addCombobox("application.general.laf", "Design (benötigt Neustart):", desingListModel); //NON-NLS
 	}
 
 	private boolean classExists(final String className)
@@ -99,12 +101,6 @@ public class DesignManager
 					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-				}
-
-				if (!(DesignManager.this.mainFrame == null)) {
-
-					SwingUtilities.updateComponentTreeUI(DesignManager.this.mainFrame);
-					DesignManager.this.mainFrame.pack();
 				}
 			}
 		});

@@ -21,7 +21,14 @@ package org.chaosfisch.youtubeuploader.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import org.chaosfisch.youtubeuploader.services.*;
+import org.chaosfisch.youtubeuploader.services.AccountService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.PresetService;
+import org.chaosfisch.youtubeuploader.services.QueueService;
+import org.chaosfisch.youtubeuploader.services.impl.AccountServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.PlaylistServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.PresetServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.QueueServiceImpl;
 import org.chaosfisch.youtubeuploader.util.SessionFactoryProvider;
 import org.hibernate.SessionFactory;
 
@@ -32,7 +39,7 @@ import org.hibernate.SessionFactory;
  * Time: 20:17
  * To change this template use File | Settings | File Templates.
  */
-class DatabaseModule extends AbstractModule
+public class DatabaseModule extends AbstractModule
 {
 	@Override
 	protected void configure()

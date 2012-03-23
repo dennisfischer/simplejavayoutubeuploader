@@ -31,4 +31,8 @@ public interface Pluggable
 	String getName();
 
 	String getAuthor();
+
+	boolean canBeDisabled();
+
+	String[] getDependencies();
 }

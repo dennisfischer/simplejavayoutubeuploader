@@ -59,7 +59,32 @@ public class TagParser
 					break;
 			}
 		}
-		return parsedOutput;
+		return removeInvalid(parsedOutput);
+	}
+
+	private static String removeInvalid(final String parsedOutput)
+	{
+		final String[] tags = parsedOutput.split(",");
+		final String[] tmpTags = new String[250];
+		int i = 0;
+		for (final String tag : tags) {
+			if (!(tag.length() > 30) && !(tag.length() < 2)) {
+				tmpTags[i] = tag;
+				i++;
+			}
+		}
+		final StringBuilder stringBuilder = new StringBuilder(30);
+		if (tmpTags.length > 0) {
+			stringBuilder.append(tmpTags[0]);
+			for (int j = 1; j < tmpTags.length; j++) {
+				if (tmpTags[j] == null) {
+					break;
+				}
+				stringBuilder.append(",");
+				stringBuilder.append(tmpTags[j]);
+			}
+		}
+		return stringBuilder.toString();
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -68,11 +93,13 @@ public class TagParser
 		final String parsed = parseAll(input);
 
 		if (parsed.length() > 500 || parsed.contains("<") || parsed.contains(">")) {
+			System.out.println("INVALID: " + parsed);
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
 			if (tag.length() > 30 || tag.length() < 2) {
+				System.out.println("INVALID: " + tag);
 				return false;
 			}
 		}

@@ -40,7 +40,7 @@ import java.util.Vector;
  */
 public class PluginServiceImpl implements PluginService
 {
-	private final Map<String, Vector<ExtensionPoint>> extensionPointMap = new HashMap<String, Vector<ExtensionPoint>>();
+	private final Map<String, Vector<ExtensionPoint>> extensionPointMap = new HashMap<String, Vector<ExtensionPoint>>(20);
 	@InjectLogger private Logger logger;
 
 	public PluginServiceImpl()
@@ -62,7 +62,7 @@ public class PluginServiceImpl implements PluginService
 		//noinspection StringConcatenation
 		this.logger.debug("Extension registered, type: " + type); //NON-NLS
 		if (!this.extensionPointMap.containsKey(type)) {
-			this.extensionPointMap.put(type, new Vector<ExtensionPoint>());
+			this.extensionPointMap.put(type, new Vector<ExtensionPoint>(20));
 		}
 		this.extensionPointMap.get(type).add(extension);
 	}
@@ -72,7 +72,7 @@ public class PluginServiceImpl implements PluginService
 		if (this.extensionPointMap.containsKey(extensionType)) {
 			return this.extensionPointMap.get(extensionType);
 		}
-		return new Vector<ExtensionPoint>();
+		return new Vector<ExtensionPoint>(0);
 	}
 
 	@Override

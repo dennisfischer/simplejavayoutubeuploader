@@ -17,10 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.util.AuthenticationException;
+import org.chaosfisch.youtubeuploader.services.YTService;
 
 /**
  * Created by IntelliJ IDEA.

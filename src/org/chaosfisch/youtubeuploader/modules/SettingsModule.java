@@ -17,20 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
-
-import java.util.List;
-
-/**
+/*
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 09.01.12
- * Time: 16:29
- * To change this template use File | Settings | File Templates.
+ * Date: 06.03.12
+ * Time: 09:49
  */
-public interface DirectoryService
-{
-	List getAll();
+package org.chaosfisch.youtubeuploader.modules;
 
-	List getAllActive();
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsPersister;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.impl.PropertyFileSettingsPersisterImpl;
+import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsServiceImpl;
+
+public class SettingsModule extends AbstractModule
+{
+	protected void configure()
+	{
+		this.bind(SettingsService.class).to(SettingsServiceImpl.class).in(Singleton.class);
+		this.bind(SettingsPersister.class).to(PropertyFileSettingsPersisterImpl.class).in(Singleton.class);
+	}
 }

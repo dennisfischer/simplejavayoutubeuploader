@@ -26,7 +26,7 @@ package org.chaosfisch.youtubeuploader.db;
  * Time: 09:35
  * To change this template use File | Settings | File Templates.
  */
-class HibernateMappingExtensionImpl extends HibernateMappingExtension
+public class HibernateMappingExtensionImpl extends HibernateMappingExtension
 {
 	public HibernateMappingExtensionImpl()
 	{
@@ -35,7 +35,6 @@ class HibernateMappingExtensionImpl extends HibernateMappingExtension
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/AccountEntry.hbm.xml"); //NON-NLS
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/QueueEntry.hbm.xml");	//NON-NLS
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PresetEntry.hbm.xml"); //NON-NLS
-		this.add("/org/chaosfisch/youtubeuploader/db/hbm/DirectoryEntry.hbm.xml"); //NON-NLS
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PlaylistEntry.hbm.xml"); //NON-NLS
 	}
 }

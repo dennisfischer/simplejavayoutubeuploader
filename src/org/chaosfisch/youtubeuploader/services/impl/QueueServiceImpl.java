@@ -17,13 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.services.QueuePosition;
+import org.chaosfisch.youtubeuploader.services.QueueService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -95,7 +97,7 @@ public class QueueServiceImpl implements QueueService
 	/**
 	 * Assigns a new place / new sequence to the entry
 	 *
-	 * @param queueEntry	the QueueEntry to reposition
+	 * @param queueEntry    the QueueEntry to reposition
 	 * @param queuePosition the Position the QueueEntry should get
 	 */
 	@Override

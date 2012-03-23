@@ -30,6 +30,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadF
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadWorker;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,9 +64,10 @@ public class Uploader
 	public static final String UPLOAD_FINISHED     = "uploadFinished";
 	public static final String UPLOAD_LIMIT        = "uploadLimit";
 
-	private final ExecutorService executorService;
-	private final QueueService    queueService;
-	private final PlaylistService playlistService;
+	private final   ExecutorService executorService;
+	private final   QueueService    queueService;
+	private final   PlaylistService playlistService;
+	@Inject private SettingsService settingsService;
 
 	private static final long QUEUE_SLEEPTIME = 60000;
 
@@ -98,7 +100,8 @@ public class Uploader
 					if (Uploader.this.hasFreeUploadSpace()) {
 						final QueueEntry polledEntry = Uploader.this.queueService.poll();
 						if (polledEntry != null) {
-							Uploader.this.executorService.submit(new UploadWorker(polledEntry, Uploader.this.playlistService, Uploader.this.speedLimit));
+							Uploader.this.executorService.submit(new UploadWorker(polledEntry, Uploader.this.playlistService, Uploader.this.speedLimit, 1024 * 1024 * Integer.parseInt((String) Uploader.this
+									.settingsService.get("coreplugin.general.CHUNK_SIZE", "10"))));
 							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
 							Uploader.this.runningUploads++;
 						}

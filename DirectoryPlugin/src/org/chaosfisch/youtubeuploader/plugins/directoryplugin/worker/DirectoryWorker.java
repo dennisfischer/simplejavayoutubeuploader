@@ -20,12 +20,19 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker;
 
 import com.google.inject.Inject;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
-import org.chaosfisch.youtubeuploader.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -40,132 +47,60 @@ import java.util.List;
  */
 public class DirectoryWorker extends BetterSwingWorker
 {
+	private         boolean               stop;
+	private final   long                  intervall;
+	private         FileAlterationMonitor fileAlterationMonitor;
+	@Inject private QueueService          queueService;
+	@Inject private DirectoryService      directoryService;
+	@Inject private AutoTitleGenerator    autoTitleGenerator;
 
-	private       long             lastCheck;
-	private final long             intervall;
-	private final DirectoryService directoryService;
-	private       boolean          stop;
-
-	@Inject
-	public DirectoryWorker(final DirectoryService directoryService, final long intervall)
+	public DirectoryWorker(final long intervall)
 	{
 		this.intervall = intervall;
-		this.directoryService = directoryService;
-		this.lastCheck = System.currentTimeMillis();
 	}
 
 	@Override
 	protected void background()
 	{
+
+		final FileAlterationObserver[] fileAlterationObservers = this.initObservers();
+		this.fileAlterationMonitor = new FileAlterationMonitor(this.intervall, fileAlterationObservers);
+
+		try {
+			this.fileAlterationMonitor.start();
+		} catch (Exception e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
 		while (!this.stop) {
 			try {
 				Thread.sleep(this.intervall);
-			} catch (InterruptedException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			} catch (InterruptedException ignored) {
 			}
-			this.checkForChanges();
-			this.lastCheck = System.currentTimeMillis();
 		}
+	}
+
+	private FileAlterationObserver[] initObservers()
+	{
+		final List directories = this.directoryService.getAllActive();
+		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[20];
+		final FileFilter mediaFileFilter = new MediaFileFilter();
+		final FileAlterationListener fileAlterationListener = new MediaFileAlternationListener();
+		for (final Object object : directories) {
+			final FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(((DirectoryEntry) object).getDirectory(), mediaFileFilter);
+			fileAlterationObserver.addListener(fileAlterationListener);
+			fileAlterationObservers[fileAlterationObservers.length + 1] = fileAlterationObserver;
+		}
+		return fileAlterationObservers;
 	}
 
 	@Override
 	protected void onDone()
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
-
-	private void checkForChanges()
-	{
-		final List directories = this.directoryService.getAllActive();
-		for (final Object object : directories) {
-			final DirectoryEntry directoryEntry = (DirectoryEntry) object;
-			final File[] files = this.checkDirectory(directoryEntry);
-			if (files != null) {
-				for (final File file : files) {
-					this.addToUpload(directoryEntry, file);
-				}
-			}
+		try {
+			this.fileAlterationMonitor.stop();
+		} catch (Exception e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
-	}
-
-	private void addToUpload(final DirectoryEntry entry, final File file)
-	{
-		final PresetEntry presetEntry = entry.getPreset();
-
-		final QueueEntry queueEntry = new QueueEntry();
-
-		/* AUTOTITLE MISSING !!!! */
-		queueEntry.setTitle(file.getName());
-		queueEntry.setFile(file.getAbsolutePath());
-
-		queueEntry.setAccount(entry.getAccount());
-		queueEntry.setCategory(presetEntry.getCategory());
-		queueEntry.setDescription(presetEntry.getDescription());
-		queueEntry.setKeywords(presetEntry.getKeywords());
-		queueEntry.setComment(presetEntry.getComment());
-		queueEntry.setCommentvote(presetEntry.isCommentvote());
-		queueEntry.setEmbed(presetEntry.isEmbed());
-		queueEntry.setMobile(presetEntry.isMobile());
-		queueEntry.setRate(presetEntry.isRate());
-		queueEntry.setVideoresponse(presetEntry.getVideoresponse());
-
-		switch (presetEntry.getVisibility()) {
-			case 1:
-				queueEntry.setUnlisted(true);
-				break;
-			case 2:
-				queueEntry.setPrivatefile(true);
-				break;
-		}
-
-		final int dotPos = file.toString().lastIndexOf(".") + 1;
-		final String extension = file.toString().substring(dotPos);
-		queueEntry.setMimetype(Mimetype.getMimetypeByExtension(extension));
-	}
-
-	private File[] checkDirectory(final DirectoryEntry entry)
-	{
-		File[] listFiles = null;
-		final File directory = new File(entry.getDirectory());
-		if (!directory.exists() || !directory.isDirectory()) {
-			return listFiles;
-		}
-		final FileFilter filter = new FileFilter()
-		{
-
-			@Override
-			public boolean accept(final File file)
-			{
-				final String[] extensions = Mimetype.EXTENSIONS;
-				final int dotPos = file.toString().lastIndexOf(".") + 1;
-				final String fileExtension = file.toString().substring(dotPos);
-
-				boolean flag = false;
-				for (final String extension : extensions) {
-					//noinspection CallToStringEquals
-					if (extension.equals(fileExtension)) {
-						flag = true;
-					}
-				}
-				if (!flag) {
-					return false;
-				}
-				if (file.lastModified() > DirectoryWorker.this.lastCheck) {
-					final long checkedAt = file.lastModified();
-					final long fileSizeAt = file.length();
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-					}
-					return !(file.lastModified() != checkedAt || fileSizeAt != file.length());
-				}
-				return false;
-			}
-		};
-		listFiles = directory.listFiles(filter);
-
-		return listFiles;
 	}
 
 	public void setStop(final boolean stop)
@@ -176,5 +111,96 @@ public class DirectoryWorker extends BetterSwingWorker
 	public boolean isStop()
 	{
 		return this.stop;
+	}
+
+	private class MediaFileAlternationListener extends FileAlterationListenerAdaptor
+	{
+		@Override public void onFileChange(final File file)
+		{
+			this.addToUpload(DirectoryWorker.this.directoryService.getByFileDirectory(file), file);
+		}
+
+		private void addToUpload(final DirectoryEntry entry, final File file)
+		{
+			final PresetEntry presetEntry = entry.getPreset();
+
+			final QueueEntry queueEntry = new QueueEntry();
+
+			if (presetEntry.isAutotitle()) {
+				DirectoryWorker.this.autoTitleGenerator.setFileName(file.getName());
+				DirectoryWorker.this.autoTitleGenerator.setFormatString(presetEntry.getAutotitleFormat());
+				DirectoryWorker.this.autoTitleGenerator.setPlaylist(presetEntry.getPlaylist());
+				queueEntry.setTitle(DirectoryWorker.this.autoTitleGenerator.gernerate());
+			} else {
+				queueEntry.setTitle(file.getName());
+			}
+			queueEntry.setFile(file.getAbsolutePath());
+
+			queueEntry.setAccount(presetEntry.getAccount());
+			queueEntry.setCategory(presetEntry.getCategory());
+			queueEntry.setDescription(presetEntry.getDescription());
+			queueEntry.setKeywords(presetEntry.getKeywords());
+			queueEntry.setComment(presetEntry.getComment());
+			queueEntry.setCommentvote(presetEntry.isCommentvote());
+			queueEntry.setEmbed(presetEntry.isEmbed());
+			queueEntry.setMobile(presetEntry.isMobile());
+			queueEntry.setRate(presetEntry.isRate());
+			queueEntry.setVideoresponse(presetEntry.getVideoresponse());
+
+			switch (presetEntry.getVisibility()) {
+				case 1:
+					queueEntry.setUnlisted(true);
+					break;
+				case 2:
+					queueEntry.setPrivatefile(true);
+					break;
+			}
+
+			final int dotPos = file.toString().lastIndexOf(".") + 1;
+			final String extension = file.toString().substring(dotPos);
+			queueEntry.setMimetype(Mimetype.getMimetypeByExtension(extension));
+			DirectoryWorker.this.queueService.createQueueEntry(queueEntry);
+		}
+	}
+
+	private static class MediaFileFilter extends FileFileFilter
+
+	{
+		final FileFilter filter = new FileFilter()
+		{
+
+			public long lastCheck;
+
+			@Override
+			public boolean accept(final File file)
+			{
+				final String[] extensions = Mimetype.EXTENSIONS;
+				final int dotPos = file.toString().lastIndexOf(".") + 1;
+				final String fileExtension = file.toString().substring(dotPos);
+
+				this.lastCheck = System.currentTimeMillis();
+
+				boolean flag = false;
+				for (final String extension : extensions) {
+					if (extension.equals(fileExtension)) {
+						flag = true;
+					}
+				}
+				if (!flag) {
+					return false;
+				}
+				if (file.lastModified() > this.lastCheck) {
+					final long checkedAt = file.lastModified();
+					final long fileSizeAt = file.length();
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					return !(file.lastModified() != checkedAt || fileSizeAt != file.length());
+				}
+				return false;
+			}
+		};
 	}
 }

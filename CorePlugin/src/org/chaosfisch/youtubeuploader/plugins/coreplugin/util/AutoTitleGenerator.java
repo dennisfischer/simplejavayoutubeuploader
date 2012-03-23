@@ -19,6 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 
+import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -32,21 +34,13 @@ public interface AutoTitleGenerator
 
 	void setFormatString(String formatString);
 
-	String getPlaylistName();
-
-	void setPlaylistName(String playlistName);
-
-	int getNumber();
-
-	void setNumber(int number);
-
 	String getFileName();
 
 	void setFileName(String fileName);
 
 	String gernerate();
 
-	void setPlaylistNumber(int playlistNumber);
+	void setPlaylist(PlaylistEntry playlist);
 
-	int getPlaylistNumber();
+	void setNumber(int number);
 }

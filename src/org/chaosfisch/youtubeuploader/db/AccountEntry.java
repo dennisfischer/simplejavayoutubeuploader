@@ -20,7 +20,7 @@
 package org.chaosfisch.youtubeuploader.db;
 
 import org.chaosfisch.youtubeuploader.services.YTService;
-import org.chaosfisch.youtubeuploader.services.YTServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.YTServiceImpl;
 
 import java.util.Collection;
 
@@ -88,18 +88,6 @@ public class AccountEntry
 	public void setQueue(final Collection<QueueEntry> queue)
 	{
 		this.queue = queue;
-	}
-
-	private transient Collection<DirectoryEntry> directories;
-
-	public Collection<DirectoryEntry> getDirectories()
-	{
-		return this.directories;
-	}
-
-	public void setDirectories(final Collection<DirectoryEntry> directories)
-	{
-		this.directories = directories;
 	}
 
 	public String toString()

@@ -6,6 +6,8 @@
         <element id="artifact" artifact-name="CorePlugin:jar" />
         <element id="artifact" artifact-name="SystemTrayPlugin:jar" />
         <element id="artifact" artifact-name="DirectoryPlugin:jar" />
+        <element id="artifact" artifact-name="SettingsPlugin:jar" />
+        <element id="artifact" artifact-name="NotificationsPlugin:jar" />
       </element>
       <element id="directory" name="libs">
         <element id="library" level="project" name="repositories" />
