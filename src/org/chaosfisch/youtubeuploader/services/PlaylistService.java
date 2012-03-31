@@ -44,7 +44,7 @@ public interface PlaylistService
 
 	void addLatestVideoToPlaylist(PlaylistEntry playlistEntry);
 
-	List getAllPlaylistByAccount(AccountEntry accountEntry);
+	List<PlaylistEntry> getAllPlaylistByAccount(AccountEntry accountEntry);
 
 	void removePlaylistsByAccount(AccountEntry accountEntry);
 

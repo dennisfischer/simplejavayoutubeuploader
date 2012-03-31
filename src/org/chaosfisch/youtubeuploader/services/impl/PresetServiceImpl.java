@@ -83,11 +83,11 @@ public class PresetServiceImpl implements PresetService
 	}
 
 	@Override
-	public List getAllPresetEntry()
+	public List<PresetEntry> getAllPresetEntry()
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		final List returnList = session.createQuery("select p from PresetEntry as p order by name").list(); //NON-NLS
+		final List<PresetEntry> returnList = session.createQuery("select p from PresetEntry as p order by name").list(); //NON-NLS
 		session.getTransaction().commit();
 		return returnList;
 	}

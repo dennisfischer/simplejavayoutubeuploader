@@ -44,7 +44,7 @@ public interface AccountService
 
 	AccountEntry findAccountEntry(int identifier);
 
-	List getAllAccountEntry();
+	List<AccountEntry> getAllAccountEntry();
 
 	void refreshAccount(AccountEntry accountEntry);
 }

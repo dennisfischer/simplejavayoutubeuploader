@@ -17,63 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.directoryplugin.db;
+package org.chaosfisch.youtubeuploader.plugins.directoryplugin.modules;
 
-import org.chaosfisch.youtubeuploader.db.IEntry;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl.DirectoryServiceImpl;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 07.01.12
- * Time: 18:33
+ * Date: 24.03.12
+ * Time: 18:01
  * To change this template use File | Settings | File Templates.
  */
-public class DirectoryEntry implements IEntry
+public class DirectoryModule extends AbstractModule
 {
-	private transient int     identity;
-	private           String  directory;
-	private           boolean active;
-
-	public boolean isActive()
+	@Override protected void configure()
 	{
-		return this.active;
-	}
-
-	public void setActive(final boolean active)
-	{
-		this.active = active;
-	}
-
-	public String getDirectory()
-	{
-		return this.directory;
-	}
-
-	public void setDirectory(final String directory)
-	{
-		this.directory = directory;
-	}
-
-	public int getIdentity()
-	{
-		return this.identity;
-	}
-
-	public void setIdentity(final int identity)
-	{
-		this.identity = identity;
-	}
-
-	private PresetEntry preset;
-
-	public PresetEntry getPreset()
-	{
-		return this.preset;
-	}
-
-	public void setPreset(final PresetEntry preset)
-	{
-		this.preset = preset;
+		this.bind(DirectoryService.class).to(DirectoryServiceImpl.class).in(Singleton.class);
 	}
 }

@@ -26,7 +26,6 @@ import org.chaosfisch.youtubeuploader.services.PresetService;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,17 +38,17 @@ import java.util.List;
 public class PresetListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final LinkedList<PresetEntry> presetEntries = new LinkedList<PresetEntry>();
-	private       int                     selectedRow   = 0;
+	private final IdentityList<PresetEntry> presetEntries = new IdentityList<PresetEntry>();
+	private       int                       selectedRow   = 0;
 
 	public PresetListModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public PresetListModel(final List<PresetEntry> l)
+	public PresetListModel(final List<PresetEntry> entryList)
 	{
-		this.presetEntries.addAll(l);
+		this.presetEntries.addAll(entryList);
 		AnnotationProcessor.process(this);
 	}
 
@@ -60,7 +59,7 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 	}
 
 	@Override
-	public Object getElementAt(final int index)
+	public PresetEntry getElementAt(final int index)
 	{
 		return this.presetEntries.get(index);
 	}
@@ -71,12 +70,10 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 		this.fireIntervalAdded(this, 0, this.getSize());
 	}
 
-	public void addPresetEntryList(final List l)
+	public void addPresetEntryList(final List<PresetEntry> entryList)
 	{
-		for (final Object o : l) {
-			if (o instanceof PresetEntry) {
-				this.addPresetEntry((PresetEntry) o);
-			}
+		for (final PresetEntry presetEntry : entryList) {
+			this.addPresetEntry(presetEntry);
 		}
 	}
 

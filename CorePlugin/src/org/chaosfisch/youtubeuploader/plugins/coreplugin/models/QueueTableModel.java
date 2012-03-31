@@ -44,10 +44,10 @@ import java.util.*;
  */
 public class QueueTableModel extends AbstractTableModel
 {
-	private static final String         HH_MM_DD_MM_YYYY = "HH:mm dd-MM-yyyy"; //NON-NLS
-	private final        QueueEntryList queueEntries     = new QueueEntryList();
-	private final        ResourceBundle resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
-	private final        String[]       columns          = {this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"),
+	private static final String                   HH_MM_DD_MM_YYYY = "HH:mm dd-MM-yyyy"; //NON-NLS
+	private final        IdentityList<QueueEntry> queueEntries     = new IdentityList<QueueEntry>();
+	private final        ResourceBundle           resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
+	private final        String[]                 columns          = {this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"),
 			this.resourceBundle.getString("table.columns.file"), this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"),
 			this.resourceBundle.getString("table.columns.status"), this.resourceBundle.getString("table.columns.progress")};
 
@@ -328,52 +328,6 @@ public class QueueTableModel extends AbstractTableModel
 			final int index = this.queueEntries.indexOf(uploadFailed.getQueueEntry());
 			//noinspection StringConcatenation
 			this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
-		}
-	}
-
-	class QueueEntryList extends ArrayList<QueueEntry>
-	{
-		@Override
-		public int indexOf(final Object o)
-		{
-			final QueueEntry queueEntry = (QueueEntry) o;
-			if (o == null) {
-				for (int i = 0; i < this.size(); i++)
-					if (this.get(i) == null) {
-						return i;
-					}
-			} else {
-				for (int i = 0; i < this.size(); i++)
-					if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
-						return i;
-					}
-			}
-			return -1;
-		}
-
-		/**
-		 * Returns the index of the last occurrence of the specified element
-		 * in this list, or -1 if this list does not contain the element.
-		 * More formally, returns the highest index <tt>i</tt> such that
-		 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-		 * or -1 if there is no such index.
-		 */
-		@Override
-		public int lastIndexOf(final Object o)
-		{
-			final QueueEntry queueEntry = (QueueEntry) o;
-			if (o == null) {
-				for (int i = this.size() - 1; i >= 0; i--)
-					if (this.get(i) == null) {
-						return i;
-					}
-			} else {
-				for (int i = this.size() - 1; i >= 0; i--)
-					if (queueEntry.getIdentity() == this.get(i).getIdentity()) {
-						return i;
-					}
-			}
-			return -1;
 		}
 	}
 }

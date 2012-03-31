@@ -20,11 +20,12 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.chaosfisch.plugin.Pluggable;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -38,9 +39,9 @@ import java.util.ResourceBundle;
  */
 public class DirectoryTableModel extends AbstractTableModel
 {
-	private final ArrayList<DirectoryEntry> directoryList  = new ArrayList<DirectoryEntry>(20);
-	private final ResourceBundle            resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
-	private final String[]                  columns        = {this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"),
+	private final IdentityList<DirectoryEntry> directoryList  = new IdentityList<DirectoryEntry>();
+	private final ResourceBundle               resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
+	private final String[]                     columns        = {this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"),
 			this.resourceBundle.getString("directorytable.activeLabel")};
 
 	public DirectoryTableModel()
@@ -60,12 +61,10 @@ public class DirectoryTableModel extends AbstractTableModel
 		this.fireTableDataChanged();
 	}
 
-	public void addDirectoryList(final List l)
+	public void addDirectoryList(final List<DirectoryEntry> entryList)
 	{
-		for (final Object o : l) {
-			if (o instanceof Pluggable) {
-				this.addDirectory((DirectoryEntry) o);
-			}
+		for (final DirectoryEntry directoryEntry : entryList) {
+			this.addDirectory(directoryEntry);
 		}
 	}
 
@@ -163,5 +162,17 @@ public class DirectoryTableModel extends AbstractTableModel
 	{
 		this.directoryList.remove(directoryEntry);
 		this.fireTableDataChanged();
+	}
+
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_ADDED)
+	public void onDirectoryEntryAdded(final String topic, final Object o)
+	{
+		this.addDirectory((DirectoryEntry) o);
+	}
+
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_REMOVED)
+	public void onDirectoryEntryRemoved(final String topic, final Object o)
+	{
+		this.removeDirectory((DirectoryEntry) o);
 	}
 }

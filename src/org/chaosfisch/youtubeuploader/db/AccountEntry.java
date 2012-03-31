@@ -31,7 +31,7 @@ import java.util.Collection;
  * Time: 16:44
  * To change this template use File | Settings | File Templates.
  */
-public class AccountEntry
+public class AccountEntry implements IEntry
 {
 	private transient int    identity;
 	private           String name;

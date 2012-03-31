@@ -17,35 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services;
-
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
-
-import java.io.File;
-import java.util.List;
+package org.chaosfisch.youtubeuploader.db;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
- * Date: 09.01.12
- * Time: 16:29
+ * Date: 23.03.12
+ * Time: 22:39
  * To change this template use File | Settings | File Templates.
  */
-public interface DirectoryService
+public interface IEntry
 {
-	String DIRECTORY_ENTRY_REMOVED = "onDirectoryEntryRemoved";
-	String DIRECTORY_ENTRY_ADDED   = "onDirectoryEntryAdded";
-	String DIRECTORY_ENTRY_UPDATED = "onDirectoryEntryUpdated";
-
-	List<DirectoryEntry> getAll();
-
-	List<DirectoryEntry> getAllActive();
-
-	DirectoryEntry findByFile(File file);
-
-	DirectoryEntry createDirectoryEntry(DirectoryEntry directoryEntry);
-
-	DirectoryEntry deleteDirectoryEntry(DirectoryEntry directoryEntry);
-
-	DirectoryEntry updateDirectoryEntry(DirectoryEntry directoryEntry);
+	int getIdentity();
 }

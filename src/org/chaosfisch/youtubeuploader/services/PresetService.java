@@ -41,7 +41,7 @@ public interface PresetService
 
 	PresetEntry updatePresetEntry(PresetEntry presetEntry);
 
-	List getAllPresetEntry();
+	List<PresetEntry> getAllPresetEntry();
 
 	PresetEntry findPresetEntry(int identifier);
 }

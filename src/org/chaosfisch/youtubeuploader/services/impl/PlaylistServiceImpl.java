@@ -217,11 +217,12 @@ public class PlaylistServiceImpl implements PlaylistService
 	}
 
 	@Override
-	public List getAllPlaylistByAccount(final AccountEntry accountEntry)
+	public List<PlaylistEntry> getAllPlaylistByAccount(final AccountEntry accountEntry)
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		@SuppressWarnings("DuplicateStringLiteralInspection") final List returnList = session.createCriteria(PlaylistEntry.class).addOrder(Order.asc("name")).add(Restrictions.eq("account", //NON-NLS
+		@SuppressWarnings("DuplicateStringLiteralInspection") final List<PlaylistEntry> returnList = session.createCriteria(PlaylistEntry.class).addOrder(Order.asc("name")).add(Restrictions.eq
+				("account", //NON-NLS
 				accountEntry)).list();
 		session.getTransaction().commit();
 		return returnList;

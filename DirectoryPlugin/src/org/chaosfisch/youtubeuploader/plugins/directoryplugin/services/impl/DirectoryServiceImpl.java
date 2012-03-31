@@ -19,8 +19,15 @@
 
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl;
 
+import com.google.inject.Inject;
+import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
 
 import java.io.File;
 import java.util.List;
@@ -34,33 +41,71 @@ import java.util.List;
  */
 public class DirectoryServiceImpl implements DirectoryService
 {
-	@Override public List getAll()
+	@Inject private SessionFactory sessionFactory;
+
+	@Override public List<DirectoryEntry> getAll()
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		final List<DirectoryEntry> returnList = session.createQuery("select d from DirectoryEntry as d order by directory").list(); //NON-NLS
+		session.getTransaction().commit();
+		return returnList;
 	}
 
-	@Override public List getAllActive()
+	@Override public List<DirectoryEntry> getAllActive()
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		final Criteria criteria = session.createCriteria(DirectoryEntry.class); //NON-NLS
+		criteria.addOrder(Order.asc("directory")); //NON-NLS
+		criteria.add(Property.forName("active").eq(true)); //NON-NLS
+
+		final List<DirectoryEntry> returnList = criteria.list();
+		session.getTransaction().commit();
+		return returnList;
 	}
 
-	@Override public DirectoryEntry getByFileDirectory(File file)
+	@Override public DirectoryEntry findByFile(final File file)
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		final String directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator));
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		final Criteria criteria = session.createCriteria(DirectoryEntry.class); //NON-NLS
+		criteria.addOrder(Order.asc("directory")); //NON-NLS
+		criteria.add(Property.forName("directory").eq(directory)); //NON-NLS
+		final DirectoryEntry directoryEntry = (DirectoryEntry) criteria.uniqueResult();
+
+		session.getTransaction().commit();
+		return directoryEntry;
 	}
 
-	@Override public void createDirectoryEntry(DirectoryEntry directoryEntry)
+	@Override public DirectoryEntry createDirectoryEntry(final DirectoryEntry directoryEntry)
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		session.save(directoryEntry);
+		session.getTransaction().commit();
+		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_ADDED, directoryEntry);
+		return directoryEntry;
 	}
 
-	@Override public void deleteDirectoryEntry(DirectoryEntry directoryEntry)
+	@Override public DirectoryEntry deleteDirectoryEntry(final DirectoryEntry directoryEntry)
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		session.delete(directoryEntry);
+		session.getTransaction().commit();
+		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_REMOVED, directoryEntry);
+		return directoryEntry;
 	}
 
-	@Override public void updateDirectoryEntry(DirectoryEntry directoryEntry)
+	@Override public DirectoryEntry updateDirectoryEntry(final DirectoryEntry directoryEntry)
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		final Session session = this.sessionFactory.getCurrentSession();
+		session.getTransaction().begin();
+		session.update(directoryEntry);
+		session.getTransaction().commit();
+		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_UPDATED, directoryEntry);
+		return directoryEntry;
 	}
 }

@@ -38,10 +38,15 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin;/*
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicPatternSubscriber;
+import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.view.DirectoryViewPanel;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker.DirectoryWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,8 +63,14 @@ import java.awt.event.ActionListener;
 public class DirectoryPlugin implements Pluggable
 {
 	private static final String[] DEPENDENCIES = new String[0];
-	@Inject private PluginService pluginService;
-	@Inject private Injector      injector;
+	@Inject private PluginService   pluginService;
+	@Inject private Injector        injector;
+	@Inject         DirectoryWorker directoryWorker;
+
+	public DirectoryPlugin()
+	{
+		AnnotationProcessor.process(this);
+	}
 
 	@Override public boolean canBeDisabled()
 	{
@@ -102,9 +113,22 @@ public class DirectoryPlugin implements Pluggable
 			}
 		});
 		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+
+		this.directoryWorker.setIntervall(30000);
+		this.directoryWorker.start();
 	}
 
 	@Override public void onEnd()
 	{
+		this.directoryWorker.interrupt();
+	}
+
+	@EventTopicPatternSubscriber(topicPattern = "onDirectoryEntry(.*)", referenceStrength = ReferenceStrength.WEAK)
+	public void refreshDirectoryWorker(final String topic, final DirectoryEntry directoryEntry)
+	{
+		directoryWorker.interrupt();
+		directoryWorker = injector.getInstance(DirectoryWorker.class);
+		this.directoryWorker.setIntervall(30000);
+		this.directoryWorker.start();
 	}
 }

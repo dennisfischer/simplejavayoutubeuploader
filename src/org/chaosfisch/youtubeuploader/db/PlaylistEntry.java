@@ -28,7 +28,7 @@ import java.util.Collection;
  * Time: 15:57
  * To change this template use File | Settings | File Templates.
  */
-public class PlaylistEntry
+public class PlaylistEntry implements IEntry
 {
 	private int    identity;
 	private String playlistKey;

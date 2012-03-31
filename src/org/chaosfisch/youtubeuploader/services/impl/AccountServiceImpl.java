@@ -59,11 +59,11 @@ public class AccountServiceImpl implements AccountService
 	}
 
 	@Override
-	public List getAllAccountEntry()
+	public List<AccountEntry> getAllAccountEntry()
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		final List returnList = session.createQuery("select a from AccountEntry as a order by name").list(); //NON-NLS
+		final List<AccountEntry> returnList = session.createQuery("select a from AccountEntry as a order by name").list(); //NON-NLS
 		session.getTransaction().commit();
 		return returnList;
 	}

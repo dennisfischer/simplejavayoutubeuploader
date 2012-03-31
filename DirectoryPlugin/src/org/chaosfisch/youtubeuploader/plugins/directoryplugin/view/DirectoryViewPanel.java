@@ -21,10 +21,15 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
+import org.chaosfisch.youtubeuploader.services.PresetService;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,12 +53,18 @@ public class DirectoryViewPanel extends JDialog
 	private JCheckBox  activeCheckbox;
 
 	@Inject private DirectoryController directoryController;
+	@Inject private PresetService       presetService;
+	@Inject private PresetListModel     presetListModel;
 
 	public DirectoryViewPanel()
 	{
-		this.setContentPane(this.contentPane);
-		this.setModal(true);
-		this.initListeners();
+	}
+
+	private void initCompononents()
+	{
+		this.presetListModel.addPresetEntryList(this.presetService.getAllPresetEntry());
+		this.presetList.setModel(this.presetListModel);
+		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
 	}
 
 	private void initListeners()
@@ -94,7 +105,13 @@ public class DirectoryViewPanel extends JDialog
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
+				final JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
+				final int result = fileChooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					DirectoryViewPanel.this.directoryTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+				}
 			}
 		});
 
@@ -109,10 +126,29 @@ public class DirectoryViewPanel extends JDialog
 				}
 			}
 		});
+
+		this.directoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+		{
+			@Override public void valueChanged(final ListSelectionEvent e)
+			{
+
+				if (DirectoryViewPanel.this.directoryTable.getSelectedRow() == -1) {
+					return;
+				}
+				final DirectoryEntry directoryEntry = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow());
+				if (directoryEntry != null) {
+					DirectoryViewPanel.this.activeCheckbox.setSelected(directoryEntry.isActive());
+				}
+			}
+		});
 	}
 
 	public void run()
 	{
-		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
+		this.directoryController.run();
+		this.setContentPane(this.contentPane);
+		this.setModal(true);
+		this.initCompononents();
+		this.initListeners();
 	}
 }

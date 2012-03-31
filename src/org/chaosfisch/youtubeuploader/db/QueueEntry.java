@@ -28,7 +28,7 @@ import java.util.Date;
  * Time: 16:49
  * To change this template use File | Settings | File Templates.
  */
-public class QueueEntry
+public class QueueEntry implements IEntry
 {
 	private transient int     identity;
 	private           boolean archived;

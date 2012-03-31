@@ -35,7 +35,6 @@ import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.services.QueueService;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -43,7 +42,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Date;
 
 public final class UploadViewPanel
@@ -105,7 +103,7 @@ public final class UploadViewPanel
 
 		this.controller.synchronizePlaylists(this.controller.getAccountListModel().getAccountList());
 
-		AutoCompleteDecorator.decorate(this.autotitleTextField, Arrays.asList("{playlist}", "{file}", "{nummer}"), false);//NON-NLS
+		//TODO NOT WORKING AutoCompleteDecorator.decorate(this.autotitleTextField, Arrays.asList("{playlist}", "{file}", "{nummer}"), false);//NON-NLS
 	}
 
 	private void initComponents()
@@ -425,11 +423,11 @@ public final class UploadViewPanel
 			this.visibilityList.setSelectedIndex(selectedPreset.getVisibility());
 
 			if (selectedPreset.getAccount() != null) {
-				this.accountList.setSelectedItem(selectedPreset.getAccount());
-			}
-			if (selectedPreset.getPlaylist() != null) {
-				this.presetList.setSelectedItem(selectedPreset.getPlaylist());
-				System.out.println(selectedPreset.getPlaylist().getName());
+				this.controller.getAccountListModel().setSelectedItem(selectedPreset.getAccount());
+				this.controller.changeAccount(selectedPreset.getAccount());
+				if (selectedPreset.getPlaylist() != null) {
+					this.controller.getPlaylistListModel().setSelectedItem(selectedPreset.getPlaylist());
+				}
 			}
 			this.controller.changeAutotitleCheckbox(this.autotitelCheckBox.isSelected());
 			this.controller.changeAutotitleFormat(this.autotitleTextField.getText());

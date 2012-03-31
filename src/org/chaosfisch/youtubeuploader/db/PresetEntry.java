@@ -26,7 +26,7 @@ package org.chaosfisch.youtubeuploader.db;
  * Time: 18:34
  * To change this template use File | Settings | File Templates.
  */
-public class PresetEntry
+public class PresetEntry implements IEntry
 {
 	private           boolean       autotitle;
 	private           String        autotitleFormat;

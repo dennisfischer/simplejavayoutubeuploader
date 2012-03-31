@@ -44,11 +44,11 @@ public interface QueueService
 
 	void sortQueueEntry(QueueEntry queueEntry, QueuePosition queuePosition);
 
-	List getAllQueueEntry();
+	List<QueueEntry> getAllQueueEntry();
 
-	List getQueuedQueueEntry();
+	List<QueueEntry> getQueuedQueueEntry();
 
-	List getArchivedQueueEntry();
+	List<QueueEntry> getArchivedQueueEntry();
 
 	QueueEntry findQueueEntry(int identifier);
 

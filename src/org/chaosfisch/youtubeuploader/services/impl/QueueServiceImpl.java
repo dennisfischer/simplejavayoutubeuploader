@@ -170,11 +170,11 @@ public class QueueServiceImpl implements QueueService
 	 * @return List<QueueEntry> all elements
 	 */
 	@Override
-	public List getAllQueueEntry()
+	public List<QueueEntry> getAllQueueEntry()
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		final List returnList = session.createQuery("select q from QueueEntry as q order by identity").list();
+		final List<QueueEntry> returnList = session.createQuery("select q from QueueEntry as q order by identity").list();
 		session.getTransaction().commit();
 		return returnList;
 	}
@@ -185,11 +185,11 @@ public class QueueServiceImpl implements QueueService
 	 * @return List<QueueEntry> queued elements
 	 */
 	@Override
-	public List getQueuedQueueEntry()
+	public List<QueueEntry> getQueuedQueueEntry()
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		final List returnList = session.createQuery("select q from QueueEntry as q WHERE q.archived = false ORDER by sequence asc").list();
+		final List<QueueEntry> returnList = session.createQuery("select q from QueueEntry as q WHERE q.archived = false ORDER by sequence asc").list();
 		session.getTransaction().commit();
 		return returnList;
 	}
@@ -200,11 +200,11 @@ public class QueueServiceImpl implements QueueService
 	 * @return List<QueueEntry> archived elements
 	 */
 	@Override
-	public List getArchivedQueueEntry()
+	public List<QueueEntry> getArchivedQueueEntry()
 	{
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
-		final List returnList = session.createQuery("select q from QueueEntry as q WHERE q.archived = true order by identity").list();
+		final List<QueueEntry> returnList = session.createQuery("select q from QueueEntry as q WHERE q.archived = true order by identity").list();
 		session.getTransaction().commit();
 		return returnList;
 	}

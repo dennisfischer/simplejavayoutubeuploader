@@ -41,6 +41,11 @@ public class DirectoryController
 
 	public DirectoryController()
 	{
+
+	}
+
+	public void run()
+	{
 		this.directoryTableModel.addDirectoryList(this.directoryService.getAll());
 	}
 
