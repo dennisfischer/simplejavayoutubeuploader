@@ -126,8 +126,8 @@ public class DirectoryPlugin implements Pluggable
 	@EventTopicPatternSubscriber(topicPattern = "onDirectoryEntry(.*)", referenceStrength = ReferenceStrength.WEAK)
 	public void refreshDirectoryWorker(final String topic, final DirectoryEntry directoryEntry)
 	{
-		directoryWorker.interrupt();
-		directoryWorker = injector.getInstance(DirectoryWorker.class);
+		this.directoryWorker.interrupt();
+		this.directoryWorker = this.injector.getInstance(DirectoryWorker.class);
 		this.directoryWorker.setIntervall(30000);
 		this.directoryWorker.start();
 	}

@@ -117,9 +117,8 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	}
 
 	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
-	public void onPlaylistUpdate(final String topic, final Object o)
+	public void onPlaylistUpdate(final String topic, final PlaylistEntry playlistEntry)
 	{
-		final PlaylistEntry playlistEntry = (PlaylistEntry) o;
 		if (playlistEntry.getName().equals(this.playlistName)) {
 			this.setPlaylist(playlistEntry);
 			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());

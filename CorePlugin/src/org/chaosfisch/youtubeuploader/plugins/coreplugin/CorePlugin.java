@@ -74,7 +74,7 @@ public class CorePlugin implements Pluggable
 	{
 		this.uploader = this.injector.getInstance(Uploader.class);
 
-		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 10, 500, 10));
+		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
 		spinner.setEditor(new JSpinner.NumberEditor(spinner, "# MB"));
 
 		this.settingService.addSpinner("coreplugin.general.CHUNK_SIZE", "CHUNK Size:", spinner);

@@ -93,13 +93,11 @@ public class TagParser
 		final String parsed = parseAll(input);
 
 		if (parsed.length() > 500 || parsed.contains("<") || parsed.contains(">")) {
-			System.out.println("INVALID: " + parsed);
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
 			if (tag.length() > 30 || tag.length() < 2) {
-				System.out.println("INVALID: " + tag);
 				return false;
 			}
 		}

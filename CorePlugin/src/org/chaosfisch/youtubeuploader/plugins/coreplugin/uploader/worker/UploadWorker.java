@@ -290,7 +290,7 @@ public class UploadWorker extends BetterSwingWorker
 			final HttpURLConnection urlConnection = this.getGDataUrlConnection(INITIAL_UPLOAD_URL);
 			urlConnection.setRequestMethod("POST");
 			urlConnection.setDoOutput(true);
-			urlConnection.setRequestProperty(Uploader.CONTENT_TYPE, "application/atom+xml; charset=UTF-8");
+			urlConnection.setRequestProperty("Content-Type", "application/atom+xml; charset=UTF-8");
 			urlConnection.setRequestProperty("Slug", filePath);
 			final OutputStreamWriter outStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8");
 			outStreamWriter.write(metaData);
@@ -303,7 +303,7 @@ public class UploadWorker extends BetterSwingWorker
 			if (responseCode == 400) {
 				throw new UploaderException("Die gegebenen Videoinformationen sind ungültig!");
 			}
-			return urlConnection.getHeaderField(Uploader.LOCATION);
+			return urlConnection.getHeaderField("Location");
 		} catch (IOException ex) {
 			throw new UploaderException("Metadaten konnten nicht gesendet werden!", ex);
 		}
@@ -324,8 +324,8 @@ public class UploadWorker extends BetterSwingWorker
 			urlConnection.setRequestMethod("PUT");
 			urlConnection.setDoOutput(true);
 			urlConnection.setFixedLengthStreamingMode(chunk);
-			urlConnection.setRequestProperty(Uploader.CONTENT_TYPE, this.queueEntry.getMimetype());
-			urlConnection.setRequestProperty(Uploader.CONTENT_RANGE, String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length()));
+			urlConnection.setRequestProperty("Content-Type", this.queueEntry.getMimetype());
+			urlConnection.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length()));
 		} catch (IOException ex) {
 			throw new UploaderException("Konnte Schreibstream nicht erzeugen!", ex);
 		}
@@ -424,7 +424,7 @@ public class UploadWorker extends BetterSwingWorker
 		final HttpURLConnection urlConnection = this.getGDataUrlConnection(uploadUrl);
 		final int responseCode;
 		try {
-			urlConnection.setRequestProperty(org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader.CONTENT_RANGE, "bytes */*");
+			urlConnection.setRequestProperty("Content-Range", "bytes */*");
 			urlConnection.setRequestMethod("PUT");
 			urlConnection.setFixedLengthStreamingMode(0);
 
@@ -453,7 +453,7 @@ public class UploadWorker extends BetterSwingWorker
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			final String location = urlConnection.getHeaderField(Uploader.LOCATION);
+			final String location = urlConnection.getHeaderField("Location");
 			if (location != null) {
 				this.updateUploadUrl(location);
 			}
@@ -560,11 +560,9 @@ public class UploadWorker extends BetterSwingWorker
 		return content;
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.ABORT_UPLOAD)
-	public void onAbortUpload(final String topic, final Object o)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT)
+	public void onAbortUpload(final String topic, final QueueEntry abortEntry)
 	{
-		final QueueEntry abortEntry = (QueueEntry) o;
-
 		if (abortEntry.getIdentity() == this.queueEntry.getIdentity()) {
 			try {
 				this.cancel(true);
@@ -576,10 +574,9 @@ public class UploadWorker extends BetterSwingWorker
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
-	public void onFailedUpload(final String topic, final Object o)
+	public void onFailedUpload(final String topic, final UploadFailed uploadFailed)
 	{
 		this.failed = true;
-		final UploadFailed uploadFailed = (UploadFailed) o;
 		Logger.getLogger(this.getClass().getName()).warn(uploadFailed.getMessage());
 		this.cancel(true);
 	}

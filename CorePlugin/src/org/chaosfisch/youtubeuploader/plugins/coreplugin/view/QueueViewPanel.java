@@ -261,6 +261,13 @@ public final class QueueViewPanel
 		this.stoppenButton.setEnabled(false);
 	}
 
+	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
+	public void onQueueStart(final String topic, final Object o)
+	{
+		QueueViewPanel.this.startenButton.setEnabled(false);
+		QueueViewPanel.this.stoppenButton.setEnabled(true);
+	}
+
 	public JPanel getJPanel()
 	{
 		return this.queuePanel;

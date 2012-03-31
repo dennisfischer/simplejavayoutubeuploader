@@ -260,21 +260,20 @@ public class QueueTableModel extends AbstractTableModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
-	public void onQueueEntryAdded(final String topic, final Object o)
+	public void onQueueEntryAdded(final String topic, final QueueEntry queueEntry)
 	{
-		this.addQueueEntry((QueueEntry) o);
+		this.addQueueEntry(queueEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
-	public void onQueueEntryRemoved(final String topic, final Object o)
+	public void onQueueEntryRemoved(final String topic, final QueueEntry queueEntry)
 	{
-		this.removeQueueEntry((QueueEntry) o);
+		this.removeQueueEntry(queueEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
-	public void onUploadStart(final String topic, final Object o)
+	public void onUploadStart(final String topic, final QueueEntry queueEntry)
 	{
-		final QueueEntry queueEntry = (QueueEntry) o;
 		if (this.queueEntries.contains(queueEntry)) {
 			final int index = this.queueEntries.indexOf(queueEntry);
 			this.setValueAt(queueEntry.getStarted().getTime(), index, 3);
@@ -284,10 +283,8 @@ public class QueueTableModel extends AbstractTableModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_PROGRESS)
-	public void onUploadProgress(final String topic, final Object o)
+	public void onUploadProgress(final String topic, final UploadProgress uploadProgress)
 	{
-
-		final UploadProgress uploadProgress = (UploadProgress) o;
 		if (this.queueEntries.contains(uploadProgress.getQueueEntry()))
 
 		{
@@ -321,9 +318,8 @@ public class QueueTableModel extends AbstractTableModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
-	public void onUploadFailed(final String topic, final Object o)
+	public void onUploadFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		final UploadFailed uploadFailed = (UploadFailed) o;
 		if (this.queueEntries.contains(uploadFailed.getQueueEntry())) {
 			final int index = this.queueEntries.indexOf(uploadFailed.getQueueEntry());
 			//noinspection StringConcatenation

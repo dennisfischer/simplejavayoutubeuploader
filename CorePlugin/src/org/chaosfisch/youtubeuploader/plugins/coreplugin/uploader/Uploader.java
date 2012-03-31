@@ -45,24 +45,19 @@ import java.util.concurrent.Executors;
 @SuppressWarnings("HardCodedStringLiteral")
 public class Uploader
 {
-	public static final String ALLOWED             = "allowed";
-	public static final String DENIED              = "denied";
-	public static final String MODERATED           = "moderated";
-	public static final String STATE               = "state";
-	public static final String CONTENT_TYPE        = "Content-Type";
-	public static final String LOCATION            = "Location";
-	public static final String CONTENT_RANGE       = "Content-Range";
-	public static final String UPLOAD_JOB          = "UPLOAD_JOB";
-	public static final String ABORT_UPLOAD        = "ABORT_UPLOAD";
-	public static final String START_QUEUE         = "START_QUEUE";
-	public static final String STOP_QUEUE          = "STOP_QUEUE";
-	public static final String UPLOAD_JOB_FINISHED = "UPLOAD_JOB_FINISHED";
+	public static final String ALLOWED   = "allowed";
+	public static final String DENIED    = "denied";
+	public static final String MODERATED = "moderated";
+
+	public static final String UPLOAD_JOB_FINISHED = "uploadJobFinished";
+	public static final String UPLOAD_ABORT        = "uploadAbort";
 	public static final String UPLOAD_FAILED       = "uploadFailed";
 	public static final String UPLOAD_LOG          = "uploadLog";
 	public static final String UPLOAD_PROGRESS     = "uploadProgress";
 	public static final String UPLOAD_STARTED      = "uploadStarted";
 	public static final String UPLOAD_FINISHED     = "uploadFinished";
 	public static final String UPLOAD_LIMIT        = "uploadLimit";
+	public static final String QUEUE_START         = "queueStart";
 
 	private final   ExecutorService executorService;
 	private final   QueueService    queueService;
@@ -129,7 +124,7 @@ public class Uploader
 
 	public void abort(final QueueEntry queueEntry)
 	{
-		EventBus.publish(Uploader.ABORT_UPLOAD, queueEntry);
+		EventBus.publish(Uploader.UPLOAD_ABORT, queueEntry);
 	}
 
 	public boolean isRunning()
@@ -143,15 +138,15 @@ public class Uploader
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final Object o)
+	public void onUploadJobFinished(final String topic, final QueueEntry queueEntry)
 	{
-		this.uploadFinished((QueueEntry) o);
+		this.uploadFinished(queueEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = UPLOAD_FAILED)
-	public void onUploadJobFailed(final String topic, final Object o)
+	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		this.uploadFinished(((UploadFailed) o).getQueueEntry());
+		this.uploadFinished(uploadFailed.getQueueEntry());
 	}
 
 	private void uploadFinished(final QueueEntry queueEntry)

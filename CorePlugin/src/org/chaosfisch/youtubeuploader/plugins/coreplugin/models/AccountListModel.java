@@ -122,14 +122,14 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
-	public void onAccountAdded(final String topic, final Object o)
+	public void onAccountAdded(final String topic, final AccountEntry accountEntry)
 	{
-		this.addAccountEntry((AccountEntry) o);
+		this.addAccountEntry(accountEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_REMOVED)
-	public void onAccountRemoved(final String topic, final Object o)
+	public void onAccountRemoved(final String topic, final AccountEntry accountEntry)
 	{
-		this.removeAccountEntry((AccountEntry) o);
+		this.removeAccountEntry(accountEntry);
 	}
 }

@@ -133,22 +133,22 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
-	public void onPlaylistAdded(final String topic, final Object o)
+	public void onPlaylistAdded(final String topic, final PlaylistEntry playlistEntry)
 	{
-		this.addPlaylistEntry((PlaylistEntry) o);
+		this.addPlaylistEntry(playlistEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
-	public void onPlaylistRemoved(final String topic, final Object o)
+	public void onPlaylistRemoved(final String topic, final PlaylistEntry playlistEntry)
 	{
-		this.removePlaylistEntry((PlaylistEntry) o);
+		this.removePlaylistEntry(playlistEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
-	public void onPlaylistUpdated(final String topic, final Object o)
+	public void onPlaylistUpdated(final String topic, final PlaylistEntry playlistEntry)
 	{
 		if (this.getSelectedIndex() != -1 && this.playlistEntries.size() >= this.getSelectedIndex()) {
-			this.playlistEntries.set(this.getSelectedIndex(), (PlaylistEntry) o);
+			this.playlistEntries.set(this.getSelectedIndex(), playlistEntry);
 			this.fireContentsChanged(this, 0, this.getSize());
 		}
 	}

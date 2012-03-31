@@ -26,9 +26,11 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
@@ -129,6 +131,11 @@ public class DirectoryWorker extends Thread
 			this.addToUpload(DirectoryWorker.this.directoryService.findByFile(file), file);
 		}
 
+		@Override public void onFileCreate(final File file)
+		{
+			this.addToUpload(DirectoryWorker.this.directoryService.findByFile(file), file);
+		}
+
 		private void addToUpload(final DirectoryEntry entry, final File file)
 		{
 			final PresetEntry presetEntry = entry.getPreset();
@@ -168,6 +175,7 @@ public class DirectoryWorker extends Thread
 			final String extension = file.toString().substring(dotPos);
 			queueEntry.setMimetype(Mimetype.getMimetypeByExtension(extension));
 			DirectoryWorker.this.queueService.createQueueEntry(queueEntry);
+			EventBus.publish(Uploader.QUEUE_START, null);
 		}
 	}
 

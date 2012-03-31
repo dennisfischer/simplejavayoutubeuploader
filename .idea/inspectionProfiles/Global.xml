@@ -37,6 +37,7 @@
       <option name="nonNlsCommentPattern" value="NON-NLS" />
     </inspection_tool>
     <inspection_tool class="InnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JpaQlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ListIndexOfReplaceableByContains" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="REPORT_VARIABLES" value="true" />

@@ -130,7 +130,7 @@ public class PluginMainFrame
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				System.exit(0);
+				PluginMainFrame.this.mainFrame.dispose();
 			}
 		});
 		fileMenu.add(exitMenuItem);

@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
@@ -156,12 +157,21 @@ public class QueueController
 			public boolean canExit()
 			{
 				if (QueueController.this.uploader.isRunning()) {
-					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"), //NON-NLS
+					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
+							//NON-NLS
 							JOptionPane.YES_NO_OPTION);
 					return result == 0;
 				}
 				return true;
 			}
 		};
+	}
+
+	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
+	public void onQueueStart(final String topic, final Object o)
+	{
+		if (!this.uploader.isRunning()) {
+			this.uploader.start();
+		}
 	}
 }

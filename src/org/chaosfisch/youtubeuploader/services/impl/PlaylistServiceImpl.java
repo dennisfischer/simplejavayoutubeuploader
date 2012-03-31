@@ -251,10 +251,10 @@ public class PlaylistServiceImpl implements PlaylistService
 	}
 
 	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
-	public void onAccountAdded(final String topic, final Object o)
+	public void onAccountAdded(final String topic, final AccountEntry accountEntry)
 	{
 		final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
-		accountEntries.add((AccountEntry) o);
+		accountEntries.add(accountEntry);
 		this.synchronizePlaylists(accountEntries);
 	}
 }

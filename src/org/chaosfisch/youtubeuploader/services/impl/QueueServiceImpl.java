@@ -243,10 +243,8 @@ public class QueueServiceImpl implements QueueService
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "updateQueueEntry")
-	public void onUploadProgress(final String topic, final Object o)
+	public void onUploadProgress(final String topic, final QueueEntry queueEntry)
 	{
-		final QueueEntry queueEntry = (QueueEntry) o;
-
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
 		session.update(queueEntry);

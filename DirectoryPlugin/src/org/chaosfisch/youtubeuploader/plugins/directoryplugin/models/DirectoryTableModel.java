@@ -165,14 +165,14 @@ public class DirectoryTableModel extends AbstractTableModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_ADDED)
-	public void onDirectoryEntryAdded(final String topic, final Object o)
+	public void onDirectoryEntryAdded(final String topic, final DirectoryEntry directoryEntry)
 	{
-		this.addDirectory((DirectoryEntry) o);
+		this.addDirectory(directoryEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_REMOVED)
-	public void onDirectoryEntryRemoved(final String topic, final Object o)
+	public void onDirectoryEntryRemoved(final String topic, final DirectoryEntry directoryEntry)
 	{
-		this.removeDirectory((DirectoryEntry) o);
+		this.removeDirectory(directoryEntry);
 	}
 }

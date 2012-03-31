@@ -119,14 +119,14 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
-	public void onPresetAdded(final String topic, final Object o)
+	public void onPresetAdded(final String topic, final PresetEntry presetEntry)
 	{
-		this.addPresetEntry((PresetEntry) o);
+		this.addPresetEntry(presetEntry);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
-	public void onPresetRemoved(final String topic, final Object o)
+	public void onPresetRemoved(final String topic, final PresetEntry presetEntry)
 	{
-		this.removePresetEntry((PresetEntry) o);
+		this.removePresetEntry(presetEntry);
 	}
 }
