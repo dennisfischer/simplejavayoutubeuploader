@@ -49,6 +49,7 @@ import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.PresetService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.Date;
 
@@ -69,7 +70,7 @@ public class UploadController
 
 	@Inject
 	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator,
-	                        final PlaylistService playlistService)
+	                        final PlaylistService playlistService, final JFileChooser fileChooser)
 	{
 		this.accountService = accountService;
 		this.presetService = presetService;
@@ -78,8 +79,8 @@ public class UploadController
 		this.playlistService = playlistService;
 
 		final XStream xStream = new XStream(new DomDriver());
-		this.importManager = new ImportManager(xStream, accountService, presetService, queueService);
-		this.exportManager = new ExportManager(xStream, accountService, presetService, queueService);
+		this.importManager = new ImportManager(xStream, accountService, presetService, queueService, fileChooser);
+		this.exportManager = new ExportManager(xStream, accountService, presetService, queueService, fileChooser);
 		AnnotationProcessor.process(this);
 	}
 

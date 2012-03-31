@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.services.settingsservice.impl;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsPersister;
@@ -45,7 +46,8 @@ public class SettingsServiceImpl implements SettingsService
 	private SettingsPersister settingsPersister;
 	private final LinkedList<String>                             changedList                  = new LinkedList<String>();
 	private final HashMap<String, Vector<SettingsViewComponent>> settingsViewComponentHashMap = new HashMap<String, Vector<SettingsViewComponent>>(100);
-	@InjectLogger Logger logger;
+	@InjectLogger   Logger   logger;
+	@Inject private Injector injector;
 
 	@Inject @Override public void setSettingsPersister(final SettingsPersister settingsPersister)
 	{
@@ -129,7 +131,8 @@ public class SettingsServiceImpl implements SettingsService
 
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = new JFileChooser();
+				final JFileChooser fileChooser = SettingsServiceImpl.this.injector.getInstance(JFileChooser.class);
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				final int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					jButton.setText(fileChooser.getSelectedFile().getAbsolutePath());

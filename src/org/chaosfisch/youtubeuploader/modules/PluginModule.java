@@ -52,5 +52,6 @@ public class PluginModule extends AbstractModule
 		this.bind(DesignManager.class).in(Singleton.class);
 		this.bind(PluginController.class).in(Singleton.class);
 		this.bindListener(Matchers.any(), new Log4JTypeListener());
+		this.bind(JFileChooser.class).in(Singleton.class);
 	}
 }

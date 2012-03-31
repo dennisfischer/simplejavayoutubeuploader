@@ -256,6 +256,7 @@ public class PluginMainFrame
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
 		}
+		this.injector.getInstance(JFileChooser.class).setCurrentDirectory(new File(System.getProperty("user.home")));
 	}
 }
 

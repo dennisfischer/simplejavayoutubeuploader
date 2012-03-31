@@ -25,6 +25,7 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import net.iharder.dnd.FileDrop;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -48,6 +49,7 @@ public final class UploadViewPanel
 {
 
 	@Inject private UploadController controller;
+	@Inject private Injector         injector;
 	private         JPanel           uploadPanel;
 	private         JButton          reset;
 	private         JButton          submit;
@@ -226,12 +228,10 @@ public final class UploadViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = new JFileChooser();
+				final JFileChooser fileChooser = UploadViewPanel.this.injector.getInstance(JFileChooser.class);
 				fileChooser.setAcceptAllFileFilterUsed(true);
 				fileChooser.setDragEnabled(true);
 				fileChooser.setMultiSelectionEnabled(true);
-				final File directory = new File(".");
-				fileChooser.setCurrentDirectory(directory);
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				final int result = fileChooser.showOpenDialog(null);
 
@@ -322,12 +322,11 @@ public final class UploadViewPanel
 
 	private void searchFileDialogOpen()
 	{
-		final JFileChooser fileChooser = new JFileChooser();
+		final JFileChooser fileChooser = this.injector.getInstance(JFileChooser.class);
 		fileChooser.setAcceptAllFileFilterUsed(true);
 		fileChooser.setDragEnabled(true);
 		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home")); //NON-NLS
-		fileChooser.setCurrentDirectory(directory);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		final PresetEntry selectedPreset = (PresetEntry) this.presetList.getSelectedItem();
 		//noinspection CallToStringEquals
 		if (selectedPreset != null && selectedPreset.getDefaultDir() != null && !selectedPreset.getDefaultDir().equals(""))
@@ -370,6 +369,11 @@ public final class UploadViewPanel
 
 		if (this.descriptionTextArea.getText().length() < 5 || this.descriptionTextArea.getText().length() > 5000) {
 			this.descriptionTextArea.setBackground(lightRed);
+			return;
+		}
+
+		if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
+			JOptionPane.showMessageDialog(null, "Das Beschreibungsfeld darf weder \"<\" noch \">\" enthalten!");
 			return;
 		}
 
@@ -509,9 +513,13 @@ public final class UploadViewPanel
 		//noinspection CallToStringEquals
 		if (this.fileList.getItemCount() > 0 && this.titleTextField.getText().equals("")) {
 			//noinspection MagicCharacter,DuplicateStringLiteralInspection
-			this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-					//NON-NLS
-					this.fileList.getSelectedItem().toString().lastIndexOf('.')));
+			try {
+				this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
+						//NON-NLS
+						this.fileList.getSelectedItem().toString().lastIndexOf('.')));
+			} catch (StringIndexOutOfBoundsException ignored) {
+
+			}
 		}
 	}
 }

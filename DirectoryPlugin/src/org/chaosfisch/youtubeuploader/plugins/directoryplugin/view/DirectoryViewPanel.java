@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
@@ -55,6 +56,7 @@ public class DirectoryViewPanel extends JDialog
 	@Inject private DirectoryController directoryController;
 	@Inject private PresetService       presetService;
 	@Inject private PresetListModel     presetListModel;
+	@Inject private Injector            injector;
 
 	public DirectoryViewPanel()
 	{
@@ -105,7 +107,7 @@ public class DirectoryViewPanel extends JDialog
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = new JFileChooser();
+				final JFileChooser fileChooser = DirectoryViewPanel.this.injector.getInstance(JFileChooser.class);
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 				final int result = fileChooser.showOpenDialog(null);

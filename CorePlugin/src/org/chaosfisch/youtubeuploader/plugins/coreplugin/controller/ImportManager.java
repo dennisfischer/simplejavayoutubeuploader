@@ -32,7 +32,7 @@ import org.chaosfisch.youtubeuploader.services.PresetService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -48,25 +48,34 @@ class ImportManager
 	private final AccountService accountService;
 	private final PresetService  presetService;
 	private final QueueService   queueService;
+	private final JFileChooser   fileChooser;
 
 	@SuppressWarnings("DuplicateStringLiteralInspection") @Inject
-	public ImportManager(final XStream xStream, final AccountService accountService, final PresetService presetService, final QueueService queueService)
+	public ImportManager(final XStream xStream, final AccountService accountService, final PresetService presetService, final QueueService queueService, final JFileChooser fileChooser)
 	{
 		this.xStream = xStream;
 		this.accountService = accountService;
 		this.presetService = presetService;
 		this.queueService = queueService;
+		this.fileChooser = fileChooser;
 		xStream.alias("entries", List.class); //NON-NLS
 	}
 
 	public void importAccount()
 	{
 		final File file = this.showFileOpenDialog();
-		if (file == null || !file.exists()) {
+		if (file == null) {
 			return;
 		}
-
-		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(file);
+		InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (FileNotFoundException e) {
+			return;
+		}
+		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(inputStreamReader);
 
 		for (final Object account : accounts) {
 			final AccountEntry accountEntry = (AccountEntry) account;
@@ -81,10 +90,18 @@ class ImportManager
 	public void importPreset()
 	{
 		final File file = this.showFileOpenDialog();
-		if (file == null || !file.exists()) {
+		if (file == null) {
 			return;
 		}
-		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(file);
+		InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (FileNotFoundException e) {
+			return;
+		}
+		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(inputStreamReader);
 
 		for (final Object preset : presets) {
 			this.presetService.createPresetEntry((PresetEntry) preset);
@@ -94,10 +111,18 @@ class ImportManager
 	public void importQueue()
 	{
 		final File file = this.showFileOpenDialog();
-		if (file == null || !file.exists()) {
+		if (file == null) {
 			return;
 		}
-		@SuppressWarnings("unchecked") final List entries = (List) this.xStream.fromXML(file);
+		InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (FileNotFoundException e) {
+			return;
+		}
+		@SuppressWarnings("unchecked") final List entries = (List) this.xStream.fromXML(inputStreamReader);
 		for (final Object entry : entries) {
 			this.queueService.createQueueEntry((QueueEntry) entry);
 		}
@@ -106,13 +131,20 @@ class ImportManager
 	public void importOldAccount()
 	{
 		final File file = this.showFileOpenDialog();
-		if (file == null || !file.exists()) {
+		if (file == null) {
 			return;
 		}
-
+		InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (FileNotFoundException e) {
+			return;
+		}
 		//noinspection DuplicateStringLiteralInspection
 		this.xStream.alias("entry", OldAccountEntry.class); //NON-NLS
-		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(file);
+		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(inputStreamReader);
 
 		for (final Object account : accounts) {
 			final OldAccountEntry oldAccountEntry = (OldAccountEntry) account;
@@ -132,12 +164,20 @@ class ImportManager
 	public void importOldPreset()
 	{
 		final File file = this.showFileOpenDialog();
-		if (file == null || !file.exists()) {
+		if (file == null) {
+			return;
+		}
+		InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (FileNotFoundException e) {
 			return;
 		}
 		//noinspection DuplicateStringLiteralInspection
 		this.xStream.alias("entry", OldPresetEntry.class); //NON-NLS
-		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(file);
+		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(inputStreamReader);
 
 		for (final Object preset : presets) {
 			final OldPresetEntry oldPresetEntry = (OldPresetEntry) preset;
@@ -165,17 +205,14 @@ class ImportManager
 
 	private File showFileOpenDialog()
 	{
-		final JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setAcceptAllFileFilterUsed(true);
-		fileChooser.setDragEnabled(true);
-		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home")); //NON-NLS
-		fileChooser.setCurrentDirectory(directory);
-
-		final int result = fileChooser.showOpenDialog(null);
+		this.fileChooser.setAcceptAllFileFilterUsed(true);
+		this.fileChooser.setDragEnabled(true);
+		this.fileChooser.setMultiSelectionEnabled(true);
+		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		final int result = this.fileChooser.showOpenDialog(null);
 
 		if (result == JFileChooser.APPROVE_OPTION) {
-			return fileChooser.getSelectedFile();
+			return this.fileChooser.getSelectedFile();
 		}
 		return null;
 	}

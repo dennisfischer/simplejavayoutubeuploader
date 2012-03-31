@@ -26,10 +26,10 @@ import org.chaosfisch.youtubeuploader.services.PresetService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -46,14 +46,16 @@ import java.util.List;
 	private final AccountService accountService;
 	private final PresetService  presetService;
 	private final QueueService   queueService;
+	private final JFileChooser   fileChooser;
 
 	@SuppressWarnings("DuplicateStringLiteralInspection") @Inject
-	public ExportManager(final XStream xStream, final AccountService accountService, final PresetService presetService, final QueueService queueService)
+	public ExportManager(final XStream xStream, final AccountService accountService, final PresetService presetService, final QueueService queueService, final JFileChooser fileChooser)
 	{
 		this.xStream = xStream;
 		this.accountService = accountService;
 		this.presetService = presetService;
 		this.queueService = queueService;
+		this.fileChooser = fileChooser;
 		xStream.alias("entries", List.class); //NON-NLS
 	}
 
@@ -67,10 +69,10 @@ import java.util.List;
 
 		final List accountEntries = this.accountService.getAllAccountEntry();
 
-		BufferedWriter output = null;
+		OutputStreamWriter output = null;
 
 		try {
-			output = new BufferedWriter(new FileWriter(file));
+			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -98,9 +100,10 @@ import java.util.List;
 
 		final List presetEntries = this.presetService.getAllPresetEntry();
 
-		BufferedWriter output = null;
+		OutputStreamWriter output = null;
+
 		try {
-			output = new BufferedWriter(new FileWriter(file));
+			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -129,9 +132,10 @@ import java.util.List;
 
 		final List queueEntries = this.queueService.getQueuedQueueEntry();
 
-		BufferedWriter output = null;
+		OutputStreamWriter output = null;
+
 		try {
-			output = new BufferedWriter(new FileWriter(file));
+			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -152,18 +156,14 @@ import java.util.List;
 
 	File showSaveDialog(final String name)
 	{
-		final JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setAcceptAllFileFilterUsed(true);
-		fileChooser.setDragEnabled(true);
-		fileChooser.setMultiSelectionEnabled(true);
-		final File directory = new File(System.getProperty("user.home")); //NON-NLS
-		fileChooser.setCurrentDirectory(directory);
-		fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml")); //NON-NLS NON-NLS
-
-		final int result = fileChooser.showSaveDialog(null);
-
+		this.fileChooser.setAcceptAllFileFilterUsed(true);
+		this.fileChooser.setDragEnabled(true);
+		this.fileChooser.setMultiSelectionEnabled(true);
+		this.fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml")); //NON-NLS NON-NLS
+		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		final int result = this.fileChooser.showSaveDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			return fileChooser.getSelectedFile();
+			return this.fileChooser.getSelectedFile();
 		}
 		return null;
 	}

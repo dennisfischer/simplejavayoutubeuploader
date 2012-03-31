@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
@@ -55,6 +56,7 @@ public class QueueController
 		this.queueList = queueTableModel;
 		this.queueService = queueService;
 		this.uploader = uploader;
+		AnnotationProcessor.process(this);
 	}
 
 	public void startQueue()
