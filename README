@@ -1,5 +1,5 @@
 =========================================================
-Simple Java Youtube Uploader - 2.0.alpha
+Simple Java Youtube Uploader - 2.0.beta
 =========================================================
 
 Sie können die Anwendung über die SimpleJavaYoutubeUploader.jar Datei starten.
@@ -8,7 +8,6 @@ Eine Deinstallation der Anwendung folgt durch Löschung des Ordners.
 =========================================================
 Bekannte Probleme
 =========================================================
-- Ordnerüberwachung deaktiviert
 - Commandlineinterface deaktiviert
 
 =========================================================

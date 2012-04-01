@@ -28,12 +28,14 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.Mimetype;
+import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.QueueService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
@@ -55,6 +57,7 @@ public class DirectoryWorker extends Thread
 	private               FileAlterationMonitor fileAlterationMonitor;
 	@Inject private       QueueService          queueService;
 	@Inject private       DirectoryService      directoryService;
+	@Inject private       PlaylistService       playlistService;
 	@Inject private       AutoTitleGenerator    autoTitleGenerator;
 	@InjectLogger private Logger                logger;
 
@@ -141,6 +144,7 @@ public class DirectoryWorker extends Thread
 			final PresetEntry presetEntry = entry.getPreset();
 
 			final QueueEntry queueEntry = new QueueEntry();
+			final PlaylistEntry playlistEntry = presetEntry.getPlaylist();
 
 			if (presetEntry.isAutotitle()) {
 				DirectoryWorker.this.autoTitleGenerator.setFileName(file.getName());
@@ -174,6 +178,13 @@ public class DirectoryWorker extends Thread
 			final int dotPos = file.toString().lastIndexOf(".") + 1;
 			final String extension = file.toString().substring(dotPos);
 			queueEntry.setMimetype(Mimetype.getMimetypeByExtension(extension));
+
+			queueEntry.setPlaylist(playlistEntry);
+			if (playlistEntry != null) {
+				playlistEntry.setNumber(playlistEntry.getNumber() + 1);
+				DirectoryWorker.this.playlistService.updatePlaylist(playlistEntry);
+			}
+
 			DirectoryWorker.this.queueService.createQueueEntry(queueEntry);
 			EventBus.publish(Uploader.QUEUE_START, null);
 		}
