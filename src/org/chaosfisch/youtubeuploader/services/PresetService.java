@@ -34,6 +34,7 @@ public interface PresetService
 {
 	public static final String PRESET_ENTRY_ADDED   = "presetEntryAdded"; //NON-NLS
 	public static final String PRESET_ENTRY_REMOVED = "presetEntryRemoved"; //NON-NLS
+	public static final String PRESET_ENTRY_UPDATED = "presetEntryUpdated"; //NON-NLS
 
 	PresetEntry createPresetEntry(PresetEntry presetEntry);
 

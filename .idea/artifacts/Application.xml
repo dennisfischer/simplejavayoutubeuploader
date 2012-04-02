@@ -10,7 +10,7 @@
         <element id="artifact" artifact-name="NotificationsPlugin:jar" />
       </element>
       <element id="directory" name="libs">
-        <element id="library" level="project" name="repositories" />
+        <element id="library" level="project" name="hibernate-4.1.1" />
         <element id="artifact" artifact-name="Images:jar" />
         <element id="artifact" artifact-name="Utilities:jar" />
       </element>

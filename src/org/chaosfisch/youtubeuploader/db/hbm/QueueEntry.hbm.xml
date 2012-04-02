@@ -47,7 +47,7 @@
 		<property name="sequence" type="int" column="sequence"/>
 		<property name="started" type="java.util.Date" column="started"/>
 		<property name="inprogress" type="boolean" column="inprogress"/>
-		<many-to-one name="account" lazy="false" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
+		<many-to-one name="account" column="account_id" cascade="all" not-null="false" lazy="false" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
 		<many-to-one name="playlist" lazy="false" class="org.chaosfisch.youtubeuploader.db.PlaylistEntry"/>
 	</class>
 </hibernate-mapping>

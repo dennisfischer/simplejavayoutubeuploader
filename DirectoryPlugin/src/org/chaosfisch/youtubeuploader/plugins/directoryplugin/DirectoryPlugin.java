@@ -112,7 +112,7 @@ public class DirectoryPlugin implements Pluggable
 				directoryViewPanel.setVisible(true);
 			}
 		});
-		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
 
 		this.directoryWorker.setIntervall(30000);
 		this.directoryWorker.start();

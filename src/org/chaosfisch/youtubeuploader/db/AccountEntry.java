@@ -23,6 +23,7 @@ import org.chaosfisch.youtubeuploader.services.YTService;
 import org.chaosfisch.youtubeuploader.services.impl.YTServiceImpl;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,10 +34,21 @@ import java.util.Collection;
  */
 public class AccountEntry implements IEntry
 {
-	private transient int    identity;
-	private           String name;
-	private           String password;
-	private           String secret;
+	private transient int                identity;
+	private           String             name;
+	private           String             password;
+	private           String             secret;
+	private           Set<PlaylistEntry> presets;
+
+	public Set<PlaylistEntry> getPresets()
+	{
+		return presets;
+	}
+
+	public void setPresets(Set<PlaylistEntry> presets)
+	{
+		this.presets = presets;
+	}
 
 	public String getSecret()
 	{

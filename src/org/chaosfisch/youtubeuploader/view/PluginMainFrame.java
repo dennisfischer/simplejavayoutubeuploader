@@ -223,7 +223,6 @@ public class PluginMainFrame
 
 	private void initComponents()
 	{
-
 		this.menuBar = new JMenuBar();
 		this.menuBar.setMinimumSize(new Dimension(111, 21));
 		this.menuBar.setName(MENU_BAR);

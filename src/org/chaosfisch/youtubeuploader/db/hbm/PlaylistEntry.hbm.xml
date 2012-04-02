@@ -34,7 +34,7 @@
 		<property name="url" type="java.lang.String" column="url"/>
 		<property name="number" type="int" column="number"/>
 		<property name="summary" type="text" column="summary"/>
-		<many-to-one name="account" not-null="true" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
+		<many-to-one name="account" column="account_id" cascade="all" not-null="false" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
 		<set name="presets" inverse="true">
 			<key/>
 			<one-to-many class="org.chaosfisch.youtubeuploader.db.PresetEntry"/>

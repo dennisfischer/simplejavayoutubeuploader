@@ -20,7 +20,6 @@
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.inject.Inject;
-import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.db.QueueEntry;
@@ -78,7 +77,6 @@ public class QueueServiceImpl implements QueueService
 
 		session.save(queueEntry);
 		session.getTransaction().commit();
-		EventBus.publish(QUEUE_ENTRY_ADDED, queueEntry);
 		return queueEntry;
 	}
 
@@ -144,7 +142,6 @@ public class QueueServiceImpl implements QueueService
 		session.getTransaction().begin();
 		session.delete(queueEntry);
 		session.getTransaction().commit();
-		EventBus.publish(QUEUE_ENTRY_REMOVED, queueEntry);
 		return queueEntry;
 	}
 

@@ -89,13 +89,13 @@ public class CorePlugin implements Pluggable
 				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel())); //NON-NLS
 
 				for (final JMenuItem menuItem : uploadViewPanel.getFileMenuItem()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
 				}
 				for (final JMenu menu : menuViewPanel.getFileMenus()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu)); //NON-NLS
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menu)); //NON-NLS
 				}
 				for (final JMenuItem menuItem : menuViewPanel.getEditMenuItems()) {
-					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
 				}
 				final QueueController queueController = queueViewPanel.getQueueController();
 				this.pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS

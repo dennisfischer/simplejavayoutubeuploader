@@ -137,8 +137,8 @@ public class MenuViewPanel
 				final JTextField nameTextField = new JTextField("");
 				final JPasswordField passwordField = new JPasswordField("");
 
-				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField,
-						MenuViewPanel.this.resourceBundle.getString("accountDialog.passwordLabel"), passwordField};
+				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("accountDialog" +
+						".passwordLabel"), passwordField};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("accountDialog.addAccountLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -173,48 +173,48 @@ public class MenuViewPanel
 				new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/table_add" + ".png"))); //NON-NLS
 		this.addPlaylistMenuItem.addActionListener(new
 
-				ActionListener()
-				{
-					@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
-					{
-						final JTextField nameTextField = new JTextField("");
-						final JTextArea descriptionTextArea = new JTextArea("");
-						descriptionTextArea.setLineWrap(true);
+		                                           ActionListener()
+		                                           {
+			                                           @SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+			                                           {
+				                                           final JTextField nameTextField = new JTextField("");
+				                                           final JTextArea descriptionTextArea = new JTextArea("");
+				                                           descriptionTextArea.setLineWrap(true);
 
-						final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
-						scrollPane.setPreferredSize(new Dimension(350, 150));
-						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField,
-								MenuViewPanel.this.resourceBundle.getString("playlistDialog" + ".descriptionLabel"), scrollPane};
+				                                           final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
+				                                           scrollPane.setPreferredSize(new Dimension(350, 150));
+				                                           final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField,
+						                                           MenuViewPanel.this.resourceBundle.getString("playlistDialog" + ".descriptionLabel"), scrollPane};
 
-						while (true) {
-							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
-									JOptionPane.OK_CANCEL_OPTION);
-							if (result == JOptionPane.OK_OPTION) {
-								if (nameTextField.getText().equals("")) {
-									nameTextField.setBackground(Color.RED);
-									continue;
-								}
-								nameTextField.setBackground(Color.WHITE);
-								if (descriptionTextArea.getText().equals("")) {
-									descriptionTextArea.setBackground(Color.RED);
-									continue;
-								}
-								descriptionTextArea.setBackground(Color.WHITE);
+				                                           while (true) {
+					                                           final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"),
+							                                           JOptionPane.OK_CANCEL_OPTION);
+					                                           if (result == JOptionPane.OK_OPTION) {
+						                                           if (nameTextField.getText().equals("")) {
+							                                           nameTextField.setBackground(Color.RED);
+							                                           continue;
+						                                           }
+						                                           nameTextField.setBackground(Color.WHITE);
+						                                           if (descriptionTextArea.getText().equals("")) {
+							                                           descriptionTextArea.setBackground(Color.RED);
+							                                           continue;
+						                                           }
+						                                           descriptionTextArea.setBackground(Color.WHITE);
 
-								final PlaylistEntry playlistEntry = new PlaylistEntry();
-								playlistEntry.setName(nameTextField.getText());
-								playlistEntry.setSummary(descriptionTextArea.getText());
-								playlistEntry.setAccount((AccountEntry) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem());
-								if (playlistEntry.getAccount() != null) {
-									MenuViewPanel.this.playlistService.createPlaylist(playlistEntry);
-									break;
-								}
-							} else {
-								break;
-							}
-						}
-					}
-				}
+						                                           final PlaylistEntry playlistEntry = new PlaylistEntry();
+						                                           playlistEntry.setName(nameTextField.getText());
+						                                           playlistEntry.setSummary(descriptionTextArea.getText());
+						                                           playlistEntry.setAccount(MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem());
+						                                           if (playlistEntry.getAccount() != null) {
+							                                           MenuViewPanel.this.playlistService.createPlaylist(playlistEntry);
+							                                           break;
+						                                           }
+					                                           } else {
+						                                           break;
+					                                           }
+				                                           }
+			                                           }
+		                                           }
 
 		);
 
@@ -223,57 +223,58 @@ public class MenuViewPanel
 				JMenuItem(this.resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/report_add.png"))); //NON-NLS
 		this.addPresetMenuItem.addActionListener(new
 
-				ActionListener()
-				{
-					@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
-					{
-						final JTextField nameTextField = new JTextField("");
+		                                         ActionListener()
+		                                         {
+			                                         @SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+			                                         {
+				                                         final JTextField nameTextField = new JTextField("");
 
-						final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField};
+				                                         final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField};
 
-						while (true) {
-							final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
-							if (result == JOptionPane.OK_OPTION) {
-								if (!nameTextField.getText().equals("")) {
-									final PresetEntry presetEntry = new PresetEntry();
-									presetEntry.setName(nameTextField.getText());
-									MenuViewPanel.this.presetService.createPresetEntry(presetEntry);
-									break;
-								} else {
-									nameTextField.setBackground(Color.RED);
-								}
-							} else {
-								break;
-							}
-						}
-					}
-				}
+				                                         while (true) {
+					                                         final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"),
+							                                         JOptionPane.OK_CANCEL_OPTION);
+					                                         if (result == JOptionPane.OK_OPTION) {
+						                                         if (!nameTextField.getText().equals("")) {
+							                                         final PresetEntry presetEntry = new PresetEntry();
+							                                         presetEntry.setName(nameTextField.getText());
+							                                         MenuViewPanel.this.presetService.createPresetEntry(presetEntry);
+							                                         break;
+						                                         } else {
+							                                         nameTextField.setBackground(Color.RED);
+						                                         }
+					                                         } else {
+						                                         break;
+					                                         }
+				                                         }
+			                                         }
+		                                         }
 
 		);
 
 		final JMenuItem importOldAccountItem = new JMenuItem(this.resourceBundle.getString("menu.accounts"));
 		importOldAccountItem.addActionListener(new
 
-				ActionListener()
-				{
-					@Override public void actionPerformed(final ActionEvent e)
-					{
-						MenuViewPanel.this.uploadController.importOldAccount();
-					}
-				}
+		                                       ActionListener()
+		                                       {
+			                                       @Override public void actionPerformed(final ActionEvent e)
+			                                       {
+				                                       MenuViewPanel.this.uploadController.importOldAccount();
+			                                       }
+		                                       }
 
 		);
 
 		final JMenuItem importOldPresetMenuItem = new JMenuItem(this.resourceBundle.getString("menu.presets"));
 		importOldPresetMenuItem.addActionListener(new
 
-				ActionListener()
-				{
-					@Override public void actionPerformed(final ActionEvent e)
-					{
-						MenuViewPanel.this.uploadController.importOldPreset();
-					}
-				}
+		                                          ActionListener()
+		                                          {
+			                                          @Override public void actionPerformed(final ActionEvent e)
+			                                          {
+				                                          MenuViewPanel.this.uploadController.importOldPreset();
+			                                          }
+		                                          }
 
 		);
 

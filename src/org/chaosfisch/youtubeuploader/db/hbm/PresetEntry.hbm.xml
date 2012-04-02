@@ -44,8 +44,9 @@
 		<property name="rate" type="boolean" column="rate"/>
 		<property name="videoresponse" type="short" column="videoresponse"/>
 		<property name="visibility" type="short" column="visibility"/>
-		<many-to-one lazy="false" name="playlist" class="org.chaosfisch.youtubeuploader.db.PlaylistEntry"/>
-		<many-to-one lazy="false" name="account" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
+		<!--<many-to-one lazy="false" name="playlist" class="org.chaosfisch.youtubeuploader.db.PlaylistEntry"/>       -->
+		<many-to-one cascade="all" column="account_id" name="account" not-null="false" class="org.chaosfisch.youtubeuploader.db.AccountEntry"/>
+
 	</class>
 
 </hibernate-mapping>

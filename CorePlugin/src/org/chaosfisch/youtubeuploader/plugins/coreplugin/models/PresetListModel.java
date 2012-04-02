@@ -127,6 +127,7 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
 	public void onPresetRemoved(final String topic, final PresetEntry presetEntry)
 	{
+		System.out.println("EVENT FIRED");
 		this.removePresetEntry(presetEntry);
 	}
 }

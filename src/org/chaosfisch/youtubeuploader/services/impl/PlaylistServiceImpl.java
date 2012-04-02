@@ -58,12 +58,10 @@ import java.util.List;
 public class PlaylistServiceImpl implements PlaylistService
 {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50"; //NON-NLS
-	private final SessionFactory sessionFactory;
+	@Inject private SessionFactory sessionFactory;
 
-	@Inject
-	public PlaylistServiceImpl(final SessionFactory sessionFactory)
+	public PlaylistServiceImpl()
 	{
-		this.sessionFactory = sessionFactory;
 		AnnotationProcessor.process(this);
 	}
 
@@ -161,8 +159,6 @@ public class PlaylistServiceImpl implements PlaylistService
 			try {
 				ytService.insert(feedUrl, newEntry);
 
-				EventBus.publish(PLAYLIST_ENTRY_ADDED, playlistEntry);
-
 				final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
 				accountEntries.add(playlistEntry.getAccount());
 				this.synchronizePlaylists(accountEntries);
@@ -231,12 +227,6 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Override
 	public void removePlaylistsByAccount(final AccountEntry accountEntry)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.refresh(accountEntry);
-		//noinspection StringConcatenation
-		session.createQuery("DELETE FROM PlaylistEntry WHERE ACCOUNT = " + accountEntry.getIdentity()).executeUpdate(); //NON-NLS
-		session.getTransaction().commit();
 	}
 
 	@Override
@@ -246,7 +236,6 @@ public class PlaylistServiceImpl implements PlaylistService
 		session.getTransaction().begin();
 		session.update(playlistEntry);
 		session.getTransaction().commit();
-		EventBus.publish(PLAYLIST_ENTRY_UPDATED, playlistEntry);
 		return playlistEntry;
 	}
 

@@ -8,9 +8,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="repositories" level="project" />
+    <orderEntry type="library" name="hibernate-4.1.1" level="project" />
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
+    <orderEntry type="library" name="other" level="project" />
   </component>
 </module>
 

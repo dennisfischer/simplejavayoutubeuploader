@@ -35,6 +35,7 @@ public interface QueueService
 	public static final String QUEUE_ENTRY_ADDED   = "queueEntryAdded"; //NON-NLS
 	public static final String QUEUE_ENTRY_REMOVED = "queueEntryRemoved"; //NON-NLS
 	public static final String EDIT_QUEUE_ENTRY    = "editQueueEntry"; //NON-NLS
+	public static final String QUEUE_ENTRY_UPDATED = "queueEntryUpdated"; //NON-NLS
 
 	QueueEntry createQueueEntry(QueueEntry queueEntry);
 

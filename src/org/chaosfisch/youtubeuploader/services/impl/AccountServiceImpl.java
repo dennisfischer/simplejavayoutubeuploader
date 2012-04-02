@@ -20,7 +20,6 @@
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.inject.Inject;
-import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.db.AccountEntry;
 import org.chaosfisch.youtubeuploader.services.AccountService;
 import org.hibernate.Query;
@@ -53,8 +52,8 @@ public class AccountServiceImpl implements AccountService
 		final Session session = this.sessionFactory.getCurrentSession();
 		session.getTransaction().begin();
 		session.delete(accountEntry);
+		session.flush();
 		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_REMOVED, accountEntry);
 		return accountEntry;
 	}
 
@@ -81,8 +80,9 @@ public class AccountServiceImpl implements AccountService
 			return null;
 		}
 		session.save(accountEntry);
+		session.flush();
 		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_ADDED, accountEntry);
+
 		return accountEntry;
 	}
 
@@ -93,7 +93,6 @@ public class AccountServiceImpl implements AccountService
 		session.getTransaction().begin();
 		session.update(accountEntry);
 		session.getTransaction().commit();
-		EventBus.publish(ACCOUNT_ENTRY_UPDATED, accountEntry);
 		return accountEntry;
 	}
 

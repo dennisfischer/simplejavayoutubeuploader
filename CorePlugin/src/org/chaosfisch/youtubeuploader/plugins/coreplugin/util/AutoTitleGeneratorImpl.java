@@ -26,6 +26,8 @@ import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -105,8 +107,17 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	@Override
 	public String gernerate()
 	{
-		String formated = this.formatString.replaceAll(this.resourceBundle.getString("autotitle.playlist"), this.playlistName).replaceAll(this.resourceBundle.getString("autotitle.number"),
-				String.valueOf(this.playlistNumber + 1 + this.number));
+		String formated = this.formatString.replaceAll(this.resourceBundle.getString("autotitle.playlist"), this.playlistName);
+
+		final Pattern p = Pattern.compile(this.resourceBundle.getString("autotitle.numberPattern"));
+		final Matcher m = p.matcher(formated);
+
+		if (m.find()) {
+			formated = m.replaceAll(this.zeroFill(this.playlistNumber + 1 + this.number, Integer.parseInt(m.group(1))));
+		} else {
+			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.numberDefault"), String.valueOf(this.playlistNumber + 1 + this.number));
+		}
+
 		//noinspection CallToStringEquals
 		if (this.fileName != null && !this.fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
@@ -123,5 +134,10 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 			this.setPlaylist(playlistEntry);
 			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());
 		}
+	}
+
+	String zeroFill(final int number, final int width)
+	{
+		return String.format("%0" + width + "d", number);//NON-NLS
 	}
 }

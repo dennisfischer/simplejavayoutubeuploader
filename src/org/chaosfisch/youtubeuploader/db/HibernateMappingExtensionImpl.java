@@ -33,7 +33,7 @@ public class HibernateMappingExtensionImpl extends HibernateMappingExtension
 		super();
 
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/AccountEntry.hbm.xml"); //NON-NLS
-		this.add("/org/chaosfisch/youtubeuploader/db/hbm/QueueEntry.hbm.xml");	//NON-NLS
+		this.add("/org/chaosfisch/youtubeuploader/db/hbm/QueueEntry.hbm.xml");    //NON-NLS
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PresetEntry.hbm.xml"); //NON-NLS
 		this.add("/org/chaosfisch/youtubeuploader/db/hbm/PlaylistEntry.hbm.xml"); //NON-NLS
 	}

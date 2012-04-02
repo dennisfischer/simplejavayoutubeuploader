@@ -32,13 +32,17 @@
 		<property name="name" type="java.lang.String" column="NAME"/>
 		<property name="password" type="java.lang.String" column="PASSWORD"/>
 		<property name="secret" type="java.lang.String" column="SECRET"/>
-		<set name="queue" lazy="false" inverse="true">
-			<key/>
+		<set name="queue" lazy="false" inverse="true" cascade="all">
+			<key column="account_id" on-delete="cascade"/>
 			<one-to-many class="org.chaosfisch.youtubeuploader.db.QueueEntry"/>
 		</set>
-		<set name="playlists" lazy="false" inverse="true">
-			<key/>
+		<set name="playlists" lazy="false" inverse="true" cascade="all">
+			<key column="account_id" on-delete="cascade"/>
 			<one-to-many class="org.chaosfisch.youtubeuploader.db.PlaylistEntry"/>
+		</set>
+		<set name="presets" lazy="false" inverse="true" cascade="all">
+			<key column="account_id" on-delete="cascade"/>
+			<one-to-many class="org.chaosfisch.youtubeuploader.db.PresetEntry"/>
 		</set>
 	</class>
 

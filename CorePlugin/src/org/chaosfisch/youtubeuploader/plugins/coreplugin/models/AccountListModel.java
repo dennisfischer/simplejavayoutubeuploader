@@ -106,7 +106,7 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 	}
 
 	@Override
-	public Object getSelectedItem()
+	public AccountEntry getSelectedItem()
 	{
 		if (this.accountEntries.size() - 1 >= this.selectedRow) {
 			return this.accountEntries.get(this.selectedRow);

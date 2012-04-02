@@ -20,7 +20,6 @@
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.inject.Inject;
-import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.services.PresetService;
 import org.hibernate.Query;
@@ -60,7 +59,6 @@ public class PresetServiceImpl implements PresetService
 
 		session.save(presetEntry);
 		session.getTransaction().commit();
-		EventBus.publish(PRESET_ENTRY_ADDED, presetEntry);
 		return presetEntry;
 	}
 
