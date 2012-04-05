@@ -36,18 +36,18 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.db.AccountEntry;
-import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.AccountListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PlaylistListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
-import org.chaosfisch.youtubeuploader.services.AccountService;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
-import org.chaosfisch.youtubeuploader.services.PresetService;
-import org.chaosfisch.youtubeuploader.services.QueueService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -86,9 +86,7 @@ public class UploadController
 
 	public void deleteAccount(final AccountEntry accountEntry)
 	{
-		this.playlistService.removePlaylistsByAccount(accountEntry);
 		this.accountService.deleteAccountEntry(accountEntry);
-		this.playlistListModel.getPlaylistList().clear();
 	}
 
 	public void deletePreset(final PresetEntry presetEntry)
@@ -170,6 +168,7 @@ public class UploadController
 		queueEntity.setRate(rate);
 		queueEntity.setVideoresponse(videoresponse);
 		queueEntity.setPlaylist(playlistEntry);
+		queueEntity.setLocked(false);
 
 		if (playlistEntry != null) {
 			playlistEntry.setNumber(playlistEntry.getNumber() + 1);
@@ -210,7 +209,7 @@ public class UploadController
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
 	public void onPlaylistSynchronize(final String topic, final Object object)
 	{
-		this.changeAccount((AccountEntry) this.accountListModel.getSelectedItem());
+		this.changeAccount(this.accountListModel.getSelectedItem());
 	}
 
 	public void changeAccount(final AccountEntry accountEntry)

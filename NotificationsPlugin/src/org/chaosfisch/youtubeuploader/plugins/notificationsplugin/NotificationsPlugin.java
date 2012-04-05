@@ -27,7 +27,7 @@ import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.util.Sound;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.systemtrayplugin.SystemTrayPlugin;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 
 import java.util.ResourceBundle;
 

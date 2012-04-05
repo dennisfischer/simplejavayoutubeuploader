@@ -20,8 +20,8 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.modules;
 
 import com.google.inject.AbstractModule;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGenerator;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGeneratorImpl;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 /**
  * Created by IntelliJ IDEA.

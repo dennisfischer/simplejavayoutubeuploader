@@ -22,8 +22,8 @@ package org.chaosfisch.youtubeuploader.plugins.settingsplugin.view;
 import com.google.inject.Inject;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsViewComponent;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 
 import javax.swing.*;
 import java.awt.*;

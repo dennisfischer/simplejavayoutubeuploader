@@ -25,12 +25,12 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.util.Computer;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadWorker;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
-import org.chaosfisch.youtubeuploader.services.QueueService;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

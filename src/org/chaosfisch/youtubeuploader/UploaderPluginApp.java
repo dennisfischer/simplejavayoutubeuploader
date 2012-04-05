@@ -34,7 +34,7 @@ import com.google.inject.Module;
 import org.apache.log4j.PropertyConfigurator;
 import org.chaosfisch.plugin.JARFileFilter;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.ClasspathLoader;
 import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
 
@@ -50,21 +50,11 @@ public class UploaderPluginApp
 
 	public UploaderPluginApp(final String[] args)
 	{
-		final JARFileFilter fileFilter = new JARFileFilter();
-		ClasspathLoader.loadLibaries(new File("./").listFiles(fileFilter));
-		ClasspathLoader.loadLibaries(new File("./libs/").listFiles(fileFilter)); //NON-NLS
-		ClasspathLoader.loadLibaries(new File("./plugins/").listFiles(fileFilter)); //NON-NLS
-
 		PropertyConfigurator.configure(this.getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
-		final ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
-
-		final Injector injector = Guice.createInjector(modules);
-		//TODO this uses ~6 MB memory
+		final Injector injector = Guice.createInjector(ServiceLoader.load(Module.class));
 		final SettingsService settingsService = injector.getInstance(SettingsService.class);
 		final DesignManager designManager = injector.getInstance(DesignManager.class);
-		//TODO this uses ~5 MB memory
 		designManager.run();
-		//TODO this uses ~10 MB memory
 		designManager.changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));//NON-NLS
 
 		SwingUtilities.invokeLater(new Runnable()
@@ -74,7 +64,6 @@ public class UploaderPluginApp
 
 				//TODO this uses ~40 MB memory
 				final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
-				//TODO this uses ~7 MB memory
 				pluginMainFrame.run();
 			}
 		});
@@ -85,6 +74,10 @@ public class UploaderPluginApp
 	 */
 	public static void main(final String[] args)
 	{
+		final JARFileFilter fileFilter = new JARFileFilter();
+		ClasspathLoader.loadLibaries(new File("./").listFiles(fileFilter));
+		ClasspathLoader.loadLibaries(new File("./libs/").listFiles(fileFilter)); //NON-NLS
+		ClasspathLoader.loadLibaries(new File("./plugins/").listFiles(fileFilter)); //NON-NLS
 		new UploaderPluginApp(args);
 	}
 }

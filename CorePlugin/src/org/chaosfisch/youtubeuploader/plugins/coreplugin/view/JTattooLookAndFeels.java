@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
-import org.chaosfisch.youtubeuploader.designmanager.DesignMap;
+import org.chaosfisch.youtubeuploader.designmanager.spi.DesignMap;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
 
 /**

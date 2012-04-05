@@ -21,8 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.db.AccountEntry;
-import org.chaosfisch.youtubeuploader.services.AccountService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -131,5 +131,11 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 	public void onAccountRemoved(final String topic, final AccountEntry accountEntry)
 	{
 		this.removeAccountEntry(accountEntry);
+	}
+
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_UPDATED)
+	public void onAccountUpdated(final String topic, final AccountEntry accountEntry)
+	{
+		this.accountEntries.set(this.accountEntries.indexOf(accountEntry), accountEntry);
 	}
 }

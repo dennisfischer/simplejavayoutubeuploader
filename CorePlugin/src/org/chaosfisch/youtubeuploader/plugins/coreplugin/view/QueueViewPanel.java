@@ -29,14 +29,18 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ProgressbarTableCellRenderer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.QueueController;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ColumnsAutoSizer;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import java.awt.*;
 import java.awt.event.*;
 
 public final class QueueViewPanel
@@ -80,6 +84,22 @@ public final class QueueViewPanel
 	{
 		this.queueTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.queueTable.getColumn(this.queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
+		this.queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
+		{
+			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
+			{
+				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				final QueueEntry queueEntry = ((QueueTableModel) table.getModel()).getQueueEntryAt(row);
+				if (queueEntry.isLocked()) {
+					component.setBackground(new Color(250, 128, 114));
+					component.setForeground(Color.white);
+				} else {
+					component.setBackground(null);
+					component.setForeground(null);
+				}
+				return component;
+			}
+		});
 
 		this.queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);

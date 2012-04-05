@@ -21,8 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdated(final String topic, final PlaylistEntry playlistEntry)
 	{
-		if (this.getSelectedIndex() != -1 && this.playlistEntries.size() >= this.getSelectedIndex()) {
+		if (this.getSelectedIndex() != -1 && this.playlistEntries.size() > 0 && this.playlistEntries.size() >= this.getSelectedIndex()) {
 			this.playlistEntries.set(this.getSelectedIndex(), playlistEntry);
 			this.fireContentsChanged(this, 0, this.getSize());
 		}

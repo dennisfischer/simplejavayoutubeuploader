@@ -20,7 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 
 /**

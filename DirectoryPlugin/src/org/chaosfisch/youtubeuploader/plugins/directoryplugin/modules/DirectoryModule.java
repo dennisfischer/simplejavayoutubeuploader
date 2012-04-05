@@ -21,8 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl.DirectoryServiceImpl;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 /**
  * Created by IntelliJ IDEA.

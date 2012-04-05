@@ -21,8 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
-import org.chaosfisch.youtubeuploader.services.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -127,7 +127,6 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
 	public void onPresetRemoved(final String topic, final PresetEntry presetEntry)
 	{
-		System.out.println("EVENT FIRED");
 		this.removePresetEntry(presetEntry);
 	}
 }

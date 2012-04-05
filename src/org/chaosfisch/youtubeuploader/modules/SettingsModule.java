@@ -27,10 +27,10 @@ package org.chaosfisch.youtubeuploader.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsPersister;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
 import org.chaosfisch.youtubeuploader.services.settingsservice.impl.PropertyFileSettingsPersisterImpl;
 import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsServiceImpl;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersister;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 
 public class SettingsModule extends AbstractModule
 {

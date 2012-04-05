@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 
-import org.chaosfisch.youtubeuploader.designmanager.Design;
+import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
 
 /**
  * Created by IntelliJ IDEA.

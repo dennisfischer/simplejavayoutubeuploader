@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.services.settingsservice.impl;
 
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsPersister;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersister;
 
 import java.io.*;
 import java.util.Enumeration;

@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
-import org.chaosfisch.youtubeuploader.db.IEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.IEntry;
 
 import java.util.ArrayList;
 

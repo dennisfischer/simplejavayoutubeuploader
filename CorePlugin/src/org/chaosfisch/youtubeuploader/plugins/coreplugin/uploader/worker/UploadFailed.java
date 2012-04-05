@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
 
 /**
  * Created by IntelliJ IDEA.

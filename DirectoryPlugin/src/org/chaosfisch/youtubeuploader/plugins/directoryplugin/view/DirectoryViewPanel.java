@@ -21,12 +21,13 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
-import org.chaosfisch.youtubeuploader.services.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -67,6 +68,22 @@ public class DirectoryViewPanel extends JDialog
 		this.presetListModel.addPresetEntryList(this.presetService.getAllPresetEntry());
 		this.presetList.setModel(this.presetListModel);
 		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
+		this.directoryTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
+		{
+			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
+			{
+				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				final DirectoryEntry directoryEntry = ((DirectoryTableModel) table.getModel()).getDirectoryAt(row);
+				if (directoryEntry.isLocked()) {
+					component.setBackground(new Color(250, 128, 114));
+					component.setForeground(Color.white);
+				} else {
+					component.setBackground(null);
+					component.setForeground(null);
+				}
+				return component;
+			}
+		});
 	}
 
 	private void initListeners()

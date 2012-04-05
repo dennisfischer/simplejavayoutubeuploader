@@ -44,7 +44,7 @@ import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.view.DirectoryViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker.DirectoryWorker;
 

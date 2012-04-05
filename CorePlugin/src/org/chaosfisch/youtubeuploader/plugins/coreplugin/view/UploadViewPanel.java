@@ -29,13 +29,13 @@ import com.google.inject.Injector;
 import net.iharder.dnd.FileDrop;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.db.AccountEntry;
-import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
-import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -346,9 +346,7 @@ public final class UploadViewPanel
 
 	private void submitForm()
 	{
-		final float[] flRed = new float[3];
-		Color.RGBtoHSB(250, 128, 114, flRed);
-		final Color lightRed = Color.getHSBColor(flRed[0], flRed[1], flRed[2]);
+		final Color lightRed = new Color(250, 128, 114);
 		if (this.fileList.getSelectedItem() == null) {
 			this.fileList.setBackground(lightRed);
 			return;
@@ -460,12 +458,13 @@ public final class UploadViewPanel
 	}
 
 	@EventTopicSubscriber(topic = QueueService.EDIT_QUEUE_ENTRY)
-	public void onEditQueueEntry(final String topic, final Object o)
+	public void onEditQueueEntry(final String topic, final QueueEntry queueEntry)
 	{
-		final QueueEntry queueEntry = (QueueEntry) o;
 
 		this.resetForm();
-		this.accountList.setSelectedItem(queueEntry.getAccount());
+		if (queueEntry.getAccount() != null) {
+			this.accountList.setSelectedItem(queueEntry.getAccount());
+		}
 		this.bewertenCheckBox.setSelected(queueEntry.isRate());
 		this.categoryList.setSelectedItem(queueEntry.getCategory());
 		this.commentList.setSelectedIndex(queueEntry.getComment());
@@ -496,9 +495,9 @@ public final class UploadViewPanel
 	}
 
 	@SuppressWarnings({"DuplicateStringLiteralInspection", "UnusedParameters"}) @EventTopicSubscriber(topic = "autoTitleChanged")
-	public void updateAutotitle(final String topic, final Object item)
+	public void updateAutotitle(final String topic, final String title)
 	{
-		this.titleTextField.setText(item.toString());
+		this.titleTextField.setText(title);
 	}
 
 	private void updateInsertedFiles(final File[] selectedFiles)

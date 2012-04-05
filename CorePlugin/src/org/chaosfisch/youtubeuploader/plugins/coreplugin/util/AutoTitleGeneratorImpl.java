@@ -22,8 +22,9 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.db.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;

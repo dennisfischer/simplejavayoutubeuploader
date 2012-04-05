@@ -28,7 +28,7 @@ package org.chaosfisch.youtubeuploader.util;
  */
 
 import com.google.inject.Provider;
-import org.chaosfisch.youtubeuploader.db.HibernateMappingExtension;
+import org.chaosfisch.youtubeuploader.spi.HibernateMappingExtension;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

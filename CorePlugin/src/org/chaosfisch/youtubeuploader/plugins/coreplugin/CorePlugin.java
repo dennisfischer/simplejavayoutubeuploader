@@ -29,7 +29,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 
 import javax.swing.*;
 import java.awt.*;

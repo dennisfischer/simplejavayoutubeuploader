@@ -21,7 +21,9 @@ package org.chaosfisch.youtubeuploader.designmanager;
 
 import com.google.inject.Inject;
 import org.apache.log4j.Logger;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
+import org.chaosfisch.youtubeuploader.designmanager.spi.DesignMap;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;

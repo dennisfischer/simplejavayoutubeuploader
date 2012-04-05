@@ -21,13 +21,14 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 
 import java.io.File;
 import java.util.List;
@@ -58,7 +59,8 @@ public class DirectoryServiceImpl implements DirectoryService
 		session.getTransaction().begin();
 		final Criteria criteria = session.createCriteria(DirectoryEntry.class); //NON-NLS
 		criteria.addOrder(Order.asc("directory")); //NON-NLS
-		criteria.add(Property.forName("active").eq(true)); //NON-NLS
+		criteria.add(Restrictions.eq("active", true)); //NON-NLS
+		criteria.add(Restrictions.ne("locked", true)); //NON-NLS
 
 		final List<DirectoryEntry> returnList = criteria.list();
 		session.getTransaction().commit();

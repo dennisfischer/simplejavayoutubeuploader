@@ -32,7 +32,7 @@ import org.chaosfisch.plugin.PluginManager;
 import org.chaosfisch.plugin.PluginService;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.PluginLoader;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 

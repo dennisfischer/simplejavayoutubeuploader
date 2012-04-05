@@ -22,8 +22,8 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.models;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.Iterator;

@@ -21,9 +21,9 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
-import org.chaosfisch.youtubeuploader.services.AccountService;
-import org.chaosfisch.youtubeuploader.services.PresetService;
-import org.chaosfisch.youtubeuploader.services.QueueService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 
 import javax.swing.*;
 import java.io.File;

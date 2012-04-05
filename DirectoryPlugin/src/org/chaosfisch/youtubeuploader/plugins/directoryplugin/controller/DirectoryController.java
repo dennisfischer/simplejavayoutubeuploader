@@ -20,11 +20,11 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller;
 
 import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.db.PresetEntry;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.db.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.DirectoryService;
-import org.chaosfisch.youtubeuploader.services.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 /**
  * Created by IntelliJ IDEA.

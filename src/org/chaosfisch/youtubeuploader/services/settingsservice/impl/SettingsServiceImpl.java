@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsPersister;
-import org.chaosfisch.youtubeuploader.services.settingsservice.SettingsService;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersister;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;

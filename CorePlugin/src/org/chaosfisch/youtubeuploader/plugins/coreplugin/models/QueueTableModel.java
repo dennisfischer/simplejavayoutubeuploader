@@ -23,12 +23,12 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ProgressbarTableCellRenderer;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadProgress;
-import org.chaosfisch.youtubeuploader.services.QueuePosition;
-import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
@@ -269,6 +269,15 @@ public class QueueTableModel extends AbstractTableModel
 	public void onQueueEntryRemoved(final String topic, final QueueEntry queueEntry)
 	{
 		this.removeQueueEntry(queueEntry);
+	}
+
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_UPDATED)
+	public void onQueueEntryUpdated(final String topic, final QueueEntry queueEntry)
+	{
+		if (this.queueEntries.contains(queueEntry)) {
+			this.queueEntries.set(this.queueEntries.indexOf(queueEntry), queueEntry);
+			this.fireTableDataChanged();
+		}
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)

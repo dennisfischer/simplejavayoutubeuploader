@@ -24,11 +24,11 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
-import org.chaosfisch.youtubeuploader.db.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.services.QueuePosition;
-import org.chaosfisch.youtubeuploader.services.QueueService;
 
 import javax.swing.*;
 import java.util.ResourceBundle;
