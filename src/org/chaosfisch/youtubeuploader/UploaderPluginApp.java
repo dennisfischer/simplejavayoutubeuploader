@@ -62,6 +62,7 @@ public class UploaderPluginApp
 			@Override public void run()
 			{
 
+				designManager.registerSettingsExtension();
 				//TODO this uses ~40 MB memory
 				final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
 				pluginMainFrame.run();

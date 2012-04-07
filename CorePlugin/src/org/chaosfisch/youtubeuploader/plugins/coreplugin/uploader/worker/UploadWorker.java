@@ -250,8 +250,8 @@ public class UploadWorker extends BetterSwingWorker
 			privateFile = "<yt:private />";
 		}
 
-		final String atomData = String.format(template, this.queueEntry.getTitle(), this.queueEntry.getDescription(), this.queueEntry.getCategory(), TagParser.parseAll(this.queueEntry.getKeywords()),
-				privateFile, xmlBlobBuilder.buildXMLBlob());
+		final String atomData = String.format(template, this.queueEntry.getTitle(), this.queueEntry.getDescription(), this.queueEntry.getCategory(),
+				TagParser.parseAll(this.queueEntry.getKeywords()).replace("\"", ""), privateFile, xmlBlobBuilder.buildXMLBlob());
 
 		Logger.getLogger(UploadWorker.class).info("AtomData: " + atomData);
 

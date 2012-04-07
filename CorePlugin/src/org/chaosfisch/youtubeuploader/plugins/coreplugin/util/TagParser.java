@@ -44,6 +44,7 @@ public class TagParser
 			switch (input.charAt(i)) {
 				case BLOCK_DELIMITER:
 					blockOpen = !blockOpen;
+					parsedOutput += "\"";
 					if (blockOpen) {
 						break;
 					}
@@ -59,7 +60,7 @@ public class TagParser
 					break;
 			}
 		}
-		return removeInvalid(parsedOutput);
+		return removeInvalid(parsedOutput.trim());
 	}
 
 	private static String removeInvalid(final String parsedOutput)
@@ -88,10 +89,9 @@ public class TagParser
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public static boolean validate(final String input)
+	public static boolean isValid(final String input)
 	{
 		final String parsed = parseAll(input);
-
 		if (parsed.length() > 500 || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}

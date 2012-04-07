@@ -377,7 +377,7 @@ public final class UploadViewPanel
 
 		this.descriptionTextArea.setBackground(null);
 
-		if (this.tagsTextArea.getText().length() < 2 || this.tagsTextArea.getText().length() > 700 || !TagParser.validate(this.tagsTextArea.getText())) {
+		if (this.tagsTextArea.getText().length() < 2 || this.tagsTextArea.getText().length() > 600 || !TagParser.isValid(this.tagsTextArea.getText())) {
 			this.tagsTextArea.setBackground(lightRed);
 			return;
 		}

@@ -76,6 +76,7 @@ public class CorePlugin implements Pluggable
 
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
 		spinner.setEditor(new JSpinner.NumberEditor(spinner, "# MB"));
+		spinner.setValue(Integer.parseInt((String) this.settingService.get("coreplugin.general.CHUNK_SIZE", "10")));
 
 		this.settingService.addSpinner("coreplugin.general.CHUNK_SIZE", "CHUNK Size:", spinner);
 		if (!GraphicsEnvironment.isHeadless()) {

@@ -53,7 +53,6 @@ public class DesignManager
 		this.logger.debug("Loading designMaps"); //NON-NLS
 		final ServiceLoader<DesignMap> designServiceLoader = ServiceLoader.load(DesignMap.class);
 		this.logger.debug("Parsing designMaps"); //NON-NLS
-		final DefaultComboBoxModel desingListModel = new DefaultComboBoxModel();
 		for (final DesignMap mapList : designServiceLoader) {
 			this.logger.debug("Parsing designs of designMap"); //NON-NLS
 			for (final Design design : mapList) {
@@ -62,11 +61,19 @@ public class DesignManager
 					//noinspection StringConcatenation
 					this.logger.debug("Adding Design " + design.getName()); //NON-NLS
 					this.designMap.put(design.getName(), design);
-					desingListModel.addElement(design);
 				}
 			}
 		}
-		this.settingsService.addCombobox("application.general.laf", "Design (benötigt Neustart):", desingListModel); //NON-NLS
+	}
+
+	private Design getDesign(final String lookAndFeel)
+	{
+		if (!this.designMap.containsKey(lookAndFeel)) {
+			//noinspection StringConcatenation
+			this.logger.debug("Design not found: " + lookAndFeel); //NON-NLS
+			return null;
+		}
+		return DesignManager.this.designMap.get(lookAndFeel);
 	}
 
 	private boolean classExists(final String className)
@@ -121,5 +128,17 @@ public class DesignManager
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
+	}
+
+	public void registerSettingsExtension()
+	{
+		final DefaultComboBoxModel desingListModel = new DefaultComboBoxModel();
+		for (final Design design : this.designMap.values()) {
+			if (design.getShortName() != null && design.getName() != null && this.classExists(design.getLaF())) {
+				desingListModel.addElement(design);
+			}
+		}
+		desingListModel.setSelectedItem(this.getDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"))); //NON-NLS
+		this.settingsService.addCombobox("application.general.laf", "Design (benötigt Neustart):", desingListModel); //NON-NLS
 	}
 }
