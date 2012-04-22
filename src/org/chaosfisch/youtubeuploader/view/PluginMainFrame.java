@@ -24,6 +24,7 @@ import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
 import org.chaosfisch.plugin.ExtensionPoints.ExtensionPoint;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
@@ -183,8 +184,8 @@ public class PluginMainFrame
 				}
 			}
 		});
-		final JMenuItem aboutMenuItem = new JMenuItem(this.resourceBundle.getString("application.aboutLabel"),
-				new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
+		final JMenuItem aboutMenuItem = new JMenuItem(this.resourceBundle.getString("application.aboutLabel"), new ImageIcon(this.getClass().getResource(
+				"/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
 		aboutMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -256,6 +257,23 @@ public class PluginMainFrame
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
 		}
 		this.injector.getInstance(JFileChooser.class).setCurrentDirectory(new File(System.getProperty("user.home")));
+	}
+
+	@EventTopicSubscriber(topic = DesignManager.UPDATE_UI)
+	public void onDesignChanged(final String topic, final String o)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override public void run()
+			{
+				try {
+
+					SwingUtilities.updateComponentTreeUI(PluginMainFrame.this.mainFrame);
+				} catch (Exception ignored) {
+
+				}
+			}
+		});
 	}
 }
 

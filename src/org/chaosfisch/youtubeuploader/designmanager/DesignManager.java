@@ -21,6 +21,9 @@ package org.chaosfisch.youtubeuploader.designmanager;
 
 import com.google.inject.Inject;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
 import org.chaosfisch.youtubeuploader.designmanager.spi.DesignMap;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
@@ -43,9 +46,11 @@ public class DesignManager
 	private final Map<String, Design> designMap = new HashMap<String, Design>(50);
 	@InjectLogger private Logger          logger;
 	@Inject               SettingsService settingsService;
+	public static final String UPDATE_UI = "onUpdateUI";
 
 	public DesignManager()
 	{
+		AnnotationProcessor.process(this);
 	}
 
 	public void run()
@@ -140,5 +145,14 @@ public class DesignManager
 		}
 		desingListModel.setSelectedItem(this.getDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"))); //NON-NLS
 		this.settingsService.addCombobox("application.general.laf", "Design (benötigt Neustart):", desingListModel); //NON-NLS
+	}
+
+	@EventTopicSubscriber(topic = SettingsService.SETTINGS_SAVED)
+	public void onDesignChanged(String topic, String o)
+	{
+		if (o.equals("application.general.laf")) {
+			this.changeDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
+			EventBus.publish(UPDATE_UI, null);
+		}
 	}
 }

@@ -19,7 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
-import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
@@ -80,7 +79,7 @@ class ImportManager
 			try {
 				accountEntry.getYoutubeServiceManager().authenticate();
 				this.accountService.createAccountEntry((AccountEntry) account);
-			} catch (AuthenticationException ignored) {
+			} catch (Exception ignored) {
 			}
 		}
 	}

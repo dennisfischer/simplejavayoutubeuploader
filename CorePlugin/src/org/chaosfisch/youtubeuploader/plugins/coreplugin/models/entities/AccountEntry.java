@@ -42,10 +42,10 @@ public class AccountEntry implements IEntry
 
 	public Set<PlaylistEntry> getPresets()
 	{
-		return presets;
+		return this.presets;
 	}
 
-	public void setPresets(Set<PlaylistEntry> presets)
+	public void setPresets(final Set<PlaylistEntry> presets)
 	{
 		this.presets = presets;
 	}

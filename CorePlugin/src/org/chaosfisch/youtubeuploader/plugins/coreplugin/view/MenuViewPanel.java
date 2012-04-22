@@ -50,13 +50,11 @@ public class MenuViewPanel
 	private final PlaylistService  playlistService;
 
 	private JMenu importMenu;
-	private JMenu importOldMenu;
 	private JMenu exportMenu;
 
 	private JMenuItem addPresetMenuItem;
 	private JMenuItem addAccountMenuItem;
 	private JMenuItem addPlaylistMenuItem;
-	private JMenuItem addAccountOAuthMenuItem;
 
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.menuView"); //NON-NLS
 
@@ -139,8 +137,7 @@ public class MenuViewPanel
 				final JPasswordField passwordField = new JPasswordField("");
 
 				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
-						"accountDialog" + "" +
-								".passwordLabel"), passwordField};
+						"accountDialog.passwordLabel"), passwordField};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("accountDialog.addAccountLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -162,8 +159,6 @@ public class MenuViewPanel
 							nameTextField.setBackground(Color.RED);
 							passwordField.setBackground(Color.RED);
 						}
-					} else {
-						break;
 					}
 				}
 			}
@@ -182,11 +177,10 @@ public class MenuViewPanel
 				final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
 				scrollPane.setPreferredSize(new Dimension(350, 150));
 				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
-						"playlistDialog" + ".descriptionLabel"), scrollPane};
+						"playlistDialog.descriptionLabel"), scrollPane};
 
 				while (true) {
-					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog" + "" +
-							                                                                                                            ".addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
+					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
 						if (nameTextField.getText().equals("")) {
 							nameTextField.setBackground(Color.RED);
@@ -227,8 +221,7 @@ public class MenuViewPanel
 				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField};
 
 				while (true) {
-					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog" + "" +
-							                                                                                                            ".addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
+					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
 						if (!nameTextField.getText().equals("")) {
 							final PresetEntry presetEntry = new PresetEntry();
@@ -250,35 +243,19 @@ public class MenuViewPanel
 		this.importMenu.add(importPresetMenuItem);
 		this.importMenu.add(importQueueMenuItem);
 
-		this.importOldMenu = new JMenu(this.resourceBundle.getString("importOldMenuItemLabel"));
-
 		this.exportMenu = new JMenu(this.resourceBundle.getString("exportMenuItemLabel"));
 		this.exportMenu.add(exportAccountMenuItem);
 		this.exportMenu.add(exportPresetMenuItem);
 		this.exportMenu.add(exportQueueMenuItem);
-
-		this.addAccountOAuthMenuItem = new JMenuItem("Test");
-		this.addAccountOAuthMenuItem.addActionListener(new ActionListener()
-		{
-			@Override public void actionPerformed(ActionEvent e)
-			{
-
-				final JDialog jDialog = new JDialog();
-				final JPanel jPanel = new JPanel();
-				jDialog.setContentPane(jPanel);
-				jDialog.pack();
-				jDialog.setVisible(true);
-			}
-		});
 	}
 
 	public JMenu[] getFileMenus()
 	{
-		return new JMenu[]{this.importMenu, this.importOldMenu, this.exportMenu};
+		return new JMenu[]{this.importMenu, this.exportMenu};
 	}
 
 	public JMenuItem[] getEditMenuItems()
 	{
-		return new JMenuItem[]{this.addAccountMenuItem, this.addPresetMenuItem, this.addPlaylistMenuItem, this.addAccountOAuthMenuItem};
+		return new JMenuItem[]{this.addAccountMenuItem, this.addPresetMenuItem, this.addPlaylistMenuItem};
 	}
 }

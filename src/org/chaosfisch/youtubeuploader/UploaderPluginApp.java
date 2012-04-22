@@ -56,6 +56,7 @@ public class UploaderPluginApp
 		final DesignManager designManager = injector.getInstance(DesignManager.class);
 		designManager.run();
 		designManager.changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));//NON-NLS
+		JFrame.setDefaultLookAndFeelDecorated(true);
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
