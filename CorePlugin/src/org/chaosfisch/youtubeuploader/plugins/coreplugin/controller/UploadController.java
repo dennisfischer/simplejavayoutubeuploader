@@ -252,14 +252,4 @@ public class UploadController
 	{
 		return this.presetService;
 	}
-
-	public void importOldAccount()
-	{
-		this.importManager.importOldAccount();
-	}
-
-	public void importOldPreset()
-	{
-		this.importManager.importOldPreset();
-	}
 }

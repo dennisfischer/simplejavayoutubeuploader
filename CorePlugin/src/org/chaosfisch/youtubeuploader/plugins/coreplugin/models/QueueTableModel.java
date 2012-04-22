@@ -47,17 +47,19 @@ public class QueueTableModel extends AbstractTableModel
 	private static final String                   HH_MM_DD_MM_YYYY = "HH:mm dd-MM-yyyy"; //NON-NLS
 	private final        IdentityList<QueueEntry> queueEntries     = new IdentityList<QueueEntry>();
 	private final        ResourceBundle           resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
-	private final        String[]                 columns          = {this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"),
-			this.resourceBundle.getString("table.columns.file"), this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"),
-			this.resourceBundle.getString("table.columns.status"), this.resourceBundle.getString("table.columns.progress")};
+	private final        String[]                 columns          = {this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"), this.resourceBundle
+			.getString("table.columns.file"), this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"), this.resourceBundle.getString(
+			"table.columns.status"), this.resourceBundle.getString("table.columns.progress")};
 
 	public QueueTableModel()
 	{
+		super();
 		AnnotationProcessor.process(this);
 	}
 
 	public QueueTableModel(final List<QueueEntry> l)
 	{
+		super();
 		AnnotationProcessor.process(this);
 		this.queueEntries.addAll(l);
 	}
@@ -92,6 +94,9 @@ public class QueueTableModel extends AbstractTableModel
 	@Override
 	public int getRowCount()
 	{
+		if (this.queueEntries == null) {
+			return 0;
+		}
 		return this.queueEntries.size();
 	}
 
@@ -134,7 +139,7 @@ public class QueueTableModel extends AbstractTableModel
 				if (queueEntry.getStatus() != null) {
 					return queueEntry.getStatus();
 				} else if (queueEntry.isArchived()) {
-					return this.resourceBundle.getString("table.columns.status.finished");
+					return this.resourceBundle.getString("table.columns.status.finished") + " http://youtu.be/" + queueEntry.getVideoId();
 				} else if (queueEntry.isInprogress()) {
 					return this.resourceBundle.getString("table.columns.status.inprogress");
 				} else {
@@ -312,15 +317,17 @@ public class QueueTableModel extends AbstractTableModel
 
 				final int percent = (int) Math.round(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize() * 100);
 
-				final long eta = (long) (new Date().getTime() + ((new Date().getTime() - uploadProgress.getQueueEntry().getStarted().getTime()) / uploadProgress.getTotalBytesUploaded() * (uploadProgress
-						.getFileSize() - uploadProgress.getTotalBytesUploaded())));
+				final long eta = (long) (new Date().getTime() + ((new Date().getTime() - uploadProgress.getQueueEntry()
+				                                                                                       .getStarted()
+				                                                                                       .getTime()) / uploadProgress.getTotalBytesUploaded() * (uploadProgress.getFileSize() - uploadProgress
+						.getTotalBytesUploaded())));
 
 				final double speed = uploadProgress.getDiffBytes() / 1024 / uploadProgress.getDiffTime();
 
 				this.setValueAt(eta, index, 4);
 				//noinspection StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation
 				this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadProgressMessage"), (int) uploadProgress.getTotalBytesUploaded() / 1048576,
-						(int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
+				                                     (int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
 				this.setValueAt(percent, index, 6);
 			}
 		}

@@ -17,51 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.olddb;
+package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities;
+
+import org.chaosfisch.youtubeuploader.spi.HibernateMappingExtension;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 08.02.12
- * Time: 19:44
+ * Date: 22.04.12
+ * Time: 16:03
  * To change this template use File | Settings | File Templates.
- *
- * @deprecated Removed in v 2.1
  */
-@Deprecated
-public class OldAccountEntry
+public class HibernateMappingExtensionImpl extends HibernateMappingExtension
 {
-	private String name;
-	private String password;
-	private String secret = "6#+p~*a.ZKC@2?{dkfV){xk(hS7FEHkZJtKJ|.WWWyvg9rM%Z%-W{w]e"; //NON-NLS
-
-	public String getName()
+	public HibernateMappingExtensionImpl()
 	{
-		return this.name;
-	}
+		super();
 
-	public void setName(final String name)
-	{
-		this.name = name;
-	}
-
-	public String getPassword()
-	{
-		return this.password;
-	}
-
-	public void setPassword(final String password)
-	{
-		this.password = password;
-	}
-
-	public String getSecret()
-	{
-		return this.secret;
-	}
-
-	public void setSecret(final String secret)
-	{
-		this.secret = secret;
+		this.add("/org/chaosfisch/youtubeuploader/plugins/socializeplugin/models/entities/hbm/MessageEntry.hbm.xml"); //NON-NLS
 	}
 }

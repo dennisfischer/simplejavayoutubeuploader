@@ -27,6 +27,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 import com.google.inject.Inject;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.util.HyperlinkMouseAdapter;
 import org.chaosfisch.util.ProgressbarTableCellRenderer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.QueueController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
@@ -42,6 +43,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public final class QueueViewPanel
 {
@@ -82,8 +84,7 @@ public final class QueueViewPanel
 
 	private void initComponents()
 	{
-		this.queueTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.queueTable.getColumn(this.queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
+		this.queueTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
@@ -93,13 +94,16 @@ public final class QueueViewPanel
 				if (queueEntry.isLocked()) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
-				} else {
+				} else if (!isSelected) {
 					component.setBackground(null);
 					component.setForeground(null);
 				}
 				return component;
 			}
 		});
+
+		this.queueTable.getColumn(this.queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
+		this.queueTable.addMouseListener(new HyperlinkMouseAdapter(5));
 
 		this.queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);
@@ -223,10 +227,16 @@ public final class QueueViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.deleteEntry(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
-					QueueViewPanel.this.queueTable.changeSelection(selectedRow - 1, 0, false, false);
+				final int[] selectedRows = QueueViewPanel.this.queueTable.getSelectedRows();
+				final ArrayList<QueueEntry> queueEntries = new ArrayList<QueueEntry>(QueueViewPanel.this.queueTable.getRowCount());
+				for (final int selectedRow : selectedRows) {
+					if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
+						queueEntries.add(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+					}
+				}
+
+				for (final QueueEntry queueEntry : queueEntries) {
+					QueueViewPanel.this.controller.deleteEntry(queueEntry);
 				}
 			}
 		});

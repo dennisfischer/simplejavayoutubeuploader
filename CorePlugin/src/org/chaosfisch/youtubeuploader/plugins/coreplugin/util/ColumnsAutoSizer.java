@@ -60,11 +60,11 @@ public class ColumnsAutoSizer
 		for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
 			final int headerWidth = headerFontMetrics.stringWidth(table.getColumnName(columnIndex));
 
-			minWidths[columnIndex] = headerWidth;
+			minWidths[columnIndex] = headerWidth + 20;
 
 			final int maxWidth = getMaximalRequiredColumnWidth(table, columnIndex, headerWidth);
 
-			maxWidths[columnIndex] = Math.max(maxWidth, minWidths[columnIndex]) + 5;
+			maxWidths[columnIndex] = Math.max(maxWidth, minWidths[columnIndex]) + 20;
 		}
 
 		adjustMaximumWidths(table, minWidths, maxWidths);

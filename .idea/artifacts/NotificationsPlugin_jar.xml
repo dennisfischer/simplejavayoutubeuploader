@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact name="NotificationsPlugin:jar">
+  <artifact build-on-make="true" name="NotificationsPlugin:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/NotificationsPlugin_jar</output-path>
     <root id="root">
       <element id="archive" name="NotificationsPlugin.jar">

@@ -2,21 +2,24 @@
   <artifact build-on-make="true" name="Application">
     <output-path>$PROJECT_DIR$/../Application</output-path>
     <root id="root">
+      <element id="directory" name="libs">
+        <element id="artifact" artifact-name="Images:jar" />
+        <element id="artifact" artifact-name="Utilities:jar" />
+        <element id="library" level="project" name="hibernate-4.1.1" />
+        <element id="library" level="project" name="scribe-1.3.0" />
+        <element id="library" level="project" name="commons-codec-1" />
+      </element>
+      <element id="artifact" artifact-name="SimpleJavaYoutubeUploader:jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
+      <element id="file-copy" path="$PROJECT_DIR$/README" />
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
         <element id="artifact" artifact-name="SystemTrayPlugin:jar" />
         <element id="artifact" artifact-name="DirectoryPlugin:jar" />
         <element id="artifact" artifact-name="SettingsPlugin:jar" />
         <element id="artifact" artifact-name="NotificationsPlugin:jar" />
+        <element id="artifact" artifact-name="SocializePlugin:jar" />
       </element>
-      <element id="directory" name="libs">
-        <element id="library" level="project" name="hibernate-4.1.1" />
-        <element id="artifact" artifact-name="Images:jar" />
-        <element id="artifact" artifact-name="Utilities:jar" />
-      </element>
-      <element id="artifact" artifact-name="SimpleJavaYoutubeUploader:jar" />
-      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
-      <element id="file-copy" path="$PROJECT_DIR$/README" />
     </root>
   </artifact>
 </component>

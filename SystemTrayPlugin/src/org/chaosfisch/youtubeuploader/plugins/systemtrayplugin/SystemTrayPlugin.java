@@ -132,8 +132,8 @@ public class SystemTrayPlugin implements Pluggable
 				@Override
 				public void windowIconified(final WindowEvent e)
 				{
-					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"),
-							SystemTrayPlugin.this.resourceBundle.getString("applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
+					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"), SystemTrayPlugin.this.resourceBundle.getString(
+							"applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
 					SystemTrayPlugin.this.mainFrame.setVisible(false);
 				}
 			});

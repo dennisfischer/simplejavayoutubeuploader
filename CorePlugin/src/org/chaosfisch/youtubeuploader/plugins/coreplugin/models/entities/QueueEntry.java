@@ -55,6 +55,17 @@ public class QueueEntry implements IEntry
 	private           String  status;
 	private           boolean inprogress;
 	private           boolean locked;
+	private           String  videoId;
+
+	public String getVideoId()
+	{
+		return this.videoId;
+	}
+
+	public void setVideoId(final String videoId)
+	{
+		this.videoId = videoId;
+	}
 
 	public boolean isLocked()
 	{

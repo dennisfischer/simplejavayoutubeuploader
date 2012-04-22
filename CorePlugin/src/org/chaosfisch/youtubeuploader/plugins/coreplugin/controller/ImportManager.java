@@ -25,8 +25,6 @@ import com.thoughtworks.xstream.XStream;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.olddb.OldAccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.olddb.OldPresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
@@ -125,81 +123,6 @@ class ImportManager
 		@SuppressWarnings("unchecked") final List entries = (List) this.xStream.fromXML(inputStreamReader);
 		for (final Object entry : entries) {
 			this.queueService.createQueueEntry((QueueEntry) entry);
-		}
-	}
-
-	public void importOldAccount()
-	{
-		final File file = this.showFileOpenDialog();
-		if (file == null) {
-			return;
-		}
-		InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (FileNotFoundException e) {
-			return;
-		}
-		//noinspection DuplicateStringLiteralInspection
-		this.xStream.alias("entry", OldAccountEntry.class); //NON-NLS
-		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(inputStreamReader);
-
-		for (final Object account : accounts) {
-			final OldAccountEntry oldAccountEntry = (OldAccountEntry) account;
-			final AccountEntry accountEntity = new AccountEntry();
-
-			accountEntity.setName(oldAccountEntry.getName());
-			accountEntity.setPassword(oldAccountEntry.getPassword());
-			accountEntity.setSecret(oldAccountEntry.getSecret());
-			try {
-				accountEntity.getYoutubeServiceManager().authenticate();
-				this.accountService.createAccountEntry(accountEntity);
-			} catch (AuthenticationException ignored) {
-			}
-		}
-	}
-
-	public void importOldPreset()
-	{
-		final File file = this.showFileOpenDialog();
-		if (file == null) {
-			return;
-		}
-		InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (FileNotFoundException e) {
-			return;
-		}
-		//noinspection DuplicateStringLiteralInspection
-		this.xStream.alias("entry", OldPresetEntry.class); //NON-NLS
-		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(inputStreamReader);
-
-		for (final Object preset : presets) {
-			final OldPresetEntry oldPresetEntry = (OldPresetEntry) preset;
-			final PresetEntry presetEntity = new PresetEntry();
-
-			presetEntity.setName(oldPresetEntry.getName());
-			presetEntity.setAutotitle(oldPresetEntry.isAutotitle());
-			presetEntity.setAutotitleFormat(oldPresetEntry.getAutotitle_format());
-			presetEntity.setCategory(oldPresetEntry.getCategory());
-			presetEntity.setComment((short) oldPresetEntry.getComment());
-			presetEntity.setCommentvote(oldPresetEntry.isCommentVote());
-			presetEntity.setDefaultDir(oldPresetEntry.getDefault_dir());
-			presetEntity.setDescription(oldPresetEntry.getDescription());
-			presetEntity.setEmbed(oldPresetEntry.isEmbed());
-			presetEntity.setKeywords(oldPresetEntry.getKeywords());
-			presetEntity.setMobile(oldPresetEntry.isMobile());
-			presetEntity.setNumberModifier((short) oldPresetEntry.getNumber_modifier());
-			presetEntity.setRate(oldPresetEntry.isRate());
-			presetEntity.setVideoresponse((short) oldPresetEntry.getVideoResponse());
-			presetEntity.setVisibility((short) oldPresetEntry.getVisibility());
-
-			this.presetService.createPresetEntry(presetEntity);
 		}
 	}
 

@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/NotificationsPlugin/NotificationsPlugin.iml" filepath="$PROJECT_DIR$/NotificationsPlugin/NotificationsPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/SettingsPlugin/SettingsPlugin.iml" filepath="$PROJECT_DIR$/SettingsPlugin/SettingsPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" filepath="$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SocializePlugin/SocializePlugin.iml" filepath="$PROJECT_DIR$/SocializePlugin/SocializePlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" filepath="$PROJECT_DIR$/SystemTrayPlugin/SystemTrayPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utilities/Utilities.iml" filepath="$PROJECT_DIR$/Utilities/Utilities.iml" />
     </modules>

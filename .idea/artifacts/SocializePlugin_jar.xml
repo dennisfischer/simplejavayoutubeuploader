@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="SocializePlugin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SocializePlugin_jar</output-path>
+    <root id="root">
+      <element id="archive" name="SocializePlugin.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/SocializePlugin/src/META-INF/MANIFEST.MF" />
+          <element id="directory" name="services">
+            <element id="dir-copy" path="$PROJECT_DIR$/SocializePlugin/src/META-INF/services" />
+          </element>
+        </element>
+        <element id="module-output" name="SocializePlugin" />
+      </element>
+    </root>
+  </artifact>
+</component>

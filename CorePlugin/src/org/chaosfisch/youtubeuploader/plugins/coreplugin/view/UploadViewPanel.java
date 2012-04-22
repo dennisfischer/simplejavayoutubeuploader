@@ -395,9 +395,9 @@ public final class UploadViewPanel
 		}
 
 		this.controller.submitUpload((AccountEntry) this.accountList.getSelectedItem(), this.bewertenCheckBox.isSelected(), this.categoryList.getSelectedItem().toString(),
-				(short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(), this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(),
-				this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlistEntry, this.tagsTextArea.getText(), this.titleTextField.getText(),
-				(short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue());
+		                             (short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(), this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(),
+		                             this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlistEntry, this.tagsTextArea.getText(), this.titleTextField.getText(),
+		                             (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue());
 
 		this.fileList.removeItem(this.fileList.getSelectedItem());
 	}
@@ -428,6 +428,7 @@ public final class UploadViewPanel
 				this.controller.getAccountListModel().setSelectedItem(selectedPreset.getAccount());
 				this.controller.changeAccount(selectedPreset.getAccount());
 				if (selectedPreset.getPlaylist() != null) {
+					this.playlistCheckBox.setSelected(true);
 					this.controller.getPlaylistListModel().setSelectedItem(selectedPreset.getPlaylist());
 				}
 			}
@@ -448,6 +449,7 @@ public final class UploadViewPanel
 			this.tagsTextArea.setText("");
 			this.videoresponseList.setSelectedIndex(0);
 			this.visibilityList.setSelectedIndex(0);
+			this.playlistCheckBox.setSelected(false);
 		}
 		this.startzeitpunktSpinner.setValue(new Date());
 	}
@@ -514,8 +516,8 @@ public final class UploadViewPanel
 			//noinspection MagicCharacter,DuplicateStringLiteralInspection
 			try {
 				this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-						//NON-NLS
-						this.fileList.getSelectedItem().toString().lastIndexOf('.')));
+				                                                                                 //NON-NLS
+				                                                                                 this.fileList.getSelectedItem().toString().lastIndexOf('.')));
 			} catch (StringIndexOutOfBoundsException ignored) {
 
 			}

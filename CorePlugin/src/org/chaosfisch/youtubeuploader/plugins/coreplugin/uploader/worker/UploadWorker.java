@@ -119,6 +119,8 @@ public class UploadWorker extends BetterSwingWorker
 			this.playlistService.addLatestVideoToPlaylist(this.queueEntry.getPlaylist());
 		}
 
+		this.queueEntry.setVideoId(videoId);
+		EventBus.publish("updateQueueEntry", this.queueEntry);
 		EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(this.queueEntry, this.fileSize, this.fileSize, 0, 0, 0));
 		EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, this.queueEntry);
 	}
@@ -250,8 +252,9 @@ public class UploadWorker extends BetterSwingWorker
 			privateFile = "<yt:private />";
 		}
 
-		final String atomData = String.format(template, this.queueEntry.getTitle(), this.queueEntry.getDescription(), this.queueEntry.getCategory(),
-				TagParser.parseAll(this.queueEntry.getKeywords()).replace("\"", ""), privateFile, xmlBlobBuilder.buildXMLBlob());
+		final String atomData = String.format(template, this.queueEntry.getTitle(), this.queueEntry.getDescription(), this.queueEntry.getCategory(), TagParser.parseAll(this.queueEntry.getKeywords())
+		                                                                                                                                                      .replace("\"", ""), privateFile,
+		                                      xmlBlobBuilder.buildXMLBlob());
 
 		Logger.getLogger(UploadWorker.class).info("AtomData: " + atomData);
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2012, Dennis Fischer
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+		"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.hbm">
+
+	<class name="org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.MessageEntry" table="MESSAGES" schema="PUBLIC">
+		<id name="identity" type="int" column="IDENTITY">
+			<generator class="org.hibernate.id.IdentityGenerator"/>
+		</id>
+		<property name="message" type="java.lang.String" column="message"/>
+		<property name="uploadID" type="int" column="uploadID"/>
+		<property name="facebook" type="boolean" column="facebook"/>
+		<property name="twitter" type="boolean" column="twitter"/>
+		<property name="googlePlus" type="boolean" column="googlePlus"/>
+		<property name="youtube" type="boolean" column="youtube"/>
+	</class>
+
+</hibernate-mapping>

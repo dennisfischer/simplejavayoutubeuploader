@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="commons-codec-1">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" />
+      <root url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6/apidocs" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" />
+      <root url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../repositories/commons-codec-1.6" recursive="false" type="SOURCES" />
+  </library>
+</component>
