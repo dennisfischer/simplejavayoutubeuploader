@@ -125,9 +125,9 @@
         </constraints>
         <properties>
           <model>
-            <item value="With Upload ID:"/>
-            <item value="All Uploads finished"/>
-            <item value="Now"/>
+            <item value="Mit UploadID:"/>
+            <item value="Alle Uploads fertiggestellt"/>
+            <item value="Jetzt"/>
           </model>
         </properties>
       </component>

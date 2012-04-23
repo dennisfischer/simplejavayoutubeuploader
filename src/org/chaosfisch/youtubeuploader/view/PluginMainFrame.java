@@ -131,7 +131,8 @@ public class PluginMainFrame
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				PluginMainFrame.this.mainFrame.dispose();
+				final Window w = PluginMainFrame.this.mainFrame;
+				w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		fileMenu.add(exitMenuItem);

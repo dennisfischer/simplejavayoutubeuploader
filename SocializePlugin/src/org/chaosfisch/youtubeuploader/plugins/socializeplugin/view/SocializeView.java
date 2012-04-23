@@ -90,7 +90,7 @@ public class SocializeView
 		{
 			@Override public void itemStateChanged(final ItemEvent e)
 			{
-				if (e.getStateChange() == ItemEvent.SELECTED && e.getItem().equals("With Upload ID:")) { //NON-NLS
+				if (e.getStateChange() == ItemEvent.SELECTED && e.getItem().equals("Mit UploadID:")) { //NON-NLS
 					SocializeView.this.uploadIDSpinner.setEnabled(true);
 				} else {
 					SocializeView.this.uploadIDSpinner.setEnabled(false);

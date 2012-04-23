@@ -14,6 +14,7 @@
     <orderEntry type="library" name="commons-codec-1" level="project" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
+    <orderEntry type="library" name="hibernate-4.1.1" level="project" />
   </component>
 </module>
 

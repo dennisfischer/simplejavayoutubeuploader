@@ -103,7 +103,8 @@ public class SystemTrayPlugin implements Pluggable
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				SystemTrayPlugin.this.mainFrame.dispose();
+				final Window w = SystemTrayPlugin.this.mainFrame;
+				w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		popup.add(itemOpen);

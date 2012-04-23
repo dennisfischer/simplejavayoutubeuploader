@@ -47,10 +47,6 @@ public class SocializePlugin implements org.chaosfisch.plugin.Pluggable
 
 	@Override public void init()
 	{
-		this.settingService.addTextfield("socialize.socialize.facebook", "Facebook Token:"); //NON-NLS
-		this.settingService.addTextfield("socialize.socialize.twitter", "Twitter Token:"); //NON-NLS
-		this.settingService.addTextfield("socialize.socialize.googleplus", "Google+ Token:"); //NON-NLS
-		this.settingService.addTextfield("socialize.socialize.youtube", "Youtube Token:"); //NON-NLS
 	}
 
 	@Override public void onStart()
