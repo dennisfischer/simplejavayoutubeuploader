@@ -44,7 +44,7 @@
 		<property name="rate" type="boolean" column="rate"/>
 		<property name="videoresponse" type="short" column="videoresponse"/>
 		<property name="visibility" type="short" column="visibility"/>
-		<many-to-one column="playlist_id" lazy="false" name="playlist" class="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry"/>
+		<many-to-one column="playlist_id" not-null="false" lazy="false" name="playlist" class="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry"/>
 		<many-to-one column="account_id" name="account" class="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry"/>
 
 	</class>
