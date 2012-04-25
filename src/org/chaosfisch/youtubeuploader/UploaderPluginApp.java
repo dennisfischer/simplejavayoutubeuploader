@@ -31,6 +31,7 @@ package org.chaosfisch.youtubeuploader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.chaosfisch.plugin.JARFileFilter;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
@@ -67,6 +68,15 @@ public class UploaderPluginApp
 				//TODO this uses ~40 MB memory
 				final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
 				pluginMainFrame.run();
+			}
+		});
+
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
+		{
+			@Override public void uncaughtException(final Thread t, final Throwable e)
+			{
+				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER");
+				logger.warn(e.getMessage(), e);
 			}
 		});
 	}

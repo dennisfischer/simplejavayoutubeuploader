@@ -45,11 +45,13 @@
             <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:d:grow"/>
             <colspec value="left:4dlu:noGrow"/>
-            <colspec value="fill:d:grow"/>
+            <colspec value="fill:185px:grow"/>
             <colspec value="left:4dlu:noGrow"/>
-            <colspec value="fill:d:grow"/>
-            <colspec value="left:4dlu:noGrow"/>
+            <colspec value="left:50dlu:noGrow"/>
             <colspec value="fill:max(d;4px):noGrow"/>
+            <colspec value="fill:d:noGrow"/>
+            <colspec value="fill:40dlu:noGrow"/>
+            <colspec value="fill:max(d;10px):noGrow"/>
             <constraints>
               <grid row="0" column="0" row-span="5" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
               <forms top="5" left="5" bottom="5" right="5"/>
@@ -124,7 +126,7 @@
               </component>
               <component id="867c4" class="javax.swing.JTextField" binding="titleTextField">
                 <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="7" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="2" column="2" row-span="1" col-span="10" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                   <forms defaultalign-horz="false"/>
@@ -144,7 +146,7 @@
               </component>
               <component id="c5775" class="javax.swing.JComboBox" binding="categoryList">
                 <constraints>
-                  <grid row="4" column="2" row-span="1" col-span="7" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="2" row-span="1" col-span="10" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
@@ -184,7 +186,7 @@
               </component>
               <scrollpane id="f1f15">
                 <constraints>
-                  <grid row="6" column="2" row-span="1" col-span="7" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="2" row-span="1" col-span="10" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <forms defaultalign-horz="false" defaultalign-vert="false"/>
                 </constraints>
                 <properties/>
@@ -202,7 +204,7 @@
               </scrollpane>
               <scrollpane id="478ba">
                 <constraints>
-                  <grid row="8" column="2" row-span="1" col-span="7" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="2" row-span="1" col-span="10" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <forms defaultalign-horz="false" defaultalign-vert="false"/>
                 </constraints>
                 <properties/>
@@ -219,26 +221,6 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="362ac" class="javax.swing.JButton" binding="searchFile">
-                <constraints>
-                  <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <icon value="youtubeuploader/resources/images/folder_explore.png"/>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.searchFile"/>
-                </properties>
-              </component>
-              <component id="fc127" class="javax.swing.JButton" binding="reset">
-                <constraints>
-                  <grid row="12" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms defaultalign-horz="false"/>
-                </constraints>
-                <properties>
-                  <icon value="youtubeuploader/resources/images/cancel.png"/>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.reset"/>
-                </properties>
-              </component>
               <component id="68dcd" class="javax.swing.JButton" binding="submit">
                 <constraints>
                   <grid row="12" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -247,6 +229,36 @@
                 <properties>
                   <icon value="youtubeuploader/resources/images/add.png"/>
                   <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.submit"/>
+                </properties>
+              </component>
+              <component id="1032d" class="javax.swing.JButton" binding="synchronizePlaylistsButton">
+                <constraints>
+                  <grid row="10" column="11" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/refresh.png"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="fc127" class="javax.swing.JButton" binding="reset">
+                <constraints>
+                  <grid row="12" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-horz="false"/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/cancel.png"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.reset"/>
+                </properties>
+              </component>
+              <component id="362ac" class="javax.swing.JButton" binding="searchFile">
+                <constraints>
+                  <grid row="0" column="8" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <icon value="youtubeuploader/resources/images/folder_explore.png"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/uploadView" key="button.searchFile"/>
                 </properties>
               </component>
             </children>

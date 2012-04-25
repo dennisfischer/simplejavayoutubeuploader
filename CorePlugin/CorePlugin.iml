@@ -24,6 +24,7 @@
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="library" name="scribe-1.3.0" level="project" />
+    <orderEntry type="library" name="GData" level="project" />
   </component>
 </module>
 

@@ -47,7 +47,9 @@
 		<property name="sequence" type="int" column="sequence"/>
 		<property name="started" type="java.util.Date" column="started"/>
 		<property name="inprogress" type="boolean" column="inprogress"/>
-		<property name="locked" type="boolean" column="locked"/>
+		<property name="locked" type="boolean">
+			<column name="locked" default="false"/>
+		</property>
 		<property name="videoId" type="java.lang.String" column="videoID"/>
 		<many-to-one name="account" column="account_id" lazy="false" class="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry"/>
 		<many-to-one name="playlist" not-null="false" column="playlist_id" lazy="false" class="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry"/>

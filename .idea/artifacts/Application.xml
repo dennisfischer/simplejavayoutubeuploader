@@ -9,6 +9,7 @@
         <element id="library" level="project" name="scribe-1.3.0" />
         <element id="library" level="project" name="commons-codec-1" />
         <element id="library" level="project" name="other" />
+        <element id="library" level="project" name="GData" />
       </element>
       <element id="artifact" artifact-name="SimpleJavaYoutubeUploader:jar" />
       <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />

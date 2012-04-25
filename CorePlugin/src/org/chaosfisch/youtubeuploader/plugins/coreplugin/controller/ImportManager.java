@@ -56,6 +56,9 @@ class ImportManager
 		this.queueService = queueService;
 		this.fileChooser = fileChooser;
 		xStream.alias("entries", List.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.PresetEntry", PresetEntry.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.AccountEntry", AccountEntry.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.QueueEntry", QueueEntry.class); //NON-NLS
 	}
 
 	public void importAccount()
@@ -66,7 +69,7 @@ class ImportManager
 		}
 		InputStreamReader inputStreamReader = null;
 		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8"); //NON-NLS
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (FileNotFoundException e) {

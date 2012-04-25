@@ -77,13 +77,6 @@ public class QueueEntry implements IEntry
 		this.locked = locked;
 	}
 
-	public void setLocked(final Object object)
-	{
-		if (object == null) {
-			this.locked = false;
-		}
-	}
-
 	public boolean isInprogress()
 	{
 		return this.inprogress;

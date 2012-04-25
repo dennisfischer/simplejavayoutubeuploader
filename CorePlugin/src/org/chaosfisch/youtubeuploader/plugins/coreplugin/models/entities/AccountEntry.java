@@ -20,7 +20,6 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.YTServiceImpl;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 
 import java.util.Collection;
 import java.util.Set;
@@ -107,9 +106,9 @@ public class AccountEntry implements IEntry
 		return this.getName();
 	}
 
-	public YTService getYoutubeServiceManager()
+	public YTServiceImpl getYoutubeServiceManager()
 	{
-		final YTService youtubeServiceManager = new YTServiceImpl();
+		final YTServiceImpl youtubeServiceManager = new YTServiceImpl();
 		youtubeServiceManager.setUsername(this.name);
 		youtubeServiceManager.setPassword(this.password);
 

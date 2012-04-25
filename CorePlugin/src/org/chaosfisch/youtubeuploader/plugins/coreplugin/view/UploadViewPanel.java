@@ -43,6 +43,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 public final class UploadViewPanel
@@ -79,6 +80,7 @@ public final class UploadViewPanel
 	private         JButton          savePreset;
 	private         JButton          deleteAccount;
 	private         JSpinner         startzeitpunktSpinner;
+	private         JButton          synchronizePlaylistsButton;
 	private         JMenuItem        fileSearchMenuItem;
 
 	public UploadViewPanel()
@@ -316,6 +318,18 @@ public final class UploadViewPanel
 			public void itemStateChanged(final ItemEvent e)
 			{
 				UploadViewPanel.this.controller.changeAccount((AccountEntry) e.getItem());
+			}
+		});
+
+		this.synchronizePlaylistsButton.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
+					final ArrayList<AccountEntry> accountEntries = new ArrayList<AccountEntry>(1);
+					accountEntries.add((AccountEntry) UploadViewPanel.this.accountList.getSelectedItem());
+					UploadViewPanel.this.controller.synchronizePlaylists(accountEntries);
+				}
 			}
 		});
 	}
