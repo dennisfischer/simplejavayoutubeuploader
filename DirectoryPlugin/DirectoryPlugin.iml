@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
     <orderEntry type="module" module-name="CorePlugin" />
     <orderEntry type="library" name="other" level="project" />
+    <orderEntry type="library" name="Google Guice v 3.0" level="project" />
   </component>
 </module>
 

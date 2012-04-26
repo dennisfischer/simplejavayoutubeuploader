@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="GData">
+  <library name="GData Library 1.47">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../repositories/gdata-src.java-1.47.0/gdata/java/lib/gdata-analytics-2.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/gdata-src.java-1.47.0/gdata/java/lib/gdata-appsforyourdomain-1.0.jar!/" />
