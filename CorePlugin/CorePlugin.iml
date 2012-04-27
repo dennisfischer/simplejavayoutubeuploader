@@ -26,6 +26,7 @@
     <orderEntry type="library" name="Scribe Fork" level="project" />
     <orderEntry type="library" name="GData Library 1.47" level="project" />
     <orderEntry type="library" name="Google Guice v 3.0" level="project" />
+    <orderEntry type="library" name="Google Api Java Client v 1.8" level="project" />
   </component>
 </module>
 
