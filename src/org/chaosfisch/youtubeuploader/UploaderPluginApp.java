@@ -56,7 +56,7 @@ public class UploaderPluginApp
 		final SettingsService settingsService = injector.getInstance(SettingsService.class);
 		final DesignManager designManager = injector.getInstance(DesignManager.class);
 		designManager.run();
-		designManager.changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));//NON-NLS
+		designManager.changeDesign((String) settingsService.get("application.general.laf", "Substance Graphite Glass"));//NON-NLS
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
 		SwingUtilities.invokeLater(new Runnable()
@@ -65,7 +65,6 @@ public class UploaderPluginApp
 			{
 
 				designManager.registerSettingsExtension();
-				//TODO this uses ~40 MB memory
 				final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
 				pluginMainFrame.run();
 			}
@@ -75,8 +74,16 @@ public class UploaderPluginApp
 		{
 			@Override public void uncaughtException(final Thread t, final Throwable e)
 			{
-				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER");
+				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER"); //NON-NLS
 				logger.warn(e.getMessage(), e);
+
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override public void run()
+					{
+						JOptionPane.showMessageDialog(null, e.getMessage(), "Error:", JOptionPane.ERROR_MESSAGE); //NON-NLS
+					}
+				});
 			}
 		});
 	}

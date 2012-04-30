@@ -56,7 +56,7 @@ public class SettingsServiceImpl implements SettingsService
 
 	@Override public Object get(final String uniqueKey, final String defaultValue)
 	{
-		if (this.settingsPersister.has(uniqueKey)) {
+		if (this.settingsPersister.has(uniqueKey) && !this.settingsPersister.get(uniqueKey).equals("") && this.settingsPersister.get(uniqueKey) != null) {
 			return this.settingsPersister.get(uniqueKey);
 		}
 		this.settingsPersister.set(uniqueKey, defaultValue);

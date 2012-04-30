@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader;
 
 import com.google.inject.Inject;
+import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -31,6 +32,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueServi
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadWorker;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
+import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,10 +61,11 @@ public class Uploader
 	public static final String UPLOAD_LIMIT        = "uploadLimit";
 	public static final String QUEUE_START         = "queueStart";
 
-	private final   ExecutorService executorService;
-	private final   QueueService    queueService;
-	private final   PlaylistService playlistService;
-	@Inject private SettingsService settingsService;
+	private final         ExecutorService executorService;
+	private final         QueueService    queueService;
+	private final         PlaylistService playlistService;
+	@Inject private       SettingsService settingsService;
+	@InjectLogger private Logger          logger;
 
 	private static final long QUEUE_SLEEPTIME = 60000;
 
@@ -95,8 +98,8 @@ public class Uploader
 					if (Uploader.this.hasFreeUploadSpace()) {
 						final QueueEntry polledEntry = Uploader.this.queueService.poll();
 						if (polledEntry != null) {
-							Uploader.this.executorService.submit(new UploadWorker(polledEntry, Uploader.this.playlistService, Uploader.this.speedLimit, 1024 * 1024 * Integer.parseInt((String) Uploader.this
-									.settingsService.get("coreplugin.general.CHUNK_SIZE", "10"))));
+							Uploader.this.executorService.submit(new UploadWorker(polledEntry, Uploader.this.playlistService, Uploader.this.speedLimit, 1024 * 1024 * Integer.parseInt(
+									(String) Uploader.this.settingsService.get("coreplugin.general.CHUNK_SIZE", "10"))));
 							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
 							Uploader.this.runningUploads++;
 						}
@@ -151,25 +154,30 @@ public class Uploader
 
 	private void uploadFinished(final QueueEntry queueEntry)
 	{
+		this.logger.info("Upload finished: " + queueEntry.getTitle() + "; " + queueEntry.getVideoId());
 		this.runningUploads--;
 		queueEntry.setArchived(true);
 		queueEntry.setInprogress(false);
+		this.logger.info("Running uploads: " + this.runningUploads);
 		this.queueService.updateQueueEntry(queueEntry);
 		if (this.queueService.getQueuedQueueEntry().size() == 0 && this.runningUploads == 0) {
+			this.logger.info("All uploads finished");
 			switch (this.actionOnFinish) {
 				case 0:
-					break;
+					return;
 				case 1:
 					System.exit(0);
-					break;
+					return;
 				case 2:
 					Computer.shutdownComputer();
-					break;
+					return;
 				case 3:
 					Computer.hibernateComputer();
-					break;
+					return;
 			}
 		}
+
+		this.logger.info("Left uploads: " + this.queueService.getQueuedQueueEntry().size());
 	}
 
 	public void setActionOnFinish(final short actionOnFinish)
