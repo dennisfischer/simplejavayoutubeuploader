@@ -35,7 +35,7 @@ public class YoutubeSocialProvider implements ISocialProvider
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override public void setAccessToken(Token accessToken)
+	@Override public void setAccessToken(final Token accessToken)
 	{
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
@@ -50,7 +50,7 @@ public class YoutubeSocialProvider implements ISocialProvider
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override public void publish(String message)
+	@Override public void publish(final String message)
 	{
 		//To change body of implemented methods use File | Settings | File Templates.
 	}

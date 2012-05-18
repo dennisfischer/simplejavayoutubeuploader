@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact build-on-make="true" name="SimpleJavaYoutubeUploader:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/SimpleJavaYoutubeUploader_jar</output-path>
+    <output-path>$PROJECT_DIR$/../Application</output-path>
     <root id="root">
       <element id="archive" name="SimpleJavaYoutubeUploader.jar">
         <element id="module-output" name="SimpleJavaYoutubeUploader" />
@@ -13,6 +13,22 @@
         </element>
         <element id="module-output" name="Utilities" />
       </element>
+      <element id="directory" name="libs">
+        <element id="artifact" artifact-name="Images:jar" />
+        <element id="library" level="project" name="Apache Commons Codec v 1.6" />
+        <element id="library" level="project" name="Google Guice v 3.0" />
+        <element id="library" level="project" name="GoogleYoutubeJavaApi" />
+        <element id="library" level="project" name="other" />
+        <element id="library" level="project" name="Scribe Fork" />
+        <element id="library" level="project" name="mybatis-3.1.1" />
+        <element id="library" level="project" name="mybatis-guice-3.3" />
+      </element>
+      <element id="directory" name="plugins">
+        <element id="artifact" artifact-name="CorePlugin:jar" />
+        <element id="artifact" artifact-name="SettingsPlugin:jar" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
+      <element id="file-copy" path="$PROJECT_DIR$/README" />
     </root>
   </artifact>
 </component>

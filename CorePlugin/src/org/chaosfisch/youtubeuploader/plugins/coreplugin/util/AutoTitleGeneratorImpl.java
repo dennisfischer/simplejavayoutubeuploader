@@ -22,7 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
@@ -53,21 +53,21 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		AnnotationProcessor.process(this);
 	}
 
-	public AutoTitleGeneratorImpl(final String formatString, final PlaylistEntry playlistEntry, final int number)
+	public AutoTitleGeneratorImpl(final String formatString, final Playlist playlist, final int number)
 	{
 		this.formatString = formatString;
 		this.number = number;
 		this.fileName = null;
-		this.setPlaylist(playlistEntry);
+		this.setPlaylist(playlist);
 		AnnotationProcessor.process(this);
 	}
 
-	public AutoTitleGeneratorImpl(final String formatString, final PlaylistEntry playlistEntry, final int number, final String fileName)
+	public AutoTitleGeneratorImpl(final String formatString, final Playlist playlist, final int number, final String fileName)
 	{
 		this.formatString = formatString;
 		this.number = number;
 		this.fileName = fileName;
-		this.setPlaylist(playlistEntry);
+		this.setPlaylist(playlist);
 	}
 
 	@Override
@@ -94,10 +94,10 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		this.fileName = fileName;
 	}
 
-	@Override public void setPlaylist(final PlaylistEntry playlist)
+	@Override public void setPlaylist(final Playlist playlist)
 	{
-		this.playlistName = playlist.getName();
-		this.playlistNumber = playlist.getNumber();
+		this.playlistName = playlist.title;
+		this.playlistNumber = playlist.number;
 	}
 
 	@Override public void setNumber(final int number)
@@ -123,16 +123,16 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		if (this.fileName != null && !this.fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
 			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.file"), this.fileName.substring(this.fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
-					this.fileName.lastIndexOf('.')));
+			                                                                                                        this.fileName.lastIndexOf('.')));
 		}
 		return formated;
 	}
 
 	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
-	public void onPlaylistUpdate(final String topic, final PlaylistEntry playlistEntry)
+	public void onPlaylistUpdate(final String topic, final Playlist playlist)
 	{
-		if (playlistEntry.getName().equals(this.playlistName)) {
-			this.setPlaylist(playlistEntry);
+		if (playlist.title.equals(this.playlistName)) {
+			this.setPlaylist(playlist);
 			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());
 		}
 	}

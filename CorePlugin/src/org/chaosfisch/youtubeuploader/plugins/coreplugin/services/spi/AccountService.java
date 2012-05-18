@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 
 import java.util.List;
 
@@ -36,15 +36,13 @@ public interface AccountService
 	public static final String ACCOUNT_ENTRY_REMOVED = "accountEntryRemoved"; //NON-NLS
 	public static final String ACCOUNT_ENTRY_UPDATED = "accountEntryUpdated"; //NON-NLS
 
-	AccountEntry createAccountEntry(AccountEntry accountEntry);
+	Account createAccountEntry(Account account);
 
-	AccountEntry deleteAccountEntry(AccountEntry accountEntry);
+	Account deleteAccountEntry(Account account);
 
-	AccountEntry updateAccountEntry(AccountEntry accountEntry);
+	Account updateAccountEntry(Account account);
 
-	AccountEntry findAccountEntry(int identifier);
+	Account findAccountEntry(int identifier);
 
-	List<AccountEntry> getAllAccountEntry();
-
-	void refreshAccount(AccountEntry accountEntry);
+	List<Account> getAllAccountEntry();
 }

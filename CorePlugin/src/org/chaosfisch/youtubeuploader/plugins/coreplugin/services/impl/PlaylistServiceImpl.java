@@ -19,32 +19,33 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
-import com.google.gdata.data.PlainTextConstruct;
-import com.google.gdata.data.youtube.PlaylistLinkEntry;
-import com.google.gdata.data.youtube.PlaylistLinkFeed;
-import com.google.gdata.data.youtube.VideoEntry;
-import com.google.gdata.data.youtube.VideoFeed;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.google.atom.Feed;
+import org.chaosfisch.google.atom.VideoEntry;
+import org.chaosfisch.google.auth.AuthenticationException;
+import org.chaosfisch.google.auth.GoogleAuthorization;
+import org.chaosfisch.google.auth.GoogleRequestSigner;
+import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.google.request.Request;
+import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.mybatis.guice.transactional.Transactional;
+import org.mybatis.mappers.PlaylistMapper;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,187 +59,216 @@ import java.util.List;
 public class PlaylistServiceImpl implements PlaylistService
 {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50"; //NON-NLS
-	@Inject private SessionFactory sessionFactory;
 
-	public PlaylistServiceImpl()
+	@Inject private PlaylistMapper playlistMapper;
+
+	@Transactional @Override public List<Playlist> getByAccount(final Account account)
 	{
-		AnnotationProcessor.process(this);
+		return this.playlistMapper.findPlaylists(account);
+	}
+
+	@Transactional @Override public List<Playlist> getAll()
+	{
+		return this.playlistMapper.getAll();
+	}
+
+	@Transactional @Override public Playlist findPlaylist(final int id)
+	{
+		return this.playlistMapper.findPlaylist(id);
+	}
+
+	@Transactional @Override public Playlist createPlaylist(final Playlist playlist)
+	{
+		this.playlistMapper.createPlaylist(playlist);
+		EventBus.publish(PLAYLIST_ENTRY_ADDED, playlist);
+		return playlist;
+	}
+
+	@Transactional @Override public Playlist updatePlaylist(final Playlist playlist)
+	{
+		this.playlistMapper.updatePlaylist(playlist);
+		EventBus.publish(PLAYLIST_ENTRY_UPDATED, playlist);
+		return playlist;
+	}
+
+	@Transactional @Override public Playlist deletePlaylist(final Playlist playlist)
+	{
+		this.playlistMapper.deletePlaylist(playlist);
+		EventBus.publish(PLAYLIST_ENTRY_REMOVED, playlist);
+		return playlist;
 	}
 
 	@Override
-	public void synchronizePlaylists(final Collection<AccountEntry> accountEntries)
+	public void synchronizePlaylists(final List<Account> accounts)
 	{
-		URL feedUrl = null;
-		try {
-			feedUrl = new URL(YOUTUBE_PLAYLIST_FEED_50_RESULTS);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-
-		final URL finalFeedUrl = feedUrl;
 		new BetterSwingWorker()
 		{
 			@Override
 			protected void background()
 			{
-				for (final AccountEntry accountEntry : accountEntries) {
-					final YTService ytService = accountEntry.getYoutubeServiceManager();
+				Request request = null;
+				try {
+					request = new Request.Builder(Request.Method.GET, new URL(YOUTUBE_PLAYLIST_FEED_50_RESULTS)).build();
+				} catch (MalformedURLException e) {
+					return;
+				}
+				for (final Account account : accounts) {
+
+					Response response = null;
 					try {
-						ytService.authenticate();
+						final Request tmpRequest = (Request) request.clone();
+						PlaylistServiceImpl.this.getRequestSigner(account).sign(request);
+						response = tmpRequest.send();
 					} catch (AuthenticationException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						e.printStackTrace();
+						return;
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+						return;
+					} catch (IOException e) {
+						e.printStackTrace();
 						return;
 					}
 
-					PlaylistLinkFeed feed = null;
-					try {
-						feed = ytService.getFeed(finalFeedUrl, PlaylistLinkFeed.class);
-					} catch (IOException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-					} catch (ServiceException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-					}
+					if (response.code == 200) {
+						final Feed feed = PlaylistServiceImpl.this.parseFeed(response.body, Feed.class);
 
-					if (feed != null) {
-						final Session session = PlaylistServiceImpl.this.sessionFactory.getCurrentSession();
-						session.getTransaction().begin();
-						for (final PlaylistLinkEntry linkEntry : feed.getEntries()) {
-
-							final PlaylistEntry entrySearch = (PlaylistEntry) session.createCriteria(PlaylistEntry.class).add(Restrictions.eq("playlistKey", //NON-NLS
-									linkEntry.getPlaylistId())).uniqueResult();
-
-							if (entrySearch == null) {
-								final PlaylistEntry playlistEntity = new PlaylistEntry();
-								playlistEntity.setPlaylistKey(linkEntry.getPlaylistId());
-								playlistEntity.setName(linkEntry.getTitle().getPlainText());
-								playlistEntity.setNumber(linkEntry.getCountHint());
-								playlistEntity.setUrl(linkEntry.getFeedUrl());
-								playlistEntity.setSummary(linkEntry.getSummary().getPlainText());
-								playlistEntity.setAccount(accountEntry);
-								session.save(playlistEntity);
-							} else {
-								entrySearch.setPlaylistKey(linkEntry.getPlaylistId());
-								entrySearch.setName(linkEntry.getTitle().getPlainText());
-								entrySearch.setNumber(linkEntry.getCountHint());
-								entrySearch.setUrl(linkEntry.getFeedUrl());
-								entrySearch.setSummary(linkEntry.getSummary().getPlainText());
-								entrySearch.setAccount(accountEntry);
-								session.update(entrySearch);
-							}
-							session.flush();
+						if (feed.videoEntries == null) {
+							return;
 						}
-						session.getTransaction().commit();
+						for (final VideoEntry entry : feed.videoEntries) {
+							final Playlist playlist = new Playlist();
+							playlist.title = entry.title;
+							playlist.playlistKey = entry.playlistId;
+							playlist.number = entry.playlistCountHint;
+							playlist.url = entry.title;
+							playlist.summary = entry.playlistSummary;
+							playlist.account = account;
+							PlaylistServiceImpl.this.createPlaylist(playlist);
+						}
 					}
 				}
 			}
 
-			@Override
-			protected void onDone()
+			@Override protected void onDone()
 			{
 				EventBus.publish("playlistsSynchronized", null); //NON-NLS
 			}
 		}.execute();
 	}
 
-	@Override
-	public void createPlaylist(final PlaylistEntry playlistEntry)
+	@Override public Playlist addYoutubePlaylist(final Playlist playlist)
 	{
-		URL feedUrl = null;
-		try {
-			feedUrl = new URL("http://gdata.youtube.com/feeds/api/users/default/playlists"); //NON-NLS
-		} catch (MalformedURLException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
+		final VideoEntry entry = new VideoEntry();
+		entry.title = playlist.title;
+		entry.playlistSummary = playlist.summary;
+		final String atomData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + this.parseObjectToFeed(entry); //NON-NLS
 
-		final YTService ytService = playlistEntry.getAccount().getYoutubeServiceManager();
 		try {
-			ytService.authenticate();
-			final PlaylistLinkEntry newEntry = new PlaylistLinkEntry();
-			newEntry.setTitle(new PlainTextConstruct(playlistEntry.getName()));
-			newEntry.setSummary(new PlainTextConstruct(playlistEntry.getSummary()));
+			final Request request = new Request.Builder(Request.Method.POST, new URL("http://gdata.youtube.com/feeds/api/users/default/playlists")).build();
+			this.getRequestSigner(playlist.account).sign(request);
+
+			request.setContentType("application/atom+xml; charset=utf-8"); //NON-NLS
+
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
+			final DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
 			try {
-				ytService.insert(feedUrl, newEntry);
+				dataOutputStream.writeBytes(atomData);
+				dataOutputStream.flush();
 
-				final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
-				accountEntries.add(playlistEntry.getAccount());
-				this.synchronizePlaylists(accountEntries);
+				final Response response = request.send();
+				System.out.println(response.body);
+				System.out.println(response.message);
+				if (response.code == 200 || response.code == 201) {
+					System.out.println(response.code);
+					System.out.println(response.message);
+
+					final LinkedList<Account> accountEntries = new LinkedList<Account>();
+					accountEntries.add(playlist.account);
+					this.synchronizePlaylists(accountEntries);
+				}
 			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			} catch (ServiceException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-		} catch (AuthenticationException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-	}
-
-	@Override
-	public void addLatestVideoToPlaylist(final PlaylistEntry playlistEntry)
-	{
-
-		URL feedUrl = null;
-		try {
-			feedUrl = new URL("http://gdata.youtube.com/feeds/api/users/default/uploads"); //NON-NLS
-		} catch (MalformedURLException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-
-		final YTService ytService = playlistEntry.getAccount().getYoutubeServiceManager();
-		try {
-			ytService.authenticate();
-			VideoFeed videoFeed = null;
-			try {
-				videoFeed = ytService.getFeed(feedUrl, VideoFeed.class);
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			} catch (ServiceException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-			if (videoFeed != null) {
-				final List<VideoEntry> videoFeedEntries = videoFeed.getEntries();
-
-				final VideoEntry update = videoFeedEntries.get(0);
-				final com.google.gdata.data.youtube.PlaylistEntry entry = new com.google.gdata.data.youtube.PlaylistEntry(update);
+				e.printStackTrace();
+			} finally {
 				try {
-					ytService.insert(new URL(playlistEntry.getUrl()), entry);
-				} catch (IOException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-				} catch (ServiceException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+					bufferedOutputStream.close();
+					dataOutputStream.close();
+				} catch (IOException ignored) {
 				}
 			}
-		} catch (AuthenticationException e) {
+		} catch (IOException ignored) {
+			ignored.printStackTrace();
+		} catch (AuthenticationException ignored) {
+			ignored.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override public void addLatestVideoToPlaylist(final Playlist playlistEntry)
+	{
+		try {
+			final URL feedUrl = new URL("http://gdata.youtube.com/feeds/api/users/default/uploads");
+		} catch (MalformedURLException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
+//
+//		final YTService ytService = playlistEntry.getAccount().getYoutubeServiceManager();
+//		try {
+//			ytService.authenticate();
+//			VideoFeed videoFeed = null;
+//			try {
+//				videoFeed = ytService.getFeed(feedUrl, VideoFeed.class);
+//			} catch (IOException e) {
+//				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//			} catch (ServiceException e) {
+//				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//			}
+//			if (videoFeed != null) {
+//				final List<VideoEntry> videoFeedEntries = videoFeed.getEntries();
+//
+//				final VideoEntry update = videoFeedEntries.get(0);
+//				final com.google.gdata.data.youtube.Playlist entry = new com.google.gdata.data.youtube.Playlist(update);
+//				try {
+//					ytService.insert(new URL(playlistEntry.getUrl()), entry);
+//				} catch (IOException e) {
+//					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//				} catch (ServiceException e) {
+//					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//				}
+//			}
+//		} catch (AuthenticationException e) {
+//			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//		}
 	}
 
-	@Override
-	public List<PlaylistEntry> getAllPlaylistByAccount(final AccountEntry accountEntry)
+	private <T> T parseFeed(final String atomData, final Class<T> clazz)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		@SuppressWarnings("DuplicateStringLiteralInspection") final List<PlaylistEntry> returnList = session.createCriteria(PlaylistEntry.class).addOrder(Order.asc("name")).add(Restrictions.eq
-				("account", //NON-NLS
-				accountEntry)).list();
-		session.getTransaction().commit();
-		return returnList;
+		final XStream xStream = new XStream(new DomDriver());
+		xStream.processAnnotations(clazz);
+		final Object o = xStream.fromXML(atomData);
+		if (clazz.isInstance(o)) {
+			return clazz.cast(o);
+		}
+		throw new IllegalArgumentException("atomData of invalid clazz object!");
 	}
 
-	@Override
-	public PlaylistEntry updatePlaylist(final PlaylistEntry playlistEntry)
+	private String parseObjectToFeed(final Object o)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.update(playlistEntry);
-		session.getTransaction().commit();
-		return playlistEntry;
+		final XStream xStream = new XStream(new DomDriver());
+		xStream.processAnnotations(o.getClass());
+		return xStream.toXML(o);
 	}
 
-	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
-	public void onAccountAdded(final String topic, final AccountEntry accountEntry)
+	private RequestSigner getRequestSigner(final Account account) throws AuthenticationException
 	{
-		final LinkedList<AccountEntry> accountEntries = new LinkedList<AccountEntry>();
-		accountEntries.add(accountEntry);
-		this.synchronizePlaylists(accountEntries);
+		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, account.name, account.password));
+	}
+
+	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED) public void onAccountAdded(final String topic, final Account account)
+	{
+		final LinkedList<Account> accounts = new LinkedList<Account>();
+		accounts.add(account);
+		this.synchronizePlaylists(accounts);
 	}
 }

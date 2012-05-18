@@ -1,2 +1,1 @@
-org.chaosfisch.youtubeuploader.plugins.coreplugin.modules.UtilModule
-org.chaosfisch.youtubeuploader.plugins.coreplugin.modules.DatabaseModule
+org.chaosfisch.youtubeuploader.plugins.coreplugin.modules.BindingsModule

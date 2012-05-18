@@ -22,6 +22,7 @@ package org.chaosfisch.youtubeuploader.services.settingsservice.impl;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersister;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +40,34 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 	private final Properties properties = new Properties();
 	private final String     fileName   = "config.properties"; //NON-NLS
 
-	public PropertyFileSettingsPersisterImpl() throws IOException
+	public PropertyFileSettingsPersisterImpl()
 	{
 		final File file = new File(this.fileName);
 		if (!file.exists() || !file.isFile()) {
-			if (!file.createNewFile()) {
-				throw new IOException("Failed to create new File");
+			try {
+				//noinspection ResultOfMethodCallIgnored
+				file.createNewFile();
+			} catch (IOException ex) {
+				return;
 			}
 		}
 
-		this.properties.load(new FileInputStream(file));
+		try {
+			final FileInputStream fileInputStream = new FileInputStream(file);
+			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+			try {
+				this.properties.load(bufferedInputStream);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					bufferedInputStream.close();
+					fileInputStream.close();
+				} catch (IOException ignored) {
+				}
+			}
+		} catch (FileNotFoundException ignored) {
+		}
 	}
 
 	@Override public boolean has(final String uniqueKey)
@@ -78,22 +97,30 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 		final File file = new File(this.fileName);
 		if (!file.exists() || !file.isFile()) {
 			try {
-				if (!file.createNewFile()) {
-					throw new IOException("Failed to create new File");
-				}
+				//noinspection ResultOfMethodCallIgnored
+				file.createNewFile();
 			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				return;
 			}
 		}
 
 		try {
-			this.properties.store(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), null); //NON-NLS
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			final FileOutputStream fileOutputStream = new FileOutputStream(file);
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName("UTF-8"));
+			try {
+				this.properties.store(outputStreamWriter, null); //NON-NLS
+			} catch (IOException e) {
+				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			} finally {
+				try {
+					outputStreamWriter.close();
+					bufferedOutputStream.close();
+					fileOutputStream.close();
+				} catch (IOException ignored) {
+				}
+			}
+		} catch (FileNotFoundException ignored) {
 		}
 	}
 

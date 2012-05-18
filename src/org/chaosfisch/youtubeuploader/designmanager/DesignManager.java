@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.designmanager;
 
 import com.google.inject.Inject;
 import org.apache.log4j.Logger;
+import org.apache.xbean.finder.ResourceFinder;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -30,9 +31,10 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,18 +58,30 @@ public class DesignManager
 	public void run()
 	{
 		this.logger.debug("Loading designMaps"); //NON-NLS
-		final ServiceLoader<DesignMap> designServiceLoader = ServiceLoader.load(DesignMap.class);
-		this.logger.debug("Parsing designMaps"); //NON-NLS
-		for (final DesignMap mapList : designServiceLoader) {
-			this.logger.debug("Parsing designs of designMap"); //NON-NLS
-			for (final Design design : mapList) {
-				this.logger.debug("Design found"); //NON-NLS
-				if (design.getShortName() != null && design.getName() != null && this.classExists(design.getLaF())) {
-					//noinspection StringConcatenation
-					this.logger.debug("Adding Design " + design.getName()); //NON-NLS
-					this.designMap.put(design.getName(), design);
+		final ResourceFinder finder = new ResourceFinder("META-INF/services/");
+		try {
+			final List<Class> classes = finder.findAllImplementations(DesignMap.class);
+
+			this.logger.debug("Parsing designMaps"); //NON-NLS
+			for (final Class mapList : classes) {
+				this.logger.debug("Parsing designs of designMap"); //NON-NLS
+				for (final Design design : (DesignMap) mapList.newInstance()) {
+					this.logger.debug("Design found"); //NON-NLS
+					if (design.getShortName() != null && design.getName() != null) {
+						//noinspection StringConcatenation
+						this.logger.debug("Adding Design " + design.getName()); //NON-NLS
+						this.designMap.put(design.getName(), design);
+					}
 				}
 			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (InstantiationException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
 
@@ -79,16 +93,6 @@ public class DesignManager
 			return null;
 		}
 		return DesignManager.this.designMap.get(lookAndFeel);
-	}
-
-	private boolean classExists(final String className)
-	{
-		try {
-			Class.forName(className);
-			return true;
-		} catch (ClassNotFoundException exception) {
-			return false;
-		}
 	}
 
 	public void changeDesign(final String design)
@@ -106,7 +110,7 @@ public class DesignManager
 			@Override public void run()
 			{
 				try {
-					UIManager.setLookAndFeel(DesignManager.this.designMap.get(design).getLaF());
+					UIManager.setLookAndFeel(DesignManager.this.designMap.get(design).getLaF().getCanonicalName());
 				} catch (UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -139,7 +143,7 @@ public class DesignManager
 	{
 		final DefaultComboBoxModel desingListModel = new DefaultComboBoxModel();
 		for (final Design design : this.designMap.values()) {
-			if (design.getShortName() != null && design.getName() != null && this.classExists(design.getLaF())) {
+			if (design.getShortName() != null && design.getName() != null) {
 				desingListModel.addElement(design);
 			}
 		}
@@ -148,7 +152,7 @@ public class DesignManager
 	}
 
 	@EventTopicSubscriber(topic = SettingsService.SETTINGS_SAVED)
-	public void onDesignChanged(String topic, String o)
+	public void onDesignChanged(final String topic, final String o)
 	{
 		if (o.equals("application.general.laf")) {
 			this.changeDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));

@@ -44,10 +44,10 @@ public class ThrottledOutputStream extends FilterOutputStream
 	// written.
 	// @param b the byte to be written
 	// @exception IOException if an I/O error has occurred
-	public void writeByte(final int b) throws IOException, InterruptedException
+	public void write(final int b) throws IOException
 	{
 		this.oneByte[0] = (byte) b;
-		this.writeBytes(this.oneByte, 0, 1);
+		this.write(this.oneByte, 0, 1);
 	}
 
 	/// Writes a subarray of bytes.
@@ -55,7 +55,8 @@ public class ThrottledOutputStream extends FilterOutputStream
 	// @param off the start offset in the data
 	// @param len the number of bytes that are written
 	// @exception IOException if an I/O error has occurred
-	public void writeBytes(final byte[] b, final int off, final int len) throws IOException, InterruptedException
+	@Override
+	public void write(final byte[] b, final int off, final int len) throws IOException
 	{
 		// Check the throttle.
 		this.bytes += len;
@@ -65,7 +66,10 @@ public class ThrottledOutputStream extends FilterOutputStream
 		if (this.maxBps != 0 && bps > this.maxBps) {
 			// Oops, sending too fast.
 			final long wakeElapsed = this.bytes * 1000L / this.maxBps;
-			Thread.sleep(wakeElapsed - elapsed);
+			try {
+				Thread.sleep(wakeElapsed - elapsed);
+			} catch (InterruptedException ignored) {
+			}
 		}
 
 		// Write the bytes.

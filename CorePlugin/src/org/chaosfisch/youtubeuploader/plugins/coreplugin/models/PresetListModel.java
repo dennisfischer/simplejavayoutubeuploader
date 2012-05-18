@@ -21,7 +21,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 
 import javax.swing.*;
@@ -38,75 +37,75 @@ import java.util.List;
 public class PresetListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final IdentityList<PresetEntry> presetEntries = new IdentityList<PresetEntry>();
-	private       int                       selectedRow   = 0;
+	private final IdentityList<Preset> presets     = new IdentityList<Preset>();
+	private       int                  selectedRow = 0;
 
 	public PresetListModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public PresetListModel(final List<PresetEntry> entryList)
+	public PresetListModel(final List<Preset> list)
 	{
-		this.presetEntries.addAll(entryList);
+		this.presets.addAll(list);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public int getSize()
 	{
-		return this.presetEntries.size();
+		return this.presets.size();
 	}
 
 	@Override
-	public PresetEntry getElementAt(final int index)
+	public Preset getElementAt(final int index)
 	{
-		return this.presetEntries.get(index);
+		return this.presets.get(index);
 	}
 
-	void addPresetEntry(final PresetEntry presetEntry)
+	void addPresetEntry(final Preset preset)
 	{
-		this.presetEntries.add(presetEntry);
+		this.presets.add(preset);
 		this.fireIntervalAdded(this, 0, this.getSize());
 	}
 
-	public void addPresetEntryList(final List<PresetEntry> entryList)
+	public void addPresetEntryList(final List<Preset> list)
 	{
-		for (final PresetEntry presetEntry : entryList) {
-			this.addPresetEntry(presetEntry);
+		for (final Preset preset : list) {
+			this.addPresetEntry(preset);
 		}
 	}
 
-	public PresetEntry removeSelectedPresetEntry()
+	public Preset removeSelectedPresetEntry()
 	{
-		final PresetEntry presetEntry = this.presetEntries.remove(this.selectedRow);
+		final Preset preset = this.presets.remove(this.selectedRow);
 		this.fireContentsChanged(this, 0, this.getSize());
-		return presetEntry;
+		return preset;
 	}
 
-	public List<PresetEntry> getPresetList()
+	public List<Preset> getPresetList()
 	{
-		return new ArrayList<PresetEntry>(this.presetEntries);
+		return new ArrayList<Preset>(this.presets);
 	}
 
-	public void removePresetEntry(final PresetEntry presetEntry)
+	public void removePresetEntry(final Preset preset)
 	{
-		this.presetEntries.remove(presetEntry);
+		this.presets.remove(preset);
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
 	@Override
 	public void setSelectedItem(final Object selectedItem)
 	{
-		final PresetEntry presetEntry = (PresetEntry) selectedItem;
-		this.selectedRow = this.presetEntries.indexOf(presetEntry);
+		final Preset preset = (Preset) selectedItem;
+		this.selectedRow = this.presets.indexOf(preset);
 	}
 
 	@Override
 	public Object getSelectedItem()
 	{
-		if (this.presetEntries.size() - 1 >= this.selectedRow) {
-			return this.presetEntries.get(this.selectedRow);
+		if (this.presets.size() - 1 >= this.selectedRow) {
+			return this.presets.get(this.selectedRow);
 		} else {
 			this.selectedRow = 0;
 		}
@@ -115,18 +114,18 @@ public class PresetListModel extends AbstractListModel implements ComboBoxModel
 
 	public boolean hasPresetEntryAt(final int selectedRow)
 	{
-		return this.presetEntries.size() >= selectedRow && selectedRow != -1;
+		return this.presets.size() >= selectedRow && selectedRow != -1;
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
-	public void onPresetAdded(final String topic, final PresetEntry presetEntry)
+	public void onPresetAdded(final String topic, final Preset preset)
 	{
-		this.addPresetEntry(presetEntry);
+		this.addPresetEntry(preset);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
-	public void onPresetRemoved(final String topic, final PresetEntry presetEntry)
+	public void onPresetRemoved(final String topic, final Preset preset)
 	{
-		this.removePresetEntry(presetEntry);
+		this.removePresetEntry(preset);
 	}
 }

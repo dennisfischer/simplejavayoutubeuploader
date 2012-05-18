@@ -19,32 +19,35 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
-import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.google.atom.VideoEntry;
+import org.chaosfisch.google.atom.media.MediaCategory;
+import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
+import org.chaosfisch.google.auth.*;
+import org.chaosfisch.google.request.Request;
+import org.chaosfisch.google.request.RequestUtilities;
+import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.YTServiceImpl;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.CancellationException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,24 +64,28 @@ public class UploadWorker extends BetterSwingWorker
 	 * Max size for each upload chunk
 	 */
 	private final int DEFAULT_CHUNK_SIZE;
-	private static final int     MAX_RETRIES        = 4;
-	private static final int     BACKOFF            = 5; // base of exponential backoff
-	private              double  fileSize           = 0;
-	private              double  totalBytesUploaded = 0;
-	private              int     numberOfRetries    = 0;
-	private              boolean failed             = false;
-	private final QueueEntry      queueEntry;
+	private static final int    MAX_RETRIES = 5;
+	private static final double BACKOFF     = 3.13; // base of exponential backoff
+	private static final int    bufferSize  = 8192;
+
+	private double fileSize           = 0;
+	private double totalBytesUploaded = 0;
+	private int    numberOfRetries    = 0;
+
+	private boolean failed = false;
+	private final Queue           queue;
 	private final PlaylistService playlistService;
 	private       File            overWriteDir;
-	private       String          authToken;
 	private       long            start;
 	private       double          bytesToUpload;
 	private       int             speedLimit;
+	private       Authorization   googleAuthorization;
+	private final Logger logger = Logger.getLogger(UploadWorker.class);
 
 	@Inject
-	public UploadWorker(final QueueEntry queueEntry, final PlaylistService playlistService, final int speedLimit, final int chunkSize)
+	public UploadWorker(final Queue queue, final PlaylistService playlistService, final int speedLimit, final int chunkSize)
 	{
-		this.queueEntry = queueEntry;
+		this.queue = queue;
 		this.playlistService = playlistService;
 		this.speedLimit = speedLimit;
 		this.DEFAULT_CHUNK_SIZE = chunkSize;
@@ -88,94 +95,89 @@ public class UploadWorker extends BetterSwingWorker
 	@Override
 	protected void background()
 	{
+		this.queue.started = Calendar.getInstance().getTime();
+		EventBus.publish(Uploader.UPLOAD_STARTED, this.queue);
 
-		this.queueEntry.setStarted(new Date());
-		EventBus.publish(Uploader.UPLOAD_STARTED, this.queueEntry);
+		//Get File and Check if existing
+		final File fileToUpload;
+		if (this.overWriteDir == null) {
+			fileToUpload = new File(this.queue.file);
+		} else {
+			fileToUpload = new File(this.overWriteDir.getAbsolutePath() + new File(this.queue.file).getName());
+		}
 
-		String videoId = null;
-		int submitCount = 0;
-		while (submitCount <= MAX_RETRIES && videoId == null) {
-			try {
+		try {
+			int submitCount = 0;
+			String videoId = null;
+			while (submitCount <= MAX_RETRIES && videoId == null && !this.failed) {
 				Thread.sleep(1L);
-			} catch (InterruptedException e) {
-				break;
-			}
-			if (this.failed) {
-				break;
-			}
-			submitCount++;
-			try {
-				videoId = this.doUpload();
-			} catch (UploaderException e) {
-				this.queueEntry.setInprogress(false);
-				this.queueEntry.setFailed(true);
-				EventBus.publish("updateQueueEntry", this.queueEntry);
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queueEntry, e.getMessage()));
-				break;
-			}
-			assert videoId != null;
-		}
-		if (!this.failed && this.queueEntry.getPlaylist() != null) {
-			this.playlistService.addLatestVideoToPlaylist(this.queueEntry.getPlaylist());
-		}
+				submitCount++;
 
-		this.queueEntry.setVideoId(videoId);
-		EventBus.publish("updateQueueEntry", this.queueEntry);
-		EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(this.queueEntry, this.fileSize, this.fileSize, 0, 0, 0));
-		EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, this.queueEntry);
+				if (!fileToUpload.exists()) {
+					throw new UploaderException("Datei existiert nicht.");
+				}
+
+				final String uploadUrl;
+				if (this.queue.uploadurl == null) {
+					uploadUrl = this.fetchUploadUrl(fileToUpload);
+					this.updateUploadUrl(uploadUrl);
+
+					//Log operation
+					this.logger.info("uploadUrl=" + uploadUrl);
+					//INIT Vars
+					this.fileSize = fileToUpload.length();
+					this.totalBytesUploaded = 0;
+					this.numberOfRetries = 0;
+					this.start = 0;
+					this.bytesToUpload = this.fileSize;
+				} else {
+					this.queue.file = fileToUpload.getAbsolutePath();
+					this.fileSize = fileToUpload.length();
+					try {
+						videoId = this.analyzeResumeInfo(this.fetchResumeInfo(this.queue.uploadurl), this.queue.uploadurl);
+					} catch (UploaderException ex) {
+						continue;
+					}
+					uploadUrl = this.queue.uploadurl;
+					if (videoId != null) {
+						break;
+					}
+				}
+				try {
+					videoId = this.uploadFile(fileToUpload, uploadUrl);
+				} catch (UploaderException ignored) {
+				}
+			}
+			if (!this.failed && this.queue.playlist != null) {
+				this.playlistService.addLatestVideoToPlaylist(this.queue.playlist);
+			}
+			this.queue.videoId = videoId;
+			EventBus.publish("updateQueue", this.queue);
+			EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(this.queue, this.fileSize, this.fileSize, 0, 0, 0));
+			EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, this.queue);
+		} catch (UploaderException e) {
+			this.queue.inprogress = false;
+			this.queue.failed = true;
+			EventBus.publish("updateQueue", this.queue);
+			EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queue, e.getMessage()));
+		} catch (UploaderResumeException e) {
+			this.queue.inprogress = false;
+			this.queue.failed = true;
+			EventBus.publish("updateQueue", this.queue);
+			EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queue, e.getMessage()));
+		} catch (InterruptedException ignored) {
+		}
 	}
 
 	@Override
 	protected void onDone()
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	private String doUpload() throws UploaderException
-	{
-
-		//Get File and Check if existing
-		final File fileToUpload;
-
-		if (this.overWriteDir == null) {
-			fileToUpload = new File(this.queueEntry.getFile());
-		} else {
-			fileToUpload = new File(this.overWriteDir.getAbsolutePath() + new File(this.queueEntry.getFile()).getName());
-		}
-
-		if (!fileToUpload.exists()) {
-			throw new UploaderException("Datei existiert nicht.");
-		}
-
-		if (this.queueEntry.getUploadurl() == null) {
-			return this.beginNewUpload(fileToUpload);
-		} else {
-			return this.finishStartedUpload(fileToUpload);
-		}
-	}
-
-	private String beginNewUpload(final File fileToUpload) throws UploaderException
-	{
-		final String uploadUrl = this.fetchUploadUrl(fileToUpload);
-		this.updateUploadUrl(uploadUrl);
-
-		//Log operation
-		Logger.getLogger(Thread.currentThread().getName()).info("uploadUrl=" + uploadUrl);
-		Logger.getLogger(Thread.currentThread().getName()).info(String.format("YTServiceImpl token : %s ", this.getAuthToken(this.queueEntry.getAccount())));
-		//INIT Vars
-		this.fileSize = fileToUpload.length();
-		this.totalBytesUploaded = 0;
-		this.numberOfRetries = 0;
-		this.start = 0;
-		this.bytesToUpload = this.fileSize;
-
-		return this.uploadFile(fileToUpload, uploadUrl);
-	}
-
-	private String uploadFile(final File fileToUpload, final String uploadUrl) throws UploaderException
+	private String uploadFile(final File fileToUpload, final String uploadUrl) throws UploaderException, UploaderResumeException
 	{
 		String videoId = null;
-		while (this.bytesToUpload > 0) {
+		while (this.bytesToUpload > 0 && !this.failed) {
 			try {
 				Thread.sleep(1L);
 			} catch (InterruptedException e) {
@@ -185,7 +187,7 @@ public class UploadWorker extends BetterSwingWorker
 			final long end = this.generateEndBytes(this.start, this.bytesToUpload);
 
 			//Log operation
-			Logger.getLogger(Thread.currentThread().getName()).info(String.format("start=%s end=%s filesize=%s", this.start, end, (int) this.bytesToUpload));
+			this.logger.info(String.format("start=%s end=%s filesize=%s", this.start, end, (int) this.bytesToUpload));
 
 			try {
 				videoId = this.uploadChunk(fileToUpload, uploadUrl, this.start, end);
@@ -197,7 +199,8 @@ public class UploadWorker extends BetterSwingWorker
 				throw new UploaderStopException("Beendet auf Userrequest");
 			} catch (UploaderException ex) {
 				//Log operation
-				Logger.getLogger(Thread.currentThread().getName()).warn("Exception: " + ex.getMessage());
+				this.logger.warn("Exception: " + ex.getMessage());
+				this.logger.trace(ex.getCause());
 
 				videoId = this.analyzeResumeInfo(this.fetchResumeInfo(uploadUrl), uploadUrl);
 				if (videoId != null) {
@@ -213,10 +216,10 @@ public class UploadWorker extends BetterSwingWorker
 
 	private String analyzeResumeInfo(final ResumeInfo resumeInfo, final String uploadUrl)
 	{
-		Logger.getLogger(Thread.currentThread().getName()).info(String.format("Resuming stalled upload to: %s.", uploadUrl));
+		this.logger.info(String.format("Resuming stalled upload to: %s.", uploadUrl));
 		if (resumeInfo.videoId != null) { // upload actually complted despite the exception
 			final String videoId = resumeInfo.videoId;
-			Logger.getLogger(Thread.currentThread().getName()).info(String.format("No need to resume video ID '%s'.", videoId));
+			this.logger.info(String.format("No need to resume video ID '%s'.", videoId));
 			return videoId;
 		} else {
 			final long nextByteToUpload = resumeInfo.nextByteToUpload;
@@ -224,17 +227,17 @@ public class UploadWorker extends BetterSwingWorker
 			// possibly rolling back the previosuly saved value
 			this.bytesToUpload = this.fileSize - nextByteToUpload;
 			this.start = nextByteToUpload;
-			Logger.getLogger(Thread.currentThread().getName()).info(String.format("Next byte to upload is '%d'.", nextByteToUpload));
+			this.logger.info(String.format("Next byte to upload is '%d'.", nextByteToUpload));
 			return null;
 		}
 	}
 
-	private ResumeInfo fetchResumeInfo(final String uploadUrl) throws UploaderException
+	private ResumeInfo fetchResumeInfo(final String uploadUrl) throws UploaderException, UploaderResumeException
 	{
 		ResumeInfo resumeInfo;
 		do {
-			if (!this.shouldResume()) {
-				throw new UploaderException(String.format("Giving up uploading '%s'.", uploadUrl));
+			if (!this.canResume()) {
+				throw new UploaderResumeException(String.format("Giving up uploading '%s'.", uploadUrl));
 			}
 			resumeInfo = this.resumeFileUpload(uploadUrl);
 		} while (resumeInfo == null);
@@ -242,38 +245,43 @@ public class UploadWorker extends BetterSwingWorker
 	}
 
 	private String fetchUploadUrl(final File fileToUpload) throws UploaderException
-	{//Fetch meta data templates
-		final String template = this.readFile(this.getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/gdata.xml"));
-		final XMLBlobBuilder xmlBlobBuilder = new XMLBlobBuilder(this.queueEntry);
+	{
+		final org.chaosfisch.google.atom.VideoEntry videoEntry = new org.chaosfisch.google.atom.VideoEntry();
+		videoEntry.mediaGroup.title = this.queue.title;
+		videoEntry.mediaGroup.description = this.queue.description;
+		videoEntry.mediaGroup.keywords = TagParser.parseAll(this.queue.keywords).replace("\"", "");
 
-		//Build atomData
-		String privateFile = "";
-		if (this.queueEntry.isPrivatefile()) {
-			privateFile = "<yt:private />";
+		videoEntry.mediaGroup.category = new ArrayList<MediaCategory>(1);
+		final MediaCategory mediaCategory = new MediaCategory();
+		mediaCategory.label = this.queue.category;
+		mediaCategory.scheme = "http://gdata.youtube.com/schemas/2007/categories.cat";
+		mediaCategory.category = this.queue.category;
+		videoEntry.mediaGroup.category.add(mediaCategory);
+
+		if (this.queue.privatefile) {
+			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
 
-		final String atomData = String.format(template, this.queueEntry.getTitle(), this.queueEntry.getDescription(), this.queueEntry.getCategory(), TagParser.parseAll(this.queueEntry.getKeywords())
-		                                                                                                                                                      .replace("\"", ""), privateFile,
-		                                      xmlBlobBuilder.buildXMLBlob());
+		videoEntry.accessControl.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(this.queue.embed)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(this.queue.rate)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(this.queue.mobile)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(this.queue.commentvote)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(this.queue.videoresponse)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(this.queue.comment)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(!this.queue.unlisted)));
+
+		if (this.queue.comment == 3) {
+			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends"));
+		}
+
+		final com.thoughtworks.xstream.XStream xStream = new com.thoughtworks.xstream.XStream(new DomDriver());
+		xStream.autodetectAnnotations(true);
+		final String atomData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xStream.toXML(videoEntry);
 
 		Logger.getLogger(UploadWorker.class).info("AtomData: " + atomData);
 
 		//Upload atomData and fetch URL to upload to
 		return this.uploadMetaData(atomData, fileToUpload.getAbsolutePath());
-	}
-
-	private String getAuthToken(final AccountEntry account) throws UploaderException
-	{
-		if (this.authToken == null) {
-			try {
-				this.authToken = account.getYoutubeServiceManager().getAuthToken();
-			} catch (AuthenticationException e) {
-				e.printStackTrace();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queueEntry, e.getMessage()));
-				throw new UploaderException("AUTH TOKEN FAILED");
-			}
-		}
-		return this.authToken;
 	}
 
 	private long generateEndBytes(final long start, final double bytesToUpload)
@@ -290,189 +298,180 @@ public class UploadWorker extends BetterSwingWorker
 	private String uploadMetaData(final String metaData, final String filePath) throws UploaderException
 	{
 		try {
-			final HttpURLConnection urlConnection = this.getGDataUrlConnection(INITIAL_UPLOAD_URL);
-			urlConnection.setRequestMethod("POST");
-			urlConnection.setDoOutput(true);
-			urlConnection.setRequestProperty("Content-Type", "application/atom+xml; charset=UTF-8");
-			urlConnection.setRequestProperty("Slug", filePath);
-			final OutputStreamWriter outStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8");
-			outStreamWriter.write(metaData);
-			outStreamWriter.close();
-			final int responseCode = urlConnection.getResponseCode();
+			final Request request = new Request.Builder(Request.Method.POST, new URL(INITIAL_UPLOAD_URL)).build();
+			final RequestSigner requestSigner = this.getRequestSigner();
 
-			this.logHeaderFields(urlConnection);
+			request.setContentType("application/atom+xml; charset=UTF-8");
+			request.setHeaderParameter("Slug", filePath);
 
-			Logger.getLogger(this.getClass().getName()).info(metaData);
-			if (responseCode == 400) {
-				throw new UploaderException("Die gegebenen Videoinformationen sind ungültig!");
+			requestSigner.sign(request);
+
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
+			final OutputStreamWriter outStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName("UTF-8"));
+			try {
+				outStreamWriter.write(metaData);
+				outStreamWriter.flush();
+
+				final Response response = request.send();
+				if (response.code == 400) {
+					throw new UploaderException("Die gegebenen Videoinformationen sind ungültig!");
+				}
+				return response.headerFields.get("Location").get(0);
+			} finally {
+				outStreamWriter.close();
 			}
-			return urlConnection.getHeaderField("Location");
 		} catch (IOException ex) {
 			throw new UploaderException("Metadaten konnten nicht gesendet werden!", ex);
-		}
-	}
-
-	private void logHeaderFields(final HttpURLConnection urlConnection)
-	{
-		for (int i = 0; i < urlConnection.getHeaderFields().size(); i++) {
-			Logger.getLogger(Thread.currentThread().getName()).info("Key: " + urlConnection.getHeaderFieldKey(i) + " Value: " + urlConnection.getHeaderField(i));
+		} catch (org.chaosfisch.google.auth.AuthenticationException e) {
+			throw new UploaderException("Auth exception", e);
 		}
 	}
 
 	private String uploadChunk(final File fileToUpload, final String uploadUrl, final long startByte, final long endByte) throws UploaderException
 	{
-		final int chunk = (int) (endByte - startByte + 1);
-		final HttpURLConnection urlConnection = this.getGDataUrlConnection(uploadUrl);
-		try {
-			urlConnection.setRequestMethod("PUT");
-			urlConnection.setDoOutput(true);
-			urlConnection.setFixedLengthStreamingMode(chunk);
-			urlConnection.setRequestProperty("Content-Type", this.queueEntry.getMimetype());
-			urlConnection.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length()));
-		} catch (IOException ex) {
-			throw new UploaderException("Konnte Schreibstream nicht erzeugen!", ex);
-		}
-
 		//Log operation
-		Logger.getLogger(Thread.currentThread().getName()).info(String.format("Uploaded %d bytes so far, using PUT method.", (int) this.totalBytesUploaded));
-		final InputStream fileStream;
+		this.logger.info(String.format("Uploaded %d bytes so far, using PUT method.", (int) this.totalBytesUploaded));
+		final UploadProgress uploadProgress = new UploadProgress(this.queue, this.fileSize, this.totalBytesUploaded, 0, Calendar.getInstance().getTimeInMillis(), 0);
+
+		//Building PUT Request for chunk data
+		final Request request;
 		try {
-			fileStream = new BufferedInputStream(new FileInputStream(fileToUpload));
-			final long skipped = fileStream.skip(startByte);
-			if (startByte != skipped) {
-				//noinspection DuplicateStringLiteralInspection
-				throw new UploaderException("Fehler beim Lesen der Datei!");
-			}
-		} catch (IOException ex) {
-			throw new UploaderException("Fehler beim Lesen der Datei!", ex);
+			request = new Request.Builder(Request.Method.PUT, new URL(uploadUrl)).build();
+		} catch (MalformedURLException e) {
+			throw new UploaderException(String.format("Upload URL malformed! %s", uploadUrl));
 		}
 
-		final UploadProgress uploadProgress = new UploadProgress(this.queueEntry, this.fileSize, this.totalBytesUploaded, 0, new Date().getTime(), 0);
-		ThrottledOutputStream outputStream = null;
+		request.setContentType(this.queue.mimetype);
+		request.setHeaderParameter("Content-Range", String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length()));
+
 		try {
+			this.getRequestSigner().sign(request);
+		} catch (AuthenticationException e) {
+			return null;
+		}
 
-			outputStream = new ThrottledOutputStream(urlConnection.getOutputStream(), this.speedLimit);
-			//Write Chunk
-			final int bufferSize = 1024;
-			final byte[] buffer = new byte[bufferSize];
-			int bytesRead;
-			long totalRead = 0;
-			while ((bytesRead = fileStream.read(buffer, 0, bufferSize)) != -1) {
+		//Calculating the chunk size
+		final int chunk = (int) (endByte - startByte + 1);
 
-				//Upload bytes in buffer
-				try {
-					outputStream.writeBytes(buffer, 0, bytesRead);
-				} catch (InterruptedException e) {
-					throw new UploaderStopException("Beendet auf Userrequest ::: B");
-				}
-				//Calculate all uploadinformation
-				totalRead += bytesRead;
-				this.totalBytesUploaded += bytesRead;
+		try {
+			//Input
+			final FileInputStream fileInputStream = new FileInputStream(fileToUpload);
+			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 
-				//PropertyChangeEvent
-				final long diffTime = new Date().getTime() - uploadProgress.getTime();
-				if (diffTime > 2000) {
-					uploadProgress.setDiffBytes(this.totalBytesUploaded - uploadProgress.getTotalBytesUploaded());
-					uploadProgress.setTotalBytesUploaded(this.totalBytesUploaded);
-					uploadProgress.setDiffTime(diffTime);
-					uploadProgress.setTime(uploadProgress.getTime() + diffTime);
+			//Output
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setFixedContent(chunk));
+			final ThrottledOutputStream throttledOutputStream = new ThrottledOutputStream(bufferedOutputStream, this.speedLimit);
 
-					EventBus.publish(Uploader.UPLOAD_PROGRESS, uploadProgress);
-				}
-
-				if (totalRead == (endByte - startByte + 1)) {
-					break;
-				}
-			}
-		} catch (IOException ex) {
-			throw new UploaderException("Fehler beim Schreiben der Datei", ex);
-		} finally {
 			try {
-				if (outputStream != null) {
-					outputStream.close();
+				final long skipped = bufferedInputStream.skip(startByte);
+				if (startByte != skipped) {
+					//noinspection DuplicateStringLiteralInspection
+					throw new UploaderException("Fehler beim Lesen der Datei!");
 				}
-			} catch (IOException ignored) {
+				this.flowChunk(bufferedInputStream, throttledOutputStream, startByte, endByte, uploadProgress);
+				final Response response = request.send();
+				switch (response.code) {
+					case 200:
+						throw new UploaderException("Received 200 response during resumable uploading");
+					case 201:
+						final String videoId = this.parseVideoId(response.body);
+						Logger.getLogger(Thread.currentThread().getName()).info("videoId=" + videoId);
+						return videoId;
+					case 308:
+						// OK, the chunk completed succesfully
+						this.logger.info(String.format("responseCode=%d responseMessage=%s", response.code, response.message));
+						return null;
+					default:
+						throw new UploaderException(String.format("Unexpected return code : %d %s while uploading :%s", response.code, response.message, response.url.toString()));
+				}
+			} finally {
+				try {
+					bufferedInputStream.close();
+					fileInputStream.close();
+					throttledOutputStream.close();
+					bufferedOutputStream.close();
+				} catch (IOException ignored) {
+				}
 			}
-		}
-
-		try {
-			return this.handleResponseCode(uploadUrl, urlConnection, urlConnection.getResponseCode());
-		} catch (IOException e) {
-			throw new UploaderException("Fehler beim Lesen des Response Codes", e);
+		} catch (FileNotFoundException ex) {
+			throw new UploaderException("Datei konnte nicht gefunden werden!", ex);
+		} catch (IOException ex) {
+			throw new UploaderException("Fehler beim Schreiben der Datei (0x00001)", ex);
 		}
 	}
 
-	private String handleResponseCode(final String uploadUrl, final HttpURLConnection urlConnection, final int responseCode) throws IOException, UploaderException
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte, final UploadProgress uploadProgress) throws IOException
 	{
-		switch (responseCode) {
+		//Write Chunk
+		final byte[] buffer = new byte[bufferSize];
+		long totalRead = 0;
 
-			case 200:
-				this.logHeaderFields(urlConnection);
-				throw new UploaderException("Received 200 response during resumable uploading");
-			case 201:
-				final String videoId = this.parseVideoId(urlConnection.getInputStream());
-				Logger.getLogger(Thread.currentThread().getName()).info("videoId=" + videoId);
-				return videoId;
-			case 308:
-				// OK, the chunk completed succesfully
-				Logger.getLogger(Thread.currentThread().getName()).info(String.format("responseCode=%d responseMessage=%s", responseCode, urlConnection.getResponseMessage()));
-				return null;
-			default:
-				throw new UploaderException(String.format("Unexpected return code : %d %s while uploading :%s", responseCode, urlConnection.getResponseMessage(), uploadUrl));
+		while (totalRead != (endByte - startByte + 1)) {
+			//Upload bytes in buffer
+			final int bytesRead = RequestUtilities.flowChunk(inputStream, outputStream, buffer, 0, bufferSize);
+			//Calculate all uploadinformation
+			totalRead += bytesRead;
+			this.totalBytesUploaded += bytesRead;
+
+			//PropertyChangeEvent
+			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
+			if (diffTime > 1000 || (totalRead == (endByte - startByte + 1))) {
+				uploadProgress.setDiffBytes(this.totalBytesUploaded - uploadProgress.getTotalBytesUploaded());
+				uploadProgress.setTotalBytesUploaded(this.totalBytesUploaded);
+				uploadProgress.setDiffTime(diffTime);
+				uploadProgress.setTime(uploadProgress.getTime() + diffTime);
+
+				EventBus.publish(Uploader.UPLOAD_PROGRESS, uploadProgress);
+			}
 		}
 	}
 
 	private ResumeInfo resumeFileUpload(final String uploadUrl) throws UploaderException
 	{
-		final HttpURLConnection urlConnection = this.getGDataUrlConnection(uploadUrl);
-		final int responseCode;
 		try {
-			urlConnection.setRequestProperty("Content-Range", "bytes */*");
-			urlConnection.setRequestMethod("PUT");
-			urlConnection.setFixedLengthStreamingMode(0);
+			final Request request = new Request.Builder(Request.Method.PUT, new URL(uploadUrl)).build();
+			this.getRequestSigner().sign(request);
+			request.setHeaderParameter("Content-Range", "bytes */*");
+			request.setFixedContent(0);
+			final Response response = request.send(false);
 
-			HttpURLConnection.setFollowRedirects(false);
-			urlConnection.setDoOutput(true);
-			urlConnection.connect();
-			responseCode = urlConnection.getResponseCode();
-		} catch (IOException ex) {
-			throw new UploaderException("Content-Range-Header-Request konnte nicht erzeugt werden!", ex);
-		}
+			if (response.code == 308) {
+				final long nextByteToUpload;
 
-		if (responseCode == 308) {
-			final long nextByteToUpload;
-
-			final String range = urlConnection.getHeaderField("Range");
-			if (range == null) {
-				Logger.getLogger(Thread.currentThread().getName()).info(String.format("PUT to %s did not return 'Range' header.", uploadUrl));
-				nextByteToUpload = 0;
-			} else {
-				Logger.getLogger(Thread.currentThread().getName()).info(String.format("Range header is '%s'.", range));
-				final String[] parts = range.split("-");
-				if (parts.length > 1) {
-					nextByteToUpload = Long.parseLong(parts[1]) + 1;
-				} else {
+				final String range = response.headerFields.get("Range").get(0);
+				if (range == null) {
+					this.logger.info(String.format("PUT to %s did not return 'Range' header.", uploadUrl));
 					nextByteToUpload = 0;
+				} else {
+					this.logger.info(String.format("Range header is '%s'.", range));
+					final String[] parts = range.split("-");
+					if (parts.length > 1) {
+						nextByteToUpload = Long.parseLong(parts[1]) + 1;
+					} else {
+						nextByteToUpload = 0;
+					}
 				}
+				final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
+				if (response.headerFields.containsKey("Location")) {
+					final String location = response.headerFields.get("Location").get(0);
+					if (location != null) {
+						this.updateUploadUrl(location);
+					}
+				}
+				return resumeInfo;
+			} else if (response.code >= 200 && response.code < 300) {
+				return new ResumeInfo(this.parseVideoId(response.body));
+			} else {
+				throw new UploaderException(String.format("Unexpected return code : %d while uploading :%s", response.code, uploadUrl));
 			}
-			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			final String location = urlConnection.getHeaderField("Location");
-			if (location != null) {
-				this.updateUploadUrl(location);
-			}
-			return resumeInfo;
-		} else if (responseCode >= 200 && responseCode < 300) {
-			try {
-				return new ResumeInfo(this.parseVideoId(urlConnection.getInputStream()));
-			} catch (IOException ex) {
-				throw new UploaderException("Inputstream zum parsen fehlt.", ex);
-			}
+		} catch (IOException ex) {
+			throw new UploaderException("Content-Range-Header-Request konnte nicht erzeugt werden! (0x00003)", ex);
+		} catch (AuthenticationException e) {
+			throw new UploaderException("Autentifizierungsfehler! (0x00004)", e);
 		}
-		throw new UploaderException(String.format("Unexpected return code : %d while uploading :%s", responseCode, uploadUrl));
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean shouldResume()
+	private boolean canResume()
 	{
 		this.numberOfRetries++;
 		if (this.numberOfRetries > MAX_RETRIES) {
@@ -480,112 +479,56 @@ public class UploadWorker extends BetterSwingWorker
 		}
 		try {
 			final int sleepSeconds = (int) Math.pow(BACKOFF, this.numberOfRetries);
-			Logger.getLogger(Thread.currentThread().getName()).info(String.format("Zzzzz for : %d sec.", sleepSeconds));
+			this.logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
 			Thread.sleep(sleepSeconds * 1000);
-			Logger.getLogger(Thread.currentThread().getName()).info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
+			this.logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
 		} catch (InterruptedException se) {
 			return false;
 		}
 		return true;
 	}
 
-	private String parseVideoId(final InputStream atomDataStream) throws UploaderException
+	private String parseVideoId(final String atomData) throws UploaderException
 	{
-		try {
-			final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			final Document doc = docBuilder.parse(atomDataStream);
-
-			final NodeList nodes = doc.getElementsByTagNameNS("*", "*");
-			for (int i = 0; i < nodes.getLength(); i++) {
-				final Node node = nodes.item(i);
-				final String nodeName = node.getNodeName();
-				//noinspection CallToStringEquals
-				if ("yt:videoid".equals(nodeName)) {
-					return node.getFirstChild().getNodeValue();
-				}
-			}
-		} catch (IOException ex) {
-			throw new UploaderException("Fehler beim lesen des Inputstream: AtomDataStream", ex);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (SAXException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-		return null;
+		final XStream xStream = new XStream(new DomDriver());
+		xStream.processAnnotations(VideoEntry.class);
+		final VideoEntry videoEntry = (VideoEntry) xStream.fromXML(atomData);
+		return videoEntry.mediaGroup.videoID;
 	}
 
-	private HttpURLConnection getGDataUrlConnection(final String urlString) throws UploaderException
+	private RequestSigner getRequestSigner() throws org.chaosfisch.google.auth.AuthenticationException
 	{
-		try {
-			final URL url = new URL(urlString);
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("Authorization", String.format("GoogleLogin auth=\"%s\"", this.getAuthToken(this.queueEntry.getAccount())));
-			connection.setRequestProperty("GData-Version", "2");
-			connection.setRequestProperty("X-GData-Key", String.format("key=%s", YTServiceImpl.DEVELOPER_KEY));
-			return connection;
-		} catch (IOException ex) {
-			throw new UploaderException("Konnte GData Request nicht öffnen.", ex);
+		if (this.googleAuthorization == null) {
+			this.googleAuthorization = new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, this.queue.account.name, this.queue.account.password);
 		}
-	}
-
-	private String finishStartedUpload(final File fileToUpload) throws UploaderException
-	{
-		this.queueEntry.setFile(fileToUpload.getAbsolutePath());
-		this.fileSize = fileToUpload.length();
-		final String videoId = this.analyzeResumeInfo(this.fetchResumeInfo(this.queueEntry.getUploadurl()), this.queueEntry.getUploadurl());
-		if (videoId != null) {
-			return videoId;
-		}
-		return this.uploadFile(fileToUpload, this.queueEntry.getUploadurl());
+		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, this.googleAuthorization);
 	}
 
 	private void updateUploadUrl(final String uploadUrl)
 	{
-		this.queueEntry.setUploadurl(uploadUrl);
-		EventBus.publish("updateQueueEntry", this.queueEntry);
+		this.queue.uploadurl = uploadUrl;
+		EventBus.publish("updateQueue", this.queue);
 	}
 
-	private String readFile(final InputStream inputStream) throws UploaderException
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT) public void onAbortUpload(final String topic, final Queue abort)
 	{
-		String content = "";
-		try {
-			final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-
-			String strLine;
-			//Read File Line By Line
-			while ((strLine = br.readLine()) != null) {
-				content = content + strLine;
-			}
-		} catch (IOException ex) {//Catch exception if any
-			throw new UploaderException("Konnte GData.xml nicht lesen", ex);
-		}
-		return content;
-	}
-
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT)
-	public void onAbortUpload(final String topic, final QueueEntry abortEntry)
-	{
-		if (abortEntry.getIdentity() == this.queueEntry.getIdentity()) {
+		if (abort.getIdentity() == this.queue.getIdentity()) {
 			try {
 				this.cancel(true);
 				this.failed = true;
-			} catch (Exception ignored) {
-
+			} catch (CancellationException ignored) {
 			}
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
-	public void onFailedUpload(final String topic, final UploadFailed uploadFailed)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED) public void onFailedUpload(final String topic, final UploadFailed uploadFailed)
 	{
 		this.failed = true;
-		Logger.getLogger(this.getClass().getName()).warn(uploadFailed.getMessage());
+		this.logger.warn(uploadFailed.getMessage());
 		this.cancel(true);
 	}
 
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_LIMIT)
-	public void onSpeedLimit(final String topic, final Object o)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_LIMIT) public void onSpeedLimit(final String topic, final Object o)
 	{
 		this.speedLimit = Integer.parseInt(o.toString());
 	}

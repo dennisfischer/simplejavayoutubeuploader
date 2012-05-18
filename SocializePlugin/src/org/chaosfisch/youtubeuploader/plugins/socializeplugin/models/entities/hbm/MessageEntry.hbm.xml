@@ -25,7 +25,7 @@
 
 <hibernate-mapping package="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.hbm">
 
-	<class name="org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.MessageEntry" table="MESSAGES" schema="PUBLIC">
+	<class name="org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message" table="MESSAGES" schema="PUBLIC">
 		<id name="identity" type="int" column="IDENTITY">
 			<generator class="org.hibernate.id.IdentityGenerator"/>
 		</id>

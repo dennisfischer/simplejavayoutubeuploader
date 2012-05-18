@@ -1,11 +1,30 @@
 <component name="libraryTable">
   <library name="other">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../repositories/other" />
-      <root url="file://$PROJECT_DIR$/../repositories/other" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/commons-collections-3.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/EventBus.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/filedrop.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-common-1.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-forms-1.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/JTattoo.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/log4j-1.2.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/mp3plugin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/substance-6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/substance-swingx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/swingx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/trident.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/xstream-1.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/commons-io-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/hsqldb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/slf4j-api-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/slf4j-log4j12-1.6.4.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/../repositories/other" recursive="false" />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

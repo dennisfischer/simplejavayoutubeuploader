@@ -36,13 +36,7 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.AccountListModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PlaylistListModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
@@ -50,8 +44,8 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueServi
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import javax.swing.*;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class UploadController
 {
@@ -84,21 +78,21 @@ public class UploadController
 		AnnotationProcessor.process(this);
 	}
 
-	public void deleteAccount(final AccountEntry accountEntry)
+	public void deleteAccount(final Account account)
 	{
-		this.accountService.deleteAccountEntry(accountEntry);
+		this.accountService.deleteAccountEntry(account);
 	}
 
-	public void deletePreset(final PresetEntry presetEntry)
+	public void deletePreset(final Preset preset)
 	{
 
-		this.presetListModel.removePresetEntry(presetEntry);
-		this.presetService.deletePresetEntry(presetEntry);
+		this.presetListModel.removePresetEntry(preset);
+		this.presetService.deletePresetEntry(preset);
 	}
 
-	public void savePreset(final PresetEntry presetEntry)
+	public void savePreset(final Preset preset)
 	{
-		this.presetService.updatePresetEntry(presetEntry);
+		this.presetService.updatePresetEntry(preset);
 	}
 
 	public void changeAutotitleCheckbox(final boolean selected)
@@ -115,7 +109,7 @@ public class UploadController
 
 	public void changeAutotitlePlaylist(final Object item)
 	{
-		this.autoTitleGenerator.setPlaylist((PlaylistEntry) item);
+		this.autoTitleGenerator.setPlaylist((Playlist) item);
 		this.updateAutotitle();
 	}
 
@@ -149,46 +143,46 @@ public class UploadController
 		return this.accountService;
 	}
 
-	public void submitUpload(final AccountEntry accountEntry, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file,
-	                         final boolean commentvote, final boolean mobile, final PlaylistEntry playlistEntry, final String tags, final String title, final short videoresponse,
-	                         final short visibility, final Date starttime)
+	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file,
+	                         final boolean commentvote, final boolean mobile, final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility,
+	                         final Date starttime)
 	{
-		final QueueEntry queueEntity = new QueueEntry();
-		queueEntity.setAccount(accountEntry);
-		queueEntity.setMimetype(Mimetype.getMimetypeByExtension(file));
-		queueEntity.setMobile(mobile);
-		queueEntity.setTitle(title);
-		queueEntity.setCategory(category);
-		queueEntity.setComment(comment);
-		queueEntity.setCommentvote(commentvote);
-		queueEntity.setDescription(description);
-		queueEntity.setEmbed(embed);
-		queueEntity.setFile(file);
-		queueEntity.setKeywords(tags);
-		queueEntity.setRate(rate);
-		queueEntity.setVideoresponse(videoresponse);
-		queueEntity.setPlaylist(playlistEntry);
-		queueEntity.setLocked(false);
+		final Queue queueEntity = new Queue();
+		queueEntity.account = account;
+		queueEntity.mimetype = Mimetype.getMimetypeByExtension(file);
+		queueEntity.mobile = mobile;
+		queueEntity.title = title;
+		queueEntity.category = category;
+		queueEntity.comment = comment;
+		queueEntity.commentvote = commentvote;
+		queueEntity.description = description;
+		queueEntity.embed = embed;
+		queueEntity.file = file;
+		queueEntity.keywords = tags;
+		queueEntity.rate = rate;
+		queueEntity.videoresponse = videoresponse;
+		queueEntity.playlist = playlist;
+		queueEntity.locked = false;
 
-		if (playlistEntry != null) {
-			playlistEntry.setNumber(playlistEntry.getNumber() + 1);
-			this.playlistService.updatePlaylist(playlistEntry);
+		if (playlist != null) {
+			playlist.number++;
+			this.playlistService.updatePlaylist(playlist);
 		}
 
 		switch (visibility) {
 			case 1:
-				queueEntity.setUnlisted(true);
+				queueEntity.unlisted = true;
 				break;
 			case 2:
-				queueEntity.setPrivatefile(true);
+				queueEntity.privatefile = true;
 				break;
 		}
 
 		if (starttime.after(new Date(System.currentTimeMillis() + 60 * 60 * 1000))) {
-			queueEntity.setStarted(starttime);
+			queueEntity.started = starttime;
 		}
 
-		this.queueService.createQueueEntry(queueEntity);
+		this.queueService.createQueue(queueEntity);
 	}
 
 	public PresetListModel getPresetListModel()
@@ -201,9 +195,9 @@ public class UploadController
 		return this.playlistListModel;
 	}
 
-	public void synchronizePlaylists(final Collection<AccountEntry> accountEntries)
+	public void synchronizePlaylists(final List<Account> accounts)
 	{
-		this.playlistService.synchronizePlaylists(accountEntries);
+		this.playlistService.synchronizePlaylists(accounts);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
@@ -212,10 +206,10 @@ public class UploadController
 		this.changeAccount(this.accountListModel.getSelectedItem());
 	}
 
-	public void changeAccount(final AccountEntry accountEntry)
+	public void changeAccount(final Account account)
 	{
 		this.playlistListModel.removeAll();
-		this.playlistListModel.addPlaylistEntryList(this.playlistService.getAllPlaylistByAccount(accountEntry));
+		this.playlistListModel.addPlaylistEntryList(this.playlistService.getByAccount(account));
 	}
 
 	public void importAccount()

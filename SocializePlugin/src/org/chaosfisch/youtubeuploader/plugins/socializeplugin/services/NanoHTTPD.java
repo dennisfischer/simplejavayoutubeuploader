@@ -42,7 +42,9 @@ import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.*;
 
-public class NanoHTTPD
+@SuppressWarnings(
+		{"CallToStringEquals", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer",
+				"IOResourceOpenedButNotSafelyClosed"}) public class NanoHTTPD
 {
 	// ==================================================
 	// API parts
@@ -176,28 +178,45 @@ public class NanoHTTPD
 	 */
 	public NanoHTTPD(final int port, final File wwwroot) throws IOException
 	{
-		this.myTcpPort = port;
 		this.myRootDir = wwwroot;
-		this.myServerSocket = new ServerSocket(this.myTcpPort);
-		this.myThread = new Thread(new Runnable()
-		{
-			public void run()
+		this.myServerSocket = new ServerSocket(port);
+		try {
+			this.myThread = new Thread(new Runnable()
 			{
-				try {
-					while (true) {
-						new HTTPSession(NanoHTTPD.this.myServerSocket.accept());
+				public void run()
+				{
+					try {
+						final Socket socket = NanoHTTPD.this.myServerSocket.accept();
+
+						try {
+							do {
+								//noinspection ObjectAllocationInLoop
+								new HTTPSession(socket);
+							} while (socket.isBound());
+						} finally {
+							try {
+								socket.close();
+							} catch (IOException ignored) {
+							}
+						}
+					} catch (IOException ignored) {
 					}
-				} catch (IOException ignored) {
 				}
+			});
+			this.myThread.setDaemon(true);
+			this.myThread.start();
+		} finally {
+			try {
+				this.myServerSocket.close();
+			} catch (IOException ignored) {
 			}
-		});
-		this.myThread.setDaemon(true);
-		this.myThread.start();
+		}
 	}
 
 	/**
 	 * Stops the server.
 	 */
+
 	public void stop()
 	{
 		try {
@@ -212,7 +231,9 @@ public class NanoHTTPD
 	 * Handles one session, i.e. parses the HTTP request
 	 * and returns the response.
 	 */
-	private class HTTPSession implements Runnable
+	@SuppressWarnings(
+			{"CallToStringEqualsIgnoreCase", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer",
+					"IOResourceOpenedButNotSafelyClosed"}) private class HTTPSession implements Runnable
 	{
 		public HTTPSession(final Socket s)
 		{
@@ -443,7 +464,7 @@ public class NanoHTTPD
 						this.sendError(HTTP_BADREQUEST, "BAD REQUEST: Content type is multipart/form-data but next chunk does not start with boundary. Usage: GET /example/file.html");
 					}
 					boundarycount++;
-					final Properties item = new Properties();
+					@SuppressWarnings("ObjectAllocationInLoop") final Properties item = new Properties();
 					mpline = in.readLine();
 					while (mpline != null && mpline.trim().length() > 0) {
 						final int p = mpline.indexOf(':');
@@ -457,8 +478,8 @@ public class NanoHTTPD
 						if (contentDisposition == null) {
 							this.sendError(HTTP_BADREQUEST, "BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
 						}
-						final StringTokenizer st = new StringTokenizer(contentDisposition, "; ");
-						final Properties disposition = new Properties();
+						@SuppressWarnings("ObjectAllocationInLoop") final StringTokenizer st = new StringTokenizer(contentDisposition, "; ");
+						@SuppressWarnings("ObjectAllocationInLoop") final Properties disposition = new Properties();
 						while (st.hasMoreTokens()) {
 							final String token = st.nextToken();
 							final int p = token.indexOf('=');
@@ -466,7 +487,7 @@ public class NanoHTTPD
 								disposition.put(token.substring(0, p).trim().toLowerCase(), token.substring(p + 1).trim());
 							}
 						}
-						String pname = disposition.getProperty("name");
+						String pname = disposition.getProperty("title");
 						pname = pname.substring(1, pname.length() - 1);
 
 						String value = "";
@@ -510,7 +531,7 @@ public class NanoHTTPD
 		{
 			int matchcount = 0;
 			int matchbyte = -1;
-			final Vector matchbytes = new Vector();
+			@SuppressWarnings("CollectionWithoutInitialCapacity") final Vector matchbytes = new Vector();
 			for (int i = 0; i < b.length; i++) {
 				if (b[i] == boundary[matchcount]) {
 					if (matchcount == 0) {
@@ -518,6 +539,7 @@ public class NanoHTTPD
 					}
 					matchcount++;
 					if (matchcount == boundary.length) {
+						//noinspection unchecked
 						matchbytes.addElement(matchbyte);
 						matchcount = 0;
 						matchbyte = -1;
@@ -547,12 +569,25 @@ public class NanoHTTPD
 				final String tmpdir = System.getProperty("java.io.tmpdir");
 				try {
 					final File temp = File.createTempFile("org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.NanoHTTPD", "", new File(tmpdir));
-					final OutputStream fstream = new FileOutputStream(temp);
-					fstream.write(b, offset, len);
-					fstream.close();
-					path = temp.getAbsolutePath();
-				} catch (Exception e) { // Catch exception if any
-					System.err.println("Error: " + e.getMessage());
+					final FileOutputStream fileOutputStream = new FileOutputStream(temp);
+					final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+					try {
+						bufferedOutputStream.write(b, offset, len);
+						path = temp.getAbsolutePath();
+						return path;
+					} catch (Exception e) { // Catch exception if any
+						System.err.println("Error: " + e.getMessage());
+					} finally {
+						try {
+							bufferedOutputStream.close();
+							fileOutputStream.close();
+						} catch (IOException ignored) {
+						}
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				} catch (IOException e) {
+					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 				}
 			}
 			return path;
@@ -580,7 +615,7 @@ public class NanoHTTPD
 		private String decodePercent(final String str) throws InterruptedException
 		{
 			try {
-				final StringBuilder sb = new StringBuilder();
+				@SuppressWarnings("StringBufferWithoutInitialCapacity") final StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < str.length(); i++) {
 					final char c = str.charAt(i);
 					switch (c) {
@@ -605,7 +640,7 @@ public class NanoHTTPD
 
 		/**
 		 * Decodes parameters in percent-encoded URI-format
-		 * ( e.g. "name=Jack%20Daniels&pass=Single%20Malt" ) and
+		 * ( e.g. "title=Jack%20Daniels&pass=Single%20Malt" ) and
 		 * adds them to given Properties. NOTE: this doesn't support multiple
 		 * identical keys due to the simplicity of Properties -- if you need multiples,
 		 * you might want to replace the Properties with a Hashtable of Vectors or such.
@@ -655,7 +690,7 @@ public class NanoHTTPD
 				}
 
 				if (header == null || header.getProperty("Date") == null) {
-					pw.print("Date: " + gmtFrmt.format(new Date()) + "\r\n");
+					pw.print("Date: " + gmtFrmt.format(Calendar.getInstance().getTime()) + "\r\n");
 				}
 
 				if (header != null) {
@@ -724,7 +759,6 @@ public class NanoHTTPD
 		return newUri;
 	}
 
-	private final int          myTcpPort;
 	private final ServerSocket myServerSocket;
 	private       Thread       myThread;
 	private final File         myRootDir;
@@ -797,7 +831,7 @@ public class NanoHTTPD
 
 					if (files != null) {
 						for (int i = 0; i < files.length; ++i) {
-							final File curFile = new File(f, files[i]);
+							@SuppressWarnings("ObjectAllocationInLoop") final File curFile = new File(f, files[i]);
 							final boolean dir = curFile.isDirectory();
 							if (dir) {
 								msg += "<b>";
@@ -837,7 +871,7 @@ public class NanoHTTPD
 
 		try {
 			if (res == null) {
-				// Get MIME type from file name extension, if possible
+				// Get MIME type from file title extension, if possible
 				String mime = null;
 				final int dot = f.getCanonicalPath().lastIndexOf('.');
 				if (dot >= 0) {
@@ -889,6 +923,7 @@ public class NanoHTTPD
 						{
 							public int available() throws IOException { return (int) dataLen; }
 						};
+						//noinspection ResultOfMethodCallIgnored
 						fis.skip(startFrom);
 
 						res = new Response(HTTP_PARTIALCONTENT, mime, fis);
@@ -917,7 +952,7 @@ public class NanoHTTPD
 	/**
 	 * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE
 	 */
-	private static final Hashtable theMimeTypes = new Hashtable();
+	@SuppressWarnings("CollectionWithoutInitialCapacity") private static final Hashtable theMimeTypes = new Hashtable();
 
 	static {
 		final StringTokenizer st = new StringTokenizer("css		text/css " +
@@ -945,6 +980,7 @@ public class NanoHTTPD
 				                                               "exe		application/octet-stream " +
 				                                               "class		application/octet-stream ");
 		while (st.hasMoreTokens()) {
+			//noinspection unchecked
 			theMimeTypes.put(st.nextToken(), st.nextToken());
 		}
 	}
@@ -963,34 +999,5 @@ public class NanoHTTPD
 		gmtFrmt = new java.text.SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
 		gmtFrmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 	}
-
-	/**
-	 * The distribution licence
-	 */
-	private static final String LICENCE = "Copyright (C) 2001,2005-2011 by Jarno Elonen <elonen@iki.fi>\n" +
-			"and Copyright (C) 2010 by Konstantinos Togias <info@ktogias.gr>\n" +
-			"\n" +
-			"Redistribution and use in source and binary forms, with or without\n" +
-			"modification, are permitted provided that the following conditions\n" +
-			"are met:\n" +
-			"\n" +
-			"Redistributions of source code must retain the above copyright notice,\n" +
-			"this list of conditions and the following disclaimer. Redistributions in\n" +
-			"binary form must reproduce the above copyright notice, this list of\n" +
-			"conditions and the following disclaimer in the documentation and/or other\n" +
-			"materials provided with the distribution. The name of the author may not\n" +
-			"be used to endorse or promote products derived from this software without\n" +
-			"specific prior written permission. \n" +
-			" \n" +
-			"THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n" +
-			"IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES\n" +
-			"OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n" +
-			"IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,\n" +
-			"INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT\n" +
-			"NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n" +
-			"DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n" +
-			"THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n" +
-			"(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n" +
-			"OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
 }
 

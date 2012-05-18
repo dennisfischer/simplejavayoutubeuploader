@@ -21,15 +21,16 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -56,9 +57,9 @@ class ImportManager
 		this.queueService = queueService;
 		this.fileChooser = fileChooser;
 		xStream.alias("entries", List.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.PresetEntry", PresetEntry.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.AccountEntry", AccountEntry.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.QueueEntry", QueueEntry.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.Preset", Preset.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.Account", Account.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.Queue", Queue.class); //NON-NLS
 	}
 
 	public void importAccount()
@@ -67,22 +68,13 @@ class ImportManager
 		if (file == null) {
 			return;
 		}
-		InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8"); //NON-NLS
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (FileNotFoundException e) {
-			return;
-		}
-		@SuppressWarnings("unchecked") final List accounts = (List) this.xStream.fromXML(inputStreamReader);
-
-		for (final Object account : accounts) {
-			final AccountEntry accountEntry = (AccountEntry) account;
-			try {
-				accountEntry.getYoutubeServiceManager().authenticate();
-				this.accountService.createAccountEntry((AccountEntry) account);
-			} catch (Exception ignored) {
+		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		if (object instanceof List<?>) {
+			final List<?> accounts = (List<?>) object;
+			for (final Object account : accounts) {
+				final Account accountEntry = (Account) account;
+				//accountEntry.getYoutubeServiceManager().authenticate();
+				this.accountService.createAccountEntry(accountEntry);
 			}
 		}
 	}
@@ -93,18 +85,12 @@ class ImportManager
 		if (file == null) {
 			return;
 		}
-		InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (FileNotFoundException e) {
-			return;
-		}
-		@SuppressWarnings("unchecked") final List presets = (List) this.xStream.fromXML(inputStreamReader);
-
-		for (final Object preset : presets) {
-			this.presetService.createPresetEntry((PresetEntry) preset);
+		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		if (object instanceof List<?>) {
+			final List<?> presets = (List<?>) object;
+			for (final Object preset : presets) {
+				this.presetService.createPresetEntry((Preset) preset);
+			}
 		}
 	}
 
@@ -114,17 +100,33 @@ class ImportManager
 		if (file == null) {
 			return;
 		}
-		InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (FileNotFoundException e) {
-			return;
+		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		if (object instanceof List<?>) {
+			final List<?> entries = (List<?>) object;
+			for (final Object entry : entries) {
+				this.queueService.createQueue((Queue) entry);
+			}
 		}
-		@SuppressWarnings("unchecked") final List entries = (List) this.xStream.fromXML(inputStreamReader);
-		for (final Object entry : entries) {
-			this.queueService.createQueueEntry((QueueEntry) entry);
+	}
+
+	private Object readObjectFromXMLFile(final File file, final String charset)
+	{
+		try {
+			final FileInputStream fileInputStream = new FileInputStream(file);
+			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+			final InputStreamReader inputStreamReader = new InputStreamReader(bufferedInputStream, Charset.forName(charset));
+			try {
+				return this.xStream.fromXML(inputStreamReader);
+			} finally {
+				try {
+					inputStreamReader.close();
+					bufferedInputStream.close();
+					fileInputStream.close();
+				} catch (IOException ignored) {
+				}
+			}
+		} catch (FileNotFoundException ex) {
+			return new Object();
 		}
 	}
 

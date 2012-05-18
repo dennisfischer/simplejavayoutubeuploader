@@ -28,7 +28,7 @@ package org.chaosfisch.youtubeuploader.designmanager.spi;
  */
 public interface Design
 {
-	String getLaF();
+	Class getLaF();
 
 	String getName();
 

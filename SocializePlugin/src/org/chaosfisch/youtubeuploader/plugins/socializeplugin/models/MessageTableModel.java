@@ -22,7 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.MessageEntry;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.MessageService;
 
 import javax.swing.table.AbstractTableModel;
@@ -39,51 +39,51 @@ import java.util.List;
  */
 public class MessageTableModel extends AbstractTableModel
 {
-	private final IdentityList<MessageEntry> messageEntries = new IdentityList<MessageEntry>();
-	private final String[]                   columns        = {"ID:", "Nachricht:", "Upload ID:", "Facebook", "Twitter", "Google+", "Youtube"};
+	private final IdentityList<Message> messages = new IdentityList<Message>();
+	private final String[]              columns  = {"ID:", "Nachricht:", "Upload ID:", "Facebook", "Twitter", "Google+", "Youtube"};
 
 	public MessageTableModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public MessageTableModel(final List<MessageEntry> messageEntries)
+	public MessageTableModel(final List<Message> messages)
 	{
 		AnnotationProcessor.process(this);
-		this.messageEntries.addAll(messageEntries);
+		this.messages.addAll(messages);
 	}
 
-	void addMessageEntry(final MessageEntry q)
+	void addMessageEntry(final Message q)
 	{
-		this.messageEntries.add(q);
+		this.messages.add(q);
 		this.fireTableDataChanged();
 	}
 
 	public void addMessageEntryList(final List l)
 	{
 		for (final Object o : l) {
-			if (o instanceof MessageEntry) {
-				this.addMessageEntry((MessageEntry) o);
+			if (o instanceof Message) {
+				this.addMessageEntry((Message) o);
 			}
 		}
 	}
 
-	public MessageEntry getMessageEntryAt(final int row)
+	public Message getMessageEntryAt(final int row)
 	{
-		return this.messageEntries.get(row);
+		return this.messages.get(row);
 	}
 
-	public MessageEntry removeMessageEntryAt(final int row)
+	public Message removeMessageEntryAt(final int row)
 	{
-		final MessageEntry messageEntry = this.messageEntries.remove(row);
+		final Message message = this.messages.remove(row);
 		this.fireTableDataChanged();
-		return messageEntry;
+		return message;
 	}
 
 	@Override
 	public int getRowCount()
 	{
-		return this.messageEntries.size();
+		return this.messages.size();
 	}
 
 	@Override
@@ -101,22 +101,22 @@ public class MessageTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final MessageEntry messageEntry = this.messageEntries.get(row);
+		final Message message = this.messages.get(row);
 		switch (col) {
 			case 0:
-				return messageEntry.getIdentity();
+				return message.getIdentity();
 			case 1:
-				return messageEntry.getMessage();
+				return message.message;
 			case 2:
-				return messageEntry.getUploadID();
+				return message.uploadID;
 			case 3:
-				return messageEntry.isFacebook();
+				return message.facebook;
 			case 4:
-				return messageEntry.isTwitter();
+				return message.twitter;
 			case 5:
-				return messageEntry.isGooglePlus();
+				return message.googlePlus;
 			case 6:
-				return messageEntry.isYoutube();
+				return message.youtube;
 			default:
 				return null;
 		}
@@ -148,25 +148,25 @@ public class MessageTableModel extends AbstractTableModel
 	@Override
 	public void setValueAt(final Object value, final int row, final int col)
 	{
-		final MessageEntry messageEntry = this.messageEntries.get(row);
-		switch (col) {
-		}
-		this.fireTableCellUpdated(row, col);
+//		final Message messageEntry = this.messages.get(row);
+//		switch (col) {
+//		}
+//		this.fireTableCellUpdated(row, col);
 	}
 
 	public boolean hasMessageEntryAt(final int selectedRow)
 	{
-		return this.messageEntries.size() >= selectedRow && selectedRow != -1;
+		return this.messages.size() >= selectedRow && selectedRow != -1;
 	}
 
-	public List<MessageEntry> getMessageList()
+	public List<Message> getMessageList()
 	{
-		return new ArrayList<MessageEntry>(this.messageEntries);
+		return new ArrayList<Message>(this.messages);
 	}
 
 	public void removeAll()
 	{
-		final Iterator iterator = this.messageEntries.iterator();
+		final Iterator iterator = this.messages.iterator();
 		while (iterator.hasNext()) {
 			iterator.next();
 			iterator.remove();
@@ -174,29 +174,29 @@ public class MessageTableModel extends AbstractTableModel
 		}
 	}
 
-	public void removeMessageEntry(final MessageEntry messageEntry)
+	public void removeMessageEntry(final Message message)
 	{
-		this.messageEntries.remove(messageEntry);
+		this.messages.remove(message);
 		this.fireTableDataChanged();
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_ADDED)
-	public void onMessageEntryAdded(final String topic, final MessageEntry messageEntry)
+	public void onMessageEntryAdded(final String topic, final Message message)
 	{
-		this.addMessageEntry(messageEntry);
+		this.addMessageEntry(message);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_REMOVED)
-	public void onMessageEntryRemoved(final String topic, final MessageEntry messageEntry)
+	public void onMessageEntryRemoved(final String topic, final Message message)
 	{
-		this.removeMessageEntry(messageEntry);
+		this.removeMessageEntry(message);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_UPDATED)
-	public void onMessageEntryUpdated(final String topic, final MessageEntry messageEntry)
+	public void onMessageEntryUpdated(final String topic, final Message message)
 	{
-		if (this.messageEntries.contains(messageEntry)) {
-			this.messageEntries.set(this.messageEntries.indexOf(messageEntry), messageEntry);
+		if (this.messages.contains(message)) {
+			this.messages.set(this.messages.indexOf(message), message);
 			this.fireTableDataChanged();
 		}
 	}

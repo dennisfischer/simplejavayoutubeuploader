@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.util.List;
 
@@ -37,23 +37,40 @@ public interface QueueService
 	public static final String EDIT_QUEUE_ENTRY    = "editQueueEntry"; //NON-NLS
 	public static final String QUEUE_ENTRY_UPDATED = "queueEntryUpdated"; //NON-NLS
 
-	QueueEntry createQueueEntry(QueueEntry queueEntry);
+	/**
+	 * Adds / Persists a Queue(Entry)
+	 *
+	 * @param queue the Queue(Entry) that should be added
+	 * @return the added Queue(Entry)
+	 */
+	Queue createQueue(Queue queue);
 
-	QueueEntry deleteQueueEntry(QueueEntry queueEntry);
+	Queue deleteQueue(Queue queue);
 
-	QueueEntry updateQueueEntry(QueueEntry queueEntry);
+	Queue updateQueue(Queue queue);
 
-	void sortQueueEntry(QueueEntry queueEntry, QueuePosition queuePosition);
+	/**
+	 * Assigns a new place / new sequence to the entry
+	 *
+	 * @param queue         the Queue(Entry) to reposition
+	 * @param queuePosition the Position the Queue(Entry) should get
+	 */
+	void sortList(Queue queue, QueuePosition queuePosition);
 
-	List<QueueEntry> getAllQueueEntry();
+	List<Queue> getAll();
 
-	List<QueueEntry> getQueuedQueueEntry();
+	List<Queue> getQueued();
 
-	List<QueueEntry> getArchivedQueueEntry();
+	List<Queue> getArchived();
 
-	QueueEntry findQueueEntry(int identifier);
+	Queue findQueue(int identifier);
 
-	QueueEntry poll();
+	/**
+	 * Polls item and updates inProgress to true
+	 *
+	 * @return Polls current first positioned item or null if not found
+	 */
+	Queue poll();
 
-	boolean hasStarttimeEntry();
+	boolean hasStarttime();
 }

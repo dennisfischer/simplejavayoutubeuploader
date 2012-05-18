@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 
 import java.io.File;
 import java.util.List;
@@ -37,15 +37,15 @@ public interface DirectoryService
 	String DIRECTORY_ENTRY_ADDED   = "onDirectoryEntryAdded";
 	String DIRECTORY_ENTRY_UPDATED = "onDirectoryEntryUpdated";
 
-	List<DirectoryEntry> getAll();
+	List<Directory> getAll();
 
-	List<DirectoryEntry> getAllActive();
+	List<Directory> getAllActive();
 
-	DirectoryEntry findByFile(File file);
+	Directory findByFile(File file);
 
-	DirectoryEntry createDirectoryEntry(DirectoryEntry directoryEntry);
+	Directory createDirectoryEntry(Directory directory);
 
-	DirectoryEntry deleteDirectoryEntry(DirectoryEntry directoryEntry);
+	Directory deleteDirectoryEntry(Directory directory);
 
-	DirectoryEntry updateDirectoryEntry(DirectoryEntry directoryEntry);
+	Directory updateDirectoryEntry(Directory directory);
 }

@@ -489,6 +489,7 @@
                     <item value="Erlaubt"/>
                     <item value="Moderiert"/>
                     <item value="Verweigert"/>
+                    <item value="Moderiert - Freunde erlaubt"/>
                   </model>
                 </properties>
               </component>

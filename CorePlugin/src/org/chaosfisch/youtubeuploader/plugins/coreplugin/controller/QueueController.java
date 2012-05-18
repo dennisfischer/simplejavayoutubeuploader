@@ -24,8 +24,8 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
@@ -69,9 +69,9 @@ public class QueueController
 		this.uploader.stop();
 	}
 
-	public void abortUpload(final QueueEntry queueEntry)
+	public void abortUpload(final Queue queue)
 	{
-		this.uploader.abort(queueEntry);
+		this.uploader.abort(queue);
 	}
 
 	public void changeQueueFinished(final int item)
@@ -79,27 +79,27 @@ public class QueueController
 		this.uploader.setActionOnFinish((short) item);
 	}
 
-	public void moveTop(final QueueEntry selectedRow)
+	public void moveTop(final Queue selectedRow)
 	{
-		this.queueService.sortQueueEntry(selectedRow, QueuePosition.QUEUE_TOP);
+		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_TOP);
 		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_TOP);
 	}
 
-	public void moveUp(final QueueEntry selectedRow)
+	public void moveUp(final Queue selectedRow)
 	{
-		this.queueService.sortQueueEntry(selectedRow, QueuePosition.QUEUE_UP);
+		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_UP);
 		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_UP);
 	}
 
-	public void moveDown(final QueueEntry selectedRow)
+	public void moveDown(final Queue selectedRow)
 	{
-		this.queueService.sortQueueEntry(selectedRow, QueuePosition.QUEUE_DOWN);
+		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_DOWN);
 		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_DOWN);
 	}
 
-	public void moveBottom(final QueueEntry selectedRow)
+	public void moveBottom(final Queue selectedRow)
 	{
-		this.queueService.sortQueueEntry(selectedRow, QueuePosition.QUEUE_BOTTOM);
+		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_BOTTOM);
 		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_BOTTOM);
 	}
 
@@ -108,25 +108,25 @@ public class QueueController
 		this.queueList.removeAll();
 		switch (item) {
 			case 0:
-				this.queueList.addQueueEntryList(this.queueService.getAllQueueEntry());
+				this.queueList.addQueueEntryList(this.queueService.getAll());
 				break;
 			case 1:
-				this.queueList.addQueueEntryList(this.queueService.getArchivedQueueEntry());
+				this.queueList.addQueueEntryList(this.queueService.getArchived());
 				break;
 			case 2:
-				this.queueList.addQueueEntryList(this.queueService.getQueuedQueueEntry());
+				this.queueList.addQueueEntryList(this.queueService.getQueued());
 				break;
 		}
 	}
 
-	public void deleteEntry(final QueueEntry queueEntityAt)
+	public void deleteEntry(final Queue queueEntityAt)
 	{
 		this.uploader.abort(queueEntityAt);
 		this.getQueueList().removeQueueEntry(queueEntityAt);
-		this.queueService.deleteQueueEntry(queueEntityAt);
+		this.queueService.deleteQueue(queueEntityAt);
 	}
 
-	public void editEntry(final QueueEntry queueEntityAt)
+	public void editEntry(final Queue queueEntityAt)
 	{
 		EventBus.publish(QueueService.EDIT_QUEUE_ENTRY, queueEntityAt);
 	}
@@ -160,8 +160,8 @@ public class QueueController
 			{
 				if (QueueController.this.uploader.isRunning()) {
 					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
-							//NON-NLS
-							JOptionPane.YES_NO_OPTION);
+					                                                 //NON-NLS
+					                                                 JOptionPane.YES_NO_OPTION);
 					return result == 0;
 				}
 				return true;

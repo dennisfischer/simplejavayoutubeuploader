@@ -19,12 +19,11 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
-import com.google.gdata.util.AuthenticationException;
 import com.google.inject.Inject;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
@@ -144,21 +143,23 @@ public class MenuViewPanel
 					if (result == JOptionPane.OK_OPTION) {
 						if (!nameTextField.getText().equals("")) {
 
-							final AccountEntry accountEntry = new AccountEntry();
-							accountEntry.setName(nameTextField.getText());
-							accountEntry.setPassword(String.valueOf(passwordField.getPassword()));
-							try {
-								accountEntry.getYoutubeServiceManager().authenticate();
-								MenuViewPanel.this.accountService.createAccountEntry(accountEntry);
-								break;
-							} catch (AuthenticationException e1) {
+							final Account account = new Account();
+							account.name = nameTextField.getText();
+							account.password = String.valueOf(passwordField.getPassword());
+							//try {
+
+							MenuViewPanel.this.accountService.createAccountEntry(account);
+							break;
+							/*} catch (AuthenticationException ex) {
 								nameTextField.setBackground(Color.RED);
 								passwordField.setBackground(Color.RED);
-							}
+							} */
 						} else {
 							nameTextField.setBackground(Color.RED);
 							passwordField.setBackground(Color.RED);
 						}
+					} else {
+						break;
 					}
 				}
 			}
@@ -193,12 +194,12 @@ public class MenuViewPanel
 						}
 						descriptionTextArea.setBackground(Color.WHITE);
 
-						final PlaylistEntry playlistEntry = new PlaylistEntry();
-						playlistEntry.setName(nameTextField.getText());
-						playlistEntry.setSummary(descriptionTextArea.getText());
-						playlistEntry.setAccount(MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem());
-						if (playlistEntry.getAccount() != null) {
-							MenuViewPanel.this.playlistService.createPlaylist(playlistEntry);
+						final Playlist playlist = new Playlist();
+						playlist.title = nameTextField.getText();
+						playlist.summary = descriptionTextArea.getText();
+						playlist.account = MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
+						if (playlist.account != null) {
+							MenuViewPanel.this.playlistService.createPlaylist(playlist);
 							break;
 						} else {
 							break;
@@ -224,9 +225,9 @@ public class MenuViewPanel
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
 						if (!nameTextField.getText().equals("")) {
-							final PresetEntry presetEntry = new PresetEntry();
-							presetEntry.setName(nameTextField.getText());
-							MenuViewPanel.this.presetService.createPresetEntry(presetEntry);
+							final Preset preset = new Preset();
+							preset.name = nameTextField.getText();
+							MenuViewPanel.this.presetService.createPresetEntry(preset);
 							break;
 						} else {
 							nameTextField.setBackground(Color.RED);

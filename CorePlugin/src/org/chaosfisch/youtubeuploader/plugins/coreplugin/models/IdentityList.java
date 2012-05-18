@@ -19,8 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.IEntry;
-
 import java.util.ArrayList;
 
 /**
@@ -30,12 +28,12 @@ import java.util.ArrayList;
  * Time: 22:35
  * To change this template use File | Settings | File Templates.
  */
-public class IdentityList<E extends IEntry> extends ArrayList<E>
+public class IdentityList<E extends IModel> extends ArrayList<E>
 {
 	@Override
 	public int indexOf(final Object o)
 	{
-		final IEntry entry = (IEntry) o;
+		final IModel model = (IModel) o;
 		if (o == null) {
 			for (int i = 0; i < this.size(); i++)
 				if (this.get(i) == null) {
@@ -43,7 +41,7 @@ public class IdentityList<E extends IEntry> extends ArrayList<E>
 				}
 		} else {
 			for (int i = 0; i < this.size(); i++)
-				if (entry.getIdentity() == this.get(i).getIdentity()) {
+				if (model.getIdentity() == this.get(i).getIdentity()) {
 					return i;
 				}
 		}
@@ -60,15 +58,15 @@ public class IdentityList<E extends IEntry> extends ArrayList<E>
 	@Override
 	public int lastIndexOf(final Object o)
 	{
-		final IEntry entry = (IEntry) o;
-		if (entry == null) {
+		final IModel model = (IModel) o;
+		if (model == null) {
 			for (int i = this.size() - 1; i >= 0; i--)
 				if (this.get(i) == null) {
 					return i;
 				}
 		} else {
 			for (int i = this.size() - 1; i >= 0; i--)
-				if (entry.getIdentity() == this.get(i).getIdentity()) {
+				if (model.getIdentity() == this.get(i).getIdentity()) {
 					return i;
 				}
 		}

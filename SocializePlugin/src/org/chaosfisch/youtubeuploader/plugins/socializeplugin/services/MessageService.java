@@ -19,12 +19,10 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
-import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.MessageEntry;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.*;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +34,6 @@ import java.util.List;
  */
 public class MessageService
 {
-	@Inject private SessionFactory sessionFactory;
 
 	public static final String MESSAGE_ENTRY_ADDED   = "onMessageEntryAdded"; //NON-NLS
 	public static final String MESSAGE_ENTRY_REMOVED = "onMessageEntryRemoved"; //NON-NLS
@@ -62,62 +59,42 @@ public class MessageService
 		return null;
 	}
 
-	public void createMessageEntry(final MessageEntry messageEntry)
+	public void createMessageEntry(final Message message)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.save(messageEntry);
-		session.getTransaction().commit();
 	}
 
-	public List<MessageEntry> getMessageEntriesByQueueID(final int queueID)
+	public List<Message> getMessageEntriesByQueueID(final int queueID)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		List<MessageEntry> messageEntries = session.createQuery("select m from MessageEntry as m WHERE m.uploadID = " + queueID).list();
-		session.getTransaction().commit();
-		return messageEntries;
+		final List<Message> messages = new ArrayList<Message>(0);
+		String query = "select m from Message as m WHERE m.uploadID = " + queueID;
+		return messages;
 	}
 
-	public List<MessageEntry> getMessageEntriesWithoutQueueID()
+	public List<Message> getMessageEntriesWithoutQueueID()
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		List<MessageEntry> messageEntries = session.createQuery("select m from MessageEntry as m WHERE m.uploadID = NULL").list();
-		session.getTransaction().commit();
-		return messageEntries;
+		final List<Message> messages = new ArrayList<Message>(0);
+		String query = "select m from Message as m WHERE m.uploadID = NULL";
+		return messages;
 	}
 
-	public List<MessageEntry> getMessageEntries()
+	public List<Message> getMessageEntries()
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		List<MessageEntry> messageEntries = session.createQuery("SELECT m FROM MessageEntry as m order by identity").list();
-		session.getTransaction().commit();
-		return messageEntries;
+		final List<Message> messages = new ArrayList<Message>(0);
+		String query = "SELECT m FROM Message as m order by identity";
+		return messages;
 	}
 
 	public void clearWithoutQueueID()
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.createQuery("DELETE FROM MessageEntry as m WHERE m.uploadID = NULL").executeUpdate();
-		session.getTransaction().commit();
+		String query = "DELETE FROM Message as m WHERE m.uploadID = NULL";
 	}
 
 	public void clearWithQueueID(final int identity)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.createQuery("DELETE FROM MessageEntry as m WHERE m.uploadID = " + identity).executeUpdate();
-		session.getTransaction().commit();
+		String query = "DELETE FROM Message as m WHERE m.uploadID = " + identity;
 	}
 
-	public void removeMessageEntry(final MessageEntry messageEntry)
+	public void removeMessageEntry(final Message message)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.delete(messageEntry);
-		session.getTransaction().commit();
 	}
 }

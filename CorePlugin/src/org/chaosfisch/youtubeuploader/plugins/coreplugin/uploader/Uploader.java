@@ -26,7 +26,7 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.util.Computer;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
@@ -96,9 +96,9 @@ public class Uploader
 			{
 				while (Uploader.this.inProgress) {
 					if (Uploader.this.hasFreeUploadSpace()) {
-						final QueueEntry polledEntry = Uploader.this.queueService.poll();
-						if (polledEntry != null) {
-							Uploader.this.executorService.submit(new UploadWorker(polledEntry, Uploader.this.playlistService, Uploader.this.speedLimit, 1024 * 1024 * Integer.parseInt(
+						final Queue polled = Uploader.this.queueService.poll();
+						if (polled != null) {
+							Uploader.this.executorService.submit(new UploadWorker(polled, Uploader.this.playlistService, Uploader.this.speedLimit, 1024 * 1024 * Integer.parseInt(
 									(String) Uploader.this.settingsService.get("coreplugin.general.CHUNK_SIZE", "10"))));
 							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
 							Uploader.this.runningUploads++;
@@ -125,9 +125,9 @@ public class Uploader
 		this.inProgress = false;
 	}
 
-	public void abort(final QueueEntry queueEntry)
+	public void abort(final Queue queue)
 	{
-		EventBus.publish(Uploader.UPLOAD_ABORT, queueEntry);
+		EventBus.publish(Uploader.UPLOAD_ABORT, queue);
 	}
 
 	public boolean isRunning()
@@ -141,26 +141,26 @@ public class Uploader
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final QueueEntry queueEntry)
+	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
-		this.uploadFinished(queueEntry);
+		this.uploadFinished(queue);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = UPLOAD_FAILED)
 	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		this.uploadFinished(uploadFailed.getQueueEntry());
+		this.uploadFinished(uploadFailed.getQueue());
 	}
 
-	private void uploadFinished(final QueueEntry queueEntry)
+	private void uploadFinished(final Queue queue)
 	{
-		this.logger.info("Upload finished: " + queueEntry.getTitle() + "; " + queueEntry.getVideoId());
+		this.logger.info("Upload finished: " + queue.title + "; " + queue.videoId);
 		this.runningUploads--;
-		queueEntry.setArchived(true);
-		queueEntry.setInprogress(false);
+		queue.archived = true;
+		queue.inprogress = false;
 		this.logger.info("Running uploads: " + this.runningUploads);
-		this.queueService.updateQueueEntry(queueEntry);
-		if (this.queueService.getQueuedQueueEntry().size() == 0 && this.runningUploads == 0) {
+		this.queueService.updateQueue(queue);
+		if (this.queueService.getQueued().size() == 0 && this.runningUploads == 0) {
 			this.logger.info("All uploads finished");
 			switch (this.actionOnFinish) {
 				case 0:
@@ -177,7 +177,7 @@ public class Uploader
 			}
 		}
 
-		this.logger.info("Left uploads: " + this.queueService.getQueuedQueueEntry().size());
+		this.logger.info("Left uploads: " + this.queueService.getQueued().size());
 	}
 
 	public void setActionOnFinish(final short actionOnFinish)
@@ -217,7 +217,7 @@ public class Uploader
 			{
 				while (!Thread.currentThread().isInterrupted() && Uploader.this.startTimeCheckerFlag) {
 
-					if (Uploader.this.queueService.hasStarttimeEntry() && !Uploader.this.inProgress) {
+					if (Uploader.this.queueService.hasStarttime() && !Uploader.this.inProgress) {
 						Uploader.this.start();
 					}
 

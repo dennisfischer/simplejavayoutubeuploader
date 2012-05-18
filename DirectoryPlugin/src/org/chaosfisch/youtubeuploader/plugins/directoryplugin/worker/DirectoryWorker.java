@@ -28,14 +28,14 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
@@ -92,14 +92,14 @@ public class DirectoryWorker extends Thread
 
 	private FileAlterationObserver[] initObservers()
 	{
-		final List<DirectoryEntry> directories = this.directoryService.getAllActive();
+		final List<Directory> directories = this.directoryService.getAllActive();
 		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[20];
 		final FileFilter mediaFileFilter = new MediaFileFilter();
 		final FileAlterationListener fileAlterationListener = new MediaFileAlternationListener();
 		int i = 0;
-		for (final DirectoryEntry directoryEntry : directories) {
-			this.logger.debug(directoryEntry.getDirectory());
-			final FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(directoryEntry.getDirectory(), mediaFileFilter);
+		for (final Directory directory : directories) {
+			this.logger.debug(directory.directory);
+			final FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(directory.directory, mediaFileFilter);
 			fileAlterationObserver.addListener(fileAlterationListener);
 			fileAlterationObservers[i] = fileAlterationObserver;
 			i++;
@@ -139,53 +139,53 @@ public class DirectoryWorker extends Thread
 			this.addToUpload(DirectoryWorker.this.directoryService.findByFile(file), file);
 		}
 
-		private void addToUpload(final DirectoryEntry entry, final File file)
+		private void addToUpload(final Directory entry, final File file)
 		{
-			final PresetEntry presetEntry = entry.getPreset();
+			final Preset preset = entry.preset;
 
-			final QueueEntry queueEntry = new QueueEntry();
-			final PlaylistEntry playlistEntry = presetEntry.getPlaylist();
+			final Queue queue = new Queue();
+			final Playlist playlist = preset.playlist;
 
-			if (presetEntry.isAutotitle()) {
+			if (preset.autotitle) {
 				DirectoryWorker.this.autoTitleGenerator.setFileName(file.getName());
-				DirectoryWorker.this.autoTitleGenerator.setFormatString(presetEntry.getAutotitleFormat());
-				DirectoryWorker.this.autoTitleGenerator.setPlaylist(presetEntry.getPlaylist());
-				queueEntry.setTitle(DirectoryWorker.this.autoTitleGenerator.gernerate());
+				DirectoryWorker.this.autoTitleGenerator.setFormatString(preset.autotitleFormat);
+				DirectoryWorker.this.autoTitleGenerator.setPlaylist(preset.playlist);
+				queue.title = DirectoryWorker.this.autoTitleGenerator.gernerate();
 			} else {
-				queueEntry.setTitle(file.getName());
+				queue.title = file.getName();
 			}
-			queueEntry.setFile(file.getAbsolutePath());
-			queueEntry.setAccount(presetEntry.getAccount());
-			queueEntry.setCategory(presetEntry.getCategory());
-			queueEntry.setDescription(presetEntry.getDescription());
-			queueEntry.setKeywords(presetEntry.getKeywords());
-			queueEntry.setComment(presetEntry.getComment());
-			queueEntry.setCommentvote(presetEntry.isCommentvote());
-			queueEntry.setEmbed(presetEntry.isEmbed());
-			queueEntry.setMobile(presetEntry.isMobile());
-			queueEntry.setRate(presetEntry.isRate());
-			queueEntry.setVideoresponse(presetEntry.getVideoresponse());
+			queue.file = file.getAbsolutePath();
+			queue.account = preset.account;
+			queue.category = preset.category;
+			queue.description = preset.description;
+			queue.keywords = preset.keywords;
+			queue.comment = preset.comment;
+			queue.commentvote = preset.commentvote;
+			queue.embed = preset.embed;
+			queue.mobile = preset.mobile;
+			queue.rate = preset.rate;
+			queue.videoresponse = preset.videoresponse;
 
-			switch (presetEntry.getVisibility()) {
+			switch (preset.visibility) {
 				case 1:
-					queueEntry.setUnlisted(true);
+					queue.unlisted = true;
 					break;
 				case 2:
-					queueEntry.setPrivatefile(true);
+					queue.privatefile = true;
 					break;
 			}
 
 			final int dotPos = file.toString().lastIndexOf(".") + 1;
 			final String extension = file.toString().substring(dotPos);
-			queueEntry.setMimetype(Mimetype.getMimetypeByExtension(extension));
+			queue.mimetype = Mimetype.getMimetypeByExtension(extension);
 
-			queueEntry.setPlaylist(playlistEntry);
-			if (playlistEntry != null) {
-				playlistEntry.setNumber(playlistEntry.getNumber() + 1);
-				DirectoryWorker.this.playlistService.updatePlaylist(playlistEntry);
+			queue.playlist = playlist;
+			if (playlist != null) {
+				playlist.number++;
+				DirectoryWorker.this.playlistService.updatePlaylist(playlist);
 			}
 
-			DirectoryWorker.this.queueService.createQueueEntry(queueEntry);
+			DirectoryWorker.this.queueService.createQueue(queue);
 			EventBus.publish(Uploader.QUEUE_START, null);
 		}
 	}

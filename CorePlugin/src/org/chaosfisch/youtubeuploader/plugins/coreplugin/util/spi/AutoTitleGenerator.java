@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +40,7 @@ public interface AutoTitleGenerator
 
 	String gernerate();
 
-	void setPlaylist(PlaylistEntry playlist);
+	void setPlaylist(Playlist playlist);
 
 	void setNumber(int number);
 }

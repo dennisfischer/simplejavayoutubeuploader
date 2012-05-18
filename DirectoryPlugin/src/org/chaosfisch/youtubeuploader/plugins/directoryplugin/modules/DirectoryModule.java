@@ -21,7 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl.DirectoryServiceImpl;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.mock.DirectoryServiceImpl;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 /**

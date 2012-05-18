@@ -10,6 +10,13 @@
           </element>
         </element>
         <element id="module-output" name="CorePlugin" />
+        <element id="directory" name="org">
+          <element id="directory" name="mybatis">
+            <element id="directory" name="mappers">
+              <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/mybatis/mappers/scheme.sql" />
+            </element>
+          </element>
+        </element>
       </element>
     </root>
   </artifact>

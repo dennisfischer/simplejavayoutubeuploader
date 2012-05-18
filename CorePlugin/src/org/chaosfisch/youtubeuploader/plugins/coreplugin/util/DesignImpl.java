@@ -30,18 +30,18 @@ import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
  */
 public class DesignImpl implements Design
 {
-	private final String laf;
+	private final Class  laf;
 	private final String shortName;
 	private final String name;
 
-	public DesignImpl(final String laf, final String shortName, final String name)
+	public DesignImpl(final Class laf, final String shortName, final String name)
 	{
 		this.laf = laf;
 		this.shortName = shortName;
 		this.name = name;
 	}
 
-	@Override public String getLaF()
+	@Override public Class getLaF()
 	{
 		return this.laf;
 	}

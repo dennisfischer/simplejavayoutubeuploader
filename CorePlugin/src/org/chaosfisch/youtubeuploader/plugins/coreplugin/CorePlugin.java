@@ -21,6 +21,9 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
@@ -33,6 +36,8 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ResourceBundle;
 
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
@@ -40,13 +45,28 @@ public class CorePlugin implements Pluggable
 {
 	private static final String[]       DEPENDENCIES   = new String[0];
 	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
-	private         Uploader        uploader;
-	@Inject private PluginService   pluginService;
-	@Inject private Injector        injector;
-	@Inject private SettingsService settingService;
+	private         Uploader          uploader;
+	@Inject private PluginService     pluginService;
+	@Inject private Injector          injector;
+	@Inject private SettingsService   settingService;
+	@Inject         SqlSessionFactory sessionFactory;
 
-	public CorePlugin()
+	@Inject
+	public CorePlugin(final SqlSessionFactory sessionFactory) throws IOException
 	{
+		this.sessionFactory = sessionFactory;
+		this.loadDatabase();
+	}
+
+	// uses the new MyBatis style of lookup
+	public void loadDatabase() throws IOException
+	{
+		final Reader schemaReader = Resources.getResourceAsReader("org/mybatis/mappers/scheme.sql");
+		final ScriptRunner scriptRunner = new ScriptRunner(this.sessionFactory.openSession().getConnection());
+		scriptRunner.setStopOnError(true);
+		scriptRunner.setAutoCommit(true);
+		scriptRunner.setDelimiter(";");
+		scriptRunner.runScript(schemaReader);
 	}
 
 	@Override public boolean canBeDisabled()
@@ -90,13 +110,13 @@ public class CorePlugin implements Pluggable
 				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel())); //NON-NLS
 
 				for (final JMenuItem menuItem : uploadViewPanel.getFileMenuItem()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				for (final JMenu menu : menuViewPanel.getFileMenus()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menu)); //NON-NLS
+					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu)); //NON-NLS
 				}
 				for (final JMenuItem menuItem : menuViewPanel.getEditMenuItems()) {
-					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
+					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				final QueueController queueController = queueViewPanel.getQueueController();
 				this.pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2012, Dennis Fischer
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.mybatis.mappers.PresetMapper">
+
+	<sql id="insertValuesList">
+		(autotitle, autotitleFormat, category, comment, commentVote, defaultDir, description, embed, keywords, mobile,
+		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id)
+		VALUES (#{autotitle}, #{autotitleFormat}, #{category}, #{comment}, #{commentvote}, #{defaultDir}, #{description}, #{embed}, #{keywords},
+		#{mobile}, #{name}, #{numberModifier}, #{videoresponse}, #{visibility}, #{rate}, #{account.identity}, #{playlist.identity})
+	</sql>
+
+	<sql id="updateSetList">
+		account_id = #{account.identity},
+		playlist_id = #{playlist.identity},
+		identity = #{identity},
+		autotitle = #{autotitle},
+		autotitleFormat = #{autotitleFormat},
+		category = #{category},
+		comment = #{comment},
+		commentvote = #{commentvote},
+		defaultDir = #{defaultDir},
+		description = #{description},
+		embed = #{embed},
+		keywords = #{keywords},
+		mobile = #{mobile},
+		name = #{name},
+		numberModifier = #{numberModifier},
+		videoresponse = #{videoresponse},
+		visibility = #{visibility},
+		rate = #{rate}
+	</sql>
+
+	<select id="findPreset" parameterType="int" resultType="Preset">
+		SELECT * FROM PRESETS WHERE identity = #{id}
+	</select>
+
+	<select id="findByAccount" parameterType="Account" resultType="Preset">
+		SELECT * FROM PRESETS WHERE account_id = #{identity}
+	</select>
+
+	<select id="getPresets" resultType="Preset">
+		SELECT * FROM PRESETS ORDER BY name
+	</select>
+
+	<insert id="createPreset" parameterType="Preset">
+		INSERT INTO PRESETS
+		<include refid="insertValuesList"/>
+		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
+			CALL IDENTITY();
+		</selectKey>
+	</insert>
+
+	<update id="updatePreset" parameterType="Preset">
+		UPDATE PRESETS SET
+		<include refid="updateSetList"/>
+		WHERE identity = #{identity}
+	</update>
+
+	<delete id="deletePreset" parameterType="Preset">
+		DELETE FROM PRESETS WHERE identity = #{identity}
+	</delete>
+</mapper>

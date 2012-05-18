@@ -23,10 +23,10 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.MessageTableModel;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.MessageEntry;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.MessageService;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.FacebookSocialProvider;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.TwitterSocialProvider;
@@ -61,25 +61,26 @@ public class MessageController
 	public void addMessage(final String messageTextAreaText, final int publishComboBoxSelectedItem, final int uploadIDSpinnerValue, final boolean facebookButtonSellected,
 	                       final boolean twitterButtonSelected, final boolean googlePlusButtonSelected, final boolean youtubeButtonSelected)
 	{
+		final Message message;
 		switch (publishComboBoxSelectedItem) {
 			case 0:
-				final MessageEntry messageEntry_1 = new MessageEntry();
-				messageEntry_1.setMessage(messageTextAreaText);
-				messageEntry_1.setFacebook(facebookButtonSellected);
-				messageEntry_1.setTwitter(twitterButtonSelected);
-				messageEntry_1.setGooglePlus(googlePlusButtonSelected);
-				messageEntry_1.setYoutube(youtubeButtonSelected);
-				messageEntry_1.setUploadID(uploadIDSpinnerValue);
-				this.messageService.createMessageEntry(messageEntry_1);
+				message = new Message();
+				message.message = messageTextAreaText;
+				message.facebook = facebookButtonSellected;
+				message.twitter = twitterButtonSelected;
+				message.googlePlus = googlePlusButtonSelected;
+				message.youtube = youtubeButtonSelected;
+				message.uploadID = uploadIDSpinnerValue;
+				this.messageService.createMessageEntry(message);
 				break;
 			case 1:
-				final MessageEntry messageEntry_2 = new MessageEntry();
-				messageEntry_2.setMessage(messageTextAreaText);
-				messageEntry_2.setFacebook(facebookButtonSellected);
-				messageEntry_2.setTwitter(twitterButtonSelected);
-				messageEntry_2.setGooglePlus(googlePlusButtonSelected);
-				messageEntry_2.setYoutube(youtubeButtonSelected);
-				this.messageService.createMessageEntry(messageEntry_2);
+				message = new Message();
+				message.message = messageTextAreaText;
+				message.facebook = facebookButtonSellected;
+				message.twitter = twitterButtonSelected;
+				message.googlePlus = googlePlusButtonSelected;
+				message.youtube = youtubeButtonSelected;
+				this.messageService.createMessageEntry(message);
 				break;
 			case 2:
 				this.publish(messageTextAreaText, facebookButtonSellected, twitterButtonSelected, googlePlusButtonSelected, youtubeButtonSelected);
@@ -122,20 +123,19 @@ public class MessageController
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final QueueEntry queueEntry)
+	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
-		for (final MessageEntry messageEntry : this.messageService.getMessageEntriesByQueueID(queueEntry.getIdentity())) {
-			this.publish(messageEntry.getMessage().replace("{video}", "http://youtu.be/" + queueEntry.getVideoId()), messageEntry.isFacebook(), messageEntry.isTwitter(), messageEntry.isGooglePlus(),
-			             messageEntry.isYoutube());
+		for (final Message message : this.messageService.getMessageEntriesByQueueID(queue.getIdentity())) {
+			this.publish(message.message.replace("{video}", "http://youtu.be/" + queue.videoId), message.facebook, message.twitter, message.googlePlus, message.youtube);
 		}
-		this.messageService.clearWithQueueID(queueEntry.getIdentity());
+		this.messageService.clearWithQueueID(queue.getIdentity());
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadsFinished(final String topic, final Object o)
 	{
-		for (final MessageEntry messageEntry : this.messageService.getMessageEntriesWithoutQueueID()) {
-			this.publish(messageEntry.getMessage(), messageEntry.isFacebook(), messageEntry.isTwitter(), messageEntry.isGooglePlus(), messageEntry.isYoutube());
+		for (final Message message : this.messageService.getMessageEntriesWithoutQueueID()) {
+			this.publish(message.message, message.facebook, message.twitter, message.googlePlus, message.youtube);
 		}
 
 		this.messageService.clearWithoutQueueID();
@@ -144,8 +144,8 @@ public class MessageController
 	public void removeEntryAt(final int selectedRow)
 	{
 		if (this.messageTableModel.hasMessageEntryAt(selectedRow)) {
-			final MessageEntry messageEntry = this.messageTableModel.getMessageEntryAt(selectedRow);
-			this.messageService.removeMessageEntry(messageEntry);
+			final Message message = this.messageTableModel.getMessageEntryAt(selectedRow);
+			this.messageService.removeMessageEntry(message);
 		}
 	}
 }

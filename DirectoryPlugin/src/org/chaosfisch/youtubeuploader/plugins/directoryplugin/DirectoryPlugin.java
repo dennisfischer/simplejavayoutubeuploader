@@ -44,7 +44,7 @@ import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.view.DirectoryViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker.DirectoryWorker;
 
@@ -112,7 +112,7 @@ public class DirectoryPlugin implements Pluggable
 				directoryViewPanel.setVisible(true);
 			}
 		});
-		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("org.hibernate.integrator.spi.Integrator", menuItem)); //NON-NLS
+		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 
 		this.directoryWorker.setIntervall(30000);
 		this.directoryWorker.start();
@@ -124,7 +124,7 @@ public class DirectoryPlugin implements Pluggable
 	}
 
 	@EventTopicPatternSubscriber(topicPattern = "onDirectoryEntry(.*)", referenceStrength = ReferenceStrength.WEAK)
-	public void refreshDirectoryWorker(final String topic, final DirectoryEntry directoryEntry)
+	public void refreshDirectoryWorker(final String topic, final Directory directory)
 	{
 		this.directoryWorker.interrupt();
 		this.directoryWorker = this.injector.getInstance(DirectoryWorker.class);

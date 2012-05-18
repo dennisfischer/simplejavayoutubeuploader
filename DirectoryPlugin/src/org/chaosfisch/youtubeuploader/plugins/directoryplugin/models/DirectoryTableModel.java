@@ -22,7 +22,6 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.models;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 import javax.swing.table.AbstractTableModel;
@@ -39,43 +38,43 @@ import java.util.ResourceBundle;
  */
 public class DirectoryTableModel extends AbstractTableModel
 {
-	private final IdentityList<DirectoryEntry> directoryList  = new IdentityList<DirectoryEntry>();
-	private final ResourceBundle               resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
-	private final String[]                     columns        = {this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"),
-			this.resourceBundle.getString("directorytable.activeLabel")};
+	private final IdentityList<Directory> directoryList  = new IdentityList<Directory>();
+	private final ResourceBundle          resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
+	private final String[]                columns        = {this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"), this.resourceBundle
+			.getString("directorytable.activeLabel")};
 
 	public DirectoryTableModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public DirectoryTableModel(final List<DirectoryEntry> l)
+	public DirectoryTableModel(final List<Directory> l)
 	{
 		AnnotationProcessor.process(this);
 		this.directoryList.addAll(l);
 	}
 
-	void addDirectory(final DirectoryEntry directoryEntry)
+	void addDirectory(final Directory directory)
 	{
-		this.directoryList.add(directoryEntry);
+		this.directoryList.add(directory);
 		this.fireTableDataChanged();
 	}
 
-	public void addDirectoryList(final List<DirectoryEntry> entryList)
+	public void addDirectoryList(final List<Directory> list)
 	{
-		for (final DirectoryEntry directoryEntry : entryList) {
-			this.addDirectory(directoryEntry);
+		for (final Directory directory : list) {
+			this.addDirectory(directory);
 		}
 	}
 
-	public DirectoryEntry getDirectoryAt(final int row)
+	public Directory getDirectoryAt(final int row)
 	{
 		return this.directoryList.get(row);
 	}
 
-	public DirectoryEntry removeDirectoryAt(final int row)
+	public Directory removeDirectoryAt(final int row)
 	{
-		final DirectoryEntry element = this.directoryList.remove(row);
+		final Directory element = this.directoryList.remove(row);
 		this.fireTableDataChanged();
 		return element;
 	}
@@ -101,14 +100,14 @@ public class DirectoryTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final DirectoryEntry directoryEntry = this.directoryList.get(row);
+		final Directory directory = this.directoryList.get(row);
 		switch (col) {
 			case 0:
-				return directoryEntry.getDirectory();
+				return directory.directory;
 			case 1:
-				return directoryEntry.getPreset();
+				return directory.preset;
 			case 2:
-				return directoryEntry.isActive();
+				return directory.active;
 			default:
 				return null;
 		}
@@ -132,7 +131,7 @@ public class DirectoryTableModel extends AbstractTableModel
 	@Override
 	public void setValueAt(final Object value, final int row, final int col)
 	{
-		final DirectoryEntry directoryEntry = this.directoryList.get(row);
+		final Directory directory = this.directoryList.get(row);
 		switch (col) {
 		}
 		this.fireTableCellUpdated(row, col);
@@ -143,7 +142,7 @@ public class DirectoryTableModel extends AbstractTableModel
 		return this.directoryList.size() >= selectedRow && selectedRow != -1;
 	}
 
-	public List<DirectoryEntry> getDirectoryList()
+	public List<Directory> getDirectoryList()
 	{
 		return this.directoryList;
 	}
@@ -158,21 +157,21 @@ public class DirectoryTableModel extends AbstractTableModel
 		}
 	}
 
-	public void removeDirectory(final DirectoryEntry directoryEntry)
+	public void removeDirectory(final Directory directory)
 	{
-		this.directoryList.remove(directoryEntry);
+		this.directoryList.remove(directory);
 		this.fireTableDataChanged();
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_ADDED)
-	public void onDirectoryEntryAdded(final String topic, final DirectoryEntry directoryEntry)
+	public void onDirectoryEntryAdded(final String topic, final Directory directory)
 	{
-		this.addDirectory(directoryEntry);
+		this.addDirectory(directory);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_REMOVED)
-	public void onDirectoryEntryRemoved(final String topic, final DirectoryEntry directoryEntry)
+	public void onDirectoryEntryRemoved(final String topic, final Directory directory)
 	{
-		this.removeDirectory(directoryEntry);
+		this.removeDirectory(directory);
 	}
 }

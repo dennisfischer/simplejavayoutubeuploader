@@ -26,10 +26,8 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetServ
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -68,27 +66,7 @@ import java.util.List;
 		}
 
 		final List accountEntries = this.accountService.getAllAccountEntry();
-
-		OutputStreamWriter output = null;
-
-		try {
-			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-		if (output != null) {
-			try {
-				output.write(XML_HEADER);
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-			this.xStream.toXML(accountEntries, output);
-			try {
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-		}
+		this.writeObjectToXMLFile(file, accountEntries, "UTF-8"); //NON-NLS
 	}
 
 	public void exportPreset()
@@ -99,28 +77,7 @@ import java.util.List;
 		}
 
 		final List presetEntries = this.presetService.getAllPresetEntry();
-
-		OutputStreamWriter output = null;
-
-		try {
-			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-
-		if (output != null) {
-			try {
-				output.write(XML_HEADER);
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-			this.xStream.toXML(presetEntries, output);
-			try {
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-		}
+		this.writeObjectToXMLFile(file, presetEntries, "UTF-8"); //NON-NLS
 	}
 
 	public void exportQueue()
@@ -130,27 +87,31 @@ import java.util.List;
 			return;
 		}
 
-		final List queueEntries = this.queueService.getQueuedQueueEntry();
+		final List queueEntries = this.queueService.getQueued();
+		this.writeObjectToXMLFile(file, queueEntries, "UTF-8"); //NON-NLS
+	}
 
-		OutputStreamWriter output = null;
-
+	private void writeObjectToXMLFile(final File file, final Object object, final String charset)
+	{
 		try {
-			output = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-		if (output != null) {
+			final FileOutputStream fileOutputStream = new FileOutputStream(file);
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName(charset));
+
 			try {
-				output.write(XML_HEADER);
+				outputStreamWriter.write(XML_HEADER);
+				this.xStream.toXML(object, outputStreamWriter);
 			} catch (IOException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			} finally {
+				try {
+					outputStreamWriter.close();
+					bufferedOutputStream.close();
+					fileOutputStream.close();
+				} catch (IOException ignored) {
+				}
 			}
-			this.xStream.toXML(queueEntries, output);
-			try {
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
+		} catch (IOException ignored) {
 		}
 	}
 

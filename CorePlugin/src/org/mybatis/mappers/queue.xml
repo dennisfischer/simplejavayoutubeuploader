@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2012, Dennis Fischer
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.mybatis.mappers.QueueMapper">
+
+	<sql id="queueValuesList">
+		(category, description, file, keywords, mimetype, title, uploadurl, videoid, archived, commentvote, inprogress, locked,
+		 mobile, privatefile, rate, unlisted, embed, failed, comment, videoresponse, sequence, started, account_id, playlist_id)
+		 VALUES (#{category}, #{description}, #{file}, #{keywords}, #{mimetype}, #{title}, #{uploadurl}, #{videoId},
+		 #{archived}, #{commentvote}, #{inprogress}, #{locked}, #{mobile}, #{privatefile}, #{rate}, #{unlisted}, #{embed}, #{failed}, #{comment},
+		 #{videoresponse}, #{sequence}, #{started}, #{account.identity}, #{playlist.identity})
+	</sql>
+
+	<sql id="queueSetList">
+		identity 		= #{identity},
+		category 		= #{category},
+		description 	= #{description},
+		file			= #{file},
+		keywords 		= #{keywords},
+		mimetype 		= #{mimetype},
+		title 			= #{title},
+		uploadurl 		= #{uploadurl},
+		videoid 		= #{videoId},
+		archived 		= #{archived},
+		commentvote 	= #{commentvote},
+		inprogress 		= #{inprogress},
+		locked 			= #{locked},
+		mobile 			= #{mobile},
+		privatefile 	= #{privatefile},
+		rate			= #{rate},
+		unlisted 		= #{unlisted},
+		embed 			= #{embed},
+		failed 			= #{failed},
+		comment 		= #{comment},
+		videoresponse 	= #{videoresponse},
+		sequence 		= #{sequence},
+		started 		= #{started},
+		account_id		= #{account.identity},
+		playlist_id		= #{playlist.identity}
+	</sql>
+
+	<sql id="accountColumns">
+		A.identity AS account_identity, A.name AS account_name, A.password AS account_password, A.secret AS account_secret
+	</sql>
+	<sql id="playlistColumns">
+		P.identity AS playlist_identity, P.playlistKey as playlist_key, P.title AS playlist_title,
+		P.url AS playlist_url, P.summary AS playlist_summary, P.number as playlist_number
+	</sql>
+
+	<resultMap id="queueMap" type="Queue" autoMapping="true">
+		<id property="identity" column="identity"/>
+		<association property="account" javaType="Account">
+			<id property="identity" column="account_identity"/>
+			<result property="name" column="account_name"/>
+			<result property="password" column="account_password"/>
+			<result property="secret" column="account_secret"/>
+		</association>
+		<association property="playlist" javaType="Playlist">
+			<id property="identity" column="playlist_identity"/>
+			<result property="playlistKey" column="playlist_key"/>
+			<result property="title" column="playlist_title"/>
+			<result property="url" column="playlist_url"/>
+			<result property="summary" column="playlist_summary"/>
+			<result property="number" column="playlist_number"/>
+		</association>
+	</resultMap>
+
+	<select id="getAll" resultType="Queue">
+		SELECT * FROM QUEUE ORDER BY identity
+	</select>
+
+	<select id="getQueued" resultType="Queue">
+		SELECT * FROM Queue WHERE archived = false ORDER BY sequence ASC
+	</select>
+
+	<select id="getArchived" resultType="Queue">
+		SELECT * FROM Queue WHERE archived = true ORDER BY sequence ASC
+	</select>
+
+	<select id="findByAccount" parameterType="Account" resultType="Queue">
+		SELECT * FROM QUEUE WHERE account_id = #{identity}
+	</select>
+
+	<select id="findQueue" resultType="Queue" parameterType="int">
+		SELECT * FROM QUEUE WHERE identity = #{id}
+	</select>
+
+	<insert id="createQueue" parameterType="Queue" keyProperty="identity" useGeneratedKeys="true">
+		INSERT INTO QUEUE
+		<include refid="queueValuesList"/>
+		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
+			CALL IDENTITY();
+		</selectKey>
+	</insert>
+
+	<update id="updateQueue" parameterType="Queue">
+		UPDATE QUEUE SET
+		<include refid="queueSetList"/>
+		WHERE identity = #{identity}
+	</update>
+
+	<delete id="deleteQueue" parameterType="Queue">
+		DELETE FROM QUEUE WHERE identity = #{identity}
+	</delete>
+
+	<select id="countQueued" resultType="int">
+		SELECT COUNT(*) FROM QUEUE WHERE archived = false
+	</select>
+
+	<select id="countStarttime" resultType="int">
+		SELECT COUNT(*) FROM QUEUE WHERE archived = false AND started &lt; NOW() AND inprogress = false
+	</select>
+
+	<select id="poll" resultMap="queueMap">
+		SELECT Q.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM Queue AS Q
+		INNER JOIN ACCOUNTS AS A ON (A.identity = Q.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = Q.playlist_id)
+		WHERE Q.archived = false AND Q.inprogress = false AND (Q.started &lt; NOW() OR Q.started IS NULL) AND Q.locked = false ORDER BY Q.started DESC, Q.sequence ASC, Q.failed ASC LIMIT 1
+	</select>
+</mapper>

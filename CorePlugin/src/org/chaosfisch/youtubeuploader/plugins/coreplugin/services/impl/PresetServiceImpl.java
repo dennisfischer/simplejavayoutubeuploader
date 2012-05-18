@@ -20,11 +20,11 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
 import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.mybatis.guice.transactional.Transactional;
+import org.mybatis.mappers.PresetMapper;
 
 import java.util.List;
 
@@ -37,62 +37,36 @@ import java.util.List;
  */
 public class PresetServiceImpl implements PresetService
 {
-	private final SessionFactory sessionFactory;
+	@Inject PresetMapper presetMapper;
 
-	@Inject
-	public PresetServiceImpl(final SessionFactory sessionFactory)
+	@Transactional @Override public Preset createPresetEntry(final Preset preset)
 	{
-		this.sessionFactory = sessionFactory;
+		this.presetMapper.createPreset(preset);
+		EventBus.publish(PRESET_ENTRY_ADDED, preset);
+		return preset;
 	}
 
-	public PresetEntry createPresetEntry(final PresetEntry presetEntry)
+	@Transactional @Override public Preset deletePresetEntry(final Preset preset)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final Query temp = session.createQuery("Select Count(*) From PresetEntry Where name = :name");
-		temp.setParameter("name", presetEntry.getName()); //NON-NLS
-
-		if ((Long) temp.uniqueResult() > 0) {
-			session.getTransaction().commit();
-			return null;
-		}
-
-		session.save(presetEntry);
-		session.getTransaction().commit();
-		return presetEntry;
+		this.presetMapper.deletePreset(preset);
+		EventBus.publish(PRESET_ENTRY_REMOVED, preset);
+		return preset;
 	}
 
-	public PresetEntry deletePresetEntry(final PresetEntry presetEntry)
+	@Transactional @Override public Preset updatePresetEntry(final Preset preset)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.delete(presetEntry);
-		session.getTransaction().commit();
-		return presetEntry;
+		this.presetMapper.updatePreset(preset);
+		EventBus.publish(PRESET_ENTRY_UPDATED, preset);
+		return preset;
 	}
 
-	public PresetEntry updatePresetEntry(final PresetEntry presetEntry)
+	@Transactional @Override public List<Preset> getAllPresetEntry()
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.update(presetEntry);
-		session.getTransaction().commit();
-		return presetEntry;
+		return this.presetMapper.getPresets();
 	}
 
-	@Override
-	public List<PresetEntry> getAllPresetEntry()
+	@Transactional @Override public Preset findPresetEntry(final int identifier)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final List<PresetEntry> returnList = session.createQuery("select p from PresetEntry as p order by name").list(); //NON-NLS
-		session.getTransaction().commit();
-		return returnList;
-	}
-
-	public PresetEntry findPresetEntry(final int identifier)
-	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		return (PresetEntry) session.load(PresetEntry.class, identifier);
+		return this.presetMapper.findPreset(identifier);
 	}
 }

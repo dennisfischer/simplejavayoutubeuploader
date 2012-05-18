@@ -19,14 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
-import com.google.gdata.data.IEntry;
-import com.google.gdata.data.IFeed;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
-
-import java.io.IOException;
-import java.net.URL;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -36,19 +28,6 @@ import java.net.URL;
  */
 public interface YTService
 {
-	void setPassword(final String password);
-
-	String getPassword();
-
-	void setUsername(final String username);
-
-	String getUsername();
-
-	String getAuthToken() throws AuthenticationException;
-
-	void authenticate() throws AuthenticationException;
-
-	@SuppressWarnings("RedundantThrows") <E extends IEntry> E insert(URL feedUrl, E entry) throws IOException, ServiceException;
-
-	@SuppressWarnings("RedundantThrows") <F extends IFeed> F getFeed(URL feedUrl, Class<F> feedClass) throws IOException, ServiceException;
+	public static final String DEVELOPER_KEY    = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
+	public static final String APPLICATION_NAME = "dennis-fischer-youtube java uploader-2.0-alpha-1";
 }

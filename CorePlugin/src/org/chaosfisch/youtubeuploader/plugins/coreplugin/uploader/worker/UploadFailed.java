@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,18 +30,18 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEn
  */
 public class UploadFailed
 {
-	private final QueueEntry queueEntry;
-	private final String     message;
+	private final Queue  queue;
+	private final String message;
 
-	public UploadFailed(final QueueEntry queueEntry, final String message)
+	public UploadFailed(final Queue queue, final String message)
 	{
-		this.queueEntry = queueEntry;
+		this.queue = queue;
 		this.message = message;
 	}
 
-	public QueueEntry getQueueEntry()
+	public Queue getQueue()
 	{
-		return this.queueEntry;
+		return this.queue;
 	}
 
 	public String getMessage()

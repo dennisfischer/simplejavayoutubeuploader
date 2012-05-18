@@ -21,7 +21,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 
 import javax.swing.*;
@@ -39,78 +38,78 @@ import java.util.List;
 public class PlaylistListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final IdentityList<PlaylistEntry> playlistEntries = new IdentityList<PlaylistEntry>();
-	private       int                         selectedRow     = 0;
+	private final IdentityList<Playlist> playlists   = new IdentityList<Playlist>();
+	private       int                    selectedRow = 0;
 
 	public PlaylistListModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public PlaylistListModel(final List<PlaylistEntry> l)
+	public PlaylistListModel(final List<Playlist> l)
 	{
-		this.playlistEntries.addAll(l);
+		this.playlists.addAll(l);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public int getSize()
 	{
-		return this.playlistEntries.size();
+		return this.playlists.size();
 	}
 
 	@Override
 	public Object getElementAt(final int index)
 	{
-		return this.playlistEntries.get(index);
+		return this.playlists.get(index);
 	}
 
-	void addPlaylistEntry(final PlaylistEntry playlistEntry)
+	void addPlaylistEntry(final Playlist playlist)
 	{
-		this.playlistEntries.add(playlistEntry);
+		this.playlists.add(playlist);
 		this.fireIntervalAdded(this, 0, this.getSize());
 	}
 
 	public void addPlaylistEntryList(final List l)
 	{
 		for (final Object o : l) {
-			if (o instanceof PlaylistEntry) {
-				this.addPlaylistEntry((PlaylistEntry) o);
+			if (o instanceof Playlist) {
+				this.addPlaylistEntry((Playlist) o);
 			}
 		}
 	}
 
-	public PlaylistEntry removeSelectedPlaylistEntry()
+	public Playlist removeSelectedPlaylistEntry()
 	{
-		final PlaylistEntry playlistEntry = this.playlistEntries.remove(this.selectedRow);
+		final Playlist playlist = this.playlists.remove(this.selectedRow);
 		this.fireContentsChanged(this, 0, this.getSize());
-		return playlistEntry;
+		return playlist;
 	}
 
-	public List<PlaylistEntry> getPlaylistList()
+	public List<Playlist> getPlaylistList()
 	{
-		return new ArrayList<PlaylistEntry>(this.playlistEntries);
+		return new ArrayList<Playlist>(this.playlists);
 	}
 
-	void removePlaylistEntry(final PlaylistEntry playlistEntry)
+	void removePlaylistEntry(final Playlist playlist)
 	{
-		this.playlistEntries.remove(playlistEntry);
+		this.playlists.remove(playlist);
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
 	@Override
 	public void setSelectedItem(final Object selectedItem)
 	{
-		final PlaylistEntry playlistEntry = (PlaylistEntry) selectedItem;
-		this.selectedRow = this.playlistEntries.indexOf(playlistEntry);
+		final Playlist playlist = (Playlist) selectedItem;
+		this.selectedRow = this.playlists.indexOf(playlist);
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
 	@Override
 	public Object getSelectedItem()
 	{
-		if (this.playlistEntries.size() - 1 >= this.selectedRow) {
-			return this.playlistEntries.get(this.selectedRow);
+		if (this.playlists.size() - 1 >= this.selectedRow) {
+			return this.playlists.get(this.selectedRow);
 		} else {
 			this.selectedRow = 0;
 		}
@@ -119,12 +118,12 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 
 	public boolean hasPlaylistentryAt(final int selectedRow)
 	{
-		return this.playlistEntries.size() >= selectedRow && selectedRow != -1;
+		return this.playlists.size() >= selectedRow && selectedRow != -1;
 	}
 
 	public void removeAll()
 	{
-		final Iterator iterator = this.playlistEntries.iterator();
+		final Iterator iterator = this.playlists.iterator();
 		while (iterator.hasNext()) {
 			iterator.next();
 			iterator.remove();
@@ -133,22 +132,22 @@ public class PlaylistListModel extends AbstractListModel implements ComboBoxMode
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
-	public void onPlaylistAdded(final String topic, final PlaylistEntry playlistEntry)
+	public void onPlaylistAdded(final String topic, final Playlist playlist)
 	{
-		this.addPlaylistEntry(playlistEntry);
+		this.addPlaylistEntry(playlist);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
-	public void onPlaylistRemoved(final String topic, final PlaylistEntry playlistEntry)
+	public void onPlaylistRemoved(final String topic, final Playlist playlist)
 	{
-		this.removePlaylistEntry(playlistEntry);
+		this.removePlaylistEntry(playlist);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
-	public void onPlaylistUpdated(final String topic, final PlaylistEntry playlistEntry)
+	public void onPlaylistUpdated(final String topic, final Playlist playlist)
 	{
-		if (this.getSelectedIndex() != -1 && this.playlistEntries.size() > 0 && this.playlistEntries.size() >= this.getSelectedIndex()) {
-			this.playlistEntries.set(this.getSelectedIndex(), playlistEntry);
+		if (this.getSelectedIndex() != -1 && this.playlists.size() > 0 && this.playlists.size() >= this.getSelectedIndex()) {
+			this.playlists.set(this.getSelectedIndex(), playlist);
 			this.fireContentsChanged(this, 0, this.getSize());
 		}
 	}

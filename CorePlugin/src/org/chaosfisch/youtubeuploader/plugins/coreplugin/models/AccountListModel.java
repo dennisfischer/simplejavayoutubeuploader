@@ -21,7 +21,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 
 import javax.swing.*;
@@ -38,78 +37,78 @@ import java.util.List;
 public class AccountListModel extends AbstractListModel implements ComboBoxModel
 {
 
-	private final IdentityList<AccountEntry> accountEntries = new IdentityList<AccountEntry>();
-	private       int                        selectedRow    = 0;
+	private final IdentityList<Account> accounts    = new IdentityList<Account>();
+	private       int                   selectedRow = 0;
 
 	public AccountListModel()
 	{
 		AnnotationProcessor.process(this);
 	}
 
-	public AccountListModel(final List<AccountEntry> l)
+	public AccountListModel(final List<Account> l)
 	{
-		this.accountEntries.addAll(l);
+		this.accounts.addAll(l);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public int getSize()
 	{
-		return this.accountEntries.size();
+		return this.accounts.size();
 	}
 
 	@Override
 	public Object getElementAt(final int index)
 	{
-		return this.accountEntries.get(index);
+		return this.accounts.get(index);
 	}
 
-	void addAccountEntry(final AccountEntry accountEntry)
+	void addAccountEntry(final Account account)
 	{
-		this.accountEntries.add(accountEntry);
+		this.accounts.add(account);
 		this.fireIntervalAdded(this, 0, this.getSize());
 	}
 
 	public void addAccountEntryList(final List l)
 	{
 		for (final Object o : l) {
-			if (o instanceof AccountEntry) {
-				this.addAccountEntry((AccountEntry) o);
+			if (o instanceof Account) {
+				this.addAccountEntry((Account) o);
 			}
 		}
 	}
 
-	public AccountEntry removeSelectedAccountEntry()
+	public Account removeSelectedAccountEntry()
 	{
-		final AccountEntry accountEntry = this.accountEntries.remove(this.selectedRow);
+		final Account account = this.accounts.remove(this.selectedRow);
 		this.fireContentsChanged(this, 0, this.getSize());
-		return accountEntry;
+		return account;
 	}
 
-	public List<AccountEntry> getAccountList()
+	public List<Account> getAccountList()
 	{
-		return new ArrayList<AccountEntry>(this.accountEntries);
+		return new ArrayList<Account>(this.accounts);
 	}
 
-	void removeAccountEntry(final AccountEntry accountEntry)
+	void removeAccountEntry(final Account account)
 	{
-		this.accountEntries.remove(accountEntry);
+		this.accounts.remove(account);
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
 	@Override
 	public void setSelectedItem(final Object selectedItem)
 	{
-		final AccountEntry accountEntry = (AccountEntry) selectedItem;
-		this.selectedRow = this.accountEntries.indexOf(accountEntry);
+		final Account account = (Account) selectedItem;
+		this.selectedRow = this.accounts.indexOf(account);
 		this.fireContentsChanged(this, 0, this.getSize());
 	}
 
 	@Override
-	public AccountEntry getSelectedItem()
+	public Account getSelectedItem()
 	{
-		if (this.accountEntries.size() - 1 >= this.selectedRow) {
-			return this.accountEntries.get(this.selectedRow);
+		if (this.accounts.size() - 1 >= this.selectedRow) {
+			return this.accounts.get(this.selectedRow);
 		} else {
 			this.selectedRow = 0;
 		}
@@ -118,24 +117,24 @@ public class AccountListModel extends AbstractListModel implements ComboBoxModel
 
 	public boolean hasAccountEntryAt(final int selectedRow)
 	{
-		return this.accountEntries.size() >= selectedRow && selectedRow != -1;
+		return this.accounts.size() >= selectedRow && selectedRow != -1;
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED)
-	public void onAccountAdded(final String topic, final AccountEntry accountEntry)
+	public void onAccountAdded(final String topic, final Account account)
 	{
-		this.addAccountEntry(accountEntry);
+		this.addAccountEntry(account);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_REMOVED)
-	public void onAccountRemoved(final String topic, final AccountEntry accountEntry)
+	public void onAccountRemoved(final String topic, final Account account)
 	{
-		this.removeAccountEntry(accountEntry);
+		this.removeAccountEntry(account);
 	}
 
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_UPDATED)
-	public void onAccountUpdated(final String topic, final AccountEntry accountEntry)
+	public void onAccountUpdated(final String topic, final Account account)
 	{
-		this.accountEntries.set(this.accountEntries.indexOf(accountEntry), accountEntry);
+		this.accounts.set(this.accounts.indexOf(account), account);
 	}
 }

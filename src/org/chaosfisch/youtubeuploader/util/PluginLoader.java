@@ -21,27 +21,32 @@ package org.chaosfisch.youtubeuploader.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.apache.xbean.finder.ResourceFinder;
 import org.chaosfisch.plugin.Pluggable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
 
-@SuppressWarnings("ALL")
 public class PluginLoader
 {
 	@Inject Injector injector;
 
-	public List<Pluggable> loadPlugins(File plugDir) throws IOException
+	public List<Pluggable> loadPlugins(final File plugDir) throws IOException
 	{
-		ServiceLoader<Pluggable> pluggableServiceLoader = ServiceLoader.load(Pluggable.class);
-		List<Pluggable> pluggableList = new LinkedList<Pluggable>();
-		for (Pluggable pluggable : pluggableServiceLoader) {
-			pluggableList.add(injector.getInstance(pluggable.getClass()));
-			pluggable = null;
+		final ResourceFinder finder = new ResourceFinder("META-INF/services/");
+		try {
+			final List<Class> classes = finder.findAllImplementations(Pluggable.class);
+
+			final List<Pluggable> pluggableList = new ArrayList<Pluggable>(classes.size());
+			for (final Class pluggable : classes) {
+				pluggableList.add(this.injector.<Pluggable>getInstance(pluggable));
+			}
+			return pluggableList;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
-		return pluggableList;
+		return new ArrayList<Pluggable>(0);
 	}
 }

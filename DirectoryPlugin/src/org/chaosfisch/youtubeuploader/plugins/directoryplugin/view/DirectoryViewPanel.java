@@ -21,12 +21,12 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import javax.swing.*;
@@ -73,8 +73,8 @@ public class DirectoryViewPanel extends JDialog
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final DirectoryEntry directoryEntry = ((DirectoryTableModel) table.getModel()).getDirectoryAt(row);
-				if (directoryEntry.isLocked()) {
+				final Directory directory = ((DirectoryTableModel) table.getModel()).getDirectoryAt(row);
+				if (directory.locked) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
 				} else {
@@ -105,7 +105,7 @@ public class DirectoryViewPanel extends JDialog
 				DirectoryViewPanel.this.presetList.setBackground(null);
 
 				DirectoryViewPanel.this.directoryController.addAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), DirectoryViewPanel.this.directoryTextField.getText(),
-						(PresetEntry) DirectoryViewPanel.this.presetList.getSelectedItem());
+				                                                      (Preset) DirectoryViewPanel.this.presetList.getSelectedItem());
 			}
 		});
 
@@ -141,7 +141,8 @@ public class DirectoryViewPanel extends JDialog
 				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
 				if (directoryTableModel.hasDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow())) {
 					DirectoryViewPanel.this.directoryController.checkboxChangeAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), directoryTableModel.getDirectoryAt(DirectoryViewPanel
-							.this.directoryTable.getSelectedRow()));
+							                                                                                                                                                         .this.directoryTable
+							                                                                                                                                                         .getSelectedRow()));
 				}
 			}
 		});
@@ -154,9 +155,9 @@ public class DirectoryViewPanel extends JDialog
 				if (DirectoryViewPanel.this.directoryTable.getSelectedRow() == -1) {
 					return;
 				}
-				final DirectoryEntry directoryEntry = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow());
-				if (directoryEntry != null) {
-					DirectoryViewPanel.this.activeCheckbox.setSelected(directoryEntry.isActive());
+				final Directory directory = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow());
+				if (directory != null) {
+					DirectoryViewPanel.this.activeCheckbox.setSelected(directory.active);
 				}
 			}
 		});

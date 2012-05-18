@@ -30,8 +30,8 @@ import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.HyperlinkMouseAdapter;
 import org.chaosfisch.util.ProgressbarTableCellRenderer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.QueueController;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ColumnsAutoSizer;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
@@ -79,7 +79,7 @@ public final class QueueViewPanel
 
 	private void setup()
 	{
-		this.controller.getQueueList().addQueueEntryList(this.controller.getQueueService().getAllQueueEntry());
+		this.controller.getQueueList().addQueueEntryList(this.controller.getQueueService().getAll());
 	}
 
 	private void initComponents()
@@ -90,8 +90,8 @@ public final class QueueViewPanel
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final QueueEntry queueEntry = ((QueueTableModel) table.getModel()).getQueueEntryAt(row);
-				if (queueEntry.isLocked()) {
+				final Queue queue = ((QueueTableModel) table.getModel()).getQueueEntryAt(row);
+				if (queue.locked) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
 				} else if (!isSelected) {
@@ -228,15 +228,15 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int[] selectedRows = QueueViewPanel.this.queueTable.getSelectedRows();
-				final ArrayList<QueueEntry> queueEntries = new ArrayList<QueueEntry>(QueueViewPanel.this.queueTable.getRowCount());
+				final ArrayList<Queue> queues = new ArrayList<Queue>(QueueViewPanel.this.queueTable.getRowCount());
 				for (final int selectedRow : selectedRows) {
 					if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-						queueEntries.add(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+						queues.add(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
 					}
 				}
 
-				for (final QueueEntry queueEntry : queueEntries) {
-					QueueViewPanel.this.controller.deleteEntry(queueEntry);
+				for (final Queue queue : queues) {
+					QueueViewPanel.this.controller.deleteEntry(queue);
 				}
 			}
 		});

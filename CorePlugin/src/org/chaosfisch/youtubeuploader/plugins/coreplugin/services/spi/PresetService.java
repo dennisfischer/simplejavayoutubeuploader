@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 
 import java.util.List;
 
@@ -36,13 +36,13 @@ public interface PresetService
 	public static final String PRESET_ENTRY_REMOVED = "presetEntryRemoved"; //NON-NLS
 	public static final String PRESET_ENTRY_UPDATED = "presetEntryUpdated"; //NON-NLS
 
-	PresetEntry createPresetEntry(PresetEntry presetEntry);
+	Preset createPresetEntry(Preset preset);
 
-	PresetEntry deletePresetEntry(PresetEntry presetEntry);
+	Preset deletePresetEntry(Preset preset);
 
-	PresetEntry updatePresetEntry(PresetEntry presetEntry);
+	Preset updatePresetEntry(Preset preset);
 
-	List<PresetEntry> getAllPresetEntry();
+	List<Preset> getAllPresetEntry();
 
-	PresetEntry findPresetEntry(int identifier);
+	Preset findPresetEntry(int identifier);
 }

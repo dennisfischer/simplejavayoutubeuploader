@@ -20,10 +20,10 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller;
 
 import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PresetEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.entities.DirectoryEntry;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
 /**
@@ -54,23 +54,23 @@ public class DirectoryController
 		return this.directoryTableModel;
 	}
 
-	public void addAction(final boolean activeCheckboxSelected, final String directoryTextFieldText, final PresetEntry presetListSelectedItem)
+	public void addAction(final boolean activeCheckboxSelected, final String directoryTextFieldText, final Preset presetListSelectedItem)
 	{
-		final DirectoryEntry directoryEntry = new DirectoryEntry();
-		directoryEntry.setActive(activeCheckboxSelected);
-		directoryEntry.setDirectory(directoryTextFieldText);
-		directoryEntry.setPreset(presetListSelectedItem);
-		this.directoryService.createDirectoryEntry(directoryEntry);
+		final Directory directory = new Directory();
+		directory.active = activeCheckboxSelected;
+		directory.directory = directoryTextFieldText;
+		directory.preset = presetListSelectedItem;
+		this.directoryService.createDirectoryEntry(directory);
 	}
 
-	public void deleteAction(final DirectoryEntry directoryEntry)
+	public void deleteAction(final Directory directory)
 	{
-		this.directoryService.deleteDirectoryEntry(directoryEntry);
+		this.directoryService.deleteDirectoryEntry(directory);
 	}
 
-	public void checkboxChangeAction(final boolean activeCheckboxSelected, final DirectoryEntry directoryEntry)
+	public void checkboxChangeAction(final boolean activeCheckboxSelected, final Directory directory)
 	{
-		directoryEntry.setActive(activeCheckboxSelected);
-		this.directoryService.updateDirectoryEntry(directoryEntry);
+		directory.active = activeCheckboxSelected;
+		this.directoryService.updateDirectoryEntry(directory);
 	}
 }

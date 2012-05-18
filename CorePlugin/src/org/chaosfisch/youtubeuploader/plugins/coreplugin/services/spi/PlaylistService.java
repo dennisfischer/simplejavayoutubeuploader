@@ -19,10 +19,9 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.PlaylistEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,13 +37,21 @@ public interface PlaylistService
 	public static final String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved"; //NON-NLS
 	public static final String PLAYLIST_ENTRY_UPDATED = "playlistEntryUpdated"; //NON-NLS
 
-	void synchronizePlaylists(Collection<AccountEntry> accountEntries);
+	void synchronizePlaylists(List<Account> accounts);
 
-	void createPlaylist(PlaylistEntry playlistEntry);
+	List<Playlist> getByAccount(Account account);
 
-	void addLatestVideoToPlaylist(PlaylistEntry playlistEntry);
+	List<Playlist> getAll();
 
-	List<PlaylistEntry> getAllPlaylistByAccount(AccountEntry accountEntry);
+	Playlist findPlaylist(int id);
 
-	PlaylistEntry updatePlaylist(PlaylistEntry playlistEntry);
+	Playlist createPlaylist(Playlist playlist);
+
+	Playlist updatePlaylist(Playlist playlist);
+
+	Playlist deletePlaylist(Playlist playlist);
+
+	void addLatestVideoToPlaylist(Playlist playlist);
+
+	Playlist addYoutubePlaylist(Playlist playlist);
 }

@@ -20,11 +20,17 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
 import com.google.inject.Inject;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.AccountEntry;
+import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.mybatis.guice.transactional.Transactional;
+import org.mybatis.mappers.AccountMapper;
+import org.mybatis.mappers.PlaylistMapper;
+import org.mybatis.mappers.PresetMapper;
+import org.mybatis.mappers.QueueMapper;
 
 import java.util.List;
 
@@ -37,71 +43,55 @@ import java.util.List;
  */
 public class AccountServiceImpl implements AccountService
 {
+	@Inject AccountMapper  accountMapper;
+	@Inject PlaylistMapper playlistMapper;
+	@Inject PresetMapper   presetMapper;
+	@Inject QueueMapper    queueMapper;
 
-	@Inject private SessionFactory sessionFactory;
-
-	@Override
-	public AccountEntry deleteAccountEntry(final AccountEntry accountEntry)
+	@Transactional @Override public Account createAccountEntry(final Account account)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.delete(accountEntry);
-		session.getTransaction().commit();
-		return accountEntry;
+		this.accountMapper.createAccount(account);
+		EventBus.publish(ACCOUNT_ENTRY_ADDED, account);
+		return account;
 	}
 
-	@Override
-	public List<AccountEntry> getAllAccountEntry()
+	@Transactional @Override public Account deleteAccountEntry(final Account account)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final List<AccountEntry> returnList = session.createQuery("select a from AccountEntry as a order by name").list(); //NON-NLS
-		session.getTransaction().commit();
-		return returnList;
-	}
-
-	@Override
-	public AccountEntry createAccountEntry(final AccountEntry accountEntry)
-	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		final Query temp = session.createQuery("Select Count(*) From AccountEntry Where name = :name");
-		temp.setParameter("name", accountEntry.getName()); //NON-NLS
-
-		if ((Long) temp.uniqueResult() > 0) {
-			session.getTransaction().commit();
-			return null;
+		final List<Playlist> playlists = this.playlistMapper.findPlaylists(account);
+		for (final Playlist playlist : playlists) {
+			this.playlistMapper.deletePlaylist(playlist);
 		}
-		session.save(accountEntry);
-		session.flush();
-		session.getTransaction().commit();
-
-		return accountEntry;
+		final List<Preset> presets = this.presetMapper.findByAccount(account);
+		for (final Preset preset : presets) {
+			preset.account = null;
+			preset.playlist = null;
+			this.presetMapper.updatePreset(preset);
+		}
+		final List<Queue> queues = this.queueMapper.findByAccount(account);
+		for (final Queue queue : queues) {
+			queue.account = null;
+			queue.playlist = null;
+			this.queueMapper.updateQueue(queue);
+		}
+		this.accountMapper.deleteAccount(account);
+		EventBus.publish(ACCOUNT_ENTRY_REMOVED, account);
+		return account;
 	}
 
-	@Override
-	public AccountEntry updateAccountEntry(final AccountEntry accountEntry)
+	@Transactional @Override public Account updateAccountEntry(final Account account)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.update(accountEntry);
-		session.getTransaction().commit();
-		return accountEntry;
+		this.accountMapper.updateAccount(account);
+		EventBus.publish(ACCOUNT_ENTRY_UPDATED, account);
+		return account;
 	}
 
-	@Override
-	public AccountEntry findAccountEntry(final int identifier)
+	@Transactional @Override public Account findAccountEntry(final int identifier)
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		return (AccountEntry) session.load(AccountEntry.class, identifier);
+		return this.accountMapper.findAccount(identifier);
 	}
 
-	@Override
-	public void refreshAccount(final AccountEntry accountEntry)
+	@Transactional @Override public List<Account> getAllAccountEntry()
 	{
-		final Session session = this.sessionFactory.getCurrentSession();
-		session.getTransaction().begin();
-		session.refresh(accountEntry);
-		session.getTransaction().commit();
+		return this.accountMapper.getAccounts();
 	}
 }

@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEntry;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,16 +30,16 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.entities.QueueEn
  */
 public class UploadProgress
 {
-	private final QueueEntry queueEntry;
-	private final double     fileSize;
-	private       long       time;
-	private       double     totalBytesUploaded;
-	private       double     diffBytes;
-	private       long       diffTime;
+	private final Queue  queue;
+	private final double fileSize;
+	private       long   time;
+	private       double totalBytesUploaded;
+	private       double diffBytes;
+	private       long   diffTime;
 
-	public UploadProgress(final QueueEntry queueEntry, final double fileSize, final double totalBytesUploaded, final double diffBytes, final long time, final long diffTime)
+	public UploadProgress(final Queue queue, final double fileSize, final double totalBytesUploaded, final double diffBytes, final long time, final long diffTime)
 	{
-		this.queueEntry = queueEntry;
+		this.queue = queue;
 		this.fileSize = fileSize;
 		this.totalBytesUploaded = totalBytesUploaded;
 		this.diffBytes = diffBytes;
@@ -47,9 +47,9 @@ public class UploadProgress
 		this.diffTime = diffTime;
 	}
 
-	public QueueEntry getQueueEntry()
+	public Queue getQueue()
 	{
-		return this.queueEntry;
+		return this.queue;
 	}
 
 	public double getFileSize()
