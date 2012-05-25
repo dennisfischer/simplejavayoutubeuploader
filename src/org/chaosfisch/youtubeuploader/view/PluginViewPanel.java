@@ -19,20 +19,21 @@
 
 package org.chaosfisch.youtubeuploader.view;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.chaosfisch.plugin.Pluggable;
+import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.controller.PluginController;
 
 import javax.swing.*;
-import java.util.List;
+import java.util.Collection;
 
 public class PluginViewPanel extends JDialog
 {
-	private JPanel          contentPane;
-	private JTable          pluginTable;
-	private JButton         addButton;
-	private JButton         removeButton;
-	private List<Pluggable> pluggableList;
+	private JPanel  contentPane;
+	private JTable  pluginTable;
+	private JButton addButton;
+	private JButton removeButton;
 
 	private @Inject PluginController pluginController;
 
@@ -44,11 +45,15 @@ public class PluginViewPanel extends JDialog
 
 	public void run()
 	{
-		this.pluginTable.setModel(this.pluginController.getPluginTableModel(this.pluggableList));
+		this.pluginTable.setModel(this.pluginController.getPluginTableModel());
 	}
 
-	public void setPluggableList(final List<Pluggable> pluggableList)
+	public void setPluggableList(final Collection<Pluggable> pluggableList)
 	{
-		this.pluggableList = pluggableList;
+		final RowTableModel<Pluggable> rowTableModel = this.pluginController.getPluginTableModel();
+		if (rowTableModel.getRowCount() > 0) {
+			rowTableModel.removeRowRange(0, rowTableModel.getRowCount() - 1);
+		}
+		rowTableModel.insertRows(this.pluginTable.getModel().getRowCount(), Lists.newArrayList(pluggableList));
 	}
 }

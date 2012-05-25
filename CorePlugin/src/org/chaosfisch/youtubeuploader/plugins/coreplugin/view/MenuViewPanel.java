@@ -197,7 +197,7 @@ public class MenuViewPanel
 						final Playlist playlist = new Playlist();
 						playlist.title = nameTextField.getText();
 						playlist.summary = descriptionTextArea.getText();
-						playlist.account = MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
+						playlist.account = (Account) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
 						if (playlist.account != null) {
 							MenuViewPanel.this.playlistService.createPlaylist(playlist);
 							break;

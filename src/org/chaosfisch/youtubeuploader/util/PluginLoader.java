@@ -21,32 +21,40 @@ package org.chaosfisch.youtubeuploader.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.apache.log4j.Logger;
 import org.apache.xbean.finder.ResourceFinder;
 import org.chaosfisch.plugin.Pluggable;
+import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PluginLoader
 {
-	@Inject Injector injector;
+	@Inject       Injector injector;
+	@InjectLogger Logger   logger;
 
-	public List<Pluggable> loadPlugins(final File plugDir) throws IOException
+	public Map<String, Pluggable> loadPlugins(final List<String> disabledPlugins)
 	{
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/");
 		try {
 			final List<Class> classes = finder.findAllImplementations(Pluggable.class);
 
-			final List<Pluggable> pluggableList = new ArrayList<Pluggable>(classes.size());
+			final HashMap<String, Pluggable> pluggableList = new HashMap<String, Pluggable>(classes.size());
 			for (final Class pluggable : classes) {
-				pluggableList.add(this.injector.<Pluggable>getInstance(pluggable));
+				if (!disabledPlugins.contains(pluggable.getName())) {
+					this.logger.info(String.format("Plugin Loaded: %s", pluggable.getName()));
+					pluggableList.put(pluggable.getName(), this.injector.<Pluggable>getInstance(pluggable));
+				}
 			}
 			return pluggableList;
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			this.logger.warn(String.format("Plugin could not be loaded: %s", e.getMessage()));
+		} catch (IOException ignored) {
+			this.logger.error("Pluginloader fatal error: 1x00001");
 		}
-		return new ArrayList<Pluggable>(0);
+		return new HashMap<String, Pluggable>(0);
 	}
 }

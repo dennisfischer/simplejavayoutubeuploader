@@ -71,13 +71,8 @@ public class SocializePlugin implements org.chaosfisch.plugin.Pluggable
 		return "CHAOSFISCH"; //NON-NLS
 	}
 
-	@Override public boolean canBeDisabled()
-	{
-		return true;  //To change body of implemented methods use File | Settings | File Templates.
-	}
-
 	@Override public String[] getDependencies()
 	{
-		return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+		return new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
 	}
 }

@@ -28,5 +28,5 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
  */
 public interface IModel
 {
-	int getIdentity();
+	public int getIdentity();
 }

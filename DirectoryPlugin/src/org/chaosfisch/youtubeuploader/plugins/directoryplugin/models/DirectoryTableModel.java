@@ -21,11 +21,12 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
-import javax.swing.table.AbstractTableModel;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -36,71 +37,33 @@ import java.util.ResourceBundle;
  * Time: 19:10
  * To change this template use File | Settings | File Templates.
  */
-public class DirectoryTableModel extends AbstractTableModel
+public class DirectoryTableModel extends RowTableModel<Directory>
 {
-	private final IdentityList<Directory> directoryList  = new IdentityList<Directory>();
-	private final ResourceBundle          resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
-	private final String[]                columns        = {this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"), this.resourceBundle
-			.getString("directorytable.activeLabel")};
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
 
 	public DirectoryTableModel()
 	{
-		AnnotationProcessor.process(this);
+		this(Collections.<Directory>emptyList());
 	}
 
-	public DirectoryTableModel(final List<Directory> l)
+	public DirectoryTableModel(final List<Directory> directories)
 	{
-		AnnotationProcessor.process(this);
-		this.directoryList.addAll(l);
-	}
+		super(Directory.class);
+		this.setDataAndColumnNames(new IdentityList<Directory>(), Arrays.asList(this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"),
+		                                                                        this.resourceBundle.getString("directorytable.activeLabel")));
 
-	void addDirectory(final Directory directory)
-	{
-		this.directoryList.add(directory);
-		this.fireTableDataChanged();
-	}
-
-	public void addDirectoryList(final List<Directory> list)
-	{
-		for (final Directory directory : list) {
-			this.addDirectory(directory);
+		for (final Directory directory : directories) {
+			this.addRow(directory);
 		}
-	}
-
-	public Directory getDirectoryAt(final int row)
-	{
-		return this.directoryList.get(row);
-	}
-
-	public Directory removeDirectoryAt(final int row)
-	{
-		final Directory element = this.directoryList.remove(row);
-		this.fireTableDataChanged();
-		return element;
-	}
-
-	@Override
-	public int getRowCount()
-	{
-		return this.directoryList.size();
-	}
-
-	@Override
-	public int getColumnCount()
-	{
-		return this.columns.length;
-	}
-
-	@Override
-	public String getColumnName(final int col)
-	{
-		return this.columns[col];
+		this.setColumnClass(2, Boolean.class);
+		this.setModelEditable(false);
+		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Directory directory = this.directoryList.get(row);
+		final Directory directory = this.getRow(row);
 		switch (col) {
 			case 0:
 				return directory.directory;
@@ -113,65 +76,19 @@ public class DirectoryTableModel extends AbstractTableModel
 		}
 	}
 
-	@Override
-	public Class getColumnClass(final int col)
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ADDED)
+	public void onDirectoryAdded(final String topic, final Directory directory)
 	{
-		switch (col) {
-			case 0:
-				return String.class;
-			case 1:
-				return String.class;
-			case 2:
-				return Boolean.class;
-			default:
-				return null;
+		this.addRow(directory);
+	}
+
+	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED)
+	public void onDirectoryRemoved(final String topic, final Directory directory)
+	{
+		if (this.modelData.contains(directory)) {
+			final int row = this.modelData.indexOf(directory);
+			this.modelData.remove(directory);
+			this.fireTableRowsDeleted(row, row);
 		}
-	}
-
-	@Override
-	public void setValueAt(final Object value, final int row, final int col)
-	{
-		final Directory directory = this.directoryList.get(row);
-		switch (col) {
-		}
-		this.fireTableCellUpdated(row, col);
-	}
-
-	public boolean hasDirectoryAt(final int selectedRow)
-	{
-		return this.directoryList.size() >= selectedRow && selectedRow != -1;
-	}
-
-	public List<Directory> getDirectoryList()
-	{
-		return this.directoryList;
-	}
-
-	public void removeAll()
-	{
-		final Iterator iterator = this.directoryList.iterator();
-		while (iterator.hasNext()) {
-			iterator.next();
-			iterator.remove();
-			this.fireTableDataChanged();
-		}
-	}
-
-	public void removeDirectory(final Directory directory)
-	{
-		this.directoryList.remove(directory);
-		this.fireTableDataChanged();
-	}
-
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_ADDED)
-	public void onDirectoryEntryAdded(final String topic, final Directory directory)
-	{
-		this.addDirectory(directory);
-	}
-
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ENTRY_REMOVED)
-	public void onDirectoryEntryRemoved(final String topic, final Directory directory)
-	{
-		this.removeDirectory(directory);
 	}
 }

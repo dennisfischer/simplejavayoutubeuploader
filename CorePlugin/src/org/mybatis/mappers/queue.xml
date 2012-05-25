@@ -103,6 +103,10 @@
 		SELECT * FROM QUEUE WHERE account_id = #{identity}
 	</select>
 
+	<select id="findByPlaylist" parameterType="Playlist" resultType="Queue">
+		SELECT * FROM QUEUE WHERE playlist_id = #{identity}
+	</select>
+
 	<select id="findQueue" resultType="Queue" parameterType="int">
 		SELECT * FROM QUEUE WHERE identity = #{id}
 	</select>

@@ -61,11 +61,6 @@ public class SettingsPlugin implements Pluggable
 
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.settingsplugin.resources.settings"); //NON-NLS
 
-	@Override public boolean canBeDisabled()
-	{
-		return false;
-	}
-
 	@Override public String[] getDependencies()
 	{
 		return DEPENDENCIES;

@@ -33,19 +33,19 @@ import java.util.List;
  */
 public interface DirectoryService
 {
-	String DIRECTORY_ENTRY_REMOVED = "onDirectoryEntryRemoved";
-	String DIRECTORY_ENTRY_ADDED   = "onDirectoryEntryAdded";
-	String DIRECTORY_ENTRY_UPDATED = "onDirectoryEntryUpdated";
+	public final static String DIRECTORY_REMOVED = "onDirectoryRemoved"; //NON-NLS
+	public final static String DIRECTORY_ADDED   = "onDirectoryAdded"; //NON-NLS
+	public final static String DIRECTORY_UPDATED = "onDirectoryUpdated"; //NON-NLS
 
 	List<Directory> getAll();
 
-	List<Directory> getAllActive();
+	List<Directory> getActive();
 
 	Directory findByFile(File file);
 
-	Directory createDirectoryEntry(Directory directory);
+	Directory createDirectory(Directory directory);
 
-	Directory deleteDirectoryEntry(Directory directory);
+	Directory deleteDirectory(Directory directory);
 
-	Directory updateDirectoryEntry(Directory directory);
+	Directory updateDirectory(Directory directory);
 }

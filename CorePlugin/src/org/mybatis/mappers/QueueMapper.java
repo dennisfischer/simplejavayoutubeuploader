@@ -20,6 +20,7 @@
 package org.mybatis.mappers;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.util.List;
@@ -40,6 +41,8 @@ public interface QueueMapper
 	List<Queue> getArchived();
 
 	List<Queue> findByAccount(Account account);
+
+	List<Queue> findByPlaylist(Playlist playlist);
 
 	Queue findQueue(int id);
 

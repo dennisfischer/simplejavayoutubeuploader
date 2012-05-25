@@ -38,7 +38,7 @@ import java.util.Properties;
 public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 {
 	private final Properties properties = new Properties();
-	private final String     fileName   = "config.properties"; //NON-NLS
+	private final String     fileName   = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/config.properties"; //NON-NLS
 
 	public PropertyFileSettingsPersisterImpl()
 	{

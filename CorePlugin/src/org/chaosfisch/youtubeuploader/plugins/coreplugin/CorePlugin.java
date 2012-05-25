@@ -43,7 +43,7 @@ import java.util.ResourceBundle;
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
 public class CorePlugin implements Pluggable
 {
-	private static final String[]       DEPENDENCIES   = new String[0];
+	private static final String[]       DEPENDENCIES   = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin"};
 	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
 	private         Uploader          uploader;
 	@Inject private PluginService     pluginService;
@@ -67,11 +67,6 @@ public class CorePlugin implements Pluggable
 		scriptRunner.setAutoCommit(true);
 		scriptRunner.setDelimiter(";");
 		scriptRunner.runScript(schemaReader);
-	}
-
-	@Override public boolean canBeDisabled()
-	{
-		return false;
 	}
 
 	@Override public String[] getDependencies()

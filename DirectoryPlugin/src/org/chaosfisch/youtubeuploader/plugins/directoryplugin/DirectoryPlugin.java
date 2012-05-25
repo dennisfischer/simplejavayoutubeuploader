@@ -62,7 +62,7 @@ import java.awt.event.ActionListener;
  */
 public class DirectoryPlugin implements Pluggable
 {
-	private static final String[] DEPENDENCIES = new String[0];
+	private static final String[] DEPENDENCIES = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
 	@Inject private PluginService   pluginService;
 	@Inject private Injector        injector;
 	@Inject         DirectoryWorker directoryWorker;
@@ -70,11 +70,6 @@ public class DirectoryPlugin implements Pluggable
 	public DirectoryPlugin()
 	{
 		AnnotationProcessor.process(this);
-	}
-
-	@Override public boolean canBeDisabled()
-	{
-		return true;
 	}
 
 	@Override public String[] getDependencies()

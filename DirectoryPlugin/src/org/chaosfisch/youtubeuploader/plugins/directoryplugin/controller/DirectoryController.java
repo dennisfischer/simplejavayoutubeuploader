@@ -46,7 +46,9 @@ public class DirectoryController
 
 	public void run()
 	{
-		this.directoryTableModel.addDirectoryList(this.directoryService.getAll());
+		for (final Directory directory : this.directoryService.getAll()) {
+			this.directoryTableModel.addRow(directory);
+		}
 	}
 
 	public DirectoryTableModel getDirectoryTableModel()
@@ -60,17 +62,17 @@ public class DirectoryController
 		directory.active = activeCheckboxSelected;
 		directory.directory = directoryTextFieldText;
 		directory.preset = presetListSelectedItem;
-		this.directoryService.createDirectoryEntry(directory);
+		this.directoryService.createDirectory(directory);
 	}
 
 	public void deleteAction(final Directory directory)
 	{
-		this.directoryService.deleteDirectoryEntry(directory);
+		this.directoryService.deleteDirectory(directory);
 	}
 
 	public void checkboxChangeAction(final boolean activeCheckboxSelected, final Directory directory)
 	{
 		directory.active = activeCheckboxSelected;
-		this.directoryService.updateDirectoryEntry(directory);
+		this.directoryService.updateDirectory(directory);
 	}
 }

@@ -40,7 +40,7 @@ import java.util.ResourceBundle;
  */
 public class NotificationsPlugin implements Pluggable
 {
-	private static final String[] DEPENDENCIES = new String[0];
+	private static final String[] DEPENDENCIES = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
 	private @Inject SettingsService settingsService;
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.notificationsplugin.resources.notificationsplugin"); //NON-NLS
 
@@ -48,11 +48,6 @@ public class NotificationsPlugin implements Pluggable
 	{
 		super();
 		AnnotationProcessor.process(this);
-	}
-
-	@Override public boolean canBeDisabled()
-	{
-		return true;
 	}
 
 	@Override public String[] getDependencies()

@@ -19,14 +19,11 @@
 
 package org.chaosfisch.plugin;
 
-import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
 public interface PluginManager
 {
-	List<Pluggable> loadPlugins();
-
-	List<Pluggable> loadPlugins(File directory);
+	Collection<Pluggable> loadPlugins(String[] disabledPlugins);
 
 	void startPlugins();
 

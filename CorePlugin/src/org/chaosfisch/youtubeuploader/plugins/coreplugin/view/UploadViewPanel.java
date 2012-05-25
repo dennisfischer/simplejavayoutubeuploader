@@ -40,6 +40,9 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -50,39 +53,39 @@ import java.util.Date;
 public final class UploadViewPanel
 {
 
-	@Inject private UploadController controller;
-	@Inject private Injector         injector;
-	private         JPanel           uploadPanel;
-	private         JButton          reset;
-	private         JButton          submit;
-	private         JCheckBox        playlistCheckBox;
-	private         JButton          searchFile;
-	private         JComboBox        fileList;
-	private         JComboBox        categoryList;
-	private         JTextField       titleTextField;
-	private         JTextArea        descriptionTextArea;
-	private         JTextArea        tagsTextArea;
-	private         JComboBox        playlistList;
-	private         JCheckBox        autotitelCheckBox;
-	private         JComboBox        presetList;
-	private         JTextField       autotitleTextField;
-	private         JSpinner         numberModifierSpinner;
-	private         JTextField       defaultdirTextField;
-	private         JComboBox        accountList;
-	private         JComboBox        commentList;
-	private         JComboBox        videoresponseList;
-	private         JComboBox        visibilityList;
-	private         JCheckBox        kommentareBewertenCheckBox;
-	private         JCheckBox        bewertenCheckBox;
-	private         JCheckBox        mobileCheckBox;
-	private         JCheckBox        embedCheckBox;
-	private         JButton          defaultdirSearch;
-	private         JButton          deletePreset;
-	private         JButton          savePreset;
-	private         JButton          deleteAccount;
-	private         JSpinner         startzeitpunktSpinner;
-	private         JButton          synchronizePlaylistsButton;
-	private         JMenuItem        fileSearchMenuItem;
+	@Inject private UploadController    controller;
+	@Inject private Injector            injector;
+	private         JPanel              uploadPanel;
+	private         JButton             reset;
+	private         JButton             submit;
+	private         JCheckBox           playlistCheckBox;
+	private         JButton             searchFile;
+	private         JComboBox<File>     fileList;
+	private         JComboBox           categoryList;
+	private         JTextField          titleTextField;
+	private         JTextArea           descriptionTextArea;
+	private         JTextArea           tagsTextArea;
+	private         JComboBox<Playlist> playlistList;
+	private         JCheckBox           autotitelCheckBox;
+	private         JComboBox<Preset>   presetList;
+	private         JTextField          autotitleTextField;
+	private         JSpinner            numberModifierSpinner;
+	private         JTextField          defaultdirTextField;
+	private         JComboBox<Account>  accountList;
+	private         JComboBox           commentList;
+	private         JComboBox           videoresponseList;
+	private         JComboBox           visibilityList;
+	private         JCheckBox           kommentareBewertenCheckBox;
+	private         JCheckBox           bewertenCheckBox;
+	private         JCheckBox           mobileCheckBox;
+	private         JCheckBox           embedCheckBox;
+	private         JButton             defaultdirSearch;
+	private         JButton             deletePreset;
+	private         JButton             savePreset;
+	private         JButton             deleteAccount;
+	private         JSpinner            startzeitpunktSpinner;
+	private         JButton             synchronizePlaylistsButton;
+	private         JMenuItem           fileSearchMenuItem;
 
 	public UploadViewPanel()
 	{
@@ -103,12 +106,14 @@ public final class UploadViewPanel
 
 	private void setup()
 	{
-		this.controller.getAccountListModel().addAccountEntryList(this.controller.getAccountService().getAllAccountEntry());
-		this.controller.getPresetListModel().addPresetEntryList(this.controller.getPresetService().getAllPresetEntry());
+		for (final Account account : this.controller.getAccountService().getAllAccountEntry()) {
+			this.controller.getAccountListModel().addElement(account);
+		}
+		for (final Preset preset : this.controller.getPresetService().getAllPresetEntry()) {
+			this.controller.getPresetListModel().addElement(preset);
+		}
 
-		this.controller.synchronizePlaylists(this.controller.getAccountListModel().getAccountList());
-
-		//TODO NOT WORKING AutoCompleteDecorator.decorate(this.autotitleTextField, Arrays.asList("{playlist}", "{file}", "{nummer}"), false);//NON-NLS
+		this.controller.synchronizePlaylists(this.controller.getAccountListModel().getAll());
 	}
 
 	private void initComponents()
@@ -151,7 +156,7 @@ public final class UploadViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getAccountListModel().hasAccountEntryAt(UploadViewPanel.this.accountList.getSelectedIndex())) {
+				if (UploadViewPanel.this.controller.getAccountListModel().hasIndex(UploadViewPanel.this.accountList.getSelectedIndex())) {
 					UploadViewPanel.this.controller.deleteAccount((Account) UploadViewPanel.this.accountList.getSelectedItem());
 				}
 			}
@@ -161,7 +166,7 @@ public final class UploadViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getPresetListModel().hasPresetEntryAt(UploadViewPanel.this.presetList.getSelectedIndex())) {
+				if (UploadViewPanel.this.controller.getPresetListModel().hasIndex(UploadViewPanel.this.presetList.getSelectedIndex())) {
 					final Preset preset = (Preset) UploadViewPanel.this.presetList.getSelectedItem();
 					preset.autotitle = UploadViewPanel.this.autotitelCheckBox.isSelected();
 					preset.autotitleFormat = UploadViewPanel.this.autotitleTextField.getText();
@@ -194,7 +199,7 @@ public final class UploadViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getPresetListModel().hasPresetEntryAt(UploadViewPanel.this.presetList.getSelectedIndex())) {
+				if (UploadViewPanel.this.controller.getPresetListModel().hasIndex(UploadViewPanel.this.presetList.getSelectedIndex())) {
 					UploadViewPanel.this.controller.deletePreset((Preset) UploadViewPanel.this.presetList.getSelectedItem());
 				}
 			}
@@ -254,10 +259,21 @@ public final class UploadViewPanel
 			}
 		});
 
-		this.autotitleTextField.addKeyListener(new KeyAdapter()
+		final PlainDocument plainDocument = new PlainDocument();
+		this.autotitleTextField.setDocument(plainDocument);
+		plainDocument.addDocumentListener(new DocumentListener()
 		{
-			@Override
-			public void keyTyped(final KeyEvent e)
+			@Override public void insertUpdate(final DocumentEvent e)
+			{
+				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
+			}
+
+			@Override public void removeUpdate(final DocumentEvent e)
+			{
+				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
+			}
+
+			@Override public void changedUpdate(final DocumentEvent e)
 			{
 				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
 			}
@@ -420,7 +436,7 @@ public final class UploadViewPanel
 	@SuppressWarnings("CallToStringEquals")
 	private void resetForm()
 	{
-		if (this.controller.getPresetListModel().hasPresetEntryAt(this.presetList.getSelectedIndex())) {
+		if (this.controller.getPresetListModel().hasIndex(this.presetList.getSelectedIndex())) {
 			final Preset selectedPreset = (Preset) this.presetList.getSelectedItem();
 			this.autotitelCheckBox.setSelected(selectedPreset.autotitle);
 			this.autotitleTextField.setText(selectedPreset.autotitleFormat);
@@ -487,7 +503,7 @@ public final class UploadViewPanel
 		this.commentList.setSelectedIndex(queue.comment);
 		this.descriptionTextArea.setText(queue.description);
 		this.embedCheckBox.setSelected(queue.embed);
-		this.fileList.addItem(queue.file);
+		this.fileList.addItem(new File(queue.file));
 		this.kommentareBewertenCheckBox.setSelected(queue.commentvote);
 		this.mobileCheckBox.setSelected(queue.mobile);
 		this.tagsTextArea.setText(queue.keywords);

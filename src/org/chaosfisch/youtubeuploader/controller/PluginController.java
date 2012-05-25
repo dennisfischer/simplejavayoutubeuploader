@@ -19,11 +19,11 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
+import com.google.common.collect.Lists;
 import org.chaosfisch.plugin.Pluggable;
-import org.chaosfisch.youtubeuploader.models.PluginTableModel;
+import org.chaosfisch.table.RowTableModel;
 
-import javax.swing.table.TableModel;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,16 +34,42 @@ import java.util.List;
  */
 public class PluginController
 {
-	private final PluginTableModel pluginTableModel = new PluginTableModel();
+	private RowTableModel<Pluggable> pluginTableModel;
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); //NON-NLS
 
-	public TableModel getPluginTableModel(final List<Pluggable> pluggableList)
+	public PluginController()
 	{
-		this.pluginTableModel.addPluginList(pluggableList);
+
+	}
+
+	public RowTableModel<Pluggable> getPluginTableModel(final Collection<Pluggable> pluggableList)
+	{
+		if (this.pluginTableModel == null) {
+			final List<String> columns = Arrays.asList(this.resourceBundle.getString("pluginTable.name"), this.resourceBundle.getString("pluginTable.author"), this.resourceBundle.getString(
+					"pluginTable.disableCheckbox"));
+			this.pluginTableModel = new RowTableModel<Pluggable>(Lists.newArrayList(pluggableList), columns, Pluggable.class)
+			{
+				@Override public Object getValueAt(final int rowIndex, final int columnIndex)
+				{
+					switch (columnIndex) {
+						case 0:
+							return this.getRow(rowIndex).getName();
+						case 1:
+							return this.getRow(rowIndex).getAuthor();
+						case 2:
+						default:
+							return true;
+					}
+				}
+			};
+			this.pluginTableModel.setColumnClass(2, Boolean.class);
+			this.pluginTableModel.setModelEditable(false);
+		}
 		return this.pluginTableModel;
 	}
 
-	public TableModel getPluginTableModel()
+	public RowTableModel<Pluggable> getPluginTableModel()
 	{
-		return this.pluginTableModel;
+		return this.getPluginTableModel(Collections.<Pluggable>emptyList());
 	}
 }

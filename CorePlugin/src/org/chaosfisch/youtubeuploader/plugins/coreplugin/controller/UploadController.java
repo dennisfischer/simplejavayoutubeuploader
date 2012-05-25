@@ -57,10 +57,80 @@ public class UploadController
 	private final AutoTitleGenerator autoTitleGenerator;
 	private final ImportManager      importManager;
 	private final ExportManager      exportManager;
-	private final AccountListModel  accountListModel  = new AccountListModel();
-	private final PresetListModel   presetListModel   = new PresetListModel();
-	private final PlaylistListModel playlistListModel = new PlaylistListModel();
-	private       boolean           autotitle         = false;
+	private final GenericListModel<Account>  accountListModel  = new GenericListModel<Account>()
+	{
+		@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED)
+		public void onAccountAdded(final String topic, final Account element)
+		{
+			this.addElement(element);
+		}
+
+		@EventTopicSubscriber(topic = AccountService.ACCOUNT_REMOVED)
+		public void onAccountRemoved(final String topic, final Account element)
+		{
+			this.removeElement(element);
+		}
+
+		@EventTopicSubscriber(topic = AccountService.ACCOUNT_UPDATED)
+		public void onAccountUpdated(final String topic, final Account element)
+		{
+			final int index = this.getIndexOf(element);
+			if (index != -1) {
+				this.removeElementAt(index);
+				this.insertElementAt(element, index);
+			}
+		}
+	};
+	private final GenericListModel<Preset>   presetListModel   = new GenericListModel<Preset>()
+	{
+
+		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
+		public void onPresetAdded(final String topic, final Preset preset)
+		{
+			this.addElement(preset);
+		}
+
+		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_UPDATED)
+		public void onPresetUpdated(final String topic, final Preset preset)
+		{
+			final int index = this.getIndexOf(preset);
+			if (index != -1) {
+				this.removeElementAt(index);
+				this.insertElementAt(preset, index);
+			}
+		}
+
+		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
+		public void onPresetRemoved(final String topic, final Preset preset)
+		{
+			this.removeElement(preset);
+		}
+	};
+	private final GenericListModel<Playlist> playlistListModel = new GenericListModel<Playlist>()
+	{
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
+		public void onPlaylistAdded(final String topic, final Playlist playlist)
+		{
+			this.addElement(playlist);
+		}
+
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
+		public void onPlaylistRemoved(final String topic, final Playlist playlist)
+		{
+			this.removeElement(playlist);
+		}
+
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
+		public void onPlaylistUpdated(final String topic, final Playlist playlist)
+		{
+			final int index = this.getIndexOf(playlist);
+			if (index != -1) {
+				this.removeElementAt(index);
+				this.insertElementAt(playlist, index);
+			}
+		}
+	};
+	private       boolean                    autotitle         = false;
 
 	@Inject
 	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator,
@@ -86,7 +156,7 @@ public class UploadController
 	public void deletePreset(final Preset preset)
 	{
 
-		this.presetListModel.removePresetEntry(preset);
+		this.presetListModel.removeElement(preset);
 		this.presetService.deletePresetEntry(preset);
 	}
 
@@ -133,7 +203,7 @@ public class UploadController
 		}
 	}
 
-	public AccountListModel getAccountListModel()
+	public GenericListModel<Account> getAccountListModel()
 	{
 		return this.accountListModel;
 	}
@@ -185,12 +255,12 @@ public class UploadController
 		this.queueService.createQueue(queueEntity);
 	}
 
-	public PresetListModel getPresetListModel()
+	public GenericListModel<Preset> getPresetListModel()
 	{
 		return this.presetListModel;
 	}
 
-	public PlaylistListModel getPlaylistListModel()
+	public GenericListModel<Playlist> getPlaylistListModel()
 	{
 		return this.playlistListModel;
 	}
@@ -203,13 +273,15 @@ public class UploadController
 	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
 	public void onPlaylistSynchronize(final String topic, final Object object)
 	{
-		this.changeAccount(this.accountListModel.getSelectedItem());
+		this.changeAccount((Account) this.accountListModel.getSelectedItem());
 	}
 
 	public void changeAccount(final Account account)
 	{
-		this.playlistListModel.removeAll();
-		this.playlistListModel.addPlaylistEntryList(this.playlistService.getByAccount(account));
+		this.playlistListModel.removeAllElements();
+		for (final Playlist playlist : this.playlistService.getByAccount(account)) {
+			this.playlistListModel.addElement(playlist);
+		}
 	}
 
 	public void importAccount()

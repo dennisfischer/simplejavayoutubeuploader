@@ -47,11 +47,6 @@ public class SystemTrayPlugin implements Pluggable
 		AnnotationProcessor.process(this);
 	}
 
-	@Override public boolean canBeDisabled()
-	{
-		return true;
-	}
-
 	@Override public String[] getDependencies()
 	{
 		return DEPENDENCIES;

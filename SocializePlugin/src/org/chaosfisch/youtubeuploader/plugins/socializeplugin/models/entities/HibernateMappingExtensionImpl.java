@@ -19,7 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities;
 
-import org.chaosfisch.youtubeuploader.spi.HibernateMappingExtension;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +28,7 @@ import org.chaosfisch.youtubeuploader.spi.HibernateMappingExtension;
  * Time: 16:03
  * To change this template use File | Settings | File Templates.
  */
-public class HibernateMappingExtensionImpl extends HibernateMappingExtension
+public class HibernateMappingExtensionImpl extends ArrayList<String>
 {
 	public HibernateMappingExtensionImpl()
 	{

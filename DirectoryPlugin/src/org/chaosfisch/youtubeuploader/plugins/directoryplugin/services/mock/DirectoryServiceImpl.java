@@ -40,7 +40,7 @@ public class DirectoryServiceImpl implements DirectoryService
 		return new ArrayList<Directory>(0);
 	}
 
-	@Override public List<Directory> getAllActive()
+	@Override public List<Directory> getActive()
 	{
 		return new ArrayList<Directory>(0);
 	}
@@ -50,17 +50,17 @@ public class DirectoryServiceImpl implements DirectoryService
 		return new Directory();
 	}
 
-	@Override public Directory createDirectoryEntry(Directory directory)
+	@Override public Directory createDirectory(Directory directory)
 	{
 		return new Directory();
 	}
 
-	@Override public Directory deleteDirectoryEntry(Directory directory)
+	@Override public Directory deleteDirectory(Directory directory)
 	{
 		return new Directory();
 	}
 
-	@Override public Directory updateDirectoryEntry(Directory directory)
+	@Override public Directory updateDirectory(Directory directory)
 	{
 		return new Directory();
 	}

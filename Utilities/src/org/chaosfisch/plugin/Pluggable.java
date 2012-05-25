@@ -32,7 +32,5 @@ public interface Pluggable
 
 	String getAuthor();
 
-	boolean canBeDisabled();
-
 	String[] getDependencies();
 }

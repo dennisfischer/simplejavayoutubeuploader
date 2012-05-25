@@ -81,33 +81,33 @@
 //		return directoryEntry;
 //	}
 //
-//	@Override public Directory createDirectoryEntry(final Directory directoryEntry)
+//	@Override public Directory createDirectory(final Directory directoryEntry)
 //	{
 //		final Session session = this.sessionFactory.getCurrentSession();
 //		session.getTransaction().begin();
 //		session.save(directoryEntry);
 //		session.getTransaction().commit();
-//		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_ADDED, directoryEntry);
+//		EventBus.publish(DirectoryService.DIRECTORY_ADDED, directoryEntry);
 //		return directoryEntry;
 //	}
 //
-//	@Override public Directory deleteDirectoryEntry(final Directory directoryEntry)
+//	@Override public Directory deleteDirectory(final Directory directoryEntry)
 //	{
 //		final Session session = this.sessionFactory.getCurrentSession();
 //		session.getTransaction().begin();
 //		session.delete(directoryEntry);
 //		session.getTransaction().commit();
-//		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_REMOVED, directoryEntry);
+//		EventBus.publish(DirectoryService.DIRECTORY_REMOVED, directoryEntry);
 //		return directoryEntry;
 //	}
 //
-//	@Override public Directory updateDirectoryEntry(final Directory directoryEntry)
+//	@Override public Directory updateDirectory(final Directory directoryEntry)
 //	{
 //		final Session session = this.sessionFactory.getCurrentSession();
 //		session.getTransaction().begin();
 //		session.update(directoryEntry);
 //		session.getTransaction().commit();
-//		EventBus.publish(DirectoryService.DIRECTORY_ENTRY_UPDATED, directoryEntry);
+//		EventBus.publish(DirectoryService.DIRECTORY_UPDATED, directoryEntry);
 //		return directoryEntry;
 //	}
 //}

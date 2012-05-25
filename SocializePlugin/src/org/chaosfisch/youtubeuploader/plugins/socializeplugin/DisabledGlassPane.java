@@ -23,10 +23,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,8 +34,10 @@ import java.awt.event.MouseMotionAdapter;
  */
 public class DisabledGlassPane extends JComponent implements KeyListener
 {
-	private final static Border MESSAGE_BORDER = new EmptyBorder(10, 10, 10, 10);
-	private final        JLabel message        = new JLabel();
+	private final static Border       MESSAGE_BORDER = new EmptyBorder(10, 10, 10, 10);
+	private final        JLabel       message        = new JLabel();
+	private final        JProgressBar progressBar    = new JProgressBar(0, 100);
+	private Timer timer;
 
 	public DisabledGlassPane()
 	{
@@ -51,8 +50,17 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		this.setLayout(new GridBagLayout());
 
 		//  Add a message label to the glass pane
+		final GridBagConstraints mGrid = new GridBagConstraints();
+		mGrid.gridx = 0;
+		mGrid.gridy = 0;
 
-		this.add(this.message, new GridBagConstraints());
+		final GridBagConstraints pGrid = new GridBagConstraints();
+		pGrid.gridx = 0;
+		pGrid.gridy = 1;
+		pGrid.fill = GridBagConstraints.HORIZONTAL;
+
+		this.add(this.message, mGrid);
+		this.add(this.progressBar, pGrid);
 		this.message.setOpaque(true);
 		this.message.setBorder(MESSAGE_BORDER);
 
@@ -119,7 +127,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		} else {
 			this.message.setVisible(false);
 		}
-
+		this.startTimer();
 		this.setVisible(true);
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		this.requestFocusInWindow();
@@ -132,5 +140,34 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	{
 		this.setCursor(null);
 		this.setVisible(false);
+		this.timer.stop();
+	}
+
+	public void startTimer()
+	{
+		if (this.timer == null) {
+			this.timer = new Timer(600, new ActionListener()
+			{
+				int progress = 0;
+
+				public void actionPerformed(final ActionEvent event)
+				{
+					this.progress += 1;
+					DisabledGlassPane.this.progressBar.setValue(this.progress);
+
+					// Once we hit 100%, remove the glass pane and reset the
+					// progress bar stuff
+					if (this.progress >= 100) {
+						this.progress = 0;
+						DisabledGlassPane.this.timer.stop();
+						DisabledGlassPane.this.progressBar.setValue(0);
+					}
+				}
+			});
+		}
+		if (this.timer.isRunning()) {
+			this.timer.stop();
+		}
+		this.timer.start();
 	}
 }

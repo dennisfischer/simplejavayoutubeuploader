@@ -61,6 +61,10 @@
 		SELECT * FROM PRESETS WHERE account_id = #{identity}
 	</select>
 
+	<select id="findByPlaylist" parameterType="Playlist" resultType="Preset">
+		SELECT * FROM QUEUE WHERE playlist_id = #{identity}
+	</select>
+
 	<select id="getPresets" resultType="Preset">
 		SELECT * FROM PRESETS ORDER BY name
 	</select>

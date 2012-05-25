@@ -20,6 +20,7 @@
 package org.mybatis.mappers;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 
 import java.util.List;
@@ -36,6 +37,8 @@ public interface PresetMapper
 	Preset findPreset(int id);
 
 	List<Preset> findByAccount(Account account);
+
+	List<Preset> findByPlaylist(Playlist playlist);
 
 	List<Preset> getPresets();
 

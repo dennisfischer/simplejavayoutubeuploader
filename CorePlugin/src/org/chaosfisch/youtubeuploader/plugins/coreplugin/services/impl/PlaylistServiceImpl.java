@@ -35,11 +35,15 @@ import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.mybatis.guice.transactional.Transactional;
 import org.mybatis.mappers.PlaylistMapper;
+import org.mybatis.mappers.PresetMapper;
+import org.mybatis.mappers.QueueMapper;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -61,6 +65,8 @@ public class PlaylistServiceImpl implements PlaylistService
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50"; //NON-NLS
 
 	@Inject private PlaylistMapper playlistMapper;
+	@Inject private PresetMapper   presetMapper;
+	@Inject private QueueMapper    queueMapper;
 
 	@Transactional @Override public List<Playlist> getByAccount(final Account account)
 	{
@@ -93,6 +99,17 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	@Transactional @Override public Playlist deletePlaylist(final Playlist playlist)
 	{
+		final List<Preset> presets = this.presetMapper.findByPlaylist(playlist);
+		for (final Preset preset : presets) {
+			preset.playlist = null;
+			this.presetMapper.updatePreset(preset);
+		}
+		final List<Queue> queues = this.queueMapper.findByPlaylist(playlist);
+		for (final Queue queue : queues) {
+			queue.playlist = null;
+			this.queueMapper.updateQueue(queue);
+		}
+
 		this.playlistMapper.deletePlaylist(playlist);
 		EventBus.publish(PLAYLIST_ENTRY_REMOVED, playlist);
 		return playlist;
@@ -265,7 +282,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, account.name, account.password));
 	}
 
-	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ENTRY_ADDED) public void onAccountAdded(final String topic, final Account account)
+	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED) public void onAccountAdded(final String topic, final Account account)
 	{
 		final LinkedList<Account> accounts = new LinkedList<Account>();
 		accounts.add(account);

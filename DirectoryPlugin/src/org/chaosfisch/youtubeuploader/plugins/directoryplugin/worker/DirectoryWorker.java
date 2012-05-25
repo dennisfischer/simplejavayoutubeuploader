@@ -92,7 +92,7 @@ public class DirectoryWorker extends Thread
 
 	private FileAlterationObserver[] initObservers()
 	{
-		final List<Directory> directories = this.directoryService.getAllActive();
+		final List<Directory> directories = this.directoryService.getActive();
 		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[20];
 		final FileFilter mediaFileFilter = new MediaFileFilter();
 		final FileAlterationListener fileAlterationListener = new MediaFileAlternationListener();

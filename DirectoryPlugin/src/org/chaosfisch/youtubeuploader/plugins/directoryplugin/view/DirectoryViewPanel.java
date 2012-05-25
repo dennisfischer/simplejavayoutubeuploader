@@ -21,8 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.GenericListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.PresetListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
@@ -45,19 +45,19 @@ import java.awt.event.ActionListener;
  */
 public class DirectoryViewPanel extends JDialog
 {
-	private JTable     directoryTable;
-	private JPanel     contentPane;
-	private JButton    addButton;
-	private JButton    deleteButton;
-	private JButton    selectButton;
-	private JComboBox  presetList;
-	private JTextField directoryTextField;
-	private JCheckBox  activeCheckbox;
+	private JTable            directoryTable;
+	private JPanel            contentPane;
+	private JButton           addButton;
+	private JButton           deleteButton;
+	private JButton           selectButton;
+	private JComboBox<Preset> presetList;
+	private JTextField        directoryTextField;
+	private JCheckBox         activeCheckbox;
 
-	@Inject private DirectoryController directoryController;
-	@Inject private PresetService       presetService;
-	@Inject private PresetListModel     presetListModel;
-	@Inject private Injector            injector;
+	@Inject private DirectoryController      directoryController;
+	@Inject private PresetService            presetService;
+	@Inject private GenericListModel<Preset> presetListModel;
+	@Inject private Injector                 injector;
 
 	public DirectoryViewPanel()
 	{
@@ -65,7 +65,9 @@ public class DirectoryViewPanel extends JDialog
 
 	private void initCompononents()
 	{
-		this.presetListModel.addPresetEntryList(this.presetService.getAllPresetEntry());
+		for (final Preset preset : this.presetService.getAllPresetEntry()) {
+			this.presetListModel.addElement(preset);
+		}
 		this.presetList.setModel(this.presetListModel);
 		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
 		this.directoryTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
@@ -73,7 +75,7 @@ public class DirectoryViewPanel extends JDialog
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final Directory directory = ((DirectoryTableModel) table.getModel()).getDirectoryAt(row);
+				final Directory directory = ((DirectoryTableModel) table.getModel()).getRow(row);
 				if (directory.locked) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
@@ -114,8 +116,8 @@ public class DirectoryViewPanel extends JDialog
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if (directoryTableModel.hasDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow())) {
-					DirectoryViewPanel.this.directoryController.deleteAction(directoryTableModel.getDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow()));
+				if (directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow() && DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1) {
+					DirectoryViewPanel.this.directoryController.deleteAction(directoryTableModel.getRow(DirectoryViewPanel.this.directoryTable.getSelectedRow()));
 				}
 			}
 		});
@@ -139,10 +141,10 @@ public class DirectoryViewPanel extends JDialog
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if (directoryTableModel.hasDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow())) {
-					DirectoryViewPanel.this.directoryController.checkboxChangeAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), directoryTableModel.getDirectoryAt(DirectoryViewPanel
-							                                                                                                                                                         .this.directoryTable
-							                                                                                                                                                         .getSelectedRow()));
+				if (directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow() && DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1) {
+					DirectoryViewPanel.this.directoryController.checkboxChangeAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), directoryTableModel.getRow(DirectoryViewPanel
+							                                                                                                                                                 .this.directoryTable
+							                                                                                                                                                 .getSelectedRow()));
 				}
 			}
 		});
@@ -155,7 +157,7 @@ public class DirectoryViewPanel extends JDialog
 				if (DirectoryViewPanel.this.directoryTable.getSelectedRow() == -1) {
 					return;
 				}
-				final Directory directory = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getDirectoryAt(DirectoryViewPanel.this.directoryTable.getSelectedRow());
+				final Directory directory = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getRow(DirectoryViewPanel.this.directoryTable.getSelectedRow());
 				if (directory != null) {
 					DirectoryViewPanel.this.activeCheckbox.setSelected(directory.active);
 				}

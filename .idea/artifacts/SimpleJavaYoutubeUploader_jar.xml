@@ -25,6 +25,10 @@
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
+        <element id="artifact" artifact-name="DirectoryPlugin:jar" />
+        <element id="artifact" artifact-name="NotificationsPlugin:jar" />
+        <element id="artifact" artifact-name="SocializePlugin:jar" />
+        <element id="artifact" artifact-name="SystemTrayPlugin:jar" />
         <element id="artifact" artifact-name="SettingsPlugin:jar" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />

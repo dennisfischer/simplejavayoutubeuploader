@@ -25,43 +25,48 @@ import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginManager;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
-@SuppressWarnings("ALL")
 public class PluginManagerImpl implements PluginManager
 {
-	private               List<Pluggable> plugins;
-	@InjectLogger private Logger          logger;
-	@Inject               PluginLoader    pluginLoader;
+	private               Map<String, Pluggable> plugins;
+	private @InjectLogger Logger                 logger;
+	private @Inject       PluginLoader           pluginLoader;
 
 	public PluginManagerImpl()
 	{
 	}
 
 	@Override
-	public List<Pluggable> loadPlugins()
+	public Collection<Pluggable> loadPlugins(final String[] disabledPlugins)
 	{
-		return this.loadPlugins(new File("./plugins"));
-	}
+		this.logger.info("Loading Plugins...: Disabled -> %s");
+		this.plugins = this.pluginLoader.loadPlugins(Arrays.asList(disabledPlugins));
 
-	public List<Pluggable> loadPlugins(File directory)
-	{
-		logger.info("Loading Plugins from " + directory.getAbsolutePath());
-		try {
-			plugins = pluginLoader.loadPlugins(directory);
-		} catch (IOException e) {
-			e.printStackTrace();
+		this.logger.info("Checking dependencies...");
+		for (Iterator<Map.Entry<String, Pluggable>> i = this.plugins.entrySet().iterator(); i.hasNext(); ) {
+			final Map.Entry<String, Pluggable> entry = i.next();
+			this.logger.info(String.format("Checking dependencies of %s", entry.getValue().getClass().getName()));
+			for (final String dependency : entry.getValue().getDependencies()) {
+				if (!this.plugins.containsKey(dependency)) {
+					this.logger.info(String.format("Missing dependency: %s <- %s", dependency, entry.getValue().getClass().getName()));
+					i.remove();
+					break;
+				}
+			}
 		}
-		return plugins;
+
+		return this.plugins.values();
 	}
 
 	@Override
 	public void startPlugins()
 	{
-		if (plugins != null) {
-			for (Pluggable p : plugins) {
+		if (this.plugins != null) {
+			for (final Pluggable p : this.plugins.values()) {
 				p.onStart();
 			}
 		}
@@ -70,8 +75,8 @@ public class PluginManagerImpl implements PluginManager
 	@Override
 	public void endPlugins()
 	{
-		if (plugins != null) {
-			for (Pluggable p : plugins) {
+		if (this.plugins != null) {
+			for (final Pluggable p : this.plugins.values()) {
 				p.onEnd();
 			}
 		}

@@ -19,6 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.*;
 
@@ -39,6 +41,8 @@ public class MessageService
 	public static final String MESSAGE_ENTRY_REMOVED = "onMessageEntryRemoved"; //NON-NLS
 	public static final String MESSAGE_ENTRY_UPDATED = "onMessageEntryUpdated"; //NON-NLS
 
+	@Inject private Injector injector;
+
 	public enum Provider
 	{
 		FACEBOOK, TWITTER, GOOGLEPLUS, YOUTUBE
@@ -48,13 +52,13 @@ public class MessageService
 	{
 		switch (provider) {
 			case FACEBOOK:
-				return new FacebookSocialProvider();
+				return this.injector.getInstance(FacebookSocialProvider.class);
 			case TWITTER:
-				return new TwitterSocialProvider();
+				return this.injector.getInstance(TwitterSocialProvider.class);
 			case GOOGLEPLUS:
-				return new GooglePlusSocialProvider();
+				return this.injector.getInstance(GooglePlusSocialProvider.class);
 			case YOUTUBE:
-				return new YoutubeSocialProvider();
+				return this.injector.getInstance(YoutubeSocialProvider.class);
 		}
 		return null;
 	}

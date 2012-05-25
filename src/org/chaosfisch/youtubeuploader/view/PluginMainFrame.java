@@ -45,7 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 /**
@@ -95,7 +95,7 @@ public class PluginMainFrame
 
 	private void initPlugins()
 	{
-		final List<Pluggable> pluggableList = this.pluginManager.loadPlugins(new File("plugins/")); //NON-NLS
+		final Collection<Pluggable> pluggableList = this.pluginManager.loadPlugins(new String[0]); //NON-NLS
 		for (final Pluggable p : pluggableList) {
 			p.init();
 		}
@@ -149,7 +149,9 @@ public class PluginMainFrame
 				}
 			}
 		}
-		this.menuBar.add(editMenu);
+		if (editMenu.getItemCount() > 0) {
+			this.menuBar.add(editMenu);
+		}
 
 		final JMenuItem wikiMenuItem = new JMenuItem(this.resourceBundle.getString("application.wikiLabel"));
 		wikiMenuItem.addActionListener(new ActionListener()
@@ -205,8 +207,8 @@ public class PluginMainFrame
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final PluginViewPanel pluginViewPanel = PluginMainFrame.this.injector.getInstance(PluginViewPanel.class);
-				pluginViewPanel.setPluggableList(pluggableList);
 				pluginViewPanel.run();
+				pluginViewPanel.setPluggableList(pluggableList);
 				pluginViewPanel.setTitle(PluginMainFrame.this.resourceBundle.getString("pluginDialogTitle")); //NON-NLS
 				pluginViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png"))); //NON-NLS
 				pluginViewPanel.pack();

@@ -46,7 +46,7 @@ public class FacebookSocialProvider implements ISocialProvider
 {
 	private static final Token        EMPTY_TOKEN  = null;
 	private              Token        accessToken  = null;
-	private final        OAuthService oAuthService = new ServiceBuilder().provider(FacebookApi.class).scope("publish_stream").callback("http://localhost:9097/oauth")  //NON-NLS
+	private final        OAuthService oAuthService = new ServiceBuilder().provider(FacebookApi.class).scope("publish_stream").callback("http://localhost:8080/oauth")  //NON-NLS
 			.apiKey(APIData.FACEBOOK_APIKEY).apiSecret(APIData.FACEBOOK_APISECRET).build();
 	@InjectLogger private Logger logger;
 	private static final String FACEBOOK_ACCES_TOKEN = "onFacebookAccessToken"; //NON-NLS
@@ -83,13 +83,15 @@ public class FacebookSocialProvider implements ISocialProvider
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 		try {
-			final OAuthHTTPDServer oAuthHTTPDServer = new OAuthHTTPDServer(9097);
+			this.logger.info("Facebook-Server started.");
+			final OAuthHTTPDServer oAuthHTTPDServer = new OAuthHTTPDServer(8080);
 			synchronized (oAuthHTTPDServer) {
 				oAuthHTTPDServer.wait(60000);
 			}
 			if (oAuthHTTPDServer.getCode() != null) {
 				this.accessToken = this.oAuthService.getAccessToken(null, new Verifier(oAuthHTTPDServer.getCode()));
 			}
+			this.logger.info("Facebook-Server stopped.");
 			oAuthHTTPDServer.stop();
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
