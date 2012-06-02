@@ -35,21 +35,21 @@ import static java.util.TimeZone.getDefault;
  */
 public class Sound implements Runnable
 {
-	private              Thread  runner            = new Thread(this); //AbspielThread
-	private static final int     BufferSize        = 1024; // Anzahl der Daten, die aufeinmal an die Soundkarte geschickt werden.
-	private static final byte[]  buffer            = new byte[BufferSize];
-	private              int     gainPercent       = 90;  //gibt die Lautstärke in Prozent an.  (0% = -80dB und 100% = 6dB)
-	private              Boolean stop              = false;
-	private              Boolean loopPlay          = false;
-	private              File    song              = null;
-	private static final long    timeZoneKorrektur = getDefault().getOffset(0);
-	private final        Time    time              = new Time(-timeZoneKorrektur);
-	private final        Time    songTime          = new Time(-timeZoneKorrektur);
-	private              boolean reset             = false;
-	private              Boolean isPlaying         = false;
-	private              boolean pause             = false;
-	private              boolean mute              = false;
-	private              int     lautstaerke       = this.gainPercent;
+	private              Thread  runner      = new Thread(this); //AbspielThread
+	private static final int     BufferSize  = 1024; // Anzahl der Daten, die aufeinmal an die Soundkarte geschickt werden.
+	private static final byte[]  buffer      = new byte[Sound.BufferSize];
+	private              int     gainPercent = 90;  //gibt die Lautstärke in Prozent an.  (0% = -80dB und 100% = 6dB)
+	private              Boolean stop        = false;
+	private              Boolean loopPlay    = false;
+	private File song;
+	private static final long timeZoneKorrektur = getDefault().getOffset(0);
+	private final        Time time              = new Time(-Sound.timeZoneKorrektur);
+	private final        Time songTime          = new Time(-Sound.timeZoneKorrektur);
+	private boolean reset;
+	private Boolean isPlaying = false;
+	private boolean pause;
+	private boolean mute;
+	private int lautstaerke = this.gainPercent;
 
 	/**
 	 * damit mp3-Dateien abgespielt werden können, muss das mp3plugin von Sun im Classpath stehen oder
@@ -67,7 +67,7 @@ public class Sound implements Runnable
 	 */
 	public Time getCurrentTime()
 	{
-		return this.time;
+		return (Time) this.time.clone();
 	}
 
 	/**
@@ -138,6 +138,9 @@ public class Sound implements Runnable
 	public void run()
 	{
 		do {
+			if (!(this.song.exists() && this.song.isFile())) {
+				break;
+			}
 			try {
 				final AudioInputStream in = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(this.song));
 				final AudioFormat audioFormat = in.getFormat();
@@ -149,19 +152,19 @@ public class Sound implements Runnable
 				final int sampleSizeInBits = audioFormat.getSampleSizeInBits();
 
 				if (in.getFrameLength() == -1) {
-					this.songTime.setTime(songLaenge / sampleSizeInBits - timeZoneKorrektur);
+					this.songTime.setTime((songLaenge / sampleSizeInBits) - Sound.timeZoneKorrektur);
 				} else {
-					this.songTime.setTime((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000 - timeZoneKorrektur);
+					this.songTime.setTime(((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000) - Sound.timeZoneKorrektur);
 				}
 
 				in.mark(in.available());
 				long resetKorrektur = 0;
 				while ((!this.stop)) {
 					this.isPlaying = true;
-					final int gainLevel = (int) ((int) gainControl.getMinimum() + ((gainControl.getMaximum() - gainControl.getMinimum()) / 100 * this.gainPercent));
+					final int gainLevel = (int) ((int) gainControl.getMinimum() + (((gainControl.getMaximum() - gainControl.getMinimum()) / 100) * this.gainPercent));
 					gainControl.setValue(gainLevel);
 					if (!this.pause) {
-						final int n = in.read(buffer, 0, buffer.length);
+						final int n = in.read(Sound.buffer, 0, Sound.buffer.length);
 						if ((n < 0) || (this.stop)) {
 							break;
 						}
@@ -170,18 +173,18 @@ public class Sound implements Runnable
 							in.reset();
 							this.reset = false;
 						}
-						this.time.setTime(line.getMicrosecondPosition() / 1000 - timeZoneKorrektur - resetKorrektur);
-						line.write(buffer, 0, n);
+						this.time.setTime((line.getMicrosecondPosition() / 1000) - Sound.timeZoneKorrektur - resetKorrektur);
+						line.write(Sound.buffer, 0, n);
 					}
 				}
 				line.drain();
 				line.close();
 				in.close();
-			} catch (UnsupportedAudioFileException e) {
+			} catch (UnsupportedAudioFileException ignored) {
 				System.out.println("nicht unterstütztes Format"); //NON-NLS
 			} catch (IOException e) {
-				System.out.println("Datei nicht gefunden" + e); //NON-NLS
-			} catch (LineUnavailableException e) {
+				System.out.printf("Datei nicht gefunden %s%n", e); //NON-NLS
+			} catch (LineUnavailableException ignored) {
 				System.out.println("Soundkartenfehler"); //NON-NLS
 			}
 		} while (this.loopPlay && !this.stop);
@@ -216,7 +219,7 @@ public class Sound implements Runnable
 	 */
 	public Time getSongTime()
 	{
-		return this.songTime;
+		return (Time) this.songTime.clone();
 	}
 
 	/**

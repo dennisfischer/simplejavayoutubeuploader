@@ -32,10 +32,9 @@ import java.util.List;
  */
 public interface QueueService
 {
-	public static final String QUEUE_ENTRY_ADDED   = "queueEntryAdded"; //NON-NLS
-	public static final String QUEUE_ENTRY_REMOVED = "queueEntryRemoved"; //NON-NLS
-	public static final String EDIT_QUEUE_ENTRY    = "editQueueEntry"; //NON-NLS
-	public static final String QUEUE_ENTRY_UPDATED = "queueEntryUpdated"; //NON-NLS
+	String QUEUE_ENTRY_ADDED   = "queueEntryAdded"; //NON-NLS
+	String QUEUE_ENTRY_REMOVED = "queueEntryRemoved"; //NON-NLS
+	String QUEUE_ENTRY_UPDATED = "queueEntryUpdated"; //NON-NLS
 
 	/**
 	 * Adds / Persists a Queue(Entry)
@@ -43,11 +42,11 @@ public interface QueueService
 	 * @param queue the Queue(Entry) that should be added
 	 * @return the added Queue(Entry)
 	 */
-	Queue createQueue(Queue queue);
+	Queue create(Queue queue);
 
-	Queue deleteQueue(Queue queue);
+	Queue delete(Queue queue);
 
-	Queue updateQueue(Queue queue);
+	Queue update(Queue queue);
 
 	/**
 	 * Assigns a new place / new sequence to the entry
@@ -55,7 +54,7 @@ public interface QueueService
 	 * @param queue         the Queue(Entry) to reposition
 	 * @param queuePosition the Position the Queue(Entry) should get
 	 */
-	void sortList(Queue queue, QueuePosition queuePosition);
+	void sort(Queue queue, QueuePosition queuePosition);
 
 	List<Queue> getAll();
 
@@ -63,7 +62,7 @@ public interface QueueService
 
 	List<Queue> getArchived();
 
-	Queue findQueue(int identifier);
+	Queue find(int identifier);
 
 	/**
 	 * Polls item and updates inProgress to true

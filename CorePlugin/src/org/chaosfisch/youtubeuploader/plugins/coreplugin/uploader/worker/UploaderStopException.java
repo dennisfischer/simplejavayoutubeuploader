@@ -26,8 +26,10 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
  * Time: 08:56
  * To change this template use File | Settings | File Templates.
  */
-class UploaderStopException extends UploaderException
+class UploaderStopException extends Throwable
 {
+	private static final long serialVersionUID = 37933389258992805L;
+
 	public UploaderStopException(final String message)
 	{
 		super(message);

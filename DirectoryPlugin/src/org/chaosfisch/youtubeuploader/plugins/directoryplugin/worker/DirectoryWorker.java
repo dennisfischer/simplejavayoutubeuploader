@@ -61,10 +61,6 @@ public class DirectoryWorker extends Thread
 	@Inject private       AutoTitleGenerator    autoTitleGenerator;
 	@InjectLogger private Logger                logger;
 
-	public DirectoryWorker()
-	{
-	}
-
 	@Override
 	public void run()
 	{
@@ -182,16 +178,18 @@ public class DirectoryWorker extends Thread
 			queue.playlist = playlist;
 			if (playlist != null) {
 				playlist.number++;
-				DirectoryWorker.this.playlistService.updatePlaylist(playlist);
+				DirectoryWorker.this.playlistService.update(playlist);
 			}
 
-			DirectoryWorker.this.queueService.createQueue(queue);
+			DirectoryWorker.this.queueService.create(queue);
 			EventBus.publish(Uploader.QUEUE_START, null);
 		}
 	}
 
 	private static class MediaFileFilter extends FileFileFilter
 	{
+
+		private static final long serialVersionUID = -2933681858342032049L;
 
 		@Override
 		public boolean accept(final File file)
@@ -202,6 +200,7 @@ public class DirectoryWorker extends Thread
 
 			boolean flag = false;
 			for (final String extension : extensions) {
+				//noinspection CallToStringEquals
 				if (extension.equals(fileExtension)) {
 					flag = true;
 				}
@@ -217,7 +216,7 @@ public class DirectoryWorker extends Thread
 			} catch (InterruptedException ignored) {
 
 			}
-			return !(file.lastModified() != checkedAt || fileSizeAt != file.length());
+			return !((file.lastModified() != checkedAt) || (fileSizeAt != file.length()));
 		}
 	}
 }

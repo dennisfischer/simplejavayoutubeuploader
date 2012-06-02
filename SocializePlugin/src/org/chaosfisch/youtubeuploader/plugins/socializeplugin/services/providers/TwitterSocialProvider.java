@@ -91,7 +91,7 @@ public class TwitterSocialProvider implements ISocialProvider
 		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
 		final Response response = oAuthRequest.send();
 		if (response.getCode() != 200) {
-			this.logger.fatal("Wrong response code: " + response.getCode()); //NON-NLS
+			this.logger.fatal(String.format("Wrong response code: %d", response.getCode())); //NON-NLS
 			this.logger.fatal(response.getBody());
 		}
 	}
@@ -108,7 +108,7 @@ public class TwitterSocialProvider implements ISocialProvider
 			if (response.getCode() == 200) {
 				return true;
 			}
-		} catch (RuntimeException ex) {
+		} catch (RuntimeException ignored) {
 			return false;
 		}
 		return false;

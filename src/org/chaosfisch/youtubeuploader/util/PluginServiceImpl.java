@@ -43,11 +43,6 @@ public class PluginServiceImpl implements PluginService
 	private final Map<String, Vector<ExtensionPoint>> extensionPointMap = new HashMap<String, Vector<ExtensionPoint>>(20);
 	@InjectLogger private Logger logger;
 
-	public PluginServiceImpl()
-	{
-
-	}
-
 	@Override
 	public void registerPlugins(final List<Pluggable> pluggableList)
 	{

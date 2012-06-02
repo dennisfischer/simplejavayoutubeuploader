@@ -45,6 +45,7 @@ import java.awt.event.ActionListener;
  */
 public class DirectoryViewPanel extends JDialog
 {
+	private static final long serialVersionUID = -7077457843089222621L;
 	private JTable            directoryTable;
 	private JPanel            contentPane;
 	private JButton           addButton;
@@ -59,19 +60,17 @@ public class DirectoryViewPanel extends JDialog
 	@Inject private GenericListModel<Preset> presetListModel;
 	@Inject private Injector                 injector;
 
-	public DirectoryViewPanel()
-	{
-	}
-
 	private void initCompononents()
 	{
-		for (final Preset preset : this.presetService.getAllPresetEntry()) {
+		for (final Preset preset : this.presetService.getAll()) {
 			this.presetListModel.addElement(preset);
 		}
 		this.presetList.setModel(this.presetListModel);
 		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
 		this.directoryTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
+			private static final long serialVersionUID = -905536623165714507L;
+
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -94,7 +93,7 @@ public class DirectoryViewPanel extends JDialog
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (DirectoryViewPanel.this.directoryTextField.getText().equals("")) {
+				if (DirectoryViewPanel.this.directoryTextField.getText().isEmpty()) {
 					DirectoryViewPanel.this.directoryTextField.setBackground(Color.RED);
 					return;
 				}
@@ -106,8 +105,7 @@ public class DirectoryViewPanel extends JDialog
 				}
 				DirectoryViewPanel.this.presetList.setBackground(null);
 
-				DirectoryViewPanel.this.directoryController.addAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), DirectoryViewPanel.this.directoryTextField.getText(),
-				                                                      (Preset) DirectoryViewPanel.this.presetList.getSelectedItem());
+				DirectoryViewPanel.this.directoryController.addAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), DirectoryViewPanel.this.directoryTextField.getText(), (Preset) DirectoryViewPanel.this.presetList.getSelectedItem());
 			}
 		});
 
@@ -116,7 +114,7 @@ public class DirectoryViewPanel extends JDialog
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if (directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow() && DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1) {
+				if ((directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow()) && (DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1)) {
 					DirectoryViewPanel.this.directoryController.deleteAction(directoryTableModel.getRow(DirectoryViewPanel.this.directoryTable.getSelectedRow()));
 				}
 			}
@@ -141,10 +139,9 @@ public class DirectoryViewPanel extends JDialog
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if (directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow() && DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1) {
+				if ((directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow()) && (DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1)) {
 					DirectoryViewPanel.this.directoryController.checkboxChangeAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), directoryTableModel.getRow(DirectoryViewPanel
-							                                                                                                                                                 .this.directoryTable
-							                                                                                                                                                 .getSelectedRow()));
+																																											 .this.directoryTable.getSelectedRow()));
 				}
 			}
 		});

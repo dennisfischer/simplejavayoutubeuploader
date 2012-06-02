@@ -40,13 +40,12 @@ import java.util.regex.Pattern;
 
 public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 {
-	private              String         formatString      = "";
-	private              String         playlistName      = "";
-	private              int            playlistNumber    = 0;
-	private              int            number            = 0;
-	private              String         fileName          = "";
-	private final        ResourceBundle resourceBundle    = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.uploadView"); //NON-NLS
-	private static final String         AUTOTITLE_CHANGED = "autoTitleChanged"; //NON-NLS
+	private String formatString = "";
+	private String playlistName = "";
+	private int playlistNumber;
+	private int number;
+	private       String         fileName       = "";
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
 
 	public AutoTitleGeneratorImpl()
 	{
@@ -120,10 +119,10 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		}
 
 		//noinspection CallToStringEquals
-		if (this.fileName != null && !this.fileName.equals("")) {
+		if ((this.fileName != null) && !this.fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
 			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.file"), this.fileName.substring(this.fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
-			                                                                                                        this.fileName.lastIndexOf('.')));
+																													this.fileName.lastIndexOf('.')));
 		}
 		return formated;
 	}
@@ -133,12 +132,12 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	{
 		if (playlist.title.equals(this.playlistName)) {
 			this.setPlaylist(playlist);
-			EventBus.publish(AUTOTITLE_CHANGED, this.gernerate());
+			EventBus.publish(AutoTitleGeneratorImpl.AUTOTITLE_CHANGED, this.gernerate());
 		}
 	}
 
 	String zeroFill(final int number, final int width)
 	{
-		return String.format("%0" + width + "d", number);//NON-NLS
+		return String.format(String.format("%%0%dd", width), number);//NON-NLS
 	}
 }

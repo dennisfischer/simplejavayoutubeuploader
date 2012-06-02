@@ -30,6 +30,8 @@ import java.util.Vector;
  */
 public class IdentityVector<E> extends Vector<E>
 {
+	private static final long serialVersionUID = -5332035741200112233L;
+
 	public IdentityVector(final int initialCapacity, final int capacityIncrement)
 	{
 		super(initialCapacity, capacityIncrement);    //To change body of overridden methods use File | Settings | File Templates.
@@ -42,26 +44,25 @@ public class IdentityVector<E> extends Vector<E>
 
 	public IdentityVector()
 	{
-		super();    //To change body of overridden methods use File | Settings | File Templates.
 	}
 
 	@Override public synchronized int lastIndexOf(final Object o, final int index)
 	{
 		if (index >= this.elementCount) {
-			throw new IndexOutOfBoundsException(index + " >= " + this.elementCount);
+			throw new IndexOutOfBoundsException(String.format("%d >= %d", index, this.elementCount)); //NON-NLS
 		}
 
 		if (o == null) {
-			for (int i = index; i >= 0; i--)
+			for (int i = index; i >= 0; i--) {
 				if (this.elementData[i] == null) {
 					return i;
 				}
+			}
 		} else {
 			for (int i = index; i >= 0; i--) {
-				if (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel.class.isInstance(o) && org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel.class.isInstance(
-						this.elementData[i])) {
-					final org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel model1 = (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel) o;
-					final org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel model2 = (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel) this.elementData[i];
+				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
+					final IModel model1 = (IModel) o;
+					final IModel model2 = (IModel) this.elementData[i];
 					if (model1.getIdentity() == model2.getIdentity()) {
 						return i;
 					}
@@ -74,16 +75,16 @@ public class IdentityVector<E> extends Vector<E>
 	@Override public synchronized int indexOf(final Object o, final int index)
 	{
 		if (o == null) {
-			for (int i = index; i < this.elementCount; i++)
+			for (int i = index; i < this.elementCount; i++) {
 				if (this.elementData[i] == null) {
 					return i;
 				}
+			}
 		} else {
 			for (int i = index; i < this.elementCount; i++) {
-				if (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel.class.isInstance(o) && org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel.class.isInstance(
-						this.elementData[i])) {
-					final org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel model1 = (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel) o;
-					final org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel model2 = (org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel) this.elementData[i];
+				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
+					final IModel model1 = (IModel) o;
+					final IModel model2 = (IModel) this.elementData[i];
 					if (model1.getIdentity() == model2.getIdentity()) {
 						return i;
 					}

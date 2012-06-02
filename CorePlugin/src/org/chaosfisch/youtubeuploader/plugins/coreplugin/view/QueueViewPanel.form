@@ -3,8 +3,8 @@
   <grid id="27dc6" binding="queuePanel" layout-manager="FormLayout">
     <rowspec value="center:d:grow"/>
     <rowspec value="top:2dlu:noGrow"/>
-    <rowspec value="center:max(p;30px):noGrow"/>
-    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:30px:noGrow"/>
+    <rowspec value="top:4px:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <colspec value="fill:max(d;100px):noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
@@ -22,7 +22,7 @@
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:d:grow"/>
     <constraints>
-      <xy x="37" y="122" width="697" height="268"/>
+      <xy x="37" y="122" width="723" height="268"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -49,7 +49,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.start"/>
+          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="button.start"/>
         </properties>
       </component>
       <component id="3d2f9" class="javax.swing.JButton" binding="stoppenButton" default-binding="true">
@@ -58,7 +58,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.stop"/>
+          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="button.stop"/>
         </properties>
       </component>
       <component id="14c8c" class="javax.swing.JComboBox" binding="queueFinishedList">
@@ -75,26 +75,6 @@
           </model>
         </properties>
       </component>
-      <component id="e1285" class="javax.swing.JButton" binding="arrowBottom">
-        <constraints>
-          <grid row="2" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <icon value="youtubeuploader/resources/images/arrow-double-down.png"/>
-          <text value=""/>
-        </properties>
-      </component>
-      <component id="ef2ac" class="javax.swing.JButton" binding="arrowDown">
-        <constraints>
-          <grid row="2" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <icon value="youtubeuploader/resources/images/arrow_down.png"/>
-          <text value=""/>
-        </properties>
-      </component>
       <component id="c810b" class="javax.swing.JButton" binding="editButton">
         <constraints>
           <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -103,7 +83,7 @@
         <properties>
           <enabled value="true"/>
           <icon value="youtubeuploader/resources/images/pencil.png"/>
-          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.edit"/>
+          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="button.edit"/>
         </properties>
       </component>
       <component id="9e8e4" class="javax.swing.JButton" binding="deleteButton">
@@ -113,7 +93,7 @@
         </constraints>
         <properties>
           <icon value="youtubeuploader/resources/images/delete.png"/>
-          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.delete"/>
+          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="button.delete"/>
         </properties>
       </component>
       <component id="171bf" class="javax.swing.JComboBox" binding="queueViewList">
@@ -136,7 +116,7 @@
         </constraints>
         <properties>
           <icon value="youtubeuploader/resources/images/cancel.png"/>
-          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/queueView" key="button.abort"/>
+          <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="button.abort"/>
         </properties>
       </component>
       <component id="44952" class="javax.swing.JSpinner" binding="maxUploadsSpinner">
@@ -170,6 +150,26 @@
         </constraints>
         <properties>
           <icon value="youtubeuploader/resources/images/arrow_up.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="ef2ac" class="javax.swing.JButton" binding="arrowDown">
+        <constraints>
+          <grid row="2" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <icon value="youtubeuploader/resources/images/arrow_down.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="e1285" class="javax.swing.JButton" binding="arrowBottom">
+        <constraints>
+          <grid row="2" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <icon value="youtubeuploader/resources/images/arrow-double-down.png"/>
           <text value=""/>
         </properties>
       </component>

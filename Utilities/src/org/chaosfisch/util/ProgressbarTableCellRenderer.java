@@ -32,6 +32,8 @@ import java.awt.*;
  */
 public class ProgressbarTableCellRenderer extends JProgressBar implements TableCellRenderer
 {
+	private static final long serialVersionUID = 1415947245980872517L;
+
 	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
@@ -41,6 +43,7 @@ public class ProgressbarTableCellRenderer extends JProgressBar implements TableC
 		}
 		this.setBackground(table.getBackground());
 		this.setStringPainted(true);
+		//noinspection ReturnOfThis
 		return this;
 	}
 }

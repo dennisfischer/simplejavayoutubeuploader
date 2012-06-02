@@ -7,12 +7,11 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Images" />
     <orderEntry type="module" module-name="Utilities" />
-    <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
     <orderEntry type="module" module-name="CorePlugin" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="library" name="Google Guice v 3.0" level="project" />
+    <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
   </component>
 </module>
 

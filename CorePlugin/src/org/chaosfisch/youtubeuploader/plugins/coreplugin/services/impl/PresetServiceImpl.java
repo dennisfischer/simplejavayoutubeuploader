@@ -21,10 +21,10 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PresetMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.mybatis.guice.transactional.Transactional;
-import org.mybatis.mappers.PresetMapper;
 
 import java.util.List;
 
@@ -39,33 +39,33 @@ public class PresetServiceImpl implements PresetService
 {
 	@Inject PresetMapper presetMapper;
 
-	@Transactional @Override public Preset createPresetEntry(final Preset preset)
+	@Transactional @Override public Preset create(final Preset preset)
 	{
 		this.presetMapper.createPreset(preset);
-		EventBus.publish(PRESET_ENTRY_ADDED, preset);
+		EventBus.publish(PresetService.PRESET_ENTRY_ADDED, preset);
 		return preset;
 	}
 
-	@Transactional @Override public Preset deletePresetEntry(final Preset preset)
+	@Transactional @Override public Preset delete(final Preset preset)
 	{
 		this.presetMapper.deletePreset(preset);
-		EventBus.publish(PRESET_ENTRY_REMOVED, preset);
+		EventBus.publish(PresetService.PRESET_ENTRY_REMOVED, preset);
 		return preset;
 	}
 
-	@Transactional @Override public Preset updatePresetEntry(final Preset preset)
+	@Transactional @Override public Preset update(final Preset preset)
 	{
 		this.presetMapper.updatePreset(preset);
-		EventBus.publish(PRESET_ENTRY_UPDATED, preset);
+		EventBus.publish(PresetService.PRESET_ENTRY_UPDATED, preset);
 		return preset;
 	}
 
-	@Transactional @Override public List<Preset> getAllPresetEntry()
+	@Transactional @Override public List<Preset> getAll()
 	{
 		return this.presetMapper.getPresets();
 	}
 
-	@Transactional @Override public Preset findPresetEntry(final int identifier)
+	@Transactional @Override public Preset find(final int identifier)
 	{
 		return this.presetMapper.findPreset(identifier);
 	}

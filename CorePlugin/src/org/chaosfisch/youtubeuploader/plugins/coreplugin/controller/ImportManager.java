@@ -70,11 +70,11 @@ class ImportManager
 		}
 		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
-			final List<?> accounts = (List<?>) object;
+			final Iterable<?> accounts = (Iterable<?>) object;
 			for (final Object account : accounts) {
 				final Account accountEntry = (Account) account;
 				//accountEntry.getYoutubeServiceManager().authenticate();
-				this.accountService.createAccountEntry(accountEntry);
+				this.accountService.create(accountEntry);
 			}
 		}
 	}
@@ -87,9 +87,9 @@ class ImportManager
 		}
 		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
-			final List<?> presets = (List<?>) object;
+			final Iterable<?> presets = (Iterable<?>) object;
 			for (final Object preset : presets) {
-				this.presetService.createPresetEntry((Preset) preset);
+				this.presetService.create((Preset) preset);
 			}
 		}
 	}
@@ -102,9 +102,9 @@ class ImportManager
 		}
 		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
-			final List<?> entries = (List<?>) object;
+			final Iterable<?> entries = (Iterable<?>) object;
 			for (final Object entry : entries) {
-				this.queueService.createQueue((Queue) entry);
+				this.queueService.create((Queue) entry);
 			}
 		}
 	}
@@ -125,7 +125,7 @@ class ImportManager
 				} catch (IOException ignored) {
 				}
 			}
-		} catch (FileNotFoundException ex) {
+		} catch (FileNotFoundException ignored) {
 			return new Object();
 		}
 	}

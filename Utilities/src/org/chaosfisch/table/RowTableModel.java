@@ -22,6 +22,7 @@ package org.chaosfisch.table;
 import javax.swing.table.AbstractTableModel;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,15 +42,16 @@ import java.util.List;
  */
 public abstract class RowTableModel<T> extends AbstractTableModel
 {
+	private static final long serialVersionUID = -7161940552109409818L;
 	protected List<T>      modelData;
 	protected List<String> columnNames;
-	protected Class[]      columnClasses;
+	protected Class<?>[]   columnClasses;
 	protected Boolean[]    isColumnEditable;
-	private Class   rowClass        = Object.class;
-	private boolean isModelEditable = true;
+	private Class<?> rowClass        = Object.class;
+	private boolean  isModelEditable = true;
 
 	/**
-	 * Constructs a <code>RowTableModel</code> with the row class.
+	 * Constructs a {@code RowTableModel} with the row class.
 	 * <p/>
 	 * This value is used by the getRowsAsArray() method.
 	 * <p/>
@@ -58,22 +60,22 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 *
 	 * @param rowClass the class of row data to be added to the model
 	 */
-	protected RowTableModel(final Class rowClass)
+	protected RowTableModel(final Class<?> rowClass)
 	{
 		this.setRowClass(rowClass);
 	}
 
 	/**
-	 * Constructs a <code>RowTableModel</code> with column names.
+	 * Constructs a {@code RowTableModel} with column names.
 	 * <p/>
-	 * Each column's name will be taken from the <code>columnNames</code>
+	 * Each column's name will be taken from the {@code columnNames}
 	 * List and the number of colums is determined by thenumber of items
-	 * in the <code>columnNames</code> List.
+	 * in the {@code columnNames} List.
 	 * <p/>
 	 * Sub classes creating a model using this constructor must make sure
 	 * to invoke the setRowClass() method.
 	 *
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 */
 	protected RowTableModel(final List<String> columnNames)
@@ -82,21 +84,21 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Constructs a <code>RowTableModel</code> with initial data and
+	 * Constructs a {@code RowTableModel} with initial data and
 	 * customized column names.
 	 * <p/>
-	 * Each item in the <code>modelData</code> List must also be a List Object
+	 * Each item in the {@code modelData} List must also be a List Object
 	 * containing items for each column of the row.
 	 * <p/>
-	 * Each column's name will be taken from the <code>columnNames</code>
+	 * Each column's name will be taken from the {@code columnNames}
 	 * List and the number of colums is determined by thenumber of items
-	 * in the <code>columnNames</code> List.
+	 * in the {@code columnNames} List.
 	 * <p/>
 	 * Sub classes creating a model using this constructor must make sure
 	 * to invoke the setRowClass() method.
 	 *
 	 * @param modelData   the data of the table
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 */
 	protected RowTableModel(final List<T> modelData, final List<String> columnNames)
@@ -105,21 +107,21 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Full Constructor for creating a <code>RowTableModel</code>.
+	 * Full Constructor for creating a {@code RowTableModel}.
 	 * <p/>
-	 * Each item in the <code>modelData</code> List must also be a List Object
+	 * Each item in the {@code modelData} List must also be a List Object
 	 * containing items for each column of the row.
 	 * <p/>
-	 * Each column's name will be taken from the <code>columnNames</code>
+	 * Each column's name will be taken from the {@code columnNames}
 	 * List and the number of colums is determined by thenumber of items
-	 * in the <code>columnNames</code> List.
+	 * in the {@code columnNames} List.
 	 *
 	 * @param modelData   the data of the table
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 * @param rowClass    the class of row data to be added to the model
 	 */
-	protected RowTableModel(final List<T> modelData, final List<String> columnNames, final Class rowClass)
+	protected RowTableModel(final List<T> modelData, final List<String> columnNames, final Class<?> rowClass)
 	{
 		this.setDataAndColumnNames(modelData, columnNames);
 		this.setRowClass(rowClass);
@@ -131,14 +133,14 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 * A fireTableStructureChanged event will be generated.
 	 *
 	 * @param modelData   the data of the table
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 */
 	protected void setDataAndColumnNames(final List<T> modelData, final List<String> columnNames)
 	{
 		this.modelData = modelData;
 		this.columnNames = columnNames;
-		this.columnClasses = new Class[this.getColumnCount()];
+		this.columnClasses = new Class<?>[this.getColumnCount()];
 		this.isColumnEditable = new Boolean[this.getColumnCount()];
 		this.fireTableStructureChanged();
 	}
@@ -151,27 +153,41 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 *
 	 * @param rowClass the class of the row
 	 */
-	protected void setRowClass(final Class rowClass)
+	protected void setRowClass(final Class<?> rowClass)
 	{
 		this.rowClass = rowClass;
 	}
+
+	public void removeElement(final T t)
+	{
+		final int index = this.modelData.indexOf(t);
+		if (index != -1) {
+			this.removeRows(index);
+		}
+	}
+
+	public boolean hasIndex(final int selectedRow)
+	{
+		return (this.modelData.size() >= selectedRow) && (selectedRow != -1);
+	}
+
 //
 //  Implement the TableModel interface
 //
 
 	/**
-	 * Returns the Class of the queried <code>column</code>.
+	 * Returns the Class of the queried {@code column}.
 	 * <p/>
 	 * First it will check to see if a Class has been specified for the
-	 * <code>column</code> by using the <code>setColumnClass</code> method.
+	 * {@code column} by using the {@code setColumnClass} method.
 	 * If not, then the superclass value is returned.
 	 *
 	 * @param column the column being queried
 	 * @return the Class of the column being queried
 	 */
-	public Class getColumnClass(final int column)
+	@Override public Class<?> getColumnClass(final int column)
 	{
-		Class columnClass = null;
+		Class<?> columnClass = null;
 
 		//  Get the class, if set, for the specified column
 
@@ -202,8 +218,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 * Returns the column name.
 	 *
 	 * @return a name for this column using the string value of the
-	 *         appropriate member in <code>columnNames</code>. If
-	 *         <code>columnNames</code> does not have an entry for this index
+	 *         appropriate member in {@code columnNames}. If
+	 *         {@code columnNames} does not have an entry for this index
 	 *         then the default name provided by the superclass is returned
 	 */
 	public String getColumnName(final int column)
@@ -262,7 +278,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Returns the Object of the requested <code>row</code>.
+	 * Returns the Object of the requested {@code row}.
 	 *
 	 * @return the Object of the requested row.
 	 */
@@ -272,7 +288,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Returns an array of Objects for the requested <code>rows</code>.
+	 * Returns an array of Objects for the requested {@code rows}.
 	 *
 	 * @return an array of Objects for the requested rows.
 	 */
@@ -285,13 +301,13 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Returns a List of Objects for the requested <code>rows</code>.
+	 * Returns a List of Objects for the requested {@code rows}.
 	 *
 	 * @return a List of Objects for the requested rows.
 	 */
 	public List<T> getRowsAsList(final int... rows)
 	{
-		final ArrayList<T> rowData = new ArrayList<T>(rows.length);
+		final List<T> rowData = new ArrayList<T>(rows.length);
 
 		for (final int row : rows) {
 			rowData.add(this.getRow(row));
@@ -301,7 +317,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Insert a row of data at the <code>row</code> location in the model.
+	 * Insert a row of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row     row in the model where the data will be inserted
@@ -314,7 +330,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Insert multiple rows of data at the <code>row</code> location in the model.
+	 * Insert multiple rows of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row     row in the model where the data will be inserted
@@ -323,17 +339,17 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	public void insertRows(final int row, final List<T> rowList)
 	{
 		this.modelData.addAll(row, rowList);
-		this.fireTableRowsInserted(row, row + rowList.size() - 1);
+		this.fireTableRowsInserted(row, (row + rowList.size()) - 1);
 	}
 
 	/**
-	 * Insert multiple rows of data at the <code>row</code> location in the model.
+	 * Insert multiple rows of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row      row in the model where the data will be inserted
 	 * @param rowArray each item in the Array is a separate row of data
 	 */
-	public void insertRows(final int row, final T[] rowArray)
+	public void insertRows(final int row, final T... rowArray)
 	{
 		final List<T> rowList = new ArrayList<T>(rowArray.length);
 
@@ -343,11 +359,11 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Moves one or more rows from the inlcusive range <code>start</code> to
-	 * <code>end</code> to the <code>to</code> position in the model.
-	 * After the move, the row that was at index <code>start</code>
-	 * will be at index <code>to</code>.
-	 * This method will send a <code>tableRowsUpdated</code> notification
+	 * Moves one or more rows from the inlcusive range {@code start} to
+	 * {@code end} to the {@code to} position in the model.
+	 * After the move, the row that was at index {@code start}
+	 * will be at index {@code to}.
+	 * This method will send a {@code tableRowsUpdated} notification
 	 * message to all the listeners. <p>
 	 * <p/>
 	 * <pre>
@@ -372,12 +388,12 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	public void moveRow(final int start, final int end, final int to)
 	{
 		if (start < 0) {
-			final String message = "Start index must be positive: " + start; //NON-NLS
+			final String message = String.format("Start index must be positive: %d", start); //NON-NLS
 			throw new IllegalArgumentException(message);
 		}
 
-		if (end > this.getRowCount() - 1) {
-			final String message = "End index must be less than total rows: " + end; //NON-NLS
+		if (end > (this.getRowCount() - 1)) {
+			final String message = String.format("End index must be less than total rows: %d", end); //NON-NLS
 			throw new IllegalArgumentException(message);
 		}
 
@@ -386,18 +402,18 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 			throw new IllegalArgumentException(message);
 		}
 
-		final int rowsMoved = end - start + 1;
+		final int rowsMoved = (end - start) + 1;
 
-		if (to < 0 || to > this.getRowCount() - rowsMoved) {
-			final String message = "New destination row (" + to + ") is invalid"; //NON-NLS NON-NLS
+		if ((to < 0) || (to > (this.getRowCount() - rowsMoved))) {
+			final String message = String.format("New destination row (%d) is invalid", to); //NON-NLS NON-NLS
 			throw new IllegalArgumentException(message);
 		}
 
 		//  Save references to the rows that are about to be moved
 
-		final ArrayList<T> temp = new ArrayList<T>(rowsMoved);
+		final Collection<T> temp = new ArrayList<T>(rowsMoved);
 
-		for (int i = start; i < end + 1; i++) {
+		for (int i = start; i < (end + 1); i++) {
 			temp.add(this.modelData.get(i));
 		}
 
@@ -417,7 +433,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 			last = end;
 		} else {
 			first = start;
-			last = to + end - start;
+			last = (to + end) - start;
 		}
 
 		this.fireTableRowsUpdated(first, last);
@@ -456,7 +472,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	}
 
 	/**
-	 * Replace a row of data at the <code>row</code> location in the model.
+	 * Replace a row of data at the {@code row} location in the model.
 	 * Notification of the row being replaced will be generated.
 	 *
 	 * @param row     row in the model where the data will be replaced
@@ -477,7 +493,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 * @param columnClass the new Class of the column
 	 * @throws ArrayIndexOutOfBoundsException if an invalid column was given
 	 */
-	public void setColumnClass(final int column, final Class columnClass)
+	public void setColumnClass(final int column, final Class<?> columnClass)
 	{
 		this.columnClasses[column] = columnClass;
 		this.fireTableRowsUpdated(0, this.getColumnCount() - 1);
@@ -506,38 +522,5 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	public void setModelEditable(final boolean isModelEditable)
 	{
 		this.isModelEditable = isModelEditable;
-	}
-
-	/*
-	 *  Convert an unformatted column name to a formatted column name. That is:
-	 *
-	 *  - insert a space when a new uppercase character is found, insert
-	 *    multiple upper case characters are grouped together.
-	 *  - replace any "_" with a space
-	 *
-	 *  @param columnName  unformatted column name
-	 *  @return the formatted column name
-	 */
-	public static String formatColumnName(final String columnName)
-	{
-		if (columnName.length() < 3) {
-			return columnName;
-		}
-
-		final StringBuilder buffer = new StringBuilder(columnName);
-		boolean isPreviousLowerCase = false;
-
-		for (int i = 1; i < buffer.length(); i++) {
-			final boolean isCurrentUpperCase = Character.isUpperCase(buffer.charAt(i));
-
-			if (isCurrentUpperCase && isPreviousLowerCase) {
-				buffer.insert(i, " ");
-				i++;
-			}
-
-			isPreviousLowerCase = !isCurrentUpperCase;
-		}
-
-		return buffer.toString().replaceAll("_", " ");
 	}
 }

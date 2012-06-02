@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="jgoodies-validation-2.4">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" />
+      <root url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1/docs/api" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" />
+      <root url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../repositories/jgoodies-validation-2.4.1" recursive="false" type="SOURCES" />
+  </library>
+</component>

@@ -28,6 +28,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
  */
 public interface YTService
 {
-	public static final String DEVELOPER_KEY    = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
-	public static final String APPLICATION_NAME = "dennis-fischer-youtube java uploader-2.0-alpha-1";
+	String DEVELOPER_KEY    = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg"; //NON-NLS
+	String APPLICATION_NAME = "dennis-fischer-youtube java uploader-2.0-alpha-1"; //NON-NLS
 }

@@ -38,7 +38,7 @@ public class Log4JTypeListener implements TypeListener
 	public <T> void hear(final TypeLiteral<T> typeLiteral, final TypeEncounter<T> typeEncounter)
 	{
 		for (final Field field : typeLiteral.getRawType().getDeclaredFields()) {
-			if (field.getType() == Logger.class && field.isAnnotationPresent(InjectLogger.class)) {
+			if ((field.getType() == Logger.class) && field.isAnnotationPresent(InjectLogger.class)) {
 				typeEncounter.register(new Log4JMembersInjector<T>(field));
 			}
 		}

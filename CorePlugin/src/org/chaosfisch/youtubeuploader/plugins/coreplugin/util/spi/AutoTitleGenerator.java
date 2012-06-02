@@ -30,6 +30,8 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
  */
 public interface AutoTitleGenerator
 {
+	String AUTOTITLE_CHANGED = "autoTitleChanged"; //NON-NLS
+
 	String getFormatString();
 
 	void setFormatString(String formatString);

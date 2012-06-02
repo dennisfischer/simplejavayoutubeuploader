@@ -21,6 +21,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 
 import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
 
+import javax.swing.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -30,18 +32,18 @@ import org.chaosfisch.youtubeuploader.designmanager.spi.Design;
  */
 public class DesignImpl implements Design
 {
-	private final Class  laf;
-	private final String shortName;
-	private final String name;
+	private final Class<? extends LookAndFeel> laf;
+	private final String                       shortName;
+	private final String                       name;
 
-	public DesignImpl(final Class laf, final String shortName, final String name)
+	public DesignImpl(final Class<? extends LookAndFeel> laf, final String shortName, final String name)
 	{
 		this.laf = laf;
 		this.shortName = shortName;
 		this.name = name;
 	}
 
-	@Override public Class getLaF()
+	@Override public Class<? extends LookAndFeel> getLaF()
 	{
 		return this.laf;
 	}

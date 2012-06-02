@@ -19,7 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
-import java.io.IOException;
+import org.chaosfisch.google.request.HTTP_STATUS;
+
 import java.util.Properties;
 
 /**
@@ -31,33 +32,33 @@ import java.util.Properties;
  */
 public class OAuthHTTPDServer extends NanoHTTPD
 {
-	private String code = null;
+	private String code;
 
-	public OAuthHTTPDServer(final int port) throws IOException
+	public OAuthHTTPDServer(final int port)
 	{
 		super(port, null);    //To change body of overridden methods use File | Settings | File Templates.
 	}
 
 	@Override public Response serve(final String uri, final String method, final Properties header, final Properties parms, final Properties files)
 	{
-		if (parms.getProperty("code") != null) {
-			this.code = parms.getProperty("code");
+		if (parms.getProperty("code") != null) { //NON-NLS
+			this.code = parms.getProperty("code");//NON-NLS
 			synchronized (this) {
 				this.notifyAll();
 			}
-			final String msg = "Danke für die Autorisierung!";
-			return new Response(HTTP_OK, MIME_HTML, msg);
-		} else if (parms.getProperty("error_reason") != null) {
+			final String msg = "Danke f&uuml;r die Autorisierung!";
+			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_HTML, msg);
+		} else if (parms.getProperty("error_reason") != null) {//NON-NLS
 			synchronized (this) {
 				this.notifyAll();
 			}
 			final String msg = "Die Autorisierung wurde durch den Benutzer abgelehnt!";
-			return new Response(HTTP_OK, MIME_PLAINTEXT, msg);
+			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_PLAINTEXT, msg);
 		}
 		synchronized (this) {
 			this.notifyAll();
 		}
-		return new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, "Not found!");
+		return new Response(HTTP_STATUS.NOTFOUND.toString(), NanoHTTPD.MIME_PLAINTEXT, "Not found!"); //NON-NLS
 	}
 
 	public String getCode()

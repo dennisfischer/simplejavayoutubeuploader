@@ -17,10 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.mybatis.mappers;
+package org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.util.List;
 
@@ -31,17 +32,38 @@ import java.util.List;
  * Time: 08:34
  * To change this template use File | Settings | File Templates.
  */
-public interface PlaylistMapper
+public interface QueueMapper
 {
-	List<Playlist> findPlaylists(Account account);
+	List<Queue> getAll();
 
-	void updatePlaylist(Playlist playlist);
+	List<Queue> getQueued();
 
-	void deletePlaylist(Playlist playlist);
+	List<Queue> getArchived();
 
-	void createPlaylist(Playlist playlist);
+	List<Queue> findByAccount(Account account);
 
-	Playlist findPlaylist(int id);
+	List<Queue> findByPlaylist(Playlist playlist);
 
-	List<Playlist> getAll();
+	Queue findQueue(int id);
+
+	Queue poll();
+
+	void createQueue(Queue queue);
+
+	void updateQueue(Queue queue);
+
+	void deleteQueue(Queue queue);
+
+	void moveTop(Queue queue);
+
+	void moveUp(Queue queue);
+
+	void moveDown(Queue queue);
+
+	void moveBottom(Queue queue);
+
+	int countQueued();
+
+	int countStarttime();
 }
+

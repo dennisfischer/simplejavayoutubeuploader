@@ -30,13 +30,13 @@ import java.util.List;
  */
 public class Account implements IModel
 {
-	public           String         name;
-	public           String         password;
-	public           String         secret;
-	public transient int            identity;
-	public transient List<Playlist> presets;
-	public transient List<Queue>    queue;
-	public transient List<Playlist> playlists;
+	public            String         name;
+	public            String         password;
+	public            String         secret;
+	private transient int            identity;
+	public transient  List<Playlist> presets;
+	public transient  List<Queue>    queue;
+	public transient  List<Playlist> playlists;
 
 	@Override public int getIdentity()
 	{

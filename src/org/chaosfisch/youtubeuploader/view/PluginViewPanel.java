@@ -26,16 +26,16 @@ import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.controller.PluginController;
 
 import javax.swing.*;
-import java.util.Collection;
 
 public class PluginViewPanel extends JDialog
 {
+	private static final long serialVersionUID = -7964085115455095508L;
 	private JPanel  contentPane;
 	private JTable  pluginTable;
 	private JButton addButton;
 	private JButton removeButton;
 
-	private @Inject PluginController pluginController;
+	@Inject private PluginController pluginController;
 
 	public PluginViewPanel()
 	{
@@ -48,7 +48,7 @@ public class PluginViewPanel extends JDialog
 		this.pluginTable.setModel(this.pluginController.getPluginTableModel());
 	}
 
-	public void setPluggableList(final Collection<Pluggable> pluggableList)
+	public void setPluggableList(final Iterable<Pluggable> pluggableList)
 	{
 		final RowTableModel<Pluggable> rowTableModel = this.pluginController.getPluginTableModel();
 		if (rowTableModel.getRowCount() > 0) {

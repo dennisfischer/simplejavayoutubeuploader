@@ -17,31 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.mybatis.mappers;
+package org.chaosfisch.youtubeuploader.plugins.socializeplugin.mappers;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 05.05.12
- * Time: 21:24
+ * Date: 29.05.12
+ * Time: 10:23
  * To change this template use File | Settings | File Templates.
  */
-public interface AccountMapper
+public interface MessageMapper
 {
-	Account findAccount(int id);
 
-	List<Account> getAccounts();
+	List<Message> getMessages();
 
-	void deleteAccount(Account account);
+	List<Message> findMessages(Message message);
 
-	void createAccount(Account account);
+	void deleteMessage(Message message);
 
-	void updateAccount(Account account);
+	void createMessage(Message message);
 
-	void preDeleteAccount();
+	void updateMessage(Message message);
+
+	void deleteByUploadID(Integer uploadID);
+
+	List<Message> findMessagesByQueueID(Integer uploadID);
 }
-

@@ -30,19 +30,15 @@ package org.chaosfisch.util;
 public class Mimetype
 {
 
-	public final static  String[] EXTENSIONS = {"mkv", "mp4", "mpeg", "avi", "flv", "mov", "wmv", "f4v", "m4v", "mk3d"};
+	public static final  String[] EXTENSIONS = {"mkv", "mp4", "mpeg", "avi", "flv", "mov", "wmv", "f4v", "m4v", "mk3d"};
 	private static final String[] MIMETYPES  = {"video/mkv", "video/mp4", "video/mpeg", "video/avi", "video/x-flv", "video/quicktime", "video/xs-ms-wmv", "video/x-flv", "video/mp4", "video/mkv"};
-
-	public Mimetype()
-	{
-	}
 
 	public static String getMimetypeByExtension(final String extension)
 	{
 		int i = 0;
-		for (final String ext : EXTENSIONS) {
+		for (final String ext : Mimetype.EXTENSIONS) {
 			if (ext.equals(extension)) {
-				return MIMETYPES[i];
+				return Mimetype.MIMETYPES[i];
 			}
 			i++;
 		}
@@ -53,9 +49,9 @@ public class Mimetype
 	{
 		@SuppressWarnings("MagicCharacter") final String extension = file.substring(file.lastIndexOf('.') + 1, file.length());
 		int i = 0;
-		for (final String ext : EXTENSIONS) {
+		for (final String ext : Mimetype.EXTENSIONS) {
 			if (ext.equals(extension)) {
-				return MIMETYPES[i];
+				return Mimetype.MIMETYPES[i];
 			}
 			i++;
 		}

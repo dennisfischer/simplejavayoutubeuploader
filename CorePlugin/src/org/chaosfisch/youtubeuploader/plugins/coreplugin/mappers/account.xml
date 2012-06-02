@@ -18,11 +18,12 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
+
 <!DOCTYPE mapper
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.mybatis.mappers.AccountMapper">
+<mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.AccountMapper">
 
 	<select id="findAccount" parameterType="int" resultType="Account">
         SELECT * FROM ACCOUNTS WHERE identity = #{id}

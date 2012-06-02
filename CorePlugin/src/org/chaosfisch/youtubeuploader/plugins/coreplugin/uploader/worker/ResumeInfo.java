@@ -17,22 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.view;
-
-import javax.swing.*;
+package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 27.02.12
- * Time: 09:08
+ * Date: 26.05.12
+ * Time: 20:16
  * To change this template use File | Settings | File Templates.
  */
-public class MainFrame extends JFrame
+class ResumeInfo
 {
 
-	public MainFrame()
+	public final Long   nextByteToUpload;
+	public final String videoId;
+
+	ResumeInfo(final long nextByteToUpload)
 	{
-		super();
+		this.nextByteToUpload = nextByteToUpload;
+		this.videoId = null;
+	}
+
+	ResumeInfo(final String videoId)
+	{
+		this.videoId = videoId;
+		this.nextByteToUpload = null;
 	}
 }

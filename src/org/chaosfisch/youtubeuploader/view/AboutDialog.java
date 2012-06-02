@@ -24,6 +24,7 @@ import java.awt.event.*;
 
 public class AboutDialog extends JDialog
 {
+	private static final long serialVersionUID = 3890601023863310149L;
 	private JPanel  contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
@@ -45,7 +46,7 @@ public class AboutDialog extends JDialog
 		});
 
 // call onCancel() when cross is clicked
-		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter()
 		{
 			public void windowClosing(final WindowEvent e)

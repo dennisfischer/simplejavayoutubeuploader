@@ -33,9 +33,9 @@ import java.util.List;
  */
 public interface DirectoryService
 {
-	public final static String DIRECTORY_REMOVED = "onDirectoryRemoved"; //NON-NLS
-	public final static String DIRECTORY_ADDED   = "onDirectoryAdded"; //NON-NLS
-	public final static String DIRECTORY_UPDATED = "onDirectoryUpdated"; //NON-NLS
+	String DIRECTORY_REMOVED = "onDirectoryRemoved"; //NON-NLS
+	String DIRECTORY_ADDED   = "onDirectoryAdded"; //NON-NLS
+	String DIRECTORY_UPDATED = "onDirectoryUpdated"; //NON-NLS
 
 	List<Directory> getAll();
 

@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities;
+package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
 
@@ -30,13 +30,13 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
  */
 public class Message implements IModel
 {
-	public transient int     identity;
+	public transient Integer identity;
 	public           String  message;
-	public           int     uploadID;
-	public           boolean facebook;
-	public           boolean twitter;
-	public           boolean youtube;
-	public           boolean googlePlus;
+	public           Integer uploadID;
+	public           Boolean facebook;
+	public           Boolean twitter;
+	public           Boolean youtube;
+	public           Boolean googlePlus;
 
 	@Override public int getIdentity()
 	{

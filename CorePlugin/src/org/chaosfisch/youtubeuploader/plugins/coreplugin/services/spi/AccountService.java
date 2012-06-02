@@ -32,17 +32,17 @@ import java.util.List;
  */
 public interface AccountService
 {
-	public static final String ACCOUNT_ADDED   = "accountEntryAdded"; //NON-NLS
-	public static final String ACCOUNT_REMOVED = "accountEntryRemoved"; //NON-NLS
-	public static final String ACCOUNT_UPDATED = "accountEntryUpdated"; //NON-NLS
+	String ACCOUNT_ADDED   = "accountEntryAdded"; //NON-NLS
+	String ACCOUNT_REMOVED = "accountEntryRemoved"; //NON-NLS
+	String ACCOUNT_UPDATED = "accountEntryUpdated"; //NON-NLS
 
-	Account createAccountEntry(Account account);
+	Account create(Account account);
 
-	Account deleteAccountEntry(Account account);
+	Account delete(Account account);
 
-	Account updateAccountEntry(Account account);
+	Account update(Account account);
 
-	Account findAccountEntry(int identifier);
+	Account find(int identifier);
 
-	List<Account> getAllAccountEntry();
+	List<Account> getAll();
 }

@@ -23,7 +23,7 @@
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.mybatis.mappers.PresetMapper">
+<mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PresetMapper">
 
 	<sql id="insertValuesList">
 		(autotitle, autotitleFormat, category, comment, commentVote, defaultDir, description, embed, keywords, mobile,

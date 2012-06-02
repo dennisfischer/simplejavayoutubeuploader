@@ -28,6 +28,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
  */
 class UploaderException extends Exception
 {
+	private static final long serialVersionUID = 1097833255891875198L;
+
 	public UploaderException(final String message)
 	{
 		super(message);

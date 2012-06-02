@@ -20,6 +20,10 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
 import com.google.inject.Inject;
+import com.jgoodies.validation.ValidationResult;
+import com.jgoodies.validation.ValidationResultModel;
+import com.jgoodies.validation.util.DefaultValidationResultModel;
+import com.jgoodies.validation.view.ValidationResultViewFactory;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
@@ -55,7 +59,7 @@ public class MenuViewPanel
 	private JMenuItem addAccountMenuItem;
 	private JMenuItem addPlaylistMenuItem;
 
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.menuView"); //NON-NLS
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
 
 	@Inject
 	public MenuViewPanel(final UploadController uploadController, final AccountService accountService, final PresetService presetService, final PlaylistService playlistService)
@@ -135,8 +139,7 @@ public class MenuViewPanel
 				final JTextField nameTextField = new JTextField("");
 				final JPasswordField passwordField = new JPasswordField("");
 
-				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
-						"accountDialog.passwordLabel"), passwordField};
+				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("accountDialog.accountLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("accountDialog.passwordLabel"), passwordField};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("accountDialog.addAccountLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -148,7 +151,7 @@ public class MenuViewPanel
 							account.password = String.valueOf(passwordField.getPassword());
 							//try {
 
-							MenuViewPanel.this.accountService.createAccountEntry(account);
+							MenuViewPanel.this.accountService.create(account);
 							break;
 							/*} catch (AuthenticationException ex) {
 								nameTextField.setBackground(Color.RED);
@@ -165,11 +168,10 @@ public class MenuViewPanel
 			}
 		});
 
-		this.addPlaylistMenuItem = new JMenuItem(this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), new ImageIcon(this.getClass().getResource(
-				"/youtubeuploader/resources/images/table_add" + ".png"))); //NON-NLS
+		this.addPlaylistMenuItem = new JMenuItem(this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), new ImageIcon(this.getClass().getResource(String.format("/youtubeuploader/resources/images/table_add.png")))); //NON-NLS
 		this.addPlaylistMenuItem.addActionListener(new ActionListener()
 		{
-			@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final JTextField nameTextField = new JTextField("");
 				final JTextArea descriptionTextArea = new JTextArea("");
@@ -177,33 +179,36 @@ public class MenuViewPanel
 
 				final JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
 				scrollPane.setPreferredSize(new Dimension(350, 150));
-				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
-						"playlistDialog.descriptionLabel"), scrollPane};
+
+				final ValidationResultModel validationResultModel = new DefaultValidationResultModel();
+				final JPanel validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(validationResultModel);
+
+				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("playlistDialog.descriptionLabel"), scrollPane, validationPanel};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
-						if (nameTextField.getText().equals("")) {
-							nameTextField.setBackground(Color.RED);
-							continue;
-						}
-						nameTextField.setBackground(Color.WHITE);
-						if (descriptionTextArea.getText().equals("")) {
-							descriptionTextArea.setBackground(Color.RED);
-							continue;
-						}
-						descriptionTextArea.setBackground(Color.WHITE);
 
-						final Playlist playlist = new Playlist();
-						playlist.title = nameTextField.getText();
-						playlist.summary = descriptionTextArea.getText();
-						playlist.account = (Account) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
-						if (playlist.account != null) {
-							MenuViewPanel.this.playlistService.createPlaylist(playlist);
-							break;
+						final ValidationResult validationResult = new ValidationResult();
+						if (nameTextField.getText().isEmpty()) {
+							validationResult.addError("Der Playlist-Name darf nicht leer sein!");
+						} else if (descriptionTextArea.getText().isEmpty()) {
+							validationResult.addError("Die Beschreibung darf nicht leer sein!");
+						} else if (MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem() == null) {
+							validationResult.addError("Es ist kein Account verfügbar!");
 						} else {
-							break;
+							final Playlist playlist = new Playlist();
+							playlist.title = nameTextField.getText();
+							playlist.summary = descriptionTextArea.getText();
+							playlist.account = (Account) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
+							if (playlist.account != null) {
+								MenuViewPanel.this.playlistService.create(playlist);
+								break;
+							} else {
+								break;
+							}
 						}
+						validationResultModel.setResult(validationResult);
 					} else {
 						break;
 					}
@@ -211,26 +216,29 @@ public class MenuViewPanel
 			}
 		});
 
-		this.addPresetMenuItem = new JMenuItem(this.resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(this.getClass().getResource(
-				"/youtubeuploader/resources/images/report_add" + ".png"))); //NON-NLS
+		this.addPresetMenuItem = new JMenuItem(this.resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(this.getClass().getResource(String.format("/youtubeuploader/resources/images/report_add.png")))); //NON-NLS
 		this.addPresetMenuItem.addActionListener(new ActionListener()
 		{
-			@SuppressWarnings("CallToStringEquals") @Override public void actionPerformed(final ActionEvent e)
+			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final JTextField nameTextField = new JTextField("");
 
-				final Object[] message = new Object[]{MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField};
+				final ValidationResultModel validationResultModel = new DefaultValidationResultModel();
+				final JPanel validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(validationResultModel);
+				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("presetDialog.presetLabel"), nameTextField, validationPanel};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("presetDialog.addPresetLabel"), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
-						if (!nameTextField.getText().equals("")) {
+						if (nameTextField.getText().isEmpty()) {
+							final ValidationResult validationResult = new ValidationResult();
+							validationResult.addError("Der Preset-Name darf nicht leer sein!");
+							validationResultModel.setResult(validationResult);
+						} else {
 							final Preset preset = new Preset();
 							preset.name = nameTextField.getText();
-							MenuViewPanel.this.presetService.createPresetEntry(preset);
+							MenuViewPanel.this.presetService.create(preset);
 							break;
-						} else {
-							nameTextField.setBackground(Color.RED);
 						}
 					} else {
 						break;

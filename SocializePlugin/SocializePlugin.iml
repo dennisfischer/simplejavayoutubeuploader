@@ -10,11 +10,11 @@
     <orderEntry type="library" name="Scribe Fork" level="project" />
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="module" module-name="CorePlugin" />
-    <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="Apache Commons Codec v 1.6" level="project" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
     <orderEntry type="library" name="Google Guice v 3.0" level="project" />
+    <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
+    <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
   </component>
 </module>
 

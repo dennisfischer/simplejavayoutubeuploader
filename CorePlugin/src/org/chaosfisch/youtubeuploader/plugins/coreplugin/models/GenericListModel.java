@@ -22,10 +22,9 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 
 import javax.swing.*;
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,9 +33,10 @@ import java.util.Vector;
  * Time: 21:53
  * To change this template use File | Settings | File Templates.
  */
-public class GenericListModel<E> extends AbstractListModel<E> implements MutableComboBoxModel<E>, Serializable
+public class GenericListModel<E> extends AbstractListModel<E> implements MutableComboBoxModel<E>
 {
 
+	private static final long serialVersionUID = -8891330887837958077L;
 	final IdentityVector<E> objects;
 	Object selectedObject;
 
@@ -45,7 +45,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 		this(Collections.<E>emptyList());
 	}
 
-	public GenericListModel(final List<E> elements)
+	public GenericListModel(final Collection<E> elements)
 	{
 		AnnotationProcessor.process(this);
 		this.objects = new IdentityVector<E>(elements.size());
@@ -61,15 +61,16 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	 *
 	 * @param items an array of Object objects
 	 */
-	public GenericListModel(final E items[])
+	public GenericListModel(final E... items)
 	{
 		this.objects = new IdentityVector<E>(items.length);
 		this.objects.ensureCapacity(items.length);
 
 		int i;
 		final int c;
-		for (i = 0, c = items.length; i < c; i++)
+		for (i = 0, c = items.length; i < c; i++) {
 			this.objects.addElement(items[i]);
+		}
 
 		if (this.getSize() > 0) {
 			this.selectedObject = this.getElementAt(0);
@@ -102,7 +103,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	@Override
 	public void setSelectedItem(final Object anObject)
 	{
-		if ((this.selectedObject != null && !this.selectedObject.equals(anObject)) || this.selectedObject == null && anObject != null) {
+		if (((this.selectedObject != null) && !this.selectedObject.equals(anObject)) || ((this.selectedObject == null) && (anObject != null))) {
 			this.selectedObject = anObject;
 			this.fireContentsChanged(this, -1, -1);
 		}
@@ -126,7 +127,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	@Override
 	public E getElementAt(final int index)
 	{
-		if (index >= 0 && index < this.objects.size()) {
+		if ((index >= 0) && (index < this.objects.size())) {
 			return this.objects.elementAt(index);
 		} else {
 			return null;
@@ -136,7 +137,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	/**
 	 * Returns the index-position of the specified object in the list.
 	 *
-	 * @param anObject
+	 * @param anObject the object to check
 	 * @return an int representing the index position, where 0 is
 	 *         the first position
 	 */
@@ -151,7 +152,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	{
 		this.objects.addElement(anObject);
 		this.fireIntervalAdded(this, this.objects.size() - 1, this.objects.size() - 1);
-		if (this.objects.size() == 1 && this.selectedObject == null && anObject != null) {
+		if ((this.objects.size() == 1) && (this.selectedObject == null) && (anObject != null)) {
 			this.setSelectedItem(anObject);
 		}
 	}
@@ -170,7 +171,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	{
 		if (this.getElementAt(index) == this.selectedObject) {
 			if (index == 0) {
-				this.setSelectedItem(this.getSize() == 1 ? null : this.getElementAt(index + 1));
+				this.setSelectedItem((this.getSize() == 1) ? null : this.getElementAt(index + 1));
 			} else {
 				this.setSelectedItem(this.getElementAt(index - 1));
 			}
@@ -196,7 +197,7 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	 */
 	public void removeAllElements()
 	{
-		if (this.objects.size() > 0) {
+		if (!this.objects.isEmpty()) {
 			final int lastIndex = this.objects.size() - 1;
 			this.objects.removeAllElements();
 			this.selectedObject = null;
@@ -207,18 +208,13 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 		}
 	}
 
-	public Vector<E> getAll()
+	public List<E> getAll()
 	{
-		return this.objects;
+		return Collections.unmodifiableList(this.objects);
 	}
 
 	public boolean hasIndex(final int index)
 	{
-		try {
-			this.objects.get(index);
-			return true;
-		} catch (ArrayIndexOutOfBoundsException ex) {
-			return false;
-		}
+		return (this.objects.size() > index) && (index > -1);
 	}
 }

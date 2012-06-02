@@ -20,7 +20,8 @@
 package org.chaosfisch.youtubeuploader.plugins.settingsplugin.view;
 
 import com.google.inject.Inject;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsViewComponent;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
@@ -29,7 +30,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
@@ -51,29 +51,30 @@ public class SettingsViewPanel
 
 	public SettingsViewPanel()
 	{
-		super();
 		this.initListeners();
 	}
 
 	public JPanel getJPanel()
 	{
-		final HashMap<String, Vector<SettingsViewComponent>> settingsViewComponentHashMap = this.settingsService.getMap();
+		final Map<String, Vector<SettingsViewComponent>> settingsViewComponentHashMap = this.settingsService.getMap();
 		final Dimension preferredSize = new Dimension(200, 20);
-		final FormLayout formLayout = new FormLayout("150 dlu, 20px, fill:pref:grow", "default, default, default, default, default, default"); //NON-NLS
+		final FormLayout formLayout = new FormLayout("150 dlu, 20px, fill:pref:grow", "default, 4px, default, 4px, default, 4px, default, 4px, default, 4px, default"); //NON-NLS
+		int i = 1;
 		for (final Map.Entry<String, Vector<SettingsViewComponent>> entry : settingsViewComponentHashMap.entrySet()) {
 			final String group = entry.getKey();
-			final Vector<SettingsViewComponent> viewComponentVector = entry.getValue();
+			final Iterable<SettingsViewComponent> viewComponentVector = entry.getValue();
 
-			final DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
+			final PanelBuilder builder = new PanelBuilder(formLayout);
 
 			for (final SettingsViewComponent settingsViewComponent : viewComponentVector) {
 				final JComponent component = settingsViewComponent.getComponent();
 				component.setPreferredSize(preferredSize);
-				builder.append(settingsViewComponent.getLabel(), component);
+				builder.add(new JLabel(settingsViewComponent.getLabel()), CC.xy(1, (i * 2) - 1), component, CC.xy(3, (i * 2) - 1));
+				i++;
 			}
 			final JPanel panel = builder.getPanel();
 			panel.setName(group);
-			this.settingsTabPanel.addTab(group.substring(0, 1).toUpperCase(Locale.getDefault()) + group.substring(1), panel);
+			this.settingsTabPanel.addTab(String.format("%s%s", group.substring(0, 1).toUpperCase(Locale.getDefault()), group.substring(1)), panel); //NON-NLS
 		}
 
 		return this.settingsPanel;
@@ -86,8 +87,8 @@ public class SettingsViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				for (int i = 0; i < SettingsViewPanel.this.settingsTabPanel.getTabCount(); i++) {
-					for (final Component component : ((JPanel) SettingsViewPanel.this.settingsTabPanel.getComponents()[i]).getComponents()) {
-						if (component instanceof JComponent && !(component instanceof JLabel)) {
+					for (final Component component : ((Container) SettingsViewPanel.this.settingsTabPanel.getComponents()[i]).getComponents()) {
+						if ((component instanceof JComponent) && !(component instanceof JLabel)) {
 
 							if (component instanceof JTextField) {
 								final JTextField jTextField = (JTextField) component;
@@ -95,7 +96,7 @@ public class SettingsViewPanel
 									SettingsViewPanel.this.settingsService.set(jTextField.getName(), jTextField.getText());
 								}
 							} else if (component instanceof JComboBox) {
-								final JComboBox jComboBox = (JComboBox) component;
+								final JComboBox<?> jComboBox = (JComboBox<?>) component;
 								if (!SettingsViewPanel.this.settingsService.get(jComboBox.getName(), "").equals(jComboBox.getSelectedItem().toString())) {
 									SettingsViewPanel.this.settingsService.set(jComboBox.getName(), jComboBox.getSelectedItem().toString());
 								}
@@ -128,14 +129,14 @@ public class SettingsViewPanel
 			{
 
 				for (int i = 0; i < SettingsViewPanel.this.settingsTabPanel.getTabCount(); i++) {
-					for (final Component component : ((JPanel) SettingsViewPanel.this.settingsTabPanel.getComponents()[i]).getComponents()) {
-						if (component instanceof JComponent && !(component instanceof JLabel)) {
+					for (final Component component : ((Container) SettingsViewPanel.this.settingsTabPanel.getComponents()[i]).getComponents()) {
+						if ((component instanceof JComponent) && !(component instanceof JLabel)) {
 
 							if (component instanceof JTextField) {
 								final JTextField jTextField = (JTextField) component;
 								jTextField.setText((String) SettingsViewPanel.this.settingsService.get(jTextField.getName(), jTextField.getText()));
 							} else if (component instanceof JComboBox) {
-								final JComboBox jComboBox = (JComboBox) component;
+								final JComboBox<?> jComboBox = (JComboBox<?>) component;
 								//TODO FINISH COMBOBOX
 							} else if (component instanceof JCheckBox) {
 								final JCheckBox jCheckBox = (JCheckBox) component;

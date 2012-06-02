@@ -23,7 +23,10 @@ import com.google.common.collect.Lists;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.table.RowTableModel;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,18 +40,14 @@ public class PluginController
 	private RowTableModel<Pluggable> pluginTableModel;
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); //NON-NLS
 
-	public PluginController()
-	{
-
-	}
-
-	public RowTableModel<Pluggable> getPluginTableModel(final Collection<Pluggable> pluggableList)
+	public RowTableModel<Pluggable> getPluginTableModel(final Iterable<Pluggable> pluggableList)
 	{
 		if (this.pluginTableModel == null) {
-			final List<String> columns = Arrays.asList(this.resourceBundle.getString("pluginTable.name"), this.resourceBundle.getString("pluginTable.author"), this.resourceBundle.getString(
-					"pluginTable.disableCheckbox"));
+			final List<String> columns = Arrays.asList(this.resourceBundle.getString("pluginTable.name"), this.resourceBundle.getString("pluginTable.author"), this.resourceBundle.getString("pluginTable.disableCheckbox"));
 			this.pluginTableModel = new RowTableModel<Pluggable>(Lists.newArrayList(pluggableList), columns, Pluggable.class)
 			{
+				private static final long serialVersionUID = 3423121373666600098L;
+
 				@Override public Object getValueAt(final int rowIndex, final int columnIndex)
 				{
 					switch (columnIndex) {

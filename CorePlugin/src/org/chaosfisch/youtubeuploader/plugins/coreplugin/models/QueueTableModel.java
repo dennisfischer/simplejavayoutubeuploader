@@ -22,6 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.util.ProgressbarTableCellRenderer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
@@ -29,7 +30,6 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadFailed;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadProgress;
 
-import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,80 +41,42 @@ import java.util.*;
  * Time: 21:11
  * To change this template use File | Settings | File Templates.
  */
-public class QueueTableModel extends AbstractTableModel
+public class QueueTableModel extends RowTableModel<Queue>
 {
-	private static final String              HH_MM_DD_MM_YYYY = "HH:mm dd-MM-yyyy"; //NON-NLS
-	private final        IdentityList<Queue> queues           = new IdentityList<Queue>();
-	private final        ResourceBundle      resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
-	private final        String[]            columns          = {this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"), this.resourceBundle.getString(
-			"table.columns.file"), this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"), this.resourceBundle.getString(
-			"table.columns.status"), this.resourceBundle.getString("table.columns.progress")};
+	private static final String         HH_MM_DD_MM_YYYY = "HH:mm dd-MM-yyyy"; //NON-NLS
+	private static final long           serialVersionUID = -9087761536188585440L;
+	private final        ResourceBundle resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin", Locale.getDefault()); //NON-NLS
 
 	public QueueTableModel()
 	{
-		super();
-		AnnotationProcessor.process(this);
+		this(Collections.<Queue>emptyList());
 	}
 
-	public QueueTableModel(final List<Queue> l)
+	public QueueTableModel(final Iterable<Queue> queues)
 	{
-		super();
-		AnnotationProcessor.process(this);
-		this.queues.addAll(l);
-	}
+		super(Queue.class);
+		this.setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"), this.resourceBundle.getString("table.columns.file"),
+																			this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"), this.resourceBundle.getString("table.columns.status"),
+																			this.resourceBundle.getString("table.columns.progress")));
 
-	void addQueueEntry(final Queue q)
-	{
-		this.queues.add(q);
-		this.fireTableDataChanged();
-	}
-
-	public void addQueueEntryList(final List l)
-	{
-		for (final Object o : l) {
-			if (o instanceof Queue) {
-				this.addQueueEntry((Queue) o);
-			}
+		for (final Queue queue : queues) {
+			this.addRow(queue);
 		}
-	}
-
-	public Queue getQueueEntryAt(final int row)
-	{
-		return this.queues.get(row);
-	}
-
-	public Queue removeQueueEntryAt(final int row)
-	{
-		final Queue element = this.queues.remove(row);
-		this.fireTableDataChanged();
-		return element;
-	}
-
-	@Override
-	public int getRowCount()
-	{
-		if (this.queues == null) {
-			return 0;
-		}
-		return this.queues.size();
-	}
-
-	@Override
-	public int getColumnCount()
-	{
-		return this.columns.length;
-	}
-
-	@Override
-	public String getColumnName(final int col)
-	{
-		return this.columns[col];
+		this.setColumnClass(0, Integer.class);
+		this.setColumnClass(1, String.class);
+		this.setColumnClass(2, String.class);
+		this.setColumnClass(3, String.class);
+		this.setColumnClass(4, String.class);
+		this.setColumnClass(5, String.class);
+		this.setColumnClass(6, ProgressbarTableCellRenderer.class);
+		this.setModelEditable(false);
+		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Queue queue = this.queues.get(row);
+		final Queue queue = this.getRow(row);
 		switch (col) {
 			case 0:
 				return queue.getIdentity();
@@ -126,19 +88,19 @@ public class QueueTableModel extends AbstractTableModel
 				if (queue.started == null) {
 					return "";
 				} else {
-					return new SimpleDateFormat(HH_MM_DD_MM_YYYY, Locale.getDefault()).format(queue.started);
+					return new SimpleDateFormat(QueueTableModel.HH_MM_DD_MM_YYYY, Locale.getDefault()).format(queue.started);
 				}
 			case 4:
 				if (queue.eta == null) {
 					return "";
 				} else {
-					return new SimpleDateFormat(HH_MM_DD_MM_YYYY, Locale.getDefault()).format(queue.eta);
+					return new SimpleDateFormat(QueueTableModel.HH_MM_DD_MM_YYYY, Locale.getDefault()).format(queue.eta);
 				}
 			case 5:
 				if (queue.status != null) {
 					return queue.status;
 				} else if (queue.archived) {
-					return this.resourceBundle.getString("table.columns.status.finished") + " http://youtu.be/" + queue.videoId;
+					return String.format("%s http://youtu.be/%s", this.resourceBundle.getString("table.columns.status.finished"), queue.videoId);//NON-NLS
 				} else if (queue.inprogress) {
 					return this.resourceBundle.getString("table.columns.status.inprogress");
 				} else {
@@ -152,32 +114,9 @@ public class QueueTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public Class getColumnClass(final int col)
-	{
-		switch (col) {
-			case 0:
-				return Integer.class;
-			case 1:
-				return String.class;
-			case 2:
-				return String.class;
-			case 3:
-				return String.class;
-			case 4:
-				return String.class;
-			case 5:
-				return String.class;
-			case 6:
-				return ProgressbarTableCellRenderer.class;
-			default:
-				return null;
-		}
-	}
-
-	@Override
 	public void setValueAt(final Object value, final int row, final int col)
 	{
-		final Queue queue = this.queues.get(row);
+		final Queue queue = this.getRow(row);
 		final Calendar calendar;
 		switch (col) {
 			case 0:
@@ -210,138 +149,104 @@ public class QueueTableModel extends AbstractTableModel
 		this.fireTableCellUpdated(row, col);
 	}
 
-	public boolean hasQueueEntryAt(final int selectedRow)
-	{
-		return this.queues.size() >= selectedRow && selectedRow != -1;
-	}
-
-	public List<Queue> getQueueList()
-	{
-		return new ArrayList<Queue>(this.queues);
-	}
-
-	public void removeAll()
-	{
-		final Iterator iterator = this.queues.iterator();
-		while (iterator.hasNext()) {
-			iterator.next();
-			iterator.remove();
-			this.fireTableDataChanged();
-		}
-	}
-
-	public void removeQueueEntry(final Queue queue)
-	{
-		this.queues.remove(queue);
-		this.fireTableDataChanged();
-	}
-
 	public void sortQueueEntry(final Queue queue, final QueuePosition queuePosition)
 	{
+		if (!this.modelData.contains(queue)) {
+			return;
+		}
+
 		switch (queuePosition) {
 
 			case QUEUE_TOP:
-				this.queues.remove(queue);
-				this.queues.add(0, queue);
+				this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), 0);
 				break;
 			case QUEUE_UP:
-				final int prePostionUp = this.queues.indexOf(queue);
-				this.queues.remove(queue);
-				if (prePostionUp - 1 >= 0) {
-					this.queues.add(prePostionUp - 1, queue);
-				} else {
-					this.queues.add(prePostionUp, queue);
+				if ((this.modelData.indexOf(queue) - 1) > -1) {
+					this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.modelData.indexOf(queue) - 1);
 				}
 				break;
 			case QUEUE_DOWN:
-				final int prePostionDown = this.queues.indexOf(queue);
-				if (prePostionDown + 1 < this.queues.size()) {
-					this.queues.remove(queue);
-					this.queues.add(prePostionDown + 1, queue);
+				if ((this.modelData.indexOf(queue) + 1) < this.getRowCount()) {
+					this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.modelData.indexOf(queue) + 1);
 				}
 				break;
 			case QUEUE_BOTTOM:
-				this.queues.remove(queue);
-				this.queues.add(this.queues.size(), queue);
+				this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.getRowCount() - 1);
 				break;
 		}
 		this.fireTableDataChanged();
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
 	public void onQueueEntryAdded(final String topic, final Queue queue)
 	{
-		this.addQueueEntry(queue);
+		this.addRow(queue);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
 	public void onQueueEntryRemoved(final String topic, final Queue queue)
 	{
-		this.removeQueueEntry(queue);
+		this.removeElement(queue);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_UPDATED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_UPDATED)
 	public void onQueueEntryUpdated(final String topic, final Queue queue)
 	{
-		if (this.queues.contains(queue)) {
-			this.queues.set(this.queues.indexOf(queue), queue);
-			this.fireTableDataChanged();
+		if (this.modelData.contains(queue)) {
+			this.replaceRow(this.modelData.indexOf(queue), queue);
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
 	public void onUploadStart(final String topic, final Queue queue)
 	{
-		if (this.queues.contains(queue)) {
-			final int index = this.queues.indexOf(queue);
+		if (this.modelData.contains(queue)) {
+			final int index = this.modelData.indexOf(queue);
 			this.setValueAt(queue.started.getTime(), index, 3);
 			this.setValueAt(this.resourceBundle.getString("uploadStarting"), index, 5);
-			EventBus.publish("updateQueue", queue); //NON-NLS
+			EventBus.publish("update", queue); //NON-NLS
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_PROGRESS)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_PROGRESS)
 	public void onUploadProgress(final String topic, final UploadProgress uploadProgress)
 	{
-		if (this.queues.contains(uploadProgress.getQueue()))
+		if (this.modelData.contains(uploadProgress.getQueue()))
 
 		{
-			final int index = this.queues.indexOf(uploadProgress.getQueue());
+			final int index = this.modelData.indexOf(uploadProgress.getQueue());
 
 			if (uploadProgress.getFileSize() == uploadProgress.getTotalBytesUploaded()) {
 				final Queue queue = uploadProgress.getQueue();
 				queue.archived = true;
 				queue.inprogress = false;
 				queue.status = null;
-				this.queues.set(index, queue);
+				this.modelData.set(index, queue);
 				this.setValueAt(Calendar.getInstance().getTimeInMillis(), index, 4);
 				this.setValueAt(100, index, 6);
 				this.fireTableDataChanged();
 			} else {
 
-				final int percent = (int) Math.round(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize() * 100);
+				final int percent = (int) Math.round((uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize()) * 100);
 
-				final long eta = (long) (Calendar.getInstance().getTimeInMillis() + ((Calendar.getInstance().getTimeInMillis() - uploadProgress.getQueue()
+				final long eta = (long) (Calendar.getInstance().getTimeInMillis() + (((Calendar.getInstance().getTimeInMillis() - uploadProgress.getQueue()
 						.started
-						.getTime()) / uploadProgress.getTotalBytesUploaded() * (uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded())));
+						.getTime()) / uploadProgress.getTotalBytesUploaded()) * (uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded())));
 
 				final double speed = uploadProgress.getDiffBytes() / 1024 / uploadProgress.getDiffTime();
 
 				this.setValueAt(eta, index, 4);
-				//noinspection StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation,StringConcatenation
-				this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadProgressMessage"), (int) uploadProgress.getTotalBytesUploaded() / 1048576,
-				                                     (int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
+				this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadProgressMessage"), (int) uploadProgress.getTotalBytesUploaded() / 1048576, (int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
 				this.setValueAt(percent, index, 6);
 			}
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
 	public void onUploadFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		if (this.queues.contains(uploadFailed.getQueue())) {
-			final int index = this.queues.indexOf(uploadFailed.getQueue());
-			//noinspection StringConcatenation
+		if (this.modelData.contains(uploadFailed.getQueue())) {
+			final int index = this.modelData.indexOf(uploadFailed.getQueue());
 			this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
 		}
 	}

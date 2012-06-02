@@ -62,10 +62,10 @@ public class ThrottledOutputStream extends FilterOutputStream
 		this.bytes += len;
 		final long elapsed = Math.max(System.currentTimeMillis() - this.start, 1);
 
-		final long bps = this.bytes * 1000L / elapsed;
-		if (this.maxBps != 0 && bps > this.maxBps) {
+		final long bps = (this.bytes * 1000L) / elapsed;
+		if ((this.maxBps != 0) && (bps > this.maxBps)) {
 			// Oops, sending too fast.
-			final long wakeElapsed = this.bytes * 1000L / this.maxBps;
+			final long wakeElapsed = (this.bytes * 1000L) / this.maxBps;
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
 			} catch (InterruptedException ignored) {

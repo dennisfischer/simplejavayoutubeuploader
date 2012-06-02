@@ -33,26 +33,22 @@ import java.util.Map;
 public class PluginManagerImpl implements PluginManager
 {
 	private               Map<String, Pluggable> plugins;
-	private @InjectLogger Logger                 logger;
-	private @Inject       PluginLoader           pluginLoader;
-
-	public PluginManagerImpl()
-	{
-	}
+	@InjectLogger private Logger                 logger;
+	@Inject private       PluginLoader           pluginLoader;
 
 	@Override
-	public Collection<Pluggable> loadPlugins(final String[] disabledPlugins)
+	public Collection<Pluggable> loadPlugins(final String... disabledPlugins)
 	{
-		this.logger.info("Loading Plugins...: Disabled -> %s");
+		this.logger.info("Loading Plugins...: Disabled -> %s"); //NON-NLS
 		this.plugins = this.pluginLoader.loadPlugins(Arrays.asList(disabledPlugins));
 
-		this.logger.info("Checking dependencies...");
+		this.logger.info("Checking dependencies..."); //NON-NLS
 		for (Iterator<Map.Entry<String, Pluggable>> i = this.plugins.entrySet().iterator(); i.hasNext(); ) {
 			final Map.Entry<String, Pluggable> entry = i.next();
-			this.logger.info(String.format("Checking dependencies of %s", entry.getValue().getClass().getName()));
+			this.logger.info(String.format("Checking dependencies of %s", entry.getValue().getClass().getName()));//NON-NLS
 			for (final String dependency : entry.getValue().getDependencies()) {
 				if (!this.plugins.containsKey(dependency)) {
-					this.logger.info(String.format("Missing dependency: %s <- %s", dependency, entry.getValue().getClass().getName()));
+					this.logger.info(String.format("Missing dependency: %s <- %s", dependency, entry.getValue().getClass().getName())); //NON-NLS
 					i.remove();
 					break;
 				}

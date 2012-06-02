@@ -43,9 +43,10 @@ import org.pushingpixels.substance.api.skin.*;
  */
 public class LookAndFeels extends DesignMap
 {
+	private static final long serialVersionUID = 2119730730764578776L;
+
 	public LookAndFeels()
 	{
-		super();
 
 		this.add(new DesignImpl(SubstanceAutumnLookAndFeel.class, "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS
 		this.add(new DesignImpl(SubstanceBusinessBlackSteelLookAndFeel.class, "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS

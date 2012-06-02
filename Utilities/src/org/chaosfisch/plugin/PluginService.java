@@ -23,7 +23,6 @@ import org.chaosfisch.plugin.ExtensionPoints.ExtensionPoint;
 
 import java.io.File;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +37,7 @@ public interface PluginService
 
 	void registerExtension(String type, ExtensionPoint extension);
 
-	Vector<ExtensionPoint> getExtensions(String extensionType);
+	Iterable<ExtensionPoint> getExtensions(String extensionType);
 
 	File getPluginDataDirectory();
 }

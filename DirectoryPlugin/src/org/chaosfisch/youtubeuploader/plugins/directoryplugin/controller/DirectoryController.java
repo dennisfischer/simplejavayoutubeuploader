@@ -39,11 +39,6 @@ public class DirectoryController
 	@Inject private DirectoryService    directoryService;
 	@Inject private PresetService       presetService;
 
-	public DirectoryController()
-	{
-
-	}
-
 	public void run()
 	{
 		for (final Directory directory : this.directoryService.getAll()) {

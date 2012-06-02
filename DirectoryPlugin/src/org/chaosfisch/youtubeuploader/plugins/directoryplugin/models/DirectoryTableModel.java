@@ -27,7 +27,6 @@ import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.Direc
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -39,22 +38,25 @@ import java.util.ResourceBundle;
  */
 public class DirectoryTableModel extends RowTableModel<Directory>
 {
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
+	private static final long serialVersionUID = 3730645697933907437L;
 
 	public DirectoryTableModel()
 	{
 		this(Collections.<Directory>emptyList());
 	}
 
-	public DirectoryTableModel(final List<Directory> directories)
+	public DirectoryTableModel(final Iterable<Directory> directories)
 	{
 		super(Directory.class);
-		this.setDataAndColumnNames(new IdentityList<Directory>(), Arrays.asList(this.resourceBundle.getString("button.selectButton"), this.resourceBundle.getString("directorytable.presetLabel"),
-		                                                                        this.resourceBundle.getString("directorytable.activeLabel")));
+		final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin");//NON-NLS
+		this.setDataAndColumnNames(new IdentityList<Directory>(), Arrays.asList(resourceBundle.getString("button.selectButton"), resourceBundle.getString("directorytable.presetLabel"), resourceBundle.getString("directorytable.activeLabel")));
 
 		for (final Directory directory : directories) {
 			this.addRow(directory);
 		}
+
+		this.setColumnClass(0, String.class);
+		this.setColumnClass(1, String.class);
 		this.setColumnClass(2, Boolean.class);
 		this.setModelEditable(false);
 		AnnotationProcessor.process(this);
@@ -76,19 +78,15 @@ public class DirectoryTableModel extends RowTableModel<Directory>
 		}
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ADDED)
+	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ADDED)
 	public void onDirectoryAdded(final String topic, final Directory directory)
 	{
 		this.addRow(directory);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED)
+	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED)
 	public void onDirectoryRemoved(final String topic, final Directory directory)
 	{
-		if (this.modelData.contains(directory)) {
-			final int row = this.modelData.indexOf(directory);
-			this.modelData.remove(directory);
-			this.fireTableRowsDeleted(row, row);
-		}
+		this.removeElement(directory);
 	}
 }

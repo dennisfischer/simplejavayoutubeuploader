@@ -23,11 +23,14 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ListTableModel extends RowTableModel<List>
+public class ListTableModel extends RowTableModel<List<Object>>
 {
+	private static final long serialVersionUID = -5104035525413191687L;
+
 	/**
 	 * Initialize the List with null values. This will set the size of the
 	 * List and will prevent an IndexOutOfBoundsException when trying to
@@ -37,7 +40,7 @@ public class ListTableModel extends RowTableModel<List>
 	 */
 	protected static List<String> newList(final int size)
 	{
-		final ArrayList<String> list = new ArrayList<String>(size);
+		final List<String> list = new ArrayList<String>(size);
 
 		for (int i = 0; i < size; i++) {
 			list.add(null);
@@ -47,23 +50,23 @@ public class ListTableModel extends RowTableModel<List>
 	}
 
 	/**
-	 * Constructs an empty <code>ListTableModel</code> with default
-	 * column names for the specified number of <code>columns</code>.
+	 * Constructs an empty {@code ListTableModel} with default
+	 * column names for the specified number of {@code columns}.
 	 *
 	 * @param columns the number of columns the table holds
 	 */
 	public ListTableModel(final int columns)
 	{
-		super(newList(columns));
+		super(ListTableModel.newList(columns));
 		this.setRowClass(List.class);
 	}
 
 	/**
-	 * Constructs an empty <code>ListTableModel</code> with customized
+	 * Constructs an empty {@code ListTableModel} with customized
 	 * column names. The number of columns is determined bye the
-	 * number of items in the <code>columnNames</code> List.
+	 * number of items in the {@code columnNames} List.
 	 *
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 */
 	public ListTableModel(final List<String> columnNames)
@@ -73,69 +76,103 @@ public class ListTableModel extends RowTableModel<List>
 	}
 
 	/**
-	 * Constructs a <code>ListTableModel</code> with the specified number
+	 * Constructs a {@code ListTableModel} with the specified number
 	 * of rows. Default column names will be used for the specified number
-	 * of <code>columns</code>.
+	 * of {@code columns}.
 	 *
 	 * @param rows    the number of initially empty rows to create
 	 * @param columns the number of columns the table holds
 	 */
 	public ListTableModel(final int rows, final int columns)
 	{
-		super(newList(columns));
+		super(ListTableModel.newList(columns));
 		this.setRowClass(List.class);
 
-		final List<List> data = new ArrayList<List>(rows);
+		final List<List<Object>> data = new ArrayList<List<Object>>(rows);
 
-		for (int i = 0; i < rows; i++)
-			data.add(new ArrayList(columns));
+		for (int i = 0; i < rows; i++) {
+			data.add(new ArrayList<Object>(columns));
+		}
 
 		this.insertRows(0, data);
 	}
 
 	/**
-	 * Constructs a <code>ListTableModel</code> with initial data and
+	 * Constructs a {@code ListTableModel} with initial data and
 	 * customized column names.
 	 * <p/>
-	 * Each item in the <code>modelData</code> List must also be a List Object
+	 * Each item in the {@code modelData} List must also be a List Object
 	 * containing items for each column of the row.
 	 * <p/>
-	 * Each column's name will be taken from the <code>columnNames</code>
+	 * Each column's name will be taken from the {@code columnNames}
 	 * List and the number of colums is determined by thenumber of items
-	 * in the <code>columnNames</code> List.
+	 * in the {@code columnNames} List.
 	 *
 	 * @param modelData   the data of the table
-	 * @param columnNames <code>List</code> containing the names
+	 * @param columnNames {@code List} containing the names
 	 *                    of the new columns
 	 */
-	public ListTableModel(final List<List> modelData, final List<String> columnNames)
+	public ListTableModel(final List<List<Object>> modelData, final List<String> columnNames)
 	{
 		super(modelData, columnNames);
 		this.setRowClass(List.class);
+	}
+
+	/*
+		 *  Convert an unformatted column name to a formatted column name. That is:
+		 *
+		 *  - insert a space when a new uppercase character is found, insert
+		 *    multiple upper case characters are grouped together.
+		 *  - replace any "_" with a space
+		 *
+		 *  @param columnName  unformatted column name
+		 *  @return the formatted column name
+		 */
+	public static String formatColumnName(final String columnName)
+	{
+		if (columnName.length() < 3) {
+			return columnName;
+		}
+
+		final StringBuilder buffer = new StringBuilder(columnName);
+		boolean isPreviousLowerCase = false;
+
+		for (int i = 1; i < buffer.length(); i++) {
+			final boolean isCurrentUpperCase = Character.isUpperCase(buffer.charAt(i));
+
+			if (isCurrentUpperCase && isPreviousLowerCase) {
+				buffer.insert(i, " ");
+				i++;
+			}
+
+			isPreviousLowerCase = !isCurrentUpperCase;
+		}
+
+		return buffer.toString().replaceAll("_", " ");
 	}
 //
 //  Implement the TableModel interface
 //
 
 	/**
-	 * Returns an attribute value for the cell at <code>row</code>
-	 * and <code>column</code>.
+	 * Returns an attribute value for the cell at {@code row}
+	 * and {@code column}.
 	 *
 	 * @param row    the row whose value is to be queried
 	 * @param column the column whose value is to be queried
-	 * @throws IndexOutOfBoundsException if an invalid row or column was given
 	 * @return the value Object at the specified cell
+	 * @throws IndexOutOfBoundsException if an invalid row or column was given
 	 */
 	public Object getValueAt(final int row, final int column)
 	{
-		final List rowData = this.getRow(row);
+		final List<Object> rowData = this.getRow(row);
 		return rowData.get(column);
 	}
 
 	/**
-	 * Sets the object value for the cell at <code>column</code> and
-	 * <code>row</code>.  <code>value</code> is the new value.  This method
-	 * will generate a <code>tableChanged</code> notification.
+	 * Sets the object value for the cell at {@code column} and
+	 * {@code row}.  {@code value} is the new value.  This method
+	 * will generate a {@code tableChanged} notification.
 	 *
 	 * @param value  the new value; this can be null
 	 * @param row    the row whose value is to be changed
@@ -143,39 +180,39 @@ public class ListTableModel extends RowTableModel<List>
 	 * @throws IndexOutOfBoundsException if an invalid row or
 	 *                                   column was given
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	public void setValueAt(final Object value, final int row, final int column)
 	{
-		final List rowData = this.getRow(row);
+		final List<Object> rowData = this.getRow(row);
 		rowData.set(column, value);
 		this.fireTableCellUpdated(row, column);
 	}
 
 	/**
-	 * Insert a row of data at the <code>row</code> location in the model.
+	 * Insert a row of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row     row in the model where the data will be inserted
 	 * @param rowData data of the row being added
 	 */
 	@Override
-	public void insertRow(final int row, final List rowData)
+	public void insertRow(final int row, final List<Object> rowData)
 	{
 		this.justifyRow(rowData);
 		super.insertRow(row, rowData);
 	}
 
 	/**
-	 * Insert multiple rows of data at the <code>row</code> location in the model.
+	 * Insert multiple rows of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row     row in the model where the data will be inserted
 	 * @param rowList each item in the list is a separate row of data
 	 */
 	@Override
-	public void insertRows(final int row, final List<List> rowList)
+	public void insertRows(final int row, final List<List<Object>> rowList)
 	{
-		for (final List rowData : rowList) {
+		for (final List<Object> rowData : rowList) {
 			this.justifyRow(rowData);
 		}
 
@@ -186,7 +223,7 @@ public class ListTableModel extends RowTableModel<List>
 	 *  Make sure each List row contains the required number of columns.
 	 */
 	@SuppressWarnings("unchecked")
-	private void justifyRow(final List rowData)
+	private void justifyRow(final Collection<Object> rowData)
 	{
 		for (int i = rowData.size(); i < this.getColumnCount(); i++) {
 			rowData.add(null);
@@ -199,25 +236,25 @@ public class ListTableModel extends RowTableModel<List>
 	 *
 	 * @param rowData data of the row being added
 	 */
-	public void addRow(final Object[] rowData)
+	public void addRow(final Object... rowData)
 	{
 		this.insertRow(this.getRowCount(), rowData);
 	}
 
 	/**
-	 * Insert a row of data at the <code>row</code> location in the model.
+	 * Insert a row of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row     row in the model where the data will be inserted
 	 * @param rowData data of the row being added
 	 */
-	public void insertRow(final int row, final Object[] rowData)
+	public void insertRow(final int row, final Object... rowData)
 	{
 		this.insertRow(row, this.copyToList(rowData));
 	}
 
 	/**
-	 * Insert multiple rows of data at the <code>row</code> location in the model.
+	 * Insert multiple rows of data at the {@code row} location in the model.
 	 * Notification of the row being added will be generated.
 	 *
 	 * @param row      row in the model where the data will be inserted
@@ -225,9 +262,9 @@ public class ListTableModel extends RowTableModel<List>
 	 */
 	public void insertRows(final int row, final Object[][] rowArray)
 	{
-		final List<List> data = new ArrayList<List>(rowArray.length);
+		final List<List<Object>> data = new ArrayList<List<Object>>(rowArray.length);
 
-		for (Object[] aRowArray : rowArray) {
+		for (final Object[] aRowArray : rowArray) {
 			data.add(this.copyToList(aRowArray));
 		}
 
@@ -238,7 +275,7 @@ public class ListTableModel extends RowTableModel<List>
 	 *  Copy the information in the Array to a List so a List can be added
 	 *  to the model
 	 */
-	private List copyToList(final Object[] rowData)
+	private List<Object> copyToList(final Object... rowData)
 	{
 		final List<Object> row = new ArrayList<Object>(rowData.length);
 
@@ -255,8 +292,8 @@ public class ListTableModel extends RowTableModel<List>
 	 * ResultSet. The class of
 	 *
 	 * @param resultSet ResultSet containing results of a database query
-	 * @throws SQLException when an SQL error is encountered
 	 * @return a newly created ListTableModel
+	 * @throws SQLException when an SQL error is encountered
 	 */
 	public static ListTableModel createModelFromResultSet(final ResultSet resultSet) throws SQLException
 	{
@@ -265,14 +302,15 @@ public class ListTableModel extends RowTableModel<List>
 
 		//  Create empty model using the column names
 
-		final ArrayList<String> columnNames = new ArrayList<String>();
+		final ArrayList<String> columnNames = new ArrayList<String>(columns);
 
 		for (int i = 1; i <= columns; i++) {
 			final String columnName = metaData.getColumnName(i);
 			final String columnLabel = metaData.getColumnLabel(i);
 
+			//noinspection CallToStringEquals
 			if (columnLabel.equals(columnName)) {
-				columnNames.add(formatColumnName(columnName));
+				columnNames.add(ListTableModel.formatColumnName(columnName));
 			} else {
 				columnNames.add(columnLabel);
 			}
@@ -287,16 +325,17 @@ public class ListTableModel extends RowTableModel<List>
 			try {
 				final String className = metaData.getColumnClassName(i);
 				model.setColumnClass(i - 1, Class.forName(className));
-			} catch (Exception ignored) {
+			} catch (ClassNotFoundException ignored) {
+			} catch (SQLException ignored) {
 			}
 		}
 
 		//  Get row data
 
-		final ArrayList<List> data = new ArrayList<List>();
+		final List<List<Object>> data = new ArrayList<List<Object>>(resultSet.getFetchSize());
 
 		while (resultSet.next()) {
-			final ArrayList<Object> row = new ArrayList<Object>(columns);
+			final List<Object> row = new ArrayList<Object>(columns);
 
 			for (int i = 1; i <= columns; i++) {
 				final Object o = resultSet.getObject(i);

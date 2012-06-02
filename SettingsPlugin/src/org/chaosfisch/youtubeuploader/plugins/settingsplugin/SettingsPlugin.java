@@ -63,7 +63,7 @@ public class SettingsPlugin implements Pluggable
 
 	@Override public String[] getDependencies()
 	{
-		return DEPENDENCIES;
+		return SettingsPlugin.DEPENDENCIES;
 	}
 
 	@Override public void init()

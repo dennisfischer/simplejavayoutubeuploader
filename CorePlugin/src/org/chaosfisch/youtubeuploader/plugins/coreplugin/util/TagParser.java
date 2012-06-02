@@ -26,13 +26,13 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
  * Time: 16:40
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings({"CallToStringEquals", "MagicCharacter"})
+@SuppressWarnings({"MagicCharacter"})
 public class TagParser
 {
-	private static final char    DELIMITER       = ' ';
-	private static final char    BLOCK_DELIMITER = '"';
+	private static final char DELIMITER       = ' ';
+	private static final char BLOCK_DELIMITER = '"';
 	@SuppressWarnings("StaticNonFinalField")
-	private static       boolean blockOpen       = false;
+	private static boolean blockOpen;
 
 	public static String parseAll(String input)
 	{
@@ -42,16 +42,16 @@ public class TagParser
 		String parsedOutput = "";
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
-				case BLOCK_DELIMITER:
-					blockOpen = !blockOpen;
+				case TagParser.BLOCK_DELIMITER:
+					TagParser.blockOpen = !TagParser.blockOpen;
 					parsedOutput += "\"";
-					if (blockOpen) {
+					if (TagParser.blockOpen) {
 						break;
 					}
-				case DELIMITER:
-					if (blockOpen) {
+				case TagParser.DELIMITER:
+					if (TagParser.blockOpen) {
 						parsedOutput += input.charAt(i);
-					} else if (parsedOutput.lastIndexOf(',') != parsedOutput.length() && i + 1 != input.length()) {
+					} else if ((parsedOutput.lastIndexOf(',') != parsedOutput.length()) && ((i + 1) != input.length())) {
 						parsedOutput += ",";
 					}
 					break;
@@ -60,7 +60,7 @@ public class TagParser
 					break;
 			}
 		}
-		return removeInvalid(parsedOutput.trim());
+		return TagParser.removeInvalid(parsedOutput.trim());
 	}
 
 	private static String removeInvalid(final String parsedOutput)
@@ -88,16 +88,15 @@ public class TagParser
 		return stringBuilder.toString();
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isValid(final String input)
 	{
-		final String parsed = parseAll(input);
-		if (parsed.length() > 500 || parsed.contains("<") || parsed.contains(">")) {
+		final String parsed = TagParser.parseAll(input);
+		if ((parsed.length() > 500) || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
-			if (tag.length() > 30 || tag.length() < 2) {
+			if ((tag.length() > 30) || (tag.length() < 2)) {
 				return false;
 			}
 		}

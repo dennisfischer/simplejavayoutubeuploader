@@ -32,9 +32,7 @@ import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +46,7 @@ public class DesignManager
 	private final Map<String, Design> designMap = new HashMap<String, Design>(50);
 	@InjectLogger private Logger          logger;
 	@Inject               SettingsService settingsService;
-	public static final String UPDATE_UI = "onUpdateUI";
+	public static final String UPDATE_UI = "onUpdateUI"; //NON-NLS
 
 	public DesignManager()
 	{
@@ -58,16 +56,16 @@ public class DesignManager
 	public void run()
 	{
 		this.logger.debug("Loading designMaps"); //NON-NLS
-		final ResourceFinder finder = new ResourceFinder("META-INF/services/");
+		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
 			final List<Class> classes = finder.findAllImplementations(DesignMap.class);
 
 			this.logger.debug("Parsing designMaps"); //NON-NLS
-			for (final Class mapList : classes) {
+			for (final Class<?> mapList : classes) {
 				this.logger.debug("Parsing designs of designMap"); //NON-NLS
 				for (final Design design : (DesignMap) mapList.newInstance()) {
 					this.logger.debug("Design found"); //NON-NLS
-					if (design.getShortName() != null && design.getName() != null) {
+					if ((design.getShortName() != null) && (design.getName() != null)) {
 						//noinspection StringConcatenation
 						this.logger.debug("Adding Design " + design.getName()); //NON-NLS
 						this.designMap.put(design.getName(), design);
@@ -92,7 +90,7 @@ public class DesignManager
 			this.logger.debug("Design not found: " + lookAndFeel); //NON-NLS
 			return null;
 		}
-		return DesignManager.this.designMap.get(lookAndFeel);
+		return this.designMap.get(lookAndFeel);
 	}
 
 	public void changeDesign(final String design)
@@ -141,9 +139,21 @@ public class DesignManager
 
 	public void registerSettingsExtension()
 	{
-		final DefaultComboBoxModel desingListModel = new DefaultComboBoxModel();
-		for (final Design design : this.designMap.values()) {
-			if (design.getShortName() != null && design.getName() != null) {
+		final MutableComboBoxModel<Design> desingListModel = new DefaultComboBoxModel<Design>();
+		final List<Design> designCollection = new ArrayList<Design>(this.designMap.size());
+		designCollection.addAll(this.designMap.values());
+		Collections.sort(designCollection, new Comparator<Object>()
+		{
+			@Override public int compare(final Object o1, final Object o2)
+			{
+				final Design design_1 = (Design) o1;
+				final Design design_2 = (Design) o2;
+
+				return design_1.getName().compareTo(design_2.getName());
+			}
+		});
+		for (final Design design : designCollection) {
+			if ((design.getShortName() != null) && (design.getName() != null)) {
 				desingListModel.addElement(design);
 			}
 		}
@@ -154,9 +164,10 @@ public class DesignManager
 	@EventTopicSubscriber(topic = SettingsService.SETTINGS_SAVED)
 	public void onDesignChanged(final String topic, final String o)
 	{
+		//noinspection CallToStringEquals,CallToStringEquals
 		if (o.equals("application.general.laf")) {
 			this.changeDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
-			EventBus.publish(UPDATE_UI, null);
+			EventBus.publish(DesignManager.UPDATE_UI, null);
 		}
 	}
 }

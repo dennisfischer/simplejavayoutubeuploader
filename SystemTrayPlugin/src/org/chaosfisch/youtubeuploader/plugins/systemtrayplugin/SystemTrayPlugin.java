@@ -35,9 +35,9 @@ import java.util.ResourceBundle;
 public class SystemTrayPlugin implements Pluggable
 {
 	private static final String[] DEPENDENCIES = new String[0];
-	@Inject private                             PluginService pluginService;
-	@Inject @Named(value = "mainFrame") private JFrame        mainFrame;
-	private                                     TrayIcon      trayIcon;
+	@Inject private                     PluginService pluginService;
+	@Inject @Named("mainFrame") private JFrame        mainFrame;
+	private                             TrayIcon      trayIcon;
 	public static final String MESSAGE = "onMessage"; //NON-NLS
 
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.systemtrayplugin.resources.systemtrayplugin"); //NON-NLS
@@ -49,7 +49,7 @@ public class SystemTrayPlugin implements Pluggable
 
 	@Override public String[] getDependencies()
 	{
-		return DEPENDENCIES;
+		return SystemTrayPlugin.DEPENDENCIES;
 	}
 
 	@Override public String getAuthor()
@@ -128,8 +128,7 @@ public class SystemTrayPlugin implements Pluggable
 				@Override
 				public void windowIconified(final WindowEvent e)
 				{
-					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"), SystemTrayPlugin.this.resourceBundle.getString(
-							"applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
+					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"), SystemTrayPlugin.this.resourceBundle.getString("applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
 					SystemTrayPlugin.this.mainFrame.setVisible(false);
 				}
 			});

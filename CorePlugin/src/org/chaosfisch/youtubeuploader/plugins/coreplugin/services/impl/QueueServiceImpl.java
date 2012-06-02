@@ -21,11 +21,11 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.QueueMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.mybatis.guice.transactional.Transactional;
-import org.mybatis.mappers.QueueMapper;
 
 import java.util.List;
 
@@ -40,31 +40,53 @@ public class QueueServiceImpl implements QueueService
 {
 	@Inject private QueueMapper queueMapper;
 
-	@Transactional @Override public Queue createQueue(final Queue queue)
+	@Transactional @Override public Queue create(final Queue queue)
 	{
 		queue.sequence = this.queueMapper.countQueued();
 		this.queueMapper.createQueue(queue);
-		EventBus.publish(QUEUE_ENTRY_ADDED, queue);
+		EventBus.publish(QueueService.QUEUE_ENTRY_ADDED, queue);
 		return queue;
 	}
 
-	@Transactional @Override public Queue deleteQueue(final Queue queue)
+	@Transactional @Override public Queue delete(final Queue queue)
 	{
+		this.sort(queue, QueuePosition.QUEUE_BOTTOM);
 		this.queueMapper.deleteQueue(queue);
-		EventBus.publish(QUEUE_ENTRY_REMOVED, queue);
+		EventBus.publish(QueueService.QUEUE_ENTRY_REMOVED, queue);
 		return queue;
 	}
 
-	@Transactional @Override public Queue updateQueue(final Queue queue)
+	@Transactional @Override public Queue update(final Queue queue)
 	{
 		this.queueMapper.updateQueue(queue);
-		EventBus.publish(QUEUE_ENTRY_UPDATED, queue);
+		EventBus.publish(QueueService.QUEUE_ENTRY_UPDATED, queue);
 		return queue;
 	}
 
-	@Transactional @Override public void sortList(final Queue queue, final QueuePosition queuePosition)
+	@Transactional @Override public void sort(final Queue queue, final QueuePosition queuePosition)
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		final int prePos = queue.sequence;
+		final int entries = this.queueMapper.countQueued();
+		switch (queuePosition) {
+			case QUEUE_BOTTOM:
+				this.queueMapper.moveBottom(queue);
+				break;
+			case QUEUE_TOP:
+				this.queueMapper.moveTop(queue);
+				break;
+			case QUEUE_UP:
+				if (prePos == 0) {
+					return;
+				}
+				this.queueMapper.moveUp(queue);
+				break;
+			case QUEUE_DOWN:
+				if (prePos == (entries - 1)) {
+					return;
+				}
+				this.queueMapper.moveDown(queue);
+				break;
+		}
 	}
 
 	@Transactional @Override public List<Queue> getAll()
@@ -82,7 +104,7 @@ public class QueueServiceImpl implements QueueService
 		return this.queueMapper.getArchived();
 	}
 
-	@Transactional @Override public Queue findQueue(final int identifier)
+	@Transactional @Override public Queue find(final int identifier)
 	{
 		return this.queueMapper.findQueue(identifier);
 	}
@@ -96,59 +118,4 @@ public class QueueServiceImpl implements QueueService
 	{
 		return this.queueMapper.countStarttime() > 0;
 	}
-
-//
-
-//	@Override
-//	public void sortList(final Queue queueEntry, final QueuePosition queuePosition)
-//	{
-//		final Session session = this.sessionFactory.openSession();
-//		session.getTransaction().begin();
-//		session.refresh(queueEntry);
-//		final int prePos = queueEntry.getSequence();
-//		final int entries = this.countEntries(session);
-//		switch (queuePosition) {
-//			case QUEUE_BOTTOM:
-//
-//				session.createQuery("UPDATE Queue SET SEQUENCE = SEQUENCE-1 WHERE SEQUENCE > " + prePos).executeUpdate();
-//				queueEntry.setSequence(entries - 1);
-//				break;
-//			case QUEUE_TOP:
-//				session.createQuery("UPDATE Queue SET SEQUENCE = SEQUENCE+1 WHERE SEQUENCE < " + prePos).executeUpdate();
-//				queueEntry.setSequence(0);
-//				break;
-//			case QUEUE_UP:
-//				if (prePos == 0) {
-//					break;
-//				}
-//				session.createQuery("UPDATE Queue SET SEQUENCE = " + prePos + " + " + (prePos - 1) + " - SEQUENCE WHERE SEQUENCE IN (" + prePos + "," +
-//						                    "" + (prePos - 1) + ")").executeUpdate();
-//				break;
-//			case QUEUE_DOWN:
-//				if (prePos == entries - 1) {
-//					break;
-//				}
-//				session.createQuery("UPDATE QueueEntity SET SEQUENCE = " + prePos + " + " + (prePos + 1) + " - SEQUENCE WHERE SEQUENCE IN (" + prePos + "," +
-//						                    "" + (prePos + 1) + ")").executeUpdate();
-//				break;
-//		}
-//		session.getTransaction().commit();
-//		session.close();
-//	}
-//
-//	@Override
-//	public Queue deleteQueue(final Queue queueEntry)
-//	{
-//		this.sortList(queueEntry, QueuePosition.QUEUE_BOTTOM);
-//	}
-//
-//	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "updateQueue")
-//	public void onUploadProgress(final String topic, final Queue queueEntry)
-//	{
-//		final Session session = this.sessionFactory.openSession();
-//		session.getTransaction().begin();
-//		session.update(queueEntry);
-//		session.getTransaction().commit();
-//		session.close();
-//	}
 }

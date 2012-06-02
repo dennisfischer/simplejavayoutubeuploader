@@ -40,19 +40,18 @@ import java.util.ResourceBundle;
  */
 public class NotificationsPlugin implements Pluggable
 {
-	private static final String[] DEPENDENCIES = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
-	private @Inject SettingsService settingsService;
+	private static final String[] DEPENDENCIES = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
+	@Inject private SettingsService settingsService;
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.notificationsplugin.resources.notificationsplugin"); //NON-NLS
 
 	public NotificationsPlugin()
 	{
-		super();
 		AnnotationProcessor.process(this);
 	}
 
 	@Override public String[] getDependencies()
 	{
-		return DEPENDENCIES;
+		return NotificationsPlugin.DEPENDENCIES.clone();
 	}
 
 	@Override public void init()

@@ -22,7 +22,7 @@ package org.chaosfisch.youtubeuploader.services.settingsservice.spi;
 import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsViewComponent;
 
 import javax.swing.*;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -34,7 +34,7 @@ import java.util.Vector;
  */
 public interface SettingsService
 {
-	public static String SETTINGS_SAVED = "onSettingsSaved"; //NON-NLS
+	String SETTINGS_SAVED = "onSettingsSaved"; //NON-NLS
 
 	void setSettingsPersister(SettingsPersister settingsPersister);
 
@@ -46,13 +46,13 @@ public interface SettingsService
 
 	void addSpinner(String uniqueKey, String label, JSpinner spinner);
 
-	void addCombobox(String uniqueKey, String label, DefaultComboBoxModel comboBoxModel);
+	void addCombobox(String uniqueKey, String label, ComboBoxModel<?> comboBoxModel);
 
 	void addCheckbox(String uniqueKey, String label);
 
 	void save();
 
-	HashMap<String, Vector<SettingsViewComponent>> getMap();
+	Map<String, Vector<SettingsViewComponent>> getMap();
 
 	String getGroupByKey(String uniqueKey);
 

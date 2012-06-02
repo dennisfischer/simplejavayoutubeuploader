@@ -21,14 +21,13 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IdentityList;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.MessageService;
 
-import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,71 +36,38 @@ import java.util.List;
  * Time: 21:23
  * To change this template use File | Settings | File Templates.
  */
-public class MessageTableModel extends AbstractTableModel
+public class MessageTableModel extends RowTableModel<Message>
 {
-	private final IdentityList<Message> messages = new IdentityList<Message>();
-	private final String[]              columns  = {"ID:", "Nachricht:", "Upload ID:", "Facebook", "Twitter", "Google+", "Youtube"};
+	private static final long           serialVersionUID = -7519372212702247601L;
+	private final        ResourceBundle resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin"); //NON-NLS
 
 	public MessageTableModel()
 	{
-		AnnotationProcessor.process(this);
+		this(Collections.<Message>emptyList());
 	}
 
-	public MessageTableModel(final List<Message> messages)
+	public MessageTableModel(final Iterable<Message> messagges)
 	{
-		AnnotationProcessor.process(this);
-		this.messages.addAll(messages);
-	}
-
-	void addMessageEntry(final Message q)
-	{
-		this.messages.add(q);
-		this.fireTableDataChanged();
-	}
-
-	public void addMessageEntryList(final List l)
-	{
-		for (final Object o : l) {
-			if (o instanceof Message) {
-				this.addMessageEntry((Message) o);
-			}
+		super(Message.class);
+		this.setDataAndColumnNames(new IdentityList<Message>(), Arrays.asList("ID:", "Nachricht:", "Upload ID:", "Facebook", "Twitter", "Google+", "Youtube"));
+		for (final Message directory : messagges) {
+			this.addRow(directory);
 		}
-	}
-
-	public Message getMessageEntryAt(final int row)
-	{
-		return this.messages.get(row);
-	}
-
-	public Message removeMessageEntryAt(final int row)
-	{
-		final Message message = this.messages.remove(row);
-		this.fireTableDataChanged();
-		return message;
-	}
-
-	@Override
-	public int getRowCount()
-	{
-		return this.messages.size();
-	}
-
-	@Override
-	public int getColumnCount()
-	{
-		return this.columns.length;
-	}
-
-	@Override
-	public String getColumnName(final int col)
-	{
-		return this.columns[col];
+		this.setColumnClass(0, Integer.class);
+		this.setColumnClass(1, String.class);
+		this.setColumnClass(2, Integer.class);
+		this.setColumnClass(3, Boolean.class);
+		this.setColumnClass(4, Boolean.class);
+		this.setColumnClass(5, Boolean.class);
+		this.setColumnClass(6, Boolean.class);
+		this.setModelEditable(false);
+		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Message message = this.messages.get(row);
+		final Message message = this.getRow(row);
 		switch (col) {
 			case 0:
 				return message.getIdentity();
@@ -122,82 +88,23 @@ public class MessageTableModel extends AbstractTableModel
 		}
 	}
 
-	@Override
-	public Class getColumnClass(final int col)
-	{
-		switch (col) {
-			case 0:
-				return Integer.class;
-			case 1:
-				return String.class;
-			case 2:
-				return Integer.class;
-			case 3:
-				return Boolean.class;
-			case 4:
-				return Boolean.class;
-			case 5:
-				return Boolean.class;
-			case 6:
-				return Boolean.class;
-			default:
-				return null;
-		}
-	}
-
-	@Override
-	public void setValueAt(final Object value, final int row, final int col)
-	{
-//		final Message messageEntry = this.messages.get(row);
-//		switch (col) {
-//		}
-//		this.fireTableCellUpdated(row, col);
-	}
-
-	public boolean hasMessageEntryAt(final int selectedRow)
-	{
-		return this.messages.size() >= selectedRow && selectedRow != -1;
-	}
-
-	public List<Message> getMessageList()
-	{
-		return new ArrayList<Message>(this.messages);
-	}
-
-	public void removeAll()
-	{
-		final Iterator iterator = this.messages.iterator();
-		while (iterator.hasNext()) {
-			iterator.next();
-			iterator.remove();
-			this.fireTableDataChanged();
-		}
-	}
-
-	public void removeMessageEntry(final Message message)
-	{
-		this.messages.remove(message);
-		this.fireTableDataChanged();
-	}
-
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_ADDED)
+	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_ADDED)
 	public void onMessageEntryAdded(final String topic, final Message message)
 	{
-		this.addMessageEntry(message);
+		this.addRow(message);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_REMOVED)
+	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_REMOVED)
 	public void onMessageEntryRemoved(final String topic, final Message message)
 	{
-		this.removeMessageEntry(message);
+		this.removeElement(message);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_UPDATED)
+	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_UPDATED)
 	public void onMessageEntryUpdated(final String topic, final Message message)
 	{
-		if (this.messages.contains(message)) {
-			this.messages.set(this.messages.indexOf(message), message);
-			this.fireTableDataChanged();
+		if (this.modelData.contains(message)) {
+			this.replaceRow(this.modelData.indexOf(message), message);
 		}
 	}
 }

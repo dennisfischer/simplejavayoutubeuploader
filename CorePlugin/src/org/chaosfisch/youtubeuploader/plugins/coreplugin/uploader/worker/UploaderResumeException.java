@@ -28,6 +28,8 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
  */
 public class UploaderResumeException extends Throwable
 {
+	private static final long serialVersionUID = 4654579354152960064L;
+
 	public UploaderResumeException(final String format)
 	{
 		super(format);

@@ -33,9 +33,9 @@ import java.util.List;
  */
 public interface PlaylistService
 {
-	public static final String PLAYLIST_ENTRY_ADDED   = "playlistEntryAdded"; //NON-NLS
-	public static final String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved"; //NON-NLS
-	public static final String PLAYLIST_ENTRY_UPDATED = "playlistEntryUpdated"; //NON-NLS
+	String PLAYLIST_ENTRY_ADDED   = "playlistEntryAdded"; //NON-NLS
+	String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved"; //NON-NLS
+	String PLAYLIST_ENTRY_UPDATED = "playlistEntryUpdated"; //NON-NLS
 
 	void synchronizePlaylists(List<Account> accounts);
 
@@ -43,13 +43,13 @@ public interface PlaylistService
 
 	List<Playlist> getAll();
 
-	Playlist findPlaylist(int id);
+	Playlist find(int id);
 
-	Playlist createPlaylist(Playlist playlist);
+	Playlist create(Playlist playlist);
 
-	Playlist updatePlaylist(Playlist playlist);
+	Playlist update(Playlist playlist);
 
-	Playlist deletePlaylist(Playlist playlist);
+	Playlist delete(Playlist playlist);
 
 	void addLatestVideoToPlaylist(Playlist playlist);
 

@@ -19,6 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.designmanager.spi;
 
+import javax.swing.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -28,7 +30,7 @@ package org.chaosfisch.youtubeuploader.designmanager.spi;
  */
 public interface Design
 {
-	Class getLaF();
+	Class<? extends LookAndFeel> getLaF();
 
 	String getName();
 

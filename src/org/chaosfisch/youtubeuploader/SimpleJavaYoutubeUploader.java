@@ -39,8 +39,10 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,15 +50,15 @@ import java.util.List;
  */
 public class SimpleJavaYoutubeUploader
 {
-	public SimpleJavaYoutubeUploader(final String[] args)
+	public SimpleJavaYoutubeUploader(final String... args)
 	{
 		PropertyConfigurator.configure(this.getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
-		final ResourceFinder finder = new ResourceFinder("META-INF/services/");
+		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
 			final List<Class> classes = finder.findAllImplementations(Module.class);
 
-			final ArrayList<Module> modules = new ArrayList<Module>(classes.size());
-			for (final Class clazz : classes) {
+			final Collection<Module> modules = new ArrayList<Module>(classes.size());
+			for (final Class<?> clazz : classes) {
 				modules.add((Module) clazz.newInstance());
 			}
 
@@ -92,7 +94,7 @@ public class SimpleJavaYoutubeUploader
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(final String[] args)
+	public static void main(final String... args)
 	{
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
 		{
@@ -105,7 +107,18 @@ public class SimpleJavaYoutubeUploader
 				{
 					@Override public void run()
 					{
-						JOptionPane.showMessageDialog(null, e.getMessage(), "Error:", JOptionPane.ERROR_MESSAGE); //NON-NLS
+
+						final JTextArea textArea = new JTextArea();
+						textArea.setEditable(false);
+						textArea.setLineWrap(true);
+						textArea.setText(e.getMessage());
+
+						// stuff it in a scrollpane with a controlled size.
+						final JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setPreferredSize(new Dimension(400, 400));
+
+						// pass the scrollpane to the joptionpane.
+						JOptionPane.showMessageDialog(null, scrollPane, "An Error Has Occurred", JOptionPane.ERROR_MESSAGE); //NON-NLS
 					}
 				});
 			}

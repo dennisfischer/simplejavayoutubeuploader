@@ -35,7 +35,6 @@ public class JComponentExtensionPoint implements ExtensionPoint
 
 	public JComponentExtensionPoint(final String title, final JComponent JComponent)
 	{
-		super();
 		this.title = title;
 		this.JComponent = JComponent;
 	}

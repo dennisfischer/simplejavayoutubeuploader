@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
  * Time: 15:19
  * To change this template use File | Settings | File Templates.
  */
-@Retention(RetentionPolicy.RUNTIME) @Target({ElementType.FIELD}) public @interface InjectLogger
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface InjectLogger
 {}

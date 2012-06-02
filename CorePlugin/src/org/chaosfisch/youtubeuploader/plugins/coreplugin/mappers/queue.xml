@@ -23,7 +23,7 @@
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.mybatis.mappers.QueueMapper">
+<mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.QueueMapper">
 
 	<sql id="queueValuesList">
 		(category, description, file, keywords, mimetype, title, uploadurl, videoid, archived, commentvote, inprogress, locked,
@@ -88,7 +88,7 @@
 	</resultMap>
 
 	<select id="getAll" resultType="Queue">
-		SELECT * FROM QUEUE ORDER BY identity
+		SELECT * FROM QUEUE ORDER BY sequence ASC
 	</select>
 
 	<select id="getQueued" resultType="Queue">
@@ -146,4 +146,31 @@
 		LEFT JOIN PLAYLISTS AS P ON (P.identity = Q.playlist_id)
 		WHERE Q.archived = false AND Q.inprogress = false AND (Q.started &lt; NOW() OR Q.started IS NULL) AND Q.locked = false ORDER BY Q.started DESC, Q.sequence ASC, Q.failed ASC LIMIT 1
 	</select>
+
+	<update id="moveTop">
+		<![CDATA[
+
+		UPDATE QUEUE SET SEQUENCE = CASE
+		WHEN identity = #{identity} THEN 0
+		ELSE SEQUENCE+1
+		END WHERE SEQUENCE <= #{sequence}
+
+		]]>
+	</update>
+	<update id="moveUp" parameterType="Queue">
+	   	UPDATE QUEUE SET SEQUENCE = #{sequence} + (#{sequence} - 1) - SEQUENCE WHERE SEQUENCE IN (#{sequence},(#{sequence} - 1))
+	</update>
+	<update id="moveDown" parameterType="Queue">
+	   	UPDATE QUEUE SET SEQUENCE = #{sequence} + (#{sequence} + 1) - SEQUENCE WHERE SEQUENCE IN (#{sequence},(#{sequence} + 1))
+	</update>
+	<update id="moveBottom" parameterType="Queue">
+		<![CDATA[
+
+		UPDATE QUEUE SET SEQUENCE = CASE
+		WHEN identity = #{identity} THEN (SELECT COUNT(*) FROM QUEUE WHERE archived = false) - 1
+		ELSE SEQUENCE-1
+		END WHERE SEQUENCE >= #{sequence}
+
+		]]>
+	</update>
 </mapper>

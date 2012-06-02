@@ -8,15 +8,10 @@
           <element id="directory" name="services">
             <element id="dir-copy" path="$PROJECT_DIR$/CorePlugin/src/META-INF/services" />
           </element>
+          <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/META-INF/mappers.properties" />
         </element>
         <element id="module-output" name="CorePlugin" />
-        <element id="directory" name="org">
-          <element id="directory" name="mybatis">
-            <element id="directory" name="mappers">
-              <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/mybatis/mappers/scheme.sql" />
-            </element>
-          </element>
-        </element>
+        <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/scheme.sql" />
       </element>
     </root>
   </artifact>

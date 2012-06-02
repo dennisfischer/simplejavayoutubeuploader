@@ -2,14 +2,7 @@
   <library name="mybatis-guice-3.3">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/mybatis-guice-3.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/aopalliance-1.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/bonecp-0.7.1.RELEASE.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/c3p0-0.9.1.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/commons-dbcp-1.4.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/commons-pool-1.5.4.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/guava-r08.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/guice-multibindings-3.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/lib/javax.inject-1.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/../repositories/mybatis-guice-3.3/mybatis-guice-3.3-javadoc.jar!/" />

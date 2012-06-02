@@ -25,13 +25,15 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.MessageTableModel;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.MessageService;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.FacebookSocialProvider;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.TwitterSocialProvider;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.Provider;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.ISocialProvider;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.scribe.model.Token;
+
+import javax.swing.table.TableModel;
 
 /**
  * Created with IntelliJ IDEA.
@@ -55,11 +57,13 @@ public class MessageController
 
 	public void setup()
 	{
-		this.messageTableModel.addMessageEntryList(this.messageService.getMessageEntries());
+		for (final Message message : this.messageService.getAll()) {
+			this.messageTableModel.addRow(message);
+		}
 	}
 
-	public void addMessage(final String messageTextAreaText, final int publishComboBoxSelectedItem, final int uploadIDSpinnerValue, final boolean facebookButtonSellected,
-	                       final boolean twitterButtonSelected, final boolean googlePlusButtonSelected, final boolean youtubeButtonSelected)
+	public void addMessage(final String messageTextAreaText, final int publishComboBoxSelectedItem, final int uploadIDSpinnerValue, final boolean facebookButtonSellected, final boolean twitterButtonSelected, final boolean googlePlusButtonSelected,
+						   final boolean youtubeButtonSelected)
 	{
 		final Message message;
 		switch (publishComboBoxSelectedItem) {
@@ -71,7 +75,7 @@ public class MessageController
 				message.googlePlus = googlePlusButtonSelected;
 				message.youtube = youtubeButtonSelected;
 				message.uploadID = uploadIDSpinnerValue;
-				this.messageService.createMessageEntry(message);
+				this.messageService.create(message);
 				break;
 			case 1:
 				message = new Message();
@@ -80,7 +84,7 @@ public class MessageController
 				message.twitter = twitterButtonSelected;
 				message.googlePlus = googlePlusButtonSelected;
 				message.youtube = youtubeButtonSelected;
-				this.messageService.createMessageEntry(message);
+				this.messageService.create(message);
 				break;
 			case 2:
 				this.publish(messageTextAreaText, facebookButtonSellected, twitterButtonSelected, googlePlusButtonSelected, youtubeButtonSelected);
@@ -95,7 +99,7 @@ public class MessageController
 			if (settingsString.contains("___")) {
 				final String token = settingsString.substring(0, settingsString.indexOf("___"));
 				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
-				final FacebookSocialProvider facebookSocialProvider = (FacebookSocialProvider) this.messageService.get(MessageService.Provider.FACEBOOK);
+				final ISocialProvider facebookSocialProvider = this.messageService.get(Provider.FACEBOOK);
 				facebookSocialProvider.setAccessToken(new Token(token, secret));
 				facebookSocialProvider.publish(message);
 			}
@@ -105,14 +109,14 @@ public class MessageController
 			if (settingsString.contains("___")) {
 				final String token = settingsString.substring(0, settingsString.indexOf("___"));
 				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
-				final TwitterSocialProvider twitterSocialProvider = (TwitterSocialProvider) this.messageService.get(MessageService.Provider.TWITTER);
+				final ISocialProvider twitterSocialProvider = this.messageService.get(Provider.TWITTER);
 				twitterSocialProvider.setAccessToken(new Token(token, secret));
 				twitterSocialProvider.publish(message);
 			}
 		}
 	}
 
-	public MessageTableModel getMessageTableModel()
+	public TableModel getMessageTableModel()
 	{
 		return this.messageTableModel;
 	}
@@ -125,27 +129,29 @@ public class MessageController
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
 	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
-		for (final Message message : this.messageService.getMessageEntriesByQueueID(queue.getIdentity())) {
-			this.publish(message.message.replace("{video}", "http://youtu.be/" + queue.videoId), message.facebook, message.twitter, message.googlePlus, message.youtube);
+		final Message findParameter = new Message();
+		findParameter.uploadID = queue.getIdentity();
+		for (final Message message : this.messageService.find(findParameter)) {
+			this.publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googlePlus, message.youtube); //NON-NLS
 		}
-		this.messageService.clearWithQueueID(queue.getIdentity());
+		this.messageService.clearByUploadID(queue.getIdentity());
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadsFinished(final String topic, final Object o)
 	{
-		for (final Message message : this.messageService.getMessageEntriesWithoutQueueID()) {
+		for (final Message message : this.messageService.findWithoutQueueID()) {
 			this.publish(message.message, message.facebook, message.twitter, message.googlePlus, message.youtube);
 		}
 
-		this.messageService.clearWithoutQueueID();
+		this.messageService.clearByUploadID(null);
 	}
 
 	public void removeEntryAt(final int selectedRow)
 	{
-		if (this.messageTableModel.hasMessageEntryAt(selectedRow)) {
-			final Message message = this.messageTableModel.getMessageEntryAt(selectedRow);
-			this.messageService.removeMessageEntry(message);
+		if (this.messageTableModel.hasIndex(selectedRow)) {
+			final Message message = this.messageTableModel.getRow(selectedRow);
+			this.messageService.delete(message);
 		}
 	}
 }

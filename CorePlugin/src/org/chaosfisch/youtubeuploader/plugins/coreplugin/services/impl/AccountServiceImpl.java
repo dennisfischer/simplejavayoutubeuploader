@@ -21,16 +21,16 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
 import com.google.inject.Inject;
 import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.AccountMapper;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PlaylistMapper;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PresetMapper;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.QueueMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.mybatis.guice.transactional.Transactional;
-import org.mybatis.mappers.AccountMapper;
-import org.mybatis.mappers.PlaylistMapper;
-import org.mybatis.mappers.PresetMapper;
-import org.mybatis.mappers.QueueMapper;
 
 import java.util.List;
 
@@ -48,14 +48,14 @@ public class AccountServiceImpl implements AccountService
 	@Inject PresetMapper   presetMapper;
 	@Inject QueueMapper    queueMapper;
 
-	@Transactional @Override public Account createAccountEntry(final Account account)
+	@Transactional @Override public Account create(final Account account)
 	{
 		this.accountMapper.createAccount(account);
-		EventBus.publish(ACCOUNT_ADDED, account);
+		EventBus.publish(AccountService.ACCOUNT_ADDED, account);
 		return account;
 	}
 
-	@Transactional @Override public Account deleteAccountEntry(final Account account)
+	@Transactional @Override public Account delete(final Account account)
 	{
 		final List<Playlist> playlists = this.playlistMapper.findPlaylists(account);
 		for (final Playlist playlist : playlists) {
@@ -74,23 +74,23 @@ public class AccountServiceImpl implements AccountService
 			this.queueMapper.updateQueue(queue);
 		}
 		this.accountMapper.deleteAccount(account);
-		EventBus.publish(ACCOUNT_REMOVED, account);
+		EventBus.publish(AccountService.ACCOUNT_REMOVED, account);
 		return account;
 	}
 
-	@Transactional @Override public Account updateAccountEntry(final Account account)
+	@Transactional @Override public Account update(final Account account)
 	{
 		this.accountMapper.updateAccount(account);
-		EventBus.publish(ACCOUNT_UPDATED, account);
+		EventBus.publish(AccountService.ACCOUNT_UPDATED, account);
 		return account;
 	}
 
-	@Transactional @Override public Account findAccountEntry(final int identifier)
+	@Transactional @Override public Account find(final int identifier)
 	{
 		return this.accountMapper.findAccount(identifier);
 	}
 
-	@Transactional @Override public List<Account> getAllAccountEntry()
+	@Transactional @Override public List<Account> getAll()
 	{
 		return this.accountMapper.getAccounts();
 	}

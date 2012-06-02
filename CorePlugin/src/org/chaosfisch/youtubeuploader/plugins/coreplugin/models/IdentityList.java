@@ -30,20 +30,24 @@ import java.util.ArrayList;
  */
 public class IdentityList<E extends IModel> extends ArrayList<E>
 {
+	private static final long serialVersionUID = 2474924338814601242L;
+
 	@Override
 	public int indexOf(final Object o)
 	{
 		final IModel model = (IModel) o;
 		if (o == null) {
-			for (int i = 0; i < this.size(); i++)
+			for (int i = 0; i < this.size(); i++) {
 				if (this.get(i) == null) {
 					return i;
 				}
+			}
 		} else {
-			for (int i = 0; i < this.size(); i++)
+			for (int i = 0; i < this.size(); i++) {
 				if (model.getIdentity() == this.get(i).getIdentity()) {
 					return i;
 				}
+			}
 		}
 		return -1;
 	}
@@ -60,15 +64,17 @@ public class IdentityList<E extends IModel> extends ArrayList<E>
 	{
 		final IModel model = (IModel) o;
 		if (model == null) {
-			for (int i = this.size() - 1; i >= 0; i--)
+			for (int i = this.size() - 1; i >= 0; i--) {
 				if (this.get(i) == null) {
 					return i;
 				}
+			}
 		} else {
-			for (int i = this.size() - 1; i >= 0; i--)
+			for (int i = this.size() - 1; i >= 0; i--) {
 				if (model.getIdentity() == this.get(i).getIdentity()) {
 					return i;
 				}
+			}
 		}
 		return -1;
 	}

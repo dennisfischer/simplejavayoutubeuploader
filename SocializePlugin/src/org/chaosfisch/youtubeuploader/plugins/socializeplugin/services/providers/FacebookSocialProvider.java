@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers;
 
 import org.apache.log4j.Logger;
+import org.chaosfisch.google.request.HTTP_STATUS;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.APIData;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.OAuthHTTPDServer;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
@@ -44,12 +45,13 @@ import java.util.regex.Pattern;
  */
 public class FacebookSocialProvider implements ISocialProvider
 {
-	private static final Token        EMPTY_TOKEN  = null;
-	private              Token        accessToken  = null;
-	private final        OAuthService oAuthService = new ServiceBuilder().provider(FacebookApi.class).scope("publish_stream").callback("http://localhost:8080/oauth")  //NON-NLS
+	private static final Token EMPTY_TOKEN = null;
+	private Token accessToken;
+	private final OAuthService oAuthService = new ServiceBuilder().provider(FacebookApi.class).scope("publish_stream").callback("http://localhost:8080/oauth")  //NON-NLS
 			.apiKey(APIData.FACEBOOK_APIKEY).apiSecret(APIData.FACEBOOK_APISECRET).build();
 	@InjectLogger private Logger logger;
 	private static final String FACEBOOK_ACCES_TOKEN = "onFacebookAccessToken"; //NON-NLS
+	OAuthHTTPDServer oAuthHTTPDServer;
 
 	@Override
 	public void publish(final String message)
@@ -59,12 +61,12 @@ public class FacebookSocialProvider implements ISocialProvider
 		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed"); //NON-NLS
 		oAuthRequest.addBodyParameter("message", message); //NON-NLS
-		oAuthRequest.addBodyParameter("link", this.extractUrl(message));
+		oAuthRequest.addBodyParameter("link", this.extractUrl(message)); //NON-NLS
 
 		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
 		final Response response = oAuthRequest.send();
-		if (response.getCode() != 200) {
-			this.logger.warn("Wrong response code: " + response.getCode()); //NON-NLS
+		if (response.getCode() != HTTP_STATUS.OK.getCode()) {
+			this.logger.warn(String.format("Wrong response code: %d", response.getCode()));//NON-NLS
 			this.logger.warn(response.getBody());
 		}
 	}
@@ -72,29 +74,27 @@ public class FacebookSocialProvider implements ISocialProvider
 	@Override
 	public void authenticate()
 	{
-		if (this.accessToken != null && this.hasValidAccessToken()) {
+		if ((this.accessToken != null) && this.hasValidAccessToken()) {
 			return;
 		}
 		try {
-			Desktop.getDesktop().browse(new URI(this.oAuthService.getAuthorizationUrl(EMPTY_TOKEN)));
+			Desktop.getDesktop().browse(new URI(this.oAuthService.getAuthorizationUrl(FacebookSocialProvider.EMPTY_TOKEN)));
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (URISyntaxException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 		try {
-			this.logger.info("Facebook-Server started.");
-			final OAuthHTTPDServer oAuthHTTPDServer = new OAuthHTTPDServer(8080);
-			synchronized (oAuthHTTPDServer) {
-				oAuthHTTPDServer.wait(60000);
+			this.logger.info("Facebook-Server started.");//NON-NLS
+			this.oAuthHTTPDServer = new OAuthHTTPDServer(8080);
+
+			synchronized (this.oAuthHTTPDServer) {
+				this.oAuthHTTPDServer.wait(60000);
 			}
-			if (oAuthHTTPDServer.getCode() != null) {
-				this.accessToken = this.oAuthService.getAccessToken(null, new Verifier(oAuthHTTPDServer.getCode()));
+			if (this.oAuthHTTPDServer.getCode() != null) {
+				this.accessToken = this.oAuthService.getAccessToken(null, new Verifier(this.oAuthHTTPDServer.getCode()));
 			}
-			this.logger.info("Facebook-Server stopped.");
-			oAuthHTTPDServer.stop();
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			this.logger.info("Facebook-Server stopped.");//NON-NLS
 		} catch (InterruptedException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -121,10 +121,10 @@ public class FacebookSocialProvider implements ISocialProvider
 		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
 		try {
 			final Response response = oAuthRequest.send();
-			if (response.getCode() == 200) {
+			if (response.getCode() == HTTP_STATUS.OK.getCode()) {
 				return true;
 			}
-		} catch (RuntimeException ex) {
+		} catch (RuntimeException ignored) {
 			return false;
 		}
 		return false;

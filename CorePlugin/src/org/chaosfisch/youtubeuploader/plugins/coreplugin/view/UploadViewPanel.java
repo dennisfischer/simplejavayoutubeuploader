@@ -26,66 +26,82 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.jgoodies.validation.ValidationResult;
+import com.jgoodies.validation.ValidationResultModel;
+import com.jgoodies.validation.util.DefaultValidationResultModel;
+import com.jgoodies.validation.util.ValidationUtils;
+import com.jgoodies.validation.view.ValidationComponentUtils;
+import com.jgoodies.validation.view.ValidationResultViewFactory;
 import net.iharder.dnd.FileDrop;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.util.TextDocument;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public final class UploadViewPanel
 {
 
-	@Inject private UploadController    controller;
-	@Inject private Injector            injector;
-	private         JPanel              uploadPanel;
-	private         JButton             reset;
-	private         JButton             submit;
-	private         JCheckBox           playlistCheckBox;
-	private         JButton             searchFile;
-	private         JComboBox<File>     fileList;
-	private         JComboBox           categoryList;
-	private         JTextField          titleTextField;
-	private         JTextArea           descriptionTextArea;
-	private         JTextArea           tagsTextArea;
-	private         JComboBox<Playlist> playlistList;
-	private         JCheckBox           autotitelCheckBox;
-	private         JComboBox<Preset>   presetList;
-	private         JTextField          autotitleTextField;
-	private         JSpinner            numberModifierSpinner;
-	private         JTextField          defaultdirTextField;
-	private         JComboBox<Account>  accountList;
-	private         JComboBox           commentList;
-	private         JComboBox           videoresponseList;
-	private         JComboBox           visibilityList;
-	private         JCheckBox           kommentareBewertenCheckBox;
-	private         JCheckBox           bewertenCheckBox;
-	private         JCheckBox           mobileCheckBox;
-	private         JCheckBox           embedCheckBox;
-	private         JButton             defaultdirSearch;
-	private         JButton             deletePreset;
-	private         JButton             savePreset;
-	private         JButton             deleteAccount;
-	private         JSpinner            startzeitpunktSpinner;
-	private         JButton             synchronizePlaylistsButton;
-	private         JMenuItem           fileSearchMenuItem;
+	@Inject private UploadController      controller;
+	@Inject private Injector              injector;
+	private         JPanel                uploadPanel;
+	private         JButton               reset;
+	private         JButton               submit;
+	private         JCheckBox             playlistCheckBox;
+	private         JButton               searchFile;
+	private         JComboBox<File>       fileList;
+	private         JComboBox<String>     categoryList;
+	private         JTextField            titleTextField;
+	private         JTextArea             descriptionTextArea;
+	private         JTextArea             tagsTextArea;
+	private         JComboBox<Playlist>   playlistList;
+	private         JCheckBox             autotitelCheckBox;
+	private         JComboBox<Preset>     presetList;
+	private         JTextField            autotitleTextField;
+	private         JSpinner              numberModifierSpinner;
+	private         JTextField            defaultdirTextField;
+	private         JComboBox<Account>    accountList;
+	private         JComboBox<String>     commentList;
+	private         JComboBox<String>     videoresponseList;
+	private         JComboBox<String>     visibilityList;
+	private         JCheckBox             kommentareBewertenCheckBox;
+	private         JCheckBox             bewertenCheckBox;
+	private         JCheckBox             mobileCheckBox;
+	private         JCheckBox             embedCheckBox;
+	private         JButton               defaultdirSearch;
+	private         JButton               deletePreset;
+	private         JButton               savePreset;
+	private         JButton               deleteAccount;
+	private         JSpinner              startzeitpunktSpinner;
+	private         JButton               synchronizePlaylistsButton;
+	private         JPanel                validationPanel;
+	private         JLabel                hintLabel;
+	private         JMenuItem             fileSearchMenuItem;
+	private         ValidationResultModel validationResultModel;
+
+	public static final String EDIT_QUEUE_ENTRY = "editQueueEntry"; //NON-NLS
 
 	public UploadViewPanel()
 	{
@@ -106,10 +122,10 @@ public final class UploadViewPanel
 
 	private void setup()
 	{
-		for (final Account account : this.controller.getAccountService().getAllAccountEntry()) {
+		for (final Account account : this.controller.getAccountService().getAll()) {
 			this.controller.getAccountListModel().addElement(account);
 		}
-		for (final Preset preset : this.controller.getPresetService().getAllPresetEntry()) {
+		for (final Preset preset : this.controller.getPresetService().getAll()) {
 			this.controller.getPresetListModel().addElement(preset);
 		}
 
@@ -145,6 +161,25 @@ public final class UploadViewPanel
 				UploadViewPanel.this.searchFileDialogOpen();
 			}
 		});
+
+		this.descriptionTextArea.setDocument(new TextDocument(5000));
+		this.tagsTextArea.setDocument(new TextDocument(600));
+		this.titleTextField.setDocument(new TextDocument(100));
+
+		this.hintLabel.setIcon(ValidationResultViewFactory.getInfoIcon());
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(new FocusChangeHandler());
+
+		ValidationComponentUtils.setInputHint(this.fileList, "Select a file to upload.");
+		ValidationComponentUtils.setInputHint(this.titleTextField, "Enter a title with 5 - 100 characters.");
+		ValidationComponentUtils.setInputHint(this.categoryList, "Select a category.");
+		ValidationComponentUtils.setInputHint(this.descriptionTextArea, "Enter a description with 5 - 5000 characters.");
+		ValidationComponentUtils.setInputHint(this.tagsTextArea, "Enter tags with 2-30 characters.");
+		ValidationComponentUtils.setInputHint(this.autotitleTextField, "Enter an autotitle. You can use {file}, {playlist}, {number}.");
+		ValidationComponentUtils.setInputHint(this.defaultdirTextField, "Select a directory to be used as default.");
+		ValidationComponentUtils.setInputHint(this.visibilityList, "Choose the video visibility.");
+		ValidationComponentUtils.setInputHint(this.videoresponseList, "Choose the videoreponse permissions");
+		ValidationComponentUtils.setInputHint(this.commentList, "Choose the comment permissions.");
+		ValidationComponentUtils.setInputHint(this.accountList, "Select an account to upload to.");
 	}
 
 	private void initListeners()
@@ -259,7 +294,7 @@ public final class UploadViewPanel
 			}
 		});
 
-		final PlainDocument plainDocument = new PlainDocument();
+		final Document plainDocument = new PlainDocument();
 		this.autotitleTextField.setDocument(plainDocument);
 		plainDocument.addDocumentListener(new DocumentListener()
 		{
@@ -343,7 +378,7 @@ public final class UploadViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
-					final ArrayList<Account> accounts = new ArrayList<Account>(1);
+					final List<Account> accounts = new ArrayList<Account>(1);
 					accounts.add((Account) UploadViewPanel.this.accountList.getSelectedItem());
 					UploadViewPanel.this.controller.synchronizePlaylists(accounts);
 				}
@@ -360,7 +395,7 @@ public final class UploadViewPanel
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		final Preset selectedPreset = (Preset) this.presetList.getSelectedItem();
 		//noinspection CallToStringEquals
-		if (selectedPreset != null && selectedPreset.defaultDir != null && !selectedPreset.defaultDir.equals(""))
+		if ((selectedPreset != null) && (selectedPreset.defaultDir != null) && !selectedPreset.defaultDir.equals(""))
 
 		{
 			final File presetDir = new File(selectedPreset.defaultDir);
@@ -377,60 +412,48 @@ public final class UploadViewPanel
 
 	private void submitForm()
 	{
-		final Color lightRed = new Color(250, 128, 114);
-		if (this.fileList.getSelectedItem() == null) {
-			this.fileList.setBackground(lightRed);
-			return;
-		}
-		this.fileList.setBackground(null);
 
-		if (this.titleTextField.getText().length() < 5 || this.titleTextField.getText().length() > 100) {
-			this.titleTextField.setBackground(lightRed);
-			return;
-		}
-		this.titleTextField.setBackground(null);
-
-		if (this.categoryList.getSelectedIndex() == -1) {
-			this.categoryList.setBackground(lightRed);
-			return;
-		}
-		this.categoryList.setBackground(null);
-
-		if (this.descriptionTextArea.getText().length() < 5 || this.descriptionTextArea.getText().length() > 5000) {
-			this.descriptionTextArea.setBackground(lightRed);
+		this.validationResultModel.setResult(this.validate());
+		if (this.validationResultModel.hasErrors()) {
 			return;
 		}
 
-		if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
-			JOptionPane.showMessageDialog(null, "Das Beschreibungsfeld darf weder \"<\" noch \">\" enthalten!");
-			return;
-		}
-
-		this.descriptionTextArea.setBackground(null);
-
-		if (this.tagsTextArea.getText().length() < 2 || this.tagsTextArea.getText().length() > 600 || !TagParser.isValid(this.tagsTextArea.getText())) {
-			this.tagsTextArea.setBackground(lightRed);
-			return;
-		}
-		this.tagsTextArea.setBackground(null);
-
-		if (this.accountList.getSelectedItem() == null) {
-			this.accountList.setBackground(lightRed);
-			return;
-		}
-		this.accountList.setBackground(null);
 		Playlist playlist = null;
 		if (this.playlistCheckBox.isSelected()) {
 			playlist = (Playlist) this.playlistList.getSelectedItem();
-			System.out.println(playlist.getIdentity() + playlist.playlistKey);
 		}
 
-		this.controller.submitUpload((Account) this.accountList.getSelectedItem(), this.bewertenCheckBox.isSelected(), this.categoryList.getSelectedItem().toString(),
-		                             (short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(), this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(),
-		                             this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlist, this.tagsTextArea.getText(), this.titleTextField.getText(),
-		                             (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue());
+		this.controller.submitUpload((Account) this.accountList.getSelectedItem(), this.bewertenCheckBox.isSelected(), this.categoryList.getSelectedItem().toString(), (short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(),
+									 this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(), this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlist, this.tagsTextArea.getText(),
+									 this.titleTextField.getText(), (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue());
 
 		this.fileList.removeItem(this.fileList.getSelectedItem());
+	}
+
+	//validate each of the three input fields
+	private ValidationResult validate()
+	{
+		final ValidationResult validationResult = new ValidationResult();
+
+		if (this.fileList.getSelectedItem() == null) {
+			validationResult.addError("Eine Datei zum Hochladen muss ausgewählt sein.");
+		} else if (!ValidationUtils.hasBoundedLength(this.titleTextField.getText().trim(), 5, 100)) {
+			validationResult.addError("Der Titel muss zwischen 5 und 100 Zeichen lang sein.");
+		} else if (this.categoryList.getSelectedIndex() == -1) {
+			validationResult.addError("Eine Kategorie muss ausgewählt sein.");
+		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 5, 5000)) {
+			validationResult.addError("Die Beschreibungs muss zwischen 5 und 5000 Zeichen lang sein.");
+		} else if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
+			validationResult.addError("Das Beschreibungsfeld darf weder \"<\" noch \">\" enthalten!");
+		} else if (!ValidationUtils.hasBoundedLength(this.tagsTextArea.getText().trim(), 2, 600) || !TagParser.isValid(this.tagsTextArea.getText())) {
+			validationResult.addError("Die Tags sind ungültig! Mindestens 2 Zeichen, maximal 30 Zeichen pro Tag.\n Maximal 500 Zeichen gesamt!");
+		} else if (this.accountList.getSelectedItem() == null) {
+			validationResult.addError("Ein Account muss ausgewählt sein!");
+		} else {
+			validationResult.addInfo("Eintrag hinzugefügt.");
+		}
+
+		return validationResult;
 	}
 
 	@SuppressWarnings("CallToStringEquals")
@@ -441,7 +464,7 @@ public final class UploadViewPanel
 			this.autotitelCheckBox.setSelected(selectedPreset.autotitle);
 			this.autotitleTextField.setText(selectedPreset.autotitleFormat);
 			this.bewertenCheckBox.setSelected(selectedPreset.rate);
-			if (selectedPreset.category == null || !selectedPreset.category.equals("")) {
+			if ((selectedPreset.category == null) || !selectedPreset.category.equals("")) {
 				this.categoryList.setSelectedItem(selectedPreset.category);
 			}
 			this.commentList.setSelectedIndex(selectedPreset.comment);
@@ -490,7 +513,7 @@ public final class UploadViewPanel
 		return this.uploadPanel;
 	}
 
-	@EventTopicSubscriber(topic = QueueService.EDIT_QUEUE_ENTRY)
+	@EventTopicSubscriber(topic = UploadViewPanel.EDIT_QUEUE_ENTRY)
 	public void onEditQueueEntry(final String topic, final Queue queue)
 	{
 
@@ -527,13 +550,13 @@ public final class UploadViewPanel
 		}
 	}
 
-	@SuppressWarnings({"DuplicateStringLiteralInspection", "UnusedParameters"}) @EventTopicSubscriber(topic = "autoTitleChanged")
+	@EventTopicSubscriber(topic = AutoTitleGenerator.AUTOTITLE_CHANGED)
 	public void updateAutotitle(final String topic, final String title)
 	{
 		this.titleTextField.setText(title);
 	}
 
-	private void updateInsertedFiles(final File[] selectedFiles)
+	private void updateInsertedFiles(final File... selectedFiles)
 	{
 		this.fileList.removeAllItems();
 		for (final File file : selectedFiles) {
@@ -543,14 +566,39 @@ public final class UploadViewPanel
 		}
 
 		//noinspection CallToStringEquals
-		if (this.fileList.getItemCount() > 0 && this.titleTextField.getText().equals("")) {
-			//noinspection MagicCharacter,DuplicateStringLiteralInspection
+		if ((this.fileList.getItemCount() > 0) && this.titleTextField.getText().equals("")) {
+			// noinspection DuplicateStringLiteralInspection
 			try {
 				this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-				                                                                                 //NON-NLS
-				                                                                                 this.fileList.getSelectedItem().toString().lastIndexOf('.')));
+																								 //NON-NLS
+																								 this.fileList.getSelectedItem().toString().lastIndexOf(".")));
 			} catch (StringIndexOutOfBoundsException ignored) {
+			}
+		}
+	}
 
+	private void createUIComponents()
+	{
+		this.validationResultModel = new DefaultValidationResultModel();
+		this.validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(this.validationResultModel);
+	}
+
+	//update the hint label's text based on which component has focus
+	private final class FocusChangeHandler implements PropertyChangeListener
+	{
+		public void propertyChange(final PropertyChangeEvent evt)
+		{
+			final String propertyName = evt.getPropertyName();
+			//noinspection CallToStringEquals
+			if ("permanentFocusOwner".equals(propertyName)) { //NON-NLS
+				final Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+
+				if (focusOwner instanceof JComponent) {
+					final String focusHint = (String) ValidationComponentUtils.getInputHint((JComponent) focusOwner);
+					UploadViewPanel.this.hintLabel.setText(focusHint);
+				} else {
+					UploadViewPanel.this.hintLabel.setText("");
+				}
 			}
 		}
 	}

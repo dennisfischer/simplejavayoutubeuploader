@@ -23,7 +23,7 @@ import java.util.Collection;
 
 public interface PluginManager
 {
-	Collection<Pluggable> loadPlugins(String[] disabledPlugins);
+	Collection<Pluggable> loadPlugins(String... disabledPlugins);
 
 	void startPlugins();
 

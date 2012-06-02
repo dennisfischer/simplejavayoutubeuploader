@@ -7,13 +7,13 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Images" />
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="library" name="Google Guice v 3.0" level="project" />
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
     <orderEntry type="library" name="mybatis-3.1.1" level="project" />
     <orderEntry type="library" name="mybatis-guice-3.3" level="project" />
+    <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
   </component>
 </module>
 

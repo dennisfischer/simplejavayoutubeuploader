@@ -38,13 +38,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
 public class CorePlugin implements Pluggable
 {
-	private static final String[]       DEPENDENCIES   = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin"};
-	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.plugin"); //NON-NLS
+	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin"};
+	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin", Locale.getDefault()); //NON-NLS
 	private         Uploader          uploader;
 	@Inject private PluginService     pluginService;
 	@Inject private Injector          injector;
@@ -61,9 +62,10 @@ public class CorePlugin implements Pluggable
 	// uses the new MyBatis style of lookup
 	public void loadDatabase() throws IOException
 	{
-		final Reader schemaReader = Resources.getResourceAsReader("org/mybatis/mappers/scheme.sql");
+		final Reader schemaReader = Resources.getResourceAsReader("scheme.sql");//NON-NLS
 		final ScriptRunner scriptRunner = new ScriptRunner(this.sessionFactory.openSession().getConnection());
 		scriptRunner.setStopOnError(true);
+		scriptRunner.setLogWriter(null);
 		scriptRunner.setAutoCommit(true);
 		scriptRunner.setDelimiter(";");
 		scriptRunner.runScript(schemaReader);
@@ -71,7 +73,7 @@ public class CorePlugin implements Pluggable
 
 	@Override public String[] getDependencies()
 	{
-		return DEPENDENCIES;
+		return CorePlugin.DEPENDENCIES.clone();
 	}
 
 	@Override public String getName()
@@ -90,10 +92,10 @@ public class CorePlugin implements Pluggable
 		this.uploader = this.injector.getInstance(Uploader.class);
 
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
-		spinner.setEditor(new JSpinner.NumberEditor(spinner, "# MB"));
-		spinner.setValue(Integer.parseInt((String) this.settingService.get("coreplugin.general.CHUNK_SIZE", "10")));
+		spinner.setEditor(new JSpinner.NumberEditor(spinner, this.resourceBundle.getString("chunksize_spinner")));
+		spinner.setValue(Integer.parseInt((String) this.settingService.get("coreplugin.general.chunk_size", "10")));
 
-		this.settingService.addSpinner("coreplugin.general.CHUNK_SIZE", "CHUNK Size:", spinner);
+		this.settingService.addSpinner("coreplugin.general.chunk_size", this.resourceBundle.getString("chunksize_spinner.label"), spinner);
 		if (!GraphicsEnvironment.isHeadless()) {
 			final UploadViewPanel uploadViewPanel = this.injector.getInstance(UploadViewPanel.class);
 			uploadViewPanel.run();

@@ -17,23 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities;
-
-import java.util.ArrayList;
+package org.chaosfisch.util;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 22.04.12
- * Time: 16:03
+ * Date: 29.05.12
+ * Time: 10:30
  * To change this template use File | Settings | File Templates.
  */
-public class HibernateMappingExtensionImpl extends ArrayList<String>
+public interface CRUDService<E>
 {
-	public HibernateMappingExtensionImpl()
-	{
-		super();
+	E create(E object);
 
-		this.add("/org/chaosfisch/youtubeuploader/plugins/socializeplugin/models/entities/hbm/MessageEntry.hbm.xml"); //NON-NLS
-	}
+	E update(E object);
+
+	void delete(E object);
+
+	Iterable<E> getAll();
+
+	Iterable<E> find(E object);
 }

@@ -44,25 +44,26 @@ import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public final class QueueViewPanel
 {
-	private final QueueController controller;
-	private       JPanel          queuePanel;
-	public        JTable          queueTable;
-	private       JButton         startenButton;
-	private       JButton         stoppenButton;
-	private       JButton         arrowTop;
-	private       JButton         arrowUp;
-	private       JButton         arrowDown;
-	private       JButton         arrowBottom;
-	private       JComboBox       queueFinishedList;
-	private       JButton         editButton;
-	private       JButton         deleteButton;
-	private       JComboBox       queueViewList;
-	private       JButton         abortButton;
-	private       JSpinner        speedLimitSpinner;
-	private       JSpinner        maxUploadsSpinner;
+	private final QueueController   controller;
+	private       JPanel            queuePanel;
+	public        JTable            queueTable;
+	private       JButton           startenButton;
+	private       JButton           stoppenButton;
+	private       JButton           arrowTop;
+	private       JButton           arrowUp;
+	private       JButton           arrowDown;
+	private       JButton           arrowBottom;
+	private       JComboBox<String> queueFinishedList;
+	private       JButton           editButton;
+	private       JButton           deleteButton;
+	private       JComboBox<String> queueViewList;
+	private       JButton           abortButton;
+	private       JSpinner          speedLimitSpinner;
+	private       JSpinner          maxUploadsSpinner;
 
 	@Inject
 	public QueueViewPanel(final QueueController controller)
@@ -79,7 +80,9 @@ public final class QueueViewPanel
 
 	private void setup()
 	{
-		this.controller.getQueueList().addQueueEntryList(this.controller.getQueueService().getAll());
+		for (final Queue queue : this.controller.getQueueService().getAll()) {
+			this.controller.getQueueList().addRow(queue);
+		}
 	}
 
 	private void initComponents()
@@ -87,10 +90,12 @@ public final class QueueViewPanel
 		this.queueTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
+			private static final long serialVersionUID = -8124241179871597973L;
+
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final Queue queue = ((QueueTableModel) table.getModel()).getQueueEntryAt(row);
+				final Queue queue = ((QueueTableModel) table.getModel()).getRow(row);
 				if (queue.locked) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
@@ -147,8 +152,8 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.abortUpload(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.abortUpload(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -169,8 +174,8 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.moveTop(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.moveTop(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -180,8 +185,8 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.moveUp(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.moveUp(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -191,8 +196,8 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.moveDown(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.moveDown(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -202,8 +207,8 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.moveBottom(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.moveBottom(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -215,9 +220,9 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-					QueueViewPanel.this.controller.editEntry(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
-					QueueViewPanel.this.controller.deleteEntry(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					QueueViewPanel.this.controller.editEntry(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+					QueueViewPanel.this.controller.deleteEntry(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
@@ -228,10 +233,10 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int[] selectedRows = QueueViewPanel.this.queueTable.getSelectedRows();
-				final ArrayList<Queue> queues = new ArrayList<Queue>(QueueViewPanel.this.queueTable.getRowCount());
+				final Collection<Queue> queues = new ArrayList<Queue>(QueueViewPanel.this.queueTable.getRowCount());
 				for (final int selectedRow : selectedRows) {
-					if (QueueViewPanel.this.controller.getQueueList().hasQueueEntryAt(selectedRow)) {
-						queues.add(QueueViewPanel.this.controller.getQueueList().getQueueEntryAt(selectedRow));
+					if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+						queues.add(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 					}
 				}
 
@@ -284,7 +289,7 @@ public final class QueueViewPanel
 		});
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadFinished(final String topic, final Object o)
 	{
 		this.startenButton.setEnabled(true);
@@ -294,8 +299,8 @@ public final class QueueViewPanel
 	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
 	public void onQueueStart(final String topic, final Object o)
 	{
-		QueueViewPanel.this.startenButton.setEnabled(false);
-		QueueViewPanel.this.stoppenButton.setEnabled(true);
+		this.startenButton.setEnabled(false);
+		this.stoppenButton.setEnabled(true);
 	}
 
 	public JPanel getJPanel()

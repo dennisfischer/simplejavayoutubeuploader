@@ -22,6 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
+import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.view.SocializeView;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
@@ -35,15 +36,11 @@ import java.awt.*;
  * Time: 19:38
  * To change this template use File | Settings | File Templates.
  */
-public class SocializePlugin implements org.chaosfisch.plugin.Pluggable
+public class SocializePlugin implements Pluggable
 {
-	private @Inject Injector        injector;
-	private @Inject PluginService   pluginService;
-	private @Inject SettingsService settingService;
-
-	public SocializePlugin()
-	{
-	}
+	@Inject private Injector        injector;
+	@Inject private PluginService   pluginService;
+	@Inject private SettingsService settingService;
 
 	@Override public void init()
 	{

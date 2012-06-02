@@ -59,6 +59,8 @@ public class UploadController
 	private final ExportManager      exportManager;
 	private final GenericListModel<Account>  accountListModel  = new GenericListModel<Account>()
 	{
+		private static final long serialVersionUID = 7368872570202779563L;
+
 		@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED)
 		public void onAccountAdded(final String topic, final Account element)
 		{
@@ -84,6 +86,8 @@ public class UploadController
 	private final GenericListModel<Preset>   presetListModel   = new GenericListModel<Preset>()
 	{
 
+		private static final long serialVersionUID = 5531366617857937110L;
+
 		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
 		public void onPresetAdded(final String topic, final Preset preset)
 		{
@@ -108,6 +112,8 @@ public class UploadController
 	};
 	private final GenericListModel<Playlist> playlistListModel = new GenericListModel<Playlist>()
 	{
+		private static final long serialVersionUID = 8997201386145568022L;
+
 		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
 		public void onPlaylistAdded(final String topic, final Playlist playlist)
 		{
@@ -130,11 +136,10 @@ public class UploadController
 			}
 		}
 	};
-	private       boolean                    autotitle         = false;
+	private boolean autotitle;
 
 	@Inject
-	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator,
-	                        final PlaylistService playlistService, final JFileChooser fileChooser)
+	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator, final PlaylistService playlistService, final JFileChooser fileChooser)
 	{
 		this.accountService = accountService;
 		this.presetService = presetService;
@@ -150,19 +155,19 @@ public class UploadController
 
 	public void deleteAccount(final Account account)
 	{
-		this.accountService.deleteAccountEntry(account);
+		this.accountService.delete(account);
 	}
 
 	public void deletePreset(final Preset preset)
 	{
 
 		this.presetListModel.removeElement(preset);
-		this.presetService.deletePresetEntry(preset);
+		this.presetService.delete(preset);
 	}
 
 	public void savePreset(final Preset preset)
 	{
-		this.presetService.updatePresetEntry(preset);
+		this.presetService.update(preset);
 	}
 
 	public void changeAutotitleCheckbox(final boolean selected)
@@ -199,7 +204,7 @@ public class UploadController
 	{
 		if (this.autotitle) {
 			//noinspection DuplicateStringLiteralInspection
-			EventBus.publish("autoTitleChanged", this.autoTitleGenerator.gernerate()); //NON-NLS
+			EventBus.publish(AutoTitleGenerator.AUTOTITLE_CHANGED, this.autoTitleGenerator.gernerate()); //NON-NLS
 		}
 	}
 
@@ -213,9 +218,8 @@ public class UploadController
 		return this.accountService;
 	}
 
-	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file,
-	                         final boolean commentvote, final boolean mobile, final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility,
-	                         final Date starttime)
+	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file, final boolean commentvote, final boolean mobile,
+							 final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility, final Date starttime)
 	{
 		final Queue queueEntity = new Queue();
 		queueEntity.account = account;
@@ -236,7 +240,7 @@ public class UploadController
 
 		if (playlist != null) {
 			playlist.number++;
-			this.playlistService.updatePlaylist(playlist);
+			this.playlistService.update(playlist);
 		}
 
 		switch (visibility) {
@@ -248,11 +252,11 @@ public class UploadController
 				break;
 		}
 
-		if (starttime.after(new Date(System.currentTimeMillis() + 60 * 60 * 1000))) {
-			queueEntity.started = starttime;
+		if (starttime.after(new Date(System.currentTimeMillis() + (3600000)))) {
+			queueEntity.started = new Date(starttime.getTime());
 		}
 
-		this.queueService.createQueue(queueEntity);
+		this.queueService.create(queueEntity);
 	}
 
 	public GenericListModel<Preset> getPresetListModel()
@@ -260,7 +264,7 @@ public class UploadController
 		return this.presetListModel;
 	}
 
-	public GenericListModel<Playlist> getPlaylistListModel()
+	public ComboBoxModel<Playlist> getPlaylistListModel()
 	{
 		return this.playlistListModel;
 	}
@@ -270,7 +274,7 @@ public class UploadController
 		this.playlistService.synchronizePlaylists(accounts);
 	}
 
-	@SuppressWarnings("UnusedParameters") @EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
+	@EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
 	public void onPlaylistSynchronize(final String topic, final Object object)
 	{
 		this.changeAccount((Account) this.accountListModel.getSelectedItem());

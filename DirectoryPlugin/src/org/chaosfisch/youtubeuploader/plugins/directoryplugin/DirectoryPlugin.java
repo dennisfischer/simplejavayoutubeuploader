@@ -52,6 +52,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,7 +64,8 @@ import java.awt.event.ActionListener;
  */
 public class DirectoryPlugin implements Pluggable
 {
-	private static final String[] DEPENDENCIES = new String[]{"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
+	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
+	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
 	@Inject private PluginService   pluginService;
 	@Inject private Injector        injector;
 	@Inject         DirectoryWorker directoryWorker;
@@ -74,7 +77,7 @@ public class DirectoryPlugin implements Pluggable
 
 	@Override public String[] getDependencies()
 	{
-		return DEPENDENCIES;
+		return DirectoryPlugin.DEPENDENCIES.clone();
 	}
 
 	@Override public String getName()
@@ -94,7 +97,7 @@ public class DirectoryPlugin implements Pluggable
 	@Override public void onStart()
 	{
 
-		final JMenuItem menuItem = new JMenuItem("Ordnerüberwachung", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
+		final JMenuItem menuItem = new JMenuItem(this.resourceBundle.getString("directoryobserver.label"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
 		menuItem.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
@@ -102,8 +105,8 @@ public class DirectoryPlugin implements Pluggable
 				final DirectoryViewPanel directoryViewPanel = DirectoryPlugin.this.injector.getInstance(DirectoryViewPanel.class);
 				directoryViewPanel.run();
 				directoryViewPanel.pack();
-				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));
-				directoryViewPanel.setTitle("Ordnerüberwachung");
+				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
+				directoryViewPanel.setTitle(DirectoryPlugin.this.resourceBundle.getString("directoryobserver.label"));
 				directoryViewPanel.setVisible(true);
 			}
 		});

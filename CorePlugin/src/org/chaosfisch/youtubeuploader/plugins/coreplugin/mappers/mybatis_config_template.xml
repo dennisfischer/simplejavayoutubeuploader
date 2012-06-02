@@ -21,14 +21,7 @@
 
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-
-	<typeAliases>
-		<typeAlias alias="Account" type="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account"/>
-		<typeAlias alias="Playlist" type="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist"/>
-		<typeAlias alias="Preset" type="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset"/>
-		<typeAlias alias="Queue" type="org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue"/>
-	</typeAliases>
-
+	%s
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type="JDBC"/>
@@ -40,12 +33,5 @@
 			</dataSource>
 		</environment>
 	</environments>
-
-	<mappers>
-		<mapper resource="org/mybatis/mappers/account.xml"/>
-		<mapper resource="org/mybatis/mappers/preset.xml"/>
-		<mapper resource="org/mybatis/mappers/playlist.xml"/>
-		<mapper resource="org/mybatis/mappers/queue.xml"/>
-	</mappers>
-
+	%s
 </configuration>

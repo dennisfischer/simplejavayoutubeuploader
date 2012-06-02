@@ -34,9 +34,10 @@ import java.awt.event.*;
  */
 public class DisabledGlassPane extends JComponent implements KeyListener
 {
-	private final static Border       MESSAGE_BORDER = new EmptyBorder(10, 10, 10, 10);
-	private final        JLabel       message        = new JLabel();
-	private final        JProgressBar progressBar    = new JProgressBar(0, 100);
+	private static final Border       MESSAGE_BORDER   = new EmptyBorder(10, 10, 10, 10);
+	private static final long         serialVersionUID = 6021041734286185845L;
+	private final        JLabel       message          = new JLabel();
+	private final        JProgressBar progressBar      = new JProgressBar(0, 100);
 	private Timer timer;
 
 	public DisabledGlassPane()
@@ -62,7 +63,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		this.add(this.message, mGrid);
 		this.add(this.progressBar, pGrid);
 		this.message.setOpaque(true);
-		this.message.setBorder(MESSAGE_BORDER);
+		this.message.setBorder(DisabledGlassPane.MESSAGE_BORDER);
 
 		//  Disable Mouse, Key and Focus events for the glass pane
 
@@ -120,7 +121,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	 */
 	public void activate(final String text)
 	{
-		if (text != null && text.length() > 0) {
+		if ((text != null) && !text.isEmpty()) {
 			this.message.setVisible(true);
 			this.message.setText(text);
 			this.message.setForeground(this.getForeground());
@@ -143,12 +144,12 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		this.timer.stop();
 	}
 
-	public void startTimer()
+	void startTimer()
 	{
 		if (this.timer == null) {
 			this.timer = new Timer(600, new ActionListener()
 			{
-				int progress = 0;
+				int progress;
 
 				public void actionPerformed(final ActionEvent event)
 				{

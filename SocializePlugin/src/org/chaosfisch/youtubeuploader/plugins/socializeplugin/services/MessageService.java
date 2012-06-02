@@ -21,11 +21,12 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.entities.Message;
+import com.google.inject.persist.Transactional;
+import org.bushe.swing.event.EventBus;
+import org.chaosfisch.util.CRUDService;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.mappers.MessageMapper;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,19 +35,15 @@ import java.util.List;
  * Time: 21:28
  * To change this template use File | Settings | File Templates.
  */
-public class MessageService
+public class MessageService implements CRUDService<Message>
 {
 
 	public static final String MESSAGE_ENTRY_ADDED   = "onMessageEntryAdded"; //NON-NLS
 	public static final String MESSAGE_ENTRY_REMOVED = "onMessageEntryRemoved"; //NON-NLS
 	public static final String MESSAGE_ENTRY_UPDATED = "onMessageEntryUpdated"; //NON-NLS
 
-	@Inject private Injector injector;
-
-	public enum Provider
-	{
-		FACEBOOK, TWITTER, GOOGLEPLUS, YOUTUBE
-	}
+	@Inject private Injector      injector;
+	@Inject private MessageMapper messageMapper;
 
 	public ISocialProvider get(final Provider provider)
 	{
@@ -63,42 +60,45 @@ public class MessageService
 		return null;
 	}
 
-	public void createMessageEntry(final Message message)
+	@Override @Transactional public Message create(final Message message)
 	{
+		this.messageMapper.createMessage(message);
+		EventBus.publish(MessageService.MESSAGE_ENTRY_ADDED, message);
+		return message;
 	}
 
-	public List<Message> getMessageEntriesByQueueID(final int queueID)
+	@Override @Transactional public Message update(final Message message)
 	{
-		final List<Message> messages = new ArrayList<Message>(0);
-		String query = "select m from Message as m WHERE m.uploadID = " + queueID;
-		return messages;
+		this.messageMapper.updateMessage(message);
+		EventBus.publish(MessageService.MESSAGE_ENTRY_UPDATED, message);
+		return message;
 	}
 
-	public List<Message> getMessageEntriesWithoutQueueID()
+	@Override @Transactional public void delete(final Message message)
 	{
-		final List<Message> messages = new ArrayList<Message>(0);
-		String query = "select m from Message as m WHERE m.uploadID = NULL";
-		return messages;
+		this.messageMapper.deleteMessage(message);
+		EventBus.publish(MessageService.MESSAGE_ENTRY_REMOVED, message);
 	}
 
-	public List<Message> getMessageEntries()
+	@Override @Transactional public Iterable<Message> getAll()
 	{
-		final List<Message> messages = new ArrayList<Message>(0);
-		String query = "SELECT m FROM Message as m order by identity";
-		return messages;
+		return this.messageMapper.getMessages();
 	}
 
-	public void clearWithoutQueueID()
+	@Override @Transactional public Iterable<Message> find(final Message message)
 	{
-		String query = "DELETE FROM Message as m WHERE m.uploadID = NULL";
+		return this.messageMapper.findMessages(message);
 	}
 
-	public void clearWithQueueID(final int identity)
+	@Transactional public Iterable<Message> findWithoutQueueID()
 	{
-		String query = "DELETE FROM Message as m WHERE m.uploadID = " + identity;
+		return this.messageMapper.findMessagesByQueueID(null);
 	}
 
-	public void removeMessageEntry(final Message message)
+	@Transactional public void clearByUploadID(final Integer uploadID)
 	{
+		for (final Message message : this.messageMapper.findMessagesByQueueID(uploadID)) {
+			this.delete(message);
+		}
 	}
 }

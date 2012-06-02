@@ -21,6 +21,9 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
@@ -37,7 +40,7 @@ import java.util.List;
  * Time: 22:20
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings("StringConcatenation") class ExportManager
+class ExportManager
 {
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"; //NON-NLS
 	private final XStream        xStream;
@@ -46,7 +49,7 @@ import java.util.List;
 	private final QueueService   queueService;
 	private final JFileChooser   fileChooser;
 
-	@SuppressWarnings("DuplicateStringLiteralInspection") @Inject
+	@Inject
 	public ExportManager(final XStream xStream, final AccountService accountService, final PresetService presetService, final QueueService queueService, final JFileChooser fileChooser)
 	{
 		this.xStream = xStream;
@@ -57,7 +60,6 @@ import java.util.List;
 		xStream.alias("entries", List.class); //NON-NLS
 	}
 
-	@SuppressWarnings("DuplicateStringLiteralInspection")
 	public void exportAccount()
 	{
 		final File file = this.showSaveDialog("account"); //NON-NLS
@@ -65,8 +67,8 @@ import java.util.List;
 			return;
 		}
 
-		final List accountEntries = this.accountService.getAllAccountEntry();
-		this.writeObjectToXMLFile(file, accountEntries, "UTF-8"); //NON-NLS
+		final List<Account> accounts = this.accountService.getAll();
+		this.writeObjectToXMLFile(file, accounts, "UTF-8"); //NON-NLS
 	}
 
 	public void exportPreset()
@@ -76,7 +78,7 @@ import java.util.List;
 			return;
 		}
 
-		final List presetEntries = this.presetService.getAllPresetEntry();
+		final List<Preset> presetEntries = this.presetService.getAll();
 		this.writeObjectToXMLFile(file, presetEntries, "UTF-8"); //NON-NLS
 	}
 
@@ -87,7 +89,7 @@ import java.util.List;
 			return;
 		}
 
-		final List queueEntries = this.queueService.getQueued();
+		final List<Queue> queueEntries = this.queueService.getQueued();
 		this.writeObjectToXMLFile(file, queueEntries, "UTF-8"); //NON-NLS
 	}
 
@@ -99,7 +101,7 @@ import java.util.List;
 			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName(charset));
 
 			try {
-				outputStreamWriter.write(XML_HEADER);
+				outputStreamWriter.write(ExportManager.XML_HEADER);
 				this.xStream.toXML(object, outputStreamWriter);
 			} catch (IOException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -111,6 +113,7 @@ import java.util.List;
 				} catch (IOException ignored) {
 				}
 			}
+		} catch (FileNotFoundException ignored) {
 		} catch (IOException ignored) {
 		}
 	}

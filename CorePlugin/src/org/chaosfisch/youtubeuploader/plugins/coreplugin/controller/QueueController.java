@@ -24,11 +24,13 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
+import org.chaosfisch.plugin.ExtensionPoints.ExtensionPoint;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueuePosition;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
 
 import javax.swing.*;
 import java.util.ResourceBundle;
@@ -48,7 +50,7 @@ public class QueueController
 	private final QueueService    queueService;
 	private final Uploader        uploader;
 
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.queueView"); //NON-NLS
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
 
 	@Inject
 	public QueueController(final QueueTableModel queueTableModel, final QueueService queueService, final Uploader uploader)
@@ -79,56 +81,62 @@ public class QueueController
 		this.uploader.setActionOnFinish((short) item);
 	}
 
-	public void moveTop(final Queue selectedRow)
+	public void moveTop(final Queue queue)
 	{
-		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_TOP);
-		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_TOP);
+		this.queueService.sort(queue, QueuePosition.QUEUE_TOP);
+		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_TOP);
 	}
 
-	public void moveUp(final Queue selectedRow)
+	public void moveUp(final Queue queue)
 	{
-		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_UP);
-		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_UP);
+		this.queueService.sort(queue, QueuePosition.QUEUE_UP);
+		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_UP);
 	}
 
-	public void moveDown(final Queue selectedRow)
+	public void moveDown(final Queue queue)
 	{
-		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_DOWN);
-		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_DOWN);
+		this.queueService.sort(queue, QueuePosition.QUEUE_DOWN);
+		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_DOWN);
 	}
 
-	public void moveBottom(final Queue selectedRow)
+	public void moveBottom(final Queue queue)
 	{
-		this.queueService.sortList(selectedRow, QueuePosition.QUEUE_BOTTOM);
-		this.queueList.sortQueueEntry(selectedRow, QueuePosition.QUEUE_BOTTOM);
+		this.queueService.sort(queue, QueuePosition.QUEUE_BOTTOM);
+		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_BOTTOM);
 	}
 
 	public void changeQueueView(final short item)
 	{
-		this.queueList.removeAll();
+		this.queueList.removeRowRange(0, this.queueList.getRowCount() - 1);
 		switch (item) {
 			case 0:
-				this.queueList.addQueueEntryList(this.queueService.getAll());
+				for (final Queue queue : this.queueService.getAll()) {
+					this.queueList.addRow(queue);
+				}
 				break;
 			case 1:
-				this.queueList.addQueueEntryList(this.queueService.getArchived());
+				for (final Queue queue : this.queueService.getArchived()) {
+					this.queueList.addRow(queue);
+				}
 				break;
 			case 2:
-				this.queueList.addQueueEntryList(this.queueService.getQueued());
+				for (final Queue queue : this.queueService.getQueued()) {
+					this.queueList.addRow(queue);
+				}
 				break;
 		}
 	}
 
-	public void deleteEntry(final Queue queueEntityAt)
+	public void deleteEntry(final Queue queue)
 	{
-		this.uploader.abort(queueEntityAt);
-		this.getQueueList().removeQueueEntry(queueEntityAt);
-		this.queueService.deleteQueue(queueEntityAt);
+		this.uploader.abort(queue);
+		this.getQueueList().removeElement(queue);
+		this.queueService.delete(queue);
 	}
 
-	public void editEntry(final Queue queueEntityAt)
+	public void editEntry(final Queue queue)
 	{
-		EventBus.publish(QueueService.EDIT_QUEUE_ENTRY, queueEntityAt);
+		EventBus.publish(UploadViewPanel.EDIT_QUEUE_ENTRY, queue);
 	}
 
 	public QueueTableModel getQueueList()
@@ -151,7 +159,7 @@ public class QueueController
 		this.uploader.setMaxUploads(maxUploads);
 	}
 
-	public ExitExtensionPoint uploadExitPoint()
+	public ExtensionPoint uploadExitPoint()
 	{
 		return new ExitExtensionPoint()
 		{
@@ -160,8 +168,8 @@ public class QueueController
 			{
 				if (QueueController.this.uploader.isRunning()) {
 					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
-					                                                 //NON-NLS
-					                                                 JOptionPane.YES_NO_OPTION);
+																	 //NON-NLS
+																	 JOptionPane.YES_NO_OPTION);
 					return result == 0;
 				}
 				return true;

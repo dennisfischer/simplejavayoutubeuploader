@@ -39,10 +39,10 @@ public class Computer
 	public static void hibernateComputer()
 	{
 		String command = "";
-		if (isWindows()) {
+		if (Computer.isWindows()) {
 			command = "rundll32 powrprof.dll,SetSuspendState";
 		}
-		if (isUnix()) {
+		if (Computer.isUnix()) {
 			command = "pm-hibernate";
 		}
 
@@ -57,10 +57,10 @@ public class Computer
 	public static void shutdownComputer()
 	{
 		String command = "";
-		if (isWindows()) {
+		if (Computer.isWindows()) {
 			command = "shutdown -t 60 -s";
 		}
-		if (isUnix()) {
+		if (Computer.isUnix()) {
 			command = "shutdown -t 60 -h";
 		}
 		try {

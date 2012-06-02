@@ -50,9 +50,9 @@ public class HyperlinkMouseAdapter extends MouseAdapter
 	{
 		final JTable target = (JTable) e.getSource();
 		final int selectedColumn = target.getSelectedColumn();
-		if (e.getClickCount() == 2 && selectedColumn == this.column) {
+		if ((e.getClickCount() == 2) && (selectedColumn == this.column)) {
 			final String label = (String) target.getValueAt(target.getSelectedRow(), selectedColumn);
-			if (this.extractUrl(label) != null && Desktop.isDesktopSupported()) {
+			if ((this.extractUrl(label) != null) && Desktop.isDesktopSupported()) {
 				try {
 					Desktop.getDesktop().browse(new URI(this.extractUrl(label)));
 				} catch (URISyntaxException e1) {

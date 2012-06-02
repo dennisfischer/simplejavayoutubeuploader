@@ -28,6 +28,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
  */
 public class OAuthAPIData
 {
-	public static final String GOOGLE_APIKEY    = "584002212402.apps.googleusercontent.com";
-	public static final String GOOGLE_APISECRET = "eSn2KQCZ0RiLwHFFAqRHamlu";
+	public static final String GOOGLE_APIKEY    = "584002212402.apps.googleusercontent.com";//NON-NLS
+	public static final String GOOGLE_APISECRET = "eSn2KQCZ0RiLwHFFAqRHamlu";//NON-NLS
 }

@@ -23,8 +23,8 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersi
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -38,7 +38,7 @@ import java.util.Properties;
 public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 {
 	private final Properties properties = new Properties();
-	private final String     fileName   = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/config.properties"; //NON-NLS
+	private final String     fileName   = String.format("%s/SimpleJavaYoutubeUploader/config.properties", System.getProperty("user.home")); //NON-NLS
 
 	public PropertyFileSettingsPersisterImpl()
 	{
@@ -47,7 +47,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 			try {
 				//noinspection ResultOfMethodCallIgnored
 				file.createNewFile();
-			} catch (IOException ex) {
+			} catch (IOException ignored) {
 				return;
 			}
 		}
@@ -99,7 +99,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 			try {
 				//noinspection ResultOfMethodCallIgnored
 				file.createNewFile();
-			} catch (IOException e) {
+			} catch (IOException ignored) {
 				return;
 			}
 		}
@@ -126,10 +126,10 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 
 	@Override public Map<String, Object> getAll()
 	{
-		final Enumeration<Object> keys = this.properties.keys();
-		final HashMap<String, Object> map = new HashMap<String, Object>(this.properties.size());
-		while (keys.hasMoreElements()) {
-			final String key = (String) keys.nextElement();
+		final Iterator<Object> iterator = this.properties.keySet().iterator();
+		final Map<String, Object> map = new HashMap<String, Object>(this.properties.size());
+		while (iterator.hasNext()) {
+			final String key = (String) iterator.next();
 
 			if (this.has(key)) {
 				map.put(key, this.get(key));

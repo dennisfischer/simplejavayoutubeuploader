@@ -30,9 +30,13 @@ import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.GoogleAuthorization;
 import org.chaosfisch.google.auth.GoogleRequestSigner;
 import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.google.request.HTTP_STATUS;
 import org.chaosfisch.google.request.Request;
 import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PlaylistMapper;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PresetMapper;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.QueueMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
@@ -41,9 +45,6 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountSer
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.mybatis.guice.transactional.Transactional;
-import org.mybatis.mappers.PlaylistMapper;
-import org.mybatis.mappers.PresetMapper;
-import org.mybatis.mappers.QueueMapper;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -78,26 +79,26 @@ public class PlaylistServiceImpl implements PlaylistService
 		return this.playlistMapper.getAll();
 	}
 
-	@Transactional @Override public Playlist findPlaylist(final int id)
+	@Transactional @Override public Playlist find(final int id)
 	{
 		return this.playlistMapper.findPlaylist(id);
 	}
 
-	@Transactional @Override public Playlist createPlaylist(final Playlist playlist)
+	@Transactional @Override public Playlist create(final Playlist playlist)
 	{
 		this.playlistMapper.createPlaylist(playlist);
-		EventBus.publish(PLAYLIST_ENTRY_ADDED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_ADDED, playlist);
 		return playlist;
 	}
 
-	@Transactional @Override public Playlist updatePlaylist(final Playlist playlist)
+	@Transactional @Override public Playlist update(final Playlist playlist)
 	{
 		this.playlistMapper.updatePlaylist(playlist);
-		EventBus.publish(PLAYLIST_ENTRY_UPDATED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_UPDATED, playlist);
 		return playlist;
 	}
 
-	@Transactional @Override public Playlist deletePlaylist(final Playlist playlist)
+	@Transactional @Override public Playlist delete(final Playlist playlist)
 	{
 		final List<Preset> presets = this.presetMapper.findByPlaylist(playlist);
 		for (final Preset preset : presets) {
@@ -111,7 +112,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		}
 
 		this.playlistMapper.deletePlaylist(playlist);
-		EventBus.publish(PLAYLIST_ENTRY_REMOVED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_REMOVED, playlist);
 		return playlist;
 	}
 
@@ -123,15 +124,15 @@ public class PlaylistServiceImpl implements PlaylistService
 			@Override
 			protected void background()
 			{
-				Request request = null;
+				final Request request;
 				try {
-					request = new Request.Builder(Request.Method.GET, new URL(YOUTUBE_PLAYLIST_FEED_50_RESULTS)).build();
-				} catch (MalformedURLException e) {
+					request = new Request.Builder(Request.Method.GET, new URL(PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS)).build();
+				} catch (MalformedURLException ignored) {
 					return;
 				}
 				for (final Account account : accounts) {
 
-					Response response = null;
+					final Response response;
 					try {
 						final Request tmpRequest = (Request) request.clone();
 						PlaylistServiceImpl.this.getRequestSigner(account).sign(request);
@@ -147,7 +148,7 @@ public class PlaylistServiceImpl implements PlaylistService
 						return;
 					}
 
-					if (response.code == 200) {
+					if (response.code == HTTP_STATUS.OK.getCode()) {
 						final Feed feed = PlaylistServiceImpl.this.parseFeed(response.body, Feed.class);
 
 						if (feed.videoEntries == null) {
@@ -161,7 +162,7 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.url = entry.title;
 							playlist.summary = entry.playlistSummary;
 							playlist.account = account;
-							PlaylistServiceImpl.this.createPlaylist(playlist);
+							PlaylistServiceImpl.this.create(playlist);
 						}
 					}
 				}
@@ -179,7 +180,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		final VideoEntry entry = new VideoEntry();
 		entry.title = playlist.title;
 		entry.playlistSummary = playlist.summary;
-		final String atomData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + this.parseObjectToFeed(entry); //NON-NLS
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", this.parseObjectToFeed(entry)); //NON-NLS
 
 		try {
 			final Request request = new Request.Builder(Request.Method.POST, new URL("http://gdata.youtube.com/feeds/api/users/default/playlists")).build();
@@ -196,11 +197,11 @@ public class PlaylistServiceImpl implements PlaylistService
 				final Response response = request.send();
 				System.out.println(response.body);
 				System.out.println(response.message);
-				if (response.code == 200 || response.code == 201) {
+				if ((response.code == 200) || (response.code == 201)) {
 					System.out.println(response.code);
 					System.out.println(response.message);
 
-					final LinkedList<Account> accountEntries = new LinkedList<Account>();
+					final List<Account> accountEntries = new LinkedList<Account>();
 					accountEntries.add(playlist.account);
 					this.synchronizePlaylists(accountEntries);
 				}
@@ -213,10 +214,9 @@ public class PlaylistServiceImpl implements PlaylistService
 				} catch (IOException ignored) {
 				}
 			}
+		} catch (MalformedURLException ignored) {
 		} catch (IOException ignored) {
-			ignored.printStackTrace();
 		} catch (AuthenticationException ignored) {
-			ignored.printStackTrace();
 		}
 
 		return null;
@@ -284,7 +284,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED) public void onAccountAdded(final String topic, final Account account)
 	{
-		final LinkedList<Account> accounts = new LinkedList<Account>();
+		final List<Account> accounts = new LinkedList<Account>();
 		accounts.add(account);
 		this.synchronizePlaylists(accounts);
 	}

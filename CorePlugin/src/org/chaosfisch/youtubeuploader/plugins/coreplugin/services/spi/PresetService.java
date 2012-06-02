@@ -32,17 +32,17 @@ import java.util.List;
  */
 public interface PresetService
 {
-	public static final String PRESET_ENTRY_ADDED   = "presetEntryAdded"; //NON-NLS
-	public static final String PRESET_ENTRY_REMOVED = "presetEntryRemoved"; //NON-NLS
-	public static final String PRESET_ENTRY_UPDATED = "presetEntryUpdated"; //NON-NLS
+	String PRESET_ENTRY_ADDED   = "presetEntryAdded"; //NON-NLS
+	String PRESET_ENTRY_REMOVED = "presetEntryRemoved"; //NON-NLS
+	String PRESET_ENTRY_UPDATED = "presetEntryUpdated"; //NON-NLS
 
-	Preset createPresetEntry(Preset preset);
+	Preset create(Preset preset);
 
-	Preset deletePresetEntry(Preset preset);
+	Preset delete(Preset preset);
 
-	Preset updatePresetEntry(Preset preset);
+	Preset update(Preset preset);
 
-	List<Preset> getAllPresetEntry();
+	List<Preset> getAll();
 
-	Preset findPresetEntry(int identifier);
+	Preset find(int identifier);
 }

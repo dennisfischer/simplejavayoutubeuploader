@@ -39,7 +39,7 @@ public class ColumnsAutoSizer
 
 	public static void sizeColumnsToFit(final JTable table)
 	{
-		sizeColumnsToFit(table, 5);
+		ColumnsAutoSizer.sizeColumnsToFit(table, 5);
 	}
 
 	@SuppressWarnings({"SameParameterValue", "UnusedParameters"})
@@ -62,12 +62,12 @@ public class ColumnsAutoSizer
 
 			minWidths[columnIndex] = headerWidth + 20;
 
-			final int maxWidth = getMaximalRequiredColumnWidth(table, columnIndex, headerWidth);
+			final int maxWidth = ColumnsAutoSizer.getMaximalRequiredColumnWidth(table, columnIndex, headerWidth);
 
 			maxWidths[columnIndex] = Math.max(maxWidth, minWidths[columnIndex]) + 20;
 		}
 
-		adjustMaximumWidths(table, minWidths, maxWidths);
+		ColumnsAutoSizer.adjustMaximumWidths(table, minWidths, maxWidths);
 
 		for (int i = 0; i < minWidths.length; i++) {
 			if (minWidths[i] > 0) {
@@ -81,28 +81,28 @@ public class ColumnsAutoSizer
 			}
 		}
 
-		stretchTable(table, maxWidths);
+		ColumnsAutoSizer.stretchTable(table, maxWidths);
 	}
 
-	private static void stretchTable(final JTable table, final int[] maxWidths)
+	private static void stretchTable(final JTable table, final int... maxWidths)
 	{
-		if (sum(maxWidths) < table.getWidth()) {
-			final int diff = table.getWidth() - sum(maxWidths);
+		if (ColumnsAutoSizer.sum(maxWidths) < table.getWidth()) {
+			final int diff = table.getWidth() - ColumnsAutoSizer.sum(maxWidths);
 			table.getColumnModel().getColumn(maxWidths.length - 1).setMinWidth(maxWidths[maxWidths.length - 1] + diff);
 			table.getColumnModel().getColumn(maxWidths.length - 1).setMaxWidth(maxWidths[maxWidths.length - 1] + diff);
 			table.getColumnModel().getColumn(maxWidths.length - 1).setWidth(maxWidths[maxWidths.length - 1] + diff);
 		}
 	}
 
-	private static void adjustMaximumWidths(final JTable table, final int[] minWidths, final int[] maxWidths)
+	private static void adjustMaximumWidths(final JTable table, final int[] minWidths, final int... maxWidths)
 	{
 		if (table.getWidth() > 0) {
 			// to prevent infinite loops in exceptional situations
 			int breaker = 0;
 
 			// keep stealing one pixel of the maximum width of the highest column until we can fit in the width of the table
-			while (sum(maxWidths) > table.getWidth() && breaker < 10000) {
-				final int highestWidthIndex = findLargestIndex(maxWidths);
+			while ((ColumnsAutoSizer.sum(maxWidths) > table.getWidth()) && (breaker < 10000)) {
+				final int highestWidthIndex = ColumnsAutoSizer.findLargestIndex(maxWidths);
 
 				maxWidths[highestWidthIndex] -= 1;
 
@@ -136,7 +136,7 @@ public class ColumnsAutoSizer
 		return maxWidth;
 	}
 
-	private static int findLargestIndex(final int[] widths)
+	private static int findLargestIndex(final int... widths)
 	{
 		int largestIndex = 0;
 		int largestValue = 0;
@@ -151,7 +151,7 @@ public class ColumnsAutoSizer
 		return largestIndex;
 	}
 
-	private static int sum(final int[] widths)
+	private static int sum(final int... widths)
 	{
 		int sum = 0;
 

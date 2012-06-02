@@ -30,9 +30,7 @@ import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,8 +42,8 @@ import java.util.Vector;
 public class SettingsServiceImpl implements SettingsService
 {
 	private SettingsPersister settingsPersister;
-	private final LinkedList<String>                             changedList                  = new LinkedList<String>();
-	private final HashMap<String, Vector<SettingsViewComponent>> settingsViewComponentHashMap = new HashMap<String, Vector<SettingsViewComponent>>(100);
+	private final Collection<String>                         changedList                  = new LinkedList<String>();
+	private final Map<String, Vector<SettingsViewComponent>> settingsViewComponentHashMap = new HashMap<String, Vector<SettingsViewComponent>>(100);
 	@InjectLogger   Logger   logger;
 	@Inject private Injector injector;
 
@@ -56,7 +54,7 @@ public class SettingsServiceImpl implements SettingsService
 
 	@Override public Object get(final String uniqueKey, final String defaultValue)
 	{
-		if (this.settingsPersister.has(uniqueKey) && !this.settingsPersister.get(uniqueKey).equals("") && this.settingsPersister.get(uniqueKey) != null) {
+		if (this.settingsPersister.has(uniqueKey) && !this.settingsPersister.get(uniqueKey).equals("") && (this.settingsPersister.get(uniqueKey) != null)) {
 			return this.settingsPersister.get(uniqueKey);
 		}
 		this.settingsPersister.set(uniqueKey, defaultValue);
@@ -73,7 +71,7 @@ public class SettingsServiceImpl implements SettingsService
 	{
 		this.settingsPersister.save();
 		for (final String uniqueKey : this.changedList) {
-			EventBus.publish(SETTINGS_SAVED, uniqueKey);
+			EventBus.publish(SettingsService.SETTINGS_SAVED, uniqueKey);
 		}
 		this.changedList.clear();
 	}
@@ -100,7 +98,7 @@ public class SettingsServiceImpl implements SettingsService
 		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jSpinner));
 	}
 
-	@Override public void addCombobox(final String uniqueKey, final String label, final DefaultComboBoxModel comboBoxModel)
+	@Override public void addCombobox(final String uniqueKey, final String label, final ComboBoxModel comboBoxModel)
 	{
 		final JComboBox jComboBox = new JComboBox();
 		jComboBox.setName(uniqueKey);
@@ -153,8 +151,8 @@ public class SettingsServiceImpl implements SettingsService
 		return uniqueKey.substring(uniqueKey.substring(0, index).lastIndexOf(".") + 1, index); //NON-NLS
 	}
 
-	@Override public HashMap<String, Vector<SettingsViewComponent>> getMap()
+	@Override public Map<String, Vector<SettingsViewComponent>> getMap()
 	{
-		return this.settingsViewComponentHashMap;
+		return Collections.unmodifiableMap(this.settingsViewComponentHashMap);
 	}
 }

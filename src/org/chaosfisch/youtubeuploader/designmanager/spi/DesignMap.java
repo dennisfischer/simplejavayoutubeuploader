@@ -28,5 +28,7 @@ import java.util.ArrayList;
  * Time: 18:04
  * To change this template use File | Settings | File Templates.
  */
-abstract public class DesignMap extends ArrayList<Design>
-{}
+public abstract class DesignMap extends ArrayList<Design>
+{
+	private static final long serialVersionUID = 3308558749039387266L;
+}
