@@ -252,7 +252,7 @@ public class UploadController
 				break;
 		}
 
-		if (starttime.after(new Date(System.currentTimeMillis() + (3600000)))) {
+		if (starttime.after(new Date(System.currentTimeMillis() + (300000)))) {
 			queueEntity.started = new Date(starttime.getTime());
 		}
 

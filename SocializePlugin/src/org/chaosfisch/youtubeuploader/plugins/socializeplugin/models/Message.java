@@ -32,13 +32,13 @@ public class Message implements IModel
 {
 	public transient Integer identity;
 	public           String  message;
-	public           Integer uploadID;
+	public           Integer uploadid;
 	public           Boolean facebook;
 	public           Boolean twitter;
 	public           Boolean youtube;
-	public           Boolean googlePlus;
+	public           Boolean googleplus;
 
-	@Override public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

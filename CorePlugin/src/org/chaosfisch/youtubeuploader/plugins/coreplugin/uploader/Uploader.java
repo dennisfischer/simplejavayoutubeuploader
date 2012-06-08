@@ -100,6 +100,8 @@ public class Uploader
 							Uploader.this.executorService.submit(uploadWorker);
 							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
 							Uploader.this.runningUploads++;
+
+							System.out.println(runningUploads);
 						}
 					}
 
@@ -141,12 +143,14 @@ public class Uploader
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
 	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
+		this.logger.info("Upload successful");
 		this.uploadFinished(queue);
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
 	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
 	{
+		this.logger.info("Upload failed");
 		this.uploadFinished(uploadFailed.getQueue());
 	}
 

@@ -72,9 +72,9 @@ public class MessageController
 				message.message = messageTextAreaText;
 				message.facebook = facebookButtonSellected;
 				message.twitter = twitterButtonSelected;
-				message.googlePlus = googlePlusButtonSelected;
+				message.googleplus = googlePlusButtonSelected;
 				message.youtube = youtubeButtonSelected;
-				message.uploadID = uploadIDSpinnerValue;
+				message.uploadid = uploadIDSpinnerValue;
 				this.messageService.create(message);
 				break;
 			case 1:
@@ -82,7 +82,7 @@ public class MessageController
 				message.message = messageTextAreaText;
 				message.facebook = facebookButtonSellected;
 				message.twitter = twitterButtonSelected;
-				message.googlePlus = googlePlusButtonSelected;
+				message.googleplus = googlePlusButtonSelected;
 				message.youtube = youtubeButtonSelected;
 				this.messageService.create(message);
 				break;
@@ -130,9 +130,9 @@ public class MessageController
 	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
 		final Message findParameter = new Message();
-		findParameter.uploadID = queue.getIdentity();
+		findParameter.uploadid = queue.getIdentity();
 		for (final Message message : this.messageService.find(findParameter)) {
-			this.publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googlePlus, message.youtube); //NON-NLS
+			this.publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googleplus, message.youtube); //NON-NLS
 		}
 		this.messageService.clearByUploadID(queue.getIdentity());
 	}
@@ -141,7 +141,7 @@ public class MessageController
 	public void onUploadsFinished(final String topic, final Object o)
 	{
 		for (final Message message : this.messageService.findWithoutQueueID()) {
-			this.publish(message.message, message.facebook, message.twitter, message.googlePlus, message.youtube);
+			this.publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
 		}
 
 		this.messageService.clearByUploadID(null);

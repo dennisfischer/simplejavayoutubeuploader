@@ -52,6 +52,7 @@ import java.util.List;
  */
 public class DirectoryWorker extends Thread
 {
+	private static final int MAX_OBSERVERS = 20;
 	private               boolean               stop;
 	private               long                  intervall;
 	private               FileAlterationMonitor fileAlterationMonitor;
@@ -89,7 +90,7 @@ public class DirectoryWorker extends Thread
 	private FileAlterationObserver[] initObservers()
 	{
 		final List<Directory> directories = this.directoryService.getActive();
-		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[20];
+		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[DirectoryWorker.MAX_OBSERVERS];
 		final FileFilter mediaFileFilter = new MediaFileFilter();
 		final FileAlterationListener fileAlterationListener = new MediaFileAlternationListener();
 		int i = 0;
@@ -190,6 +191,7 @@ public class DirectoryWorker extends Thread
 	{
 
 		private static final long serialVersionUID = -2933681858342032049L;
+		private static final int  WAIT_CHECKTIME   = 10000;
 
 		@Override
 		public boolean accept(final File file)
@@ -212,7 +214,7 @@ public class DirectoryWorker extends Thread
 			final long checkedAt = file.lastModified();
 			final long fileSizeAt = file.length();
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(MediaFileFilter.WAIT_CHECKTIME);
 			} catch (InterruptedException ignored) {
 
 			}

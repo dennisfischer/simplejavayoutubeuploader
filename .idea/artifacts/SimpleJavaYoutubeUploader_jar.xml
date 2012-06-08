@@ -23,6 +23,7 @@
         <element id="library" level="project" name="mybatis-3.1.1" />
         <element id="library" level="project" name="mybatis-guice-3.3" />
         <element id="library" level="project" name="jgoodies-validation-2.4" />
+        <element id="library" level="project" name="swing" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />

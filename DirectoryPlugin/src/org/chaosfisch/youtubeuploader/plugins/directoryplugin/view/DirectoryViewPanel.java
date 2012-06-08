@@ -74,8 +74,9 @@ public class DirectoryViewPanel extends JDialog
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final Directory directory = ((DirectoryTableModel) table.getModel()).getRow(row);
+				@SuppressWarnings("OverlyStrongTypeCast") final Directory directory = ((DirectoryTableModel) table.getModel()).getRow(row);
 				if (directory.locked) {
+					// noinspection MagicNumber
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
 				} else {

@@ -130,7 +130,7 @@ public class MenuViewPanel
 			}
 		});
 
-		this.addAccountMenuItem = new JMenuItem("Account hinzufügen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/key_add.png"))); //NON-NLS
+		this.addAccountMenuItem = new JMenuItem(this.resourceBundle.getString("accountDialog.addAccountMenuLabel"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/key_add.png"))); //NON-NLS
 		this.addAccountMenuItem.addActionListener(new ActionListener()
 		{
 			@SuppressWarnings("CallToStringEquals") @Override
@@ -183,7 +183,12 @@ public class MenuViewPanel
 				final ValidationResultModel validationResultModel = new DefaultValidationResultModel();
 				final JPanel validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(validationResultModel);
 
-				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString("playlistDialog.descriptionLabel"), scrollPane, validationPanel};
+				final Account[] accounts = new Account[MenuViewPanel.this.accountService.getAll().size()];
+				MenuViewPanel.this.accountService.getAll().toArray(accounts);
+				final JComboBox<Account> accountList = new JComboBox<Account>(accounts);
+
+				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
+						"playlistDialog.descriptionLabel"), scrollPane, "Account", accountList, validationPanel};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, MenuViewPanel.this.resourceBundle.getString("playlistDialog.addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -191,18 +196,18 @@ public class MenuViewPanel
 
 						final ValidationResult validationResult = new ValidationResult();
 						if (nameTextField.getText().isEmpty()) {
-							validationResult.addError("Der Playlist-Name darf nicht leer sein!");
+							validationResult.addError(MenuViewPanel.this.resourceBundle.getString("validation.playlistname"));
 						} else if (descriptionTextArea.getText().isEmpty()) {
-							validationResult.addError("Die Beschreibung darf nicht leer sein!");
-						} else if (MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem() == null) {
-							validationResult.addError("Es ist kein Account verfügbar!");
+							validationResult.addError(MenuViewPanel.this.resourceBundle.getString("validation.playlistdescription"));
+						} else if (accountList.getSelectedItem() == null) {
+							validationResult.addError(MenuViewPanel.this.resourceBundle.getString("validation.playlistaccount"));
 						} else {
 							final Playlist playlist = new Playlist();
 							playlist.title = nameTextField.getText();
 							playlist.summary = descriptionTextArea.getText();
-							playlist.account = (Account) MenuViewPanel.this.uploadController.getAccountListModel().getSelectedItem();
+							playlist.account = (Account) accountList.getSelectedItem();
 							if (playlist.account != null) {
-								MenuViewPanel.this.playlistService.create(playlist);
+								MenuViewPanel.this.playlistService.addYoutubePlaylist(playlist);
 								break;
 							} else {
 								break;
@@ -232,7 +237,7 @@ public class MenuViewPanel
 					if (result == JOptionPane.OK_OPTION) {
 						if (nameTextField.getText().isEmpty()) {
 							final ValidationResult validationResult = new ValidationResult();
-							validationResult.addError("Der Preset-Name darf nicht leer sein!");
+							validationResult.addError(MenuViewPanel.this.resourceBundle.getString("validation.presetname"));
 							validationResultModel.setResult(validationResult);
 						} else {
 							final Preset preset = new Preset();

@@ -29,8 +29,16 @@
 		SELECT * FROM PLAYLISTS
 	</select>
 
-	<select id="findPlaylist" resultType="Playlist" parameterType="int">
-		SELECT * FROM PLAYLISTS WHERE identity = #{id}
+	<select id="findPlaylist" resultType="Playlist" parameterType="Playlist">
+		SELECT * FROM PLAYLISTS
+		<where>
+			<if test="identity != null">
+				identity = #{identity}
+			</if>
+			<if test="playlistKey != null">
+				AND playlistKey = #{playlistKey}
+			</if>
+		</where>
 	</select>
 
 	<select id="findPlaylists" resultType="Playlist" parameterType="Account">

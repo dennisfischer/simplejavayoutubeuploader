@@ -38,7 +38,7 @@ public class Account implements IModel
 	public transient  List<Queue>    queue;
 	public transient  List<Playlist> playlists;
 
-	@Override public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

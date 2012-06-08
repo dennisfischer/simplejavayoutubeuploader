@@ -26,7 +26,6 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
  * Time: 16:40
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings({"MagicCharacter"})
 public class TagParser
 {
 	private static final char DELIMITER       = ' ';
@@ -51,7 +50,7 @@ public class TagParser
 				case TagParser.DELIMITER:
 					if (TagParser.blockOpen) {
 						parsedOutput += input.charAt(i);
-					} else if ((parsedOutput.lastIndexOf(',') != parsedOutput.length()) && ((i + 1) != input.length())) {
+					} else if ((parsedOutput.lastIndexOf(",") != parsedOutput.length()) && ((i + 1) != input.length())) {
 						parsedOutput += ",";
 					}
 					break;

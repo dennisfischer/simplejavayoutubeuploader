@@ -66,14 +66,7 @@
           <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
-        <properties>
-          <model>
-            <item value="Nichts tun"/>
-            <item value="Anwendung beenden"/>
-            <item value="Herunterfahren"/>
-            <item value="Ruhezustand"/>
-          </model>
-        </properties>
+        <properties/>
       </component>
       <component id="c810b" class="javax.swing.JButton" binding="editButton">
         <constraints>
@@ -101,13 +94,7 @@
           <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
-        <properties>
-          <model>
-            <item value="Alle"/>
-            <item value="Hochgeladen"/>
-            <item value="In Warteschlange"/>
-          </model>
-        </properties>
+        <properties/>
       </component>
       <component id="8d681" class="javax.swing.JButton" binding="abortButton">
         <constraints>

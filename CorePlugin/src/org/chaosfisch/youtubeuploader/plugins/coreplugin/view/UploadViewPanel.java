@@ -24,6 +24,8 @@
  */
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
+import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationParameters;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.jgoodies.validation.ValidationResult;
@@ -56,10 +58,9 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 public final class UploadViewPanel
 {
@@ -101,7 +102,8 @@ public final class UploadViewPanel
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
-	public static final String EDIT_QUEUE_ENTRY = "editQueueEntry"; //NON-NLS
+	public static final String         EDIT_QUEUE_ENTRY = "editQueueEntry"; //NON-NLS
+	private final       ResourceBundle resourceBundle   = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
 
 	public UploadViewPanel()
 	{
@@ -152,7 +154,7 @@ public final class UploadViewPanel
 		this.startzeitpunktSpinner.setEditor(timeEditor);
 		this.startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
 
-		this.fileSearchMenuItem = new JMenuItem("Datei(en) öffnen", new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
+		this.fileSearchMenuItem = new JMenuItem(this.resourceBundle.getString("menuitem.openfile"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
 		this.fileSearchMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -169,17 +171,24 @@ public final class UploadViewPanel
 		this.hintLabel.setIcon(ValidationResultViewFactory.getInfoIcon());
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(new FocusChangeHandler());
 
-		ValidationComponentUtils.setInputHint(this.fileList, "Select a file to upload.");
-		ValidationComponentUtils.setInputHint(this.titleTextField, "Enter a title with 5 - 100 characters.");
-		ValidationComponentUtils.setInputHint(this.categoryList, "Select a category.");
-		ValidationComponentUtils.setInputHint(this.descriptionTextArea, "Enter a description with 5 - 5000 characters.");
-		ValidationComponentUtils.setInputHint(this.tagsTextArea, "Enter tags with 2-30 characters.");
-		ValidationComponentUtils.setInputHint(this.autotitleTextField, "Enter an autotitle. You can use {file}, {playlist}, {number}.");
-		ValidationComponentUtils.setInputHint(this.defaultdirTextField, "Select a directory to be used as default.");
-		ValidationComponentUtils.setInputHint(this.visibilityList, "Choose the video visibility.");
-		ValidationComponentUtils.setInputHint(this.videoresponseList, "Choose the videoreponse permissions");
-		ValidationComponentUtils.setInputHint(this.commentList, "Choose the comment permissions.");
-		ValidationComponentUtils.setInputHint(this.accountList, "Select an account to upload to.");
+		ValidationComponentUtils.setInputHint(this.fileList, this.resourceBundle.getString("inputhint.filelist"));
+		ValidationComponentUtils.setInputHint(this.titleTextField, this.resourceBundle.getString("inputhint.title"));
+		ValidationComponentUtils.setInputHint(this.categoryList, this.resourceBundle.getString("inputhint.category"));
+		ValidationComponentUtils.setInputHint(this.descriptionTextArea, this.resourceBundle.getString("inputhint.description"));
+		ValidationComponentUtils.setInputHint(this.tagsTextArea, this.resourceBundle.getString("inputhint.tags"));
+		ValidationComponentUtils.setInputHint(this.autotitleTextField, this.resourceBundle.getString("inputhint.autotitle"));
+		ValidationComponentUtils.setInputHint(this.defaultdirTextField, this.resourceBundle.getString("inputhint.defaultdir"));
+		ValidationComponentUtils.setInputHint(this.visibilityList, this.resourceBundle.getString("inputhint.visibilitylist"));
+		ValidationComponentUtils.setInputHint(this.videoresponseList, this.resourceBundle.getString("inputhint.videoresponselist"));
+		ValidationComponentUtils.setInputHint(this.commentList, this.resourceBundle.getString("inputhint.commentlist"));
+		ValidationComponentUtils.setInputHint(this.accountList, this.resourceBundle.getString("inputhint.accountlist"));
+
+		this.visibilityList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("visibilitylist.public"), this.resourceBundle.getString("visibilitylist.unlisted"), this.resourceBundle.getString(
+				"visibilitylist.private")}));
+		this.commentList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("commentlist.allowed"), this.resourceBundle.getString("commentlist.moderated"), this.resourceBundle.getString(
+				"commentlist.denied"), this.resourceBundle.getString("commentlist.friendsonly")}));
+		this.videoresponseList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("videoresponselist.allowed"), this.resourceBundle.getString("videoresponselist.moderated"), this.resourceBundle.getString(
+				"videoresponselist.denied")}));
 	}
 
 	private void initListeners()
@@ -336,7 +345,10 @@ public final class UploadViewPanel
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitlePlaylist(e.getItem());
+
+				if (UploadViewPanel.this.autotitelCheckBox.isSelected()) {
+					UploadViewPanel.this.controller.changeAutotitlePlaylist(e.getItem());
+				}
 			}
 		});
 
@@ -377,11 +389,37 @@ public final class UploadViewPanel
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override public void run()
+					{
+
+						WebBrowserNavigationParameters parameters = new WebBrowserNavigationParameters();
+						Map<String, String> postMap = new HashMap<String, String>();
+						postMap.put("Email", "chaosking0912@gmail.com");
+						postMap.put("Passwd", "SVDQ5Lwp");
+						parameters.setPostData(postMap);
+						JFrame jframe = new JFrame();
+						JPanel webBrowserPanel = new JPanel(new BorderLayout());
+						webBrowserPanel.setBorder(BorderFactory.createTitledBorder("Native Web Browser component"));
+						final JWebBrowser webBrowser = new JWebBrowser();
+						webBrowser.navigate("https://accounts.google.com/ServiceLoginAuth", parameters);
+						webBrowserPanel.add(webBrowser, BorderLayout.CENTER);
+
+						jframe.setContentPane(webBrowserPanel);
+						jframe.pack();
+						jframe.setVisible(true);
+
+						// Here goes the rest of the program initialization
+
+					}
+				});
+
+				/*if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
 					final List<Account> accounts = new ArrayList<Account>(1);
 					accounts.add((Account) UploadViewPanel.this.accountList.getSelectedItem());
 					UploadViewPanel.this.controller.synchronizePlaylists(accounts);
-				}
+				}   */
 			}
 		});
 	}
@@ -436,21 +474,21 @@ public final class UploadViewPanel
 		final ValidationResult validationResult = new ValidationResult();
 
 		if (this.fileList.getSelectedItem() == null) {
-			validationResult.addError("Eine Datei zum Hochladen muss ausgewählt sein.");
+			validationResult.addError(this.resourceBundle.getString("validation.filelist"));
 		} else if (!ValidationUtils.hasBoundedLength(this.titleTextField.getText().trim(), 5, 100)) {
-			validationResult.addError("Der Titel muss zwischen 5 und 100 Zeichen lang sein.");
+			validationResult.addError(this.resourceBundle.getString("validation.title"));
 		} else if (this.categoryList.getSelectedIndex() == -1) {
-			validationResult.addError("Eine Kategorie muss ausgewählt sein.");
+			validationResult.addError(this.resourceBundle.getString("validation.category"));
 		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 5, 5000)) {
-			validationResult.addError("Die Beschreibungs muss zwischen 5 und 5000 Zeichen lang sein.");
+			validationResult.addError(this.resourceBundle.getString("validation.description"));
 		} else if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
-			validationResult.addError("Das Beschreibungsfeld darf weder \"<\" noch \">\" enthalten!");
+			validationResult.addError(this.resourceBundle.getString("validation.description.characters"));
 		} else if (!ValidationUtils.hasBoundedLength(this.tagsTextArea.getText().trim(), 2, 600) || !TagParser.isValid(this.tagsTextArea.getText())) {
-			validationResult.addError("Die Tags sind ungültig! Mindestens 2 Zeichen, maximal 30 Zeichen pro Tag.\n Maximal 500 Zeichen gesamt!");
+			validationResult.addError(this.resourceBundle.getString("validation.tags"));
 		} else if (this.accountList.getSelectedItem() == null) {
-			validationResult.addError("Ein Account muss ausgewählt sein!");
+			validationResult.addError(this.resourceBundle.getString("validation.account"));
 		} else {
-			validationResult.addInfo("Eintrag hinzugefügt.");
+			validationResult.addInfo(this.resourceBundle.getString("validation.info.added"));
 		}
 
 		return validationResult;

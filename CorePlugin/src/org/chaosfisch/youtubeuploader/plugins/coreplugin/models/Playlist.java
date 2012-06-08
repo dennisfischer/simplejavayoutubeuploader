@@ -28,7 +28,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
  */
 public class Playlist implements IModel
 {
-	public transient int     identity;
+	public transient Integer identity;
 	public           String  playlistKey;
 	public           String  title;
 	public           String  url;
@@ -36,7 +36,7 @@ public class Playlist implements IModel
 	public           int     number;
 	public           Account account;
 
-	public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

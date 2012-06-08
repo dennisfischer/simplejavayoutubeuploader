@@ -17,31 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers;
+package org.chaosfisch.youtubeuploader.plugins.socializeplugin;
 
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
-
-import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 06.05.12
- * Time: 08:34
+ * Date: 05.06.12
+ * Time: 08:45
  * To change this template use File | Settings | File Templates.
  */
-public interface PlaylistMapper
+public class I18nSupport
 {
-	List<Playlist> findPlaylists(Account account);
+	static final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.socializeplugin.resources.socializeplugin"); //NON-NLS
 
-	void updatePlaylist(Playlist playlist);
-
-	void deletePlaylist(Playlist playlist);
-
-	void createPlaylist(Playlist playlist);
-
-	Playlist findPlaylist(Playlist playlist);
-
-	List<Playlist> getAll();
+	public static String message(final String key)
+	{
+		return I18nSupport.resourceBundle.getString(key);
+	}
 }

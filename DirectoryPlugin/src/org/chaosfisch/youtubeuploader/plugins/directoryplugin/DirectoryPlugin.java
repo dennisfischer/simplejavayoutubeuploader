@@ -64,8 +64,9 @@ import java.util.ResourceBundle;
  */
 public class DirectoryPlugin implements Pluggable
 {
-	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
-	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
+	private static final String[]       DEPENDENCIES      = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
+	private static final int            DEFAULT_INTERVALL = 30000;
+	private final        ResourceBundle resourceBundle    = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
 	@Inject private PluginService   pluginService;
 	@Inject private Injector        injector;
 	@Inject         DirectoryWorker directoryWorker;
@@ -112,7 +113,7 @@ public class DirectoryPlugin implements Pluggable
 		});
 		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 
-		this.directoryWorker.setIntervall(30000);
+		this.directoryWorker.setIntervall(DirectoryPlugin.DEFAULT_INTERVALL);
 		this.directoryWorker.start();
 	}
 
@@ -126,7 +127,7 @@ public class DirectoryPlugin implements Pluggable
 	{
 		this.directoryWorker.interrupt();
 		this.directoryWorker = this.injector.getInstance(DirectoryWorker.class);
-		this.directoryWorker.setIntervall(30000);
+		this.directoryWorker.setIntervall(DirectoryPlugin.DEFAULT_INTERVALL);
 		this.directoryWorker.start();
 	}
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 10:23
  * To change this template use File | Settings | File Templates.
  */
-public interface MessageMapper
+@SuppressWarnings("TypeMayBeWeakened") public interface MessageMapper
 {
 
 	List<Message> getMessages();

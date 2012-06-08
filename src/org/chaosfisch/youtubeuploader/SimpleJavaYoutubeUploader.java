@@ -28,6 +28,7 @@
 
 package org.chaosfisch.youtubeuploader;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -55,7 +56,7 @@ public class SimpleJavaYoutubeUploader
 		PropertyConfigurator.configure(this.getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
-			final List<Class> classes = finder.findAllImplementations(Module.class);
+			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(Module.class);
 
 			final Collection<Module> modules = new ArrayList<Module>(classes.size());
 			for (final Class<?> clazz : classes) {
@@ -123,6 +124,8 @@ public class SimpleJavaYoutubeUploader
 				});
 			}
 		});
+		NativeInterface.open();
 		new SimpleJavaYoutubeUploader(args);
+		NativeInterface.runEventPump();
 	}
 }

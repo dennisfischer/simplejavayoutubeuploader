@@ -20,6 +20,7 @@
 package org.chaosfisch.util;
 
 import javax.swing.*;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -44,6 +45,7 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 		try {
 			this.get();
 		} catch (InterruptedException ignored) {
+		} catch (CancellationException ignored) {
 		} catch (ExecutionException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}

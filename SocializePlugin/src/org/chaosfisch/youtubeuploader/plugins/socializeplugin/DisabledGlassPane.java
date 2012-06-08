@@ -36,6 +36,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 {
 	private static final Border       MESSAGE_BORDER   = new EmptyBorder(10, 10, 10, 10);
 	private static final long         serialVersionUID = 6021041734286185845L;
+	private static final int          DEFAULT_ALPHA    = 128;
 	private final        JLabel       message          = new JLabel();
 	private final        JProgressBar progressBar      = new JProgressBar(0, 100);
 	private Timer timer;
@@ -46,7 +47,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 
 		this.setOpaque(false);
 		final Color base = UIManager.getColor("inactiveCaptionBorder");
-		final Color background = new Color(base.getRed(), base.getGreen(), base.getBlue(), 128);
+		final Color background = new Color(base.getRed(), base.getGreen(), base.getBlue(), DisabledGlassPane.DEFAULT_ALPHA);
 		this.setBackground(background);
 		this.setLayout(new GridBagLayout());
 

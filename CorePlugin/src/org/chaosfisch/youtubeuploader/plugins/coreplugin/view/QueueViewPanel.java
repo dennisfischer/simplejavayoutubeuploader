@@ -34,6 +34,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.QueueTableModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ColumnsAutoSizer;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import javax.swing.*;
@@ -45,6 +46,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 public final class QueueViewPanel
 {
@@ -64,6 +66,9 @@ public final class QueueViewPanel
 	private       JButton           abortButton;
 	private       JSpinner          speedLimitSpinner;
 	private       JSpinner          maxUploadsSpinner;
+
+	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
+	@Inject private SettingsService settingsService;
 
 	@Inject
 	public QueueViewPanel(final QueueController controller)
@@ -88,6 +93,7 @@ public final class QueueViewPanel
 	private void initComponents()
 	{
 		this.queueTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		this.queueTable.setRowSorter(null);
 		this.queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
 			private static final long serialVersionUID = -8124241179871597973L;
@@ -95,7 +101,7 @@ public final class QueueViewPanel
 			@Override public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				final Queue queue = ((QueueTableModel) table.getModel()).getRow(row);
+				@SuppressWarnings("OverlyStrongTypeCast") final Queue queue = ((QueueTableModel) table.getModel()).getRow(row);
 				if (queue.locked) {
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
@@ -111,7 +117,7 @@ public final class QueueViewPanel
 		this.queueTable.addMouseListener(new HyperlinkMouseAdapter(5));
 
 		this.queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);
+		//ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);
 		this.stoppenButton.setEnabled(false);
 
 		this.speedLimitSpinner.setModel(new SpinnerNumberModel(0, 0, 10000, 10));
@@ -119,6 +125,10 @@ public final class QueueViewPanel
 
 		this.maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		this.maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(this.maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
+
+		this.queueFinishedList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("queuefinishedlist.donothing"), this.resourceBundle.getString("queuefinishedlist.closeapplication"), this.resourceBundle.getString(
+				"queuefinishedlist.shutdown"), this.resourceBundle.getString("queuefinishedlist.hibernate")}));
+		this.queueViewList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("queueviewlist.all"), this.resourceBundle.getString("queueviewlist.uploads"), this.resourceBundle.getString("queueviewlist.queue")}));
 	}
 
 	private void initListeners()
@@ -129,6 +139,21 @@ public final class QueueViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
+				if (Boolean.parseBoolean((String) QueueViewPanel.this.settingsService.get("coreplugin.general.uploadconfirmation", "true"))) { //NON-NLS
+					final JCheckBox checkBox = new JCheckBox(QueueViewPanel.this.resourceBundle.getString("upload.confirmdialog.checkbox"));
+					final Object[] message = {QueueViewPanel.this.resourceBundle.getString("upload.confirmdialog.message"), checkBox};
+
+					final int result = JOptionPane.showConfirmDialog(null, message, QueueViewPanel.this.resourceBundle.getString("youtube.confirmdialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (result != 0) {
+						return;
+					}
+
+					if (checkBox.isSelected()) {
+						QueueViewPanel.this.settingsService.set("coreplugin.general.uploadconfirmation", "false");
+						QueueViewPanel.this.settingsService.save();
+					}
+				}
+
 				QueueViewPanel.this.controller.startQueue();
 				QueueViewPanel.this.startenButton.setEnabled(false);
 				QueueViewPanel.this.stoppenButton.setEnabled(true);
@@ -152,7 +177,10 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
+				System.out.println(selectedRow);
+
 				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
+					System.out.println(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow).getIdentity());
 					QueueViewPanel.this.controller.abortUpload(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}

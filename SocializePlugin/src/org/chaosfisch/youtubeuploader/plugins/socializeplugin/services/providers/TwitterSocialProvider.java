@@ -20,7 +20,9 @@
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers;
 
 import org.apache.log4j.Logger;
+import org.chaosfisch.google.request.HTTP_STATUS;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.APIData;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
@@ -73,7 +75,7 @@ public class TwitterSocialProvider implements ISocialProvider
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 
-		final String verifier = JOptionPane.showInputDialog(null, "Bestätigungs Code:", "Twitter Account OAuth", JOptionPane.INFORMATION_MESSAGE);
+		final String verifier = JOptionPane.showInputDialog(null, I18nSupport.message("label.acceptcode"), I18nSupport.message("label.twitteroauth"), JOptionPane.INFORMATION_MESSAGE);
 
 		if (verifier != null) {
 			this.accessToken = this.oAuthService.getAccessToken(requestToken, new Verifier(verifier));
@@ -90,7 +92,7 @@ public class TwitterSocialProvider implements ISocialProvider
 
 		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
 		final Response response = oAuthRequest.send();
-		if (response.getCode() != 200) {
+		if (response.getCode() != HTTP_STATUS.OK.getCode()) {
 			this.logger.fatal(String.format("Wrong response code: %d", response.getCode())); //NON-NLS
 			this.logger.fatal(response.getBody());
 		}
@@ -105,7 +107,7 @@ public class TwitterSocialProvider implements ISocialProvider
 		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
 		try {
 			final Response response = oAuthRequest.send();
-			if (response.getCode() == 200) {
+			if (response.getCode() == HTTP_STATUS.OK.getCode()) {
 				return true;
 			}
 		} catch (RuntimeException ignored) {

@@ -111,7 +111,12 @@ public class QueueServiceImpl implements QueueService
 
 	@Transactional @Override public Queue poll()
 	{
-		return this.queueMapper.poll();
+		final Queue queue = this.queueMapper.poll();
+		if (queue == null) {
+			return null;
+		}
+		queue.inprogress = true;
+		return this.update(queue);
 	}
 
 	@Transactional @Override public boolean hasStarttime()

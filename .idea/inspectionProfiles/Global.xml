@@ -115,13 +115,6 @@
       <option name="ignoreOnVolatileVariables" value="false" />
     </inspection_tool>
     <inspection_tool class="DriverManagerGetConnection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="DuplicatePropertyInspection" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="CURRENT_FILE" value="true" />
-      <option name="MODULE_WITH_DEPENDENCIES" value="false" />
-      <option name="CHECK_DUPLICATE_VALUES" value="true" />
-      <option name="CHECK_DUPLICATE_KEYS" value="true" />
-      <option name="CHECK_DUPLICATE_KEYS_WITH_DIFFERENT_VALUES" value="true" />
-    </inspection_tool>
     <inspection_tool class="DuplicateStringLiteralInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="MIN_STRING_LENGTH" value="5" />
       <option name="IGNORE_PROPERTY_KEYS" value="false" />
@@ -221,7 +214,6 @@
       <option name="ignoreSerializable" value="false" />
       <option name="ignoreCloneable" value="false" />
     </inspection_tool>
-    <inspection_tool class="RedundantSuppression" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantThrowsDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantToBinding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReplaceAssignmentWithOperatorAssignment" enabled="true" level="WARNING" enabled_by_default="true">
@@ -233,6 +225,8 @@
     </inspection_tool>
     <inspection_tool class="ReturnOfDateField" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReturnThis" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SameParameterValue" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SameReturnValue" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SerialVersionUIDNotStaticFinal" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SerializableHasSerialVersionUIDField" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreAnonymousInnerClasses" value="false" />
@@ -318,6 +312,7 @@
     <inspection_tool class="UnnecessaryJavaDocLink" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreInlineLinkToSuper" value="false" />
     </inspection_tool>
+    <inspection_tool class="UnnecessaryModuleDependencyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryQualifierForThis" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -333,11 +328,23 @@
       <option name="m_ignoreCatchBlocksWithComments" value="false" />
       <option name="m_ignoreTestCases" value="false" />
     </inspection_tool>
-    <inspection_tool class="UnusedLibrary" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedDeclaration" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ADD_MAINS_TO_ENTRIES" value="true" />
+      <option name="ADD_APPLET_TO_ENTRIES" value="true" />
+      <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
+      <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+    </inspection_tool>
+    <inspection_tool class="UnusedParameters" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnusedProperty" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnusedReturnValue" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreSameClass" value="false" />
       <option name="ignoreEquals" value="false" />
+    </inspection_tool>
+    <inspection_tool class="WeakerAccess" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="true" />
+      <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
+      <option name="SUGGEST_PRIVATE_FOR_INNERS" value="false" />
     </inspection_tool>
     <inspection_tool class="WhileLoopSpinsOnField" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreNonEmtpyLoops" value="false" />

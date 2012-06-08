@@ -5,7 +5,7 @@
     <option name="MAXIMUM_HEAP_SIZE" value="64" />
   </component>
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEFAULT_COMPILER" value="compAPI" />
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="?*.properties" />

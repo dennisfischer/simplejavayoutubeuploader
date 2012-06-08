@@ -38,19 +38,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
 public class CorePlugin implements Pluggable
 {
 	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin"};
-	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin", Locale.getDefault()); //NON-NLS
-	private         Uploader          uploader;
-	@Inject private PluginService     pluginService;
-	@Inject private Injector          injector;
-	@Inject private SettingsService   settingService;
-	@Inject         SqlSessionFactory sessionFactory;
+	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
+	private               Uploader          uploader;
+	@Inject private       PluginService     pluginService;
+	@Inject private       Injector          injector;
+	@Inject private       SettingsService   settingService;
+	@Inject private final SqlSessionFactory sessionFactory;
 
 	@Inject
 	public CorePlugin(final SqlSessionFactory sessionFactory) throws IOException

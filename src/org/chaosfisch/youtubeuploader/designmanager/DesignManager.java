@@ -58,7 +58,7 @@ public class DesignManager
 		this.logger.debug("Loading designMaps"); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
-			final List<Class> classes = finder.findAllImplementations(DesignMap.class);
+			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(DesignMap.class);
 
 			this.logger.debug("Parsing designMaps"); //NON-NLS
 			for (final Class<?> mapList : classes) {
@@ -158,13 +158,13 @@ public class DesignManager
 			}
 		}
 		desingListModel.setSelectedItem(this.getDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"))); //NON-NLS
-		this.settingsService.addCombobox("application.general.laf", "Design (benötigt Neustart):", desingListModel); //NON-NLS
+		this.settingsService.addCombobox("application.general.laf", "Design:", desingListModel); //NON-NLS
 	}
 
 	@EventTopicSubscriber(topic = SettingsService.SETTINGS_SAVED)
 	public void onDesignChanged(final String topic, final String o)
 	{
-		//noinspection CallToStringEquals,CallToStringEquals
+		// noinspection CallToStringEquals
 		if (o.equals("application.general.laf")) {
 			this.changeDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
 			EventBus.publish(DesignManager.UPDATE_UI, null);

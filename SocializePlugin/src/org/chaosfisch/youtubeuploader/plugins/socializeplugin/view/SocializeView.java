@@ -29,6 +29,7 @@ import com.jgoodies.validation.util.ValidationUtils;
 import com.jgoodies.validation.view.ValidationResultViewFactory;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.DisabledGlassPane;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.controller.MessageController;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.Provider;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.ISocialProvider;
@@ -89,6 +90,8 @@ public class SocializeView
 
 		this.messagesTable.setModel(this.controller.getMessageTableModel());
 		this.messagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		this.publishComboBox.setModel(new DefaultComboBoxModel<String>(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
 	}
 
 	private void initListeners()
@@ -97,7 +100,7 @@ public class SocializeView
 		{
 			@Override public void itemStateChanged(final ItemEvent e)
 			{
-				if ((e.getStateChange() == ItemEvent.SELECTED) && e.getItem().equals("Mit UploadID:")) { //NON-NLS
+				if ((e.getStateChange() == ItemEvent.SELECTED) && (SocializeView.this.publishComboBox.getSelectedIndex() == 0)) {
 					SocializeView.this.uploadIDSpinner.setEnabled(true);
 				} else {
 					SocializeView.this.uploadIDSpinner.setEnabled(false);
@@ -180,7 +183,7 @@ public class SocializeView
 										//noinspection UnqualifiedFieldAccess
 										rootPane.setGlassPane(glassPane);
 										//noinspection UnqualifiedFieldAccess
-										glassPane.activate("Warte auf die Autorisierung durch Facebook (max 1 Minute)!");
+										glassPane.activate(I18nSupport.message("label.facebook.waiting"));
 									}
 								});
 
@@ -227,15 +230,15 @@ public class SocializeView
 		final ValidationResult validationResult = new ValidationResult();
 
 		if (!this.googlePlusButton.isSelected() && !this.facebookButton.isSelected() && !this.twitterButton.isSelected() && !this.youtubeButton.isSelected()) {
-			validationResult.addError("Mindestens ein Service muss ausgewählt sein.");
+			validationResult.addError(I18nSupport.message("validation.service"));
 		}
 
 		if (!ValidationUtils.hasBoundedLength(this.messageTextArea.getText(), 5, 140)) {
-			validationResult.addError("Die Nachricht muss zwischen 5 und 140 Zeichen lang sein!");
+			validationResult.addError(I18nSupport.message("validation.message"));
 		}
 
 		if (this.messageTextArea.getText().contains("{video}") && !ValidationUtils.hasBoundedLength(this.messageTextArea.getText(), 5, 120)) { //NON-NLS
-			validationResult.addError("Die Nachricht enthält {video} und darf daher nur max. 120 Zeichen lang sein!");
+			validationResult.addError(I18nSupport.message("validation.message.video"));
 		}
 
 		return validationResult;

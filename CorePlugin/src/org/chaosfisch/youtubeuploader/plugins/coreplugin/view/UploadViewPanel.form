@@ -380,40 +380,21 @@
               <grid row="14" column="2" row-span="1" col-span="13" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
               <forms/>
             </constraints>
-            <properties>
-              <model>
-                <item value="Öffentlich"/>
-                <item value="Nicht gelistet"/>
-                <item value="Privat"/>
-              </model>
-            </properties>
+            <properties/>
           </component>
           <component id="38315" class="javax.swing.JComboBox" binding="videoresponseList">
             <constraints>
               <grid row="16" column="2" row-span="1" col-span="13" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
               <forms/>
             </constraints>
-            <properties>
-              <model>
-                <item value="Erlaubt"/>
-                <item value="Moderiert"/>
-                <item value="Verweigert"/>
-              </model>
-            </properties>
+            <properties/>
           </component>
           <component id="dfb71" class="javax.swing.JComboBox" binding="commentList">
             <constraints>
               <grid row="18" column="2" row-span="1" col-span="13" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
               <forms/>
             </constraints>
-            <properties>
-              <model>
-                <item value="Erlaubt"/>
-                <item value="Moderiert"/>
-                <item value="Verweigert"/>
-                <item value="Moderiert - Freunde erlaubt"/>
-              </model>
-            </properties>
+            <properties/>
           </component>
           <component id="ffaa" class="javax.swing.JComboBox" binding="accountList">
             <constraints>

@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.google.atom.VideoEntry;
@@ -69,6 +70,11 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Inject private PresetMapper   presetMapper;
 	@Inject private QueueMapper    queueMapper;
 
+	public PlaylistServiceImpl()
+	{
+		AnnotationProcessor.process(this);
+	}
+
 	@Transactional @Override public List<Playlist> getByAccount(final Account account)
 	{
 		return this.playlistMapper.findPlaylists(account);
@@ -79,9 +85,9 @@ public class PlaylistServiceImpl implements PlaylistService
 		return this.playlistMapper.getAll();
 	}
 
-	@Transactional @Override public Playlist find(final int id)
+	@Transactional @Override public Playlist find(final Playlist playlist)
 	{
-		return this.playlistMapper.findPlaylist(id);
+		return this.playlistMapper.findPlaylist(playlist);
 	}
 
 	@Transactional @Override public Playlist create(final Playlist playlist)
@@ -162,7 +168,7 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.url = entry.title;
 							playlist.summary = entry.playlistSummary;
 							playlist.account = account;
-							PlaylistServiceImpl.this.create(playlist);
+							PlaylistServiceImpl.this.createOrUpdate(playlist);
 						}
 					}
 				}
@@ -173,6 +179,19 @@ public class PlaylistServiceImpl implements PlaylistService
 				EventBus.publish("playlistsSynchronized", null); //NON-NLS
 			}
 		}.execute();
+	}
+
+	private void createOrUpdate(final Playlist playlist)
+	{
+		final Playlist searchObject = new Playlist();
+		searchObject.playlistKey = playlist.playlistKey;
+		final Playlist findObject = this.find(searchObject);
+		if (!(findObject == null)) {
+			playlist.identity = findObject.identity;
+			this.update(playlist);
+		} else {
+			this.create(playlist);
+		}
 	}
 
 	@Override public Playlist addYoutubePlaylist(final Playlist playlist)
@@ -195,12 +214,7 @@ public class PlaylistServiceImpl implements PlaylistService
 				dataOutputStream.flush();
 
 				final Response response = request.send();
-				System.out.println(response.body);
-				System.out.println(response.message);
-				if ((response.code == 200) || (response.code == 201)) {
-					System.out.println(response.code);
-					System.out.println(response.message);
-
+				if ((response.code == HTTP_STATUS.OK.getCode()) || (response.code == HTTP_STATUS.CREATED.getCode())) {
 					final List<Account> accountEntries = new LinkedList<Account>();
 					accountEntries.add(playlist.account);
 					this.synchronizePlaylists(accountEntries);
@@ -222,41 +236,33 @@ public class PlaylistServiceImpl implements PlaylistService
 		return null;
 	}
 
-	@Override public void addLatestVideoToPlaylist(final Playlist playlistEntry)
+	@Override public void addLatestVideoToPlaylist(final Playlist playlist, final String videoId)
 	{
 		try {
-			final URL feedUrl = new URL("http://gdata.youtube.com/feeds/api/users/default/uploads");
+			final URL submitUrl = new URL("http://gdata.youtube.com/feeds/api/playlists/" + playlist.playlistKey);
+			final VideoEntry submitFeed = new VideoEntry();
+			submitFeed.id = videoId;
+			submitFeed.mediaGroup = null;
+			final String playlistFeed = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", this.parseObjectToFeed(submitFeed)); //NON-NLS
+
+			final Request request = new Request.Builder(Request.Method.POST, submitUrl).build();
+			this.getRequestSigner(playlist.account).sign(request);
+			request.setContentType("application/atom+xml"); //NON-NLS
+
+			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
+			final DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+			dataOutputStream.writeBytes(playlistFeed); //NON-NLS
+			dataOutputStream.flush();
+			bufferedOutputStream.flush();
+
+			request.send();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (AuthenticationException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
-//
-//		final YTService ytService = playlistEntry.getAccount().getYoutubeServiceManager();
-//		try {
-//			ytService.authenticate();
-//			VideoFeed videoFeed = null;
-//			try {
-//				videoFeed = ytService.getFeed(feedUrl, VideoFeed.class);
-//			} catch (IOException e) {
-//				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//			} catch (ServiceException e) {
-//				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//			}
-//			if (videoFeed != null) {
-//				final List<VideoEntry> videoFeedEntries = videoFeed.getEntries();
-//
-//				final VideoEntry update = videoFeedEntries.get(0);
-//				final com.google.gdata.data.youtube.Playlist entry = new com.google.gdata.data.youtube.Playlist(update);
-//				try {
-//					ytService.insert(new URL(playlistEntry.getUrl()), entry);
-//				} catch (IOException e) {
-//					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//				} catch (ServiceException e) {
-//					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//				}
-//			}
-//		} catch (AuthenticationException e) {
-//			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//		}
 	}
 
 	private <T> T parseFeed(final String atomData, final Class<T> clazz)

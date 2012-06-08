@@ -59,7 +59,7 @@ public class Queue implements IModel
 	public           Account  account;
 	public           Playlist playlist;
 
-	@Override public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

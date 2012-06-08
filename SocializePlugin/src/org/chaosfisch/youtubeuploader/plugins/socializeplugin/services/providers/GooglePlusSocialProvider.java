@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.provider
 
 import org.apache.log4j.Logger;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.APIData;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
@@ -33,8 +34,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,8 +48,7 @@ public class GooglePlusSocialProvider implements ISocialProvider
 	private final OAuthService oAuthService = new ServiceBuilder().provider(GoogleApi.class).scope("https://www.googleapis.com/auth/plus.me")  //NON-NLS
 			.apiKey(APIData.GOOGLE_APIKEY).apiSecret(APIData.GOOGLE_APISECRET).build();
 	@InjectLogger private Logger logger;
-	private static final String         GOOGLE_ACCESS_TOKEN = "onGoogleAccessToken"; //NON-NLS
-	private final        ResourceBundle resourceBundle      = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.socializeplugin.resources.socializeplugin", Locale.getDefault());//NON-NLS
+	private static final String GOOGLE_ACCESS_TOKEN = "onGoogleAccessToken"; //NON-NLS
 
 	@Override public Token getAccessToken()
 	{
@@ -77,7 +75,7 @@ public class GooglePlusSocialProvider implements ISocialProvider
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 
-		final String verifier = JOptionPane.showInputDialog(null, this.resourceBundle.getString("googleOAuth.code.label"), this.resourceBundle.getString("googleOAuth.account.label"), JOptionPane.INFORMATION_MESSAGE);
+		final String verifier = JOptionPane.showInputDialog(null, I18nSupport.message("googleOAuth.code.label"), I18nSupport.message("googleOAuth.account.label"), JOptionPane.INFORMATION_MESSAGE);
 
 		if (verifier != null) {
 			this.accessToken = this.oAuthService.getAccessToken(requestToken, new Verifier(verifier));

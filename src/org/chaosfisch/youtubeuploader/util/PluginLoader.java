@@ -41,9 +41,10 @@ public class PluginLoader
 	{
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/");//NON-NLS
 		try {
-			final List<Class> classes = finder.findAllImplementations(Pluggable.class);
+			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(Pluggable.class);
 
 			final Map<String, Pluggable> pluggableList = new HashMap<String, Pluggable>(classes.size());
+			//noinspection unchecked
 			for (final Class<? extends Pluggable> pluggable : classes) {
 				if (!disabledPlugins.contains(pluggable.getName())) {
 					this.logger.info(String.format("Plugin Loaded: %s", pluggable.getName()));//NON-NLS

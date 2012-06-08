@@ -37,7 +37,7 @@ public class Directory implements IModel
 	private transient int     identity;
 	public            Preset  preset;
 
-	@Override public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

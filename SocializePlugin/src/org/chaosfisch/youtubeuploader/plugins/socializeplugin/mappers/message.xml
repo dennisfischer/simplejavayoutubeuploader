@@ -28,11 +28,11 @@
 		<where>
 			<if test="identity != null">identity = #{identity}</if>
 			<if test="message != null">AND message = #{message}</if>
-			<if test="uploadid != null">AND uploadid = #{uploadID}</if>
+			<if test="uploadid != null">AND uploadid = #{uploadid}</if>
 			<if test="facebook != null">AND facebook = #{facebook}</if>
 			<if test="twitter != null">AND twitter = #{twitter}</if>
 			<if test="youtube != null">AND youtube = #{youtube}</if>
-			<if test="googlePlus != null">AND googlePlus = #{googlePlus}</if>
+			<if test="googleplus != null">AND googleplus = #{googleplus}</if>
 		</where>
 	</select>
 

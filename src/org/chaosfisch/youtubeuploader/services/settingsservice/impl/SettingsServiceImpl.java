@@ -98,10 +98,11 @@ public class SettingsServiceImpl implements SettingsService
 		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jSpinner));
 	}
 
-	@Override public void addCombobox(final String uniqueKey, final String label, final ComboBoxModel comboBoxModel)
+	@Override public void addCombobox(final String uniqueKey, final String label, @SuppressWarnings("rawtypes") final ComboBoxModel comboBoxModel)
 	{
-		final JComboBox jComboBox = new JComboBox();
+		@SuppressWarnings("rawtypes") final JComboBox jComboBox = new JComboBox();
 		jComboBox.setName(uniqueKey);
+		//noinspection unchecked
 		jComboBox.setModel(comboBoxModel);
 		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
 			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));

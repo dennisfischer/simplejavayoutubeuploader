@@ -47,8 +47,7 @@ public class Preset implements IModel
 	public transient Account  account;
 	public transient Playlist playlist;
 
-	@Override
-	public int getIdentity()
+	@Override public Integer getIdentity()
 	{
 		return this.identity;
 	}

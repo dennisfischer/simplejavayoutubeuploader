@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
 import org.chaosfisch.google.request.HTTP_STATUS;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 
 import java.util.Properties;
 
@@ -46,13 +47,13 @@ public class OAuthHTTPDServer extends NanoHTTPD
 			synchronized (this) {
 				this.notifyAll();
 			}
-			final String msg = "Danke f&uuml;r die Autorisierung!";
+			final String msg = I18nSupport.message("message.authorization.successful");
 			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_HTML, msg);
 		} else if (parms.getProperty("error_reason") != null) {//NON-NLS
 			synchronized (this) {
 				this.notifyAll();
 			}
-			final String msg = "Die Autorisierung wurde durch den Benutzer abgelehnt!";
+			final String msg = I18nSupport.message("message.authorization.denied");
 			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_PLAINTEXT, msg);
 		}
 		synchronized (this) {

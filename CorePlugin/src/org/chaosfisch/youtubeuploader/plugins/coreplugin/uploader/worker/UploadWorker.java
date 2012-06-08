@@ -30,6 +30,7 @@ import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.*;
+import org.chaosfisch.google.request.HTTP_STATUS;
 import org.chaosfisch.google.request.Request;
 import org.chaosfisch.google.request.RequestUtilities;
 import org.chaosfisch.google.request.Response;
@@ -156,7 +157,8 @@ public class UploadWorker extends BetterSwingWorker
 				}
 			}
 			if (!this.failed && (this.queue.playlist != null)) {
-				this.playlistService.addLatestVideoToPlaylist(this.queue.playlist);
+				this.queue.playlist.account = this.queue.account;
+				this.playlistService.addLatestVideoToPlaylist(this.queue.playlist, videoId);
 			}
 			this.queue.videoId = videoId;
 			this.queueService.update(this.queue);
@@ -285,7 +287,7 @@ public class UploadWorker extends BetterSwingWorker
 		xStream.autodetectAnnotations(true);
 		final String atomData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xStream.toXML(videoEntry);
 
-		Logger.getLogger(UploadWorker.class).info("AtomData: " + atomData);
+		this.logger.info("AtomData: " + atomData);
 
 		//Upload atomData and fetch URL to upload to
 		return this.uploadMetaData(atomData, fileToUpload.getAbsolutePath());
@@ -320,7 +322,7 @@ public class UploadWorker extends BetterSwingWorker
 				outStreamWriter.flush();
 
 				final Response response = request.send();
-				if (response.code == 400) {
+				if (response.code == HTTP_STATUS.BADREQUEST.getCode()) {
 					throw new UploaderException("Die gegebenen Videoinformationen sind ungültig!");
 				}
 				return response.headerFields.get("Location").get(0);
@@ -345,7 +347,7 @@ public class UploadWorker extends BetterSwingWorker
 		//Building PUT Request for chunk data
 		final Request request;
 		try {
-			request = new Request.Builder(Request.Method.PUT, new URL(uploadUrl)).build();
+			request = new Request.Builder(Request.Method.POST, new URL(uploadUrl)).build();
 		} catch (MalformedURLException e) {
 			throw new UploaderException(String.format("Upload URL malformed! %s", uploadUrl), e);
 		}
@@ -405,7 +407,14 @@ public class UploadWorker extends BetterSwingWorker
 		} catch (FileNotFoundException ex) {
 			throw new UploaderException("Datei konnte nicht gefunden werden!", ex);
 		} catch (IOException ex) {
-			throw new UploaderException("Fehler beim Schreiben der Datei (0x00001)", ex);
+			ex.printStackTrace();
+
+			try {
+				final Response response = request.send();
+				throw new UploaderException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d", response.message, response.message, response.code), ex);
+			} catch (IOException e) {
+				throw new UploaderException("Fehler beim Schreiben der Datei (0x00001): Unknown error", e);
+			}
 		}
 	}
 
@@ -470,7 +479,7 @@ public class UploadWorker extends BetterSwingWorker
 					}
 				}
 				return resumeInfo;
-			} else if ((response.code >= 200) && (response.code < 300)) {
+			} else if ((response.code >= HTTP_STATUS.OK.getCode()) && (response.code < 300)) {
 				return new ResumeInfo(this.parseVideoId(response.body));
 			} else {
 				throw new UploaderException(String.format("Unexpected return code : %d while uploading :%s", response.code, uploadUrl));
@@ -505,6 +514,7 @@ public class UploadWorker extends BetterSwingWorker
 	{
 		final XStream xStream = new XStream(new DomDriver());
 		xStream.processAnnotations(VideoEntry.class);
+		System.out.println(atomData);
 		final VideoEntry videoEntry = (VideoEntry) xStream.fromXML(atomData);
 		return videoEntry.mediaGroup.videoID;
 	}
@@ -525,7 +535,7 @@ public class UploadWorker extends BetterSwingWorker
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT) public void onAbortUpload(final String topic, final IModel abort)
 	{
-		if (abort.getIdentity() == this.queue.getIdentity()) {
+		if (abort.getIdentity().compareTo(this.queue.getIdentity()) == 0) {
 			try {
 				this.cancel(true);
 				this.failed = true;

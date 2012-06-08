@@ -43,7 +43,7 @@ public interface PlaylistService
 
 	List<Playlist> getAll();
 
-	Playlist find(int id);
+	Playlist find(Playlist playlist);
 
 	Playlist create(Playlist playlist);
 
@@ -51,7 +51,7 @@ public interface PlaylistService
 
 	Playlist delete(Playlist playlist);
 
-	void addLatestVideoToPlaylist(Playlist playlist);
+	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
 
 	Playlist addYoutubePlaylist(Playlist playlist);
 }
