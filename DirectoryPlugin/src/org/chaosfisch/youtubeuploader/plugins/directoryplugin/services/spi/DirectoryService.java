@@ -19,33 +19,22 @@
 
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 
 import java.io.File;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 09.01.12
- * Time: 16:29
- * To change this template use File | Settings | File Templates.
- */
-public interface DirectoryService
+public interface DirectoryService extends CRUDService<Directory>
 {
 	String DIRECTORY_REMOVED = "onDirectoryRemoved"; //NON-NLS
 	String DIRECTORY_ADDED   = "onDirectoryAdded"; //NON-NLS
 	String DIRECTORY_UPDATED = "onDirectoryUpdated"; //NON-NLS
 
-	List<Directory> getAll();
-
 	List<Directory> getActive();
 
-	Directory findByFile(File file);
+	Directory findFile(final File file);
 
-	Directory createDirectory(Directory directory);
-
-	Directory deleteDirectory(Directory directory);
-
-	Directory updateDirectory(Directory directory);
+	List<Preset> findPresets();
 }
