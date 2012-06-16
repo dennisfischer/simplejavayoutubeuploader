@@ -38,6 +38,8 @@ package org.chaosfisch.youtubeuploader.plugins.directoryplugin;/*
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.name.Named;
+import org.apache.log4j.Logger;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicPatternSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
@@ -47,6 +49,7 @@ import org.chaosfisch.plugin.PluginService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.view.DirectoryViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker.DirectoryWorker;
+import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,12 +67,13 @@ import java.util.ResourceBundle;
  */
 public class DirectoryPlugin implements Pluggable
 {
-	private static final String[]       DEPENDENCIES      = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
-	private static final int            DEFAULT_INTERVALL = 30000;
-	private final        ResourceBundle resourceBundle    = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
-	@Inject private PluginService   pluginService;
-	@Inject private Injector        injector;
-	@Inject         DirectoryWorker directoryWorker;
+	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
+	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
+	@Inject private             PluginService   pluginService;
+	@Inject @Named("mainFrame") JFrame          mainFrame;
+	@Inject                     DirectoryWorker directoryWorker;
+	@Inject                     Injector        injector;
+	@InjectLogger               Logger          logger;
 
 	public DirectoryPlugin()
 	{
@@ -104,16 +108,14 @@ public class DirectoryPlugin implements Pluggable
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				final DirectoryViewPanel directoryViewPanel = DirectoryPlugin.this.injector.getInstance(DirectoryViewPanel.class);
-				directoryViewPanel.run();
 				directoryViewPanel.pack();
+				directoryViewPanel.setLocationRelativeTo(DirectoryPlugin.this.mainFrame);
 				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
 				directoryViewPanel.setTitle(DirectoryPlugin.this.resourceBundle.getString("directoryobserver.label"));
 				directoryViewPanel.setVisible(true);
 			}
 		});
 		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
-
-		this.directoryWorker.setIntervall(DirectoryPlugin.DEFAULT_INTERVALL);
 		this.directoryWorker.start();
 	}
 
@@ -122,12 +124,13 @@ public class DirectoryPlugin implements Pluggable
 		this.directoryWorker.interrupt();
 	}
 
-	@EventTopicPatternSubscriber(topicPattern = "onDirectoryEntry(.*)", referenceStrength = ReferenceStrength.WEAK)
+	@EventTopicPatternSubscriber(topicPattern = "onDirectory(.*)", referenceStrength = ReferenceStrength.WEAK)
 	public void refreshDirectoryWorker(final String topic, final Directory directory)
 	{
+		this.logger.debug("Refreshing directory worker!"); //NON-NLS
+		this.directoryWorker.stopActions();
 		this.directoryWorker.interrupt();
 		this.directoryWorker = this.injector.getInstance(DirectoryWorker.class);
-		this.directoryWorker.setIntervall(DirectoryPlugin.DEFAULT_INTERVALL);
 		this.directoryWorker.start();
 	}
 }

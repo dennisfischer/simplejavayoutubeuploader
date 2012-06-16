@@ -33,7 +33,7 @@ import java.util.List;
  * Time: 21:53
  * To change this template use File | Settings | File Templates.
  */
-public class GenericListModel<E> extends AbstractListModel<E> implements MutableComboBoxModel<E>
+public class GenericListModel<E> extends AbstractListModel implements MutableComboBoxModel
 {
 
 	private static final long serialVersionUID = -8891330887837958077L;
@@ -148,9 +148,9 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 
 	// implements javax.swing.MutableComboBoxModel
 	@Override
-	public void addElement(final E anObject)
+	public void addElement(final Object anObject)
 	{
-		this.objects.addElement(anObject);
+		this.objects.addElement((E) anObject);
 		this.fireIntervalAdded(this, this.objects.size() - 1, this.objects.size() - 1);
 		if ((this.objects.size() == 1) && (this.selectedObject == null) && (anObject != null)) {
 			this.setSelectedItem(anObject);
@@ -158,10 +158,9 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	}
 
 	// implements javax.swing.MutableComboBoxModel
-	@Override
-	public void insertElementAt(final E anObject, final int index)
+	public void insertElementAt(final Object anObject, final int index)
 	{
-		this.objects.insertElementAt(anObject, index);
+		this.objects.insertElementAt((E) anObject, index);
 		this.fireIntervalAdded(this, index, index);
 	}
 
@@ -216,5 +215,20 @@ public class GenericListModel<E> extends AbstractListModel<E> implements Mutable
 	public boolean hasIndex(final int index)
 	{
 		return (this.objects.size() > index) && (index > -1);
+	}
+
+	/**
+	 * Replace a row of data at the {@code row} location in the model.
+	 * Notification of the row being replaced will be generated.
+	 *
+	 * @param row     row in the model where the data will be replaced
+	 * @param rowData data of the row to replace the existing data
+	 * @throws IllegalArgumentException when the Class of the row data
+	 *                                  does not match the row Class of the model.
+	 */
+	public void replaceRow(final int row, final E rowData)
+	{
+		this.objects.set(row, rowData);
+		this.fireContentsChanged(this, row, row);
 	}
 }

@@ -50,22 +50,22 @@ import java.util.ResourceBundle;
 
 public final class QueueViewPanel
 {
-	private final QueueController   controller;
-	private       JPanel            queuePanel;
-	public        JTable            queueTable;
-	private       JButton           startenButton;
-	private       JButton           stoppenButton;
-	private       JButton           arrowTop;
-	private       JButton           arrowUp;
-	private       JButton           arrowDown;
-	private       JButton           arrowBottom;
-	private       JComboBox<String> queueFinishedList;
-	private       JButton           editButton;
-	private       JButton           deleteButton;
-	private       JComboBox<String> queueViewList;
-	private       JButton           abortButton;
-	private       JSpinner          speedLimitSpinner;
-	private       JSpinner          maxUploadsSpinner;
+	private final QueueController controller;
+	private       JPanel          queuePanel;
+	public        JTable          queueTable;
+	private       JButton         startenButton;
+	private       JButton         stoppenButton;
+	private       JButton         arrowTop;
+	private       JButton         arrowUp;
+	private       JButton         arrowDown;
+	private       JButton         arrowBottom;
+	private       JComboBox       queueFinishedList;
+	private       JButton         editButton;
+	private       JButton         deleteButton;
+	private       JComboBox       queueViewList;
+	private       JButton         abortButton;
+	private       JSpinner        speedLimitSpinner;
+	private       JSpinner        maxUploadsSpinner;
 
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin"); //NON-NLS
 	@Inject private SettingsService settingsService;
@@ -126,9 +126,9 @@ public final class QueueViewPanel
 		this.maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		this.maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(this.maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
 
-		this.queueFinishedList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("queuefinishedlist.donothing"), this.resourceBundle.getString("queuefinishedlist.closeapplication"), this.resourceBundle.getString(
+		this.queueFinishedList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("queuefinishedlist.donothing"), this.resourceBundle.getString("queuefinishedlist.closeapplication"), this.resourceBundle.getString(
 				"queuefinishedlist.shutdown"), this.resourceBundle.getString("queuefinishedlist.hibernate")}));
-		this.queueViewList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("queueviewlist.all"), this.resourceBundle.getString("queueviewlist.uploads"), this.resourceBundle.getString("queueviewlist.queue")}));
+		this.queueViewList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("queueviewlist.all"), this.resourceBundle.getString("queueviewlist.uploads"), this.resourceBundle.getString("queueviewlist.queue")}));
 	}
 
 	private void initListeners()
@@ -177,10 +177,7 @@ public final class QueueViewPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				System.out.println(selectedRow);
-
 				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					System.out.println(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow).getIdentity());
 					QueueViewPanel.this.controller.abortUpload(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
 				}
 			}

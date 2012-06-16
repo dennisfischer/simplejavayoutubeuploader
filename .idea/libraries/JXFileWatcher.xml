@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="JxFileWatcher">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../repositories/jxfilewatcher-1.2-cross-desktop-win_mac_linux/jxfilewatcher-1.2.partial.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../repositories/jxfilewatcher-1.2-cross-desktop-win_mac_linux/jxfilewatcher-1.2-javadoc.zip!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

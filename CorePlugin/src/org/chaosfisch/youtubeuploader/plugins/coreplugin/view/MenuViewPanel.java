@@ -147,8 +147,8 @@ public class MenuViewPanel
 						if (!nameTextField.getText().equals("")) {
 
 							final Account account = new Account();
-							account.name = nameTextField.getText();
-							account.password = String.valueOf(passwordField.getPassword());
+							account.name = nameTextField.getText().trim();
+							account.setPassword(String.valueOf(passwordField.getPassword()).trim());
 							//try {
 
 							MenuViewPanel.this.accountService.create(account);
@@ -185,7 +185,7 @@ public class MenuViewPanel
 
 				final Account[] accounts = new Account[MenuViewPanel.this.accountService.getAll().size()];
 				MenuViewPanel.this.accountService.getAll().toArray(accounts);
-				final JComboBox<Account> accountList = new JComboBox<Account>(accounts);
+				final JComboBox accountList = new JComboBox(accounts);
 
 				final Object[] message = {MenuViewPanel.this.resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, MenuViewPanel.this.resourceBundle.getString(
 						"playlistDialog.descriptionLabel"), scrollPane, "Account", accountList, validationPanel};

@@ -20,13 +20,12 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.view;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.GenericListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.controller.DirectoryController;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.DirectoryTableModel;
+import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import javax.swing.*;
@@ -46,23 +45,37 @@ import java.awt.event.ActionListener;
 public class DirectoryViewPanel extends JDialog
 {
 	private static final long serialVersionUID = -7077457843089222621L;
-	private JTable            directoryTable;
-	private JPanel            contentPane;
-	private JButton           addButton;
-	private JButton           deleteButton;
-	private JButton           selectButton;
-	private JComboBox<Preset> presetList;
-	private JTextField        directoryTextField;
-	private JCheckBox         activeCheckbox;
+	private JTable     directoryTable;
+	private JPanel     contentPane;
+	private JButton    addButton;
+	private JButton    deleteButton;
+	private JButton    selectButton;
+	private JComboBox  presetList;
+	private JTextField directoryTextField;
+	private JCheckBox  activeCheckbox;
 
-	@Inject private DirectoryController      directoryController;
-	@Inject private PresetService            presetService;
-	@Inject private GenericListModel<Preset> presetListModel;
-	@Inject private Injector                 injector;
+	private final   DirectoryController      directoryController;
+	private final   DirectoryService         directoryService;
+	private final   GenericListModel<Preset> presetListModel;
+	@Inject private JFileChooser             fileChooser;
+
+	@Inject
+	public DirectoryViewPanel(final DirectoryController directoryController, final GenericListModel<Preset> presetListModel, final DirectoryService directoryService)
+	{
+		this.directoryController = directoryController;
+		this.presetListModel = presetListModel;
+		this.directoryService = directoryService;
+		this.directoryController.run();
+		this.setContentPane(this.contentPane);
+		this.setModal(true);
+		this.initCompononents();
+		this.initListeners();
+	}
 
 	private void initCompononents()
 	{
-		for (final Preset preset : this.presetService.getAll()) {
+		this.presetList.removeAllItems();
+		for (final Preset preset : this.directoryService.findPresets()) {
 			this.presetListModel.addElement(preset);
 		}
 		this.presetList.setModel(this.presetListModel);
@@ -75,7 +88,7 @@ public class DirectoryViewPanel extends JDialog
 			{
 				final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				@SuppressWarnings("OverlyStrongTypeCast") final Directory directory = ((DirectoryTableModel) table.getModel()).getRow(row);
-				if (directory.locked) {
+				if ((directory.locked != null) && directory.locked) {
 					// noinspection MagicNumber
 					component.setBackground(new Color(250, 128, 114));
 					component.setForeground(Color.white);
@@ -125,12 +138,11 @@ public class DirectoryViewPanel extends JDialog
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = DirectoryViewPanel.this.injector.getInstance(JFileChooser.class);
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				DirectoryViewPanel.this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-				final int result = fileChooser.showOpenDialog(null);
+				final int result = DirectoryViewPanel.this.fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
-					DirectoryViewPanel.this.directoryTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+					DirectoryViewPanel.this.directoryTextField.setText(DirectoryViewPanel.this.fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
@@ -161,14 +173,5 @@ public class DirectoryViewPanel extends JDialog
 				}
 			}
 		});
-	}
-
-	public void run()
-	{
-		this.directoryController.run();
-		this.setContentPane(this.contentPane);
-		this.setModal(true);
-		this.initCompononents();
-		this.initListeners();
 	}
 }

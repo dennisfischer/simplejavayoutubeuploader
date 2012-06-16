@@ -20,6 +20,11 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 import com.google.inject.Inject;
+import com.teamdev.jxbrowser.Browser;
+import com.teamdev.jxbrowser.BrowserFactory;
+import com.teamdev.jxbrowser.BrowserFunction;
+import com.teamdev.jxbrowser.BrowserServices;
+import com.teamdev.jxbrowser.prompt.SilentPromptService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.log4j.Logger;
@@ -45,13 +50,14 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,10 +66,9 @@ import java.util.concurrent.CancellationException;
  * Time: 20:28
  * To change this template use File | Settings | File Templates.
  */
-@SuppressWarnings({"HardCodedStringLiteral", "StringConcatenation"})
 public class UploadWorker extends BetterSwingWorker
 {
-	private static final String INITIAL_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String INITIAL_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads"; //NON-NLS
 	/**
 	 * Max size for each upload chunk
 	 */
@@ -77,6 +82,7 @@ public class UploadWorker extends BetterSwingWorker
 	private int    numberOfRetries;
 
 	private boolean       failed;
+	private boolean       stopped;
 	private Queue         queue;
 	private File          overWriteDir;
 	private long          start;
@@ -118,7 +124,7 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			int submitCount = 0;
 			String videoId = null;
-			while ((submitCount <= UploadWorker.MAX_RETRIES) && (videoId == null) && !this.failed) {
+			while (!this.stopped && (submitCount <= UploadWorker.MAX_RETRIES) && (videoId == null) && !this.failed) {
 				submitCount++;
 
 				if (!fileToUpload.exists()) {
@@ -131,7 +137,7 @@ public class UploadWorker extends BetterSwingWorker
 					this.updateUploadUrl(uploadUrl);
 
 					//Log operation
-					this.logger.info("uploadUrl=" + uploadUrl);
+					this.logger.info(String.format("uploadUrl=%s", uploadUrl));
 					//INIT Vars
 					this.fileSize = fileToUpload.length();
 					this.totalBytesUploaded = 0;
@@ -156,25 +162,58 @@ public class UploadWorker extends BetterSwingWorker
 				} catch (UploaderException ignored) {
 				}
 			}
-			if (!this.failed && (this.queue.playlist != null)) {
-				this.queue.playlist.account = this.queue.account;
-				this.playlistService.addLatestVideoToPlaylist(this.queue.playlist, videoId);
+			if (this.stopped && !this.failed) {
+				this.queue.inprogress = false;
+				this.queue.failed = true;
+				this.queueService.update(this.queue);
+				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queue, "Beendet auf Userrequest"));
+				return;
 			}
-			this.queue.videoId = videoId;
-			this.queueService.update(this.queue);
-			EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(this.queue, this.fileSize, this.fileSize, 0, 0, 0));
-			EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, this.queue);
-		} catch (UploaderException e) {
+
+			if (!this.failed) {
+				if (this.queue.playlist != null) {
+					this.queue.playlist.account = this.queue.account;
+					this.playlistService.addLatestVideoToPlaylist(this.queue.playlist, videoId);
+				}
+				this.queue.videoId = videoId;
+				this.queueService.update(this.queue);
+
+				if (this.queue.monetize) {
+					this.monetizeVideo();
+					this.logger.info("Monetizing video");
+				}
+
+				if (!this.queue.enddir.equals(""))
+
+				{ //NON-NLS
+					final File enddir = new File(this.queue.enddir);
+					if (enddir.exists()) {
+						this.logger.info(String.format("Moving file to %s", enddir)); //NON-NLS
+						final File queueFile = new File(this.queue.file);
+						final File endFile = new File(enddir.getAbsolutePath() + "/" + queueFile.getName());
+						if (queueFile.renameTo(endFile)) {
+							this.logger.info(String.format("Done moving: %s", endFile.getAbsolutePath())); //NON-NLS
+						} else {
+							this.logger.info("Failed moving"); //NON-NLS
+						}
+					}
+				}
+
+				this.queue.archived = true;
+				this.queue.inprogress = false;
+				EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(this.queue, this.fileSize, this.fileSize, 0, 0, 0));
+				EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, this.queue);
+			}
+		} catch (UploaderException e)
+
+		{
 			this.queue.inprogress = false;
 			this.queue.failed = true;
 			this.queueService.update(this.queue);
 			EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queue, e.getMessage()));
-		} catch (UploaderResumeException e) {
-			this.queue.inprogress = false;
-			this.queue.failed = true;
-			this.queueService.update(this.queue);
-			EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(this.queue, e.getMessage()));
-		} catch (UploaderStopException e) {
+		} catch (UploaderResumeException e)
+
+		{
 			this.queue.inprogress = false;
 			this.queue.failed = true;
 			this.queueService.update(this.queue);
@@ -182,33 +221,105 @@ public class UploadWorker extends BetterSwingWorker
 		}
 	}
 
-	@Override
-	protected void onDone()
+	private void monetizeVideo()
+	{
+		final BetterSwingWorker swingWorker = new BetterSwingWorker()
+		{
+			@Override protected void background()
+			{
+
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override public void run()
+					{
+						final BrowserServices browserServices = BrowserServices.getInstance();
+						browserServices.setPromptService(new SilentPromptService());
+
+						final Browser browser = BrowserFactory.createBrowser();
+
+						final String LOGIN_URL = "https://accounts.google.com/ServiceLogin?uilel=3&service=youtube&passive=true&continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dheader%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&hl=en_US&ltmpl=sso";
+
+						final String LOGIN_SCRIPT = String.format("document.getElementById('Email').value=\"%s\"; " +
+																		  "document.getElementById('Passwd').value=\"%s\"; " +
+																		  "document.getElementById('gaia_loginform').submit();", UploadWorker.this.queue.account.name, UploadWorker.this.queue.account.getPassword());
+						final String VIDEO_EDIT_URL = String.format("http://www.youtube.com/my_videos_edit?ns=1&feature=vm&video_id=%s", UploadWorker.this.queue.videoId);
+						browser.navigate(LOGIN_URL);
+						if (browser.getCurrentLocation().equals(LOGIN_URL)) {
+							browser.waitReady();
+							browser.executeScript(LOGIN_SCRIPT);
+						}
+
+						browser.navigate(VIDEO_EDIT_URL);
+						browser.waitReady();
+
+						browser.registerFunction("MonetizeLoaded", new BrowserFunction()
+						{
+							public Object invoke(final Object... args)
+							{
+								browser.navigate("https://www.youtube.com/");
+								return true;
+							}
+						});
+
+						final String WORKAROUND = "if(typeof document.getElementsByClassName!='function'){document.getElementsByClassName=function(){var elms=document.getElementsByTagName('*');var ei=new Array();for(i=0;" + "i<elms.length;i++){if(elms[i]" +
+								".getAttribute('class')){ecl=elms[i].getAttribute('class').split(' ');for(j=0;j<ecl.length;j++){if(ecl[j].toLowerCase()==arguments[0].toLowerCase()){ei.push(elms[i])}}}else if(elms[i].className){ecl=elms[i].className.split(' ');for(j=0;j<ecl.length;j++){if(ecl[j].toLowerCase()==arguments[0].toLowerCase()){ei.push(elms[i])}}}}return ei}}";
+						final String MONETIZE_SCRIPT = "document.getElementsByClassName('enable-monetization')[0].checked = true;" +
+								"document.getElementsByClassName('monetization-disclaimer-accept')[0].click();" +
+								"document.getElementsByClassName('save-changes-button')[0].click();" +
+								"setTimeout('MonetizeLoaded()', 10000);";
+						browser.executeScript(WORKAROUND + MONETIZE_SCRIPT);
+						while (!browser.getCurrentLocation().equals("https://www.youtube.com/")) {
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException ignored) {
+							}
+						}
+						browser.stop();
+						browser.dispose();
+					}
+				});
+			}
+
+			@Override protected void onDone()
+			{
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		};
+		swingWorker.execute();
+		try {
+			swingWorker.get();
+		} catch (InterruptedException ignored) {
+		} catch (ExecutionException ignored) {
+		}
+	}
+
+	@Override protected void onDone()
 	{
 	}
 
-	private String uploadFile(final File fileToUpload, final String uploadUrl) throws UploaderException, UploaderResumeException, UploaderStopException
+	private String uploadFile(final File fileToUpload, final String uploadUrl) throws UploaderException, UploaderResumeException
 	{
 		String videoId = null;
-		while ((this.bytesToUpload > 0) && !this.failed) {
+		while (!this.isCancelled() && (this.bytesToUpload > 0) && !this.failed) {
 			//GET END SIZE
 			final long end = this.generateEndBytes(this.start, this.bytesToUpload);
 
 			//Log operation
-			this.logger.info(String.format("start=%s end=%s filesize=%s", this.start, end, (int) this.bytesToUpload));
+			this.logger.info(String.format("start=%s end=%s filesize=%s", this.start, end, (int) this.bytesToUpload)); //NON-NLS
 
 			try {
 				videoId = this.uploadChunk(fileToUpload, uploadUrl, this.start, end);
+				if (this.isCancelled()) {
+					break;
+				}
 
 				this.bytesToUpload -= this.DEFAULT_CHUNK_SIZE;
 				this.start = end + 1;
 				// clear this counter as we had a succesfull upload
 				this.numberOfRetries = 0;
-			} catch (InterruptedException ignored) {
-				throw new UploaderStopException("Beendet auf Userrequest");
 			} catch (UploaderException ex) {
 				//Log operation
-				this.logger.warn("Exception: " + ex.getMessage());
+				this.logger.warn(String.format("Exception: %s", ex.getMessage())); //NON-NLS
 				this.logger.trace(ex.getCause());
 
 				videoId = this.analyzeResumeInfo(this.fetchResumeInfo(uploadUrl), uploadUrl);
@@ -225,10 +336,10 @@ public class UploadWorker extends BetterSwingWorker
 
 	private String analyzeResumeInfo(final ResumeInfo resumeInfo, final String uploadUrl)
 	{
-		this.logger.info(String.format("Resuming stalled upload to: %s.", uploadUrl));
+		this.logger.info(String.format("Resuming stalled upload to: %s.", uploadUrl)); //NON-NLS
 		if (resumeInfo.videoId != null) { // upload actually complted despite the exception
 			final String videoId = resumeInfo.videoId;
-			this.logger.info(String.format("No need to resume video ID '%s'.", videoId));
+			this.logger.info(String.format("No need to resume video ID '%s'.", videoId)); //NON-NLS
 			return videoId;
 		} else {
 			final long nextByteToUpload = resumeInfo.nextByteToUpload;
@@ -236,7 +347,7 @@ public class UploadWorker extends BetterSwingWorker
 			// possibly rolling back the previosuly saved value
 			this.bytesToUpload = this.fileSize - nextByteToUpload;
 			this.start = nextByteToUpload;
-			this.logger.info(String.format("Next byte to upload is '%d'.", nextByteToUpload));
+			this.logger.info(String.format("Next byte to upload is '%d'.", nextByteToUpload)); //NON-NLS
 			return null;
 		}
 	}
@@ -246,7 +357,7 @@ public class UploadWorker extends BetterSwingWorker
 		ResumeInfo resumeInfo;
 		do {
 			if (!this.canResume()) {
-				throw new UploaderResumeException(String.format("Giving up uploading '%s'.", uploadUrl));
+				throw new UploaderResumeException(String.format("Giving up uploading '%s'.", uploadUrl)); //NON-NLS
 			}
 			resumeInfo = this.resumeFileUpload(uploadUrl);
 		} while (resumeInfo == null);
@@ -263,7 +374,7 @@ public class UploadWorker extends BetterSwingWorker
 		videoEntry.mediaGroup.category = new ArrayList<MediaCategory>(1);
 		final MediaCategory mediaCategory = new MediaCategory();
 		mediaCategory.label = this.queue.category;
-		mediaCategory.scheme = "http://gdata.youtube.com/schemas/2007/categories.cat";
+		mediaCategory.scheme = "http://gdata.youtube.com/schemas/2007/categories.cat"; //NON-NLS
 		mediaCategory.category = this.queue.category;
 		videoEntry.mediaGroup.category.add(mediaCategory);
 
@@ -271,23 +382,23 @@ public class UploadWorker extends BetterSwingWorker
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
 
-		videoEntry.accessControl.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(this.queue.embed)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(this.queue.rate)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(this.queue.mobile)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(this.queue.commentvote)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(this.queue.videoresponse)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(this.queue.comment)));
-		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(!this.queue.unlisted)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(this.queue.embed))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(this.queue.rate))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(this.queue.mobile))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(this.queue.commentvote))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(this.queue.videoresponse))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(this.queue.comment))); //NON-NLS
+		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(!this.queue.unlisted))); //NON-NLS
 
 		if (this.queue.comment == 3) {
-			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends"));
+			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends")); //NON-NLS
 		}
 
 		final XStream xStream = new XStream(new DomDriver());
 		xStream.autodetectAnnotations(true);
-		final String atomData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xStream.toXML(videoEntry);
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry)); //NON-NLS
 
-		this.logger.info("AtomData: " + atomData);
+		this.logger.info(String.format("AtomData: %s", atomData)); //NON-NLS
 
 		//Upload atomData and fetch URL to upload to
 		return this.uploadMetaData(atomData, fileToUpload.getAbsolutePath());
@@ -310,8 +421,8 @@ public class UploadWorker extends BetterSwingWorker
 			final Request request = new Request.Builder(Request.Method.POST, new URL(UploadWorker.INITIAL_UPLOAD_URL)).build();
 			final RequestSigner requestSigner = this.getRequestSigner();
 
-			request.setContentType("application/atom+xml; charset=UTF-8");
-			request.setHeaderParameter("Slug", filePath);
+			request.setContentType("application/atom+xml; charset=UTF-8"); //NON-NLS
+			request.setHeaderParameter("Slug", filePath);  //NON-NLS
 
 			requestSigner.sign(request);
 
@@ -325,7 +436,7 @@ public class UploadWorker extends BetterSwingWorker
 				if (response.code == HTTP_STATUS.BADREQUEST.getCode()) {
 					throw new UploaderException("Die gegebenen Videoinformationen sind ungültig!");
 				}
-				return response.headerFields.get("Location").get(0);
+				return response.headerFields.get("Location").get(0); //NON-NLS
 			} finally {
 				outStreamWriter.close();
 			}
@@ -338,10 +449,10 @@ public class UploadWorker extends BetterSwingWorker
 		}
 	}
 
-	private String uploadChunk(final File fileToUpload, final String uploadUrl, final long startByte, final long endByte) throws UploaderException, InterruptedException
+	private String uploadChunk(final File fileToUpload, final String uploadUrl, final long startByte, final long endByte) throws UploaderException
 	{
 		//Log operation
-		this.logger.info(String.format("Uploaded %d bytes so far, using PUT method.", (int) this.totalBytesUploaded));
+		this.logger.info(String.format("Uploaded %d bytes so far, using PUT method.", (int) this.totalBytesUploaded)); //NON-NLS
 		final UploadProgress uploadProgress = new UploadProgress(this.queue, this.fileSize, this.totalBytesUploaded, 0, Calendar.getInstance().getTimeInMillis(), 0);
 
 		//Building PUT Request for chunk data
@@ -349,11 +460,11 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			request = new Request.Builder(Request.Method.POST, new URL(uploadUrl)).build();
 		} catch (MalformedURLException e) {
-			throw new UploaderException(String.format("Upload URL malformed! %s", uploadUrl), e);
+			throw new UploaderException(String.format("Upload URL malformed! %s", uploadUrl), e); //NON-NLS
 		}
 
 		request.setContentType(this.queue.mimetype);
-		request.setHeaderParameter("Content-Range", String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length()));
+		request.setHeaderParameter("Content-Range", String.format("bytes %d-%d/%d", startByte, endByte, fileToUpload.length())); //NON-NLS
 
 		try {
 			this.getRequestSigner().sign(request);
@@ -367,7 +478,7 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			//Input
 			final FileInputStream fileInputStream = new FileInputStream(fileToUpload);
-			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream); //NON-NLS
 
 			//Output
 			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setFixedContent(chunk));
@@ -380,20 +491,23 @@ public class UploadWorker extends BetterSwingWorker
 					throw new UploaderException("Fehler beim Lesen der Datei!");
 				}
 				this.flowChunk(bufferedInputStream, throttledOutputStream, startByte, endByte, uploadProgress);
+				if (this.stopped) {
+					return null;
+				}
 				final Response response = request.send();
 				switch (response.code) {
 					case 200:
 						throw new UploaderException("Received 200 response during resumable uploading");
 					case 201:
 						final String videoId = this.parseVideoId(response.body);
-						this.logger.info("videoId=" + videoId);
+						this.logger.info(String.format("videoId=%s", videoId));  //NON-NLS
 						return videoId;
 					case 308:
 						// OK, the chunk completed succesfully
-						this.logger.info(String.format("responseCode=%d responseMessage=%s", response.code, response.message));
+						this.logger.info(String.format("responseCode=%d responseMessage=%s", response.code, response.message)); //NON-NLS
 						return null;
 					default:
-						throw new UploaderException(String.format("Unexpected return code : %d %s while uploading :%s", response.code, response.message, response.url.toString()));
+						throw new UploaderException(String.format("Unexpected return code : %d %s while uploading :%s", response.code, response.message, response.url.toString())); //NON-NLS
 				}
 			} finally {
 				try {
@@ -411,15 +525,14 @@ public class UploadWorker extends BetterSwingWorker
 
 			try {
 				final Response response = request.send();
-				throw new UploaderException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d", response.message, response.message, response.code), ex);
+				throw new UploaderException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d", response.message, response.message, response.code), ex); //NON-NLS
 			} catch (IOException e) {
 				throw new UploaderException("Fehler beim Schreiben der Datei (0x00001): Unknown error", e);
 			}
 		}
 	}
 
-	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte, final UploadProgress uploadProgress) throws IOException, InterruptedException
-
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte, final UploadProgress uploadProgress) throws IOException
 	{
 		//Write Chunk
 		final byte[] buffer = new byte[UploadWorker.bufferSize];
@@ -428,6 +541,9 @@ public class UploadWorker extends BetterSwingWorker
 		while (totalRead != ((endByte - startByte) + 1)) {
 			//Upload bytes in buffer
 			final int bytesRead = RequestUtilities.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.bufferSize);
+			if (this.stopped) {
+				break;
+			}
 			//Calculate all uploadinformation
 			totalRead += bytesRead;
 			this.totalBytesUploaded += bytesRead;
@@ -451,19 +567,19 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			final Request request = new Request.Builder(Request.Method.PUT, new URL(uploadUrl)).build();
 			this.getRequestSigner().sign(request);
-			request.setHeaderParameter("Content-Range", "bytes */*");
+			request.setHeaderParameter("Content-Range", "bytes */*"); //NON-NLS
 			request.setFixedContent(0);
 			final Response response = request.send(false);
 
 			if (response.code == 308) {
 				final long nextByteToUpload;
 
-				final String range = response.headerFields.get("Range").get(0);
+				final String range = response.headerFields.get("Range").get(0); //NON-NLS
 				if (range == null) {
-					this.logger.info(String.format("PUT to %s did not return 'Range' header.", uploadUrl));
+					this.logger.info(String.format("PUT to %s did not return 'Range' header.", uploadUrl)); //NON-NLS
 					nextByteToUpload = 0;
 				} else {
-					this.logger.info(String.format("Range header is '%s'.", range));
+					this.logger.info(String.format("Range header is '%s'.", range)); //NON-NLS
 					final String[] parts = range.split("-");
 					if (parts.length > 1) {
 						nextByteToUpload = Long.parseLong(parts[1]) + 1;
@@ -472,8 +588,8 @@ public class UploadWorker extends BetterSwingWorker
 					}
 				}
 				final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-				if (response.headerFields.containsKey("Location")) {
-					final String location = response.headerFields.get("Location").get(0);
+				if (response.headerFields.containsKey("Location")) { //NON-NLS
+					final String location = response.headerFields.get("Location").get(0);  //NON-NLS
 					if (location != null) {
 						this.updateUploadUrl(location);
 					}
@@ -482,7 +598,7 @@ public class UploadWorker extends BetterSwingWorker
 			} else if ((response.code >= HTTP_STATUS.OK.getCode()) && (response.code < 300)) {
 				return new ResumeInfo(this.parseVideoId(response.body));
 			} else {
-				throw new UploaderException(String.format("Unexpected return code : %d while uploading :%s", response.code, uploadUrl));
+				throw new UploaderException(String.format("Unexpected return code : %d while uploading :%s", response.code, uploadUrl));  //NON-NLS
 			}
 		} catch (MalformedURLException e) {
 			throw new UploaderException("Malformed URL - Content-Range-Header! (0x00003)", e);
@@ -501,9 +617,9 @@ public class UploadWorker extends BetterSwingWorker
 		}
 		try {
 			final int sleepSeconds = (int) Math.pow(UploadWorker.BACKOFF, this.numberOfRetries);
-			this.logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
+			this.logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds)); //NON-NLS
 			Thread.sleep(sleepSeconds * 1000);
-			this.logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
+			this.logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds)); //NON-NLS
 		} catch (InterruptedException ignored) {
 			return false;
 		}
@@ -522,7 +638,7 @@ public class UploadWorker extends BetterSwingWorker
 	private RequestSigner getRequestSigner() throws AuthenticationException
 	{
 		if (this.googleAuthorization == null) {
-			this.googleAuthorization = new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, this.queue.account.name, this.queue.account.password);
+			this.googleAuthorization = new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, this.queue.account.name, this.queue.account.getPassword());
 		}
 		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, this.googleAuthorization);
 	}
@@ -535,20 +651,19 @@ public class UploadWorker extends BetterSwingWorker
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT) public void onAbortUpload(final String topic, final IModel abort)
 	{
-		if (abort.getIdentity().compareTo(this.queue.getIdentity()) == 0) {
-			try {
-				this.cancel(true);
-				this.failed = true;
-			} catch (CancellationException ignored) {
-			}
+		if (abort.getIdentity().equals(this.queue.getIdentity())) {
+			this.failed = false;
+			this.stopped = true;
 		}
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED) public void onFailedUpload(final String topic, final UploadFailed uploadFailed)
 	{
-		this.failed = true;
-		this.logger.warn(uploadFailed.getMessage());
-		this.cancel(true);
+		if (uploadFailed.getQueue().getIdentity().equals(this.queue.getIdentity())) {
+			this.failed = true;
+			this.stopped = true;
+			this.logger.warn(uploadFailed.getMessage());
+		}
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_LIMIT) public void onSpeedLimit(final String topic, final Object o)

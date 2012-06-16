@@ -58,6 +58,11 @@ public class Queue implements IModel
 	public transient int      identity;
 	public           Account  account;
 	public           Playlist playlist;
+	public           boolean  monetize;
+	public           boolean  monetizeOverlay;
+	public           boolean  monetizeTrueview;
+	public           boolean  monetizeProduct;
+	public           String   enddir;
 
 	@Override public Integer getIdentity()
 	{

@@ -34,6 +34,8 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker.UploadW
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -100,8 +102,6 @@ public class Uploader
 							Uploader.this.executorService.submit(uploadWorker);
 							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
 							Uploader.this.runningUploads++;
-
-							System.out.println(runningUploads);
 						}
 					}
 
@@ -158,25 +158,29 @@ public class Uploader
 	{
 		this.logger.info(String.format("Upload finished: %s; %s", queue.title, queue.videoId));
 		this.runningUploads--;
-		queue.archived = true;
-		queue.inprogress = false;
 		this.logger.info(String.format("Running uploads: %s", this.runningUploads));
 		this.queueService.update(queue);
 		if (this.queueService.getQueued().isEmpty() && (this.runningUploads == 0)) {
 			this.logger.info("All uploads finished");
-			switch (this.actionOnFinish) {
-				case 0:
-					return;
-				case 1:
-					System.exit(0);
-					return;
-				case 2:
-					Computer.shutdownComputer();
-					return;
-				case 3:
-					Computer.hibernateComputer();
-					return;
-			}
+			final Timer timer = new Timer();
+			timer.schedule(new TimerTask()
+			{
+				@Override public void run()
+				{
+					switch (Uploader.this.actionOnFinish) {
+						case 0:
+							return;
+						case 1:
+							System.exit(0);
+							return;
+						case 2:
+							Computer.shutdownComputer();
+							return;
+						case 3:
+							Computer.hibernateComputer();
+					}
+				}
+			}, 30000);
 		}
 
 		this.logger.info(String.format("Left uploads: %d", this.queueService.getQueued().size()));

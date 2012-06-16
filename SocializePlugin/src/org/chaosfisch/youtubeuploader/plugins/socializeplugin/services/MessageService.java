@@ -28,6 +28,8 @@ import org.chaosfisch.youtubeuploader.plugins.socializeplugin.mappers.MessageMap
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.*;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
@@ -80,12 +82,12 @@ public class MessageService implements CRUDService<Message>
 		EventBus.publish(MessageService.MESSAGE_ENTRY_REMOVED, message);
 	}
 
-	@Override @Transactional public Iterable<Message> getAll()
+	@Override @Transactional public List<Message> getAll()
 	{
 		return this.messageMapper.getMessages();
 	}
 
-	@Override @Transactional public Iterable<Message> find(final Message message)
+	@Override @Transactional public List<Message> find(final Message message)
 	{
 		return this.messageMapper.findMessages(message);
 	}

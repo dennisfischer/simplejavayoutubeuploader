@@ -43,9 +43,14 @@ public class Preset implements IModel
 	public           short    videoresponse;
 	public           short    visibility;
 	public           boolean  rate;
-	public transient int      identity;
+	public transient Integer  identity;
 	public transient Account  account;
 	public transient Playlist playlist;
+	public           boolean  monetize;
+	public           boolean  monetizeOverlay;
+	public           boolean  monetizeTrueview;
+	public           boolean  monetizeProduct;
+	public           String   enddir;
 
 	@Override public Integer getIdentity()
 	{

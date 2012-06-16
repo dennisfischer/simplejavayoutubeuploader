@@ -28,7 +28,6 @@
 
 package org.chaosfisch.youtubeuploader;
 
-import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -124,8 +123,6 @@ public class SimpleJavaYoutubeUploader
 				});
 			}
 		});
-		NativeInterface.open();
 		new SimpleJavaYoutubeUploader(args);
-		NativeInterface.runEventPump();
 	}
 }

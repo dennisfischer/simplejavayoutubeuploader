@@ -84,8 +84,15 @@ public class DirectoryTableModel extends RowTableModel<Directory>
 		this.addRow(directory);
 	}
 
-	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED)
-	public void onDirectoryRemoved(final String topic, final Directory directory)
+	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_UPDATED)
+	public void onDirectoryUpdated(final String topic, final Directory directory)
+	{
+		if (this.modelData.contains(directory)) {
+			this.replaceRow(this.modelData.indexOf(directory), directory);
+		}
+	}
+
+	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED) public void onDirectoryRemoved(final String topic, final Directory directory)
 	{
 		this.removeElement(directory);
 	}

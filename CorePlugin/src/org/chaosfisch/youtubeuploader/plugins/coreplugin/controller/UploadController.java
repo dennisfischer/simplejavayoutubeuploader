@@ -78,8 +78,7 @@ public class UploadController
 		{
 			final int index = this.getIndexOf(element);
 			if (index != -1) {
-				this.removeElementAt(index);
-				this.insertElementAt(element, index);
+				this.replaceRow(index, element);
 			}
 		}
 	};
@@ -99,8 +98,7 @@ public class UploadController
 		{
 			final int index = this.getIndexOf(preset);
 			if (index != -1) {
-				this.removeElementAt(index);
-				this.insertElementAt(preset, index);
+				this.replaceRow(index, preset);
 			}
 		}
 
@@ -131,8 +129,7 @@ public class UploadController
 		{
 			final int index = this.getIndexOf(playlist);
 			if (index != -1) {
-				this.removeElementAt(index);
-				this.insertElementAt(playlist, index);
+				this.replaceRow(index, playlist);
 			}
 		}
 	};
@@ -218,25 +215,29 @@ public class UploadController
 		return this.accountService;
 	}
 
-	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file, final boolean commentvote, final boolean mobile,
-							 final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility, final Date starttime)
+	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file, final boolean commentvote, final boolean mobile, final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility, final Date starttime, final boolean monetize, final boolean monetizeOverlay, final boolean monetizeTrueview, final boolean monetizeProduct, final String enddir)
 	{
-		final Queue queueEntity = new Queue();
-		queueEntity.account = account;
-		queueEntity.mimetype = Mimetype.getMimetypeByExtension(file);
-		queueEntity.mobile = mobile;
-		queueEntity.title = title;
-		queueEntity.category = category;
-		queueEntity.comment = comment;
-		queueEntity.commentvote = commentvote;
-		queueEntity.description = description;
-		queueEntity.embed = embed;
-		queueEntity.file = file;
-		queueEntity.keywords = tags;
-		queueEntity.rate = rate;
-		queueEntity.videoresponse = videoresponse;
-		queueEntity.playlist = playlist;
-		queueEntity.locked = false;
+		final Queue queue = new Queue();
+		queue.account = account;
+		queue.mimetype = Mimetype.getMimetypeByExtension(file);
+		queue.mobile = mobile;
+		queue.title = title;
+		queue.category = category;
+		queue.comment = comment;
+		queue.commentvote = commentvote;
+		queue.description = description;
+		queue.embed = embed;
+		queue.file = file;
+		queue.keywords = tags;
+		queue.rate = rate;
+		queue.videoresponse = videoresponse;
+		queue.playlist = playlist;
+		queue.locked = false;
+		queue.monetize = monetize;
+		queue.monetizeOverlay = monetizeOverlay;
+		queue.monetizeTrueview = monetizeTrueview;
+		queue.monetizeProduct = monetizeProduct;
+		queue.enddir = enddir;
 
 		if (playlist != null) {
 			playlist.number++;
@@ -245,18 +246,18 @@ public class UploadController
 
 		switch (visibility) {
 			case 1:
-				queueEntity.unlisted = true;
+				queue.unlisted = true;
 				break;
 			case 2:
-				queueEntity.privatefile = true;
+				queue.privatefile = true;
 				break;
 		}
 
 		if (starttime.after(new Date(System.currentTimeMillis() + (300000)))) {
-			queueEntity.started = new Date(starttime.getTime());
+			queue.started = new Date(starttime.getTime());
 		}
 
-		this.queueService.create(queueEntity);
+		this.queueService.create(queue);
 	}
 
 	public GenericListModel<Preset> getPresetListModel()
@@ -264,7 +265,7 @@ public class UploadController
 		return this.presetListModel;
 	}
 
-	public ComboBoxModel<Playlist> getPlaylistListModel()
+	public ComboBoxModel getPlaylistListModel()
 	{
 		return this.playlistListModel;
 	}

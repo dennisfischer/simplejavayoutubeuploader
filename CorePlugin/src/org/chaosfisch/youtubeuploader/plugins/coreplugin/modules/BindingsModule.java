@@ -23,7 +23,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
-import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.ognl.DefaultMemberAccess;
 import org.apache.ibatis.ognl.OgnlContext;
 import org.apache.ibatis.ognl.OgnlException;
@@ -77,7 +76,7 @@ public class BindingsModule extends AbstractModule
 				final File outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
 				try {
 					final File templateFile = new File("F:/Daten/SimpleJavaYoutubeUploader/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/mappers/mybatis_config_template.xml");
-					final String fileContent = FileUtils.readFileToString(templateFile);
+					final String fileContent = BindingsModule.readFileAsString(templateFile);
 
 					final FileWriter fstream = new FileWriter(outputFile);
 					final BufferedWriter out = new BufferedWriter(fstream);
@@ -107,6 +106,7 @@ public class BindingsModule extends AbstractModule
 						fstream.close();
 					}
 					this.setClassPathResource(outputFile.getAbsolutePath());
+				} catch (FileNotFoundException ignored) {
 				} catch (IOException ignored) {
 				}
 			}
@@ -116,6 +116,21 @@ public class BindingsModule extends AbstractModule
 		this.bind(PresetService.class).to(PresetServiceImpl.class).in(Singleton.class);
 		this.bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		this.bind(AutoTitleGenerator.class).to(AutoTitleGeneratorImpl.class);
+	}
+
+	private static String readFileAsString(final File file) throws IOException, FileNotFoundException
+	{
+		final StringBuilder fileData = new StringBuilder(1000);
+		final BufferedReader reader = new BufferedReader(new FileReader(file));
+		char[] buf = new char[1024];
+		int numRead = 0;
+		while ((numRead = reader.read(buf)) != -1) {
+			final String readData = String.valueOf(buf, 0, numRead);
+			fileData.append(readData);
+			buf = new char[1024];
+		}
+		reader.close();
+		return fileData.toString();
 	}
 
 	private abstract static class AbstractMyBatisModule extends AbstractModule

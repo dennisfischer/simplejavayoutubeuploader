@@ -285,7 +285,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	private RequestSigner getRequestSigner(final Account account) throws AuthenticationException
 	{
-		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, account.name, account.password));
+		return new GoogleRequestSigner(YTService.DEVELOPER_KEY, 2, new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, account.name, account.getPassword()));
 	}
 
 	@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED) public void onAccountAdded(final String topic, final Account account)

@@ -88,6 +88,7 @@ public class FacebookSocialProvider implements ISocialProvider
 			this.logger.info("Facebook-Server started.");//NON-NLS
 			this.oAuthHTTPDServer = new OAuthHTTPDServer(8080);
 
+			//noinspection SynchronizeOnNonFinalField
 			synchronized (this.oAuthHTTPDServer) {
 				this.oAuthHTTPDServer.wait(60000);
 			}

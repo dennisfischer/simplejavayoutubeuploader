@@ -8,6 +8,7 @@
           <element id="directory" name="services">
             <element id="dir-copy" path="$PROJECT_DIR$/DirectoryPlugin/src/META-INF/services" />
           </element>
+          <element id="file-copy" path="$PROJECT_DIR$/DirectoryPlugin/src/META-INF/mappers.properties" />
         </element>
         <element id="module-output" name="DirectoryPlugin" />
       </element>

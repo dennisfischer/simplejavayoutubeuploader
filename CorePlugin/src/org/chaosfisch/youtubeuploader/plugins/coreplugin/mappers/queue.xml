@@ -27,10 +27,12 @@
 
 	<sql id="queueValuesList">
 		(category, description, file, keywords, mimetype, title, uploadurl, videoid, archived, commentvote, inprogress, locked,
-		 mobile, privatefile, rate, unlisted, embed, failed, comment, videoresponse, sequence, started, account_id, playlist_id)
+		 mobile, privatefile, rate, unlisted, embed, failed, comment, videoresponse, sequence, started, account_id, playlist_id,
+		 monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir)
 		 VALUES (#{category}, #{description}, #{file}, #{keywords}, #{mimetype}, #{title}, #{uploadurl}, #{videoId},
 		 #{archived}, #{commentvote}, #{inprogress}, #{locked}, #{mobile}, #{privatefile}, #{rate}, #{unlisted}, #{embed}, #{failed}, #{comment},
-		 #{videoresponse}, #{sequence}, #{started}, #{account.identity}, #{playlist.identity})
+		 #{videoresponse}, #{sequence}, #{started}, #{account.identity}, #{playlist.identity}, #{monetize}, #{monetizeOverlay}, #{monetizeTrueview},
+		 #{monetizeProduct}, #{enddir})
 	</sql>
 
 	<sql id="queueSetList">
@@ -58,7 +60,12 @@
 		sequence 		= #{sequence},
 		started 		= #{started},
 		account_id		= #{account.identity},
-		playlist_id		= #{playlist.identity}
+		playlist_id		= #{playlist.identity},
+		monetize 		= #{monetize},
+		monetizeOverlay = #{monetizeOverlay},
+		monetizeTrueview = #{monetizeTrueview},
+		monetizeProduct = #{monetizeProduct},
+		enddir 			= #{enddir}
 	</sql>
 
 	<sql id="accountColumns">
@@ -150,10 +157,16 @@
 	<update id="moveTop">
 		<![CDATA[
 
+
+
+
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN 0
 		ELSE SEQUENCE+1
 		END WHERE SEQUENCE <= #{sequence}
+
+
+
 
 		]]>
 	</update>
@@ -166,10 +179,16 @@
 	<update id="moveBottom" parameterType="Queue">
 		<![CDATA[
 
+
+
+
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN (SELECT COUNT(*) FROM QUEUE WHERE archived = false) - 1
 		ELSE SEQUENCE-1
 		END WHERE SEQUENCE >= #{sequence}
+
+
+
 
 		]]>
 	</update>

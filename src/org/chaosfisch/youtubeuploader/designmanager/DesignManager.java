@@ -139,7 +139,7 @@ public class DesignManager
 
 	public void registerSettingsExtension()
 	{
-		final MutableComboBoxModel<Design> desingListModel = new DefaultComboBoxModel<Design>();
+		final MutableComboBoxModel desingListModel = new DefaultComboBoxModel();
 		final List<Design> designCollection = new ArrayList<Design>(this.designMap.size());
 		designCollection.addAll(this.designMap.values());
 		Collections.sort(designCollection, new Comparator<Object>()

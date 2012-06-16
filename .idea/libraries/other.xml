@@ -10,10 +10,10 @@
       <root url="jar://$PROJECT_DIR$/../repositories/other/swingx.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/xstream-1.4.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/commons-io-2.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/hsqldb.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-common-1.3.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/trident.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7-javadoc.jar!/" />

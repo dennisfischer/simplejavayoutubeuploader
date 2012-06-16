@@ -19,6 +19,8 @@
 
 package org.chaosfisch.util;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
@@ -34,7 +36,7 @@ public interface CRUDService<E>
 
 	void delete(E object);
 
-	Iterable<E> getAll();
+	List<E> getAll();
 
-	Iterable<E> find(E object);
+	List<E> find(E object);
 }

@@ -242,8 +242,8 @@ public class PluginMainFrame
 		this.menuBar.setMinimumSize(new Dimension(111, 21));
 		this.menuBar.setName(PluginMainFrame.MENU_BAR);
 
-		this.mainFrame.setPreferredSize(new Dimension(1050, 500));
-		this.mainFrame.setMinimumSize(new Dimension(1050, 500));
+		this.mainFrame.setPreferredSize(new Dimension(1050, 575));
+		this.mainFrame.setMinimumSize(new Dimension(1050, 575));
 		this.mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.mainFrame.addWindowListener(new WindowAdapter()
 		{

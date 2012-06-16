@@ -17,51 +17,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.mock;
+package org.chaosfisch.youtubeuploader.plugins.directoryplugin.mappers;
 
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
-import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 05.05.12
- * Time: 12:44
+ * Date: 29.05.12
+ * Time: 10:23
  * To change this template use File | Settings | File Templates.
  */
-public class DirectoryServiceImpl implements DirectoryService
+public interface DirectoryMapper
 {
-	@Override public List<Directory> getAll()
-	{
-		return new ArrayList<Directory>(0);
-	}
+	List<Directory> getDirectories();
 
-	@Override public List<Directory> getActive()
-	{
-		return new ArrayList<Directory>(0);
-	}
+	List<Directory> findDirectories(Directory directory);
 
-	@Override public Directory findByFile(final File file)
-	{
-		return new Directory();
-	}
+	void deleteDirectory(Directory directory);
 
-	@Override public Directory createDirectory(final Directory directory)
-	{
-		return new Directory();
-	}
+	void createDirectory(Directory directory);
 
-	@Override public Directory deleteDirectory(final Directory directory)
-	{
-		return new Directory();
-	}
+	void updateDirectory(Directory directory);
 
-	@Override public Directory updateDirectory(final Directory directory)
-	{
-		return new Directory();
-	}
+	List<Preset> getQualifiedPresets();
 }

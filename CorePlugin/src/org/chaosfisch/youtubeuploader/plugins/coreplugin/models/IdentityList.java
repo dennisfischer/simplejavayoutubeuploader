@@ -44,7 +44,7 @@ public class IdentityList<E extends IModel> extends ArrayList<E>
 			}
 		} else {
 			for (int i = 0; i < this.size(); i++) {
-				if (model.getIdentity() == this.get(i).getIdentity()) {
+				if (model.getIdentity().equals(this.get(i).getIdentity())) {
 					return i;
 				}
 			}
@@ -71,7 +71,7 @@ public class IdentityList<E extends IModel> extends ArrayList<E>
 			}
 		} else {
 			for (int i = this.size() - 1; i >= 0; i--) {
-				if (model.getIdentity() == this.get(i).getIdentity()) {
+				if (model.getIdentity().equals(this.get(i).getIdentity())) {
 					return i;
 				}
 			}

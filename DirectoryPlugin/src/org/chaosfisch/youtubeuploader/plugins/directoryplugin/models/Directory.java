@@ -31,11 +31,11 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
  */
 public class Directory implements IModel
 {
-	public            String  directory;
-	public            boolean active;
-	public            boolean locked;
-	private transient int     identity;
-	public            Preset  preset;
+	public           String  directory;
+	public           Boolean active;
+	public           Boolean locked;
+	public transient Integer identity;
+	public           Preset  preset;
 
 	@Override public Integer getIdentity()
 	{

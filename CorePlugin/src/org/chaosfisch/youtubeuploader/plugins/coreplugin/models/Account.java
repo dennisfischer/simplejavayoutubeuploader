@@ -31,8 +31,7 @@ import java.util.List;
 public class Account implements IModel
 {
 	public            String         name;
-	public            String         password;
-	public            String         secret;
+	private           String         password;
 	private transient int            identity;
 	public transient  List<Playlist> presets;
 	public transient  List<Queue>    queue;
@@ -41,6 +40,16 @@ public class Account implements IModel
 	@Override public Integer getIdentity()
 	{
 		return this.identity;
+	}
+
+	public String getPassword()
+	{
+		return this.password;
+	}
+
+	public void setPassword(final String password)
+	{
+		this.password = password;
 	}
 
 	public String toString()

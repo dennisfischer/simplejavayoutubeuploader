@@ -57,7 +57,7 @@ public class SocializeView
 	private       JToggleButton     twitterButton;
 	private       JToggleButton     youtubeButton;
 	private       JTextArea         messageTextArea;
-	private       JComboBox<String> publishComboBox;
+	private       JComboBox         publishComboBox;
 	private       JButton           addButton;
 	private       JSpinner          uploadIDSpinner;
 	private       JButton           deleteButton;
@@ -91,7 +91,7 @@ public class SocializeView
 		this.messagesTable.setModel(this.controller.getMessageTableModel());
 		this.messagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		this.publishComboBox.setModel(new DefaultComboBoxModel<String>(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
+		this.publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
 	}
 
 	private void initListeners()

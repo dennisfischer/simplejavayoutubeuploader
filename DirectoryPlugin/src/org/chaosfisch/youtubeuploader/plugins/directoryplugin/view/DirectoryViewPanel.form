@@ -5,12 +5,13 @@
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:d:noGrow"/>
-    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:max(d;4px):grow"/>
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:d:grow"/>
     <colspec value="fill:max(m;30dlu):noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:d:grow"/>
@@ -24,7 +25,7 @@
     <children>
       <scrollpane id="f65b5">
         <constraints>
-          <grid row="4" column="0" row-span="6" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="7" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms top="5" left="5" bottom="5" right="5" defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
         <properties/>
@@ -84,9 +85,15 @@
           <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/directoryplugin/resources/directoryplugin" key="button.addLabel"/>
         </properties>
       </component>
+      <vspacer id="68750">
+        <constraints>
+          <grid row="10" column="4" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+      </vspacer>
       <component id="c10ba" class="javax.swing.JButton" binding="deleteButton">
         <constraints>
-          <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <forms top="0" left="0" bottom="0" right="3"/>
         </constraints>
         <properties>
@@ -96,7 +103,7 @@
       </component>
       <component id="60d51" class="javax.swing.JCheckBox" binding="activeCheckbox">
         <constraints>
-          <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
           <forms top="0" left="0" bottom="0" right="3"/>
         </constraints>
         <properties>

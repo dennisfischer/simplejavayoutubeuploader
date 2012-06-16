@@ -20,11 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.worker;
 
 import com.google.inject.Inject;
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
+import com.teamdev.filewatch.*;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.Mimetype;
@@ -40,8 +36,7 @@ import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.Direc
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,150 +47,130 @@ import java.util.List;
  */
 public class DirectoryWorker extends Thread
 {
-	private static final int MAX_OBSERVERS = 20;
-	private               boolean               stop;
-	private               long                  intervall;
-	private               FileAlterationMonitor fileAlterationMonitor;
-	@Inject private       QueueService          queueService;
-	@Inject private       DirectoryService      directoryService;
-	@Inject private       PlaylistService       playlistService;
-	@Inject private       AutoTitleGenerator    autoTitleGenerator;
-	@InjectLogger private Logger                logger;
+	@Inject private       QueueService       queueService;
+	@Inject private       DirectoryService   directoryService;
+	@Inject private       PlaylistService    playlistService;
+	@Inject private       AutoTitleGenerator autoTitleGenerator;
+	@InjectLogger private Logger             logger;
+	Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>();
+	Collection<File>        inProgress      = new ArrayList<File>();
 
 	@Override
 	public void run()
 	{
-		this.loadDirectoryWorker();
-	}
 
-	private void loadDirectoryWorker()
-	{
-		final FileAlterationObserver[] fileAlterationObservers = this.initObservers();
-		this.fileAlterationMonitor = new FileAlterationMonitor(this.intervall, fileAlterationObservers);
-
-		try {
-			this.fileAlterationMonitor.start();
-		} catch (Exception e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-		this.stop = false;
-		while (!this.stop) {
-			try {
-				Thread.sleep(this.intervall);
-			} catch (InterruptedException ignored) {
-			}
-		}
-	}
-
-	private FileAlterationObserver[] initObservers()
-	{
 		final List<Directory> directories = this.directoryService.getActive();
-		final FileAlterationObserver[] fileAlterationObservers = new FileAlterationObserver[DirectoryWorker.MAX_OBSERVERS];
-		final FileFilter mediaFileFilter = new MediaFileFilter();
-		final FileAlterationListener fileAlterationListener = new MediaFileAlternationListener();
-		int i = 0;
+		final FileEventsListener fileEventsAdapter = new FileEventsAdapter()
+		{
+			@Override public void fileAdded(final FileEvent.Added added)
+			{
+				if (!DirectoryWorker.this.inProgress.contains(added.getFile())) {
+					DirectoryWorker.this.inProgress.add(added.getFile());
+					DirectoryWorker.this.addToUpload(added.getFile());
+				}
+			}
+
+			@Override public void fileChanged(final FileEvent.Changed changed)
+			{
+				if (!DirectoryWorker.this.inProgress.contains(changed.getFile())) {
+					DirectoryWorker.this.inProgress.add(changed.getFile());
+					DirectoryWorker.this.addToUpload(changed.getFile());
+				}
+			}
+		};
+
+		final Set<WatchingAttributes> watchingAttributes = EnumSet.allOf(WatchingAttributes.class);
+		watchingAttributes.remove(WatchingAttributes.DirectoryName);
+		watchingAttributes.remove(WatchingAttributes.Subtree);
+
+		final FileEventFilter fileMaskFilter = new MediaFileFilter();
+
 		for (final Directory directory : directories) {
-			this.logger.debug(directory.directory);
-			final FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(directory.directory, mediaFileFilter);
-			fileAlterationObserver.addListener(fileAlterationListener);
-			fileAlterationObservers[i] = fileAlterationObserver;
-			i++;
-		}
-		return fileAlterationObservers;
-	}
-
-	public void setStop(final boolean stop)
-	{
-		this.stop = stop;
-		try {
-			this.fileAlterationMonitor.stop();
-		} catch (Exception e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			final File file = new File(directory.directory);
+			final FileWatcher fileWatcher = FileWatcher.create(file);
+			fileWatcher.addFileEventsListener(fileEventsAdapter);
+			fileWatcher.setOptions(watchingAttributes);
+			fileWatcher.setFilter(fileMaskFilter);
+			fileWatcher.start();
+			this.fileWatcherList.add(fileWatcher);
 		}
 	}
 
-	public boolean isStop()
+	private void addToUpload(final File file)
 	{
-		return this.stop;
+		final Directory directory = this.directoryService.findFile(file);
+		if (directory == null) {
+			return;
+		}
+
+		final Preset preset = directory.preset;
+
+		final Queue queue = new Queue();
+		final Playlist playlist = preset.playlist;
+
+		if (preset.autotitle) {
+			this.autoTitleGenerator.setFileName(file.getName());
+			this.autoTitleGenerator.setFormatString(preset.autotitleFormat);
+			this.autoTitleGenerator.setPlaylist(preset.playlist);
+			queue.title = this.autoTitleGenerator.gernerate();
+		} else {
+			queue.title = file.getName();
+		}
+		queue.file = file.getAbsolutePath();
+		queue.account = preset.account;
+		queue.category = preset.category;
+		queue.description = preset.description;
+		queue.keywords = preset.keywords;
+		queue.comment = preset.comment;
+		queue.commentvote = preset.commentvote;
+		queue.embed = preset.embed;
+		queue.mobile = preset.mobile;
+		queue.rate = preset.rate;
+		queue.videoresponse = preset.videoresponse;
+		queue.monetize = preset.monetize;
+		queue.monetizeOverlay = preset.monetizeOverlay;
+		queue.monetizeTrueview = preset.monetizeTrueview;
+		queue.monetizeProduct = preset.monetizeProduct;
+		queue.enddir = preset.enddir;
+
+		switch (preset.visibility) {
+			case 1:
+				queue.unlisted = true;
+				break;
+			case 2:
+				queue.privatefile = true;
+				break;
+		}
+
+		final int dotPos = file.toString().lastIndexOf(".") + 1;
+		final String extension = file.toString().substring(dotPos);
+		queue.mimetype = Mimetype.getMimetypeByExtension(extension);
+
+		queue.playlist = playlist;
+		if (playlist != null) {
+			playlist.number++;
+			this.playlistService.update(playlist);
+		}
+
+		this.queueService.create(queue);
+		EventBus.publish(Uploader.QUEUE_START, null);
 	}
 
-	public void setIntervall(final long intervall)
+	public void stopActions()
 	{
-		this.intervall = intervall;
+		for (final FileWatcher fileWatcher : this.fileWatcherList) {
+			fileWatcher.stop();
+		}
 	}
 
-	private class MediaFileAlternationListener extends FileAlterationListenerAdaptor
+	private static class MediaFileFilter implements FileEventFilter
 	{
-		@Override public void onFileChange(final File file)
+
+		private static final long WAIT_CHECKTIME = 750;
+
+		public boolean accept(final FileEvent fileEvent)
 		{
-			this.addToUpload(DirectoryWorker.this.directoryService.findByFile(file), file);
-		}
-
-		@Override public void onFileCreate(final File file)
-		{
-			this.addToUpload(DirectoryWorker.this.directoryService.findByFile(file), file);
-		}
-
-		private void addToUpload(final Directory entry, final File file)
-		{
-			final Preset preset = entry.preset;
-
-			final Queue queue = new Queue();
-			final Playlist playlist = preset.playlist;
-
-			if (preset.autotitle) {
-				DirectoryWorker.this.autoTitleGenerator.setFileName(file.getName());
-				DirectoryWorker.this.autoTitleGenerator.setFormatString(preset.autotitleFormat);
-				DirectoryWorker.this.autoTitleGenerator.setPlaylist(preset.playlist);
-				queue.title = DirectoryWorker.this.autoTitleGenerator.gernerate();
-			} else {
-				queue.title = file.getName();
-			}
-			queue.file = file.getAbsolutePath();
-			queue.account = preset.account;
-			queue.category = preset.category;
-			queue.description = preset.description;
-			queue.keywords = preset.keywords;
-			queue.comment = preset.comment;
-			queue.commentvote = preset.commentvote;
-			queue.embed = preset.embed;
-			queue.mobile = preset.mobile;
-			queue.rate = preset.rate;
-			queue.videoresponse = preset.videoresponse;
-
-			switch (preset.visibility) {
-				case 1:
-					queue.unlisted = true;
-					break;
-				case 2:
-					queue.privatefile = true;
-					break;
-			}
-
-			final int dotPos = file.toString().lastIndexOf(".") + 1;
-			final String extension = file.toString().substring(dotPos);
-			queue.mimetype = Mimetype.getMimetypeByExtension(extension);
-
-			queue.playlist = playlist;
-			if (playlist != null) {
-				playlist.number++;
-				DirectoryWorker.this.playlistService.update(playlist);
-			}
-
-			DirectoryWorker.this.queueService.create(queue);
-			EventBus.publish(Uploader.QUEUE_START, null);
-		}
-	}
-
-	private static class MediaFileFilter extends FileFileFilter
-	{
-
-		private static final long serialVersionUID = -2933681858342032049L;
-		private static final int  WAIT_CHECKTIME   = 10000;
-
-		@Override
-		public boolean accept(final File file)
-		{
+			final File file = fileEvent.getFile();
 			final String[] extensions = Mimetype.EXTENSIONS;
 			final int dotPos = file.toString().lastIndexOf(".") + 1;
 			final String fileExtension = file.toString().substring(dotPos);

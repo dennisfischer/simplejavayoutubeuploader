@@ -63,7 +63,7 @@ public class IdentityVector<E> extends Vector<E>
 				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
 					final IModel model1 = (IModel) o;
 					final IModel model2 = (IModel) this.elementData[i];
-					if (model1.getIdentity() == model2.getIdentity()) {
+					if (model1.getIdentity().equals(model2.getIdentity())) {
 						return i;
 					}
 				}
@@ -85,7 +85,7 @@ public class IdentityVector<E> extends Vector<E>
 				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
 					final IModel model1 = (IModel) o;
 					final IModel model2 = (IModel) this.elementData[i];
-					if (model1.getIdentity() == model2.getIdentity()) {
+					if (model1.getIdentity().equals(model2.getIdentity())) {
 						return i;
 					}
 				}

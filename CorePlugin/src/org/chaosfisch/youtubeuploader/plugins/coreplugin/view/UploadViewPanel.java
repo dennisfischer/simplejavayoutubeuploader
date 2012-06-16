@@ -24,8 +24,6 @@
  */
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
-import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationParameters;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.jgoodies.validation.ValidationResult;
@@ -59,6 +57,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
@@ -72,21 +71,21 @@ public final class UploadViewPanel
 	private         JButton               submit;
 	private         JCheckBox             playlistCheckBox;
 	private         JButton               searchFile;
-	private         JComboBox<File>       fileList;
-	private         JComboBox<String>     categoryList;
+	private         JComboBox             fileList;
+	private         JComboBox             categoryList;
 	private         JTextField            titleTextField;
 	private         JTextArea             descriptionTextArea;
 	private         JTextArea             tagsTextArea;
-	private         JComboBox<Playlist>   playlistList;
+	private         JComboBox             playlistList;
 	private         JCheckBox             autotitelCheckBox;
-	private         JComboBox<Preset>     presetList;
+	private         JComboBox             presetList;
 	private         JTextField            autotitleTextField;
 	private         JSpinner              numberModifierSpinner;
 	private         JTextField            defaultdirTextField;
-	private         JComboBox<Account>    accountList;
-	private         JComboBox<String>     commentList;
-	private         JComboBox<String>     videoresponseList;
-	private         JComboBox<String>     visibilityList;
+	private         JComboBox             accountList;
+	private         JComboBox             commentList;
+	private         JComboBox             videoresponseList;
+	private         JComboBox             visibilityList;
 	private         JCheckBox             kommentareBewertenCheckBox;
 	private         JCheckBox             bewertenCheckBox;
 	private         JCheckBox             mobileCheckBox;
@@ -99,6 +98,13 @@ public final class UploadViewPanel
 	private         JButton               synchronizePlaylistsButton;
 	private         JPanel                validationPanel;
 	private         JLabel                hintLabel;
+	private         JCheckBox             monetizeCheckbox;
+	private         JCheckBox             monetizeOverlayCheckbox;
+	private         JCheckBox             monetizeTrueviewCheckbox;
+	private         JCheckBox             monetizeProductCheckbox;
+	private         JTextField            enddirTextfield;
+	private         JButton               enddirSearch;
+	private         JComboBox             licenseList;
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
@@ -183,11 +189,10 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(this.commentList, this.resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(this.accountList, this.resourceBundle.getString("inputhint.accountlist"));
 
-		this.visibilityList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("visibilitylist.public"), this.resourceBundle.getString("visibilitylist.unlisted"), this.resourceBundle.getString(
-				"visibilitylist.private")}));
-		this.commentList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("commentlist.allowed"), this.resourceBundle.getString("commentlist.moderated"), this.resourceBundle.getString(
+		this.visibilityList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("visibilitylist.public"), this.resourceBundle.getString("visibilitylist.unlisted"), this.resourceBundle.getString("visibilitylist.private")}));
+		this.commentList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("commentlist.allowed"), this.resourceBundle.getString("commentlist.moderated"), this.resourceBundle.getString(
 				"commentlist.denied"), this.resourceBundle.getString("commentlist.friendsonly")}));
-		this.videoresponseList.setModel(new DefaultComboBoxModel<String>(new String[]{this.resourceBundle.getString("videoresponselist.allowed"), this.resourceBundle.getString("videoresponselist.moderated"), this.resourceBundle.getString(
+		this.videoresponseList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("videoresponselist.allowed"), this.resourceBundle.getString("videoresponselist.moderated"), this.resourceBundle.getString(
 				"videoresponselist.denied")}));
 	}
 
@@ -229,6 +234,11 @@ public final class UploadViewPanel
 					preset.videoresponse = (short) UploadViewPanel.this.videoresponseList.getSelectedIndex();
 					preset.visibility = (short) UploadViewPanel.this.visibilityList.getSelectedIndex();
 					preset.account = (Account) UploadViewPanel.this.accountList.getSelectedItem();
+					preset.monetize = UploadViewPanel.this.monetizeCheckbox.isSelected();
+					preset.monetizeOverlay = UploadViewPanel.this.monetizeOverlayCheckbox.isSelected();
+					preset.monetizeTrueview = UploadViewPanel.this.monetizeTrueviewCheckbox.isSelected();
+					preset.monetizeProduct = UploadViewPanel.this.monetizeProductCheckbox.isSelected();
+					preset.enddir = UploadViewPanel.this.enddirTextfield.getText();
 
 					if (UploadViewPanel.this.playlistCheckBox.isSelected()) {
 						preset.playlist = (Playlist) UploadViewPanel.this.playlistList.getSelectedItem();
@@ -289,6 +299,24 @@ public final class UploadViewPanel
 
 				if (result == JFileChooser.APPROVE_OPTION) {
 					UploadViewPanel.this.defaultdirTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
+
+		this.enddirSearch.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(final ActionEvent e)
+			{
+				final JFileChooser fileChooser = UploadViewPanel.this.injector.getInstance(JFileChooser.class);
+				fileChooser.setAcceptAllFileFilterUsed(true);
+				fileChooser.setDragEnabled(true);
+				fileChooser.setMultiSelectionEnabled(true);
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				final int result = fileChooser.showOpenDialog(null);
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					UploadViewPanel.this.enddirTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
@@ -389,37 +417,27 @@ public final class UploadViewPanel
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					@Override public void run()
-					{
-
-						WebBrowserNavigationParameters parameters = new WebBrowserNavigationParameters();
-						Map<String, String> postMap = new HashMap<String, String>();
-						postMap.put("Email", "chaosking0912@gmail.com");
-						postMap.put("Passwd", "SVDQ5Lwp");
-						parameters.setPostData(postMap);
-						JFrame jframe = new JFrame();
-						JPanel webBrowserPanel = new JPanel(new BorderLayout());
-						webBrowserPanel.setBorder(BorderFactory.createTitledBorder("Native Web Browser component"));
-						final JWebBrowser webBrowser = new JWebBrowser();
-						webBrowser.navigate("https://accounts.google.com/ServiceLoginAuth", parameters);
-						webBrowserPanel.add(webBrowser, BorderLayout.CENTER);
-
-						jframe.setContentPane(webBrowserPanel);
-						jframe.pack();
-						jframe.setVisible(true);
-
-						// Here goes the rest of the program initialization
-
-					}
-				});
-
-				/*if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
+				if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
 					final List<Account> accounts = new ArrayList<Account>(1);
 					accounts.add((Account) UploadViewPanel.this.accountList.getSelectedItem());
 					UploadViewPanel.this.controller.synchronizePlaylists(accounts);
-				}   */
+				}
+			}
+		});
+
+		this.monetizeCheckbox.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (UploadViewPanel.this.monetizeCheckbox.isSelected()) {
+					UploadViewPanel.this.monetizeOverlayCheckbox.setEnabled(true);
+					UploadViewPanel.this.monetizeTrueviewCheckbox.setEnabled(true);
+					UploadViewPanel.this.monetizeProductCheckbox.setEnabled(true);
+				} else {
+					UploadViewPanel.this.monetizeOverlayCheckbox.setEnabled(false);
+					UploadViewPanel.this.monetizeTrueviewCheckbox.setEnabled(false);
+					UploadViewPanel.this.monetizeProductCheckbox.setEnabled(false);
+				}
 			}
 		});
 	}
@@ -463,7 +481,8 @@ public final class UploadViewPanel
 
 		this.controller.submitUpload((Account) this.accountList.getSelectedItem(), this.bewertenCheckBox.isSelected(), this.categoryList.getSelectedItem().toString(), (short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(),
 									 this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(), this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlist, this.tagsTextArea.getText(),
-									 this.titleTextField.getText(), (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue());
+									 this.titleTextField.getText(), (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue(), this.monetizeCheckbox.isSelected(),
+									 this.monetizeOverlayCheckbox.isSelected(), this.monetizeTrueviewCheckbox.isSelected(), this.monetizeProductCheckbox.isSelected(), this.enddirTextfield.getText());
 
 		this.fileList.removeItem(this.fileList.getSelectedItem());
 	}
@@ -475,11 +494,11 @@ public final class UploadViewPanel
 
 		if (this.fileList.getSelectedItem() == null) {
 			validationResult.addError(this.resourceBundle.getString("validation.filelist"));
-		} else if (!ValidationUtils.hasBoundedLength(this.titleTextField.getText().trim(), 5, 100)) {
+		} else if (!ValidationUtils.hasBoundedLength(this.titleTextField.getText().trim(), 5, 100) || (this.titleTextField.getText().getBytes().length > 100)) {
 			validationResult.addError(this.resourceBundle.getString("validation.title"));
 		} else if (this.categoryList.getSelectedIndex() == -1) {
 			validationResult.addError(this.resourceBundle.getString("validation.category"));
-		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 5, 5000)) {
+		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 5, 5000) || (this.descriptionTextArea.getText().getBytes().length > 5000)) {
 			validationResult.addError(this.resourceBundle.getString("validation.description"));
 		} else if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
 			validationResult.addError(this.resourceBundle.getString("validation.description.characters"));
@@ -515,6 +534,11 @@ public final class UploadViewPanel
 			this.tagsTextArea.setText(selectedPreset.keywords);
 			this.videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
 			this.visibilityList.setSelectedIndex(selectedPreset.visibility);
+			this.monetizeCheckbox.setSelected(selectedPreset.monetize);
+			this.monetizeOverlayCheckbox.setSelected(selectedPreset.monetizeOverlay);
+			this.monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
+			this.monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
+			this.enddirTextfield.setText(selectedPreset.enddir);
 
 			if (selectedPreset.account != null) {
 				this.controller.getAccountListModel().setSelectedItem(selectedPreset.account);
@@ -542,6 +566,11 @@ public final class UploadViewPanel
 			this.videoresponseList.setSelectedIndex(0);
 			this.visibilityList.setSelectedIndex(0);
 			this.playlistCheckBox.setSelected(false);
+			this.monetizeCheckbox.setSelected(false);
+			this.monetizeOverlayCheckbox.setSelected(false);
+			this.monetizeTrueviewCheckbox.setSelected(false);
+			this.monetizeProductCheckbox.setSelected(false);
+			this.enddirTextfield.setText("");
 		}
 		this.startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
 	}
@@ -570,6 +599,14 @@ public final class UploadViewPanel
 		this.tagsTextArea.setText(queue.keywords);
 		this.titleTextField.setText(queue.title);
 		this.videoresponseList.setSelectedIndex(queue.videoresponse);
+		this.monetizeCheckbox.setSelected(queue.monetize);
+		this.monetizeCheckbox.doClick();
+		this.monetizeCheckbox.doClick();
+		this.monetizeOverlayCheckbox.setSelected(queue.monetizeOverlay);
+		this.monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
+		this.monetizeProductCheckbox.setSelected(queue.monetizeProduct);
+		this.enddirTextfield.setText(queue.enddir);
+
 		if (queue.privatefile) {
 			this.visibilityList.setSelectedIndex(2);
 		} else if (queue.unlisted) {

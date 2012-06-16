@@ -38,7 +38,7 @@
 	</delete>
 
 	<insert id="createAccount" parameterType="Account">
-		INSERT INTO ACCOUNTS (identity, name, password, secret) VALUES (null, #{name}, #{password}, #{secret})
+		INSERT INTO ACCOUNTS (identity, name, password) VALUES (null, #{name}, #{password})
 		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
 			CALL IDENTITY();
 		</selectKey>
@@ -47,8 +47,7 @@
 	<update id="updateAccount" parameterType="Account">
 		UPDATE ACCOUNTS SET identity	= #{identity}
 							name 		= #{name},
-							password 	= #{password},
-							secret 		= #{secret}
+							password 	= #{password}
 		WHERE identity = #{identity}
 	</update>
 

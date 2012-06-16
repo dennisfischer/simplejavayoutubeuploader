@@ -25,11 +25,38 @@
 
 <mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PresetMapper">
 
+	<sql id="accountColumns">
+		A.identity AS account_identity, A.name AS account_name, A.password AS account_password, A.secret AS account_secret
+	</sql>
+	<sql id="playlistColumns">
+		P.identity AS playlist_identity, P.playlistKey as playlist_key, P.title AS playlist_title,
+		P.url AS playlist_url, P.summary AS playlist_summary, P.number as playlist_number
+	</sql>
+
+	<resultMap id="presetMap" type="Preset" autoMapping="true">
+		<id property="identity" column="identity"/>
+		<association property="account" javaType="Account">
+			<id property="identity" column="account_identity"/>
+			<result property="name" column="account_name"/>
+			<result property="password" column="account_password"/>
+			<result property="secret" column="account_secret"/>
+		</association>
+		<association property="playlist" javaType="Playlist">
+			<id property="identity" column="playlist_identity"/>
+			<result property="playlistKey" column="playlist_key"/>
+			<result property="title" column="playlist_title"/>
+			<result property="url" column="playlist_url"/>
+			<result property="summary" column="playlist_summary"/>
+			<result property="number" column="playlist_number"/>
+		</association>
+	</resultMap>
+
 	<sql id="insertValuesList">
 		(autotitle, autotitleFormat, category, comment, commentVote, defaultDir, description, embed, keywords, mobile,
-		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id)
+		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id, monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir)
 		VALUES (#{autotitle}, #{autotitleFormat}, #{category}, #{comment}, #{commentvote}, #{defaultDir}, #{description}, #{embed}, #{keywords},
-		#{mobile}, #{name}, #{numberModifier}, #{videoresponse}, #{visibility}, #{rate}, #{account.identity}, #{playlist.identity})
+		#{mobile}, #{name}, #{numberModifier}, #{videoresponse}, #{visibility}, #{rate}, #{account.identity}, #{playlist.identity}, #{monetize},
+		#{monetizeOverlay}, #{monetizeTrueview}, #{monetizeProduct}, #{enddir})
 	</sql>
 
 	<sql id="updateSetList">
@@ -50,23 +77,52 @@
 		numberModifier = #{numberModifier},
 		videoresponse = #{videoresponse},
 		visibility = #{visibility},
-		rate = #{rate}
+		rate = #{rate},
+		monetize = #{monetize},
+		monetizeOverlay = #{monetizeOverlay},
+		monetizeTrueview = #{monetizeTrueview},
+		monetizeProduct = #{monetizeProduct},
+		enddir 			= #{enddir}
 	</sql>
 
-	<select id="findPreset" parameterType="int" resultType="Preset">
-		SELECT * FROM PRESETS WHERE identity = #{id}
+	<select id="findPreset" parameterType="int" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE identity = #{id}
 	</select>
 
-	<select id="findByAccount" parameterType="Account" resultType="Preset">
-		SELECT * FROM PRESETS WHERE account_id = #{identity}
+	<select id="findByAccount" parameterType="Account" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE account_id = #{identity}
 	</select>
 
-	<select id="findByPlaylist" parameterType="Playlist" resultType="Preset">
-		SELECT * FROM QUEUE WHERE playlist_id = #{identity}
+	<select id="findByPlaylist" parameterType="Playlist" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM QUEUE
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE playlist_id = #{identity}
 	</select>
 
-	<select id="getPresets" resultType="Preset">
-		SELECT * FROM PRESETS ORDER BY name
+	<select id="getPresets" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		ORDER BY name
 	</select>
 
 	<insert id="createPreset" parameterType="Preset">

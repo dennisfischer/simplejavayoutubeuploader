@@ -68,7 +68,7 @@ public class TagParser
 		final String[] tmpTags = new String[250];
 		int i = 0;
 		for (final String tag : tags) {
-			if (!(tag.length() > 30) && !(tag.length() < 2)) {
+			if (!(tag.length() > 30) && !(tag.length() < 2) && (tag.getBytes().length > 30)) {
 				tmpTags[i] = tag;
 				i++;
 			}
@@ -90,12 +90,12 @@ public class TagParser
 	public static boolean isValid(final String input)
 	{
 		final String parsed = TagParser.parseAll(input);
-		if ((parsed.length() > 500) || parsed.contains("<") || parsed.contains(">")) {
+		if ((parsed.length() > 500) || (parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
-			if ((tag.length() > 30) || (tag.length() < 2)) {
+			if ((tag.length() > 30) || (tag.length() < 2) || (tag.getBytes().length > 30)) {
 				return false;
 			}
 		}

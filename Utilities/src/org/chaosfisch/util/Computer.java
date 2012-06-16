@@ -58,10 +58,10 @@ public class Computer
 	{
 		String command = "";
 		if (Computer.isWindows()) {
-			command = "shutdown -t 60 -s";
+			command = "shutdown -t 60 -s -f";
 		}
 		if (Computer.isUnix()) {
-			command = "shutdown -t 60 -h";
+			command = "shutdown -t 60 -h -f";
 		}
 		try {
 			Runtime.getRuntime().exec(command);

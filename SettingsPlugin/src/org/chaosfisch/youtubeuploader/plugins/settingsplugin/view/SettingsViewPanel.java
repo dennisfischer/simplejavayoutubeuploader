@@ -96,7 +96,7 @@ public class SettingsViewPanel
 									SettingsViewPanel.this.settingsService.set(jTextField.getName(), jTextField.getText());
 								}
 							} else if (component instanceof JComboBox) {
-								final JComboBox<?> jComboBox = (JComboBox<?>) component;
+								final JComboBox jComboBox = (JComboBox) component;
 								if (!SettingsViewPanel.this.settingsService.get(jComboBox.getName(), "").equals(jComboBox.getSelectedItem().toString())) {
 									SettingsViewPanel.this.settingsService.set(jComboBox.getName(), jComboBox.getSelectedItem().toString());
 								}
@@ -136,7 +136,7 @@ public class SettingsViewPanel
 								final JTextField jTextField = (JTextField) component;
 								jTextField.setText((String) SettingsViewPanel.this.settingsService.get(jTextField.getName(), jTextField.getText()));
 							} else if (component instanceof JComboBox) {
-								final JComboBox<?> jComboBox = (JComboBox<?>) component;
+								final JComboBox jComboBox = (JComboBox) component;
 								//TODO FINISH COMBOBOX
 							} else if (component instanceof JCheckBox) {
 								final JCheckBox jCheckBox = (JCheckBox) component;

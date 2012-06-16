@@ -46,7 +46,7 @@ public interface SettingsService
 
 	void addSpinner(String uniqueKey, String label, JSpinner spinner);
 
-	void addCombobox(String uniqueKey, String label, ComboBoxModel<?> comboBoxModel);
+	void addCombobox(String uniqueKey, String label, ComboBoxModel comboBoxModel);
 
 	void addCheckbox(String uniqueKey, String label);
 

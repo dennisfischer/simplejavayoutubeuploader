@@ -10,12 +10,12 @@
           <element id="directory" name="services">
             <element id="dir-copy" path="$PROJECT_DIR$/src/META-INF/services" />
           </element>
+          <element id="file-copy" path="$PROJECT_DIR$/../repositories/jxfilewatcher-1.2-cross-desktop-win_mac_linux/Dennis Fischer - JxFileWatcher Open-Source License/development/jxfilewatcher.lic" />
         </element>
         <element id="module-output" name="Utilities" />
       </element>
       <element id="directory" name="libs">
         <element id="artifact" artifact-name="Images:jar" />
-        <element id="library" level="project" name="Apache Commons Codec v 1.6" />
         <element id="library" level="project" name="Google Guice v 3.0" />
         <element id="library" level="project" name="GoogleYoutubeJavaApi" />
         <element id="library" level="project" name="other" />
@@ -23,7 +23,9 @@
         <element id="library" level="project" name="mybatis-3.1.1" />
         <element id="library" level="project" name="mybatis-guice-3.3" />
         <element id="library" level="project" name="jgoodies-validation-2.4" />
-        <element id="library" level="project" name="swing" />
+        <element id="library" level="project" name="JxDevelopmentLicense" />
+        <element id="library" level="project" name="JxBrowser" />
+        <element id="library" level="project" name="JxFileWatcher" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
