@@ -19,27 +19,28 @@
   -->
 
 <updateDescriptor baseUrl="http://simple-java-youtube-uploader.googlecode.com/files/">
-	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Windows_x64_2.0_RC_1.exe" newVersion="2.0 RC 1" newMediaFileId="22" fileSize="13301760" bundledJre="" archive="false">
+	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Windows_x64_2.0_RC_1.1.exe" newVersion="2.0 RC 1.1" newMediaFileId="22" fileSize="13304320" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Windows_x86_2.0_RC_1.exe" newVersion="2.0 RC 1" newMediaFileId="30" fileSize="13573632" bundledJre="" archive="false">
+	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Windows_x86_2.0_RC_1.1.exe" newVersion="2.0 RC 1.1" newMediaFileId="30" fileSize="13571072" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="227" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Mac_OS_X_2.0_RC_1.dmg" newVersion="2.0 RC 1" newMediaFileId="227" fileSize="13760512" bundledJre="" archive="false">
+	<entry targetMediaFileId="227" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Mac_OS_X_2.0_RC_1.1.dmg" newVersion="2.0 RC 1.1" newMediaFileId="227" fileSize="13760512" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Unix_x86_2.0_RC_1.sh" newVersion="2.0 RC 1" newMediaFileId="228" fileSize="12149736" bundledJre="" archive="false">
+	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Unix_x86_2.0_RC_1.1.sh" newVersion="2.0 RC 1.1" newMediaFileId="228" fileSize="12150334" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Unix_x64_2.0_RC_1.sh" newVersion="2.0 RC 1" newMediaFileId="372" fileSize="12148871" bundledJre="" archive="false">
+	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Unix_x64_2.0_RC_1.1.sh" newVersion="2.0 RC 1.1" newMediaFileId="372" fileSize="12150620" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="373" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Platform_Independent_Archive_2.0_RC_1.tar.gz" newVersion="2.0 RC 1" newMediaFileId="373" fileSize="17961959" bundledJre="" archive="true">
+	<entry targetMediaFileId="373" updatableVersionMin="" updatableVersionMax="" fileName="JavaYoutubeUploader_Platform_Independent_Archive_2.0_RC_1.1.tar.gz" newVersion="2.0 RC 1.1" newMediaFileId="373" fileSize="17962912" bundledJre=""
+		   archive="true">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>

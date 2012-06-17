@@ -75,7 +75,7 @@ public class BindingsModule extends AbstractModule
 			{
 				final File outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
 				try {
-					final File templateFile = new File("F:/Daten/SimpleJavaYoutubeUploader/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/mappers/mybatis_config_template.xml");
+					final File templateFile = new File("mybatis_config_template.xml");
 					final String fileContent = BindingsModule.readFileAsString(templateFile);
 
 					final FileWriter fstream = new FileWriter(outputFile);

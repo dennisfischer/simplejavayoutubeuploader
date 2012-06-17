@@ -38,6 +38,7 @@
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
       <element id="file-copy" path="$PROJECT_DIR$/README" />
+      <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/mappers/mybatis_config_template.xml" />
     </root>
   </artifact>
 </component>
