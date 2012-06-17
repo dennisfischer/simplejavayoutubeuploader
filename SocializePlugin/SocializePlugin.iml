@@ -16,6 +16,7 @@
     <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
     <orderEntry type="module" module-name="Images" />
+    <orderEntry type="library" name="commons-codec-1.6" level="project" />
   </component>
 </module>
 

@@ -26,6 +26,7 @@
         <element id="library" level="project" name="JxDevelopmentLicense" />
         <element id="library" level="project" name="JxBrowser" />
         <element id="library" level="project" name="JxFileWatcher" />
+        <element id="library" level="project" name="commons-codec-1.6" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />

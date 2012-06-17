@@ -45,7 +45,7 @@
 	</delete>
 
 	<insert id="createMessage" parameterType="Message">
-		INSERT INTO MESSAGES (identity, message, uploadid, facebook, twitter, youtube, googlePlus) VALUES (null, #{message}, #{uploadID}, #{facebook}, #{twitter}, #{youtube}, #{googlePlus})
+		INSERT INTO MESSAGES (identity, message, uploadid, facebook, twitter, youtube, googlePlus) VALUES (null, #{message}, #{uploadid}, #{facebook}, #{twitter}, #{youtube}, #{googleplus})
 		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
 			CALL IDENTITY();
 		</selectKey>
@@ -54,16 +54,16 @@
 	<update id="updateMessage" parameterType="Message">
 		UPDATE MESSAGES SET identity	= #{identity}
 							message 	= #{message},
-							uploadid 	= #{uploadID},
+							uploadid 	= #{uploadid},
 							facebook 	= #{facebook},
 							twitter    	= #{twitter},
 							youtube		= #{youtube},
-							googlePlus  = #{googlePlus}
+							googlePlus  = #{googleplus}
 		WHERE identity = #{identity}
 	</update>
 
 	<select id="findMessagesByQueueID" parameterType="Integer" resultType="Message">
-		SELECT * FROM MESSAGES WHERE uploadID = #{uploadID}
+		SELECT * FROM MESSAGES WHERE uploadID = #{uploadid}
 	</select>
 
 </mapper>

@@ -57,9 +57,9 @@ class ImportManager
 		this.queueService = queueService;
 		this.fileChooser = fileChooser;
 		xStream.alias("entries", List.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.Preset", Preset.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.Account", Account.class); //NON-NLS
-		xStream.alias("org.chaosfisch.youtubeuploader.db.Queue", Queue.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.PresetEntry", Preset.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.AccountEntry", Account.class); //NON-NLS
+		xStream.alias("org.chaosfisch.youtubeuploader.db.QueueEntry", Queue.class); //NON-NLS
 	}
 
 	public void importAccount()

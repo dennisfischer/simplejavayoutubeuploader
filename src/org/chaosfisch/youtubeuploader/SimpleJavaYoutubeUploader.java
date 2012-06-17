@@ -31,6 +31,7 @@ package org.chaosfisch.youtubeuploader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.xbean.finder.ResourceFinder;
@@ -40,6 +41,7 @@ import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -124,5 +126,19 @@ public class SimpleJavaYoutubeUploader
 			}
 		});
 		new SimpleJavaYoutubeUploader(args);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new DebugKeyDispatcher());
+	}
+
+	private static class DebugKeyDispatcher implements KeyEventDispatcher
+	{
+		@Override
+		public boolean dispatchKeyEvent(final KeyEvent e)
+		{
+			if ((e.getID() == KeyEvent.KEY_PRESSED) && e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_D)) {
+				Logger.getRootLogger().setLevel(Level.DEBUG);
+				Logger.getRootLogger().debug("Application changed to debug mode");//NON-NLS
+			}
+			return false;
+		}
 	}
 }
