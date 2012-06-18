@@ -498,11 +498,11 @@ public final class UploadViewPanel
 			validationResult.addError(this.resourceBundle.getString("validation.title"));
 		} else if (this.categoryList.getSelectedIndex() == -1) {
 			validationResult.addError(this.resourceBundle.getString("validation.category"));
-		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 5, 5000) || (this.descriptionTextArea.getText().getBytes().length > 5000)) {
+		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 0, 5000) || (this.descriptionTextArea.getText().getBytes().length > 5000)) {
 			validationResult.addError(this.resourceBundle.getString("validation.description"));
 		} else if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
 			validationResult.addError(this.resourceBundle.getString("validation.description.characters"));
-		} else if (!ValidationUtils.hasBoundedLength(this.tagsTextArea.getText().trim(), 2, 600) || !TagParser.isValid(this.tagsTextArea.getText())) {
+		} else if (!ValidationUtils.hasBoundedLength(this.tagsTextArea.getText().trim(), 0, 600) || !TagParser.isValid(this.tagsTextArea.getText())) {
 			validationResult.addError(this.resourceBundle.getString("validation.tags"));
 		} else if (this.accountList.getSelectedItem() == null) {
 			validationResult.addError(this.resourceBundle.getString("validation.account"));
@@ -593,7 +593,9 @@ public final class UploadViewPanel
 		this.commentList.setSelectedIndex(queue.comment);
 		this.descriptionTextArea.setText(queue.description);
 		this.embedCheckBox.setSelected(queue.embed);
-		this.fileList.addItem(new File(queue.file));
+		final File file = new File(queue.file);
+		this.fileList.addItem(file);
+		this.fileList.setSelectedItem(file);
 		this.kommentareBewertenCheckBox.setSelected(queue.commentvote);
 		this.mobileCheckBox.setSelected(queue.mobile);
 		this.tagsTextArea.setText(queue.keywords);

@@ -134,10 +134,16 @@ public class SimpleJavaYoutubeUploader
 		@Override
 		public boolean dispatchKeyEvent(final KeyEvent e)
 		{
-			if ((e.getID() == KeyEvent.KEY_PRESSED) && e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_D)) {
-				Logger.getRootLogger().setLevel(Level.DEBUG);
-				Logger.getRootLogger().debug("Application changed to debug mode");//NON-NLS
+			if ((e.getID() == KeyEvent.KEY_PRESSED) && e.isControlDown() && e.isShiftDown()) {
+				if (e.getKeyCode() == KeyEvent.VK_D) {
+					Logger.getRootLogger().setLevel(Level.DEBUG);
+					Logger.getRootLogger().debug("Application changed to debug mode");//NON-NLS
+				} else if (e.getKeyCode() == KeyEvent.VK_I) {
+					Logger.getRootLogger().setLevel(Level.INFO);
+					Logger.getRootLogger().info("Application changed to info mode");//NON-NLS
+				}
 			}
+
 			return false;
 		}
 	}

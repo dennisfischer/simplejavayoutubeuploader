@@ -68,7 +68,7 @@ public class TagParser
 		final String[] tmpTags = new String[250];
 		int i = 0;
 		for (final String tag : tags) {
-			if (!(tag.length() > 30) && !(tag.length() < 2) && (tag.getBytes().length > 30)) {
+			if (!(tag.length() > 30) && !(tag.length() < 2) && !(tag.getBytes().length > 30)) {
 				tmpTags[i] = tag;
 				i++;
 			}
