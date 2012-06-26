@@ -107,7 +107,10 @@ public class QueueController
 
 	public void changeQueueView(final short item)
 	{
-		this.queueList.removeRowRange(0, this.queueList.getRowCount() - 1);
+		if (this.queueList.getRowCount() > 0) {
+			System.out.println(this.queueList.getRowCount());
+			this.queueList.removeRowRange(0, this.queueList.getRowCount() - 1);
+		}
 		switch (item) {
 			case 0:
 				for (final Queue queue : this.queueService.getAll()) {

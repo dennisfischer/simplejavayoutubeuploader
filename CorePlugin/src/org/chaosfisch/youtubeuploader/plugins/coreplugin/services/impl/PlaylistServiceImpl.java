@@ -22,6 +22,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -45,13 +46,15 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
+import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,9 +69,11 @@ public class PlaylistServiceImpl implements PlaylistService
 {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50"; //NON-NLS
 
-	@Inject private PlaylistMapper playlistMapper;
-	@Inject private PresetMapper   presetMapper;
-	@Inject private QueueMapper    queueMapper;
+	@Inject private       PlaylistMapper playlistMapper;
+	@Inject private       PresetMapper   presetMapper;
+	@Inject private       QueueMapper    queueMapper;
+	@InjectLogger private Logger         logger;
+	private               boolean        synchronizeFlag;
 
 	public PlaylistServiceImpl()
 	{
@@ -125,6 +130,11 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Override
 	public void synchronizePlaylists(final List<Account> accounts)
 	{
+		if (this.synchronizeFlag) {
+			return;
+		}
+		this.logger.info("Synchronizing playlists.");
+		this.synchronizeFlag = true;
 		new BetterSwingWorker()
 		{
 			@Override
@@ -134,6 +144,7 @@ public class PlaylistServiceImpl implements PlaylistService
 				try {
 					request = new Request.Builder(Request.Method.GET, new URL(PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS)).build();
 				} catch (MalformedURLException ignored) {
+					PlaylistServiceImpl.this.logger.warn(String.format("Malformed url playlist synchronize feed: %s", PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS));
 					return;
 				}
 				for (final Account account : accounts) {
@@ -155,9 +166,11 @@ public class PlaylistServiceImpl implements PlaylistService
 					}
 
 					if (response.code == HTTP_STATUS.OK.getCode()) {
+						PlaylistServiceImpl.this.logger.debug(String.format("Playlist synchronize okay. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
 						final Feed feed = PlaylistServiceImpl.this.parseFeed(response.body, Feed.class);
 
 						if (feed.videoEntries == null) {
+							PlaylistServiceImpl.this.logger.info("No playlists found.");
 							return;
 						}
 						for (final VideoEntry entry : feed.videoEntries) {
@@ -170,6 +183,8 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.account = account;
 							PlaylistServiceImpl.this.createOrUpdate(playlist);
 						}
+					} else {
+						PlaylistServiceImpl.this.logger.info(String.format("Playlist synchronize failed. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
 					}
 				}
 			}
@@ -177,6 +192,8 @@ public class PlaylistServiceImpl implements PlaylistService
 			@Override protected void onDone()
 			{
 				EventBus.publish("playlistsSynchronized", null); //NON-NLS
+				PlaylistServiceImpl.this.logger.info("Playlists synchronized");
+				PlaylistServiceImpl.this.synchronizeFlag = false;
 			}
 		}.execute();
 	}
@@ -208,29 +225,33 @@ public class PlaylistServiceImpl implements PlaylistService
 			request.setContentType("application/atom+xml; charset=utf-8"); //NON-NLS
 
 			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
-			final DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName("UTF-8"));
 			try {
-				dataOutputStream.writeBytes(atomData);
-				dataOutputStream.flush();
+				outputStreamWriter.write(atomData);
+				outputStreamWriter.flush();
 
 				final Response response = request.send();
+				this.logger.debug(String.format("Response-Playlist: %s, Code: %d, Message: %s, Body: %s", playlist.title, response.code, response.message, response.body));
 				if ((response.code == HTTP_STATUS.OK.getCode()) || (response.code == HTTP_STATUS.CREATED.getCode())) {
 					final List<Account> accountEntries = new LinkedList<Account>();
 					accountEntries.add(playlist.account);
 					this.synchronizePlaylists(accountEntries);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				this.logger.debug("Failed adding Playlist! IOException", e);
 			} finally {
 				try {
 					bufferedOutputStream.close();
-					dataOutputStream.close();
+					outputStreamWriter.close();
 				} catch (IOException ignored) {
 				}
 			}
-		} catch (MalformedURLException ignored) {
-		} catch (IOException ignored) {
+		} catch (MalformedURLException ex) {
+			this.logger.debug("Failed adding Playlist! MalformedURLException", ex);
+		} catch (IOException ex) {
+			this.logger.debug("Failed adding Playlist! IOException", ex);
 		} catch (AuthenticationException ignored) {
+			this.logger.debug("Failed adding playlist! Not authenticated");
 		}
 
 		return null;
@@ -250,12 +271,12 @@ public class PlaylistServiceImpl implements PlaylistService
 			request.setContentType("application/atom+xml"); //NON-NLS
 
 			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
-			final DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
-			dataOutputStream.writeBytes(playlistFeed); //NON-NLS
-			dataOutputStream.flush();
-			bufferedOutputStream.flush();
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName("UTF-8"));
+			outputStreamWriter.write(playlistFeed); //NON-NLS
+			outputStreamWriter.flush();
 
-			request.send();
+			final Response response = request.send();
+			this.logger.debug(String.format("Video added to playlist! Videoid: %s, Playlist: %s, Code: %d, Message: %s, Body: %s", videoId, playlist.title, response.code, response.message, response.body));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (AuthenticationException e) {
@@ -267,7 +288,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	private <T> T parseFeed(final String atomData, final Class<T> clazz)
 	{
-		final XStream xStream = new XStream(new DomDriver());
+		final XStream xStream = new XStream(new DomDriver("UTF-8"));
 		xStream.processAnnotations(clazz);
 		final Object o = xStream.fromXML(atomData);
 		if (clazz.isInstance(o)) {
@@ -278,7 +299,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	private String parseObjectToFeed(final Object o)
 	{
-		final XStream xStream = new XStream(new DomDriver());
+		final XStream xStream = new XStream(new DomDriver("UTF-8"));
 		xStream.processAnnotations(o.getClass());
 		return xStream.toXML(o);
 	}

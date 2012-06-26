@@ -31,6 +31,7 @@ import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.DisabledGlassPane;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.controller.MessageController;
+import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.Provider;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.ISocialProvider;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
@@ -49,7 +50,7 @@ import java.awt.event.ItemListener;
  * Time: 19:57
  * To change this template use File | Settings | File Templates.
  */
-public class SocializeView
+public class SocializeView implements SocializeViewBinding
 {
 	private       JPanel            panel;
 	private       JToggleButton     googlePlusButton;
@@ -116,13 +117,7 @@ public class SocializeView
 				if (SocializeView.this.validationResultModel.hasErrors()) {
 					return;
 				}
-				SocializeView.this.messageTextArea.setBackground(null);
-
-				if (SocializeView.this.googlePlusButton.isSelected() || SocializeView.this.facebookButton.isSelected() || SocializeView.this.twitterButton.isSelected() || SocializeView.this.youtubeButton.isSelected()) {
-					SocializeView.this.controller.addMessage(SocializeView.this.messageTextArea.getText(), SocializeView.this.publishComboBox.getSelectedIndex(), (Integer) SocializeView.this.uploadIDSpinner.getValue(),
-															 SocializeView.this.facebookButton.isSelected(), SocializeView.this.twitterButton.isSelected(), SocializeView.this.googlePlusButton.isSelected(),
-															 SocializeView.this.youtubeButton.isSelected());
-				}
+				SocializeView.this.controller.addMessage(SocializeView.this.publishComboBox.getSelectedIndex(), SocializeView.this.getData());
 			}
 		});
 
@@ -248,5 +243,29 @@ public class SocializeView
 	{
 		this.validationResultModel = new DefaultValidationResultModel();
 		this.validationComponent = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(this.validationResultModel);
+	}
+
+	public void setData(final Message data)
+	{
+		this.messageTextArea.setText(data.message);
+		this.facebookButton.setSelected(data.facebook);
+		this.twitterButton.setSelected(data.twitter);
+		this.googlePlusButton.setSelected(data.googleplus);
+		this.youtubeButton.setSelected(data.youtube);
+		this.publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
+		this.uploadIDSpinner.setValue(data.uploadid);
+	}
+
+	public Message getData()
+	{
+		final Message data = new Message();
+		data.message = this.messageTextArea.getText();
+		data.facebook = this.facebookButton.isSelected();
+		data.twitter = this.twitterButton.isSelected();
+		data.youtube = this.youtubeButton.isSelected();
+		data.googleplus = this.googlePlusButton.isSelected();
+		data.uploadid = (Integer) this.uploadIDSpinner.getValue();
+
+		return data;
 	}
 }

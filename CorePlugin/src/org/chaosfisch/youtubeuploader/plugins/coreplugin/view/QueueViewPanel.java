@@ -276,7 +276,9 @@ public final class QueueViewPanel
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				QueueViewPanel.this.controller.changeQueueView((short) QueueViewPanel.this.queueViewList.getSelectedIndex());
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					QueueViewPanel.this.controller.changeQueueView((short) QueueViewPanel.this.queueViewList.getSelectedIndex());
+				}
 			}
 		});
 

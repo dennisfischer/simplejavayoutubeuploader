@@ -62,34 +62,23 @@ public class MessageController
 		}
 	}
 
-	public void addMessage(final String messageTextAreaText, final int publishComboBoxSelectedItem, final int uploadIDSpinnerValue, final boolean facebookButtonSellected, final boolean twitterButtonSelected, final boolean googlePlusButtonSelected,
-						   final boolean youtubeButtonSelected)
+	public void addMessage(final int action, final Message data)
 	{
-		final Message message;
-		switch (publishComboBoxSelectedItem) {
-			case 0:
-				message = new Message();
-				message.message = messageTextAreaText;
-				message.facebook = facebookButtonSellected;
-				message.twitter = twitterButtonSelected;
-				message.googleplus = googlePlusButtonSelected;
-				message.youtube = youtubeButtonSelected;
-				message.uploadid = uploadIDSpinnerValue;
-				this.messageService.create(message);
-				break;
+		switch (action) {
 			case 1:
-				message = new Message();
-				message.message = messageTextAreaText;
-				message.facebook = facebookButtonSellected;
-				message.twitter = twitterButtonSelected;
-				message.googleplus = googlePlusButtonSelected;
-				message.youtube = youtubeButtonSelected;
-				this.messageService.create(message);
+				data.uploadid = null;
+			case 0:
+				this.messageService.create(data);
 				break;
 			case 2:
-				this.publish(messageTextAreaText, facebookButtonSellected, twitterButtonSelected, googlePlusButtonSelected, youtubeButtonSelected);
+				this.publish(data);
 				break;
 		}
+	}
+
+	private void publish(final Message message)
+	{
+		this.publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
 	}
 
 	private void publish(final String message, final boolean facebook, final boolean twitter, final boolean googlePlus, final boolean youtube)

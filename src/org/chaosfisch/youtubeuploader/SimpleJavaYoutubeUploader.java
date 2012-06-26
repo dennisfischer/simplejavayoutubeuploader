@@ -125,8 +125,8 @@ public class SimpleJavaYoutubeUploader
 				});
 			}
 		});
-		new SimpleJavaYoutubeUploader(args);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new DebugKeyDispatcher());
+		new SimpleJavaYoutubeUploader(args);
 	}
 
 	private static class DebugKeyDispatcher implements KeyEventDispatcher
@@ -138,9 +138,11 @@ public class SimpleJavaYoutubeUploader
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 					Logger.getRootLogger().setLevel(Level.DEBUG);
 					Logger.getRootLogger().debug("Application changed to debug mode");//NON-NLS
+					JOptionPane.showMessageDialog(null, "Debugmode activated. Press Ctrl+Shift+I to undo.", "Debugmode", JOptionPane.INFORMATION_MESSAGE); //NON-NLS
 				} else if (e.getKeyCode() == KeyEvent.VK_I) {
 					Logger.getRootLogger().setLevel(Level.INFO);
 					Logger.getRootLogger().info("Application changed to info mode");//NON-NLS
+					JOptionPane.showMessageDialog(null, "Debugmode deactivated. Press Ctrl+Shift+D to activate.", "Debugmode", JOptionPane.INFORMATION_MESSAGE); //NON-NLS
 				}
 			}
 
