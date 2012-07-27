@@ -43,27 +43,27 @@ public class OAuthHTTPDServer extends NanoHTTPD
 	@Override public Response serve(final String uri, final String method, final Properties header, final Properties parms, final Properties files)
 	{
 		if (parms.getProperty("code") != null) { //NON-NLS
-			this.code = parms.getProperty("code");//NON-NLS
+			code = parms.getProperty("code");//NON-NLS
 			synchronized (this) {
-				this.notifyAll();
+				notifyAll();
 			}
 			final String msg = I18nSupport.message("message.authorization.successful");
 			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_HTML, msg);
 		} else if (parms.getProperty("error_reason") != null) {//NON-NLS
 			synchronized (this) {
-				this.notifyAll();
+				notifyAll();
 			}
 			final String msg = I18nSupport.message("message.authorization.denied");
 			return new Response(HTTP_STATUS.OK.toString(), NanoHTTPD.MIME_PLAINTEXT, msg);
 		}
 		synchronized (this) {
-			this.notifyAll();
+			notifyAll();
 		}
 		return new Response(HTTP_STATUS.NOTFOUND.toString(), NanoHTTPD.MIME_PLAINTEXT, "Not found!"); //NON-NLS
 	}
 
 	public String getCode()
 	{
-		return this.code;
+		return code;
 	}
 }

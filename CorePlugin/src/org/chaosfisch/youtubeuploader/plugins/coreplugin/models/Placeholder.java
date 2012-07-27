@@ -19,41 +19,21 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 07.01.12
- * Time: 16:44
+ * Date: 05.07.12
+ * Time: 21:09
  * To change this template use File | Settings | File Templates.
  */
-public class Account implements IModel
+public class Placeholder implements IModel
 {
-	public            String         name;
-	private           String         password;
-	private transient int            identity;
-	public transient  List<Playlist> presets;
-	public transient  List<Queue>    queue;
-	public transient  List<Playlist> playlists;
+	public Integer identity;
+	public String  placeholder;
+	public String  replacement;
 
 	@Override public Integer getIdentity()
 	{
 		return identity;
-	}
-
-	public String getPassword()
-	{
-		return password;
-	}
-
-	public void setPassword(final String password)
-	{
-		this.password = password;
-	}
-
-	public String toString()
-	{
-		return name;
 	}
 }

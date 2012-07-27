@@ -62,35 +62,35 @@ class ExportManager
 
 	public void exportAccount()
 	{
-		final File file = this.showSaveDialog("account"); //NON-NLS
+		final File file = showSaveDialog("account"); //NON-NLS
 		if (file == null) {
 			return;
 		}
 
-		final List<Account> accounts = this.accountService.getAll();
-		this.writeObjectToXMLFile(file, accounts, "UTF-8"); //NON-NLS
+		final List<Account> accounts = accountService.getAll();
+		writeObjectToXMLFile(file, accounts, "UTF-8"); //NON-NLS
 	}
 
 	public void exportPreset()
 	{
-		final File file = this.showSaveDialog("preset"); //NON-NLS
+		final File file = showSaveDialog("preset"); //NON-NLS
 		if (file == null) {
 			return;
 		}
 
-		final List<Preset> presetEntries = this.presetService.getAll();
-		this.writeObjectToXMLFile(file, presetEntries, "UTF-8"); //NON-NLS
+		final List<Preset> presetEntries = presetService.getAll();
+		writeObjectToXMLFile(file, presetEntries, "UTF-8"); //NON-NLS
 	}
 
 	public void exportQueue()
 	{
-		final File file = this.showSaveDialog("queue"); //NON-NLS
+		final File file = showSaveDialog("queue"); //NON-NLS
 		if (file == null) {
 			return;
 		}
 
-		final List<Queue> queueEntries = this.queueService.getQueued();
-		this.writeObjectToXMLFile(file, queueEntries, "UTF-8"); //NON-NLS
+		final List<Queue> queueEntries = queueService.getQueued();
+		writeObjectToXMLFile(file, queueEntries, "UTF-8"); //NON-NLS
 	}
 
 	private void writeObjectToXMLFile(final File file, final Object object, final String charset)
@@ -102,7 +102,7 @@ class ExportManager
 
 			try {
 				outputStreamWriter.write(ExportManager.XML_HEADER);
-				this.xStream.toXML(object, outputStreamWriter);
+				xStream.toXML(object, outputStreamWriter);
 			} catch (IOException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			} finally {
@@ -120,14 +120,14 @@ class ExportManager
 
 	File showSaveDialog(final String name)
 	{
-		this.fileChooser.setAcceptAllFileFilterUsed(true);
-		this.fileChooser.setDragEnabled(true);
-		this.fileChooser.setMultiSelectionEnabled(true);
-		this.fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml")); //NON-NLS NON-NLS
-		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		final int result = this.fileChooser.showSaveDialog(null);
+		fileChooser.setAcceptAllFileFilterUsed(true);
+		fileChooser.setDragEnabled(true);
+		fileChooser.setMultiSelectionEnabled(true);
+		fileChooser.setSelectedFile(new File("export-" + name + "-" + System.currentTimeMillis() + ".xml")); //NON-NLS NON-NLS
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		final int result = fileChooser.showSaveDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			return this.fileChooser.getSelectedFile();
+			return fileChooser.getSelectedFile();
 		}
 		return null;
 	}

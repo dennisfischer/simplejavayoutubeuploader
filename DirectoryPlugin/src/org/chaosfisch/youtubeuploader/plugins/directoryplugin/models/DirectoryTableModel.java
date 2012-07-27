@@ -49,23 +49,23 @@ public class DirectoryTableModel extends RowTableModel<Directory>
 	{
 		super(Directory.class);
 		final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin");//NON-NLS
-		this.setDataAndColumnNames(new IdentityList<Directory>(), Arrays.asList(resourceBundle.getString("button.selectButton"), resourceBundle.getString("directorytable.presetLabel"), resourceBundle.getString("directorytable.activeLabel")));
+		setDataAndColumnNames(new IdentityList<Directory>(), Arrays.asList(resourceBundle.getString("button.selectButton"), resourceBundle.getString("directorytable.presetLabel"), resourceBundle.getString("directorytable.activeLabel")));
 
 		for (final Directory directory : directories) {
-			this.addRow(directory);
+			addRow(directory);
 		}
 
-		this.setColumnClass(0, String.class);
-		this.setColumnClass(1, String.class);
-		this.setColumnClass(2, Boolean.class);
-		this.setModelEditable(false);
+		setColumnClass(0, String.class);
+		setColumnClass(1, String.class);
+		setColumnClass(2, Boolean.class);
+		setModelEditable(false);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Directory directory = this.getRow(row);
+		final Directory directory = getRow(row);
 		switch (col) {
 			case 0:
 				return directory.directory;
@@ -81,19 +81,19 @@ public class DirectoryTableModel extends RowTableModel<Directory>
 	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_ADDED)
 	public void onDirectoryAdded(final String topic, final Directory directory)
 	{
-		this.addRow(directory);
+		addRow(directory);
 	}
 
 	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_UPDATED)
 	public void onDirectoryUpdated(final String topic, final Directory directory)
 	{
-		if (this.modelData.contains(directory)) {
-			this.replaceRow(this.modelData.indexOf(directory), directory);
+		if (modelData.contains(directory)) {
+			replaceRow(modelData.indexOf(directory), directory);
 		}
 	}
 
 	@EventTopicSubscriber(topic = DirectoryService.DIRECTORY_REMOVED) public void onDirectoryRemoved(final String topic, final Directory directory)
 	{
-		this.removeElement(directory);
+		removeElement(directory);
 	}
 }

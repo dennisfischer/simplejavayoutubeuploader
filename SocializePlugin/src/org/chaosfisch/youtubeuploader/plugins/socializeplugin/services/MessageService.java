@@ -51,56 +51,56 @@ public class MessageService implements CRUDService<Message>
 	{
 		switch (provider) {
 			case FACEBOOK:
-				return this.injector.getInstance(FacebookSocialProvider.class);
+				return injector.getInstance(FacebookSocialProvider.class);
 			case TWITTER:
-				return this.injector.getInstance(TwitterSocialProvider.class);
+				return injector.getInstance(TwitterSocialProvider.class);
 			case GOOGLEPLUS:
-				return this.injector.getInstance(GooglePlusSocialProvider.class);
+				return injector.getInstance(GooglePlusSocialProvider.class);
 			case YOUTUBE:
-				return this.injector.getInstance(YoutubeSocialProvider.class);
+				return injector.getInstance(YoutubeSocialProvider.class);
 		}
 		return null;
 	}
 
 	@Override @Transactional public Message create(final Message message)
 	{
-		this.messageMapper.createMessage(message);
+		messageMapper.createMessage(message);
 		EventBus.publish(MessageService.MESSAGE_ENTRY_ADDED, message);
 		return message;
 	}
 
 	@Override @Transactional public Message update(final Message message)
 	{
-		this.messageMapper.updateMessage(message);
+		messageMapper.updateMessage(message);
 		EventBus.publish(MessageService.MESSAGE_ENTRY_UPDATED, message);
 		return message;
 	}
 
 	@Override @Transactional public void delete(final Message message)
 	{
-		this.messageMapper.deleteMessage(message);
+		messageMapper.deleteMessage(message);
 		EventBus.publish(MessageService.MESSAGE_ENTRY_REMOVED, message);
 	}
 
 	@Override @Transactional public List<Message> getAll()
 	{
-		return this.messageMapper.getMessages();
+		return messageMapper.getMessages();
 	}
 
 	@Override @Transactional public List<Message> find(final Message message)
 	{
-		return this.messageMapper.findMessages(message);
+		return messageMapper.findMessages(message);
 	}
 
 	@Transactional public Iterable<Message> findWithoutQueueID()
 	{
-		return this.messageMapper.findMessagesByQueueID(null);
+		return messageMapper.findMessagesByQueueID(null);
 	}
 
 	@Transactional public void clearByUploadID(final Integer uploadID)
 	{
-		for (final Message message : this.messageMapper.findMessagesByQueueID(uploadID)) {
-			this.delete(message);
+		for (final Message message : messageMapper.findMessagesByQueueID(uploadID)) {
+			delete(message);
 		}
 	}
 }

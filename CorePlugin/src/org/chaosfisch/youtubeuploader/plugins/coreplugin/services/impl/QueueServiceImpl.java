@@ -42,23 +42,23 @@ public class QueueServiceImpl implements QueueService
 
 	@Transactional @Override public Queue create(final Queue queue)
 	{
-		queue.sequence = this.queueMapper.countQueued();
-		this.queueMapper.createQueue(queue);
+		queue.sequence = queueMapper.countQueued();
+		queueMapper.createQueue(queue);
 		EventBus.publish(QueueService.QUEUE_ENTRY_ADDED, queue);
 		return queue;
 	}
 
 	@Transactional @Override public Queue delete(final Queue queue)
 	{
-		this.sort(queue, QueuePosition.QUEUE_BOTTOM);
-		this.queueMapper.deleteQueue(queue);
+		sort(queue, QueuePosition.QUEUE_BOTTOM);
+		queueMapper.deleteQueue(queue);
 		EventBus.publish(QueueService.QUEUE_ENTRY_REMOVED, queue);
 		return queue;
 	}
 
 	@Transactional @Override public Queue update(final Queue queue)
 	{
-		this.queueMapper.updateQueue(queue);
+		queueMapper.updateQueue(queue);
 		EventBus.publish(QueueService.QUEUE_ENTRY_UPDATED, queue);
 		return queue;
 	}
@@ -66,61 +66,61 @@ public class QueueServiceImpl implements QueueService
 	@Transactional @Override public void sort(final Queue queue, final QueuePosition queuePosition)
 	{
 		final int prePos = queue.sequence;
-		final int entries = this.queueMapper.countQueued();
+		final int entries = queueMapper.countQueued();
 		switch (queuePosition) {
 			case QUEUE_BOTTOM:
-				this.queueMapper.moveBottom(queue);
+				queueMapper.moveBottom(queue);
 				break;
 			case QUEUE_TOP:
-				this.queueMapper.moveTop(queue);
+				queueMapper.moveTop(queue);
 				break;
 			case QUEUE_UP:
 				if (prePos == 0) {
 					return;
 				}
-				this.queueMapper.moveUp(queue);
+				queueMapper.moveUp(queue);
 				break;
 			case QUEUE_DOWN:
 				if (prePos == (entries - 1)) {
 					return;
 				}
-				this.queueMapper.moveDown(queue);
+				queueMapper.moveDown(queue);
 				break;
 		}
 	}
 
 	@Transactional @Override public List<Queue> getAll()
 	{
-		return this.queueMapper.getAll();
+		return queueMapper.getAll();
 	}
 
 	@Transactional @Override public List<Queue> getQueued()
 	{
-		return this.queueMapper.getQueued();
+		return queueMapper.getQueued();
 	}
 
 	@Transactional @Override public List<Queue> getArchived()
 	{
-		return this.queueMapper.getArchived();
+		return queueMapper.getArchived();
 	}
 
 	@Transactional @Override public Queue find(final int identifier)
 	{
-		return this.queueMapper.findQueue(identifier);
+		return queueMapper.findQueue(identifier);
 	}
 
 	@Transactional @Override public Queue poll()
 	{
-		final Queue queue = this.queueMapper.poll();
+		final Queue queue = queueMapper.poll();
 		if (queue == null) {
 			return null;
 		}
 		queue.inprogress = true;
-		return this.update(queue);
+		return update(queue);
 	}
 
 	@Transactional @Override public boolean hasStarttime()
 	{
-		return this.queueMapper.countStarttime() > 0;
+		return queueMapper.countStarttime() > 0;
 	}
 }

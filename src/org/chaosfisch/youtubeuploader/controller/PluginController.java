@@ -42,9 +42,9 @@ public class PluginController
 
 	public RowTableModel<Pluggable> getPluginTableModel(final Iterable<Pluggable> pluggableList)
 	{
-		if (this.pluginTableModel == null) {
-			final List<String> columns = Arrays.asList(this.resourceBundle.getString("pluginTable.name"), this.resourceBundle.getString("pluginTable.author"), this.resourceBundle.getString("pluginTable.disableCheckbox"));
-			this.pluginTableModel = new RowTableModel<Pluggable>(Lists.newArrayList(pluggableList), columns, Pluggable.class)
+		if (pluginTableModel == null) {
+			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString("pluginTable.disableCheckbox"));
+			pluginTableModel = new RowTableModel<Pluggable>(Lists.newArrayList(pluggableList), columns, Pluggable.class)
 			{
 				private static final long serialVersionUID = 3423121373666600098L;
 
@@ -52,23 +52,23 @@ public class PluginController
 				{
 					switch (columnIndex) {
 						case 0:
-							return this.getRow(rowIndex).getName();
+							return getRow(rowIndex).getName();
 						case 1:
-							return this.getRow(rowIndex).getAuthor();
+							return getRow(rowIndex).getAuthor();
 						case 2:
 						default:
 							return true;
 					}
 				}
 			};
-			this.pluginTableModel.setColumnClass(2, Boolean.class);
-			this.pluginTableModel.setModelEditable(false);
+			pluginTableModel.setColumnClass(2, Boolean.class);
+			pluginTableModel.setModelEditable(false);
 		}
-		return this.pluginTableModel;
+		return pluginTableModel;
 	}
 
 	public RowTableModel<Pluggable> getPluginTableModel()
 	{
-		return this.getPluginTableModel(Collections.<Pluggable>emptyList());
+		return getPluginTableModel(Collections.<Pluggable>emptyList());
 	}
 }

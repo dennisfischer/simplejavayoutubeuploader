@@ -55,28 +55,27 @@ public class QueueTableModel extends RowTableModel<Queue>
 	public QueueTableModel(final Iterable<Queue> queues)
 	{
 		super(Queue.class);
-		this.setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(this.resourceBundle.getString("table.columns.id"), this.resourceBundle.getString("table.columns.title"), this.resourceBundle.getString("table.columns.file"),
-																			this.resourceBundle.getString("table.columns.starttime"), this.resourceBundle.getString("table.columns.eta"), this.resourceBundle.getString("table.columns.status"),
-																			this.resourceBundle.getString("table.columns.progress")));
+		setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(resourceBundle.getString("table.columns.id"), resourceBundle.getString("table.columns.title"), resourceBundle.getString("table.columns.file"), resourceBundle.getString(
+				"table.columns.starttime"), resourceBundle.getString("table.columns.eta"), resourceBundle.getString("table.columns.status"), resourceBundle.getString("table.columns.progress")));
 
 		for (final Queue queue : queues) {
-			this.addRow(queue);
+			addRow(queue);
 		}
-		this.setColumnClass(0, Integer.class);
-		this.setColumnClass(1, String.class);
-		this.setColumnClass(2, String.class);
-		this.setColumnClass(3, String.class);
-		this.setColumnClass(4, String.class);
-		this.setColumnClass(5, String.class);
-		this.setColumnClass(6, ProgressbarTableCellRenderer.class);
-		this.setModelEditable(false);
+		setColumnClass(0, Integer.class);
+		setColumnClass(1, String.class);
+		setColumnClass(2, String.class);
+		setColumnClass(3, String.class);
+		setColumnClass(4, String.class);
+		setColumnClass(5, String.class);
+		setColumnClass(6, ProgressbarTableCellRenderer.class);
+		setModelEditable(false);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Queue queue = this.getRow(row);
+		final Queue queue = getRow(row);
 		switch (col) {
 			case 0:
 				return queue.getIdentity();
@@ -100,11 +99,11 @@ public class QueueTableModel extends RowTableModel<Queue>
 				if (queue.status != null) {
 					return queue.status;
 				} else if (queue.archived) {
-					return String.format("%s http://youtu.be/%s", this.resourceBundle.getString("table.columns.status.finished"), queue.videoId);//NON-NLS
+					return String.format("%s http://youtu.be/%s", resourceBundle.getString("table.columns.status.finished"), queue.videoId);//NON-NLS
 				} else if (queue.inprogress) {
-					return this.resourceBundle.getString("table.columns.status.inprogress");
+					return resourceBundle.getString("table.columns.status.inprogress");
 				} else {
-					return this.resourceBundle.getString("table.columns.status.waiting");
+					return resourceBundle.getString("table.columns.status.waiting");
 				}
 			case 6:
 				return queue.progress;
@@ -116,7 +115,7 @@ public class QueueTableModel extends RowTableModel<Queue>
 	@Override
 	public void setValueAt(final Object value, final int row, final int col)
 	{
-		final Queue queue = this.getRow(row);
+		final Queue queue = getRow(row);
 		final Calendar calendar;
 		switch (col) {
 			case 0:
@@ -146,64 +145,64 @@ public class QueueTableModel extends RowTableModel<Queue>
 				queue.progress = Integer.parseInt(value.toString());
 				break;
 		}
-		this.fireTableCellUpdated(row, col);
+		fireTableCellUpdated(row, col);
 	}
 
 	public void sortQueueEntry(final Queue queue, final QueuePosition queuePosition)
 	{
-		if (!this.modelData.contains(queue)) {
+		if (!modelData.contains(queue)) {
 			return;
 		}
 
 		switch (queuePosition) {
 
 			case QUEUE_TOP:
-				this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), 0);
+				moveRow(modelData.indexOf(queue), modelData.indexOf(queue), 0);
 				break;
 			case QUEUE_UP:
-				if ((this.modelData.indexOf(queue) - 1) > -1) {
-					this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.modelData.indexOf(queue) - 1);
+				if ((modelData.indexOf(queue) - 1) > -1) {
+					moveRow(modelData.indexOf(queue), modelData.indexOf(queue), modelData.indexOf(queue) - 1);
 				}
 				break;
 			case QUEUE_DOWN:
-				if ((this.modelData.indexOf(queue) + 1) < this.getRowCount()) {
-					this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.modelData.indexOf(queue) + 1);
+				if ((modelData.indexOf(queue) + 1) < getRowCount()) {
+					moveRow(modelData.indexOf(queue), modelData.indexOf(queue), modelData.indexOf(queue) + 1);
 				}
 				break;
 			case QUEUE_BOTTOM:
-				this.moveRow(this.modelData.indexOf(queue), this.modelData.indexOf(queue), this.getRowCount() - 1);
+				moveRow(modelData.indexOf(queue), modelData.indexOf(queue), getRowCount() - 1);
 				break;
 		}
-		this.fireTableDataChanged();
+		fireTableDataChanged();
 	}
 
 	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
 	public void onQueueEntryAdded(final String topic, final Queue queue)
 	{
-		this.addRow(queue);
+		addRow(queue);
 	}
 
 	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
 	public void onQueueEntryRemoved(final String topic, final Queue queue)
 	{
-		this.removeElement(queue);
+		removeElement(queue);
 	}
 
 	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_UPDATED)
 	public void onQueueEntryUpdated(final String topic, final Queue queue)
 	{
-		if (this.modelData.contains(queue)) {
-			this.replaceRow(this.modelData.indexOf(queue), queue);
+		if (modelData.contains(queue)) {
+			replaceRow(modelData.indexOf(queue), queue);
 		}
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
 	public void onUploadStart(final String topic, final Queue queue)
 	{
-		if (this.modelData.contains(queue)) {
-			final int index = this.modelData.indexOf(queue);
-			this.setValueAt(queue.started.getTime(), index, 3);
-			this.setValueAt(this.resourceBundle.getString("uploadStarting"), index, 5);
+		if (modelData.contains(queue)) {
+			final int index = modelData.indexOf(queue);
+			setValueAt(queue.started.getTime(), index, 3);
+			setValueAt(resourceBundle.getString("uploadStarting"), index, 5);
 			EventBus.publish("update", queue); //NON-NLS
 		}
 	}
@@ -211,20 +210,20 @@ public class QueueTableModel extends RowTableModel<Queue>
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_PROGRESS)
 	public void onUploadProgress(final String topic, final UploadProgress uploadProgress)
 	{
-		if (this.modelData.contains(uploadProgress.getQueue()))
+		if (modelData.contains(uploadProgress.getQueue()))
 
 		{
-			final int index = this.modelData.indexOf(uploadProgress.getQueue());
+			final int index = modelData.indexOf(uploadProgress.getQueue());
 
 			if (uploadProgress.getFileSize() == uploadProgress.getTotalBytesUploaded()) {
 				final Queue queue = uploadProgress.getQueue();
 				queue.archived = true;
 				queue.inprogress = false;
 				queue.status = null;
-				this.modelData.set(index, queue);
-				this.setValueAt(Calendar.getInstance().getTimeInMillis(), index, 4);
-				this.setValueAt(100, index, 6);
-				this.fireTableDataChanged();
+				modelData.set(index, queue);
+				setValueAt(Calendar.getInstance().getTimeInMillis(), index, 4);
+				setValueAt(100, index, 6);
+				fireTableDataChanged();
 			} else {
 
 				final int percent = (int) Math.round((uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize()) * 100);
@@ -235,9 +234,9 @@ public class QueueTableModel extends RowTableModel<Queue>
 
 				final double speed = uploadProgress.getDiffBytes() / 1024 / uploadProgress.getDiffTime();
 
-				this.setValueAt(eta, index, 4);
-				this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadProgressMessage"), (int) uploadProgress.getTotalBytesUploaded() / 1048576, (int) uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
-				this.setValueAt(percent, index, 6);
+				setValueAt(eta, index, 4);
+				setValueAt(MessageFormat.format(resourceBundle.getString("uploadProgressMessage"), uploadProgress.getTotalBytesUploaded() / 1048576, uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
+				setValueAt(percent, index, 6);
 			}
 		}
 	}
@@ -245,9 +244,9 @@ public class QueueTableModel extends RowTableModel<Queue>
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
 	public void onUploadFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		if (this.modelData.contains(uploadFailed.getQueue())) {
-			final int index = this.modelData.indexOf(uploadFailed.getQueue());
-			this.setValueAt(MessageFormat.format(this.resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
+		if (modelData.contains(uploadFailed.getQueue())) {
+			final int index = modelData.indexOf(uploadFailed.getQueue());
+			setValueAt(MessageFormat.format(resourceBundle.getString("uploadFailedMessage"), uploadFailed.getMessage()), index, 5);
 		}
 	}
 }

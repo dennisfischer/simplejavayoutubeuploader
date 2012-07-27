@@ -49,22 +49,22 @@ public class UploadProgress
 
 	public Queue getQueue()
 	{
-		return this.queue;
+		return queue;
 	}
 
 	public double getFileSize()
 	{
-		return this.fileSize;
+		return fileSize;
 	}
 
 	public double getTotalBytesUploaded()
 	{
-		return this.totalBytesUploaded;
+		return totalBytesUploaded;
 	}
 
 	public long getTime()
 	{
-		return this.time;
+		return time;
 	}
 
 	public void setTotalBytesUploaded(final double totalBytesUploaded)
@@ -74,7 +74,7 @@ public class UploadProgress
 
 	public double getDiffBytes()
 	{
-		return this.diffBytes;
+		return diffBytes;
 	}
 
 	public void setDiffBytes(final double diffBytes)
@@ -89,7 +89,7 @@ public class UploadProgress
 
 	public long getDiffTime()
 	{
-		return this.diffTime;
+		return diffTime;
 	}
 
 	public void setDiffTime(final long diffTime)

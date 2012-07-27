@@ -41,11 +41,11 @@ public class JComponentExtensionPoint implements ExtensionPoint
 
 	public String getTitle()
 	{
-		return this.title;
+		return title;
 	}
 
 	public JComponent getJComponent()
 	{
-		return this.JComponent;
+		return JComponent;
 	}
 }

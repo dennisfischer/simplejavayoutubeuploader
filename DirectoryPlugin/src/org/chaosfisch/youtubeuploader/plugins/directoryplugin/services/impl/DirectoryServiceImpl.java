@@ -37,14 +37,14 @@ public class DirectoryServiceImpl implements DirectoryService
 
 	@Override @Transactional public List<Directory> getAll()
 	{
-		return this.directoryMapper.getDirectories();
+		return directoryMapper.getDirectories();
 	}
 
 	@Override @Transactional public List<Directory> getActive()
 	{
 		final Directory findEntry = new Directory();
 		findEntry.active = true;
-		return this.directoryMapper.findDirectories(findEntry);
+		return directoryMapper.findDirectories(findEntry);
 	}
 
 	@Override @Transactional public Directory findFile(final File file)
@@ -52,7 +52,7 @@ public class DirectoryServiceImpl implements DirectoryService
 		final String directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1);
 		final Directory findEntry = new Directory();
 		findEntry.directory = directory;
-		final List<Directory> entries = this.directoryMapper.findDirectories(findEntry);
+		final List<Directory> entries = directoryMapper.findDirectories(findEntry);
 		if (entries.isEmpty()) {
 			return null;
 		}
@@ -61,31 +61,31 @@ public class DirectoryServiceImpl implements DirectoryService
 
 	@Override @Transactional public List<Directory> find(final Directory directory)
 	{
-		return this.directoryMapper.findDirectories(directory);
+		return directoryMapper.findDirectories(directory);
 	}
 
 	@Override @Transactional public Directory create(final Directory directory)
 	{
-		this.directoryMapper.createDirectory(directory);
+		directoryMapper.createDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_ADDED, directory);
 		return directory;
 	}
 
 	@Override @Transactional public void delete(final Directory directory)
 	{
-		this.directoryMapper.deleteDirectory(directory);
+		directoryMapper.deleteDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_REMOVED, directory);
 	}
 
 	@Override @Transactional public Directory update(final Directory directory)
 	{
-		this.directoryMapper.updateDirectory(directory);
+		directoryMapper.updateDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_UPDATED, directory);
 		return directory;
 	}
 
 	@Override @Transactional public List<Preset> findPresets()
 	{
-		return this.directoryMapper.getQualifiedPresets();
+		return directoryMapper.getQualifiedPresets();
 	}
 }

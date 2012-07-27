@@ -46,7 +46,7 @@ public class TextDocument extends PlainDocument
 		if (str.isEmpty()) {
 			return;
 		}
-		if ((this.getLength() + str.length()) <= this.maxLength) {
+		if ((getLength() + str.length()) <= maxLength) {
 			super.insertString(offs, str, a);
 		}
 	}

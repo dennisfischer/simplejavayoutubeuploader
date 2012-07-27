@@ -56,46 +56,46 @@ public class FacebookSocialProvider implements ISocialProvider
 	@Override
 	public void publish(final String message)
 	{
-		if (this.accessToken == null) {
+		if (accessToken == null) {
 			return;
 		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed"); //NON-NLS
 		oAuthRequest.addBodyParameter("message", message); //NON-NLS
-		oAuthRequest.addBodyParameter("link", this.extractUrl(message)); //NON-NLS
+		oAuthRequest.addBodyParameter("link", extractUrl(message)); //NON-NLS
 
-		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
+		oAuthService.signRequest(accessToken, oAuthRequest);
 		final Response response = oAuthRequest.send();
 		if (response.getCode() != HTTP_STATUS.OK.getCode()) {
-			this.logger.warn(String.format("Wrong response code: %d", response.getCode()));//NON-NLS
-			this.logger.warn(response.getBody());
+			logger.warn(String.format("Wrong response code: %d", response.getCode()));//NON-NLS
+			logger.warn(response.getBody());
 		}
 	}
 
 	@Override
 	public void authenticate()
 	{
-		if ((this.accessToken != null) && this.hasValidAccessToken()) {
+		if ((accessToken != null) && hasValidAccessToken()) {
 			return;
 		}
 		try {
-			Desktop.getDesktop().browse(new URI(this.oAuthService.getAuthorizationUrl(FacebookSocialProvider.EMPTY_TOKEN)));
+			Desktop.getDesktop().browse(new URI(oAuthService.getAuthorizationUrl(FacebookSocialProvider.EMPTY_TOKEN)));
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (URISyntaxException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 		try {
-			this.logger.info("Facebook-Server started.");//NON-NLS
-			this.oAuthHTTPDServer = new OAuthHTTPDServer(8080);
+			logger.info("Facebook-Server started.");//NON-NLS
+			oAuthHTTPDServer = new OAuthHTTPDServer(8080);
 
 			//noinspection SynchronizeOnNonFinalField
-			synchronized (this.oAuthHTTPDServer) {
-				this.oAuthHTTPDServer.wait(60000);
+			synchronized (oAuthHTTPDServer) {
+				oAuthHTTPDServer.wait(60000);
 			}
-			if (this.oAuthHTTPDServer.getCode() != null) {
-				this.accessToken = this.oAuthService.getAccessToken(null, new Verifier(this.oAuthHTTPDServer.getCode()));
+			if (oAuthHTTPDServer.getCode() != null) {
+				accessToken = oAuthService.getAccessToken(null, new Verifier(oAuthHTTPDServer.getCode()));
 			}
-			this.logger.info("Facebook-Server stopped.");//NON-NLS
+			logger.info("Facebook-Server stopped.");//NON-NLS
 		} catch (InterruptedException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -104,7 +104,7 @@ public class FacebookSocialProvider implements ISocialProvider
 	@Override
 	public Token getAccessToken()
 	{
-		return this.accessToken;
+		return accessToken;
 	}
 
 	@Override
@@ -115,11 +115,11 @@ public class FacebookSocialProvider implements ISocialProvider
 
 	@Override public boolean hasValidAccessToken()
 	{
-		if (this.accessToken == null) {
+		if (accessToken == null) {
 			return false;
 		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, "https://graph.facebook.com/me"); //NON-NLS
-		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
+		oAuthService.signRequest(accessToken, oAuthRequest);
 		try {
 			final Response response = oAuthRequest.send();
 			if (response.getCode() == HTTP_STATUS.OK.getCode()) {

@@ -66,6 +66,6 @@ public class Queue implements IModel
 
 	@Override public Integer getIdentity()
 	{
-		return this.identity;
+		return identity;
 	}
 }

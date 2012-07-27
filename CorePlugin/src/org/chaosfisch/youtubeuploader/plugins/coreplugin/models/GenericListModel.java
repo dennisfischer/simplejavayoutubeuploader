@@ -48,10 +48,10 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	public GenericListModel(final Collection<E> elements)
 	{
 		AnnotationProcessor.process(this);
-		this.objects = new IdentityVector<E>(elements.size());
+		objects = new IdentityVector<E>(elements.size());
 
 		for (final E element : elements) {
-			this.addElement(element);
+			addElement(element);
 		}
 	}
 
@@ -63,17 +63,17 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	 */
 	public GenericListModel(final E... items)
 	{
-		this.objects = new IdentityVector<E>(items.length);
-		this.objects.ensureCapacity(items.length);
+		objects = new IdentityVector<E>(items.length);
+		objects.ensureCapacity(items.length);
 
 		int i;
 		final int c;
 		for (i = 0, c = items.length; i < c; i++) {
-			this.objects.addElement(items[i]);
+			objects.addElement(items[i]);
 		}
 
-		if (this.getSize() > 0) {
-			this.selectedObject = this.getElementAt(0);
+		if (getSize() > 0) {
+			selectedObject = getElementAt(0);
 		}
 	}
 
@@ -85,10 +85,10 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	 */
 	public GenericListModel(final IdentityVector<E> v)
 	{
-		this.objects = v;
+		objects = v;
 
-		if (this.getSize() > 0) {
-			this.selectedObject = this.getElementAt(0);
+		if (getSize() > 0) {
+			selectedObject = getElementAt(0);
 		}
 	}
 
@@ -103,9 +103,9 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	@Override
 	public void setSelectedItem(final Object anObject)
 	{
-		if (((this.selectedObject != null) && !this.selectedObject.equals(anObject)) || ((this.selectedObject == null) && (anObject != null))) {
-			this.selectedObject = anObject;
-			this.fireContentsChanged(this, -1, -1);
+		if (((selectedObject != null) && !selectedObject.equals(anObject)) || ((selectedObject == null) && (anObject != null))) {
+			selectedObject = anObject;
+			fireContentsChanged(this, -1, -1);
 		}
 	}
 
@@ -113,22 +113,22 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	@Override
 	public Object getSelectedItem()
 	{
-		return this.selectedObject;
+		return selectedObject;
 	}
 
 	// implements javax.swing.ListModel
 	@Override
 	public int getSize()
 	{
-		return this.objects.size();
+		return objects.size();
 	}
 
 	// implements javax.swing.ListModel
 	@Override
 	public E getElementAt(final int index)
 	{
-		if ((index >= 0) && (index < this.objects.size())) {
-			return this.objects.elementAt(index);
+		if ((index >= 0) && (index < objects.size())) {
+			return objects.elementAt(index);
 		} else {
 			return null;
 		}
@@ -143,51 +143,51 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	 */
 	public int getIndexOf(final Object anObject)
 	{
-		return this.objects.indexOf(anObject);
+		return objects.indexOf(anObject);
 	}
 
 	// implements javax.swing.MutableComboBoxModel
 	@Override
 	public void addElement(final Object anObject)
 	{
-		this.objects.addElement((E) anObject);
-		this.fireIntervalAdded(this, this.objects.size() - 1, this.objects.size() - 1);
-		if ((this.objects.size() == 1) && (this.selectedObject == null) && (anObject != null)) {
-			this.setSelectedItem(anObject);
+		objects.addElement((E) anObject);
+		fireIntervalAdded(this, objects.size() - 1, objects.size() - 1);
+		if ((objects.size() == 1) && (selectedObject == null) && (anObject != null)) {
+			setSelectedItem(anObject);
 		}
 	}
 
 	// implements javax.swing.MutableComboBoxModel
 	public void insertElementAt(final Object anObject, final int index)
 	{
-		this.objects.insertElementAt((E) anObject, index);
-		this.fireIntervalAdded(this, index, index);
+		objects.insertElementAt((E) anObject, index);
+		fireIntervalAdded(this, index, index);
 	}
 
 	// implements javax.swing.MutableComboBoxModel
 	@Override
 	public void removeElementAt(final int index)
 	{
-		if (this.getElementAt(index) == this.selectedObject) {
+		if (getElementAt(index) == selectedObject) {
 			if (index == 0) {
-				this.setSelectedItem((this.getSize() == 1) ? null : this.getElementAt(index + 1));
+				setSelectedItem((getSize() == 1) ? null : getElementAt(index + 1));
 			} else {
-				this.setSelectedItem(this.getElementAt(index - 1));
+				setSelectedItem(getElementAt(index - 1));
 			}
 		}
 
-		this.objects.removeElementAt(index);
+		objects.removeElementAt(index);
 
-		this.fireIntervalRemoved(this, index, index);
+		fireIntervalRemoved(this, index, index);
 	}
 
 	// implements javax.swing.MutableComboBoxModel
 	@Override
 	public void removeElement(final Object anObject)
 	{
-		final int index = this.getIndexOf(anObject);
+		final int index = getIndexOf(anObject);
 		if (index != -1) {
-			this.removeElementAt(index);
+			removeElementAt(index);
 		}
 	}
 
@@ -196,25 +196,25 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	 */
 	public void removeAllElements()
 	{
-		if (!this.objects.isEmpty()) {
-			final int lastIndex = this.objects.size() - 1;
-			this.objects.removeAllElements();
-			this.selectedObject = null;
+		if (!objects.isEmpty()) {
+			final int lastIndex = objects.size() - 1;
+			objects.removeAllElements();
+			selectedObject = null;
 			final int firstIndex = 0;
-			this.fireIntervalRemoved(this, firstIndex, lastIndex);
+			fireIntervalRemoved(this, firstIndex, lastIndex);
 		} else {
-			this.selectedObject = null;
+			selectedObject = null;
 		}
 	}
 
 	public List<E> getAll()
 	{
-		return Collections.unmodifiableList(this.objects);
+		return Collections.unmodifiableList(objects);
 	}
 
 	public boolean hasIndex(final int index)
 	{
-		return (this.objects.size() > index) && (index > -1);
+		return (objects.size() > index) && (index > -1);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	 */
 	public void replaceRow(final int row, final E rowData)
 	{
-		this.objects.set(row, rowData);
-		this.fireContentsChanged(this, row, row);
+		objects.set(row, rowData);
+		fireContentsChanged(this, row, row);
 	}
 }

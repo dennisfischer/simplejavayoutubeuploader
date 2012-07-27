@@ -39,21 +39,21 @@ public class PluginViewPanel extends JDialog
 
 	public PluginViewPanel()
 	{
-		this.setContentPane(this.contentPane);
-		this.setModal(true);
+		setContentPane(contentPane);
+		setModal(true);
 	}
 
 	public void run()
 	{
-		this.pluginTable.setModel(this.pluginController.getPluginTableModel());
+		pluginTable.setModel(pluginController.getPluginTableModel());
 	}
 
 	public void setPluggableList(final Iterable<Pluggable> pluggableList)
 	{
-		final RowTableModel<Pluggable> rowTableModel = this.pluginController.getPluginTableModel();
+		final RowTableModel<Pluggable> rowTableModel = pluginController.getPluginTableModel();
 		if (rowTableModel.getRowCount() > 0) {
 			rowTableModel.removeRowRange(0, rowTableModel.getRowCount() - 1);
 		}
-		rowTableModel.insertRows(this.pluginTable.getModel().getRowCount(), Lists.newArrayList(pluggableList));
+		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), Lists.newArrayList(pluggableList));
 	}
 }

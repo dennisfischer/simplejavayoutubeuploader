@@ -52,7 +52,7 @@ public class GooglePlusSocialProvider implements ISocialProvider
 
 	@Override public Token getAccessToken()
 	{
-		return this.accessToken;  //To change body of implemented methods use File | Settings | File Templates.
+		return accessToken;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override public void setAccessToken(final Token accessToken)
@@ -62,13 +62,13 @@ public class GooglePlusSocialProvider implements ISocialProvider
 
 	@Override public void authenticate()
 	{
-		if (this.accessToken != null) {
+		if (accessToken != null) {
 			return;
 		}
 
-		final Token requestToken = this.oAuthService.getRequestToken();
+		final Token requestToken = oAuthService.getRequestToken();
 		try {
-			Desktop.getDesktop().browse(new URI(this.oAuthService.getAuthorizationUrl(requestToken)));
+			Desktop.getDesktop().browse(new URI(oAuthService.getAuthorizationUrl(requestToken)));
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (URISyntaxException e) {
@@ -78,7 +78,7 @@ public class GooglePlusSocialProvider implements ISocialProvider
 		final String verifier = JOptionPane.showInputDialog(null, I18nSupport.message("googleOAuth.code.label"), I18nSupport.message("googleOAuth.account.label"), JOptionPane.INFORMATION_MESSAGE);
 
 		if (verifier != null) {
-			this.accessToken = this.oAuthService.getAccessToken(requestToken, new Verifier(verifier));
+			accessToken = oAuthService.getAccessToken(requestToken, new Verifier(verifier));
 		}
 	}
 

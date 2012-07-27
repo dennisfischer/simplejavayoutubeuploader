@@ -34,8 +34,8 @@ public class ThrottledOutputStream extends FilterOutputStream
 	{
 		super(out);
 		this.maxBps = maxBps;
-		this.bytes = 0;
-		this.start = System.currentTimeMillis();
+		bytes = 0;
+		start = System.currentTimeMillis();
 	}
 
 	private final byte[] oneByte = new byte[1];
@@ -46,8 +46,8 @@ public class ThrottledOutputStream extends FilterOutputStream
 	// @exception IOException if an I/O error has occurred
 	public void write(final int b) throws IOException
 	{
-		this.oneByte[0] = (byte) b;
-		this.write(this.oneByte, 0, 1);
+		oneByte[0] = (byte) b;
+		write(oneByte, 0, 1);
 	}
 
 	/// Writes a subarray of bytes.
@@ -59,13 +59,13 @@ public class ThrottledOutputStream extends FilterOutputStream
 	public void write(final byte[] b, final int off, final int len) throws IOException
 	{
 		// Check the throttle.
-		this.bytes += len;
-		final long elapsed = Math.max(System.currentTimeMillis() - this.start, 1);
+		bytes += len;
+		final long elapsed = Math.max(System.currentTimeMillis() - start, 1);
 
-		final long bps = (this.bytes * 1000L) / elapsed;
-		if ((this.maxBps != 0) && (bps > this.maxBps)) {
+		final long bps = (bytes * 1000L) / elapsed;
+		if ((maxBps != 0) && (bps > maxBps)) {
 			// Oops, sending too fast.
-			final long wakeElapsed = (this.bytes * 1000L) / this.maxBps;
+			final long wakeElapsed = (bytes * 1000L) / maxBps;
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
 			} catch (InterruptedException ignored) {
@@ -73,6 +73,6 @@ public class ThrottledOutputStream extends FilterOutputStream
 		}
 
 		// Write the bytes.
-		this.out.write(b, off, len);
+		out.write(b, off, len);
 	}
 }

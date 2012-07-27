@@ -54,48 +54,48 @@ public class SettingsServiceImpl implements SettingsService
 
 	@Override public Object get(final String uniqueKey, final String defaultValue)
 	{
-		if (this.settingsPersister.has(uniqueKey) && !this.settingsPersister.get(uniqueKey).equals("") && (this.settingsPersister.get(uniqueKey) != null)) {
-			return this.settingsPersister.get(uniqueKey);
+		if (settingsPersister.has(uniqueKey) && !settingsPersister.get(uniqueKey).equals("") && (settingsPersister.get(uniqueKey) != null)) {
+			return settingsPersister.get(uniqueKey);
 		}
-		this.settingsPersister.set(uniqueKey, defaultValue);
+		settingsPersister.set(uniqueKey, defaultValue);
 		return defaultValue;
 	}
 
 	@Override public void set(final String uniqueKey, final String value)
 	{
-		this.settingsPersister.set(uniqueKey, value);
-		this.changedList.add(uniqueKey);
+		settingsPersister.set(uniqueKey, value);
+		changedList.add(uniqueKey);
 	}
 
 	@Override public void save()
 	{
-		this.settingsPersister.save();
-		for (final String uniqueKey : this.changedList) {
+		settingsPersister.save();
+		for (final String uniqueKey : changedList) {
 			EventBus.publish(SettingsService.SETTINGS_SAVED, uniqueKey);
 		}
-		this.changedList.clear();
+		changedList.clear();
 	}
 
 	@Override public void addTextfield(final String uniqueKey, final String label)
 	{
 		final JTextField jTextField = new JTextField();
 		jTextField.setName(uniqueKey);
-		jTextField.setText((String) this.get(uniqueKey, ""));
+		jTextField.setText((String) get(uniqueKey, ""));
 
-		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
-			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
+		if (!settingsViewComponentHashMap.containsKey(getGroupByKey(uniqueKey))) {
+			settingsViewComponentHashMap.put(getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
 		}
-		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jTextField));
+		settingsViewComponentHashMap.get(getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jTextField));
 	}
 
 	@Override public void addSpinner(final String uniqueKey, final String label, final JSpinner jSpinner)
 	{
 
 		jSpinner.setName(uniqueKey);
-		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
-			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
+		if (!settingsViewComponentHashMap.containsKey(getGroupByKey(uniqueKey))) {
+			settingsViewComponentHashMap.put(getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
 		}
-		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jSpinner));
+		settingsViewComponentHashMap.get(getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jSpinner));
 	}
 
 	@Override public void addCombobox(final String uniqueKey, final String label, @SuppressWarnings("rawtypes") final ComboBoxModel comboBoxModel)
@@ -104,33 +104,33 @@ public class SettingsServiceImpl implements SettingsService
 		jComboBox.setName(uniqueKey);
 		//noinspection unchecked
 		jComboBox.setModel(comboBoxModel);
-		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
-			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
+		if (!settingsViewComponentHashMap.containsKey(getGroupByKey(uniqueKey))) {
+			settingsViewComponentHashMap.put(getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
 		}
-		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jComboBox));
+		settingsViewComponentHashMap.get(getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jComboBox));
 	}
 
 	@Override public void addCheckbox(final String uniqueKey, final String label)
 	{
 		final JCheckBox jCheckBox = new JCheckBox();
 		jCheckBox.setName(uniqueKey);
-		jCheckBox.setSelected(Boolean.parseBoolean((String) this.get(uniqueKey, "")));
-		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
-			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
+		jCheckBox.setSelected(Boolean.parseBoolean((String) get(uniqueKey, "")));
+		if (!settingsViewComponentHashMap.containsKey(getGroupByKey(uniqueKey))) {
+			settingsViewComponentHashMap.put(getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
 		}
-		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jCheckBox));
+		settingsViewComponentHashMap.get(getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jCheckBox));
 	}
 
 	@Override public void addFilechooser(final String uniqueKey, final String label)
 	{
-		final JButton jButton = new JButton((String) this.get(uniqueKey, ""), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
+		final JButton jButton = new JButton((String) get(uniqueKey, ""), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
 		jButton.setName(uniqueKey);
 		jButton.addActionListener(new ActionListener()
 		{
 
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = SettingsServiceImpl.this.injector.getInstance(JFileChooser.class);
+				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
 				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				final int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
@@ -140,10 +140,10 @@ public class SettingsServiceImpl implements SettingsService
 				}
 			}
 		});
-		if (!this.settingsViewComponentHashMap.containsKey(this.getGroupByKey(uniqueKey))) {
-			this.settingsViewComponentHashMap.put(this.getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
+		if (!settingsViewComponentHashMap.containsKey(getGroupByKey(uniqueKey))) {
+			settingsViewComponentHashMap.put(getGroupByKey(uniqueKey), new Vector<SettingsViewComponent>(10));
 		}
-		this.settingsViewComponentHashMap.get(this.getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jButton));
+		settingsViewComponentHashMap.get(getGroupByKey(uniqueKey)).add(new SettingsViewComponent(uniqueKey, label, jButton));
 	}
 
 	@Override public String getGroupByKey(final String uniqueKey)
@@ -154,6 +154,6 @@ public class SettingsServiceImpl implements SettingsService
 
 	@Override public Map<String, Vector<SettingsViewComponent>> getMap()
 	{
-		return Collections.unmodifiableMap(this.settingsViewComponentHashMap);
+		return Collections.unmodifiableMap(settingsViewComponentHashMap);
 	}
 }

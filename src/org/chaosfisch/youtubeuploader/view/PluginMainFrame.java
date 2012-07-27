@@ -80,50 +80,50 @@ public class PluginMainFrame
 
 	public void run()
 	{
-		this.initComponents();
-		this.initPlugins();
-		this.showFrame();
+		initComponents();
+		initPlugins();
+		showFrame();
 	}
 
 	private void showFrame()
 	{
 
-		this.mainFrame.setTitle(this.resourceBundle.getString("application.title"));
-		this.mainFrame.setJMenuBar(this.menuBar);
-		final Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png"));//NON-NLS
-		this.mainFrame.setIconImage(image); //NON-NLS
-		this.mainFrame.add(this.tabbedPane);
+		mainFrame.setTitle(resourceBundle.getString("application.title"));
+		mainFrame.setJMenuBar(menuBar);
+		final Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png"));//NON-NLS
+		mainFrame.setIconImage(image); //NON-NLS
+		mainFrame.add(tabbedPane);
 
 		// Get the size of the screen
 		final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		// Move the window
-		this.mainFrame.setLocation((dim.width - this.mainFrame.getSize().width) / 2, (dim.height - this.mainFrame.getSize().height) / 2);
-		this.mainFrame.pack();
-		this.mainFrame.setVisible(true);
+		mainFrame.setLocation((dim.width - mainFrame.getSize().width) / 2, (dim.height - mainFrame.getSize().height) / 2);
+		mainFrame.pack();
+		mainFrame.setVisible(true);
 	}
 
 	private void initPlugins()
 	{
-		final Collection<Pluggable> pluggableList = this.pluginManager.loadPlugins(PluginMainFrame.DISABLED_PLUGINS); //NON-NLS
+		final Collection<Pluggable> pluggableList = pluginManager.loadPlugins(PluginMainFrame.DISABLED_PLUGINS); //NON-NLS
 		for (final Pluggable p : pluggableList) {
 			p.init();
 		}
 
-		this.logger.debug("Start Plugins"); //NON-NLS
-		this.pluginManager.startPlugins();
-		this.logger.debug("Process Extensionpoints"); //NON-NLS
-		for (final ExtensionPoint tabs : this.pluginService.getExtensions("panel_tabs")) { //NON-NLS
-			this.logger.debug("Extension point"); //NON-NLS
+		logger.debug("Start Plugins"); //NON-NLS
+		pluginManager.startPlugins();
+		logger.debug("Process Extensionpoints"); //NON-NLS
+		for (final ExtensionPoint tabs : pluginService.getExtensions("panel_tabs")) { //NON-NLS
+			logger.debug("Extension point"); //NON-NLS
 			if ((tabs instanceof JComponentExtensionPoint) && (((JComponentExtensionPoint) tabs).getJComponent() instanceof JPanel)) {
-				this.logger.debug(String.format("Adding panel_tab: %s", ((JComponentExtensionPoint) tabs).getTitle())); //NON-NLS
-				this.tabbedPane.addTab(((JComponentExtensionPoint) tabs).getTitle(), ((JComponentExtensionPoint) tabs).getJComponent());
+				logger.debug(String.format("Adding panel_tab: %s", ((JComponentExtensionPoint) tabs).getTitle())); //NON-NLS
+				tabbedPane.addTab(((JComponentExtensionPoint) tabs).getTitle(), ((JComponentExtensionPoint) tabs).getJComponent());
 			}
 		}
 
-		final JMenu fileMenu = new JMenu(this.resourceBundle.getString("application.fileLabel"));
+		final JMenu fileMenu = new JMenu(resourceBundle.getString("application.fileLabel"));
 
-		for (final ExtensionPoint fileMenuItem : this.pluginService.getExtensions("file_menu")) { //NON-NLS
+		for (final ExtensionPoint fileMenuItem : pluginService.getExtensions("file_menu")) { //NON-NLS
 			if (fileMenuItem instanceof JComponentExtensionPoint) {
 				if (((JComponentExtensionPoint) fileMenuItem).getJComponent() instanceof JMenuItem) {
 					fileMenu.add((JMenuItem) ((JComponentExtensionPoint) fileMenuItem).getJComponent());
@@ -133,24 +133,24 @@ public class PluginMainFrame
 			}
 		}
 		final JMenuItem exitMenuItem = new JMenuItem();
-		exitMenuItem.setIcon(new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/delete.png"))); //NON-NLS
-		exitMenuItem.setText(this.resourceBundle.getString("exitMenuItem.text"));
+		exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/delete.png"))); //NON-NLS
+		exitMenuItem.setText(resourceBundle.getString("exitMenuItem.text"));
 		exitMenuItem.setName("exitMenuItem"); //NON-NLS
 		exitMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final Window w = PluginMainFrame.this.mainFrame;
+				final Window w = mainFrame;
 				w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		fileMenu.add(exitMenuItem);
-		this.menuBar.add(fileMenu);
+		menuBar.add(fileMenu);
 
-		final JMenu editMenu = new JMenu(this.resourceBundle.getString("application.editLabel"));
+		final JMenu editMenu = new JMenu(resourceBundle.getString("application.editLabel"));
 
-		for (final ExtensionPoint editMenuItem : this.pluginService.getExtensions("edit_menu")) { //NON-NLS
+		for (final ExtensionPoint editMenuItem : pluginService.getExtensions("edit_menu")) { //NON-NLS
 			if (editMenuItem instanceof JComponentExtensionPoint) {
 				if (((JComponentExtensionPoint) editMenuItem).getJComponent() instanceof JMenuItem) {
 					editMenu.add((JMenuItem) ((JComponentExtensionPoint) editMenuItem).getJComponent());
@@ -160,10 +160,10 @@ public class PluginMainFrame
 			}
 		}
 		if (editMenu.getItemCount() > 0) {
-			this.menuBar.add(editMenu);
+			menuBar.add(editMenu);
 		}
 
-		final JMenuItem wikiMenuItem = new JMenuItem(this.resourceBundle.getString("application.wikiLabel"));
+		final JMenuItem wikiMenuItem = new JMenuItem(resourceBundle.getString("application.wikiLabel"));
 		wikiMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -171,7 +171,7 @@ public class PluginMainFrame
 			{
 				if (Desktop.isDesktopSupported()) {
 					try {
-						Desktop.getDesktop().browse(new URI(PluginMainFrame.this.resourceBundle.getString("wikiURI")));
+						Desktop.getDesktop().browse(new URI(resourceBundle.getString("wikiURI")));
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
@@ -180,7 +180,7 @@ public class PluginMainFrame
 				}
 			}
 		});
-		final JMenuItem changelogMenuItem = new JMenuItem(this.resourceBundle.getString("application.changelogLabel"));
+		final JMenuItem changelogMenuItem = new JMenuItem(resourceBundle.getString("application.changelogLabel"));
 		changelogMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -188,7 +188,7 @@ public class PluginMainFrame
 			{
 				if (Desktop.isDesktopSupported()) {
 					try {
-						Desktop.getDesktop().browse(new URI(PluginMainFrame.this.resourceBundle.getString("changeLog")));
+						Desktop.getDesktop().browse(new URI(resourceBundle.getString("changeLog")));
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
@@ -197,61 +197,61 @@ public class PluginMainFrame
 				}
 			}
 		});
-		final JMenuItem aboutMenuItem = new JMenuItem(this.resourceBundle.getString("application.aboutLabel"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
+		final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
 		aboutMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final AboutDialog aboutDialog = new AboutDialog();
-				aboutDialog.setTitle(PluginMainFrame.this.resourceBundle.getString("application.title"));
+				aboutDialog.setTitle(resourceBundle.getString("application.title"));
 				aboutDialog.pack();
-				aboutDialog.setLocationRelativeTo(PluginMainFrame.this.mainFrame);
+				aboutDialog.setLocationRelativeTo(mainFrame);
 				aboutDialog.setVisible(true);
 			}
 		});
 
-		final JMenuItem pluginMenuItem = new JMenuItem(this.resourceBundle.getString("application.pluginsLabel"));
+		final JMenuItem pluginMenuItem = new JMenuItem(resourceBundle.getString("application.pluginsLabel"));
 		pluginMenuItem.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final PluginViewPanel pluginViewPanel = PluginMainFrame.this.injector.getInstance(PluginViewPanel.class);
+				final PluginViewPanel pluginViewPanel = injector.getInstance(PluginViewPanel.class);
 				pluginViewPanel.run();
 				pluginViewPanel.setPluggableList(pluggableList);
-				pluginViewPanel.setTitle(PluginMainFrame.this.resourceBundle.getString("pluginDialogTitle")); //NON-NLS
-				pluginViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png"))); //NON-NLS
+				pluginViewPanel.setTitle(resourceBundle.getString("pluginDialogTitle")); //NON-NLS
+				pluginViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png"))); //NON-NLS
 				pluginViewPanel.pack();
-				pluginViewPanel.setLocationRelativeTo(PluginMainFrame.this.mainFrame);
+				pluginViewPanel.setLocationRelativeTo(mainFrame);
 				pluginViewPanel.setVisible(true);
 			}
 		});
 		pluginMenuItem.setEnabled(true);
 
-		final JMenu helpMenu = new JMenu(this.resourceBundle.getString("application.helpLabel"));
+		final JMenu helpMenu = new JMenu(resourceBundle.getString("application.helpLabel"));
 		helpMenu.add(wikiMenuItem);
 		helpMenu.add(changelogMenuItem);
 		helpMenu.add(aboutMenuItem);
 		helpMenu.add(pluginMenuItem);
-		this.menuBar.add(helpMenu);
+		menuBar.add(helpMenu);
 	}
 
 	private void initComponents()
 	{
-		this.menuBar = new JMenuBar();
-		this.menuBar.setMinimumSize(new Dimension(111, 21));
-		this.menuBar.setName(PluginMainFrame.MENU_BAR);
+		menuBar = new JMenuBar();
+		menuBar.setMinimumSize(new Dimension(111, 21));
+		menuBar.setName(PluginMainFrame.MENU_BAR);
 
-		this.mainFrame.setPreferredSize(new Dimension(1050, 575));
-		this.mainFrame.setMinimumSize(new Dimension(1050, 575));
-		this.mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		this.mainFrame.addWindowListener(new WindowAdapter()
+		mainFrame.setPreferredSize(new Dimension(1050, 575));
+		mainFrame.setMinimumSize(new Dimension(1050, 575));
+		mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		mainFrame.addWindowListener(new WindowAdapter()
 		{
 			@Override
 			public void windowClosing(final WindowEvent e)
 			{
 				boolean flag = true;
-				for (final ExtensionPoint element : PluginMainFrame.this.pluginService.getExtensions("exit")) { //NON-NLS
+				for (final ExtensionPoint element : pluginService.getExtensions("exit")) { //NON-NLS
 					final ExitExtensionPoint exitExtensionPoint = (ExitExtensionPoint) element;
 					flag = exitExtensionPoint.canExit();
 					if (!flag) {
@@ -259,7 +259,7 @@ public class PluginMainFrame
 					}
 				}
 				if (flag) {
-					PluginMainFrame.this.pluginManager.endPlugins();
+					pluginManager.endPlugins();
 					System.exit(0);
 				}
 			}
@@ -270,7 +270,7 @@ public class PluginMainFrame
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
 		}
-		this.injector.getInstance(JFileChooser.class).setCurrentDirectory(new File(System.getProperty("user.home")));
+		injector.getInstance(JFileChooser.class).setCurrentDirectory(new File(System.getProperty("user.home")));
 	}
 
 	@EventTopicSubscriber(topic = DesignManager.UPDATE_UI)
@@ -282,7 +282,7 @@ public class PluginMainFrame
 			{
 				try {
 
-					SwingUtilities.updateComponentTreeUI(PluginMainFrame.this.mainFrame);
+					SwingUtilities.updateComponentTreeUI(mainFrame);
 				} catch (Exception ignored) {
 
 				}

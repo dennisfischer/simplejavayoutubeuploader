@@ -66,21 +66,21 @@ public class DirectoryViewPanel extends JDialog
 		this.presetListModel = presetListModel;
 		this.directoryService = directoryService;
 		this.directoryController.run();
-		this.setContentPane(this.contentPane);
-		this.setModal(true);
-		this.initCompononents();
-		this.initListeners();
+		setContentPane(contentPane);
+		setModal(true);
+		initCompononents();
+		initListeners();
 	}
 
 	private void initCompononents()
 	{
-		this.presetList.removeAllItems();
-		for (final Preset preset : this.directoryService.findPresets()) {
-			this.presetListModel.addElement(preset);
+		presetList.removeAllItems();
+		for (final Preset preset : directoryService.findPresets()) {
+			presetListModel.addElement(preset);
 		}
-		this.presetList.setModel(this.presetListModel);
-		this.directoryTable.setModel(this.directoryController.getDirectoryTableModel());
-		this.directoryTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
+		presetList.setModel(presetListModel);
+		directoryTable.setModel(directoryController.getDirectoryTableModel());
+		directoryTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
 			private static final long serialVersionUID = -905536623165714507L;
 
@@ -103,73 +103,72 @@ public class DirectoryViewPanel extends JDialog
 
 	private void initListeners()
 	{
-		this.addButton.addActionListener(new ActionListener()
+		addButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (DirectoryViewPanel.this.directoryTextField.getText().isEmpty()) {
-					DirectoryViewPanel.this.directoryTextField.setBackground(Color.RED);
+				if (directoryTextField.getText().isEmpty()) {
+					directoryTextField.setBackground(Color.RED);
 					return;
 				}
-				DirectoryViewPanel.this.directoryTextField.setBackground(null);
+				directoryTextField.setBackground(null);
 
-				if (DirectoryViewPanel.this.presetList.getSelectedIndex() == -1) {
-					DirectoryViewPanel.this.presetList.setBackground(Color.RED);
+				if (presetList.getSelectedIndex() == -1) {
+					presetList.setBackground(Color.RED);
 					return;
 				}
-				DirectoryViewPanel.this.presetList.setBackground(null);
+				presetList.setBackground(null);
 
-				DirectoryViewPanel.this.directoryController.addAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), DirectoryViewPanel.this.directoryTextField.getText(), (Preset) DirectoryViewPanel.this.presetList.getSelectedItem());
+				directoryController.addAction(activeCheckbox.isSelected(), directoryTextField.getText(), (Preset) presetList.getSelectedItem());
 			}
 		});
 
-		this.deleteButton.addActionListener(new ActionListener()
+		deleteButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if ((directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow()) && (DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1)) {
-					DirectoryViewPanel.this.directoryController.deleteAction(directoryTableModel.getRow(DirectoryViewPanel.this.directoryTable.getSelectedRow()));
+				final DirectoryTableModel directoryTableModel = directoryController.getDirectoryTableModel();
+				if ((directoryTableModel.getRowCount() > directoryTable.getSelectedRow()) && (directoryTable.getSelectedRow() > -1)) {
+					directoryController.deleteAction(directoryTableModel.getRow(directoryTable.getSelectedRow()));
 				}
 			}
 		});
 
-		this.selectButton.addActionListener(new ActionListener()
+		selectButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				DirectoryViewPanel.this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-				final int result = DirectoryViewPanel.this.fileChooser.showOpenDialog(null);
+				final int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
-					DirectoryViewPanel.this.directoryTextField.setText(DirectoryViewPanel.this.fileChooser.getSelectedFile().getAbsolutePath());
+					directoryTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
 
-		this.activeCheckbox.addActionListener(new ActionListener()
+		activeCheckbox.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final DirectoryTableModel directoryTableModel = DirectoryViewPanel.this.directoryController.getDirectoryTableModel();
-				if ((directoryTableModel.getRowCount() > DirectoryViewPanel.this.directoryTable.getSelectedRow()) && (DirectoryViewPanel.this.directoryTable.getSelectedRow() > -1)) {
-					DirectoryViewPanel.this.directoryController.checkboxChangeAction(DirectoryViewPanel.this.activeCheckbox.isSelected(), directoryTableModel.getRow(DirectoryViewPanel
-																																											 .this.directoryTable.getSelectedRow()));
+				final DirectoryTableModel directoryTableModel = directoryController.getDirectoryTableModel();
+				if ((directoryTableModel.getRowCount() > directoryTable.getSelectedRow()) && (directoryTable.getSelectedRow() > -1)) {
+					directoryController.checkboxChangeAction(activeCheckbox.isSelected(), directoryTableModel.getRow(directoryTable.getSelectedRow()));
 				}
 			}
 		});
 
-		this.directoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+		directoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
 			@Override public void valueChanged(final ListSelectionEvent e)
 			{
 
-				if (DirectoryViewPanel.this.directoryTable.getSelectedRow() == -1) {
+				if (directoryTable.getSelectedRow() == -1) {
 					return;
 				}
-				final Directory directory = DirectoryViewPanel.this.directoryController.getDirectoryTableModel().getRow(DirectoryViewPanel.this.directoryTable.getSelectedRow());
+				final Directory directory = directoryController.getDirectoryTableModel().getRow(directoryTable.getSelectedRow());
 				if (directory != null) {
-					DirectoryViewPanel.this.activeCheckbox.setSelected(directory.active);
+					activeCheckbox.setSelected(directory.active);
 				}
 			}
 		});

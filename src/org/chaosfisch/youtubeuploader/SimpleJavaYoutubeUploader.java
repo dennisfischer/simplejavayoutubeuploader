@@ -54,7 +54,7 @@ public class SimpleJavaYoutubeUploader
 {
 	public SimpleJavaYoutubeUploader(final String... args)
 	{
-		PropertyConfigurator.configure(this.getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
+		PropertyConfigurator.configure(getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
 			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(Module.class);

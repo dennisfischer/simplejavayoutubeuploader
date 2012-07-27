@@ -74,8 +74,8 @@ public class SettingsPlugin implements Pluggable
 	@Override public void onStart()
 	{
 		if (!GraphicsEnvironment.isHeadless()) {
-			final SettingsViewPanel settingsViewPanel = this.injector.getInstance(SettingsViewPanel.class);
-			this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("settingsTab.title"), settingsViewPanel.getJPanel())); //NON-NLS
+			final SettingsViewPanel settingsViewPanel = injector.getInstance(SettingsViewPanel.class);
+			pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(resourceBundle.getString("settingsTab.title"), settingsViewPanel.getJPanel())); //NON-NLS
 		}
 	}
 

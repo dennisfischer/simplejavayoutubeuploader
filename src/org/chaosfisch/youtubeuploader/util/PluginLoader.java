@@ -47,15 +47,15 @@ public class PluginLoader
 			//noinspection unchecked
 			for (final Class<? extends Pluggable> pluggable : classes) {
 				if (!disabledPlugins.contains(pluggable.getName())) {
-					this.logger.info(String.format("Plugin Loaded: %s", pluggable.getName()));//NON-NLS
-					pluggableList.put(pluggable.getName(), this.injector.getInstance(pluggable));
+					logger.info(String.format("Plugin Loaded: %s", pluggable.getName()));//NON-NLS
+					pluggableList.put(pluggable.getName(), injector.getInstance(pluggable));
 				}
 			}
 			return pluggableList;
 		} catch (ClassNotFoundException e) {
-			this.logger.warn(String.format("Plugin could not be loaded: %s", e.getMessage()));//NON-NLS
+			logger.warn(String.format("Plugin could not be loaded: %s", e.getMessage()));//NON-NLS
 		} catch (IOException ignored) {
-			this.logger.error("Pluginloader fatal error: 1x00001");//NON-NLS
+			logger.error("Pluginloader fatal error: 1x00001");//NON-NLS
 		}
 		return new HashMap<String, Pluggable>(0);
 	}

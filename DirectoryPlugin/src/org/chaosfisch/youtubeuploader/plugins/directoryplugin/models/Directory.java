@@ -39,6 +39,6 @@ public class Directory implements IModel
 
 	@Override public Integer getIdentity()
 	{
-		return this.identity;
+		return identity;
 	}
 }

@@ -37,18 +37,13 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.TextDocument;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.*;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
@@ -58,8 +53,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
 import java.util.List;
-
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 public final class UploadViewPanel
 {
@@ -105,6 +98,13 @@ public final class UploadViewPanel
 	private         JTextField            enddirTextfield;
 	private         JButton               enddirSearch;
 	private         JComboBox             licenseList;
+	private         JTabbedPane           settingsTabbedPane;
+	private         JTable                placeholderTable;
+	private         JButton               addPlaceholderButton;
+	private         JButton               deletePlaceholderButton;
+	private         JButton               savePlaceholderButton;
+	private         JTextField            placeholderPlaceholderTextfield;
+	private         JTextField            placeholderReplaceTextfield;
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
@@ -118,179 +118,181 @@ public final class UploadViewPanel
 
 	public void run()
 	{
-		this.initComponents();
-		this.initListeners();
-		this.setup();
+		initComponents();
+		initListeners();
+		setup();
 	}
 
 	public JMenuItem[] getFileMenuItem()
 	{
-		return new JMenuItem[]{this.fileSearchMenuItem};
+		return new JMenuItem[]{fileSearchMenuItem};
 	}
 
 	private void setup()
 	{
-		for (final Account account : this.controller.getAccountService().getAll()) {
-			this.controller.getAccountListModel().addElement(account);
+		for (final Account account : controller.getAccountService().getAll()) {
+			controller.getAccountListModel().addElement(account);
 		}
-		for (final Preset preset : this.controller.getPresetService().getAll()) {
-			this.controller.getPresetListModel().addElement(preset);
+		for (final Preset preset : controller.getPresetService().getAll()) {
+			controller.getPresetListModel().addElement(preset);
 		}
 
-		this.controller.synchronizePlaylists(this.controller.getAccountListModel().getAll());
+		controller.synchronizePlaylists(controller.getAccountListModel().getAll());
 	}
 
 	private void initComponents()
 	{
-		this.accountList.setModel(this.controller.getAccountListModel());
-		this.presetList.setModel(this.controller.getPresetListModel());
-		this.playlistList.setModel(this.controller.getPlaylistListModel());
+		accountList.setModel(controller.getAccountListModel());
+		presetList.setModel(controller.getPresetListModel());
+		playlistList.setModel(controller.getPlaylistListModel());
 
-		new FileDrop(this.getJPanel(), new FileDrop.Listener()
+		new FileDrop(getJPanel(), new FileDrop.Listener()
 		{
 			@Override
 			public void filesDropped(final File[] files)
 			{
-				UploadViewPanel.this.updateInsertedFiles(files);
+				updateInsertedFiles(files);
 			}
 		});
 
-		this.startzeitpunktSpinner.setModel(new SpinnerDateModel());
-		final JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(this.startzeitpunktSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
-		this.startzeitpunktSpinner.setEditor(timeEditor);
-		this.startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
+		startzeitpunktSpinner.setModel(new SpinnerDateModel());
+		final JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(startzeitpunktSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
+		startzeitpunktSpinner.setEditor(timeEditor);
+		startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
 
-		this.fileSearchMenuItem = new JMenuItem(this.resourceBundle.getString("menuitem.openfile"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
-		this.fileSearchMenuItem.addActionListener(new ActionListener()
+		fileSearchMenuItem = new JMenuItem(resourceBundle.getString("menuitem.openfile"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
+		fileSearchMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				UploadViewPanel.this.searchFileDialogOpen();
+				searchFileDialogOpen();
 			}
 		});
 
-		this.descriptionTextArea.setDocument(new TextDocument(5000));
-		this.tagsTextArea.setDocument(new TextDocument(600));
-		this.titleTextField.setDocument(new TextDocument(100));
+		descriptionTextArea.setDocument(new TextDocument(5000));
+		tagsTextArea.setDocument(new TextDocument(600));
+		titleTextField.setDocument(new TextDocument(100));
 
-		this.hintLabel.setIcon(ValidationResultViewFactory.getInfoIcon());
+		hintLabel.setIcon(ValidationResultViewFactory.getInfoIcon());
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(new FocusChangeHandler());
 
-		ValidationComponentUtils.setInputHint(this.fileList, this.resourceBundle.getString("inputhint.filelist"));
-		ValidationComponentUtils.setInputHint(this.titleTextField, this.resourceBundle.getString("inputhint.title"));
-		ValidationComponentUtils.setInputHint(this.categoryList, this.resourceBundle.getString("inputhint.category"));
-		ValidationComponentUtils.setInputHint(this.descriptionTextArea, this.resourceBundle.getString("inputhint.description"));
-		ValidationComponentUtils.setInputHint(this.tagsTextArea, this.resourceBundle.getString("inputhint.tags"));
-		ValidationComponentUtils.setInputHint(this.autotitleTextField, this.resourceBundle.getString("inputhint.autotitle"));
-		ValidationComponentUtils.setInputHint(this.defaultdirTextField, this.resourceBundle.getString("inputhint.defaultdir"));
-		ValidationComponentUtils.setInputHint(this.visibilityList, this.resourceBundle.getString("inputhint.visibilitylist"));
-		ValidationComponentUtils.setInputHint(this.videoresponseList, this.resourceBundle.getString("inputhint.videoresponselist"));
-		ValidationComponentUtils.setInputHint(this.commentList, this.resourceBundle.getString("inputhint.commentlist"));
-		ValidationComponentUtils.setInputHint(this.accountList, this.resourceBundle.getString("inputhint.accountlist"));
+		ValidationComponentUtils.setInputHint(fileList, resourceBundle.getString("inputhint.filelist"));
+		ValidationComponentUtils.setInputHint(titleTextField, resourceBundle.getString("inputhint.title"));
+		ValidationComponentUtils.setInputHint(categoryList, resourceBundle.getString("inputhint.category"));
+		ValidationComponentUtils.setInputHint(descriptionTextArea, resourceBundle.getString("inputhint.description"));
+		ValidationComponentUtils.setInputHint(tagsTextArea, resourceBundle.getString("inputhint.tags"));
+		ValidationComponentUtils.setInputHint(autotitleTextField, resourceBundle.getString("inputhint.autotitle"));
+		ValidationComponentUtils.setInputHint(defaultdirTextField, resourceBundle.getString("inputhint.defaultdir"));
+		ValidationComponentUtils.setInputHint(visibilityList, resourceBundle.getString("inputhint.visibilitylist"));
+		ValidationComponentUtils.setInputHint(videoresponseList, resourceBundle.getString("inputhint.videoresponselist"));
+		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
+		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		this.visibilityList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("visibilitylist.public"), this.resourceBundle.getString("visibilitylist.unlisted"), this.resourceBundle.getString("visibilitylist.private")}));
-		this.commentList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("commentlist.allowed"), this.resourceBundle.getString("commentlist.moderated"), this.resourceBundle.getString(
-				"commentlist.denied"), this.resourceBundle.getString("commentlist.friendsonly")}));
-		this.videoresponseList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("videoresponselist.allowed"), this.resourceBundle.getString("videoresponselist.moderated"), this.resourceBundle.getString(
-				"videoresponselist.denied")}));
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString("visibilitylist.private")}));
+		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString("commentlist.denied"), resourceBundle.getString(
+				"commentlist.friendsonly")}));
+		videoresponseList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("videoresponselist.allowed"), resourceBundle.getString("videoresponselist.moderated"), resourceBundle.getString("videoresponselist.denied")}));
+
+		placeholderTable.setModel(controller.getPlaceholderModel());
+		placeholderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 
 	private void initListeners()
 	{
 
 		//Buttons
-		this.deleteAccount.addActionListener(new ActionListener()
+		deleteAccount.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getAccountListModel().hasIndex(UploadViewPanel.this.accountList.getSelectedIndex())) {
-					UploadViewPanel.this.controller.deleteAccount((Account) UploadViewPanel.this.accountList.getSelectedItem());
+				if (controller.getAccountListModel().hasIndex(accountList.getSelectedIndex())) {
+					controller.deleteAccount((Account) accountList.getSelectedItem());
 				}
 			}
 		});
-		this.savePreset.addActionListener(new ActionListener()
+		savePreset.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getPresetListModel().hasIndex(UploadViewPanel.this.presetList.getSelectedIndex())) {
-					final Preset preset = (Preset) UploadViewPanel.this.presetList.getSelectedItem();
-					preset.autotitle = UploadViewPanel.this.autotitelCheckBox.isSelected();
-					preset.autotitleFormat = UploadViewPanel.this.autotitleTextField.getText();
-					if (UploadViewPanel.this.categoryList.getSelectedIndex() != -1) {
-						preset.category = UploadViewPanel.this.categoryList.getSelectedItem().toString();
+				if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex())) {
+					final Preset preset = (Preset) presetList.getSelectedItem();
+					preset.autotitle = autotitelCheckBox.isSelected();
+					preset.autotitleFormat = autotitleTextField.getText();
+					if (categoryList.getSelectedIndex() != -1) {
+						preset.category = categoryList.getSelectedItem().toString();
 					}
-					preset.comment = (short) UploadViewPanel.this.commentList.getSelectedIndex();
-					preset.commentvote = UploadViewPanel.this.kommentareBewertenCheckBox.isSelected();
-					preset.defaultDir = UploadViewPanel.this.defaultdirTextField.getText();
-					preset.description = UploadViewPanel.this.descriptionTextArea.getText();
-					preset.embed = UploadViewPanel.this.embedCheckBox.isSelected();
-					preset.keywords = UploadViewPanel.this.tagsTextArea.getText();
-					preset.mobile = UploadViewPanel.this.mobileCheckBox.isSelected();
-					preset.numberModifier = Short.parseShort(UploadViewPanel.this.numberModifierSpinner.getValue().toString());
-					preset.rate = UploadViewPanel.this.bewertenCheckBox.isSelected();
-					preset.videoresponse = (short) UploadViewPanel.this.videoresponseList.getSelectedIndex();
-					preset.visibility = (short) UploadViewPanel.this.visibilityList.getSelectedIndex();
-					preset.account = (Account) UploadViewPanel.this.accountList.getSelectedItem();
-					preset.monetize = UploadViewPanel.this.monetizeCheckbox.isSelected();
-					preset.monetizeOverlay = UploadViewPanel.this.monetizeOverlayCheckbox.isSelected();
-					preset.monetizeTrueview = UploadViewPanel.this.monetizeTrueviewCheckbox.isSelected();
-					preset.monetizeProduct = UploadViewPanel.this.monetizeProductCheckbox.isSelected();
-					preset.enddir = UploadViewPanel.this.enddirTextfield.getText();
+					preset.comment = (short) commentList.getSelectedIndex();
+					preset.commentvote = kommentareBewertenCheckBox.isSelected();
+					preset.defaultDir = defaultdirTextField.getText();
+					preset.description = descriptionTextArea.getText();
+					preset.embed = embedCheckBox.isSelected();
+					preset.keywords = tagsTextArea.getText();
+					preset.mobile = mobileCheckBox.isSelected();
+					preset.numberModifier = Short.parseShort(numberModifierSpinner.getValue().toString());
+					preset.rate = bewertenCheckBox.isSelected();
+					preset.videoresponse = (short) videoresponseList.getSelectedIndex();
+					preset.visibility = (short) visibilityList.getSelectedIndex();
+					preset.account = (Account) accountList.getSelectedItem();
+					preset.monetize = monetizeCheckbox.isSelected();
+					preset.monetizeOverlay = monetizeOverlayCheckbox.isSelected();
+					preset.monetizeTrueview = monetizeTrueviewCheckbox.isSelected();
+					preset.monetizeProduct = monetizeProductCheckbox.isSelected();
+					preset.enddir = enddirTextfield.getText();
 
-					if (UploadViewPanel.this.playlistCheckBox.isSelected()) {
-						preset.playlist = (Playlist) UploadViewPanel.this.playlistList.getSelectedItem();
+					if (playlistCheckBox.isSelected()) {
+						preset.playlist = (Playlist) playlistList.getSelectedItem();
 					}
-					UploadViewPanel.this.controller.savePreset(preset);
+					controller.savePreset(preset);
 				}
 			}
 		});
 
-		this.deletePreset.addActionListener(new ActionListener()
+		deletePreset.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.controller.getPresetListModel().hasIndex(UploadViewPanel.this.presetList.getSelectedIndex())) {
-					UploadViewPanel.this.controller.deletePreset((Preset) UploadViewPanel.this.presetList.getSelectedItem());
+				if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex())) {
+					controller.deletePreset((Preset) presetList.getSelectedItem());
 				}
 			}
 		});
 
-		this.reset.addActionListener(new ActionListener()
+		reset.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				UploadViewPanel.this.resetForm();
+				resetForm();
 			}
 		});
-		this.submit.addActionListener(new ActionListener()
+		submit.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				UploadViewPanel.this.submitForm();
-			}
-		});
-
-		this.searchFile.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				UploadViewPanel.this.searchFileDialogOpen();
+				submitForm();
 			}
 		});
 
-		this.defaultdirSearch.addActionListener(new ActionListener()
+		searchFile.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = UploadViewPanel.this.injector.getInstance(JFileChooser.class);
+				searchFileDialogOpen();
+			}
+		});
+
+		defaultdirSearch.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(final ActionEvent e)
+			{
+				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
 				fileChooser.setAcceptAllFileFilterUsed(true);
 				fileChooser.setDragEnabled(true);
 				fileChooser.setMultiSelectionEnabled(true);
@@ -298,17 +300,17 @@ public final class UploadViewPanel
 				final int result = fileChooser.showOpenDialog(null);
 
 				if (result == JFileChooser.APPROVE_OPTION) {
-					UploadViewPanel.this.defaultdirTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+					defaultdirTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
 
-		this.enddirSearch.addActionListener(new ActionListener()
+		enddirSearch.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final JFileChooser fileChooser = UploadViewPanel.this.injector.getInstance(JFileChooser.class);
+				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
 				fileChooser.setAcceptAllFileFilterUsed(true);
 				fileChooser.setDragEnabled(true);
 				fileChooser.setMultiSelectionEnabled(true);
@@ -316,127 +318,172 @@ public final class UploadViewPanel
 				final int result = fileChooser.showOpenDialog(null);
 
 				if (result == JFileChooser.APPROVE_OPTION) {
-					UploadViewPanel.this.enddirTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
+					enddirTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
 
 		//Autotitle
-		this.numberModifierSpinner.addChangeListener(new ChangeListener()
+		numberModifierSpinner.addChangeListener(new ChangeListener()
 		{
 			@Override
 			public void stateChanged(final ChangeEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleNumber(UploadViewPanel.this.numberModifierSpinner.getValue());
+				controller.changeAutotitleNumber(numberModifierSpinner.getValue());
 			}
 		});
 
 		final Document plainDocument = new PlainDocument();
-		this.autotitleTextField.setDocument(plainDocument);
+		autotitleTextField.setDocument(plainDocument);
 		plainDocument.addDocumentListener(new DocumentListener()
 		{
 			@Override public void insertUpdate(final DocumentEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
+				controller.changeAutotitleFormat(autotitleTextField.getText());
 			}
 
 			@Override public void removeUpdate(final DocumentEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
+				controller.changeAutotitleFormat(autotitleTextField.getText());
 			}
 
 			@Override public void changedUpdate(final DocumentEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleFormat(UploadViewPanel.this.autotitleTextField.getText());
+				controller.changeAutotitleFormat(autotitleTextField.getText());
 			}
 		});
 
-		this.autotitelCheckBox.addActionListener(new ActionListener()
+		autotitelCheckBox.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleCheckbox(UploadViewPanel.this.autotitelCheckBox.isSelected());
+				controller.changeAutotitleCheckbox(autotitelCheckBox.isSelected());
 			}
 		});
-		this.fileList.addItemListener(new ItemListener()
+		fileList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				UploadViewPanel.this.controller.changeAutotitleFile(e.getItem());
+				controller.changeAutotitleFile(e.getItem());
 			}
 		});
 
-		this.playlistList.addItemListener(new ItemListener()
+		playlistList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
 
-				if (UploadViewPanel.this.autotitelCheckBox.isSelected()) {
-					UploadViewPanel.this.controller.changeAutotitlePlaylist(e.getItem());
+				if (autotitelCheckBox.isSelected()) {
+					controller.changeAutotitlePlaylist(e.getItem());
 				}
 			}
 		});
 
-		this.titleTextField.addKeyListener(new KeyAdapter()
+		titleTextField.addKeyListener(new KeyAdapter()
 		{
 			@Override
 			public void keyTyped(final KeyEvent e)
 			{
-				UploadViewPanel.this.autotitelCheckBox.setSelected(false);
-				UploadViewPanel.this.controller.changeAutotitleCheckbox(false);
+				autotitelCheckBox.setSelected(false);
+				controller.changeAutotitleCheckbox(false);
 			}
 		});
 
 		//Presets
-		this.presetList.addItemListener(new ItemListener()
+		presetList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				final Preset selectedPreset = (Preset) UploadViewPanel.this.presetList.getSelectedItem();
+				final Preset selectedPreset = (Preset) presetList.getSelectedItem();
 				if (selectedPreset != null) {
-					UploadViewPanel.this.resetForm();
+					resetForm();
 				}
 			}
 		});
 
 		//Account changed
-		this.accountList.addItemListener(new ItemListener()
+		accountList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				UploadViewPanel.this.controller.changeAccount((Account) e.getItem());
+				controller.changeAccount((Account) e.getItem());
 			}
 		});
 
-		this.synchronizePlaylistsButton.addActionListener(new ActionListener()
+		synchronizePlaylistsButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.accountList.getSelectedItem() != null) {
+				if (accountList.getSelectedItem() != null) {
 					final List<Account> accounts = new ArrayList<Account>(1);
-					accounts.add((Account) UploadViewPanel.this.accountList.getSelectedItem());
-					UploadViewPanel.this.controller.synchronizePlaylists(accounts);
+					accounts.add((Account) accountList.getSelectedItem());
+					controller.synchronizePlaylists(accounts);
 				}
 			}
 		});
 
-		this.monetizeCheckbox.addActionListener(new ActionListener()
+		monetizeCheckbox.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (UploadViewPanel.this.monetizeCheckbox.isSelected()) {
-					UploadViewPanel.this.monetizeOverlayCheckbox.setEnabled(true);
-					UploadViewPanel.this.monetizeTrueviewCheckbox.setEnabled(true);
-					UploadViewPanel.this.monetizeProductCheckbox.setEnabled(true);
+				if (monetizeCheckbox.isSelected()) {
+					monetizeOverlayCheckbox.setEnabled(true);
+					monetizeTrueviewCheckbox.setEnabled(true);
+					monetizeProductCheckbox.setEnabled(true);
 				} else {
-					UploadViewPanel.this.monetizeOverlayCheckbox.setEnabled(false);
-					UploadViewPanel.this.monetizeTrueviewCheckbox.setEnabled(false);
-					UploadViewPanel.this.monetizeProductCheckbox.setEnabled(false);
+					monetizeOverlayCheckbox.setEnabled(false);
+					monetizeTrueviewCheckbox.setEnabled(false);
+					monetizeProductCheckbox.setEnabled(false);
+				}
+			}
+		});
+
+		addPlaceholderButton.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				controller.addPlaceholder(placeholderPlaceholderTextfield.getText(), placeholderReplaceTextfield.getText());
+			}
+		});
+		deletePlaceholderButton.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (placeholderTable.getSelectedRow() != -1) {
+					final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					if (placeholder != null) {
+						controller.deletePlaceholder(placeholder);
+					}
+				}
+			}
+		});
+
+		savePlaceholderButton.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (placeholderTable.getSelectedRow() != -1) {
+					final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					if (placeholder != null) {
+						placeholder.placeholder = placeholderPlaceholderTextfield.getText();
+						placeholder.replacement = placeholderReplaceTextfield.getText();
+						controller.savePlaceholder(placeholder);
+					}
+				}
+			}
+		});
+
+		placeholderTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+		{
+			@Override public void valueChanged(final ListSelectionEvent e)
+			{
+				if (!e.getValueIsAdjusting()) {
+					System.out.println(placeholderTable.getSelectedRow());
 				}
 			}
 		});
@@ -444,12 +491,12 @@ public final class UploadViewPanel
 
 	private void searchFileDialogOpen()
 	{
-		final JFileChooser fileChooser = this.injector.getInstance(JFileChooser.class);
+		final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
 		fileChooser.setAcceptAllFileFilterUsed(true);
 		fileChooser.setDragEnabled(true);
 		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		final Preset selectedPreset = (Preset) this.presetList.getSelectedItem();
+		final Preset selectedPreset = (Preset) presetList.getSelectedItem();
 		//noinspection CallToStringEquals
 		if ((selectedPreset != null) && (selectedPreset.defaultDir != null) && !selectedPreset.defaultDir.equals(""))
 
@@ -462,29 +509,29 @@ public final class UploadViewPanel
 		final int result = fileChooser.showOpenDialog(null);
 
 		if (result == JFileChooser.APPROVE_OPTION) {
-			this.updateInsertedFiles(fileChooser.getSelectedFiles());
+			updateInsertedFiles(fileChooser.getSelectedFiles());
 		}
 	}
 
 	private void submitForm()
 	{
 
-		this.validationResultModel.setResult(this.validate());
-		if (this.validationResultModel.hasErrors()) {
+		validationResultModel.setResult(validate());
+		if (validationResultModel.hasErrors()) {
 			return;
 		}
 
 		Playlist playlist = null;
-		if (this.playlistCheckBox.isSelected()) {
-			playlist = (Playlist) this.playlistList.getSelectedItem();
+		if (playlistCheckBox.isSelected()) {
+			playlist = (Playlist) playlistList.getSelectedItem();
 		}
 
-		this.controller.submitUpload((Account) this.accountList.getSelectedItem(), this.bewertenCheckBox.isSelected(), this.categoryList.getSelectedItem().toString(), (short) this.commentList.getSelectedIndex(), this.descriptionTextArea.getText(),
-									 this.embedCheckBox.isSelected(), this.fileList.getSelectedItem().toString(), this.kommentareBewertenCheckBox.isSelected(), this.mobileCheckBox.isSelected(), playlist, this.tagsTextArea.getText(),
-									 this.titleTextField.getText(), (short) this.videoresponseList.getSelectedIndex(), (short) this.visibilityList.getSelectedIndex(), (Date) this.startzeitpunktSpinner.getValue(), this.monetizeCheckbox.isSelected(),
-									 this.monetizeOverlayCheckbox.isSelected(), this.monetizeTrueviewCheckbox.isSelected(), this.monetizeProductCheckbox.isSelected(), this.enddirTextfield.getText());
+		controller.submitUpload((Account) accountList.getSelectedItem(), bewertenCheckBox.isSelected(), categoryList.getSelectedItem().toString(), (short) commentList.getSelectedIndex(), descriptionTextArea.getText(), embedCheckBox.isSelected(),
+								fileList.getSelectedItem().toString(), kommentareBewertenCheckBox.isSelected(), mobileCheckBox.isSelected(), playlist, tagsTextArea.getText(), titleTextField.getText(), (short) videoresponseList.getSelectedIndex(),
+								(short) visibilityList.getSelectedIndex(), (Date) startzeitpunktSpinner.getValue(), monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(), monetizeTrueviewCheckbox.isSelected(),
+								monetizeProductCheckbox.isSelected(), enddirTextfield.getText());
 
-		this.fileList.removeItem(this.fileList.getSelectedItem());
+		fileList.removeItem(fileList.getSelectedItem());
 	}
 
 	//validate each of the three input fields
@@ -492,22 +539,22 @@ public final class UploadViewPanel
 	{
 		final ValidationResult validationResult = new ValidationResult();
 
-		if (this.fileList.getSelectedItem() == null) {
-			validationResult.addError(this.resourceBundle.getString("validation.filelist"));
-		} else if (!ValidationUtils.hasBoundedLength(this.titleTextField.getText().trim(), 5, 100) || (this.titleTextField.getText().getBytes().length > 100)) {
-			validationResult.addError(this.resourceBundle.getString("validation.title"));
-		} else if (this.categoryList.getSelectedIndex() == -1) {
-			validationResult.addError(this.resourceBundle.getString("validation.category"));
-		} else if (!ValidationUtils.hasBoundedLength(this.descriptionTextArea.getText().trim(), 0, 5000) || (this.descriptionTextArea.getText().getBytes().length > 5000)) {
-			validationResult.addError(this.resourceBundle.getString("validation.description"));
-		} else if (this.descriptionTextArea.getText().contains("<") || this.descriptionTextArea.getText().contains(">")) {
-			validationResult.addError(this.resourceBundle.getString("validation.description.characters"));
-		} else if (!ValidationUtils.hasBoundedLength(this.tagsTextArea.getText().trim(), 0, 600) || !TagParser.isValid(this.tagsTextArea.getText())) {
-			validationResult.addError(this.resourceBundle.getString("validation.tags"));
-		} else if (this.accountList.getSelectedItem() == null) {
-			validationResult.addError(this.resourceBundle.getString("validation.account"));
+		if (fileList.getSelectedItem() == null) {
+			validationResult.addError(resourceBundle.getString("validation.filelist"));
+		} else if (!ValidationUtils.hasBoundedLength(titleTextField.getText().trim(), 5, 100) || (titleTextField.getText().getBytes().length > 100)) {
+			validationResult.addError(resourceBundle.getString("validation.title"));
+		} else if (categoryList.getSelectedIndex() == -1) {
+			validationResult.addError(resourceBundle.getString("validation.category"));
+		} else if (!ValidationUtils.hasBoundedLength(descriptionTextArea.getText().trim(), 0, 5000) || (descriptionTextArea.getText().getBytes().length > 5000)) {
+			validationResult.addError(resourceBundle.getString("validation.description"));
+		} else if (descriptionTextArea.getText().contains("<") || descriptionTextArea.getText().contains(">")) {
+			validationResult.addError(resourceBundle.getString("validation.description.characters"));
+		} else if (!ValidationUtils.hasBoundedLength(tagsTextArea.getText().trim(), 0, 600) || !TagParser.isValid(tagsTextArea.getText())) {
+			validationResult.addError(resourceBundle.getString("validation.tags"));
+		} else if (accountList.getSelectedItem() == null) {
+			validationResult.addError(resourceBundle.getString("validation.account"));
 		} else {
-			validationResult.addInfo(this.resourceBundle.getString("validation.info.added"));
+			validationResult.addInfo(resourceBundle.getString("validation.info.added"));
 		}
 
 		return validationResult;
@@ -516,139 +563,139 @@ public final class UploadViewPanel
 	@SuppressWarnings("CallToStringEquals")
 	private void resetForm()
 	{
-		if (this.controller.getPresetListModel().hasIndex(this.presetList.getSelectedIndex())) {
-			final Preset selectedPreset = (Preset) this.presetList.getSelectedItem();
-			this.autotitelCheckBox.setSelected(selectedPreset.autotitle);
-			this.autotitleTextField.setText(selectedPreset.autotitleFormat);
-			this.bewertenCheckBox.setSelected(selectedPreset.rate);
+		if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex())) {
+			final Preset selectedPreset = (Preset) presetList.getSelectedItem();
+			autotitelCheckBox.setSelected(selectedPreset.autotitle);
+			autotitleTextField.setText(selectedPreset.autotitleFormat);
+			bewertenCheckBox.setSelected(selectedPreset.rate);
 			if ((selectedPreset.category == null) || !selectedPreset.category.equals("")) {
-				this.categoryList.setSelectedItem(selectedPreset.category);
+				categoryList.setSelectedItem(selectedPreset.category);
 			}
-			this.commentList.setSelectedIndex(selectedPreset.comment);
-			this.defaultdirTextField.setText(selectedPreset.defaultDir);
-			this.descriptionTextArea.setText(selectedPreset.description);
-			this.embedCheckBox.setSelected(selectedPreset.embed);
-			this.kommentareBewertenCheckBox.setSelected(selectedPreset.commentvote);
-			this.mobileCheckBox.setSelected(selectedPreset.mobile);
-			this.numberModifierSpinner.setValue(selectedPreset.numberModifier);
-			this.tagsTextArea.setText(selectedPreset.keywords);
-			this.videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
-			this.visibilityList.setSelectedIndex(selectedPreset.visibility);
-			this.monetizeCheckbox.setSelected(selectedPreset.monetize);
-			this.monetizeOverlayCheckbox.setSelected(selectedPreset.monetizeOverlay);
-			this.monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
-			this.monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
-			this.enddirTextfield.setText(selectedPreset.enddir);
+			commentList.setSelectedIndex(selectedPreset.comment);
+			defaultdirTextField.setText(selectedPreset.defaultDir);
+			descriptionTextArea.setText(selectedPreset.description);
+			embedCheckBox.setSelected(selectedPreset.embed);
+			kommentareBewertenCheckBox.setSelected(selectedPreset.commentvote);
+			mobileCheckBox.setSelected(selectedPreset.mobile);
+			numberModifierSpinner.setValue(selectedPreset.numberModifier);
+			tagsTextArea.setText(selectedPreset.keywords);
+			videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
+			visibilityList.setSelectedIndex(selectedPreset.visibility);
+			monetizeCheckbox.setSelected(selectedPreset.monetize);
+			monetizeOverlayCheckbox.setSelected(selectedPreset.monetizeOverlay);
+			monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
+			monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
+			enddirTextfield.setText(selectedPreset.enddir);
 
 			if (selectedPreset.account != null) {
-				this.controller.getAccountListModel().setSelectedItem(selectedPreset.account);
-				this.controller.changeAccount(selectedPreset.account);
+				controller.getAccountListModel().setSelectedItem(selectedPreset.account);
+				controller.changeAccount(selectedPreset.account);
 				if (selectedPreset.playlist != null) {
-					this.playlistCheckBox.setSelected(true);
-					this.controller.getPlaylistListModel().setSelectedItem(selectedPreset.playlist);
+					playlistCheckBox.setSelected(true);
+					controller.getPlaylistListModel().setSelectedItem(selectedPreset.playlist);
 				}
 			}
-			this.controller.changeAutotitleCheckbox(this.autotitelCheckBox.isSelected());
-			this.controller.changeAutotitleFormat(this.autotitleTextField.getText());
+			controller.changeAutotitleCheckbox(autotitelCheckBox.isSelected());
+			controller.changeAutotitleFormat(autotitleTextField.getText());
 		} else {
-			this.autotitelCheckBox.setSelected(false);
-			this.autotitleTextField.setText("");
-			this.bewertenCheckBox.setSelected(true);
-			this.categoryList.setSelectedIndex(0);
-			this.commentList.setSelectedIndex(0);
-			this.defaultdirTextField.setText("");
-			this.descriptionTextArea.setText("");
-			this.embedCheckBox.setSelected(true);
-			this.kommentareBewertenCheckBox.setSelected(true);
-			this.mobileCheckBox.setSelected(true);
-			this.numberModifierSpinner.setValue(0);
-			this.tagsTextArea.setText("");
-			this.videoresponseList.setSelectedIndex(0);
-			this.visibilityList.setSelectedIndex(0);
-			this.playlistCheckBox.setSelected(false);
-			this.monetizeCheckbox.setSelected(false);
-			this.monetizeOverlayCheckbox.setSelected(false);
-			this.monetizeTrueviewCheckbox.setSelected(false);
-			this.monetizeProductCheckbox.setSelected(false);
-			this.enddirTextfield.setText("");
+			autotitelCheckBox.setSelected(false);
+			autotitleTextField.setText("");
+			bewertenCheckBox.setSelected(true);
+			categoryList.setSelectedIndex(0);
+			commentList.setSelectedIndex(0);
+			defaultdirTextField.setText("");
+			descriptionTextArea.setText("");
+			embedCheckBox.setSelected(true);
+			kommentareBewertenCheckBox.setSelected(true);
+			mobileCheckBox.setSelected(true);
+			numberModifierSpinner.setValue(0);
+			tagsTextArea.setText("");
+			videoresponseList.setSelectedIndex(0);
+			visibilityList.setSelectedIndex(0);
+			playlistCheckBox.setSelected(false);
+			monetizeCheckbox.setSelected(false);
+			monetizeOverlayCheckbox.setSelected(false);
+			monetizeTrueviewCheckbox.setSelected(false);
+			monetizeProductCheckbox.setSelected(false);
+			enddirTextfield.setText("");
 		}
-		this.startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
+		startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
 	}
 
 	public JPanel getJPanel()
 	{
-		return this.uploadPanel;
+		return uploadPanel;
 	}
 
 	@EventTopicSubscriber(topic = UploadViewPanel.EDIT_QUEUE_ENTRY)
 	public void onEditQueueEntry(final String topic, final Queue queue)
 	{
 
-		this.resetForm();
+		resetForm();
 		if (queue.account != null) {
-			this.accountList.setSelectedItem(queue.account);
+			accountList.setSelectedItem(queue.account);
 		}
-		this.bewertenCheckBox.setSelected(queue.rate);
-		this.categoryList.setSelectedItem(queue.category);
-		this.commentList.setSelectedIndex(queue.comment);
-		this.descriptionTextArea.setText(queue.description);
-		this.embedCheckBox.setSelected(queue.embed);
+		bewertenCheckBox.setSelected(queue.rate);
+		categoryList.setSelectedItem(queue.category);
+		commentList.setSelectedIndex(queue.comment);
+		descriptionTextArea.setText(queue.description);
+		embedCheckBox.setSelected(queue.embed);
 		final File file = new File(queue.file);
-		this.fileList.addItem(file);
-		this.fileList.setSelectedItem(file);
-		this.kommentareBewertenCheckBox.setSelected(queue.commentvote);
-		this.mobileCheckBox.setSelected(queue.mobile);
-		this.tagsTextArea.setText(queue.keywords);
-		this.titleTextField.setText(queue.title);
-		this.videoresponseList.setSelectedIndex(queue.videoresponse);
-		this.monetizeCheckbox.setSelected(queue.monetize);
-		this.monetizeCheckbox.doClick();
-		this.monetizeCheckbox.doClick();
-		this.monetizeOverlayCheckbox.setSelected(queue.monetizeOverlay);
-		this.monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
-		this.monetizeProductCheckbox.setSelected(queue.monetizeProduct);
-		this.enddirTextfield.setText(queue.enddir);
+		fileList.addItem(file);
+		fileList.setSelectedItem(file);
+		kommentareBewertenCheckBox.setSelected(queue.commentvote);
+		mobileCheckBox.setSelected(queue.mobile);
+		tagsTextArea.setText(queue.keywords);
+		titleTextField.setText(queue.title);
+		videoresponseList.setSelectedIndex(queue.videoresponse);
+		monetizeCheckbox.setSelected(queue.monetize);
+		monetizeCheckbox.doClick();
+		monetizeCheckbox.doClick();
+		monetizeOverlayCheckbox.setSelected(queue.monetizeOverlay);
+		monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
+		monetizeProductCheckbox.setSelected(queue.monetizeProduct);
+		enddirTextfield.setText(queue.enddir);
 
 		if (queue.privatefile) {
-			this.visibilityList.setSelectedIndex(2);
+			visibilityList.setSelectedIndex(2);
 		} else if (queue.unlisted) {
-			this.visibilityList.setSelectedIndex(1);
+			visibilityList.setSelectedIndex(1);
 		} else {
-			this.visibilityList.setSelectedIndex(0);
+			visibilityList.setSelectedIndex(0);
 		}
 
 		if (queue.started != null) {
-			this.startzeitpunktSpinner.setValue(queue.started);
+			startzeitpunktSpinner.setValue(queue.started);
 		}
 
 		if (queue.playlist != null) {
-			this.playlistCheckBox.setSelected(true);
-			this.playlistList.setSelectedItem(queue.playlist);
+			playlistCheckBox.setSelected(true);
+			playlistList.setSelectedItem(queue.playlist);
 		}
 	}
 
 	@EventTopicSubscriber(topic = AutoTitleGenerator.AUTOTITLE_CHANGED)
 	public void updateAutotitle(final String topic, final String title)
 	{
-		this.titleTextField.setText(title);
+		titleTextField.setText(title);
 	}
 
 	private void updateInsertedFiles(final File... selectedFiles)
 	{
-		this.fileList.removeAllItems();
+		fileList.removeAllItems();
 		for (final File file : selectedFiles) {
 			if (!file.isDirectory()) {
-				this.fileList.addItem(file);
+				fileList.addItem(file);
 			}
 		}
 
 		//noinspection CallToStringEquals
-		if ((this.fileList.getItemCount() > 0) && this.titleTextField.getText().equals("")) {
+		if ((fileList.getItemCount() > 0) && titleTextField.getText().equals("")) {
 			// noinspection DuplicateStringLiteralInspection
 			try {
-				this.titleTextField.setText(this.fileList.getSelectedItem().toString().substring(this.fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-																								 //NON-NLS
-																								 this.fileList.getSelectedItem().toString().lastIndexOf(".")));
+				titleTextField.setText(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
+																					   //NON-NLS
+																					   fileList.getSelectedItem().toString().lastIndexOf(".")));
 			} catch (StringIndexOutOfBoundsException ignored) {
 			}
 		}
@@ -656,8 +703,8 @@ public final class UploadViewPanel
 
 	private void createUIComponents()
 	{
-		this.validationResultModel = new DefaultValidationResultModel();
-		this.validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(this.validationResultModel);
+		validationResultModel = new DefaultValidationResultModel();
+		validationPanel = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(validationResultModel);
 	}
 
 	//update the hint label's text based on which component has focus
@@ -672,9 +719,9 @@ public final class UploadViewPanel
 
 				if (focusOwner instanceof JComponent) {
 					final String focusHint = (String) ValidationComponentUtils.getInputHint((JComponent) focusOwner);
-					UploadViewPanel.this.hintLabel.setText(focusHint);
+					hintLabel.setText(focusHint);
 				} else {
-					UploadViewPanel.this.hintLabel.setText("");
+					hintLabel.setText("");
 				}
 			}
 		}

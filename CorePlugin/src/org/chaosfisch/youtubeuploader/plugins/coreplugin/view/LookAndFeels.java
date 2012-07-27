@@ -48,44 +48,44 @@ public class LookAndFeels extends DesignMap
 	public LookAndFeels()
 	{
 
-		this.add(new DesignImpl(SubstanceAutumnLookAndFeel.class, "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS
-		this.add(new DesignImpl(SubstanceBusinessBlackSteelLookAndFeel.class, "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS
-		this.add(new DesignImpl(SubstanceBusinessBlueSteelLookAndFeel.class, "SubstanceBusinessBlueSteelLookAndFeel", "Substance Buisness Blue Steel")); //NON-NLS
-		this.add(new DesignImpl(SubstanceBusinessLookAndFeel.class, "SubstanceBusinessLookAndFeel", "Substance Buisness")); //NON-NLS
-		this.add(new DesignImpl(SubstanceChallengerDeepLookAndFeel.class, "SubstanceChallengerDeepLookAndFeel", "Substance Challenger Deep")); //NON-NLS
-		this.add(new DesignImpl(SubstanceCremeCoffeeLookAndFeel.class, "SubstanceCremeCoffeeLookAndFeel", "Substance Creme Coffee")); //NON-NLS
-		this.add(new DesignImpl(SubstanceCremeLookAndFeel.class, "SubstanceCremeLookAndFeel", "Substance Creme")); //NON-NLS
-		this.add(new DesignImpl(SubstanceDustCoffeeLookAndFeel.class, "SubstanceDustCoffeeLookAndFeel", "Substance Dust Coffee")); //NON-NLS
-		this.add(new DesignImpl(SubstanceDustLookAndFeel.class, "SubstanceDustLookAndFeel", "Substance Dust")); //NON-NLS
-		this.add(new DesignImpl(SubstanceEmeraldDuskLookAndFeel.class, "SubstanceEmeraldDuskLookAndFeel", "Substance Emerald Dusk")); //NON-NLS
-		this.add(new DesignImpl(SubstanceGeminiLookAndFeel.class, "SubstanceGeminiLookAndFeel", "Substance Gemini")); //NON-NLS
-		this.add(new DesignImpl(SubstanceGraphiteAquaLookAndFeel.class, "SubstanceGraphiteAquaLookAndFeel", "Substance Graphite Aqua")); //NON-NLS
-		this.add(new DesignImpl(SubstanceGraphiteGlassLookAndFeel.class, "SubstanceGraphiteGlassLookAndFeel", "Substance Graphite Glass")); //NON-NLS
-		this.add(new DesignImpl(SubstanceGraphiteLookAndFeel.class, "SubstanceGraphiteLookAndFeel", "Substance Graphite")); //NON-NLS
-		this.add(new DesignImpl(SubstanceMagellanLookAndFeel.class, "SubstanceMagellanLookAndFeel", "Substance Magellan")); //NON-NLS
-		this.add(new DesignImpl(SubstanceMarinerLookAndFeel.class, "SubstanceMarinerLookAndFeel", "Substance Mariner")); //NON-NLS
-		this.add(new DesignImpl(SubstanceMistAquaLookAndFeel.class, "SubstanceMistAquaLookAndFeel", "Substance Mist Aqua")); //NON-NLS
-		this.add(new DesignImpl(SubstanceMistSilverLookAndFeel.class, "SubstanceMistSilverLookAndFeel", "Substance Mist Silver")); //NON-NLS
-		this.add(new DesignImpl(SubstanceModerateLookAndFeel.class, "SubstanceModerateLookAndFeel", "Substance Moderate")); //NON-NLS
-		this.add(new DesignImpl(SubstanceNebulaBrickWallLookAndFeel.class, "SubstanceNebulaBrickWallLookAndFeel", "Substance Nebula Brick")); //NON-NLS
-		this.add(new DesignImpl(SubstanceNebulaLookAndFeel.class, "SubstanceNebulaLookAndFeel", "Substance Nebula")); //NON-NLS
-		this.add(new DesignImpl(SubstanceOfficeBlack2007LookAndFeel.class, "SubstanceOfficeBlack2007LookAndFeel", "Substance Office Black 2007")); //NON-NLS
-		this.add(new DesignImpl(SubstanceOfficeBlue2007LookAndFeel.class, "SubstanceOfficeBlue2007LookAndFeel", "Substance Office Blue 2007")); //NON-NLS
-		this.add(new DesignImpl(SubstanceOfficeSilver2007LookAndFeel.class, "SubstanceOfficeSilver2007LookAndFeel", "Substance Office Silver 2007")); //NON-NLS
-		this.add(new DesignImpl(SubstanceRavenLookAndFeel.class, "SubstanceRavenLookAndFeel", "Substance Raven")); //NON-NLS
-		this.add(new DesignImpl(SubstanceSaharaLookAndFeel.class, "SubstanceSaharaLookAndFeel", "Substance Sahara")); //NON-NLS
-		this.add(new DesignImpl(SubstanceTwilightLookAndFeel.class, "SubstanceTwilightLookAndFeel", "Substance Twilight")); //NON-NLS
+		add(new DesignImpl(SubstanceAutumnLookAndFeel.class, "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS
+		add(new DesignImpl(SubstanceBusinessBlackSteelLookAndFeel.class, "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS
+		add(new DesignImpl(SubstanceBusinessBlueSteelLookAndFeel.class, "SubstanceBusinessBlueSteelLookAndFeel", "Substance Buisness Blue Steel")); //NON-NLS
+		add(new DesignImpl(SubstanceBusinessLookAndFeel.class, "SubstanceBusinessLookAndFeel", "Substance Buisness")); //NON-NLS
+		add(new DesignImpl(SubstanceChallengerDeepLookAndFeel.class, "SubstanceChallengerDeepLookAndFeel", "Substance Challenger Deep")); //NON-NLS
+		add(new DesignImpl(SubstanceCremeCoffeeLookAndFeel.class, "SubstanceCremeCoffeeLookAndFeel", "Substance Creme Coffee")); //NON-NLS
+		add(new DesignImpl(SubstanceCremeLookAndFeel.class, "SubstanceCremeLookAndFeel", "Substance Creme")); //NON-NLS
+		add(new DesignImpl(SubstanceDustCoffeeLookAndFeel.class, "SubstanceDustCoffeeLookAndFeel", "Substance Dust Coffee")); //NON-NLS
+		add(new DesignImpl(SubstanceDustLookAndFeel.class, "SubstanceDustLookAndFeel", "Substance Dust")); //NON-NLS
+		add(new DesignImpl(SubstanceEmeraldDuskLookAndFeel.class, "SubstanceEmeraldDuskLookAndFeel", "Substance Emerald Dusk")); //NON-NLS
+		add(new DesignImpl(SubstanceGeminiLookAndFeel.class, "SubstanceGeminiLookAndFeel", "Substance Gemini")); //NON-NLS
+		add(new DesignImpl(SubstanceGraphiteAquaLookAndFeel.class, "SubstanceGraphiteAquaLookAndFeel", "Substance Graphite Aqua")); //NON-NLS
+		add(new DesignImpl(SubstanceGraphiteGlassLookAndFeel.class, "SubstanceGraphiteGlassLookAndFeel", "Substance Graphite Glass")); //NON-NLS
+		add(new DesignImpl(SubstanceGraphiteLookAndFeel.class, "SubstanceGraphiteLookAndFeel", "Substance Graphite")); //NON-NLS
+		add(new DesignImpl(SubstanceMagellanLookAndFeel.class, "SubstanceMagellanLookAndFeel", "Substance Magellan")); //NON-NLS
+		add(new DesignImpl(SubstanceMarinerLookAndFeel.class, "SubstanceMarinerLookAndFeel", "Substance Mariner")); //NON-NLS
+		add(new DesignImpl(SubstanceMistAquaLookAndFeel.class, "SubstanceMistAquaLookAndFeel", "Substance Mist Aqua")); //NON-NLS
+		add(new DesignImpl(SubstanceMistSilverLookAndFeel.class, "SubstanceMistSilverLookAndFeel", "Substance Mist Silver")); //NON-NLS
+		add(new DesignImpl(SubstanceModerateLookAndFeel.class, "SubstanceModerateLookAndFeel", "Substance Moderate")); //NON-NLS
+		add(new DesignImpl(SubstanceNebulaBrickWallLookAndFeel.class, "SubstanceNebulaBrickWallLookAndFeel", "Substance Nebula Brick")); //NON-NLS
+		add(new DesignImpl(SubstanceNebulaLookAndFeel.class, "SubstanceNebulaLookAndFeel", "Substance Nebula")); //NON-NLS
+		add(new DesignImpl(SubstanceOfficeBlack2007LookAndFeel.class, "SubstanceOfficeBlack2007LookAndFeel", "Substance Office Black 2007")); //NON-NLS
+		add(new DesignImpl(SubstanceOfficeBlue2007LookAndFeel.class, "SubstanceOfficeBlue2007LookAndFeel", "Substance Office Blue 2007")); //NON-NLS
+		add(new DesignImpl(SubstanceOfficeSilver2007LookAndFeel.class, "SubstanceOfficeSilver2007LookAndFeel", "Substance Office Silver 2007")); //NON-NLS
+		add(new DesignImpl(SubstanceRavenLookAndFeel.class, "SubstanceRavenLookAndFeel", "Substance Raven")); //NON-NLS
+		add(new DesignImpl(SubstanceSaharaLookAndFeel.class, "SubstanceSaharaLookAndFeel", "Substance Sahara")); //NON-NLS
+		add(new DesignImpl(SubstanceTwilightLookAndFeel.class, "SubstanceTwilightLookAndFeel", "Substance Twilight")); //NON-NLS
 
-		this.add(new DesignImpl(AcrylLookAndFeel.class, "AcrylLookAndFeel", "Acryl")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(AeroLookAndFeel.class, "AeroLookAndFeel", "Aero")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(AluminiumLookAndFeel.class, "AlumuniumLookAndFeel", "Aluminium")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(BernsteinLookAndFeel.class, "BernsteinLookAndFeel", "Bernstein")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(FastLookAndFeel.class, "FastLookAndFeel", "Fast")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(GraphiteLookAndFeel.class, "GraphiteLookAndFeel", "Graphite")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(HiFiLookAndFeel.class, "HiFiLookAndFeel", "Hifi")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(LunaLookAndFeel.class, "LunaLookAndFeel", "Luna")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(MintLookAndFeel.class, "MintLookAndFeel", "Mint")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(NoireLookAndFeel.class, "NoireLookAndFeel", "Noire")); //NON-NLS NON-NLS
-		this.add(new DesignImpl(SmartLookAndFeel.class, "SmartLookAndFeel", "Smart")); //NON-NLS NON-NLS
+		add(new DesignImpl(AcrylLookAndFeel.class, "AcrylLookAndFeel", "Acryl")); //NON-NLS NON-NLS
+		add(new DesignImpl(AeroLookAndFeel.class, "AeroLookAndFeel", "Aero")); //NON-NLS NON-NLS
+		add(new DesignImpl(AluminiumLookAndFeel.class, "AlumuniumLookAndFeel", "Aluminium")); //NON-NLS NON-NLS
+		add(new DesignImpl(BernsteinLookAndFeel.class, "BernsteinLookAndFeel", "Bernstein")); //NON-NLS NON-NLS
+		add(new DesignImpl(FastLookAndFeel.class, "FastLookAndFeel", "Fast")); //NON-NLS NON-NLS
+		add(new DesignImpl(GraphiteLookAndFeel.class, "GraphiteLookAndFeel", "Graphite")); //NON-NLS NON-NLS
+		add(new DesignImpl(HiFiLookAndFeel.class, "HiFiLookAndFeel", "Hifi")); //NON-NLS NON-NLS
+		add(new DesignImpl(LunaLookAndFeel.class, "LunaLookAndFeel", "Luna")); //NON-NLS NON-NLS
+		add(new DesignImpl(MintLookAndFeel.class, "MintLookAndFeel", "Mint")); //NON-NLS NON-NLS
+		add(new DesignImpl(NoireLookAndFeel.class, "NoireLookAndFeel", "Noire")); //NON-NLS NON-NLS
+		add(new DesignImpl(SmartLookAndFeel.class, "SmartLookAndFeel", "Smart")); //NON-NLS NON-NLS
 	}
 }                                                                       

@@ -38,11 +38,11 @@ public class Playlist implements IModel
 
 	@Override public Integer getIdentity()
 	{
-		return this.identity;
+		return identity;
 	}
 
 	public String toString()
 	{
-		return this.title;
+		return title;
 	}
 }

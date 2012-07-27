@@ -39,30 +39,30 @@ public class PluginManagerImpl implements PluginManager
 	@Override
 	public Collection<Pluggable> loadPlugins(final String... disabledPlugins)
 	{
-		this.logger.info("Loading Plugins...: Disabled -> %s"); //NON-NLS
-		this.plugins = this.pluginLoader.loadPlugins(Arrays.asList(disabledPlugins));
+		logger.info("Loading Plugins...: Disabled -> %s"); //NON-NLS
+		plugins = pluginLoader.loadPlugins(Arrays.asList(disabledPlugins));
 
-		this.logger.info("Checking dependencies..."); //NON-NLS
-		for (Iterator<Map.Entry<String, Pluggable>> i = this.plugins.entrySet().iterator(); i.hasNext(); ) {
+		logger.info("Checking dependencies..."); //NON-NLS
+		for (Iterator<Map.Entry<String, Pluggable>> i = plugins.entrySet().iterator(); i.hasNext(); ) {
 			final Map.Entry<String, Pluggable> entry = i.next();
-			this.logger.info(String.format("Checking dependencies of %s", entry.getValue().getClass().getName()));//NON-NLS
+			logger.info(String.format("Checking dependencies of %s", entry.getValue().getClass().getName()));//NON-NLS
 			for (final String dependency : entry.getValue().getDependencies()) {
-				if (!this.plugins.containsKey(dependency)) {
-					this.logger.info(String.format("Missing dependency: %s <- %s", dependency, entry.getValue().getClass().getName())); //NON-NLS
+				if (!plugins.containsKey(dependency)) {
+					logger.info(String.format("Missing dependency: %s <- %s", dependency, entry.getValue().getClass().getName())); //NON-NLS
 					i.remove();
 					break;
 				}
 			}
 		}
 
-		return this.plugins.values();
+		return plugins.values();
 	}
 
 	@Override
 	public void startPlugins()
 	{
-		if (this.plugins != null) {
-			for (final Pluggable p : this.plugins.values()) {
+		if (plugins != null) {
+			for (final Pluggable p : plugins.values()) {
 				p.onStart();
 			}
 		}
@@ -71,8 +71,8 @@ public class PluginManagerImpl implements PluginManager
 	@Override
 	public void endPlugins()
 	{
-		if (this.plugins != null) {
-			for (final Pluggable p : this.plugins.values()) {
+		if (plugins != null) {
+			for (final Pluggable p : plugins.values()) {
 				p.onEnd();
 			}
 		}

@@ -82,7 +82,7 @@ import java.util.*;
 			NanoHTTPD.myOut.printf("  UPLOADED: '%s' = '%s'%n", value, files.getProperty(value));
 		}
 
-		return this.serveFile(uri, header, this.myRootDir, true);
+		return serveFile(uri, header, myRootDir, true);
 	}
 
 	/**
@@ -103,15 +103,15 @@ import java.util.*;
 	 */
 	public NanoHTTPD(final int port, final File wwwroot)
 	{
-		this.myRootDir = wwwroot;
-		this.myThread = new Thread(new Runnable()
+		myRootDir = wwwroot;
+		myThread = new Thread(new Runnable()
 		{
 			public void run()
 			{
 
 				try {
-					NanoHTTPD.this.myServerSocket = new ServerSocket(port);
-					final Socket socket = NanoHTTPD.this.myServerSocket.accept();
+					myServerSocket = new ServerSocket(port);
+					final Socket socket = myServerSocket.accept();
 
 					try {
 						do {
@@ -120,7 +120,7 @@ import java.util.*;
 						} while (socket.isBound());
 					} finally {
 						try {
-							NanoHTTPD.this.myServerSocket.close();
+							myServerSocket.close();
 							socket.close();
 							System.out.println("Socket closed");
 						} catch (IOException ignored) {
@@ -130,8 +130,8 @@ import java.util.*;
 				}
 			}
 		});
-		this.myThread.setDaemon(true);
-		this.myThread.start();
+		myThread.setDaemon(true);
+		myThread.start();
 	}
 
 	/**
@@ -141,8 +141,8 @@ import java.util.*;
 	public void stop()
 	{
 		try {
-			this.myServerSocket.close();
-			this.myThread.join();
+			myServerSocket.close();
+			myThread.join();
 		} catch (IOException ignored) {
 		} catch (InterruptedException ignored) {
 		}
@@ -157,7 +157,7 @@ import java.util.*;
 	{
 		public HTTPSession(final Socket s)
 		{
-			this.mySocket = s;
+			mySocket = s;
 			final Thread t = new Thread(this);
 			t.setDaemon(true);
 			t.start();
@@ -166,7 +166,7 @@ import java.util.*;
 		public void run()
 		{
 			try {
-				final InputStream is = this.mySocket.getInputStream();
+				final InputStream is = mySocket.getInputStream();
 				if (is == null) {
 					return;
 				}
@@ -190,7 +190,7 @@ import java.util.*;
 				final Properties files = new Properties();
 
 				// Decode the header into parms and header java properties
-				this.decodeHeader(hin, pre, parms, header);
+				decodeHeader(hin, pre, parms, header);
 				final String method = pre.getProperty("method");
 				final String uri = pre.getProperty("uri");
 
@@ -264,17 +264,17 @@ import java.util.*;
 					if (contentType.equalsIgnoreCase("multipart/form-data")) {
 						// Handle multipart/form-data
 						if (!st.hasMoreTokens()) {
-							this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html");
+							sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html");
 						}
 						final String boundaryExp = st.nextToken();
 						st = new StringTokenizer(boundaryExp, "=");
 						if (st.countTokens() != 2) {
-							this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but boundary syntax error. Usage: GET /example/file.html");
+							sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but boundary syntax error. Usage: GET /example/file.html");
 						}
 						st.nextToken();
 						final String boundary = st.nextToken();
 
-						this.decodeMultipartData(boundary, fbuf, in, parms, files);
+						decodeMultipartData(boundary, fbuf, in, parms, files);
 					} else {
 						// Handle application/x-www-form-urlencoded
 						String postLine = "";
@@ -285,27 +285,27 @@ import java.util.*;
 							read = in.read(pbuf);
 						}
 						postLine = postLine.trim();
-						this.decodeParms(postLine, parms);
+						decodeParms(postLine, parms);
 					}
 				}
 
 				if (method.equalsIgnoreCase("PUT")) {
-					files.put("content", this.saveTmpFile(fbuf, 0, f.size()));
+					files.put("content", saveTmpFile(fbuf, 0, f.size()));
 				}
 
 				// Ok, now do the serve()
-				final Response r = NanoHTTPD.this.serve(uri, method, header, parms, files);
+				final Response r = serve(uri, method, header, parms, files);
 				if (r == null) {
-					this.sendError(HTTP_STATUS.INTERNALERROR.toString(), "SERVER INTERNAL ERROR: Serve() returned a null response.");
+					sendError(HTTP_STATUS.INTERNALERROR.toString(), "SERVER INTERNAL ERROR: Serve() returned a null response.");
 				} else {
-					this.sendResponse(r.status, r.mimeType, r.header, r.data);
+					sendResponse(r.status, r.mimeType, r.header, r.data);
 				}
 
 				in.close();
 				is.close();
 			} catch (IOException ioe) {
 				try {
-					this.sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
+					sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
 				} catch (InterruptedException ignored) {
 				}
 			} catch (InterruptedException ignored) {
@@ -327,14 +327,14 @@ import java.util.*;
 				}
 				final StringTokenizer st = new StringTokenizer(inLine);
 				if (!st.hasMoreTokens()) {
-					this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Syntax error. Usage: GET /example/file.html");
+					sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Syntax error. Usage: GET /example/file.html");
 				}
 
 				final String method = st.nextToken();
 				pre.put("method", method);
 
 				if (!st.hasMoreTokens()) {
-					this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Missing URI. Usage: GET /example/file.html");
+					sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Missing URI. Usage: GET /example/file.html");
 				}
 
 				String uri = st.nextToken();
@@ -342,10 +342,10 @@ import java.util.*;
 				// Decode parameters from the URI
 				final int qmi = uri.indexOf('?');
 				if (qmi >= 0) {
-					this.decodeParms(uri.substring(qmi + 1), parms);
-					uri = this.decodePercent(uri.substring(0, qmi));
+					decodeParms(uri.substring(qmi + 1), parms);
+					uri = decodePercent(uri.substring(0, qmi));
 				} else {
-					uri = this.decodePercent(uri);
+					uri = decodePercent(uri);
 				}
 
 				// If there's another token, it's protocol version,
@@ -365,7 +365,7 @@ import java.util.*;
 
 				pre.put("uri", uri);
 			} catch (IOException ioe) {
-				this.sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
+				sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
 			}
 		}
 
@@ -376,12 +376,12 @@ import java.util.*;
 		private void decodeMultipartData(final String boundary, final byte[] fbuf, final BufferedReader in, final Properties parms, final Properties files) throws InterruptedException
 		{
 			try {
-				final int[] bpositions = this.getBoundaryPositions(fbuf, boundary.getBytes());
+				final int[] bpositions = getBoundaryPositions(fbuf, boundary.getBytes());
 				int boundarycount = 1;
 				String mpline = in.readLine();
 				while (mpline != null) {
 					if (!mpline.contains(boundary)) {
-						this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but next chunk does not start with boundary. Usage: GET /example/file.html");
+						sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but next chunk does not start with boundary. Usage: GET /example/file.html");
 					}
 					boundarycount++;
 					@SuppressWarnings("ObjectAllocationInLoop") final Properties item = new Properties();
@@ -396,7 +396,7 @@ import java.util.*;
 					if (mpline != null) {
 						final String contentDisposition = item.getProperty("content-disposition");
 						if (contentDisposition == null) {
-							this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
+							sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
 						}
 						@SuppressWarnings("ObjectAllocationInLoop") final StringTokenizer st = new StringTokenizer(contentDisposition, "; ");
 						@SuppressWarnings("ObjectAllocationInLoop") final Properties disposition = new Properties();
@@ -425,10 +425,10 @@ import java.util.*;
 							}
 						} else {
 							if (boundarycount > bpositions.length) {
-								this.sendError(HTTP_STATUS.INTERNALERROR.toString(), "Error processing request");
+								sendError(HTTP_STATUS.INTERNALERROR.toString(), "Error processing request");
 							}
-							final int offset = this.stripMultipartHeaders(fbuf, bpositions[boundarycount - 2]);
-							final String path = this.saveTmpFile(fbuf, offset, bpositions[boundarycount - 1] - offset - 4);
+							final int offset = stripMultipartHeaders(fbuf, bpositions[boundarycount - 2]);
+							final String path = saveTmpFile(fbuf, offset, bpositions[boundarycount - 1] - offset - 4);
 							files.put(pname, path);
 							value = disposition.getProperty("filename");
 							value = value.substring(1, value.length() - 1);
@@ -440,7 +440,7 @@ import java.util.*;
 					}
 				}
 			} catch (IOException ioe) {
-				this.sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
+				sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
 			}
 		}
 
@@ -552,7 +552,7 @@ import java.util.*;
 				}
 				return sb.toString();
 			} catch (NumberFormatException ignored) {
-				this.sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Bad percent-encoding.");
+				sendError(HTTP_STATUS.BADREQUEST.toString(), "BAD REQUEST: Bad percent-encoding.");
 				return null;
 			}
 		}
@@ -575,7 +575,7 @@ import java.util.*;
 				final String e = st.nextToken();
 				final int sep = e.indexOf('=');
 				if (sep >= 0) {
-					p.put(this.decodePercent(e.substring(0, sep)).trim(), this.decodePercent(e.substring(sep + 1)));
+					p.put(decodePercent(e.substring(0, sep)).trim(), decodePercent(e.substring(sep + 1)));
 				}
 			}
 		}
@@ -586,7 +586,7 @@ import java.util.*;
 		 */
 		private void sendError(final String status, final String msg) throws InterruptedException
 		{
-			this.sendResponse(status, NanoHTTPD.MIME_PLAINTEXT, null, new ByteArrayInputStream(msg.getBytes()));
+			sendResponse(status, NanoHTTPD.MIME_PLAINTEXT, null, new ByteArrayInputStream(msg.getBytes()));
 			throw new InterruptedException("InterruptedException");
 		}
 
@@ -600,7 +600,7 @@ import java.util.*;
 					throw new Error("sendResponse(): Status can't be null.");
 				}
 
-				final OutputStream out = this.mySocket.getOutputStream();
+				final OutputStream out = mySocket.getOutputStream();
 				final PrintWriter pw = new PrintWriter(out);
 				pw.print(String.format("HTTP/1.0 %s \r\n", status));
 
@@ -643,7 +643,7 @@ import java.util.*;
 			} catch (IOException ignored1) {
 				// Couldn't write? No can do.
 				try {
-					this.mySocket.close();
+					mySocket.close();
 				} catch (IOException ignored) {
 				}
 			}
@@ -755,7 +755,7 @@ import java.util.*;
 								files[i] += "/";
 							}
 
-							msg += String.format("<a href=\"%s\">%s</a>", this.encodeUri(String.format("%s%s", uri, files[i])), files[i]);
+							msg += String.format("<a href=\"%s\">%s</a>", encodeUri(String.format("%s%s", uri, files[i])), files[i]);
 
 							// Show file size
 							if (curFile.isFile()) {

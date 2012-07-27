@@ -45,11 +45,11 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	{
 		//  Set glass pane properties
 
-		this.setOpaque(false);
+		setOpaque(false);
 		final Color base = UIManager.getColor("inactiveCaptionBorder");
 		final Color background = new Color(base.getRed(), base.getGreen(), base.getBlue(), DisabledGlassPane.DEFAULT_ALPHA);
-		this.setBackground(background);
-		this.setLayout(new GridBagLayout());
+		setBackground(background);
+		setLayout(new GridBagLayout());
 
 		//  Add a message label to the glass pane
 		final GridBagConstraints mGrid = new GridBagConstraints();
@@ -61,19 +61,19 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		pGrid.gridy = 1;
 		pGrid.fill = GridBagConstraints.HORIZONTAL;
 
-		this.add(this.message, mGrid);
-		this.add(this.progressBar, pGrid);
-		this.message.setOpaque(true);
-		this.message.setBorder(DisabledGlassPane.MESSAGE_BORDER);
+		add(message, mGrid);
+		add(progressBar, pGrid);
+		message.setOpaque(true);
+		message.setBorder(DisabledGlassPane.MESSAGE_BORDER);
 
 		//  Disable Mouse, Key and Focus events for the glass pane
 
-		this.addMouseListener(new MouseAdapter() {});
-		this.addMouseMotionListener(new MouseMotionAdapter() {});
+		addMouseListener(new MouseAdapter() {});
+		addMouseMotionListener(new MouseMotionAdapter() {});
 
-		this.addKeyListener(this);
+		addKeyListener(this);
 
-		this.setFocusTraversalKeysEnabled(false);
+		setFocusTraversalKeysEnabled(false);
 	}
 
 	/*
@@ -83,8 +83,8 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	@Override
 	protected void paintComponent(final Graphics g)
 	{
-		g.setColor(this.getBackground());
-		g.fillRect(0, 0, this.getSize().width, this.getSize().height);
+		g.setColor(getBackground());
+		g.fillRect(0, 0, getSize().width, getSize().height);
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 		super.setBackground(background);
 
 		final Color messageBackground = new Color(background.getRGB());
-		this.message.setBackground(messageBackground);
+		message.setBackground(messageBackground);
 	}
 
 	//
@@ -123,16 +123,16 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	public void activate(final String text)
 	{
 		if ((text != null) && !text.isEmpty()) {
-			this.message.setVisible(true);
-			this.message.setText(text);
-			this.message.setForeground(this.getForeground());
+			message.setVisible(true);
+			message.setText(text);
+			message.setForeground(getForeground());
 		} else {
-			this.message.setVisible(false);
+			message.setVisible(false);
 		}
-		this.startTimer();
-		this.setVisible(true);
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		this.requestFocusInWindow();
+		startTimer();
+		setVisible(true);
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		requestFocusInWindow();
 	}
 
 	/*
@@ -140,36 +140,36 @@ public class DisabledGlassPane extends JComponent implements KeyListener
 	 */
 	public void deactivate()
 	{
-		this.setCursor(null);
-		this.setVisible(false);
-		this.timer.stop();
+		setCursor(null);
+		setVisible(false);
+		timer.stop();
 	}
 
 	void startTimer()
 	{
-		if (this.timer == null) {
-			this.timer = new Timer(600, new ActionListener()
+		if (timer == null) {
+			timer = new Timer(600, new ActionListener()
 			{
 				int progress;
 
 				public void actionPerformed(final ActionEvent event)
 				{
-					this.progress += 1;
-					DisabledGlassPane.this.progressBar.setValue(this.progress);
+					progress += 1;
+					progressBar.setValue(progress);
 
 					// Once we hit 100%, remove the glass pane and reset the
 					// progress bar stuff
-					if (this.progress >= 100) {
-						this.progress = 0;
-						DisabledGlassPane.this.timer.stop();
-						DisabledGlassPane.this.progressBar.setValue(0);
+					if (progress >= 100) {
+						progress = 0;
+						timer.stop();
+						progressBar.setValue(0);
 					}
 				}
 			});
 		}
-		if (this.timer.isRunning()) {
-			this.timer.stop();
+		if (timer.isRunning()) {
+			timer.stop();
 		}
-		this.timer.start();
+		timer.start();
 	}
 }

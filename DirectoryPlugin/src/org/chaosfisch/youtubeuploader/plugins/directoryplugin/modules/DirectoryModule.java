@@ -35,6 +35,6 @@ public class DirectoryModule extends AbstractModule
 {
 	@Override protected void configure()
 	{
-		this.bind(DirectoryService.class).to(DirectoryServiceImpl.class).in(Singleton.class);
+		bind(DirectoryService.class).to(DirectoryServiceImpl.class).in(Singleton.class);
 	}
 }

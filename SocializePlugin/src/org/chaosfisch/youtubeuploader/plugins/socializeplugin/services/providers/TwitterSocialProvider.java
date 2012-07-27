@@ -52,7 +52,7 @@ public class TwitterSocialProvider implements ISocialProvider
 
 	@Override public Token getAccessToken()
 	{
-		return this.accessToken;  //To change body of implemented methods use File | Settings | File Templates.
+		return accessToken;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override public void setAccessToken(final Token accessToken)
@@ -62,13 +62,13 @@ public class TwitterSocialProvider implements ISocialProvider
 
 	@Override public void authenticate()
 	{
-		if (this.accessToken != null) {
+		if (accessToken != null) {
 			return;
 		}
 
-		final Token requestToken = this.oAuthService.getRequestToken();
+		final Token requestToken = oAuthService.getRequestToken();
 		try {
-			Desktop.getDesktop().browse(new URI(this.oAuthService.getAuthorizationUrl(requestToken)));
+			Desktop.getDesktop().browse(new URI(oAuthService.getAuthorizationUrl(requestToken)));
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (URISyntaxException e) {
@@ -78,33 +78,33 @@ public class TwitterSocialProvider implements ISocialProvider
 		final String verifier = JOptionPane.showInputDialog(null, I18nSupport.message("label.acceptcode"), I18nSupport.message("label.twitteroauth"), JOptionPane.INFORMATION_MESSAGE);
 
 		if (verifier != null) {
-			this.accessToken = this.oAuthService.getAccessToken(requestToken, new Verifier(verifier));
+			accessToken = oAuthService.getAccessToken(requestToken, new Verifier(verifier));
 		}
 	}
 
 	@Override public void publish(final String message)
 	{
-		if (this.accessToken == null) {
+		if (accessToken == null) {
 			return;
 		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.POST, "http://api.twitter.com/1/statuses/update.json"); //NON-NLS
 		oAuthRequest.addBodyParameter("status", message); //NON-NLS
 
-		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
+		oAuthService.signRequest(accessToken, oAuthRequest);
 		final Response response = oAuthRequest.send();
 		if (response.getCode() != HTTP_STATUS.OK.getCode()) {
-			this.logger.fatal(String.format("Wrong response code: %d", response.getCode())); //NON-NLS
-			this.logger.fatal(response.getBody());
+			logger.fatal(String.format("Wrong response code: %d", response.getCode())); //NON-NLS
+			logger.fatal(response.getBody());
 		}
 	}
 
 	@Override public boolean hasValidAccessToken()
 	{
-		if (this.accessToken == null) {
+		if (accessToken == null) {
 			return false;
 		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, "http://api.twitter.com/1/help/test.json"); //NON-NLS
-		this.oAuthService.signRequest(this.accessToken, oAuthRequest);
+		oAuthService.signRequest(accessToken, oAuthRequest);
 		try {
 			final Response response = oAuthRequest.send();
 			if (response.getCode() == HTTP_STATUS.OK.getCode()) {

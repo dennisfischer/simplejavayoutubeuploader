@@ -57,8 +57,8 @@ public class MessageController
 
 	public void setup()
 	{
-		for (final Message message : this.messageService.getAll()) {
-			this.messageTableModel.addRow(message);
+		for (final Message message : messageService.getAll()) {
+			messageTableModel.addRow(message);
 		}
 	}
 
@@ -68,37 +68,37 @@ public class MessageController
 			case 1:
 				data.uploadid = null;
 			case 0:
-				this.messageService.create(data);
+				messageService.create(data);
 				break;
 			case 2:
-				this.publish(data);
+				publish(data);
 				break;
 		}
 	}
 
 	private void publish(final Message message)
 	{
-		this.publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
+		publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
 	}
 
 	private void publish(final String message, final boolean facebook, final boolean twitter, final boolean googlePlus, final boolean youtube)
 	{
 		if (facebook) {
-			final String settingsString = (String) this.settingsService.get("socialize.socialize.facebook", ""); //NON-NLS
+			final String settingsString = (String) settingsService.get("socialize.socialize.facebook", ""); //NON-NLS
 			if (settingsString.contains("___")) {
 				final String token = settingsString.substring(0, settingsString.indexOf("___"));
 				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
-				final ISocialProvider facebookSocialProvider = this.messageService.get(Provider.FACEBOOK);
+				final ISocialProvider facebookSocialProvider = messageService.get(Provider.FACEBOOK);
 				facebookSocialProvider.setAccessToken(new Token(token, secret));
 				facebookSocialProvider.publish(message);
 			}
 		}
 		if (twitter) {
-			final String settingsString = (String) this.settingsService.get("socialize.socialize.twitter", ""); //NON-NLS
+			final String settingsString = (String) settingsService.get("socialize.socialize.twitter", ""); //NON-NLS
 			if (settingsString.contains("___")) {
 				final String token = settingsString.substring(0, settingsString.indexOf("___"));
 				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
-				final ISocialProvider twitterSocialProvider = this.messageService.get(Provider.TWITTER);
+				final ISocialProvider twitterSocialProvider = messageService.get(Provider.TWITTER);
 				twitterSocialProvider.setAccessToken(new Token(token, secret));
 				twitterSocialProvider.publish(message);
 			}
@@ -107,12 +107,12 @@ public class MessageController
 
 	public TableModel getMessageTableModel()
 	{
-		return this.messageTableModel;
+		return messageTableModel;
 	}
 
 	public MessageService getMessageService()
 	{
-		return this.messageService;
+		return messageService;
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
@@ -120,27 +120,27 @@ public class MessageController
 	{
 		final Message findParameter = new Message();
 		findParameter.uploadid = queue.getIdentity();
-		for (final Message message : this.messageService.find(findParameter)) {
-			this.publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googleplus, message.youtube); //NON-NLS
+		for (final Message message : messageService.find(findParameter)) {
+			publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googleplus, message.youtube); //NON-NLS
 		}
-		this.messageService.clearByUploadID(queue.getIdentity());
+		messageService.clearByUploadID(queue.getIdentity());
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadsFinished(final String topic, final Object o)
 	{
-		for (final Message message : this.messageService.findWithoutQueueID()) {
-			this.publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
+		for (final Message message : messageService.findWithoutQueueID()) {
+			publish(message.message, message.facebook, message.twitter, message.googleplus, message.youtube);
 		}
 
-		this.messageService.clearByUploadID(null);
+		messageService.clearByUploadID(null);
 	}
 
 	public void removeEntryAt(final int selectedRow)
 	{
-		if (this.messageTableModel.hasIndex(selectedRow)) {
-			final Message message = this.messageTableModel.getRow(selectedRow);
-			this.messageService.delete(message);
+		if (messageTableModel.hasIndex(selectedRow)) {
+			final Message message = messageTableModel.getRow(selectedRow);
+			messageService.delete(message);
 		}
 	}
 }

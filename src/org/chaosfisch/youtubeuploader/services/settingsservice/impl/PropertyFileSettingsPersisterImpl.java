@@ -42,7 +42,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 
 	public PropertyFileSettingsPersisterImpl()
 	{
-		final File file = new File(this.fileName);
+		final File file = new File(fileName);
 		if (!file.exists() || !file.isFile()) {
 			try {
 				//noinspection ResultOfMethodCallIgnored
@@ -56,7 +56,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 			final FileInputStream fileInputStream = new FileInputStream(file);
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 			try {
-				this.properties.load(bufferedInputStream);
+				properties.load(bufferedInputStream);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
@@ -72,29 +72,29 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 
 	@Override public boolean has(final String uniqueKey)
 	{
-		return this.properties.containsKey(uniqueKey);
+		return properties.containsKey(uniqueKey);
 	}
 
 	@Override public Object get(final String uniqueKey)
 	{
-		if (this.has(uniqueKey)) {
-			return this.properties.get(uniqueKey);
+		if (has(uniqueKey)) {
+			return properties.get(uniqueKey);
 		}
 		throw new NullPointerException(String.format("Property %s not found", uniqueKey)); //NON-NLS
 	}
 
 	@Override public void set(final String uniqueKey, final String value)
 	{
-		if (this.has(uniqueKey)) {
-			this.properties.setProperty(uniqueKey, value);
+		if (has(uniqueKey)) {
+			properties.setProperty(uniqueKey, value);
 		} else {
-			this.properties.put(uniqueKey, value);
+			properties.put(uniqueKey, value);
 		}
 	}
 
 	@Override public void save()
 	{
-		final File file = new File(this.fileName);
+		final File file = new File(fileName);
 		if (!file.exists() || !file.isFile()) {
 			try {
 				//noinspection ResultOfMethodCallIgnored
@@ -109,7 +109,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
 			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName("UTF-8"));
 			try {
-				this.properties.store(outputStreamWriter, null); //NON-NLS
+				properties.store(outputStreamWriter, null); //NON-NLS
 			} catch (IOException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			} finally {
@@ -126,13 +126,13 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 
 	@Override public Map<String, Object> getAll()
 	{
-		final Iterator<Object> iterator = this.properties.keySet().iterator();
-		final Map<String, Object> map = new HashMap<String, Object>(this.properties.size());
+		final Iterator<Object> iterator = properties.keySet().iterator();
+		final Map<String, Object> map = new HashMap<String, Object>(properties.size());
 		while (iterator.hasNext()) {
 			final String key = (String) iterator.next();
 
-			if (this.has(key)) {
-				map.put(key, this.get(key));
+			if (has(key)) {
+				map.put(key, get(key));
 			}
 		}
 

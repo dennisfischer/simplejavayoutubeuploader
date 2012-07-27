@@ -39,14 +39,14 @@ class Log4JMembersInjector<T> implements MembersInjector<T>
 	Log4JMembersInjector(final Field field)
 	{
 		this.field = field;
-		this.logger = Logger.getLogger(field.getDeclaringClass());
+		logger = Logger.getLogger(field.getDeclaringClass());
 		field.setAccessible(true);
 	}
 
 	public void injectMembers(final T t)
 	{
 		try {
-			this.field.set(t, this.logger);
+			field.set(t, logger);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}

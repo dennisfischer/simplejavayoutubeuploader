@@ -31,36 +31,36 @@ public class AboutDialog extends JDialog
 
 	public AboutDialog()
 	{
-		this.setContentPane(this.contentPane);
-		this.setModal(true);
-		this.getRootPane().setDefaultButton(this.buttonOK);
+		setContentPane(contentPane);
+		setModal(true);
+		getRootPane().setDefaultButton(buttonOK);
 
-		this.buttonOK.addActionListener(new ActionListener()
+		buttonOK.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(final ActionEvent e) {AboutDialog.this.onOK();}
+			public void actionPerformed(final ActionEvent e) {onOK();}
 		});
 
-		this.buttonCancel.addActionListener(new ActionListener()
+		buttonCancel.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(final ActionEvent e) {AboutDialog.this.onCancel();}
+			public void actionPerformed(final ActionEvent e) {onCancel();}
 		});
 
 // call onCancel() when cross is clicked
-		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		this.addWindowListener(new WindowAdapter()
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter()
 		{
 			public void windowClosing(final WindowEvent e)
 			{
-				AboutDialog.this.onCancel();
+				onCancel();
 			}
 		});
 
 // call onCancel() on ESCAPE
-		this.contentPane.registerKeyboardAction(new ActionListener()
+		contentPane.registerKeyboardAction(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				AboutDialog.this.onCancel();
+				onCancel();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 	}
@@ -68,12 +68,12 @@ public class AboutDialog extends JDialog
 	private void onOK()
 	{
 // add your code here
-		this.dispose();
+		dispose();
 	}
 
 	private void onCancel()
 	{
 // add your code here if necessary
-		this.dispose();
+		dispose();
 	}
 }

@@ -62,7 +62,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	protected RowTableModel(final Class<?> rowClass)
 	{
-		this.setRowClass(rowClass);
+		setRowClass(rowClass);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	protected RowTableModel(final List<T> modelData, final List<String> columnNames)
 	{
-		this.setDataAndColumnNames(modelData, columnNames);
+		setDataAndColumnNames(modelData, columnNames);
 	}
 
 	/**
@@ -123,8 +123,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	protected RowTableModel(final List<T> modelData, final List<String> columnNames, final Class<?> rowClass)
 	{
-		this.setDataAndColumnNames(modelData, columnNames);
-		this.setRowClass(rowClass);
+		setDataAndColumnNames(modelData, columnNames);
+		setRowClass(rowClass);
 	}
 
 	/**
@@ -140,9 +140,9 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	{
 		this.modelData = modelData;
 		this.columnNames = columnNames;
-		this.columnClasses = new Class<?>[this.getColumnCount()];
-		this.isColumnEditable = new Boolean[this.getColumnCount()];
-		this.fireTableStructureChanged();
+		columnClasses = new Class<?>[getColumnCount()];
+		isColumnEditable = new Boolean[getColumnCount()];
+		fireTableStructureChanged();
 	}
 
 	/**
@@ -160,15 +160,15 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
 	public void removeElement(final T t)
 	{
-		final int index = this.modelData.indexOf(t);
+		final int index = modelData.indexOf(t);
 		if (index != -1) {
-			this.removeRows(index);
+			removeRows(index);
 		}
 	}
 
 	public boolean hasIndex(final int selectedRow)
 	{
-		return (this.modelData.size() >= selectedRow) && (selectedRow != -1);
+		return (modelData.size() >= selectedRow) && (selectedRow != -1);
 	}
 
 //
@@ -191,8 +191,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
 		//  Get the class, if set, for the specified column
 
-		if (column < this.columnClasses.length) {
-			columnClass = this.columnClasses[column];
+		if (column < columnClasses.length) {
+			columnClass = columnClasses[column];
 		}
 
 		//  Get the default class
@@ -211,7 +211,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public int getColumnCount()
 	{
-		return this.columnNames.size();
+		return columnNames.size();
 	}
 
 	/**
@@ -226,8 +226,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	{
 		Object columnName = null;
 
-		if (column < this.columnNames.size()) {
-			columnName = this.columnNames.get(column);
+		if (column < columnNames.size()) {
+			columnName = columnNames.get(column);
 		}
 
 		return (columnName == null) ? super.getColumnName(column) : columnName.toString();
@@ -240,7 +240,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return this.modelData.size();
+		return modelData.size();
 	}
 
 	/**
@@ -256,11 +256,11 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
 		//  Check is column editability has been set
 
-		if (column < this.isColumnEditable.length) {
-			isEditable = this.isColumnEditable[column];
+		if (column < isColumnEditable.length) {
+			isEditable = isColumnEditable[column];
 		}
 
-		return (isEditable == null) ? this.isModelEditable : isEditable;
+		return (isEditable == null) ? isModelEditable : isEditable;
 	}
 //
 //  Implement custom methods
@@ -274,7 +274,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void addRow(final T rowData)
 	{
-		this.insertRow(this.getRowCount(), rowData);
+		insertRow(getRowCount(), rowData);
 	}
 
 	/**
@@ -284,7 +284,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public T getRow(final int row)
 	{
-		return this.modelData.get(row);
+		return modelData.get(row);
 	}
 
 	/**
@@ -295,8 +295,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	@SuppressWarnings("unchecked")
 	public T[] getRowsAsArray(final int... rows)
 	{
-		final List<T> rowData = this.getRowsAsList(rows);
-		final T[] array = (T[]) Array.newInstance(this.rowClass, rowData.size());
+		final List<T> rowData = getRowsAsList(rows);
+		final T[] array = (T[]) Array.newInstance(rowClass, rowData.size());
 		return rowData.toArray(array);
 	}
 
@@ -310,7 +310,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 		final List<T> rowData = new ArrayList<T>(rows.length);
 
 		for (final int row : rows) {
-			rowData.add(this.getRow(row));
+			rowData.add(getRow(row));
 		}
 
 		return rowData;
@@ -325,8 +325,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void insertRow(final int row, final T rowData)
 	{
-		this.modelData.add(row, rowData);
-		this.fireTableRowsInserted(row, row);
+		modelData.add(row, rowData);
+		fireTableRowsInserted(row, row);
 	}
 
 	/**
@@ -338,8 +338,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void insertRows(final int row, final List<T> rowList)
 	{
-		this.modelData.addAll(row, rowList);
-		this.fireTableRowsInserted(row, (row + rowList.size()) - 1);
+		modelData.addAll(row, rowList);
+		fireTableRowsInserted(row, (row + rowList.size()) - 1);
 	}
 
 	/**
@@ -355,7 +355,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
 		Collections.addAll(rowList, rowArray);
 
-		this.insertRows(row, rowList);
+		insertRows(row, rowList);
 	}
 
 	/**
@@ -392,7 +392,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 			throw new IllegalArgumentException(message);
 		}
 
-		if (end > (this.getRowCount() - 1)) {
+		if (end > (getRowCount() - 1)) {
 			final String message = String.format("End index must be less than total rows: %d", end); //NON-NLS
 			throw new IllegalArgumentException(message);
 		}
@@ -404,7 +404,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
 		final int rowsMoved = (end - start) + 1;
 
-		if ((to < 0) || (to > (this.getRowCount() - rowsMoved))) {
+		if ((to < 0) || (to > (getRowCount() - rowsMoved))) {
 			final String message = String.format("New destination row (%d) is invalid", to); //NON-NLS NON-NLS
 			throw new IllegalArgumentException(message);
 		}
@@ -414,14 +414,14 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 		final Collection<T> temp = new ArrayList<T>(rowsMoved);
 
 		for (int i = start; i < (end + 1); i++) {
-			temp.add(this.modelData.get(i));
+			temp.add(modelData.get(i));
 		}
 
 		//  Remove the rows from the current location and add them back
 		//  at the specified new location
 
-		this.modelData.subList(start, end + 1).clear();
-		this.modelData.addAll(to, temp);
+		modelData.subList(start, end + 1).clear();
+		modelData.addAll(to, temp);
 
 		//  Determine the rows that need to be repainted to reflect the move
 
@@ -436,7 +436,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 			last = (to + end) - start;
 		}
 
-		this.fireTableRowsUpdated(first, last);
+		fireTableRowsUpdated(first, last);
 	}
 
 	/**
@@ -450,8 +450,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void removeRowRange(final int start, final int end)
 	{
-		this.modelData.subList(start, end + 1).clear();
-		this.fireTableRowsDeleted(start, end);
+		modelData.subList(start, end + 1).clear();
+		fireTableRowsDeleted(start, end);
 	}
 
 	/**
@@ -466,8 +466,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	{
 		for (int i = rows.length - 1; i >= 0; i--) {
 			final int row = rows[i];
-			this.modelData.remove(row);
-			this.fireTableRowsDeleted(row, row);
+			modelData.remove(row);
+			fireTableRowsDeleted(row, row);
 		}
 	}
 
@@ -482,8 +482,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void replaceRow(final int row, final T rowData)
 	{
-		this.modelData.set(row, rowData);
-		this.fireTableRowsUpdated(row, row);
+		modelData.set(row, rowData);
+		fireTableRowsUpdated(row, row);
 	}
 
 	/**
@@ -495,8 +495,8 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void setColumnClass(final int column, final Class<?> columnClass)
 	{
-		this.columnClasses[column] = columnClass;
-		this.fireTableRowsUpdated(0, this.getColumnCount() - 1);
+		columnClasses[column] = columnClass;
+		fireTableRowsUpdated(0, getColumnCount() - 1);
 	}
 
 	/**
@@ -508,7 +508,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 	 */
 	public void setColumnEditable(final int column, final boolean isEditable)
 	{
-		this.isColumnEditable[column] = isEditable ? Boolean.TRUE : Boolean.FALSE;
+		isColumnEditable[column] = isEditable ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 	/**

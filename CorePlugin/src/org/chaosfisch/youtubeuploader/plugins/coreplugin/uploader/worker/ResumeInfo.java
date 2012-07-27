@@ -35,12 +35,12 @@ class ResumeInfo
 	ResumeInfo(final long nextByteToUpload)
 	{
 		this.nextByteToUpload = nextByteToUpload;
-		this.videoId = null;
+		videoId = null;
 	}
 
 	ResumeInfo(final String videoId)
 	{
 		this.videoId = videoId;
-		this.nextByteToUpload = null;
+		nextByteToUpload = null;
 	}
 }

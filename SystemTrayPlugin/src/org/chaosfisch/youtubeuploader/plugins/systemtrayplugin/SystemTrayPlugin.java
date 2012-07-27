@@ -74,62 +74,62 @@ public class SystemTrayPlugin implements Pluggable
 			return;
 		}
 
-		final Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/film.png")); //NON-NLS
+		final Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png")); //NON-NLS
 
 		final PopupMenu popup = new PopupMenu();
-		final MenuItem itemOpen = new MenuItem(this.resourceBundle.getString("openApplicationLabel"));
+		final MenuItem itemOpen = new MenuItem(resourceBundle.getString("openApplicationLabel"));
 		itemOpen.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				SystemTrayPlugin.this.mainFrame.setVisible(true);
-				SystemTrayPlugin.this.mainFrame.setExtendedState(JFrame.NORMAL);
-				SystemTrayPlugin.this.mainFrame.setAlwaysOnTop(true);
-				SystemTrayPlugin.this.mainFrame.requestFocus();
-				SystemTrayPlugin.this.mainFrame.setAlwaysOnTop(false);
+				mainFrame.setVisible(true);
+				mainFrame.setExtendedState(JFrame.NORMAL);
+				mainFrame.setAlwaysOnTop(true);
+				mainFrame.requestFocus();
+				mainFrame.setAlwaysOnTop(false);
 			}
 		});
-		final MenuItem itemEnd = new MenuItem(this.resourceBundle.getString("closeApplicationLabel"));
+		final MenuItem itemEnd = new MenuItem(resourceBundle.getString("closeApplicationLabel"));
 		itemEnd.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final Window w = SystemTrayPlugin.this.mainFrame;
+				final Window w = mainFrame;
 				w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		popup.add(itemOpen);
 		popup.add(itemEnd);
-		this.trayIcon = new TrayIcon(image, this.mainFrame.getTitle(), popup);
-		this.trayIcon.setImageAutoSize(true);
-		this.trayIcon.addMouseListener(new MouseInputAdapter()
+		trayIcon = new TrayIcon(image, mainFrame.getTitle(), popup);
+		trayIcon.setImageAutoSize(true);
+		trayIcon.addMouseListener(new MouseInputAdapter()
 		{
 
 			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					SystemTrayPlugin.this.mainFrame.setVisible(true);
-					SystemTrayPlugin.this.mainFrame.setExtendedState(JFrame.NORMAL);
-					SystemTrayPlugin.this.mainFrame.setAlwaysOnTop(true);
-					SystemTrayPlugin.this.mainFrame.requestFocus();
-					SystemTrayPlugin.this.mainFrame.setAlwaysOnTop(false);
+					mainFrame.setVisible(true);
+					mainFrame.setExtendedState(JFrame.NORMAL);
+					mainFrame.setAlwaysOnTop(true);
+					mainFrame.requestFocus();
+					mainFrame.setAlwaysOnTop(false);
 				}
 			}
 		});
 		try {
-			SystemTray.getSystemTray().add(this.trayIcon);
-			this.mainFrame.addWindowListener(new WindowAdapter()
+			SystemTray.getSystemTray().add(trayIcon);
+			mainFrame.addWindowListener(new WindowAdapter()
 			{
 				@Override
 				public void windowIconified(final WindowEvent e)
 				{
-					SystemTrayPlugin.this.trayIcon.displayMessage(SystemTrayPlugin.this.resourceBundle.getString("informationMessageLabel"), SystemTrayPlugin.this.resourceBundle.getString("applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
-					SystemTrayPlugin.this.mainFrame.setVisible(false);
+					trayIcon.displayMessage(resourceBundle.getString("informationMessageLabel"), resourceBundle.getString("applicationMinimizedMessage"), TrayIcon.MessageType.INFO);
+					mainFrame.setVisible(false);
 				}
 			});
 		} catch (AWTException e) {
@@ -141,13 +141,13 @@ public class SystemTrayPlugin implements Pluggable
 	public void onEnd()
 	{
 		if (SystemTray.isSupported()) {
-			SystemTray.getSystemTray().remove(this.trayIcon);
+			SystemTray.getSystemTray().remove(trayIcon);
 		}
 	}
 
 	@EventTopicSubscriber(topic = SystemTrayPlugin.MESSAGE)
 	public void onMessage(final String topic, final Object o)
 	{
-		this.trayIcon.displayMessage(this.resourceBundle.getString("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
+		trayIcon.displayMessage(resourceBundle.getString("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
 	}
 }

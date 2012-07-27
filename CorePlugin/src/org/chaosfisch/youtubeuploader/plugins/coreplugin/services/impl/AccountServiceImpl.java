@@ -50,48 +50,48 @@ public class AccountServiceImpl implements AccountService
 
 	@Transactional @Override public Account create(final Account account)
 	{
-		this.accountMapper.createAccount(account);
+		accountMapper.createAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_ADDED, account);
 		return account;
 	}
 
 	@Transactional @Override public Account delete(final Account account)
 	{
-		final List<Playlist> playlists = this.playlistMapper.findPlaylists(account);
+		final List<Playlist> playlists = playlistMapper.findPlaylists(account);
 		for (final Playlist playlist : playlists) {
-			this.playlistMapper.deletePlaylist(playlist);
+			playlistMapper.deletePlaylist(playlist);
 		}
-		final List<Preset> presets = this.presetMapper.findByAccount(account);
+		final List<Preset> presets = presetMapper.findByAccount(account);
 		for (final Preset preset : presets) {
 			preset.account = null;
 			preset.playlist = null;
-			this.presetMapper.updatePreset(preset);
+			presetMapper.updatePreset(preset);
 		}
-		final List<Queue> queues = this.queueMapper.findByAccount(account);
+		final List<Queue> queues = queueMapper.findByAccount(account);
 		for (final Queue queue : queues) {
 			queue.account = null;
 			queue.playlist = null;
-			this.queueMapper.updateQueue(queue);
+			queueMapper.updateQueue(queue);
 		}
-		this.accountMapper.deleteAccount(account);
+		accountMapper.deleteAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_REMOVED, account);
 		return account;
 	}
 
 	@Transactional @Override public Account update(final Account account)
 	{
-		this.accountMapper.updateAccount(account);
+		accountMapper.updateAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_UPDATED, account);
 		return account;
 	}
 
 	@Transactional @Override public Account find(final int identifier)
 	{
-		return this.accountMapper.findAccount(identifier);
+		return accountMapper.findAccount(identifier);
 	}
 
 	@Transactional @Override public List<Account> getAll()
 	{
-		return this.accountMapper.getAccounts();
+		return accountMapper.getAccounts();
 	}
 }

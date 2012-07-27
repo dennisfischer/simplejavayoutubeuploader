@@ -33,6 +33,10 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
+import org.intellij.lang.annotations.Language;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.tools.shell.Global;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,14 +59,14 @@ public class CorePlugin implements Pluggable
 	public CorePlugin(final SqlSessionFactory sessionFactory) throws IOException
 	{
 		this.sessionFactory = sessionFactory;
-		this.loadDatabase();
+		loadDatabase();
 	}
 
 	// uses the new MyBatis style of lookup
 	public void loadDatabase() throws IOException
 	{
 		final Reader schemaReader = Resources.getResourceAsReader("scheme.sql");//NON-NLS
-		final ScriptRunner scriptRunner = new ScriptRunner(this.sessionFactory.openSession().getConnection());
+		final ScriptRunner scriptRunner = new ScriptRunner(sessionFactory.openSession().getConnection());
 		scriptRunner.setStopOnError(true);
 		scriptRunner.setLogWriter(null);
 		scriptRunner.setAutoCommit(true);
@@ -88,34 +92,34 @@ public class CorePlugin implements Pluggable
 	@Override
 	public void init()
 	{
-		this.uploader = this.injector.getInstance(Uploader.class);
+		uploader = injector.getInstance(Uploader.class);
 
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
-		spinner.setEditor(new JSpinner.NumberEditor(spinner, this.resourceBundle.getString("chunksize_spinner")));
-		spinner.setValue(Integer.parseInt((String) this.settingService.get("coreplugin.general.chunk_size", "10")));
+		spinner.setEditor(new JSpinner.NumberEditor(spinner, resourceBundle.getString("chunksize_spinner")));
+		spinner.setValue(Integer.parseInt((String) settingService.get("coreplugin.general.chunk_size", "10")));
 
-		this.settingService.addSpinner("coreplugin.general.chunk_size", this.resourceBundle.getString("chunksize_spinner.label"), spinner);
+		settingService.addSpinner("coreplugin.general.chunk_size", resourceBundle.getString("chunksize_spinner.label"), spinner);
 		if (!GraphicsEnvironment.isHeadless()) {
-			final UploadViewPanel uploadViewPanel = this.injector.getInstance(UploadViewPanel.class);
+			final UploadViewPanel uploadViewPanel = injector.getInstance(UploadViewPanel.class);
 			uploadViewPanel.run();
-			final MenuViewPanel menuViewPanel = this.injector.getInstance(MenuViewPanel.class);
-			final QueueViewPanel queueViewPanel = this.injector.getInstance(QueueViewPanel.class);
+			final MenuViewPanel menuViewPanel = injector.getInstance(MenuViewPanel.class);
+			final QueueViewPanel queueViewPanel = injector.getInstance(QueueViewPanel.class);
 
-			if (this.pluginService != null) {
-				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("uploadTab.title"), uploadViewPanel.getJPanel())); //NON-NLS
-				this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(this.resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel())); //NON-NLS
+			if (pluginService != null) {
+				pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(resourceBundle.getString("uploadTab.title"), uploadViewPanel.getJPanel())); //NON-NLS
+				pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint(resourceBundle.getString("queueTab.title"), queueViewPanel.getJPanel())); //NON-NLS
 
 				for (final JMenuItem menuItem : uploadViewPanel.getFileMenuItem()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+					pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				for (final JMenu menu : menuViewPanel.getFileMenus()) {
-					this.pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu)); //NON-NLS
+					pluginService.registerExtension("file_menu", new JComponentExtensionPoint("test", menu)); //NON-NLS
 				}
 				for (final JMenuItem menuItem : menuViewPanel.getEditMenuItems()) {
-					this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+					pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
 				}
 				final QueueController queueController = queueViewPanel.getQueueController();
-				this.pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS
+				pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS
 			}
 		}
 	}
@@ -123,13 +127,27 @@ public class CorePlugin implements Pluggable
 	@Override
 	public void onStart()
 	{
-		this.uploader.runStarttimeChecker();
+		uploader.runStarttimeChecker();
+
+		@Language("JavaScript") String script = "load('F:/env.js');";
+
+		try {
+			final Context cx = Context.enter();
+			final Global scope = new Global();
+			scope.init(cx);
+			final Scriptable scriptable = cx.newObject(scope);
+			cx.evaluateString(scope, script, "script", 1, null);
+		} catch (Exception e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} finally {
+			Context.exit();
+		}
 	}
 
 	@Override
 	public void onEnd()
 	{
-		this.uploader.stopStarttimeChecker();
-		this.uploader.exit();
+		uploader.stopStarttimeChecker();
+		uploader.exit();
 	}
 }

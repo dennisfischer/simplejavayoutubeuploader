@@ -41,11 +41,11 @@ public class UploadFailed
 
 	public Queue getQueue()
 	{
-		return this.queue;
+		return queue;
 	}
 
 	public String getMessage()
 	{
-		return this.message;
+		return message;
 	}
 }

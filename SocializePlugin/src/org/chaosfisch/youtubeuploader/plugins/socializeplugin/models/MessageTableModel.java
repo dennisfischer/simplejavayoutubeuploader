@@ -48,26 +48,26 @@ public class MessageTableModel extends RowTableModel<Message>
 	public MessageTableModel(final Iterable<Message> messagges)
 	{
 		super(Message.class);
-		this.setDataAndColumnNames(new IdentityList<Message>(), Arrays.asList(I18nSupport.message("messagetable.id"), I18nSupport.message("messagetable.message"), I18nSupport.message("messagetable.uploadid"), I18nSupport.message(
-				"messagelabel.facebook"), I18nSupport.message("messagelabel.twitter"), I18nSupport.message("messagelabel.googleplus"), I18nSupport.message("messagelabel.youtube")));
+		setDataAndColumnNames(new IdentityList<Message>(), Arrays.asList(I18nSupport.message("messagetable.id"), I18nSupport.message("messagetable.message"), I18nSupport.message("messagetable.uploadid"), I18nSupport.message("messagelabel.facebook"),
+																		 I18nSupport.message("messagelabel.twitter"), I18nSupport.message("messagelabel.googleplus"), I18nSupport.message("messagelabel.youtube")));
 		for (final Message directory : messagges) {
-			this.addRow(directory);
+			addRow(directory);
 		}
-		this.setColumnClass(0, Integer.class);
-		this.setColumnClass(1, String.class);
-		this.setColumnClass(2, Integer.class);
-		this.setColumnClass(3, Boolean.class);
-		this.setColumnClass(4, Boolean.class);
-		this.setColumnClass(5, Boolean.class);
-		this.setColumnClass(6, Boolean.class);
-		this.setModelEditable(false);
+		setColumnClass(0, Integer.class);
+		setColumnClass(1, String.class);
+		setColumnClass(2, Integer.class);
+		setColumnClass(3, Boolean.class);
+		setColumnClass(4, Boolean.class);
+		setColumnClass(5, Boolean.class);
+		setColumnClass(6, Boolean.class);
+		setModelEditable(false);
 		AnnotationProcessor.process(this);
 	}
 
 	@Override
 	public Object getValueAt(final int row, final int col)
 	{
-		final Message message = this.getRow(row);
+		final Message message = getRow(row);
 		switch (col) {
 			case 0:
 				return message.getIdentity();
@@ -91,20 +91,20 @@ public class MessageTableModel extends RowTableModel<Message>
 	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_ADDED)
 	public void onMessageEntryAdded(final String topic, final Message message)
 	{
-		this.addRow(message);
+		addRow(message);
 	}
 
 	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_REMOVED)
 	public void onMessageEntryRemoved(final String topic, final Message message)
 	{
-		this.removeElement(message);
+		removeElement(message);
 	}
 
 	@EventTopicSubscriber(topic = MessageService.MESSAGE_ENTRY_UPDATED)
 	public void onMessageEntryUpdated(final String topic, final Message message)
 	{
-		if (this.modelData.contains(message)) {
-			this.replaceRow(this.modelData.indexOf(message), message);
+		if (modelData.contains(message)) {
+			replaceRow(modelData.indexOf(message), message);
 		}
 	}
 }

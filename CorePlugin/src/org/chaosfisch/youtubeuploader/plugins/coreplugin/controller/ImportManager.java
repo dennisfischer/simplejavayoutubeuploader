@@ -64,47 +64,47 @@ class ImportManager
 
 	public void importAccount()
 	{
-		final File file = this.showFileOpenDialog();
+		final File file = showFileOpenDialog();
 		if (file == null) {
 			return;
 		}
-		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		final Object object = readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
 			final Iterable<?> accounts = (Iterable<?>) object;
 			for (final Object account : accounts) {
 				final Account accountEntry = (Account) account;
 				//accountEntry.getYoutubeServiceManager().authenticate();
-				this.accountService.create(accountEntry);
+				accountService.create(accountEntry);
 			}
 		}
 	}
 
 	public void importPreset()
 	{
-		final File file = this.showFileOpenDialog();
+		final File file = showFileOpenDialog();
 		if (file == null) {
 			return;
 		}
-		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		final Object object = readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
 			final Iterable<?> presets = (Iterable<?>) object;
 			for (final Object preset : presets) {
-				this.presetService.create((Preset) preset);
+				presetService.create((Preset) preset);
 			}
 		}
 	}
 
 	public void importQueue()
 	{
-		final File file = this.showFileOpenDialog();
+		final File file = showFileOpenDialog();
 		if (file == null) {
 			return;
 		}
-		final Object object = this.readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		final Object object = readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
 		if (object instanceof List<?>) {
 			final Iterable<?> entries = (Iterable<?>) object;
 			for (final Object entry : entries) {
-				this.queueService.create((Queue) entry);
+				queueService.create((Queue) entry);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ class ImportManager
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 			final InputStreamReader inputStreamReader = new InputStreamReader(bufferedInputStream, Charset.forName(charset));
 			try {
-				return this.xStream.fromXML(inputStreamReader);
+				return xStream.fromXML(inputStreamReader);
 			} finally {
 				try {
 					inputStreamReader.close();
@@ -132,14 +132,14 @@ class ImportManager
 
 	private File showFileOpenDialog()
 	{
-		this.fileChooser.setAcceptAllFileFilterUsed(true);
-		this.fileChooser.setDragEnabled(true);
-		this.fileChooser.setMultiSelectionEnabled(true);
-		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		final int result = this.fileChooser.showOpenDialog(null);
+		fileChooser.setAcceptAllFileFilterUsed(true);
+		fileChooser.setDragEnabled(true);
+		fileChooser.setMultiSelectionEnabled(true);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		final int result = fileChooser.showOpenDialog(null);
 
 		if (result == JFileChooser.APPROVE_OPTION) {
-			return this.fileChooser.getSelectedFile();
+			return fileChooser.getSelectedFile();
 		}
 		return null;
 	}

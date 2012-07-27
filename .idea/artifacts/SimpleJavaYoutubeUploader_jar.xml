@@ -27,6 +27,9 @@
         <element id="library" level="project" name="JxBrowser" />
         <element id="library" level="project" name="JxFileWatcher" />
         <element id="library" level="project" name="commons-codec-1.6" />
+        <element id="library" level="project" name="rhino1_7R4" />
+        <element id="library" level="project" name="commons-cli-1.2" />
+        <element id="library" level="project" name="commons-email-1.2" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />

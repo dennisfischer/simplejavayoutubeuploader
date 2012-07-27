@@ -52,29 +52,29 @@ public class DirectoryWorker extends Thread
 	@Inject private       PlaylistService    playlistService;
 	@Inject private       AutoTitleGenerator autoTitleGenerator;
 	@InjectLogger private Logger             logger;
-	Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>();
-	Collection<File>        inProgress      = new ArrayList<File>();
+	final Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>();
+	final Collection<File>        inProgress      = new ArrayList<File>();
 
 	@Override
 	public void run()
 	{
 
-		final List<Directory> directories = this.directoryService.getActive();
+		final List<Directory> directories = directoryService.getActive();
 		final FileEventsListener fileEventsAdapter = new FileEventsAdapter()
 		{
 			@Override public void fileAdded(final FileEvent.Added added)
 			{
-				if (!DirectoryWorker.this.inProgress.contains(added.getFile())) {
-					DirectoryWorker.this.inProgress.add(added.getFile());
-					DirectoryWorker.this.addToUpload(added.getFile());
+				if (!inProgress.contains(added.getFile())) {
+					inProgress.add(added.getFile());
+					addToUpload(added.getFile());
 				}
 			}
 
 			@Override public void fileChanged(final FileEvent.Changed changed)
 			{
-				if (!DirectoryWorker.this.inProgress.contains(changed.getFile())) {
-					DirectoryWorker.this.inProgress.add(changed.getFile());
-					DirectoryWorker.this.addToUpload(changed.getFile());
+				if (!inProgress.contains(changed.getFile())) {
+					inProgress.add(changed.getFile());
+					addToUpload(changed.getFile());
 				}
 			}
 		};
@@ -92,13 +92,13 @@ public class DirectoryWorker extends Thread
 			fileWatcher.setOptions(watchingAttributes);
 			fileWatcher.setFilter(fileMaskFilter);
 			fileWatcher.start();
-			this.fileWatcherList.add(fileWatcher);
+			fileWatcherList.add(fileWatcher);
 		}
 	}
 
 	private void addToUpload(final File file)
 	{
-		final Directory directory = this.directoryService.findFile(file);
+		final Directory directory = directoryService.findFile(file);
 		if (directory == null) {
 			return;
 		}
@@ -109,10 +109,10 @@ public class DirectoryWorker extends Thread
 		final Playlist playlist = preset.playlist;
 
 		if (preset.autotitle) {
-			this.autoTitleGenerator.setFileName(file.getName());
-			this.autoTitleGenerator.setFormatString(preset.autotitleFormat);
-			this.autoTitleGenerator.setPlaylist(preset.playlist);
-			queue.title = this.autoTitleGenerator.gernerate();
+			autoTitleGenerator.setFileName(file.getName());
+			autoTitleGenerator.setFormatString(preset.autotitleFormat);
+			autoTitleGenerator.setPlaylist(preset.playlist);
+			queue.title = autoTitleGenerator.gernerate();
 		} else {
 			queue.title = file.getName();
 		}
@@ -149,16 +149,16 @@ public class DirectoryWorker extends Thread
 		queue.playlist = playlist;
 		if (playlist != null) {
 			playlist.number++;
-			this.playlistService.update(playlist);
+			playlistService.update(playlist);
 		}
 
-		this.queueService.create(queue);
+		queueService.create(queue);
 		EventBus.publish(Uploader.QUEUE_START, null);
 	}
 
 	public void stopActions()
 	{
-		for (final FileWatcher fileWatcher : this.fileWatcherList) {
+		for (final FileWatcher fileWatcher : fileWatcherList) {
 			fileWatcher.stop();
 		}
 	}

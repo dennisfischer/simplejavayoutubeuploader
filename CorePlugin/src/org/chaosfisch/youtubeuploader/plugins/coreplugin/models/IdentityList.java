@@ -37,14 +37,14 @@ public class IdentityList<E extends IModel> extends ArrayList<E>
 	{
 		final IModel model = (IModel) o;
 		if (o == null) {
-			for (int i = 0; i < this.size(); i++) {
-				if (this.get(i) == null) {
+			for (int i = 0; i < size(); i++) {
+				if (get(i) == null) {
 					return i;
 				}
 			}
 		} else {
-			for (int i = 0; i < this.size(); i++) {
-				if (model.getIdentity().equals(this.get(i).getIdentity())) {
+			for (int i = 0; i < size(); i++) {
+				if (model.getIdentity().equals(get(i).getIdentity())) {
 					return i;
 				}
 			}
@@ -64,14 +64,14 @@ public class IdentityList<E extends IModel> extends ArrayList<E>
 	{
 		final IModel model = (IModel) o;
 		if (model == null) {
-			for (int i = this.size() - 1; i >= 0; i--) {
-				if (this.get(i) == null) {
+			for (int i = size() - 1; i >= 0; i--) {
+				if (get(i) == null) {
 					return i;
 				}
 			}
 		} else {
-			for (int i = this.size() - 1; i >= 0; i--) {
-				if (model.getIdentity().equals(this.get(i).getIdentity())) {
+			for (int i = size() - 1; i >= 0; i--) {
+				if (model.getIdentity().equals(get(i).getIdentity())) {
 					return i;
 				}
 			}

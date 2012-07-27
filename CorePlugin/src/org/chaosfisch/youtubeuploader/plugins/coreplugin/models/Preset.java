@@ -54,11 +54,11 @@ public class Preset implements IModel
 
 	@Override public Integer getIdentity()
 	{
-		return this.identity;
+		return identity;
 	}
 
 	@Override public String toString()
 	{
-		return this.name;
+		return name;
 	}
 }

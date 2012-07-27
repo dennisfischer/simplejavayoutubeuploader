@@ -43,7 +43,7 @@ public class SettingsViewComponent
 
 	public JComponent getComponent()
 	{
-		return this.component;
+		return component;
 	}
 
 	public void setComponent(final JComponent component)
@@ -53,7 +53,7 @@ public class SettingsViewComponent
 
 	public String getUniqueKey()
 	{
-		return this.uniqueKey;
+		return uniqueKey;
 	}
 
 	public void setUniqueKey(final String uniqueKey)
@@ -63,7 +63,7 @@ public class SettingsViewComponent
 
 	public String getLabel()
 	{
-		return this.label;
+		return label;
 	}
 
 	public void setLabel(final String label)

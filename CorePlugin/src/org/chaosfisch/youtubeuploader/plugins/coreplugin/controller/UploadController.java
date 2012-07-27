@@ -64,21 +64,21 @@ public class UploadController
 		@EventTopicSubscriber(topic = AccountService.ACCOUNT_ADDED)
 		public void onAccountAdded(final String topic, final Account element)
 		{
-			this.addElement(element);
+			addElement(element);
 		}
 
 		@EventTopicSubscriber(topic = AccountService.ACCOUNT_REMOVED)
 		public void onAccountRemoved(final String topic, final Account element)
 		{
-			this.removeElement(element);
+			removeElement(element);
 		}
 
 		@EventTopicSubscriber(topic = AccountService.ACCOUNT_UPDATED)
 		public void onAccountUpdated(final String topic, final Account element)
 		{
-			final int index = this.getIndexOf(element);
+			final int index = getIndexOf(element);
 			if (index != -1) {
-				this.replaceRow(index, element);
+				replaceRow(index, element);
 			}
 		}
 	};
@@ -90,22 +90,22 @@ public class UploadController
 		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
 		public void onPresetAdded(final String topic, final Preset preset)
 		{
-			this.addElement(preset);
+			addElement(preset);
 		}
 
 		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_UPDATED)
 		public void onPresetUpdated(final String topic, final Preset preset)
 		{
-			final int index = this.getIndexOf(preset);
+			final int index = getIndexOf(preset);
 			if (index != -1) {
-				this.replaceRow(index, preset);
+				replaceRow(index, preset);
 			}
 		}
 
 		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
 		public void onPresetRemoved(final String topic, final Preset preset)
 		{
-			this.removeElement(preset);
+			removeElement(preset);
 		}
 	};
 	private final GenericListModel<Playlist> playlistListModel = new GenericListModel<Playlist>()
@@ -115,25 +115,26 @@ public class UploadController
 		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
 		public void onPlaylistAdded(final String topic, final Playlist playlist)
 		{
-			this.addElement(playlist);
+			addElement(playlist);
 		}
 
 		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
 		public void onPlaylistRemoved(final String topic, final Playlist playlist)
 		{
-			this.removeElement(playlist);
+			removeElement(playlist);
 		}
 
 		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 		public void onPlaylistUpdated(final String topic, final Playlist playlist)
 		{
-			final int index = this.getIndexOf(playlist);
+			final int index = getIndexOf(playlist);
 			if (index != -1) {
-				this.replaceRow(index, playlist);
+				replaceRow(index, playlist);
 			}
 		}
 	};
 	private boolean autotitle;
+	private final PlaceholderTableModel placeholderModel = new PlaceholderTableModel();
 
 	@Inject
 	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator, final PlaylistService playlistService, final JFileChooser fileChooser)
@@ -145,74 +146,74 @@ public class UploadController
 		this.playlistService = playlistService;
 
 		final XStream xStream = new XStream(new DomDriver());
-		this.importManager = new ImportManager(xStream, accountService, presetService, queueService, fileChooser);
-		this.exportManager = new ExportManager(xStream, accountService, presetService, queueService, fileChooser);
+		importManager = new ImportManager(xStream, accountService, presetService, queueService, fileChooser);
+		exportManager = new ExportManager(xStream, accountService, presetService, queueService, fileChooser);
 		AnnotationProcessor.process(this);
 	}
 
 	public void deleteAccount(final Account account)
 	{
-		this.accountService.delete(account);
+		accountService.delete(account);
 	}
 
 	public void deletePreset(final Preset preset)
 	{
 
-		this.presetListModel.removeElement(preset);
-		this.presetService.delete(preset);
+		presetListModel.removeElement(preset);
+		presetService.delete(preset);
 	}
 
 	public void savePreset(final Preset preset)
 	{
-		this.presetService.update(preset);
+		presetService.update(preset);
 	}
 
 	public void changeAutotitleCheckbox(final boolean selected)
 	{
-		this.autotitle = selected;
-		this.updateAutotitle();
+		autotitle = selected;
+		updateAutotitle();
 	}
 
 	public void changeAutotitleFile(final Object item)
 	{
-		this.autoTitleGenerator.setFileName(item.toString());
-		this.updateAutotitle();
+		autoTitleGenerator.setFileName(item.toString());
+		updateAutotitle();
 	}
 
 	public void changeAutotitlePlaylist(final Object item)
 	{
-		this.autoTitleGenerator.setPlaylist((Playlist) item);
-		this.updateAutotitle();
+		autoTitleGenerator.setPlaylist((Playlist) item);
+		updateAutotitle();
 	}
 
 	public void changeAutotitleFormat(final String text)
 	{
-		this.autoTitleGenerator.setFormatString(text);
-		this.updateAutotitle();
+		autoTitleGenerator.setFormatString(text);
+		updateAutotitle();
 	}
 
 	public void changeAutotitleNumber(final Object value)
 	{
-		this.autoTitleGenerator.setNumber(Integer.parseInt(value.toString()));
-		this.updateAutotitle();
+		autoTitleGenerator.setNumber(Integer.parseInt(value.toString()));
+		updateAutotitle();
 	}
 
 	private void updateAutotitle()
 	{
-		if (this.autotitle) {
+		if (autotitle) {
 			//noinspection DuplicateStringLiteralInspection
-			EventBus.publish(AutoTitleGenerator.AUTOTITLE_CHANGED, this.autoTitleGenerator.gernerate()); //NON-NLS
+			EventBus.publish(AutoTitleGenerator.AUTOTITLE_CHANGED, autoTitleGenerator.gernerate()); //NON-NLS
 		}
 	}
 
 	public GenericListModel<Account> getAccountListModel()
 	{
-		return this.accountListModel;
+		return accountListModel;
 	}
 
 	public AccountService getAccountService()
 	{
-		return this.accountService;
+		return accountService;
 	}
 
 	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file, final boolean commentvote, final boolean mobile, final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility, final Date starttime, final boolean monetize, final boolean monetizeOverlay, final boolean monetizeTrueview, final boolean monetizeProduct, final String enddir)
@@ -241,7 +242,7 @@ public class UploadController
 
 		if (playlist != null) {
 			playlist.number++;
-			this.playlistService.update(playlist);
+			playlistService.update(playlist);
 		}
 
 		switch (visibility) {
@@ -257,70 +258,94 @@ public class UploadController
 			queue.started = new Date(starttime.getTime());
 		}
 
-		this.queueService.create(queue);
+		queueService.create(queue);
 	}
 
 	public GenericListModel<Preset> getPresetListModel()
 	{
-		return this.presetListModel;
+		return presetListModel;
 	}
 
 	public ComboBoxModel getPlaylistListModel()
 	{
-		return this.playlistListModel;
+		return playlistListModel;
 	}
 
 	public void synchronizePlaylists(final List<Account> accounts)
 	{
-		this.playlistService.synchronizePlaylists(accounts);
+		playlistService.synchronizePlaylists(accounts);
 	}
 
 	@EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
 	public void onPlaylistSynchronize(final String topic, final Object object)
 	{
-		this.changeAccount((Account) this.accountListModel.getSelectedItem());
+		changeAccount((Account) accountListModel.getSelectedItem());
 	}
 
 	public void changeAccount(final Account account)
 	{
-		this.playlistListModel.removeAllElements();
-		for (final Playlist playlist : this.playlistService.getByAccount(account)) {
-			this.playlistListModel.addElement(playlist);
+		playlistListModel.removeAllElements();
+		for (final Playlist playlist : playlistService.getByAccount(account)) {
+			playlistListModel.addElement(playlist);
 		}
 	}
 
 	public void importAccount()
 	{
-		this.importManager.importAccount();
+		importManager.importAccount();
 	}
 
 	public void importPreset()
 	{
-		this.importManager.importPreset();
+		importManager.importPreset();
 	}
 
 	public void importQueue()
 	{
-		this.importManager.importQueue();
+		importManager.importQueue();
 	}
 
 	public void exportAccount()
 	{
-		this.exportManager.exportAccount();
+		exportManager.exportAccount();
 	}
 
 	public void exportPreset()
 	{
-		this.exportManager.exportPreset();
+		exportManager.exportPreset();
 	}
 
 	public void exportQueue()
 	{
-		this.exportManager.exportQueue();
+		exportManager.exportQueue();
 	}
 
 	public PresetService getPresetService()
 	{
-		return this.presetService;
+		return presetService;
+	}
+
+	public void addPlaceholder(final String placeholder, final String replacement)
+	{
+	}
+
+	public void deletePlaceholder(final Placeholder placeholder)
+	{
+
+	}
+
+	public void savePlaceholder(final Placeholder placeholder)
+	{
+	}
+
+	public PlaceholderTableModel getPlaceholderModel()
+	{
+		final Placeholder placeholder = new Placeholder();
+		placeholder.placeholder = "WTF";
+		placeholder.replacement = "OMG";
+		placeholderModel.addRow(placeholder);
+		placeholderModel.addRow(placeholder);
+		placeholderModel.addRow(placeholder);
+		return placeholderModel;
 	}
 }

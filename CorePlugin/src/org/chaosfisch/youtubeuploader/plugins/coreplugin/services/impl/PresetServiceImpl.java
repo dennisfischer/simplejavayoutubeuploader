@@ -41,32 +41,32 @@ public class PresetServiceImpl implements PresetService
 
 	@Transactional @Override public Preset create(final Preset preset)
 	{
-		this.presetMapper.createPreset(preset);
+		presetMapper.createPreset(preset);
 		EventBus.publish(PresetService.PRESET_ENTRY_ADDED, preset);
 		return preset;
 	}
 
 	@Transactional @Override public Preset delete(final Preset preset)
 	{
-		this.presetMapper.deletePreset(preset);
+		presetMapper.deletePreset(preset);
 		EventBus.publish(PresetService.PRESET_ENTRY_REMOVED, preset);
 		return preset;
 	}
 
 	@Transactional @Override public Preset update(final Preset preset)
 	{
-		this.presetMapper.updatePreset(preset);
+		presetMapper.updatePreset(preset);
 		EventBus.publish(PresetService.PRESET_ENTRY_UPDATED, preset);
 		return preset;
 	}
 
 	@Transactional @Override public List<Preset> getAll()
 	{
-		return this.presetMapper.getPresets();
+		return presetMapper.getPresets();
 	}
 
 	@Transactional @Override public Preset find(final int identifier)
 	{
-		return this.presetMapper.findPreset(identifier);
+		return presetMapper.findPreset(identifier);
 	}
 }

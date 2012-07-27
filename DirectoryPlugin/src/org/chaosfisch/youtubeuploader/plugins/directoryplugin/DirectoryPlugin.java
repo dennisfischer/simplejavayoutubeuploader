@@ -102,35 +102,35 @@ public class DirectoryPlugin implements Pluggable
 	@Override public void onStart()
 	{
 
-		final JMenuItem menuItem = new JMenuItem(this.resourceBundle.getString("directoryobserver.label"), new ImageIcon(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
+		final JMenuItem menuItem = new JMenuItem(resourceBundle.getString("directoryobserver.label"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
 		menuItem.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final DirectoryViewPanel directoryViewPanel = DirectoryPlugin.this.injector.getInstance(DirectoryViewPanel.class);
+				final DirectoryViewPanel directoryViewPanel = injector.getInstance(DirectoryViewPanel.class);
 				directoryViewPanel.pack();
-				directoryViewPanel.setLocationRelativeTo(DirectoryPlugin.this.mainFrame);
-				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
-				directoryViewPanel.setTitle(DirectoryPlugin.this.resourceBundle.getString("directoryobserver.label"));
+				directoryViewPanel.setLocationRelativeTo(mainFrame);
+				directoryViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/folder_explore.png")));//NON-NLS
+				directoryViewPanel.setTitle(resourceBundle.getString("directoryobserver.label"));
 				directoryViewPanel.setVisible(true);
 			}
 		});
-		this.pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
-		this.directoryWorker.start();
+		pluginService.registerExtension("edit_menu", new JComponentExtensionPoint("test", menuItem)); //NON-NLS
+		directoryWorker.start();
 	}
 
 	@Override public void onEnd()
 	{
-		this.directoryWorker.interrupt();
+		directoryWorker.interrupt();
 	}
 
 	@EventTopicPatternSubscriber(topicPattern = "onDirectory(.*)", referenceStrength = ReferenceStrength.WEAK)
 	public void refreshDirectoryWorker(final String topic, final Directory directory)
 	{
-		this.logger.debug("Refreshing directory worker!"); //NON-NLS
-		this.directoryWorker.stopActions();
-		this.directoryWorker.interrupt();
-		this.directoryWorker = this.injector.getInstance(DirectoryWorker.class);
-		this.directoryWorker.start();
+		logger.debug("Refreshing directory worker!"); //NON-NLS
+		directoryWorker.stopActions();
+		directoryWorker.interrupt();
+		directoryWorker = injector.getInstance(DirectoryWorker.class);
+		directoryWorker.start();
 	}
 }

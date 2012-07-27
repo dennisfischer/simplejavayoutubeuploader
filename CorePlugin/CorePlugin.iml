@@ -20,6 +20,18 @@
     <orderEntry type="library" name="JxBrowser" level="project" />
     <orderEntry type="library" name="JxFileWatcher" level="project" />
     <orderEntry type="library" name="JxDevelopmentLicense" level="project" />
+    <orderEntry type="library" name="rhino1_7R4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/annotations.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="commons-email-1.2" level="project" />
+    <orderEntry type="library" name="commons-cli-1.2" level="project" />
   </component>
 </module>
 

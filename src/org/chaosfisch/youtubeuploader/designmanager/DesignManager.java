@@ -55,20 +55,20 @@ public class DesignManager
 
 	public void run()
 	{
-		this.logger.debug("Loading designMaps"); //NON-NLS
+		logger.debug("Loading designMaps"); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
 			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(DesignMap.class);
 
-			this.logger.debug("Parsing designMaps"); //NON-NLS
+			logger.debug("Parsing designMaps"); //NON-NLS
 			for (final Class<?> mapList : classes) {
-				this.logger.debug("Parsing designs of designMap"); //NON-NLS
+				logger.debug("Parsing designs of designMap"); //NON-NLS
 				for (final Design design : (DesignMap) mapList.newInstance()) {
-					this.logger.debug("Design found"); //NON-NLS
+					logger.debug("Design found"); //NON-NLS
 					if ((design.getShortName() != null) && (design.getName() != null)) {
 						//noinspection StringConcatenation
-						this.logger.debug("Adding Design " + design.getName()); //NON-NLS
-						this.designMap.put(design.getName(), design);
+						logger.debug("Adding Design " + design.getName()); //NON-NLS
+						designMap.put(design.getName(), design);
 					}
 				}
 			}
@@ -85,21 +85,21 @@ public class DesignManager
 
 	private Design getDesign(final String lookAndFeel)
 	{
-		if (!this.designMap.containsKey(lookAndFeel)) {
+		if (!designMap.containsKey(lookAndFeel)) {
 			//noinspection StringConcatenation
-			this.logger.debug("Design not found: " + lookAndFeel); //NON-NLS
+			logger.debug("Design not found: " + lookAndFeel); //NON-NLS
 			return null;
 		}
-		return this.designMap.get(lookAndFeel);
+		return designMap.get(lookAndFeel);
 	}
 
 	public void changeDesign(final String design)
 	{
 		//noinspection StringConcatenation
-		this.logger.debug("Changing design to " + design); //NON-NLS
-		if (!this.designMap.containsKey(design)) {
+		logger.debug("Changing design to " + design); //NON-NLS
+		if (!designMap.containsKey(design)) {
 			//noinspection StringConcatenation
-			this.logger.debug("Design not found: " + design); //NON-NLS
+			logger.debug("Design not found: " + design); //NON-NLS
 			return;
 		}
 
@@ -108,7 +108,7 @@ public class DesignManager
 			@Override public void run()
 			{
 				try {
-					UIManager.setLookAndFeel(DesignManager.this.designMap.get(design).getLaF().getCanonicalName());
+					UIManager.setLookAndFeel(designMap.get(design).getLaF().getCanonicalName());
 				} catch (UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -140,8 +140,8 @@ public class DesignManager
 	public void registerSettingsExtension()
 	{
 		final MutableComboBoxModel desingListModel = new DefaultComboBoxModel();
-		final List<Design> designCollection = new ArrayList<Design>(this.designMap.size());
-		designCollection.addAll(this.designMap.values());
+		final List<Design> designCollection = new ArrayList<Design>(designMap.size());
+		designCollection.addAll(designMap.values());
 		Collections.sort(designCollection, new Comparator<Object>()
 		{
 			@Override public int compare(final Object o1, final Object o2)
@@ -157,8 +157,8 @@ public class DesignManager
 				desingListModel.addElement(design);
 			}
 		}
-		desingListModel.setSelectedItem(this.getDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"))); //NON-NLS
-		this.settingsService.addCombobox("application.general.laf", "Design:", desingListModel); //NON-NLS
+		desingListModel.setSelectedItem(getDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"))); //NON-NLS
+		settingsService.addCombobox("application.general.laf", "Design:", desingListModel); //NON-NLS
 	}
 
 	@EventTopicSubscriber(topic = SettingsService.SETTINGS_SAVED)
@@ -166,7 +166,7 @@ public class DesignManager
 	{
 		// noinspection CallToStringEquals
 		if (o.equals("application.general.laf")) {
-			this.changeDesign((String) this.settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
+			changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
 			EventBus.publish(DesignManager.UPDATE_UI, null);
 		}
 	}

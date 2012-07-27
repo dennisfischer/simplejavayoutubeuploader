@@ -55,17 +55,17 @@ public class PluginServiceImpl implements PluginService
 	public void registerExtension(final String type, final ExtensionPoint extension)
 	{
 		//noinspection StringConcatenation
-		this.logger.debug("Extension registered, type: " + type); //NON-NLS
-		if (!this.extensionPointMap.containsKey(type)) {
-			this.extensionPointMap.put(type, new Vector<ExtensionPoint>(20));
+		logger.debug("Extension registered, type: " + type); //NON-NLS
+		if (!extensionPointMap.containsKey(type)) {
+			extensionPointMap.put(type, new Vector<ExtensionPoint>(20));
 		}
-		this.extensionPointMap.get(type).add(extension);
+		extensionPointMap.get(type).add(extension);
 	}
 
 	public Vector<ExtensionPoint> getExtensions(final String extensionType)
 	{
-		if (this.extensionPointMap.containsKey(extensionType)) {
-			return this.extensionPointMap.get(extensionType);
+		if (extensionPointMap.containsKey(extensionType)) {
+			return extensionPointMap.get(extensionType);
 		}
 		return new Vector<ExtensionPoint>(0);
 	}

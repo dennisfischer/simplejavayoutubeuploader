@@ -49,7 +49,7 @@ public class Sound implements Runnable
 	private Boolean isPlaying = false;
 	private boolean pause;
 	private boolean mute;
-	private int lautstaerke = this.gainPercent;
+	private int lautstaerke = gainPercent;
 
 	/**
 	 * damit mp3-Dateien abgespielt werden können, muss das mp3plugin von Sun im Classpath stehen oder
@@ -67,7 +67,7 @@ public class Sound implements Runnable
 	 */
 	public Time getCurrentTime()
 	{
-		return (Time) this.time.clone();
+		return (Time) time.clone();
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class Sound implements Runnable
 	 */
 	public boolean isLoopPlay()
 	{
-		return this.loopPlay;
+		return loopPlay;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class Sound implements Runnable
 	 */
 	public void setLoopPlay(final Boolean loop)
 	{
-		this.loopPlay = loop;
+		loopPlay = loop;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class Sound implements Runnable
 	 */
 	public void stop()
 	{
-		this.stop = true;
+		stop = true;
 	}
 
 	/**
@@ -103,10 +103,10 @@ public class Sound implements Runnable
 	 */
 	public void play()
 	{
-		this.stop = false;
-		if (!this.runner.isAlive()) {
-			this.runner = new Thread(this);
-			this.runner.start();
+		stop = false;
+		if (!runner.isAlive()) {
+			runner = new Thread(this);
+			runner.start();
 		}
 	}
 
@@ -117,7 +117,7 @@ public class Sound implements Runnable
 	 */
 	public int getVolume()
 	{
-		return this.gainPercent;
+		return gainPercent;
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class Sound implements Runnable
 	public void setVolumen(final int volumen)
 	{
 		if ((volumen <= 100) || (volumen >= 0)) {
-			this.gainPercent = volumen;
+			gainPercent = volumen;
 		}
 	}
 
@@ -138,42 +138,42 @@ public class Sound implements Runnable
 	public void run()
 	{
 		do {
-			if (!(this.song.exists() && this.song.isFile())) {
+			if (!(song.exists() && song.isFile())) {
 				break;
 			}
 			try {
-				final AudioInputStream in = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(this.song));
+				final AudioInputStream in = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(song));
 				final AudioFormat audioFormat = in.getFormat();
 				@SuppressWarnings("ObjectAllocationInLoop") final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, audioFormat));
 				line.open(audioFormat);
 				final FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
 				line.start();
-				final long songLaenge = this.song.length();
+				final long songLaenge = song.length();
 				final int sampleSizeInBits = audioFormat.getSampleSizeInBits();
 
 				if (in.getFrameLength() == -1) {
-					this.songTime.setTime((songLaenge / sampleSizeInBits) - Sound.timeZoneKorrektur);
+					songTime.setTime((songLaenge / sampleSizeInBits) - Sound.timeZoneKorrektur);
 				} else {
-					this.songTime.setTime(((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000) - Sound.timeZoneKorrektur);
+					songTime.setTime(((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000) - Sound.timeZoneKorrektur);
 				}
 
 				in.mark(in.available());
 				long resetKorrektur = 0;
-				while ((!this.stop)) {
-					this.isPlaying = true;
-					final int gainLevel = (int) ((int) gainControl.getMinimum() + (((gainControl.getMaximum() - gainControl.getMinimum()) / 100) * this.gainPercent));
+				while ((!stop)) {
+					isPlaying = true;
+					final int gainLevel = (int) ((int) gainControl.getMinimum() + (((gainControl.getMaximum() - gainControl.getMinimum()) / 100) * gainPercent));
 					gainControl.setValue(gainLevel);
-					if (!this.pause) {
+					if (!pause) {
 						final int n = in.read(Sound.buffer, 0, Sound.buffer.length);
-						if ((n < 0) || (this.stop)) {
+						if ((n < 0) || (stop)) {
 							break;
 						}
-						if (this.reset) {
+						if (reset) {
 							resetKorrektur = line.getMicrosecondPosition() / 1000;
 							in.reset();
-							this.reset = false;
+							reset = false;
 						}
-						this.time.setTime((line.getMicrosecondPosition() / 1000) - Sound.timeZoneKorrektur - resetKorrektur);
+						time.setTime((line.getMicrosecondPosition() / 1000) - Sound.timeZoneKorrektur - resetKorrektur);
 						line.write(Sound.buffer, 0, n);
 					}
 				}
@@ -187,8 +187,8 @@ public class Sound implements Runnable
 			} catch (LineUnavailableException ignored) {
 				System.out.println("Soundkartenfehler"); //NON-NLS
 			}
-		} while (this.loopPlay && !this.stop);
-		this.isPlaying = false;
+		} while (loopPlay && !stop);
+		isPlaying = false;
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class Sound implements Runnable
 	 */
 	public File getSong()
 	{
-		return this.song;
+		return song;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class Sound implements Runnable
 	 */
 	public Time getSongTime()
 	{
-		return (Time) this.songTime.clone();
+		return (Time) songTime.clone();
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class Sound implements Runnable
 	 */
 	public Boolean isPlaying()
 	{
-		return this.isPlaying;
+		return isPlaying;
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class Sound implements Runnable
 	 */
 	public boolean isPause()
 	{
-		return this.pause;
+		return pause;
 	}
 
 	/**
@@ -271,10 +271,10 @@ public class Sound implements Runnable
 	public void setMute(final boolean mute)
 	{
 		if ((mute) && (!this.mute)) {
-			this.lautstaerke = this.getVolume();
-			this.setVolumen(0);
+			lautstaerke = getVolume();
+			setVolumen(0);
 		} else {
-			this.setVolumen(this.lautstaerke);
+			setVolumen(lautstaerke);
 		}
 		this.mute = mute;
 	}
@@ -286,6 +286,6 @@ public class Sound implements Runnable
 	 */
 	public boolean isMute()
 	{
-		return this.mute;
+		return mute;
 	}
 }

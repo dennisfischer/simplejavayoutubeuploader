@@ -56,8 +56,8 @@ public class NotificationsPlugin implements Pluggable
 
 	@Override public void init()
 	{
-		this.settingsService.addFilechooser("notification.general.sound_failed", this.resourceBundle.getString("settings.uploadFailedLabel")); //NON-NLS
-		this.settingsService.addFilechooser("notification.general.sound_finished", this.resourceBundle.getString("settings.uploadSucceededLabel")); //NON-NLS
+		settingsService.addFilechooser("notification.general.sound_failed", resourceBundle.getString("settings.uploadFailedLabel")); //NON-NLS
+		settingsService.addFilechooser("notification.general.sound_finished", resourceBundle.getString("settings.uploadSucceededLabel")); //NON-NLS
 	}
 
 	@Override public void onStart()
@@ -73,23 +73,23 @@ public class NotificationsPlugin implements Pluggable
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
 	public void onUploadStarted(final String t, final Object o)
 	{
-		EventBus.publish(SystemTrayPlugin.MESSAGE, this.resourceBundle.getString("message.uploader_started"));
+		EventBus.publish(SystemTrayPlugin.MESSAGE, resourceBundle.getString("message.uploader_started"));
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
 	public void onUploadFinished(final String t, final Object o)
 	{
-		EventBus.publish(SystemTrayPlugin.MESSAGE, this.resourceBundle.getString("message.upload_successful"));
+		EventBus.publish(SystemTrayPlugin.MESSAGE, resourceBundle.getString("message.upload_successful"));
 		final Sound sound = new Sound();
-		sound.setSong((String) this.settingsService.get("notification.general.sound_finished", "")); //NON-NLS
+		sound.setSong((String) settingsService.get("notification.general.sound_finished", "")); //NON-NLS
 		sound.play();
 	}
 
 	public void onUploadFailed(final String t, final Object o)
 	{
-		EventBus.publish(SystemTrayPlugin.MESSAGE, this.resourceBundle.getString("message.upload_failed"));
+		EventBus.publish(SystemTrayPlugin.MESSAGE, resourceBundle.getString("message.upload_failed"));
 		final Sound sound = new Sound();
-		sound.setSong((String) this.settingsService.get("notification.general.sound_failed", "")); //NON-NLS
+		sound.setSong((String) settingsService.get("notification.general.sound_failed", "")); //NON-NLS
 		sound.play();
 	}
 

@@ -49,8 +49,8 @@ public class SocializePlugin implements Pluggable
 	@Override public void onStart()
 	{
 		if (!GraphicsEnvironment.isHeadless()) {
-			final SocializeView socializeView = this.injector.getInstance(SocializeView.class);
-			this.pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint("Socialize", socializeView.getPanel())); //NON-NLS
+			final SocializeView socializeView = injector.getInstance(SocializeView.class);
+			pluginService.registerExtension("panel_tabs", new JComponentExtensionPoint("Socialize", socializeView.getPanel())); //NON-NLS
 		}
 	}
 

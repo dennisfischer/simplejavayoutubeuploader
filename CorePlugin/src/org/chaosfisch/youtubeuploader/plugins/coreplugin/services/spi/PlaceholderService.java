@@ -17,43 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
+package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
+
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 07.01.12
- * Time: 16:44
+ * Date: 05.07.12
+ * Time: 21:14
  * To change this template use File | Settings | File Templates.
  */
-public class Account implements IModel
+public interface PlaceholderService
 {
-	public            String         name;
-	private           String         password;
-	private transient int            identity;
-	public transient  List<Playlist> presets;
-	public transient  List<Queue>    queue;
-	public transient  List<Playlist> playlists;
+	String PLACEHOLDER_ADDED   = "placeholderAdded"; //NON-NLS
+	String PLACEHOLDER_REMOVED = "placeholderRemoved"; //NON-NLS
+	String PLACEHOLDER_UPDATED = "placeholderUpdated"; //NON-NLS
 
-	@Override public Integer getIdentity()
-	{
-		return identity;
-	}
+	Placeholder create(Placeholder placeholder);
 
-	public String getPassword()
-	{
-		return password;
-	}
+	Placeholder delete(Placeholder placeholder);
 
-	public void setPassword(final String password)
-	{
-		this.password = password;
-	}
+	Placeholder update(Placeholder placeholder);
 
-	public String toString()
-	{
-		return name;
-	}
+	Placeholder find(int identifier);
+
+	List<Placeholder> getAll();
 }

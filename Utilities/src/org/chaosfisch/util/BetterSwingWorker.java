@@ -35,7 +35,7 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 	@Override
 	protected Void doInBackground() throws Exception
 	{
-		this.background();
+		background();
 		return null;
 	}
 
@@ -43,13 +43,13 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 	protected void done()
 	{
 		try {
-			this.get();
+			get();
 		} catch (InterruptedException ignored) {
 		} catch (CancellationException ignored) {
 		} catch (ExecutionException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
-		this.onDone();
+		onDone();
 	}
 
 	protected abstract void background();

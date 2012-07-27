@@ -39,10 +39,10 @@ public class ProgressbarTableCellRenderer extends JProgressBar implements TableC
 	{
 		if (value instanceof Integer) {
 			final int intValue = (Integer) value;
-			this.setValue(intValue);
+			setValue(intValue);
 		}
-		this.setBackground(table.getBackground());
-		this.setStringPainted(true);
+		setBackground(table.getBackground());
+		setStringPainted(true);
 		//noinspection ReturnOfThis
 		return this;
 	}

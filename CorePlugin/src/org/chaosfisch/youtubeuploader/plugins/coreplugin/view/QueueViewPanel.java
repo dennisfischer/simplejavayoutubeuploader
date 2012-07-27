@@ -74,27 +74,27 @@ public final class QueueViewPanel
 	public QueueViewPanel(final QueueController controller)
 	{
 		this.controller = controller;
-		this.queueTable.setModel(controller.getQueueList());
+		queueTable.setModel(controller.getQueueList());
 
-		this.initComponents();
-		this.initListeners();
+		initComponents();
+		initListeners();
 
 		AnnotationProcessor.process(this);
-		this.setup();
+		setup();
 	}
 
 	private void setup()
 	{
-		for (final Queue queue : this.controller.getQueueService().getAll()) {
-			this.controller.getQueueList().addRow(queue);
+		for (final Queue queue : controller.getQueueService().getAll()) {
+			controller.getQueueList().addRow(queue);
 		}
 	}
 
 	private void initComponents()
 	{
-		this.queueTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		this.queueTable.setRowSorter(null);
-		this.queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
+		queueTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		queueTable.setRowSorter(null);
+		queueTable.setDefaultRenderer(Object.class, new DefaultTableRenderer()
 		{
 			private static final long serialVersionUID = -8124241179871597973L;
 
@@ -113,205 +113,205 @@ public final class QueueViewPanel
 			}
 		});
 
-		this.queueTable.getColumn(this.queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
-		this.queueTable.addMouseListener(new HyperlinkMouseAdapter(5));
+		queueTable.getColumn(queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
+		queueTable.addMouseListener(new HyperlinkMouseAdapter(5));
 
-		this.queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		//ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);
-		this.stoppenButton.setEnabled(false);
+		stoppenButton.setEnabled(false);
 
-		this.speedLimitSpinner.setModel(new SpinnerNumberModel(0, 0, 10000, 10));
-		this.speedLimitSpinner.setEditor(new JSpinner.NumberEditor(this.speedLimitSpinner, "Max: # kb/s")); //NON-NLS
+		speedLimitSpinner.setModel(new SpinnerNumberModel(0, 0, 10000, 10));
+		speedLimitSpinner.setEditor(new JSpinner.NumberEditor(speedLimitSpinner, "Max: # kb/s")); //NON-NLS
 
-		this.maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		this.maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(this.maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
+		maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
 
-		this.queueFinishedList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("queuefinishedlist.donothing"), this.resourceBundle.getString("queuefinishedlist.closeapplication"), this.resourceBundle.getString(
-				"queuefinishedlist.shutdown"), this.resourceBundle.getString("queuefinishedlist.hibernate")}));
-		this.queueViewList.setModel(new DefaultComboBoxModel(new String[]{this.resourceBundle.getString("queueviewlist.all"), this.resourceBundle.getString("queueviewlist.uploads"), this.resourceBundle.getString("queueviewlist.queue")}));
+		queueFinishedList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queuefinishedlist.donothing"), resourceBundle.getString("queuefinishedlist.closeapplication"), resourceBundle.getString(
+				"queuefinishedlist.shutdown"), resourceBundle.getString("queuefinishedlist.hibernate")}));
+		queueViewList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queueviewlist.all"), resourceBundle.getString("queueviewlist.uploads"), resourceBundle.getString("queueviewlist.queue")}));
 	}
 
 	private void initListeners()
 	{
 		//Start, Stop, End Listeners
-		this.startenButton.addActionListener(new ActionListener()
+		startenButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (Boolean.parseBoolean((String) QueueViewPanel.this.settingsService.get("coreplugin.general.uploadconfirmation", "true"))) { //NON-NLS
-					final JCheckBox checkBox = new JCheckBox(QueueViewPanel.this.resourceBundle.getString("upload.confirmdialog.checkbox"));
-					final Object[] message = {QueueViewPanel.this.resourceBundle.getString("upload.confirmdialog.message"), checkBox};
+				if (Boolean.parseBoolean((String) settingsService.get("coreplugin.general.uploadconfirmation", "true"))) { //NON-NLS
+					final JCheckBox checkBox = new JCheckBox(resourceBundle.getString("upload.confirmdialog.checkbox"));
+					final Object[] message = {resourceBundle.getString("upload.confirmdialog.message"), checkBox};
 
-					final int result = JOptionPane.showConfirmDialog(null, message, QueueViewPanel.this.resourceBundle.getString("youtube.confirmdialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					final int result = JOptionPane.showConfirmDialog(null, message, resourceBundle.getString("youtube.confirmdialog.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (result != 0) {
 						return;
 					}
 
 					if (checkBox.isSelected()) {
-						QueueViewPanel.this.settingsService.set("coreplugin.general.uploadconfirmation", "false");
-						QueueViewPanel.this.settingsService.save();
+						settingsService.set("coreplugin.general.uploadconfirmation", "false");
+						settingsService.save();
 					}
 				}
 
-				QueueViewPanel.this.controller.startQueue();
-				QueueViewPanel.this.startenButton.setEnabled(false);
-				QueueViewPanel.this.stoppenButton.setEnabled(true);
+				controller.startQueue();
+				startenButton.setEnabled(false);
+				stoppenButton.setEnabled(true);
 			}
 		});
 
-		this.stoppenButton.addActionListener(new ActionListener()
+		stoppenButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				QueueViewPanel.this.controller.stopQueue();
-				QueueViewPanel.this.startenButton.setEnabled(true);
-				QueueViewPanel.this.stoppenButton.setEnabled(false);
+				controller.stopQueue();
+				startenButton.setEnabled(true);
+				stoppenButton.setEnabled(false);
 			}
 		});
 
-		this.abortButton.addActionListener(new ActionListener()
+		abortButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.abortUpload(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.abortUpload(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
 
-		this.queueFinishedList.addItemListener(new ItemListener()
+		queueFinishedList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
-				QueueViewPanel.this.controller.changeQueueFinished(QueueViewPanel.this.queueFinishedList.getSelectedIndex());
+				controller.changeQueueFinished(queueFinishedList.getSelectedIndex());
 			}
 		});
 
 		//ADD Arrow Listeners
-		this.arrowTop.addActionListener(new ActionListener()
+		arrowTop.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.moveTop(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.moveTop(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
-		this.arrowUp.addActionListener(new ActionListener()
+		arrowUp.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.moveUp(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.moveUp(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
-		this.arrowDown.addActionListener(new ActionListener()
+		arrowDown.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.moveDown(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.moveDown(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
-		this.arrowBottom.addActionListener(new ActionListener()
+		arrowBottom.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.moveBottom(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.moveBottom(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
 
 		//Edit, Delete, View Buttons
-		this.editButton.addActionListener(new ActionListener()
+		editButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int selectedRow = QueueViewPanel.this.queueTable.getSelectedRow();
-				if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-					QueueViewPanel.this.controller.editEntry(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
-					QueueViewPanel.this.controller.deleteEntry(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+				final int selectedRow = queueTable.getSelectedRow();
+				if (controller.getQueueList().hasIndex(selectedRow)) {
+					controller.editEntry(controller.getQueueList().getRow(selectedRow));
+					controller.deleteEntry(controller.getQueueList().getRow(selectedRow));
 				}
 			}
 		});
 
-		this.deleteButton.addActionListener(new ActionListener()
+		deleteButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final int[] selectedRows = QueueViewPanel.this.queueTable.getSelectedRows();
-				final Collection<Queue> queues = new ArrayList<Queue>(QueueViewPanel.this.queueTable.getRowCount());
+				final int[] selectedRows = queueTable.getSelectedRows();
+				final Collection<Queue> queues = new ArrayList<Queue>(queueTable.getRowCount());
 				for (final int selectedRow : selectedRows) {
-					if (QueueViewPanel.this.controller.getQueueList().hasIndex(selectedRow)) {
-						queues.add(QueueViewPanel.this.controller.getQueueList().getRow(selectedRow));
+					if (controller.getQueueList().hasIndex(selectedRow)) {
+						queues.add(controller.getQueueList().getRow(selectedRow));
 					}
 				}
 
 				for (final Queue queue : queues) {
-					QueueViewPanel.this.controller.deleteEntry(queue);
+					controller.deleteEntry(queue);
 				}
 			}
 		});
 
-		this.queueViewList.addItemListener(new ItemListener()
+		queueViewList.addItemListener(new ItemListener()
 		{
 			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					QueueViewPanel.this.controller.changeQueueView((short) QueueViewPanel.this.queueViewList.getSelectedIndex());
+					controller.changeQueueView((short) queueViewList.getSelectedIndex());
 				}
 			}
 		});
 
-		this.controller.getQueueList().addTableModelListener(new TableModelListener()
+		controller.getQueueList().addTableModelListener(new TableModelListener()
 		{
 			@Override
 			public void tableChanged(final TableModelEvent e)
 			{
-				ColumnsAutoSizer.sizeColumnsToFit(QueueViewPanel.this.queueTable);
+				ColumnsAutoSizer.sizeColumnsToFit(queueTable);
 			}
 		});
-		this.queuePanel.addComponentListener(new ComponentAdapter()
+		queuePanel.addComponentListener(new ComponentAdapter()
 		{
 			@Override
 			public void componentResized(final ComponentEvent e)
 			{
-				ColumnsAutoSizer.sizeColumnsToFit(QueueViewPanel.this.queueTable);
+				ColumnsAutoSizer.sizeColumnsToFit(queueTable);
 			}
 		});
-		this.speedLimitSpinner.addChangeListener(new ChangeListener()
+		speedLimitSpinner.addChangeListener(new ChangeListener()
 		{
 			@Override
 			public void stateChanged(final ChangeEvent e)
 			{
-				QueueViewPanel.this.controller.changeSpeedLimit((Integer) QueueViewPanel.this.speedLimitSpinner.getValue());
+				controller.changeSpeedLimit((Integer) speedLimitSpinner.getValue());
 			}
 		});
-		this.maxUploadsSpinner.addChangeListener(new ChangeListener()
+		maxUploadsSpinner.addChangeListener(new ChangeListener()
 		{
 			@Override
 			public void stateChanged(final ChangeEvent e)
 			{
-				QueueViewPanel.this.controller.changeMaxUpload(Short.parseShort(QueueViewPanel.this.maxUploadsSpinner.getValue().toString()));
+				controller.changeMaxUpload(Short.parseShort(maxUploadsSpinner.getValue().toString()));
 			}
 		});
 	}
@@ -319,24 +319,24 @@ public final class QueueViewPanel
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadFinished(final String topic, final Object o)
 	{
-		this.startenButton.setEnabled(true);
-		this.stoppenButton.setEnabled(false);
+		startenButton.setEnabled(true);
+		stoppenButton.setEnabled(false);
 	}
 
 	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
 	public void onQueueStart(final String topic, final Object o)
 	{
-		this.startenButton.setEnabled(false);
-		this.stoppenButton.setEnabled(true);
+		startenButton.setEnabled(false);
+		stoppenButton.setEnabled(true);
 	}
 
 	public JPanel getJPanel()
 	{
-		return this.queuePanel;
+		return queuePanel;
 	}
 
 	public QueueController getQueueController()
 	{
-		return this.controller;
+		return controller;
 	}
 }

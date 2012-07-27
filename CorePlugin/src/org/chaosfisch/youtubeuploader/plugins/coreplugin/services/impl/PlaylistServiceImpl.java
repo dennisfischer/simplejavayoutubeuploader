@@ -82,47 +82,47 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	@Transactional @Override public List<Playlist> getByAccount(final Account account)
 	{
-		return this.playlistMapper.findPlaylists(account);
+		return playlistMapper.findPlaylists(account);
 	}
 
 	@Transactional @Override public List<Playlist> getAll()
 	{
-		return this.playlistMapper.getAll();
+		return playlistMapper.getAll();
 	}
 
 	@Transactional @Override public Playlist find(final Playlist playlist)
 	{
-		return this.playlistMapper.findPlaylist(playlist);
+		return playlistMapper.findPlaylist(playlist);
 	}
 
 	@Transactional @Override public Playlist create(final Playlist playlist)
 	{
-		this.playlistMapper.createPlaylist(playlist);
+		playlistMapper.createPlaylist(playlist);
 		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_ADDED, playlist);
 		return playlist;
 	}
 
 	@Transactional @Override public Playlist update(final Playlist playlist)
 	{
-		this.playlistMapper.updatePlaylist(playlist);
+		playlistMapper.updatePlaylist(playlist);
 		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_UPDATED, playlist);
 		return playlist;
 	}
 
 	@Transactional @Override public Playlist delete(final Playlist playlist)
 	{
-		final List<Preset> presets = this.presetMapper.findByPlaylist(playlist);
+		final List<Preset> presets = presetMapper.findByPlaylist(playlist);
 		for (final Preset preset : presets) {
 			preset.playlist = null;
-			this.presetMapper.updatePreset(preset);
+			presetMapper.updatePreset(preset);
 		}
-		final List<Queue> queues = this.queueMapper.findByPlaylist(playlist);
+		final List<Queue> queues = queueMapper.findByPlaylist(playlist);
 		for (final Queue queue : queues) {
 			queue.playlist = null;
-			this.queueMapper.updateQueue(queue);
+			queueMapper.updateQueue(queue);
 		}
 
-		this.playlistMapper.deletePlaylist(playlist);
+		playlistMapper.deletePlaylist(playlist);
 		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_REMOVED, playlist);
 		return playlist;
 	}
@@ -130,11 +130,11 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Override
 	public void synchronizePlaylists(final List<Account> accounts)
 	{
-		if (this.synchronizeFlag) {
+		if (synchronizeFlag) {
 			return;
 		}
-		this.logger.info("Synchronizing playlists.");
-		this.synchronizeFlag = true;
+		logger.info("Synchronizing playlists.");
+		synchronizeFlag = true;
 		new BetterSwingWorker()
 		{
 			@Override
@@ -144,7 +144,7 @@ public class PlaylistServiceImpl implements PlaylistService
 				try {
 					request = new Request.Builder(Request.Method.GET, new URL(PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS)).build();
 				} catch (MalformedURLException ignored) {
-					PlaylistServiceImpl.this.logger.warn(String.format("Malformed url playlist synchronize feed: %s", PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS));
+					logger.warn(String.format("Malformed url playlist synchronize feed: %s", PlaylistServiceImpl.YOUTUBE_PLAYLIST_FEED_50_RESULTS));
 					return;
 				}
 				for (final Account account : accounts) {
@@ -152,7 +152,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					final Response response;
 					try {
 						final Request tmpRequest = (Request) request.clone();
-						PlaylistServiceImpl.this.getRequestSigner(account).sign(request);
+						getRequestSigner(account).sign(request);
 						response = tmpRequest.send();
 					} catch (AuthenticationException e) {
 						e.printStackTrace();
@@ -166,11 +166,11 @@ public class PlaylistServiceImpl implements PlaylistService
 					}
 
 					if (response.code == HTTP_STATUS.OK.getCode()) {
-						PlaylistServiceImpl.this.logger.debug(String.format("Playlist synchronize okay. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
-						final Feed feed = PlaylistServiceImpl.this.parseFeed(response.body, Feed.class);
+						logger.debug(String.format("Playlist synchronize okay. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
+						final Feed feed = parseFeed(response.body, Feed.class);
 
 						if (feed.videoEntries == null) {
-							PlaylistServiceImpl.this.logger.info("No playlists found.");
+							logger.info("No playlists found.");
 							return;
 						}
 						for (final VideoEntry entry : feed.videoEntries) {
@@ -181,10 +181,10 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.url = entry.title;
 							playlist.summary = entry.playlistSummary;
 							playlist.account = account;
-							PlaylistServiceImpl.this.createOrUpdate(playlist);
+							createOrUpdate(playlist);
 						}
 					} else {
-						PlaylistServiceImpl.this.logger.info(String.format("Playlist synchronize failed. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
+						logger.info(String.format("Playlist synchronize failed. Code: %d, Message: %s, Body: %s", response.code, response.message, response.body));
 					}
 				}
 			}
@@ -192,8 +192,8 @@ public class PlaylistServiceImpl implements PlaylistService
 			@Override protected void onDone()
 			{
 				EventBus.publish("playlistsSynchronized", null); //NON-NLS
-				PlaylistServiceImpl.this.logger.info("Playlists synchronized");
-				PlaylistServiceImpl.this.synchronizeFlag = false;
+				logger.info("Playlists synchronized");
+				synchronizeFlag = false;
 			}
 		}.execute();
 	}
@@ -202,12 +202,12 @@ public class PlaylistServiceImpl implements PlaylistService
 	{
 		final Playlist searchObject = new Playlist();
 		searchObject.playlistKey = playlist.playlistKey;
-		final Playlist findObject = this.find(searchObject);
+		final Playlist findObject = find(searchObject);
 		if (!(findObject == null)) {
 			playlist.identity = findObject.identity;
-			this.update(playlist);
+			update(playlist);
 		} else {
-			this.create(playlist);
+			create(playlist);
 		}
 	}
 
@@ -216,11 +216,11 @@ public class PlaylistServiceImpl implements PlaylistService
 		final VideoEntry entry = new VideoEntry();
 		entry.title = playlist.title;
 		entry.playlistSummary = playlist.summary;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", this.parseObjectToFeed(entry)); //NON-NLS
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", parseObjectToFeed(entry)); //NON-NLS
 
 		try {
 			final Request request = new Request.Builder(Request.Method.POST, new URL("http://gdata.youtube.com/feeds/api/users/default/playlists")).build();
-			this.getRequestSigner(playlist.account).sign(request);
+			getRequestSigner(playlist.account).sign(request);
 
 			request.setContentType("application/atom+xml; charset=utf-8"); //NON-NLS
 
@@ -231,14 +231,14 @@ public class PlaylistServiceImpl implements PlaylistService
 				outputStreamWriter.flush();
 
 				final Response response = request.send();
-				this.logger.debug(String.format("Response-Playlist: %s, Code: %d, Message: %s, Body: %s", playlist.title, response.code, response.message, response.body));
+				logger.debug(String.format("Response-Playlist: %s, Code: %d, Message: %s, Body: %s", playlist.title, response.code, response.message, response.body));
 				if ((response.code == HTTP_STATUS.OK.getCode()) || (response.code == HTTP_STATUS.CREATED.getCode())) {
 					final List<Account> accountEntries = new LinkedList<Account>();
 					accountEntries.add(playlist.account);
-					this.synchronizePlaylists(accountEntries);
+					synchronizePlaylists(accountEntries);
 				}
 			} catch (IOException e) {
-				this.logger.debug("Failed adding Playlist! IOException", e);
+				logger.debug("Failed adding Playlist! IOException", e);
 			} finally {
 				try {
 					bufferedOutputStream.close();
@@ -247,11 +247,11 @@ public class PlaylistServiceImpl implements PlaylistService
 				}
 			}
 		} catch (MalformedURLException ex) {
-			this.logger.debug("Failed adding Playlist! MalformedURLException", ex);
+			logger.debug("Failed adding Playlist! MalformedURLException", ex);
 		} catch (IOException ex) {
-			this.logger.debug("Failed adding Playlist! IOException", ex);
+			logger.debug("Failed adding Playlist! IOException", ex);
 		} catch (AuthenticationException ignored) {
-			this.logger.debug("Failed adding playlist! Not authenticated");
+			logger.debug("Failed adding playlist! Not authenticated");
 		}
 
 		return null;
@@ -264,10 +264,10 @@ public class PlaylistServiceImpl implements PlaylistService
 			final VideoEntry submitFeed = new VideoEntry();
 			submitFeed.id = videoId;
 			submitFeed.mediaGroup = null;
-			final String playlistFeed = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", this.parseObjectToFeed(submitFeed)); //NON-NLS
+			final String playlistFeed = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", parseObjectToFeed(submitFeed)); //NON-NLS
 
 			final Request request = new Request.Builder(Request.Method.POST, submitUrl).build();
-			this.getRequestSigner(playlist.account).sign(request);
+			getRequestSigner(playlist.account).sign(request);
 			request.setContentType("application/atom+xml"); //NON-NLS
 
 			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(request.setContent());
@@ -276,7 +276,7 @@ public class PlaylistServiceImpl implements PlaylistService
 			outputStreamWriter.flush();
 
 			final Response response = request.send();
-			this.logger.debug(String.format("Video added to playlist! Videoid: %s, Playlist: %s, Code: %d, Message: %s, Body: %s", videoId, playlist.title, response.code, response.message, response.body));
+			logger.debug(String.format("Video added to playlist! Videoid: %s, Playlist: %s, Code: %d, Message: %s, Body: %s", videoId, playlist.title, response.code, response.message, response.body));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (AuthenticationException e) {
@@ -313,6 +313,6 @@ public class PlaylistServiceImpl implements PlaylistService
 	{
 		final List<Account> accounts = new LinkedList<Account>();
 		accounts.add(account);
-		this.synchronizePlaylists(accounts);
+		synchronizePlaylists(accounts);
 	}
 }

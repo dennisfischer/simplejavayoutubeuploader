@@ -45,21 +45,21 @@ public class DesignImpl implements Design
 
 	@Override public Class<? extends LookAndFeel> getLaF()
 	{
-		return this.laf;
+		return laf;
 	}
 
 	@Override public String getName()
 	{
-		return this.name;
+		return name;
 	}
 
 	@Override public String getShortName()
 	{
-		return this.shortName;
+		return shortName;
 	}
 
 	@Override public String toString()
 	{
-		return this.getName();
+		return getName();
 	}
 }

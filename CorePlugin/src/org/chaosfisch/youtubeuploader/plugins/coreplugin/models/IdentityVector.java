@@ -48,21 +48,21 @@ public class IdentityVector<E> extends Vector<E>
 
 	@Override public synchronized int lastIndexOf(final Object o, final int index)
 	{
-		if (index >= this.elementCount) {
-			throw new IndexOutOfBoundsException(String.format("%d >= %d", index, this.elementCount)); //NON-NLS
+		if (index >= elementCount) {
+			throw new IndexOutOfBoundsException(String.format("%d >= %d", index, elementCount)); //NON-NLS
 		}
 
 		if (o == null) {
 			for (int i = index; i >= 0; i--) {
-				if (this.elementData[i] == null) {
+				if (elementData[i] == null) {
 					return i;
 				}
 			}
 		} else {
 			for (int i = index; i >= 0; i--) {
-				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
+				if (IModel.class.isInstance(o) && IModel.class.isInstance(elementData[i])) {
 					final IModel model1 = (IModel) o;
-					final IModel model2 = (IModel) this.elementData[i];
+					final IModel model2 = (IModel) elementData[i];
 					if (model1.getIdentity().equals(model2.getIdentity())) {
 						return i;
 					}
@@ -75,16 +75,16 @@ public class IdentityVector<E> extends Vector<E>
 	@Override public synchronized int indexOf(final Object o, final int index)
 	{
 		if (o == null) {
-			for (int i = index; i < this.elementCount; i++) {
-				if (this.elementData[i] == null) {
+			for (int i = index; i < elementCount; i++) {
+				if (elementData[i] == null) {
 					return i;
 				}
 			}
 		} else {
-			for (int i = index; i < this.elementCount; i++) {
-				if (IModel.class.isInstance(o) && IModel.class.isInstance(this.elementData[i])) {
+			for (int i = index; i < elementCount; i++) {
+				if (IModel.class.isInstance(o) && IModel.class.isInstance(elementData[i])) {
 					final IModel model1 = (IModel) o;
-					final IModel model2 = (IModel) this.elementData[i];
+					final IModel model2 = (IModel) elementData[i];
 					if (model1.getIdentity().equals(model2.getIdentity())) {
 						return i;
 					}

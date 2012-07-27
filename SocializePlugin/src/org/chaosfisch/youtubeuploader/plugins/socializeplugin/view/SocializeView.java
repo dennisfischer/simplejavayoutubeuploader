@@ -74,60 +74,60 @@ public class SocializeView implements SocializeViewBinding
 	@Inject
 	public SocializeView(final MessageController messageController, final SettingsService settingsService, final Injector injector, @Named("mainFrame") final JFrame mainFrame)
 	{
-		this.controller = messageController;
-		this.settings = settingsService;
+		controller = messageController;
+		settings = settingsService;
 		this.injector = injector;
 		this.mainFrame = mainFrame;
-		this.initComponents();
-		this.initListeners();
+		initComponents();
+		initListeners();
 	}
 
 	private void initComponents()
 	{
-		this.controller.setup();
+		controller.setup();
 		final SpinnerModel spinnerNumberModel = new SpinnerNumberModel(1, 1, 10000, 1);
-		this.uploadIDSpinner.setModel(spinnerNumberModel);
-		this.uploadIDSpinner.setEditor(new JSpinner.NumberEditor(this.uploadIDSpinner));
+		uploadIDSpinner.setModel(spinnerNumberModel);
+		uploadIDSpinner.setEditor(new JSpinner.NumberEditor(uploadIDSpinner));
 
-		this.messagesTable.setModel(this.controller.getMessageTableModel());
-		this.messagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		messagesTable.setModel(controller.getMessageTableModel());
+		messagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		this.publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
+		publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
 	}
 
 	private void initListeners()
 	{
-		this.publishComboBox.addItemListener(new ItemListener()
+		publishComboBox.addItemListener(new ItemListener()
 		{
 			@Override public void itemStateChanged(final ItemEvent e)
 			{
-				if ((e.getStateChange() == ItemEvent.SELECTED) && (SocializeView.this.publishComboBox.getSelectedIndex() == 0)) {
-					SocializeView.this.uploadIDSpinner.setEnabled(true);
+				if ((e.getStateChange() == ItemEvent.SELECTED) && (publishComboBox.getSelectedIndex() == 0)) {
+					uploadIDSpinner.setEnabled(true);
 				} else {
-					SocializeView.this.uploadIDSpinner.setEnabled(false);
+					uploadIDSpinner.setEnabled(false);
 				}
 			}
 		});
 
-		this.addButton.addActionListener(new ActionListener()
+		addButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				SocializeView.this.validationResultModel.setResult(SocializeView.this.validate());
-				if (SocializeView.this.validationResultModel.hasErrors()) {
+				validationResultModel.setResult(validate());
+				if (validationResultModel.hasErrors()) {
 					return;
 				}
-				SocializeView.this.controller.addMessage(SocializeView.this.publishComboBox.getSelectedIndex(), SocializeView.this.getData());
+				controller.addMessage(publishComboBox.getSelectedIndex(), getData());
 			}
 		});
 
-		this.twitterButton.addActionListener(new ActionListener()
+		twitterButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				final ISocialProvider socialProvider = SocializeView.this.controller.getMessageService().get(Provider.TWITTER);
-				final String settingsString = (String) SocializeView.this.settings.get("socialize.socialize.twitter", " ___ "); //NON-NLS
-				if (SocializeView.this.twitterButton.isSelected()) {
+				final ISocialProvider socialProvider = controller.getMessageService().get(Provider.TWITTER);
+				final String settingsString = (String) settings.get("socialize.socialize.twitter", " ___ "); //NON-NLS
+				if (twitterButton.isSelected()) {
 					if (settingsString.contains("___")) {
 						final String token = settingsString.substring(0, settingsString.indexOf("___"));
 						final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
@@ -138,16 +138,16 @@ public class SocializeView implements SocializeViewBinding
 						socialProvider.setAccessToken(null);
 						socialProvider.authenticate();
 						if (!socialProvider.hasValidAccessToken()) {
-							SocializeView.this.twitterButton.setSelected(false);
+							twitterButton.setSelected(false);
 						} else {
-							SocializeView.this.settings.set("socialize.socialize.twitter", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
-							SocializeView.this.settings.save();
+							settings.set("socialize.socialize.twitter", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
+							settings.save();
 						}
 					}
 				}
 			}
 		});
-		this.facebookButton.addActionListener(new ActionListener()
+		facebookButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
@@ -157,9 +157,9 @@ public class SocializeView implements SocializeViewBinding
 
 					@Override protected void background()
 					{
-						final ISocialProvider socialProvider = SocializeView.this.controller.getMessageService().get(Provider.FACEBOOK);
-						final String settingsString = (String) SocializeView.this.settings.get("socialize.socialize.facebook", " ___ "); //NON-NLS
-						if (SocializeView.this.facebookButton.isSelected()) {
+						final ISocialProvider socialProvider = controller.getMessageService().get(Provider.FACEBOOK);
+						final String settingsString = (String) settings.get("socialize.socialize.facebook", " ___ "); //NON-NLS
+						if (facebookButton.isSelected()) {
 							if (settingsString.contains("___")) {
 								final String token = settingsString.substring(0, settingsString.indexOf("___"));
 								final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
@@ -173,8 +173,8 @@ public class SocializeView implements SocializeViewBinding
 									@Override public void run()
 									{
 										//noinspection UnqualifiedFieldAccess
-										glassPane = SocializeView.this.injector.getInstance(DisabledGlassPane.class);
-										final JRootPane rootPane = SwingUtilities.getRootPane(SocializeView.this.mainFrame);
+										glassPane = injector.getInstance(DisabledGlassPane.class);
+										final JRootPane rootPane = SwingUtilities.getRootPane(mainFrame);
 										//noinspection UnqualifiedFieldAccess
 										rootPane.setGlassPane(glassPane);
 										//noinspection UnqualifiedFieldAccess
@@ -185,10 +185,10 @@ public class SocializeView implements SocializeViewBinding
 								socialProvider.setAccessToken(null);
 								socialProvider.authenticate();
 								if (!socialProvider.hasValidAccessToken()) {
-									SocializeView.this.facebookButton.setSelected(false);
+									facebookButton.setSelected(false);
 								} else {
-									SocializeView.this.settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
-									SocializeView.this.settings.save();
+									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
+									settings.save();
 								}
 							}
 						}
@@ -196,8 +196,8 @@ public class SocializeView implements SocializeViewBinding
 
 					@Override protected void onDone()
 					{
-						if (this.glassPane != null) {
-							this.glassPane.deactivate();
+						if (glassPane != null) {
+							glassPane.deactivate();
 						}
 					}
 				};
@@ -205,18 +205,18 @@ public class SocializeView implements SocializeViewBinding
 			}
 		});
 
-		this.deleteButton.addActionListener(new ActionListener()
+		deleteButton.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				SocializeView.this.controller.removeEntryAt(SocializeView.this.messagesTable.getSelectedRow());
+				controller.removeEntryAt(messagesTable.getSelectedRow());
 			}
 		});
 	}
 
 	public JPanel getPanel()
 	{
-		return this.panel;
+		return panel;
 	}
 
 	//validate each of the three input fields
@@ -224,15 +224,15 @@ public class SocializeView implements SocializeViewBinding
 	{
 		final ValidationResult validationResult = new ValidationResult();
 
-		if (!this.googlePlusButton.isSelected() && !this.facebookButton.isSelected() && !this.twitterButton.isSelected() && !this.youtubeButton.isSelected()) {
+		if (!googlePlusButton.isSelected() && !facebookButton.isSelected() && !twitterButton.isSelected() && !youtubeButton.isSelected()) {
 			validationResult.addError(I18nSupport.message("validation.service"));
 		}
 
-		if (!ValidationUtils.hasBoundedLength(this.messageTextArea.getText(), 5, 140)) {
+		if (!ValidationUtils.hasBoundedLength(messageTextArea.getText(), 5, 140)) {
 			validationResult.addError(I18nSupport.message("validation.message"));
 		}
 
-		if (this.messageTextArea.getText().contains("{video}") && !ValidationUtils.hasBoundedLength(this.messageTextArea.getText(), 5, 120)) { //NON-NLS
+		if (messageTextArea.getText().contains("{video}") && !ValidationUtils.hasBoundedLength(messageTextArea.getText(), 5, 120)) { //NON-NLS
 			validationResult.addError(I18nSupport.message("validation.message.video"));
 		}
 
@@ -241,30 +241,30 @@ public class SocializeView implements SocializeViewBinding
 
 	private void createUIComponents()
 	{
-		this.validationResultModel = new DefaultValidationResultModel();
-		this.validationComponent = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(this.validationResultModel);
+		validationResultModel = new DefaultValidationResultModel();
+		validationComponent = (JPanel) ValidationResultViewFactory.createReportIconAndTextPane(validationResultModel);
 	}
 
 	public void setData(final Message data)
 	{
-		this.messageTextArea.setText(data.message);
-		this.facebookButton.setSelected(data.facebook);
-		this.twitterButton.setSelected(data.twitter);
-		this.googlePlusButton.setSelected(data.googleplus);
-		this.youtubeButton.setSelected(data.youtube);
-		this.publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
-		this.uploadIDSpinner.setValue(data.uploadid);
+		messageTextArea.setText(data.message);
+		facebookButton.setSelected(data.facebook);
+		twitterButton.setSelected(data.twitter);
+		googlePlusButton.setSelected(data.googleplus);
+		youtubeButton.setSelected(data.youtube);
+		publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
+		uploadIDSpinner.setValue(data.uploadid);
 	}
 
 	public Message getData()
 	{
 		final Message data = new Message();
-		data.message = this.messageTextArea.getText();
-		data.facebook = this.facebookButton.isSelected();
-		data.twitter = this.twitterButton.isSelected();
-		data.youtube = this.youtubeButton.isSelected();
-		data.googleplus = this.googlePlusButton.isSelected();
-		data.uploadid = (Integer) this.uploadIDSpinner.getValue();
+		data.message = messageTextArea.getText();
+		data.facebook = facebookButton.isSelected();
+		data.twitter = twitterButton.isSelected();
+		data.youtube = youtubeButton.isSelected();
+		data.googleplus = googlePlusButton.isSelected();
+		data.uploadid = (Integer) uploadIDSpinner.getValue();
 
 		return data;
 	}

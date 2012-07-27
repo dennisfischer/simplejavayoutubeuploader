@@ -37,7 +37,7 @@ public class Response
 	 */
 	public Response()
 	{
-		this.status = HTTP_STATUS.OK.toString();
+		status = HTTP_STATUS.OK.toString();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class Response
 		this.status = status;
 		this.mimeType = mimeType;
 		try {
-			this.data = new ByteArrayInputStream(txt.getBytes("UTF-8"));
+			data = new ByteArrayInputStream(txt.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException uee) {
 			uee.printStackTrace();
 		}
@@ -70,7 +70,7 @@ public class Response
 	 */
 	public void addHeader(final String name, final String value)
 	{
-		this.header.put(name, value);
+		header.put(name, value);
 	}
 
 	/**

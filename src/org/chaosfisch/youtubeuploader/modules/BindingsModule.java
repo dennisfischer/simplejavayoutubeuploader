@@ -49,14 +49,14 @@ public class BindingsModule extends AbstractModule
 	@Override
 	protected void configure()
 	{
-		this.bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
-		this.bind(PluginService.class).toInstance(new PluginServiceImpl());
-		this.bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); //NON-NLS
-		this.bind(DesignManager.class).in(Singleton.class);
-		this.bind(PluginController.class).in(Singleton.class);
-		this.bindListener(Matchers.any(), new Log4JTypeListener());
-		this.bind(JFileChooser.class).in(Singleton.class);
-		this.bind(SettingsService.class).to(SettingsServiceImpl.class).in(Singleton.class);
-		this.bind(SettingsPersister.class).to(PropertyFileSettingsPersisterImpl.class).in(Singleton.class);
+		bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
+		bind(PluginService.class).toInstance(new PluginServiceImpl());
+		bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); //NON-NLS
+		bind(DesignManager.class).in(Singleton.class);
+		bind(PluginController.class).in(Singleton.class);
+		bindListener(Matchers.any(), new Log4JTypeListener());
+		bind(JFileChooser.class).in(Singleton.class);
+		bind(SettingsService.class).to(SettingsServiceImpl.class).in(Singleton.class);
+		bind(SettingsPersister.class).to(PropertyFileSettingsPersisterImpl.class).in(Singleton.class);
 	}
 }

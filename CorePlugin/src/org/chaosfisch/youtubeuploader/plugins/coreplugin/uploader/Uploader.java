@@ -80,28 +80,28 @@ public class Uploader
 
 	public Uploader()
 	{
-		this.executorService = Executors.newFixedThreadPool(10);
+		executorService = Executors.newFixedThreadPool(10);
 		AnnotationProcessor.process(this);
 	}
 
 	public void start()
 	{
-		this.inProgress = true;
+		inProgress = true;
 
 		new BetterSwingWorker()
 		{
 			@Override
 			protected void background()
 			{
-				while (Uploader.this.inProgress) {
-					if (Uploader.this.hasFreeUploadSpace()) {
-						final Queue polled = Uploader.this.queueService.poll();
+				while (inProgress) {
+					if (hasFreeUploadSpace()) {
+						final Queue polled = queueService.poll();
 						if (polled != null) {
-							final UploadWorker uploadWorker = Uploader.this.injector.getInstance(UploadWorker.class);
-							uploadWorker.run(polled, Uploader.this.speedLimit, 1048576 * Integer.parseInt((String) Uploader.this.settingsService.get("coreplugin.general.CHUNK_SIZE", "10")));
-							Uploader.this.executorService.submit(uploadWorker);
-							Uploader.this.setSpeedLimit(Uploader.this.speedLimit);
-							Uploader.this.runningUploads++;
+							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
+							uploadWorker.run(polled, speedLimit, 1048576 * Integer.parseInt((String) settingsService.get("coreplugin.general.CHUNK_SIZE", "10")));
+							executorService.submit(uploadWorker);
+							setSpeedLimit(speedLimit);
+							runningUploads++;
 						}
 					}
 
@@ -122,7 +122,7 @@ public class Uploader
 
 	public void stop()
 	{
-		this.inProgress = false;
+		inProgress = false;
 	}
 
 	public void abort(final Queue queue)
@@ -132,42 +132,42 @@ public class Uploader
 
 	public boolean isRunning()
 	{
-		return this.inProgress && (this.runningUploads != 0);
+		return inProgress && (runningUploads != 0);
 	}
 
 	private boolean hasFreeUploadSpace()
 	{
-		return this.runningUploads < this.maxUploads;
+		return runningUploads < maxUploads;
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
 	public void onUploadJobFinished(final String topic, final Queue queue)
 	{
-		this.logger.info("Upload successful");
-		this.uploadFinished(queue);
+		logger.info("Upload successful");
+		uploadFinished(queue);
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
 	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
 	{
-		this.logger.info("Upload failed");
-		this.uploadFinished(uploadFailed.getQueue());
+		logger.info("Upload failed");
+		uploadFinished(uploadFailed.getQueue());
 	}
 
 	private void uploadFinished(final Queue queue)
 	{
-		this.logger.info(String.format("Upload finished: %s; %s", queue.title, queue.videoId));
-		this.runningUploads--;
-		this.logger.info(String.format("Running uploads: %s", this.runningUploads));
-		this.queueService.update(queue);
-		if (this.queueService.getQueued().isEmpty() && (this.runningUploads == 0)) {
-			this.logger.info("All uploads finished");
+		logger.info(String.format("Upload finished: %s; %s", queue.title, queue.videoId));
+		runningUploads--;
+		logger.info(String.format("Running uploads: %s", runningUploads));
+		queueService.update(queue);
+		if (queueService.getQueued().isEmpty() && (runningUploads == 0)) {
+			logger.info("All uploads finished");
 			final Timer timer = new Timer();
 			timer.schedule(new TimerTask()
 			{
 				@Override public void run()
 				{
-					switch (Uploader.this.actionOnFinish) {
+					switch (actionOnFinish) {
 						case 0:
 							return;
 						case 1:
@@ -183,7 +183,7 @@ public class Uploader
 			}, 30000);
 		}
 
-		this.logger.info(String.format("Left uploads: %d", this.queueService.getQueued().size()));
+		logger.info(String.format("Left uploads: %d", queueService.getQueued().size()));
 	}
 
 	public void setActionOnFinish(final short actionOnFinish)
@@ -193,10 +193,10 @@ public class Uploader
 
 	public void setSpeedLimit(final int bytes)
 	{
-		this.speedLimit = bytes * 1024;
-		if (this.runningUploads > 0) {
-			this.speedLimit = Math.round((bytes * 1024) / this.runningUploads);
-			EventBus.publish(Uploader.UPLOAD_LIMIT, this.speedLimit);
+		speedLimit = bytes * 1024;
+		if (runningUploads > 0) {
+			speedLimit = Math.round((bytes * 1024) / runningUploads);
+			EventBus.publish(Uploader.UPLOAD_LIMIT, speedLimit);
 		}
 	}
 
@@ -211,7 +211,7 @@ public class Uploader
 
 	public void exit()
 	{
-		this.executorService.shutdownNow();
+		executorService.shutdownNow();
 	}
 
 	public void runStarttimeChecker()
@@ -221,10 +221,10 @@ public class Uploader
 			@Override
 			protected void background()
 			{
-				while (!Thread.currentThread().isInterrupted() && Uploader.this.startTimeCheckerFlag) {
+				while (!Thread.currentThread().isInterrupted() && startTimeCheckerFlag) {
 
-					if (Uploader.this.queueService.hasStarttime() && !Uploader.this.inProgress) {
-						Uploader.this.start();
+					if (queueService.hasStarttime() && !inProgress) {
+						start();
 					}
 
 					try {
@@ -245,6 +245,6 @@ public class Uploader
 
 	public void stopStarttimeChecker()
 	{
-		this.startTimeCheckerFlag = false;
+		startTimeCheckerFlag = false;
 	}
 }

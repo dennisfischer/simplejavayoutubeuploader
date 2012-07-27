@@ -55,7 +55,7 @@ public class QueueController
 	@Inject
 	public QueueController(final QueueTableModel queueTableModel, final QueueService queueService, final Uploader uploader)
 	{
-		this.queueList = queueTableModel;
+		queueList = queueTableModel;
 		this.queueService = queueService;
 		this.uploader = uploader;
 		AnnotationProcessor.process(this);
@@ -63,68 +63,68 @@ public class QueueController
 
 	public void startQueue()
 	{
-		this.uploader.start();
+		uploader.start();
 	}
 
 	public void stopQueue()
 	{
-		this.uploader.stop();
+		uploader.stop();
 	}
 
 	public void abortUpload(final Queue queue)
 	{
-		this.uploader.abort(queue);
+		uploader.abort(queue);
 	}
 
 	public void changeQueueFinished(final int item)
 	{
-		this.uploader.setActionOnFinish((short) item);
+		uploader.setActionOnFinish((short) item);
 	}
 
 	public void moveTop(final Queue queue)
 	{
-		this.queueService.sort(queue, QueuePosition.QUEUE_TOP);
-		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_TOP);
+		queueService.sort(queue, QueuePosition.QUEUE_TOP);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_TOP);
 	}
 
 	public void moveUp(final Queue queue)
 	{
-		this.queueService.sort(queue, QueuePosition.QUEUE_UP);
-		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_UP);
+		queueService.sort(queue, QueuePosition.QUEUE_UP);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_UP);
 	}
 
 	public void moveDown(final Queue queue)
 	{
-		this.queueService.sort(queue, QueuePosition.QUEUE_DOWN);
-		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_DOWN);
+		queueService.sort(queue, QueuePosition.QUEUE_DOWN);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_DOWN);
 	}
 
 	public void moveBottom(final Queue queue)
 	{
-		this.queueService.sort(queue, QueuePosition.QUEUE_BOTTOM);
-		this.queueList.sortQueueEntry(queue, QueuePosition.QUEUE_BOTTOM);
+		queueService.sort(queue, QueuePosition.QUEUE_BOTTOM);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_BOTTOM);
 	}
 
 	public void changeQueueView(final short item)
 	{
-		if (this.queueList.getRowCount() > 0) {
-			System.out.println(this.queueList.getRowCount());
-			this.queueList.removeRowRange(0, this.queueList.getRowCount() - 1);
+		if (queueList.getRowCount() > 0) {
+			System.out.println(queueList.getRowCount());
+			queueList.removeRowRange(0, queueList.getRowCount() - 1);
 		}
 		switch (item) {
 			case 0:
-				for (final Queue queue : this.queueService.getAll()) {
-					this.queueList.addRow(queue);
+				for (final Queue queue : queueService.getAll()) {
+					queueList.addRow(queue);
 				}
 				break;
 			case 1:
-				for (final Queue queue : this.queueService.getArchived()) {
-					this.queueList.addRow(queue);
+				for (final Queue queue : queueService.getArchived()) {
+					queueList.addRow(queue);
 				}
 				break;
 			case 2:
-				for (final Queue queue : this.queueService.getQueued()) {
-					this.queueList.addRow(queue);
+				for (final Queue queue : queueService.getQueued()) {
+					queueList.addRow(queue);
 				}
 				break;
 		}
@@ -132,9 +132,9 @@ public class QueueController
 
 	public void deleteEntry(final Queue queue)
 	{
-		this.uploader.abort(queue);
-		this.getQueueList().removeElement(queue);
-		this.queueService.delete(queue);
+		uploader.abort(queue);
+		getQueueList().removeElement(queue);
+		queueService.delete(queue);
 	}
 
 	public void editEntry(final Queue queue)
@@ -144,22 +144,22 @@ public class QueueController
 
 	public QueueTableModel getQueueList()
 	{
-		return this.queueList;
+		return queueList;
 	}
 
 	public QueueService getQueueService()
 	{
-		return this.queueService;
+		return queueService;
 	}
 
 	public void changeSpeedLimit(final int bytes)
 	{
-		this.uploader.setSpeedLimit(bytes);
+		uploader.setSpeedLimit(bytes);
 	}
 
 	public void changeMaxUpload(final short maxUploads)
 	{
-		this.uploader.setMaxUploads(maxUploads);
+		uploader.setMaxUploads(maxUploads);
 	}
 
 	public ExtensionPoint uploadExitPoint()
@@ -169,8 +169,8 @@ public class QueueController
 			@Override
 			public boolean canExit()
 			{
-				if (QueueController.this.uploader.isRunning()) {
-					final int result = JOptionPane.showConfirmDialog(null, QueueController.this.resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
+				if (uploader.isRunning()) {
+					final int result = JOptionPane.showConfirmDialog(null, resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
 																	 //NON-NLS
 																	 JOptionPane.YES_NO_OPTION);
 					return result == 0;
@@ -183,8 +183,8 @@ public class QueueController
 	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
 	public void onQueueStart(final String topic, final Object o)
 	{
-		if (!this.uploader.isRunning()) {
-			this.uploader.start();
+		if (!uploader.isRunning()) {
+			uploader.start();
 		}
 	}
 }

@@ -58,7 +58,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	public ListTableModel(final int columns)
 	{
 		super(ListTableModel.newList(columns));
-		this.setRowClass(List.class);
+		setRowClass(List.class);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	public ListTableModel(final List<String> columnNames)
 	{
 		super(columnNames);
-		this.setRowClass(List.class);
+		setRowClass(List.class);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	public ListTableModel(final int rows, final int columns)
 	{
 		super(ListTableModel.newList(columns));
-		this.setRowClass(List.class);
+		setRowClass(List.class);
 
 		final List<List<Object>> data = new ArrayList<List<Object>>(rows);
 
@@ -94,7 +94,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 			data.add(new ArrayList<Object>(columns));
 		}
 
-		this.insertRows(0, data);
+		insertRows(0, data);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	public ListTableModel(final List<List<Object>> modelData, final List<String> columnNames)
 	{
 		super(modelData, columnNames);
-		this.setRowClass(List.class);
+		setRowClass(List.class);
 	}
 
 	/*
@@ -165,7 +165,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	 */
 	public Object getValueAt(final int row, final int column)
 	{
-		final List<Object> rowData = this.getRow(row);
+		final List<Object> rowData = getRow(row);
 		return rowData.get(column);
 	}
 
@@ -183,9 +183,9 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	@Override
 	public void setValueAt(final Object value, final int row, final int column)
 	{
-		final List<Object> rowData = this.getRow(row);
+		final List<Object> rowData = getRow(row);
 		rowData.set(column, value);
-		this.fireTableCellUpdated(row, column);
+		fireTableCellUpdated(row, column);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	@Override
 	public void insertRow(final int row, final List<Object> rowData)
 	{
-		this.justifyRow(rowData);
+		justifyRow(rowData);
 		super.insertRow(row, rowData);
 	}
 
@@ -213,7 +213,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	public void insertRows(final int row, final List<List<Object>> rowList)
 	{
 		for (final List<Object> rowData : rowList) {
-			this.justifyRow(rowData);
+			justifyRow(rowData);
 		}
 
 		super.insertRows(row, rowList);
@@ -225,7 +225,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	@SuppressWarnings("unchecked")
 	private void justifyRow(final Collection<Object> rowData)
 	{
-		for (int i = rowData.size(); i < this.getColumnCount(); i++) {
+		for (int i = rowData.size(); i < getColumnCount(); i++) {
 			rowData.add(null);
 		}
 	}
@@ -238,7 +238,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	 */
 	public void addRow(final Object... rowData)
 	{
-		this.insertRow(this.getRowCount(), rowData);
+		insertRow(getRowCount(), rowData);
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class ListTableModel extends RowTableModel<List<Object>>
 	 */
 	public void insertRow(final int row, final Object... rowData)
 	{
-		this.insertRow(row, this.copyToList(rowData));
+		insertRow(row, copyToList(rowData));
 	}
 
 	/**
@@ -265,10 +265,10 @@ public class ListTableModel extends RowTableModel<List<Object>>
 		final List<List<Object>> data = new ArrayList<List<Object>>(rowArray.length);
 
 		for (final Object[] aRowArray : rowArray) {
-			data.add(this.copyToList(aRowArray));
+			data.add(copyToList(aRowArray));
 		}
 
-		this.insertRows(row, data);
+		insertRows(row, data);
 	}
 
 	/*

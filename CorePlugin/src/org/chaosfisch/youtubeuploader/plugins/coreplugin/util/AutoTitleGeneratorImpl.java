@@ -56,8 +56,8 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	{
 		this.formatString = formatString;
 		this.number = number;
-		this.fileName = null;
-		this.setPlaylist(playlist);
+		fileName = null;
+		setPlaylist(playlist);
 		AnnotationProcessor.process(this);
 	}
 
@@ -66,13 +66,13 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		this.formatString = formatString;
 		this.number = number;
 		this.fileName = fileName;
-		this.setPlaylist(playlist);
+		setPlaylist(playlist);
 	}
 
 	@Override
 	public String getFormatString()
 	{
-		return this.formatString;
+		return formatString;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	@Override
 	public String getFileName()
 	{
-		return this.fileName;
+		return fileName;
 	}
 
 	@Override
@@ -95,8 +95,8 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 
 	@Override public void setPlaylist(final Playlist playlist)
 	{
-		this.playlistName = playlist.title;
-		this.playlistNumber = playlist.number;
+		playlistName = playlist.title;
+		playlistNumber = playlist.number;
 	}
 
 	@Override public void setNumber(final int number)
@@ -107,22 +107,22 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	@Override
 	public String gernerate()
 	{
-		String formated = this.formatString.replaceAll(this.resourceBundle.getString("autotitle.playlist"), this.playlistName);
+		String formated = formatString.replaceAll(resourceBundle.getString("autotitle.playlist"), playlistName);
 
-		final Pattern p = Pattern.compile(this.resourceBundle.getString("autotitle.numberPattern"));
+		final Pattern p = Pattern.compile(resourceBundle.getString("autotitle.numberPattern"));
 		final Matcher m = p.matcher(formated);
 
 		if (m.find()) {
-			formated = m.replaceAll(this.zeroFill(this.playlistNumber + 1 + this.number, Integer.parseInt(m.group(1))));
+			formated = m.replaceAll(zeroFill(playlistNumber + 1 + number, Integer.parseInt(m.group(1))));
 		} else {
-			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.numberDefault"), String.valueOf(this.playlistNumber + 1 + this.number));
+			formated = formated.replaceAll(resourceBundle.getString("autotitle.numberDefault"), String.valueOf(playlistNumber + 1 + number));
 		}
 
 		//noinspection CallToStringEquals
-		if ((this.fileName != null) && !this.fileName.equals("")) {
+		if ((fileName != null) && !fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
-			formated = formated.replaceAll(this.resourceBundle.getString("autotitle.file"), this.fileName.substring(this.fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
-																													this.fileName.lastIndexOf('.')));
+			formated = formated.replaceAll(resourceBundle.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
+																										  fileName.lastIndexOf('.')));
 		}
 		return formated;
 	}
@@ -130,9 +130,9 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
 	public void onPlaylistUpdate(final String topic, final Playlist playlist)
 	{
-		if (playlist.title.equals(this.playlistName)) {
-			this.setPlaylist(playlist);
-			EventBus.publish(AutoTitleGeneratorImpl.AUTOTITLE_CHANGED, this.gernerate());
+		if (playlist.title.equals(playlistName)) {
+			setPlaylist(playlist);
+			EventBus.publish(AutoTitleGeneratorImpl.AUTOTITLE_CHANGED, gernerate());
 		}
 	}
 
