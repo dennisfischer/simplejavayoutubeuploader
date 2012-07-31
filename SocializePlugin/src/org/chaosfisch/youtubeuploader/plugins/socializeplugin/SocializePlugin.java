@@ -58,6 +58,11 @@ public class SocializePlugin implements Pluggable
 	{
 	}
 
+	@Override public String getCLIName()
+	{
+		return "socialize"; //NON-NLS
+	}
+
 	@Override public String getName()
 	{
 		return "Socialize Plugin";  //NON-NLS

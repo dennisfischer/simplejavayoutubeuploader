@@ -21,12 +21,12 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.persist.Transactional;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.mappers.MessageMapper;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers.*;
+import org.mybatis.guice.transactional.Transactional;
 
 import java.util.List;
 
@@ -87,9 +87,14 @@ public class MessageService implements CRUDService<Message>
 		return messageMapper.getMessages();
 	}
 
-	@Override @Transactional public List<Message> find(final Message message)
+	@Transactional public List<Message> find(final Message message, boolean multiple)
 	{
 		return messageMapper.findMessages(message);
+	}
+
+	@Transactional public Message find(final Message message)
+	{
+		return null;
 	}
 
 	@Transactional public Iterable<Message> findWithoutQueueID()

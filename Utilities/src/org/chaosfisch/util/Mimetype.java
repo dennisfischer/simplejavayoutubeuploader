@@ -47,7 +47,7 @@ public class Mimetype
 
 	public static String getMimetypeByFile(final String file)
 	{
-		@SuppressWarnings("MagicCharacter") final String extension = file.substring(file.lastIndexOf('.') + 1, file.length());
+		final String extension = new String(file.substring(file.lastIndexOf(".") + 1, file.length()));
 		int i = 0;
 		for (final String ext : Mimetype.EXTENSIONS) {
 			if (ext.equals(extension)) {

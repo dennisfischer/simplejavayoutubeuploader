@@ -101,11 +101,13 @@ public class BindingsModule extends AbstractModule
 						mappers += "</mappers>"; //NON-NLS
 						out.write(String.format(fileContent, typeAliases, mappers));
 					} catch (IOException ignored) {
+						throw new RuntimeException("This shouldn't happen");
 					} finally {
 						try {
 							out.close();
 							fstream.close();
 						} catch (IOException ignored) {
+							throw new RuntimeException("This shouldn't happen");
 						}
 					}
 					setClassPathResource(outputFile.getAbsolutePath());
@@ -324,6 +326,7 @@ public class BindingsModule extends AbstractModule
 					try {
 						reader.close();
 					} catch (IOException ignored) {
+						throw new RuntimeException("This shouldn't happen");
 					}
 				}
 			}

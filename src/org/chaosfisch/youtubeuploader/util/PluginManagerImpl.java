@@ -25,10 +25,7 @@ import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginManager;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class PluginManagerImpl implements PluginManager
 {
@@ -76,5 +73,10 @@ public class PluginManagerImpl implements PluginManager
 				p.onEnd();
 			}
 		}
+	}
+
+	@Override public Map<String, Pluggable> getPlugins()
+	{
+		return Collections.unmodifiableMap(plugins);
 	}
 }

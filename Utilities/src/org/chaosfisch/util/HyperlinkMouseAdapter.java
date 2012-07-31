@@ -70,7 +70,7 @@ public class HyperlinkMouseAdapter extends MouseAdapter
 		final Pattern p = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
 		final Matcher m = p.matcher(value);
 		if (m.find()) {
-			return value.substring(m.start(0), m.end(0));
+			return new String(value.substring(m.start(0), m.end(0)));
 		}
 		return null;
 	}

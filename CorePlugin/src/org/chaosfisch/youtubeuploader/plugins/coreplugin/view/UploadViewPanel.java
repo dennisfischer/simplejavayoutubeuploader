@@ -692,11 +692,13 @@ public final class UploadViewPanel
 		//noinspection CallToStringEquals
 		if ((fileList.getItemCount() > 0) && titleTextField.getText().equals("")) {
 			// noinspection DuplicateStringLiteralInspection
+			//@TODO MALICIOUS CODE
 			try {
-				titleTextField.setText(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-																					   //NON-NLS
-																					   fileList.getSelectedItem().toString().lastIndexOf(".")));
+				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
+																								  //NON-NLS
+																								  fileList.getSelectedItem().toString().lastIndexOf("."))));
 			} catch (StringIndexOutOfBoundsException ignored) {
+				throw new RuntimeException("This shouldn't happen");
 			}
 		}
 	}

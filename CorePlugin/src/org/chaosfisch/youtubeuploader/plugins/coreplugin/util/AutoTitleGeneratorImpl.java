@@ -121,8 +121,8 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		//noinspection CallToStringEquals
 		if ((fileName != null) && !fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
-			formated = formated.replaceAll(resourceBundle.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
-																										  fileName.lastIndexOf('.')));
+			formated = formated.replaceAll(resourceBundle.getString("autotitle.file"), new String(fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
+																													 fileName.lastIndexOf('.'))));
 		}
 		return formated;
 	}

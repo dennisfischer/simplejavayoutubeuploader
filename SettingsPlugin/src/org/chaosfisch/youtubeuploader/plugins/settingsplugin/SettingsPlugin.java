@@ -84,6 +84,11 @@ public class SettingsPlugin implements Pluggable
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
+	@Override public String getCLIName()
+	{
+		return "settings"; //NON-NLS
+	}
+
 	@Override public String getName()
 	{
 		return "SettingsPlugin"; //NON-NLS

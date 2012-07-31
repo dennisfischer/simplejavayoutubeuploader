@@ -32,7 +32,7 @@ import java.util.List;
  */
 public interface AccountMapper
 {
-	Account findAccount(int id);
+	Account findAccount(Account account);
 
 	List<Account> getAccounts();
 

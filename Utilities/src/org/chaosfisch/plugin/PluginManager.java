@@ -20,6 +20,7 @@
 package org.chaosfisch.plugin;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface PluginManager
 {
@@ -28,4 +29,6 @@ public interface PluginManager
 	void startPlugins();
 
 	void endPlugins();
+
+	Map<String, Pluggable> getPlugins();
 }

@@ -12,11 +12,13 @@
     <orderEntry type="module" module-name="CorePlugin" />
     <orderEntry type="library" name="other" level="project" />
     <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
-    <orderEntry type="library" name="Google Guice v 3.0" level="project" />
     <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
     <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="commons-codec-1.6" level="project" />
+    <orderEntry type="library" name="org.mybatis:mybatis-guice:3.3" level="project" />
+    <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
+    <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
+    <orderEntry type="library" name="JxBrowser" level="project" />
   </component>
 </module>
 

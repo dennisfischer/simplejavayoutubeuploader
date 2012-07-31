@@ -104,17 +104,19 @@ class ExportManager
 				outputStreamWriter.write(ExportManager.XML_HEADER);
 				xStream.toXML(object, outputStreamWriter);
 			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				e.printStackTrace();
 			} finally {
 				try {
 					outputStreamWriter.close();
 					bufferedOutputStream.close();
 					fileOutputStream.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (FileNotFoundException ignored) {
 		} catch (IOException ignored) {
+			throw new RuntimeException("This shouldn't happen");
 		}
 	}
 

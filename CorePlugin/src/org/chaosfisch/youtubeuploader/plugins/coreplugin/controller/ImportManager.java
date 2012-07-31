@@ -123,6 +123,7 @@ class ImportManager
 					bufferedInputStream.close();
 					fileInputStream.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (FileNotFoundException ignored) {

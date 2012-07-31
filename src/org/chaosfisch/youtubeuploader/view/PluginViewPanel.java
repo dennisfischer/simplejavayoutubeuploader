@@ -19,13 +19,14 @@
 
 package org.chaosfisch.youtubeuploader.view;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.controller.PluginController;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class PluginViewPanel extends JDialog
 {
@@ -48,12 +49,12 @@ public class PluginViewPanel extends JDialog
 		pluginTable.setModel(pluginController.getPluginTableModel());
 	}
 
-	public void setPluggableList(final Iterable<Pluggable> pluggableList)
+	public void setPluggableList(final Collection<Pluggable> pluggableList)
 	{
 		final RowTableModel<Pluggable> rowTableModel = pluginController.getPluginTableModel();
 		if (rowTableModel.getRowCount() > 0) {
 			rowTableModel.removeRowRange(0, rowTableModel.getRowCount() - 1);
 		}
-		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), Lists.newArrayList(pluggableList));
+		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), new ArrayList<Pluggable>(pluggableList));
 	}
 }

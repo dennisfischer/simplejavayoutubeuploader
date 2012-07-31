@@ -129,8 +129,8 @@ public class SocializeView implements SocializeViewBinding
 				final String settingsString = (String) settings.get("socialize.socialize.twitter", " ___ "); //NON-NLS
 				if (twitterButton.isSelected()) {
 					if (settingsString.contains("___")) {
-						final String token = settingsString.substring(0, settingsString.indexOf("___"));
-						final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
+						final String token = new String(settingsString.substring(0, settingsString.indexOf("___")));
+						final String secret = new String(settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length()));
 						socialProvider.setAccessToken(new Token(token, secret));
 					}
 
@@ -161,8 +161,8 @@ public class SocializeView implements SocializeViewBinding
 						final String settingsString = (String) settings.get("socialize.socialize.facebook", " ___ "); //NON-NLS
 						if (facebookButton.isSelected()) {
 							if (settingsString.contains("___")) {
-								final String token = settingsString.substring(0, settingsString.indexOf("___"));
-								final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
+								final String token = new String(settingsString.substring(0, settingsString.indexOf("___")));
+								final String secret = new String(settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length()));
 								socialProvider.setAccessToken(new Token(token, secret));
 							}
 

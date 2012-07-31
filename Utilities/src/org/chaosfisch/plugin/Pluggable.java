@@ -33,4 +33,6 @@ public interface Pluggable
 	String getAuthor();
 
 	String[] getDependencies();
+
+	String getCLIName();
 }

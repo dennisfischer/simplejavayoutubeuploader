@@ -9,8 +9,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="library" name="other" level="project" />
-    <orderEntry type="library" name="Google Guice v 3.0" level="project" />
     <orderEntry type="module" module-name="Images" />
+    <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
+    <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
   </component>
 </module>
 

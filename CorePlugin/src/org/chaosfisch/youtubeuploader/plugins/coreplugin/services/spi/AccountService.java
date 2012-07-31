@@ -19,9 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,19 +29,9 @@ import java.util.List;
  * Time: 15:38
  * To change this template use File | Settings | File Templates.
  */
-public interface AccountService
+public interface AccountService extends CRUDService<Account>
 {
 	String ACCOUNT_ADDED   = "accountAdded"; //NON-NLS
 	String ACCOUNT_REMOVED = "accountyRemoved"; //NON-NLS
 	String ACCOUNT_UPDATED = "accountUpdated"; //NON-NLS
-
-	Account create(Account account);
-
-	Account delete(Account account);
-
-	Account update(Account account);
-
-	Account find(int identifier);
-
-	List<Account> getAll();
 }

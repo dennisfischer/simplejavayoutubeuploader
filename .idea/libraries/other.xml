@@ -1,25 +1,14 @@
 <component name="libraryTable">
   <library name="other">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../repositories/other/EventBus.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/filedrop.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-forms-1.5.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/JTattoo.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/log4j-1.2.16.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/substance-6.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/swingx.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/xstream-1.4.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/hsqldb.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-common-1.3.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/trident.jar!/" />
       <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/other/swingx.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../repositories/other/xbean-finder-3.7-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

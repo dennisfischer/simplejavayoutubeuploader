@@ -19,6 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 
@@ -31,7 +32,7 @@ import java.util.List;
  * Time: 15:32
  * To change this template use File | Settings | File Templates.
  */
-public interface PlaylistService
+public interface PlaylistService extends CRUDService<Playlist>
 {
 	String PLAYLIST_ENTRY_ADDED   = "playlistEntryAdded"; //NON-NLS
 	String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved"; //NON-NLS
@@ -40,16 +41,6 @@ public interface PlaylistService
 	void synchronizePlaylists(List<Account> accounts);
 
 	List<Playlist> getByAccount(Account account);
-
-	List<Playlist> getAll();
-
-	Playlist find(Playlist playlist);
-
-	Playlist create(Playlist playlist);
-
-	Playlist update(Playlist playlist);
-
-	Playlist delete(Playlist playlist);
 
 	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
 

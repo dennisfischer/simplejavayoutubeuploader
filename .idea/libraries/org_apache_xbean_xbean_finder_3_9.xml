@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="org.apache.xbean:xbean-finder:3.9" type="repository">
+    <properties maven-id="org.apache.xbean:xbean-finder:3.9" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/xbean-finder-3.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xbean-bundleutils-3.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.5.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/asm-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/asm-commons-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/asm-tree-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.osgi.core-4.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/xbean-finder-3.9-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xbean-bundleutils-3.9-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.osgi.core-4.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/xbean-finder-3.9-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xbean-bundleutils-3.9-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.5.11-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.osgi.core-4.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

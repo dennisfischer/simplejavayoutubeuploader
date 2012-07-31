@@ -25,9 +25,17 @@
 
 <mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.AccountMapper">
 
-	<select id="findAccount" parameterType="int" resultType="Account">
-        SELECT * FROM ACCOUNTS WHERE identity = #{id}
-    </select>
+	<select id="findAccount" parameterType="Account" resultType="Account">
+		SELECT * FROM ACCOUNTS
+		<where>
+			<if test="identity != null">
+				identity = #{identity}
+			</if>
+			<if test="name != null">
+				AND name = #{name}
+			</if>
+		</where>
+	</select>
 
 	<select id="getAccounts" resultType="Account">
 		SELECT * FROM ACCOUNTS

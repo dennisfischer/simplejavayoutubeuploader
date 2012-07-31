@@ -35,9 +35,9 @@ import java.util.ResourceBundle;
 public class SystemTrayPlugin implements Pluggable
 {
 	private static final String[] DEPENDENCIES = new String[0];
-	@Inject private                     PluginService pluginService;
-	@Inject @Named("mainFrame") private JFrame        mainFrame;
-	private                             TrayIcon      trayIcon;
+	@Inject private                                      PluginService pluginService;
+	@Inject(optional = true) @Named("mainFrame") private JFrame        mainFrame;
+	private                                              TrayIcon      trayIcon;
 	public static final String MESSAGE = "onMessage"; //NON-NLS
 
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.systemtrayplugin.resources.systemtrayplugin"); //NON-NLS
@@ -55,6 +55,11 @@ public class SystemTrayPlugin implements Pluggable
 	@Override public String getAuthor()
 	{
 		return "CHAOSFISCH"; //NON-NLS
+	}
+
+	@Override public String getCLIName()
+	{
+		return "systemtray"; //NON-NLS
 	}
 
 	@Override public String getName()

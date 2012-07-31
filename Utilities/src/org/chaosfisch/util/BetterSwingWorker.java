@@ -44,10 +44,12 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 	{
 		try {
 			get();
-		} catch (InterruptedException ignored) {
-		} catch (CancellationException ignored) {
-		} catch (ExecutionException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (InterruptedException ex) {
+			throw new RuntimeException("This shouldn't happen", ex);
+		} catch (CancellationException ex) {
+			throw new RuntimeException("This shouldn't happen", ex);
+		} catch (ExecutionException ex) {
+			throw new RuntimeException("This shouldn't happen", ex);
 		}
 		onDone();
 	}

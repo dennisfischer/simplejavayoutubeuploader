@@ -19,6 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin;
 
+import asg.cliche.Command;
+import asg.cliche.Param;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.ibatis.io.Resources;
@@ -28,6 +30,11 @@ import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.QueueController;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
@@ -42,6 +49,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 @SuppressWarnings({"WeakerAccess", "DuplicateStringLiteralInspection"})
@@ -54,6 +64,10 @@ public class CorePlugin implements Pluggable
 	@Inject private       Injector          injector;
 	@Inject private       SettingsService   settingService;
 	@Inject private final SqlSessionFactory sessionFactory;
+	private               UploadController  uploadController;
+	private               QueueController   queueController;
+	private               AccountService    accountService;
+	private               PlaylistService   playlistService;
 
 	@Inject
 	public CorePlugin(final SqlSessionFactory sessionFactory) throws IOException
@@ -77,6 +91,11 @@ public class CorePlugin implements Pluggable
 	@Override public String[] getDependencies()
 	{
 		return CorePlugin.DEPENDENCIES.clone();
+	}
+
+	@Override public String getCLIName()
+	{
+		return "core"; //NON-NLS
 	}
 
 	@Override public String getName()
@@ -121,7 +140,86 @@ public class CorePlugin implements Pluggable
 				final QueueController queueController = queueViewPanel.getQueueController();
 				pluginService.registerExtension("exit", queueController.uploadExitPoint()); //NON-NLS
 			}
+		} else {
+			uploadController = injector.getInstance(UploadController.class);
+			queueController = injector.getInstance(QueueController.class);
+			accountService = injector.getInstance(AccountService.class);
+			playlistService = injector.getInstance(PlaylistService.class);
 		}
+	}
+
+	@Command(name = "createupload")
+	public void createUpload()
+	{
+
+	}
+
+	@Command(name = "addupload")
+	public void addUpload(@Param(name = "sAccount") final String account, @Param(name = "bRate") final boolean rate, @Param(name = "sCategory") final String category, @Param(name = "iComments") final int comment, @Param(
+			name = "sDescription") final String description, @Param(name = "bEmbed") final boolean embed, @Param(name = "sFile") final String file, @Param(name = "bCommentVote") final boolean commentvote, @Param(
+			name = "bMobile") final boolean mobile, @Param(name = "sPlaylist") final String playlist, @Param(name = "sTags") final String tags, @Param(name = "sTitle") final String title, @Param(
+			name = "iVideoResponse") final int videoresponse, @Param(name = "iVisibility") final int visibility, @Param(name = "sStarttime") final String starttime, @Param(
+			name = "bMonetize") final boolean monetize, @Param(name = "enddir") final String enddir)
+	{
+		try {
+			final Account account_find = new Account();
+			account_find.name = account;
+
+			final Account account_result = accountService.find(account_find);
+			if (account_result == null) {
+				System.out.printf("Account %s not found!\r\n", account);
+				return;
+			}
+
+			final Playlist playlist_find = new Playlist();
+
+			playlist_find.title = playlist;
+			final Playlist playlist_result = playlistService.find(playlist_find);
+
+			if (!playlist.equalsIgnoreCase("null") && (playlist_result == null)) {
+				System.out.printf("Playlist %s not found!\r\n", playlist);
+				return;
+			}
+
+			Date date = null;
+			if (!starttime.equalsIgnoreCase("null")) {
+				date = DateFormat.getInstance().parse(starttime);
+			}
+
+			uploadController.submitUpload(account_result, rate, category, (short) comment, description, embed, file, commentvote, mobile, playlist_result, tags, title, (short) videoresponse, (short) visibility, date, monetize, true, true, false,
+										  enddir);
+			System.out.println("Upload added!\r\n");
+		} catch (ParseException ignored) {
+			System.out.println("Starttime is formatted incorrectly.\r\n");
+		}
+	}
+
+	@Command(name = "addaccount")
+	public void addAccount(@Param(name = "Name") final String name, @Param(name = "Password") final String password)
+	{
+	}
+
+	@Command(name = "removeaccount")
+	public void removeAccount()
+	{
+
+	}
+
+	@Command(name = "startqueue")
+	public void startQueue()
+	{
+
+	}
+
+	@Command(name = "stopqueue")
+	public void stopQueue()
+	{
+	}
+
+	@Command(name = "viewqueue")
+	public void viewQueue()
+	{
+
 	}
 
 	@Override

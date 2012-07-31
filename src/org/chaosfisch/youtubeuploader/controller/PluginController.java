@@ -19,7 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
-import com.google.common.collect.Lists;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.table.RowTableModel;
 
@@ -40,11 +39,11 @@ public class PluginController
 	private RowTableModel<Pluggable> pluginTableModel;
 	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); //NON-NLS
 
-	public RowTableModel<Pluggable> getPluginTableModel(final Iterable<Pluggable> pluggableList)
+	public RowTableModel<Pluggable> getPluginTableModel(final List<Pluggable> pluggableList)
 	{
 		if (pluginTableModel == null) {
 			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString("pluginTable.disableCheckbox"));
-			pluginTableModel = new RowTableModel<Pluggable>(Lists.newArrayList(pluggableList), columns, Pluggable.class)
+			pluginTableModel = new RowTableModel<Pluggable>(Collections.unmodifiableList(pluggableList), columns, Pluggable.class)
 			{
 				private static final long serialVersionUID = 3423121373666600098L;
 

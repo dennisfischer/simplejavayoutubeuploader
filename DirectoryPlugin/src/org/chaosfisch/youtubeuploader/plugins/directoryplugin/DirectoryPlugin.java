@@ -69,11 +69,11 @@ public class DirectoryPlugin implements Pluggable
 {
 	private static final String[]       DEPENDENCIES   = {"org.chaosfisch.youtubeuploader.plugins.settingsplugin.SettingsPlugin", "org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin"};
 	private final        ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.plugins.directoryplugin.resources.directoryplugin", Locale.getDefault());//NON-NLS
-	@Inject private             PluginService   pluginService;
-	@Inject @Named("mainFrame") JFrame          mainFrame;
-	@Inject                     DirectoryWorker directoryWorker;
-	@Inject                     Injector        injector;
-	@InjectLogger               Logger          logger;
+	@Inject private                              PluginService   pluginService;
+	@Inject(optional = true) @Named("mainFrame") JFrame          mainFrame;
+	@Inject                                      DirectoryWorker directoryWorker;
+	@Inject                                      Injector        injector;
+	@InjectLogger                                Logger          logger;
 
 	public DirectoryPlugin()
 	{
@@ -83,6 +83,11 @@ public class DirectoryPlugin implements Pluggable
 	@Override public String[] getDependencies()
 	{
 		return DirectoryPlugin.DEPENDENCIES.clone();
+	}
+
+	@Override public String getCLIName()
+	{
+		return "directory"; //NON-NLS
 	}
 
 	@Override public String getName()

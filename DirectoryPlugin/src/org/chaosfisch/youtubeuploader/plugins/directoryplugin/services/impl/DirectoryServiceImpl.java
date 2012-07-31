@@ -20,12 +20,12 @@
 package org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.impl;
 
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.mappers.DirectoryMapper;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
+import org.mybatis.guice.transactional.Transactional;
 
 import java.io.File;
 import java.util.List;
@@ -44,22 +44,18 @@ public class DirectoryServiceImpl implements DirectoryService
 	{
 		final Directory findEntry = new Directory();
 		findEntry.active = true;
-		return directoryMapper.findDirectories(findEntry);
+		return directoryMapper.findMultiple(findEntry);
 	}
 
 	@Override @Transactional public Directory findFile(final File file)
 	{
-		final String directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1);
+		final String directory = new String(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1));
 		final Directory findEntry = new Directory();
 		findEntry.directory = directory;
-		final List<Directory> entries = directoryMapper.findDirectories(findEntry);
-		if (entries.isEmpty()) {
-			return null;
-		}
-		return entries.get(0);
+		return directoryMapper.findDirectories(findEntry);
 	}
 
-	@Override @Transactional public List<Directory> find(final Directory directory)
+	@Override @Transactional public Directory find(final Directory directory)
 	{
 		return directoryMapper.findDirectories(directory);
 	}

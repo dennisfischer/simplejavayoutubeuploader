@@ -108,6 +108,7 @@ public class Uploader
 					try {
 						Thread.sleep(Uploader.QUEUE_SLEEPTIME);
 					} catch (InterruptedException ignored) {
+						throw new RuntimeException("This shouldn't happen");
 					}
 				}
 			}
@@ -230,6 +231,7 @@ public class Uploader
 					try {
 						Thread.sleep(60000);
 					} catch (InterruptedException ignored) {
+						throw new RuntimeException("This shouldn't happen");
 					}
 				}
 			}

@@ -254,7 +254,7 @@ public class UploadController
 				break;
 		}
 
-		if (starttime.after(new Date(System.currentTimeMillis() + (300000)))) {
+		if ((starttime != null) && starttime.after(new Date(System.currentTimeMillis() + (300000)))) {
 			queue.started = new Date(starttime.getTime());
 		}
 

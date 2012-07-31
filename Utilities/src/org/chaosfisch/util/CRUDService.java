@@ -38,5 +38,5 @@ public interface CRUDService<E>
 
 	List<E> getAll();
 
-	List<E> find(E object);
+	E find(E object);
 }

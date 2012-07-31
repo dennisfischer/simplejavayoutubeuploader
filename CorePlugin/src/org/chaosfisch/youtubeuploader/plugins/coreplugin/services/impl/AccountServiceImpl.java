@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService
 		return account;
 	}
 
-	@Transactional @Override public Account delete(final Account account)
+	@Transactional @Override public void delete(final Account account)
 	{
 		final List<Playlist> playlists = playlistMapper.findPlaylists(account);
 		for (final Playlist playlist : playlists) {
@@ -75,7 +75,6 @@ public class AccountServiceImpl implements AccountService
 		}
 		accountMapper.deleteAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_REMOVED, account);
-		return account;
 	}
 
 	@Transactional @Override public Account update(final Account account)
@@ -85,9 +84,9 @@ public class AccountServiceImpl implements AccountService
 		return account;
 	}
 
-	@Transactional @Override public Account find(final int identifier)
+	@Transactional @Override public Account find(final Account account)
 	{
-		return accountMapper.findAccount(identifier);
+		return accountMapper.findAccount(account);
 	}
 
 	@Transactional @Override public List<Account> getAll()

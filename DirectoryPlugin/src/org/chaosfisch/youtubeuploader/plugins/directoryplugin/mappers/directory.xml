@@ -128,6 +128,27 @@
 		ORDER BY directory ASC
 	</select>
 
+	<select id="findMultiple" parameterType="Directory" resultMap="directoryMap">
+		SELECT directories.*,
+		<include refid="presetSelectList"/>,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM DIRECTORIES
+		INNER JOIN PRESETS ON (presets.identity = directories.preset_id)
+		INNER JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		<where>
+			<if test="identity != null">identity = #{identity}</if>
+			<if test="directory != null">AND directory = #{directory}</if>
+			<if test="active != null">AND active = #{active}</if>
+			<if test="locked != null">AND locked = #{locked}</if>
+			<if test="preset != null">
+				<if test="preset.identity != null">AND preset_id = #{preset.identity}</if>
+			</if>
+		</where>
+		ORDER BY directory ASC
+	</select>
+
 	<select id="getDirectories" resultMap="directoryMap">
 		SELECT directories.*,
 		<include refid="presetSelectList"/>,

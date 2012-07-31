@@ -34,6 +34,8 @@ import org.chaosfisch.youtubeuploader.designmanager.spi.DesignMap;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
 import org.pushingpixels.substance.api.skin.*;
 
+import javax.swing.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Dennis
@@ -47,7 +49,11 @@ public class LookAndFeels extends DesignMap
 
 	public LookAndFeels()
 	{
-
+		try {
+			add(new DesignImpl((Class<? extends LookAndFeel>) Class.forName(UIManager.getSystemLookAndFeelClassName()), "System-Default", "System default")); //NON-NLS
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Something terrible went wrong.", e);
+		}
 		add(new DesignImpl(SubstanceAutumnLookAndFeel.class, "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS
 		add(new DesignImpl(SubstanceBusinessBlackSteelLookAndFeel.class, "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS
 		add(new DesignImpl(SubstanceBusinessBlueSteelLookAndFeel.class, "SubstanceBusinessBlueSteelLookAndFeel", "Substance Buisness Blue Steel")); //NON-NLS

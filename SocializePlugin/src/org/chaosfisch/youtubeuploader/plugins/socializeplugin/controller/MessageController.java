@@ -19,7 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.controller;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -33,6 +32,7 @@ import org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.scribe.model.Token;
 
+import javax.inject.Inject;
 import javax.swing.table.TableModel;
 
 /**
@@ -86,8 +86,8 @@ public class MessageController
 		if (facebook) {
 			final String settingsString = (String) settingsService.get("socialize.socialize.facebook", ""); //NON-NLS
 			if (settingsString.contains("___")) {
-				final String token = settingsString.substring(0, settingsString.indexOf("___"));
-				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
+				final String token = new String(settingsString.substring(0, settingsString.indexOf("___")));
+				final String secret = new String(settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length()));
 				final ISocialProvider facebookSocialProvider = messageService.get(Provider.FACEBOOK);
 				facebookSocialProvider.setAccessToken(new Token(token, secret));
 				facebookSocialProvider.publish(message);
@@ -96,8 +96,8 @@ public class MessageController
 		if (twitter) {
 			final String settingsString = (String) settingsService.get("socialize.socialize.twitter", ""); //NON-NLS
 			if (settingsString.contains("___")) {
-				final String token = settingsString.substring(0, settingsString.indexOf("___"));
-				final String secret = settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length());
+				final String token = new String(settingsString.substring(0, settingsString.indexOf("___")));
+				final String secret = new String(settingsString.substring(settingsString.indexOf("___") + 3, settingsString.length()));
 				final ISocialProvider twitterSocialProvider = messageService.get(Provider.TWITTER);
 				twitterSocialProvider.setAccessToken(new Token(token, secret));
 				twitterSocialProvider.publish(message);
@@ -120,7 +120,7 @@ public class MessageController
 	{
 		final Message findParameter = new Message();
 		findParameter.uploadid = queue.getIdentity();
-		for (final Message message : messageService.find(findParameter)) {
+		for (final Message message : messageService.find(findParameter, true)) {
 			publish(message.message.replace("{video}", String.format("http://youtu.be/%s", queue.videoId)), message.facebook, message.twitter, message.googleplus, message.youtube); //NON-NLS
 		}
 		messageService.clearByUploadID(queue.getIdentity());

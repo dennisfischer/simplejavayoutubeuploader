@@ -35,7 +35,7 @@ public interface DirectoryMapper
 {
 	List<Directory> getDirectories();
 
-	List<Directory> findDirectories(Directory directory);
+	Directory findDirectories(Directory directory);
 
 	void deleteDirectory(Directory directory);
 
@@ -44,4 +44,6 @@ public interface DirectoryMapper
 	void updateDirectory(Directory directory);
 
 	List<Preset> getQualifiedPresets();
+
+	List<Directory> findMultiple(Directory findEntry);
 }

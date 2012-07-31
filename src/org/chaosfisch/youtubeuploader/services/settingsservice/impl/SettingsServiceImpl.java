@@ -149,7 +149,7 @@ public class SettingsServiceImpl implements SettingsService
 	@Override public String getGroupByKey(final String uniqueKey)
 	{
 		final int index = uniqueKey.lastIndexOf("."); //NON-NLS
-		return uniqueKey.substring(uniqueKey.substring(0, index).lastIndexOf(".") + 1, index); //NON-NLS
+		return new String(uniqueKey.substring(uniqueKey.substring(0, index).lastIndexOf(".") + 1, index)); //NON-NLS
 	}
 
 	@Override public Map<String, Vector<SettingsViewComponent>> getMap()

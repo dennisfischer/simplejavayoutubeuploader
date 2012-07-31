@@ -32,7 +32,7 @@ public class Account implements IModel
 {
 	public            String         name;
 	private           String         password;
-	private transient int            identity;
+	private transient Integer        identity;
 	public transient  List<Playlist> presets;
 	public transient  List<Queue>    queue;
 	public transient  List<Playlist> playlists;

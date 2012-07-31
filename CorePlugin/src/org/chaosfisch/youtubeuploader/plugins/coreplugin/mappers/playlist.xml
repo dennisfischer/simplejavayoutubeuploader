@@ -38,6 +38,9 @@
 			<if test="playlistKey != null">
 				AND playlistKey = #{playlistKey}
 			</if>
+			<if test="title != null">
+				AND title = #{title}
+			</if>
 		</where>
 	</select>
 

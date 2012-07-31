@@ -93,6 +93,11 @@ public class NotificationsPlugin implements Pluggable
 		sound.play();
 	}
 
+	@Override public String getCLIName()
+	{
+		return "notifications"; //NON-NLS
+	}
+
 	@Override public String getName()
 	{
 		return "NotificationsPlugin"; //NON-NLS

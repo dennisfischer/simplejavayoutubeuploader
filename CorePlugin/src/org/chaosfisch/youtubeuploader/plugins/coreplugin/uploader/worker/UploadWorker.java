@@ -275,6 +275,7 @@ public class UploadWorker extends BetterSwingWorker
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException ignored) {
+								throw new RuntimeException("This shouldn't happen");
 							}
 						}
 						browser.stop();
@@ -292,7 +293,9 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			swingWorker.get();
 		} catch (InterruptedException ignored) {
+			throw new RuntimeException("This shouldn't happen");
 		} catch (ExecutionException ignored) {
+			throw new RuntimeException("This shouldn't happen");
 		}
 	}
 
@@ -519,6 +522,7 @@ public class UploadWorker extends BetterSwingWorker
 					throttledOutputStream.close();
 					bufferedOutputStream.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (FileNotFoundException ex) {

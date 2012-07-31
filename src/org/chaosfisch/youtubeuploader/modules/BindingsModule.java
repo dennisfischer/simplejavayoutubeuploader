@@ -36,6 +36,7 @@ import org.chaosfisch.youtubeuploader.util.PluginServiceImpl;
 import org.chaosfisch.youtubeuploader.util.logger.Log4JTypeListener;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,11 +52,13 @@ public class BindingsModule extends AbstractModule
 	{
 		bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
 		bind(PluginService.class).toInstance(new PluginServiceImpl());
-		bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); //NON-NLS
 		bind(DesignManager.class).in(Singleton.class);
 		bind(PluginController.class).in(Singleton.class);
 		bindListener(Matchers.any(), new Log4JTypeListener());
-		bind(JFileChooser.class).in(Singleton.class);
+		if (!GraphicsEnvironment.isHeadless()) {
+			bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); //NON-NLS
+			bind(JFileChooser.class).in(Singleton.class);
+		}
 		bind(SettingsService.class).to(SettingsServiceImpl.class).in(Singleton.class);
 		bind(SettingsPersister.class).to(PropertyFileSettingsPersisterImpl.class).in(Singleton.class);
 	}

@@ -31,19 +31,26 @@ package org.chaosfisch.youtubeuploader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.MultiPartEmail;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.xbean.finder.ResourceFinder;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
-import org.chaosfisch.youtubeuploader.view.PluginMainFrame;
+import org.chaosfisch.youtubeuploader.view.PluginMainApplication;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,31 +64,36 @@ public class SimpleJavaYoutubeUploader
 		PropertyConfigurator.configure(getClass().getResource("/META-INF/log4j.properties")); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
-			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(Module.class);
+			final List<Class<? extends Module>> classes = finder.findAllImplementations(Module.class);
 
 			final Collection<Module> modules = new ArrayList<Module>(classes.size());
-			for (final Class<?> clazz : classes) {
-				modules.add((Module) clazz.newInstance());
+			for (final Class<? extends Module> clazz : classes) {
+				modules.add(clazz.newInstance());
 			}
 
 			final Injector injector = Guice.createInjector(modules);
 			modules.clear();
 
 			final SettingsService settingsService = injector.getInstance(SettingsService.class);
-			final DesignManager designManager = injector.getInstance(DesignManager.class);
-			designManager.run();
-			designManager.changeDesign((String) settingsService.get("application.general.laf", "Substance Graphite Glass"));//NON-NLS
-			JFrame.setDefaultLookAndFeelDecorated(true);
+			if (!GraphicsEnvironment.isHeadless()) {
+				final DesignManager designManager = injector.getInstance(DesignManager.class);
+				designManager.run();
+				designManager.changeDesign((String) settingsService.get("application.general.laf", "Substance Graphite Glass"));//NON-NLS
+				JFrame.setDefaultLookAndFeelDecorated(true);
 
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				@Override public void run()
+				SwingUtilities.invokeLater(new Runnable()
 				{
-					designManager.registerSettingsExtension();
-					final PluginMainFrame pluginMainFrame = injector.getInstance(PluginMainFrame.class);
-					pluginMainFrame.run();
-				}
-			});
+					@Override public void run()
+					{
+						designManager.registerSettingsExtension();
+						final PluginMainApplication pluginMainApplication = injector.getInstance(PluginMainApplication.class);
+						pluginMainApplication.run();
+					}
+				});
+			} else {
+				final PluginMainApplication pluginMainApplication = injector.getInstance(PluginMainApplication.class);
+				pluginMainApplication.run(args);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (ClassNotFoundException e) {
@@ -105,28 +117,110 @@ public class SimpleJavaYoutubeUploader
 				System.out.println(e.getMessage());
 				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER"); //NON-NLS
 				logger.warn(e.getMessage(), e);
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					@Override public void run()
+				if (!GraphicsEnvironment.isHeadless()) {
+					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override public void run()
+						{
 
-						final JTextArea textArea = new JTextArea();
-						textArea.setEditable(false);
-						textArea.setLineWrap(true);
-						textArea.setText(e.getMessage());
+							final JTextArea textArea = new JTextArea();
+							textArea.setEditable(false);
+							textArea.setLineWrap(true);
+							textArea.setText(e.getMessage());
 
-						// stuff it in a scrollpane with a controlled size.
-						final JScrollPane scrollPane = new JScrollPane(textArea);
-						scrollPane.setPreferredSize(new Dimension(400, 400));
+							// stuff it in a scrollpane with a controlled size.
+							final JScrollPane scrollPane = new JScrollPane(textArea);
+							scrollPane.setPreferredSize(new Dimension(400, 400));
 
-						// pass the scrollpane to the joptionpane.
-						JOptionPane.showMessageDialog(null, scrollPane, "An Error Has Occurred", JOptionPane.ERROR_MESSAGE); //NON-NLS
+							final JButton sendLogfilesButton = new JButton(); //NON-NLS
+							final Action action = new AbstractAction("Send logfiles")
+							{
+								private static final long serialVersionUID = -8210989015639520486L;
+
+								@Override public void actionPerformed(final ActionEvent ev)
+								{
+									try {
+										SimpleJavaYoutubeUploader.sendMail(e);
+										sendLogfilesButton.setBackground(Color.green);
+										sendLogfilesButton.setAction(new AbstractAction("Logfiles sent!!! - We're working on it!")
+										{
+											private static final long serialVersionUID = 9053946519888636918L;
+
+											@Override public void actionPerformed(final ActionEvent e)
+											{
+											}
+										});
+									} catch (EmailException ignored) {
+										sendLogfilesButton.setBackground(Color.red);
+										sendLogfilesButton.setAction(new AbstractAction("Failed - something bad happend =/ Send us your feedback.")
+										{
+											private static final long serialVersionUID = 9053946519888636918L;
+
+											@Override public void actionPerformed(final ActionEvent e)
+											{
+											}
+										});
+									}
+								}
+							};
+							sendLogfilesButton.setAction(action);
+
+							final Object[] object = {scrollPane, sendLogfilesButton};
+
+							// pass the scrollpane to the joptionpane.
+							JOptionPane.showMessageDialog(null, object, "An Error Has Occurred", JOptionPane.ERROR_MESSAGE); //NON-NLS
+						}
+					});
+				} else {
+					System.out.println("An error occured - do you want to send logfiles? (y/n):"); //NON-NLS
+					final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					try {
+						final String data = br.readLine();
+						if (data.equals("y")) { //NON-NLS
+							SimpleJavaYoutubeUploader.sendMail(e);
+						}
+					} catch (IOException ex) {
+						throw new RuntimeException("This shouldn't happen", ex);
+					} catch (EmailException ignored) {
+						System.out.println("Failed - something bad happend =/ Send your feedback."); //NON-NLS
+					} finally {
+						try {
+							br.close();
+						} catch (IOException ex) {
+							throw new RuntimeException("This shouldn't happen", ex);
+						}
 					}
-				});
+				}
 			}
 		});
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new DebugKeyDispatcher());
 		new SimpleJavaYoutubeUploader(args);
+	}
+
+	private static void sendMail(final Throwable e) throws EmailException
+	{
+		final EmailAttachment attachment = new EmailAttachment();
+		attachment.setPath(String.format("%s/SimpleJavaYoutubeUploader/logs/applog.log", System.getProperty("user.home"))); //NON-NLS
+		attachment.setDisposition(EmailAttachment.ATTACHMENT);
+		attachment.setDescription("Logfiles"); //NON-NLS
+		attachment.setName("Logfile.txt"); //NON-NLS
+
+		// Create the email message
+		final MultiPartEmail email = new MultiPartEmail();
+		email.addTo("dennis0912@live.de", "Dennis Fischer"); //NON-NLS
+
+		email.setHostName("mail.gmx.net"); //NON-NLS
+		email.setAuthentication("simplejavayoutubeuploader@gmx.de", "simplejavayoutubeuploader"); //NON-NLS
+		email.setFrom("simplejavayoutubeuploader@gmx.de", "Me"); //NON-NLS
+
+		email.setSubject("Logfiles"); //NON-NLS
+		email.setMsg(String.format("Logfiles attached\r\n%s\r\n%s", e.getMessage(), Arrays.toString(e.getStackTrace())));//NON-NLS
+
+		// add the attachment
+		email.attach(attachment);
+
+		// send the email
+		email.send();
 	}
 
 	private static class DebugKeyDispatcher implements KeyEventDispatcher

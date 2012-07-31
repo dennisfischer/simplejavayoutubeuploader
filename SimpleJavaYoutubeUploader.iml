@@ -9,12 +9,15 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Utilities" />
     <orderEntry type="library" name="other" level="project" />
-    <orderEntry type="library" name="Google Guice v 3.0" level="project" />
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
-    <orderEntry type="library" name="mybatis-3.1.1" level="project" />
-    <orderEntry type="library" name="mybatis-guice-3.3" level="project" />
     <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
     <orderEntry type="module" module-name="Images" />
+    <orderEntry type="library" name="cliche" level="project" />
+    <orderEntry type="library" name="org.apache.commons:commons-email:1.2" level="project" />
+    <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
+    <orderEntry type="library" name="JxBrowser" level="project" />
+    <orderEntry type="library" name="org.apache.xbean:xbean-finder:3.9" level="project" />
+    <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
   </component>
 </module>
 

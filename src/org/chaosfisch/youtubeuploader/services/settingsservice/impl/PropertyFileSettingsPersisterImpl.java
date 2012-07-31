@@ -64,6 +64,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 					bufferedInputStream.close();
 					fileInputStream.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (FileNotFoundException ignored) {
@@ -118,6 +119,7 @@ public class PropertyFileSettingsPersisterImpl implements SettingsPersister
 					bufferedOutputStream.close();
 					fileOutputStream.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (FileNotFoundException ignored) {

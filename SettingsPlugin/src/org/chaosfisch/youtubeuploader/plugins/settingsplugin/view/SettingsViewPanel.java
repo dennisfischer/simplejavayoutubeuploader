@@ -74,7 +74,7 @@ public class SettingsViewPanel
 			}
 			final JPanel panel = builder.getPanel();
 			panel.setName(group);
-			settingsTabPanel.addTab(String.format("%s%s", group.substring(0, 1).toUpperCase(Locale.getDefault()), group.substring(1)), panel); //NON-NLS
+			settingsTabPanel.addTab(String.format("%s%s", new String(group.substring(0, 1)).toUpperCase(Locale.getDefault()), new String(group.substring(1))), panel); //NON-NLS
 		}
 
 		return settingsPanel;

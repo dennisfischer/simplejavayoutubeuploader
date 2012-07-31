@@ -252,6 +252,9 @@
       <option name="ignoreConstantInitializers" value="false" />
       <option name="ignoreInTestCode" value="false" />
     </inspection_tool>
+    <inspection_tool class="StringConstructor" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoreSubstringArguments" value="false" />
+    </inspection_tool>
     <inspection_tool class="StringEquals" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="StringEqualsIgnoreCase" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="StringToUpperWithoutLocale" enabled="true" level="WARNING" enabled_by_default="true" />

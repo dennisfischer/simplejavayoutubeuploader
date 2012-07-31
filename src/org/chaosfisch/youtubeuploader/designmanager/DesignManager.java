@@ -58,12 +58,12 @@ public class DesignManager
 		logger.debug("Loading designMaps"); //NON-NLS
 		final ResourceFinder finder = new ResourceFinder("META-INF/services/"); //NON-NLS
 		try {
-			@SuppressWarnings("rawtypes") final List<Class> classes = finder.findAllImplementations(DesignMap.class);
+			final List<Class<? extends DesignMap>> classes = finder.findAllImplementations(DesignMap.class);
 
 			logger.debug("Parsing designMaps"); //NON-NLS
-			for (final Class<?> mapList : classes) {
+			for (final Class<? extends DesignMap> mapList : classes) {
 				logger.debug("Parsing designs of designMap"); //NON-NLS
-				for (final Design design : (DesignMap) mapList.newInstance()) {
+				for (final Design design : mapList.newInstance()) {
 					logger.debug("Design found"); //NON-NLS
 					if ((design.getShortName() != null) && (design.getName() != null)) {
 						//noinspection StringConcatenation

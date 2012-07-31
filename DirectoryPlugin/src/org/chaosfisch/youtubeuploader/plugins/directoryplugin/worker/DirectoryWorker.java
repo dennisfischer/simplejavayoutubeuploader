@@ -191,7 +191,7 @@ public class DirectoryWorker extends Thread
 			try {
 				Thread.sleep(MediaFileFilter.WAIT_CHECKTIME);
 			} catch (InterruptedException ignored) {
-
+				throw new RuntimeException("This shouldn't happen");
 			}
 			return !((file.lastModified() != checkedAt) || (fileSizeAt != file.length()));
 		}

@@ -122,11 +122,12 @@ import java.util.*;
 						try {
 							myServerSocket.close();
 							socket.close();
-							System.out.println("Socket closed");
 						} catch (IOException ignored) {
+							throw new RuntimeException("This shouldn't happen");
 						}
 					}
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		});
@@ -144,7 +145,9 @@ import java.util.*;
 			myServerSocket.close();
 			myThread.join();
 		} catch (IOException ignored) {
+			throw new RuntimeException("This shouldn't happen");
 		} catch (InterruptedException ignored) {
+			throw new RuntimeException("This shouldn't happen");
 		}
 	}
 
@@ -200,6 +203,7 @@ import java.util.*;
 					try {
 						size = Integer.parseInt(contentLength);
 					} catch (NumberFormatException ignored) {
+						throw new RuntimeException("This shouldn't happen");
 					}
 				}
 
@@ -307,9 +311,11 @@ import java.util.*;
 				try {
 					sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
 				} catch (InterruptedException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			} catch (InterruptedException ignored) {
 				// Thrown by sendError, ignore and exit the thread.
+				throw new RuntimeException("This shouldn't happen");
 			}
 		}
 
@@ -501,6 +507,7 @@ import java.util.*;
 							bufferedOutputStream.close();
 							fileOutputStream.close();
 						} catch (IOException ignored) {
+							throw new RuntimeException("This shouldn't happen");
 						}
 					}
 				} catch (FileNotFoundException e) {
@@ -645,6 +652,7 @@ import java.util.*;
 				try {
 					mySocket.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		}
@@ -814,6 +822,7 @@ import java.util.*;
 								endAt = Long.parseLong(range.substring(minus + 1));
 							}
 						} catch (NumberFormatException ignored) {
+							throw new RuntimeException("This shouldn't happen");
 						}
 					}
 				}

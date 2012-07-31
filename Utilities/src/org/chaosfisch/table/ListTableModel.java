@@ -326,7 +326,9 @@ public class ListTableModel extends RowTableModel<List<Object>>
 				final String className = metaData.getColumnClassName(i);
 				model.setColumnClass(i - 1, Class.forName(className));
 			} catch (ClassNotFoundException ignored) {
+				throw new RuntimeException("This shouldn't happen");
 			} catch (SQLException ignored) {
+				throw new RuntimeException("This shouldn't happen");
 			}
 		}
 

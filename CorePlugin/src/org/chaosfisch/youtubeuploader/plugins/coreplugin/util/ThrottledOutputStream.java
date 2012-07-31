@@ -69,6 +69,7 @@ public class ThrottledOutputStream extends FilterOutputStream
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
 			} catch (InterruptedException ignored) {
+				throw new RuntimeException("This shouldn't happen");
 			}
 		}
 

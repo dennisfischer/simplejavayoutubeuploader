@@ -109,7 +109,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		return playlist;
 	}
 
-	@Transactional @Override public Playlist delete(final Playlist playlist)
+	@Transactional @Override public void delete(final Playlist playlist)
 	{
 		final List<Preset> presets = presetMapper.findByPlaylist(playlist);
 		for (final Preset preset : presets) {
@@ -124,7 +124,6 @@ public class PlaylistServiceImpl implements PlaylistService
 
 		playlistMapper.deletePlaylist(playlist);
 		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_REMOVED, playlist);
-		return playlist;
 	}
 
 	@Override
@@ -244,6 +243,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					bufferedOutputStream.close();
 					outputStreamWriter.close();
 				} catch (IOException ignored) {
+					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		} catch (MalformedURLException ex) {
