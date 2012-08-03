@@ -32,11 +32,13 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.log4j.Logger;
 import org.apache.xbean.finder.ResourceFinder;
+import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGeneratorImpl;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
+import org.jetbrains.annotations.NonNls;
 import org.mybatis.guice.mappers.MapperProvider;
 import org.mybatis.guice.session.SqlSessionManagerProvider;
 import org.mybatis.guice.transactional.Transactional;
@@ -69,19 +71,23 @@ public class BindingsModule extends AbstractModule
 		{
 			@Override protected void initialize()
 			{
-				final File outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
+				final File outputFile;
+				if (Computer.isMac()) {
+					outputFile = new File(String.format("%s/Library/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
+				} else {
+					outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
+				}
 				try {
 					final File templateFile = new File("mybatis_config_template.xml");
-					Logger.getLogger(CorePlugin.class).info(String.format("Searching file mybatis template in %s", templateFile.getAbsolutePath()));
+					Logger.getLogger(CorePlugin.class).info(String.format("Searching file mybatis template in %s", templateFile.getAbsolutePath()));//NON-NLS
 					if (!templateFile.exists()) {
 						throw new RuntimeException("Required file \"mybatis_config_template.xml\" not found.");
 					}
 					final String fileContent = BindingsModule.readFileAsString(templateFile);
 
-					final FileWriter fstream = new FileWriter(outputFile);
-					final BufferedWriter out = new BufferedWriter(fstream);
-
 					final ResourceFinder finder = new ResourceFinder("META-INF/"); //NON-NLS
+					final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
 					try {
 
 						final Iterable<Properties> appProps = finder.findAvailableProperties("mappers.properties"); //NON-NLS
@@ -99,13 +105,16 @@ public class BindingsModule extends AbstractModule
 						}
 						typeAliases += "</typeAliases>"; //NON-NLS
 						mappers += "</mappers>"; //NON-NLS
-						out.write(String.format(fileContent, typeAliases, mappers));
+						@NonNls String macpath = "";
+						if (Computer.isMac()) {
+							macpath = "Library/";
+						}
+						bufferedWriter.write(String.format(fileContent, typeAliases, macpath, mappers));
 					} catch (IOException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					} finally {
 						try {
-							out.close();
-							fstream.close();
+							bufferedWriter.close();
 						} catch (IOException ignored) {
 							throw new RuntimeException("This shouldn't happen");
 						}
@@ -126,18 +135,28 @@ public class BindingsModule extends AbstractModule
 		bind(AutoTitleGenerator.class).to(AutoTitleGeneratorImpl.class);
 	}
 
-	private static String readFileAsString(final File file) throws IOException
+	private static String readFileAsString(final File file) throws FileNotFoundException
 	{
 		final StringBuilder fileData = new StringBuilder(1000);
 		final BufferedReader reader = new BufferedReader(new FileReader(file));
-		char[] buf = new char[1024];
-		int numRead;
-		while ((numRead = reader.read(buf)) != -1) {
-			final String readData = String.valueOf(buf, 0, numRead);
-			fileData.append(readData);
-			buf = new char[1024];
+		try {
+			char[] buf = new char[1024];
+			int numRead;
+			while ((numRead = reader.read(buf)) != -1) {
+				final String readData = String.valueOf(buf, 0, numRead);
+				fileData.append(readData);
+				buf = new char[1024];
+			}
+			reader.close();
+		} catch (IOException ex) {
+			throw new RuntimeException("This shouldn't happen.", ex);
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				throw new RuntimeException("This shouldn't happen.", e);
+			}
 		}
-		reader.close();
 		return fileData.toString();
 	}
 
@@ -279,56 +298,54 @@ public class BindingsModule extends AbstractModule
 		final void internalConfigure()
 		{
 			initialize();
-
-			Reader reader = null;
 			try {
-				reader = new FileReader(classPathResource);
-				final SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader, environmentId, properties);
-				bind(SqlSessionFactory.class).toInstance(sessionFactory);
+				final Reader reader = new FileReader(classPathResource);
+				try {
+					final SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader, environmentId, properties);
+					bind(SqlSessionFactory.class).toInstance(sessionFactory);
 
-				final Configuration configuration = sessionFactory.getConfiguration();
+					final Configuration configuration = sessionFactory.getConfiguration();
 
-				final OgnlContext context = new OgnlContext();
-				context.setMemberAccess(new DefaultMemberAccess(true, true, true));
-				context.setRoot(configuration);
+					final OgnlContext context = new OgnlContext();
+					context.setMemberAccess(new DefaultMemberAccess(true, true, true));
+					context.setRoot(configuration);
 
-				// bind mappers
-				@SuppressWarnings("unchecked") final Iterable<Class<?>> mapperClasses = (Iterable<Class<?>>) getValue(CustomMyBatisModule.KNOWN_MAPPERS, context, configuration);
-				for (final Class<?> mapperType : mapperClasses) {
-					bindMapper(mapperType);
-				}
+					// bind mappers
+					@SuppressWarnings("unchecked") final Iterable<Class<?>> mapperClasses = (Iterable<Class<?>>) getValue(CustomMyBatisModule.KNOWN_MAPPERS, context, configuration);
+					for (final Class<?> mapperType : mapperClasses) {
+						bindMapper(mapperType);
+					}
 
-				// request injection for type handlers
-				@SuppressWarnings("unchecked") final Iterable<Map<JdbcType, TypeHandler<?>>> mappedTypeHandlers = (Iterable<Map<JdbcType, TypeHandler<?>>>) getValue(CustomMyBatisModule.TYPE_HANDLERS, context, configuration);
-				for (final Map<JdbcType, TypeHandler<?>> mappedTypeHandler : mappedTypeHandlers) {
-					for (final TypeHandler<?> handler : mappedTypeHandler.values()) {
+					// request injection for type handlers
+					@SuppressWarnings("unchecked") final Iterable<Map<JdbcType, TypeHandler<?>>> mappedTypeHandlers = (Iterable<Map<JdbcType, TypeHandler<?>>>) getValue(
+							CustomMyBatisModule.TYPE_HANDLERS, context, configuration);
+					for (final Map<JdbcType, TypeHandler<?>> mappedTypeHandler : mappedTypeHandlers) {
+						for (final TypeHandler<?> handler : mappedTypeHandler.values()) {
+							requestInjection(handler);
+						}
+					}
+					@SuppressWarnings("unchecked") final Iterable<TypeHandler<?>> allTypeHandlers = (Iterable<TypeHandler<?>>) getValue(CustomMyBatisModule.ALL_TYPE_HANDLERS, context, configuration);
+					for (final TypeHandler<?> handler : allTypeHandlers) {
 						requestInjection(handler);
 					}
-				}
-				@SuppressWarnings("unchecked") final Iterable<TypeHandler<?>> allTypeHandlers = (Iterable<TypeHandler<?>>) getValue(CustomMyBatisModule.ALL_TYPE_HANDLERS, context, configuration);
-				for (final TypeHandler<?> handler : allTypeHandlers) {
-					requestInjection(handler);
-				}
 
-				// request injection for interceptors
-				@SuppressWarnings("unchecked") final Iterable<Interceptor> interceptors = (Iterable<Interceptor>) getValue(CustomMyBatisModule.INTERCEPTORS, context, configuration);
-				for (final Interceptor interceptor : interceptors) {
-					requestInjection(interceptor);
-				}
-			} catch (FileNotFoundException e) {
-				//noinspection DuplicateStringLiteralInspection
-				addError("Impossible to read classpath resource '%s', see nested exceptions: %s", classPathResource, e.getMessage()); //NON-NLS
-			} catch (OgnlException e) {
-				//noinspection DuplicateStringLiteralInspection
-				addError("Impossible to read classpath resource '%s', see nested exceptions: %s", classPathResource, e.getMessage()); //NON-NLS
-			} finally {
-				if (reader != null) {
+					// request injection for interceptors
+					@SuppressWarnings("unchecked") final Iterable<Interceptor> interceptors = (Iterable<Interceptor>) getValue(CustomMyBatisModule.INTERCEPTORS, context, configuration);
+					for (final Interceptor interceptor : interceptors) {
+						requestInjection(interceptor);
+					}
+				} catch (OgnlException e) {
+					//noinspection DuplicateStringLiteralInspection
+					addError("Impossible to read classpath resource '%s', see nested exceptions: %s", classPathResource, e.getMessage()); //NON-NLS
+				} finally {
 					try {
 						reader.close();
 					} catch (IOException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					}
 				}
+			} catch (FileNotFoundException ex) {
+				addError("Impossible to read classpath resource '%s', see nested exceptions: %s", classPathResource, ex.getMessage()); //NON-NLS
 			}
 		}
 	}

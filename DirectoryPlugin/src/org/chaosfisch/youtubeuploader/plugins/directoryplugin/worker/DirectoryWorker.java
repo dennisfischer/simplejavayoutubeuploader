@@ -52,8 +52,8 @@ public class DirectoryWorker extends Thread
 	@Inject private       PlaylistService    playlistService;
 	@Inject private       AutoTitleGenerator autoTitleGenerator;
 	@InjectLogger private Logger             logger;
-	final Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>();
-	final Collection<File>        inProgress      = new ArrayList<File>();
+	final Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>(50);
+	final Collection<File>        inProgress      = new ArrayList<File>(10);
 
 	@Override
 	public void run()

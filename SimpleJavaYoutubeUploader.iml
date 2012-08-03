@@ -18,6 +18,15 @@
     <orderEntry type="library" name="JxBrowser" level="project" />
     <orderEntry type="library" name="org.apache.xbean:xbean-finder:3.9" level="project" />
     <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/annotations.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

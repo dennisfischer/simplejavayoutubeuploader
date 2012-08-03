@@ -63,6 +63,8 @@ public class Queue implements IModel
 	public           boolean  monetizeTrueview;
 	public           boolean  monetizeProduct;
 	public           String   enddir;
+	public           short    license;
+	public           Date     release;
 
 	@Override public Integer getIdentity()
 	{

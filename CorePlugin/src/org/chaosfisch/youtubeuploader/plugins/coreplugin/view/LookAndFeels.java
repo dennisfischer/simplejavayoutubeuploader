@@ -50,6 +50,7 @@ public class LookAndFeels extends DesignMap
 	public LookAndFeels()
 	{
 		try {
+			//noinspection unchecked
 			add(new DesignImpl((Class<? extends LookAndFeel>) Class.forName(UIManager.getSystemLookAndFeelClassName()), "System-Default", "System default")); //NON-NLS
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Something terrible went wrong.", e);

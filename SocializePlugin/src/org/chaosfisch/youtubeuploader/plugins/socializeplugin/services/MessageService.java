@@ -87,7 +87,7 @@ public class MessageService implements CRUDService<Message>
 		return messageMapper.getMessages();
 	}
 
-	@Transactional public List<Message> find(final Message message, boolean multiple)
+	@SuppressWarnings("TypeMayBeWeakened") @Transactional public List<Message> find(final Message message, final boolean multiple)
 	{
 		return messageMapper.findMessages(message);
 	}

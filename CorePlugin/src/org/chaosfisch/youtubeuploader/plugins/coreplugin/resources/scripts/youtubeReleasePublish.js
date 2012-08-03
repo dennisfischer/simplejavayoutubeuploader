@@ -17,26 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
+var evtChange = document.createEvent("HTMLEvents");
+evtChange.initEvent("change", true, true);
 
-/**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 30.01.12
- * Time: 08:56
- * To change this template use File | Settings | File Templates.
- */
-class UploaderStopException extends Throwable
-{
-	private static final long serialVersionUID = 37933389258992805L;
-
-	public UploaderStopException(final String message)
-	{
-		super(message);
-	}
-
-	public UploaderStopException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
-}
+var input = document.getElementsByClassName("metadata-privacy-input")[0];
+input.selectedIndex = 0;
+input.dispatchEvent(evtChange);

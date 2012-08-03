@@ -51,6 +51,7 @@ public class Preset implements IModel
 	public           boolean  monetizeTrueview;
 	public           boolean  monetizeProduct;
 	public           String   enddir;
+	public           short    license;
 
 	@Override public Integer getIdentity()
 	{

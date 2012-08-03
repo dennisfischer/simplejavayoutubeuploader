@@ -69,14 +69,13 @@ public class Uploader
 	@Inject private       Injector        injector;
 	@InjectLogger private Logger          logger;
 
-	private static final long QUEUE_SLEEPTIME = 60000;
-
 	private boolean inProgress;
 	private short   runningUploads;
-	private short maxUploads = 1;
-	private short actionOnFinish;
-	private int     speedLimit           = 1000 * 1024;
-	private boolean startTimeCheckerFlag = true;
+	private short   actionOnFinish;
+	private              short   maxUploads           = 1;
+	private              int     speedLimit           = 1000 * 1024;
+	private static final long    QUEUE_SLEEPTIME      = 30000;
+	private              boolean startTimeCheckerFlag = true;
 
 	public Uploader()
 	{

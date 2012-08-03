@@ -150,6 +150,7 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	@Override
 	public void addElement(final Object anObject)
 	{
+		//noinspection unchecked
 		objects.addElement((E) anObject);
 		fireIntervalAdded(this, objects.size() - 1, objects.size() - 1);
 		if ((objects.size() == 1) && (selectedObject == null) && (anObject != null)) {
@@ -160,6 +161,7 @@ public class GenericListModel<E> extends AbstractListModel implements MutableCom
 	// implements javax.swing.MutableComboBoxModel
 	public void insertElementAt(final Object anObject, final int index)
 	{
+		//noinspection unchecked
 		objects.insertElementAt((E) anObject, index);
 		fireIntervalAdded(this, index, index);
 	}

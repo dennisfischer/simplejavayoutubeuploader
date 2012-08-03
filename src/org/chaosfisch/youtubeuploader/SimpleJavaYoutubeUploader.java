@@ -41,6 +41,7 @@ import org.apache.xbean.finder.ResourceFinder;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.view.PluginMainApplication;
+import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,7 +88,7 @@ public class SimpleJavaYoutubeUploader
 					{
 						designManager.registerSettingsExtension();
 						final PluginMainApplication pluginMainApplication = injector.getInstance(PluginMainApplication.class);
-						pluginMainApplication.run();
+						pluginMainApplication.run(args);
 					}
 				});
 			} else {
@@ -175,8 +176,8 @@ public class SimpleJavaYoutubeUploader
 					System.out.println("An error occured - do you want to send logfiles? (y/n):"); //NON-NLS
 					final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 					try {
-						final String data = br.readLine();
-						if (data.equals("y")) { //NON-NLS
+						@NonNls final String data = br.readLine();
+						if (data.equals("y")) {
 							SimpleJavaYoutubeUploader.sendMail(e);
 						}
 					} catch (IOException ex) {

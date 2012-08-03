@@ -42,6 +42,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistSe
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Date;
@@ -137,7 +138,12 @@ public class UploadController
 	private final PlaceholderTableModel placeholderModel = new PlaceholderTableModel();
 
 	@Inject
-	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final AutoTitleGenerator autoTitleGenerator, final PlaylistService playlistService, final JFileChooser fileChooser)
+	public UploadController(final AccountService accountService,
+	                        final PresetService presetService,
+	                        final QueueService queueService,
+	                        final AutoTitleGenerator autoTitleGenerator,
+	                        final PlaylistService playlistService,
+	                        final JFileChooser fileChooser)
 	{
 		this.accountService = accountService;
 		this.presetService = presetService;
@@ -211,16 +217,80 @@ public class UploadController
 		return accountListModel;
 	}
 
-	public AccountService getAccountService()
+	@SuppressWarnings("TypeMayBeWeakened") public AccountService getAccountService()
 	{
 		return accountService;
 	}
 
-	public void submitUpload(final Account account, final boolean rate, final String category, final short comment, final String description, final boolean embed, final String file, final boolean commentvote, final boolean mobile, final Playlist playlist, final String tags, final String title, final short videoresponse, final short visibility, final Date starttime, final boolean monetize, final boolean monetizeOverlay, final boolean monetizeTrueview, final boolean monetizeProduct, final String enddir)
+	public void submitUpload(final String filepath, final Account account, final String category)
+	{
+		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null, (short) 0, (short) 0, true, true, true, true, null,
+		             null, null, false, false, false, false, (short) 0);
+	}
+
+	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags)
+	{
+		submitUpload(filepath, account, category, visibility, title, description, tags, null, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
+	}
+
+	public void submitUpload(final String filepath,
+	                         final Account account,
+	                         final String category,
+	                         final short visibility,
+	                         final String title,
+	                         final String description,
+	                         final String tags,
+	                         @Nullable final Playlist playlist)
+	{
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
+		             (short) 0);
+	}
+
+	public void submitUpload(final String filepath,
+	                         final Account account,
+	                         final String category,
+	                         final short visibility,
+	                         final String title,
+	                         final String description,
+	                         final String tags,
+	                         @Nullable final Playlist playlist,
+	                         final short comment,
+	                         final short videoresponse,
+	                         final boolean rate,
+	                         final boolean embed,
+	                         final boolean commentvote,
+	                         final boolean mobile)
+	{
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, comment, videoresponse, rate, embed, commentvote, mobile, null, null, null, false, false, false,
+		             false, (short) 0);
+	}
+
+	public void submitUpload(final String filepath,
+	                         final Account account,
+	                         final String category,
+	                         final short visibility,
+	                         final String title,
+	                         final String description,
+	                         final String tags,
+	                         @Nullable final Playlist playlist,
+	                         final short comment,
+	                         final short videoresponse,
+	                         final boolean rate,
+	                         final boolean embed,
+	                         final boolean commentvote,
+	                         final boolean mobile,
+	                         @Nullable final Date starttime,
+	                         @Nullable final Date releasetime,
+	                         @Nullable final String enddir,
+	                         final boolean monetize,
+	                         final boolean monetizeOverlay,
+	                         final boolean monetizeTrueview,
+	                         final boolean monetizeProduct,
+	                         final short license)
 	{
 		final Queue queue = new Queue();
 		queue.account = account;
-		queue.mimetype = Mimetype.getMimetypeByExtension(file);
+		queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
 		queue.mobile = mobile;
 		queue.title = title;
 		queue.category = category;
@@ -228,7 +298,7 @@ public class UploadController
 		queue.commentvote = commentvote;
 		queue.description = description;
 		queue.embed = embed;
-		queue.file = file;
+		queue.file = filepath;
 		queue.keywords = tags;
 		queue.rate = rate;
 		queue.videoresponse = videoresponse;
@@ -239,6 +309,7 @@ public class UploadController
 		queue.monetizeTrueview = monetizeTrueview;
 		queue.monetizeProduct = monetizeProduct;
 		queue.enddir = enddir;
+		queue.license = license;
 
 		if (playlist != null) {
 			playlist.number++;
@@ -256,6 +327,10 @@ public class UploadController
 
 		if ((starttime != null) && starttime.after(new Date(System.currentTimeMillis() + (300000)))) {
 			queue.started = new Date(starttime.getTime());
+		}
+
+		if ((releasetime != null) && releasetime.after(new Date(System.currentTimeMillis() + (300000)))) {
+			queue.release = new Date(releasetime.getTime());
 		}
 
 		queueService.create(queue);
@@ -338,11 +413,11 @@ public class UploadController
 	{
 	}
 
-	public PlaceholderTableModel getPlaceholderModel()
+	@SuppressWarnings("TypeMayBeWeakened") public PlaceholderTableModel getPlaceholderModel()
 	{
 		final Placeholder placeholder = new Placeholder();
-		placeholder.placeholder = "WTF";
-		placeholder.replacement = "OMG";
+		placeholder.placeholder = "WTF"; //NON-NLS
+		placeholder.replacement = "OMG"; //NON-NLS
 		placeholderModel.addRow(placeholder);
 		placeholderModel.addRow(placeholder);
 		placeholderModel.addRow(placeholder);

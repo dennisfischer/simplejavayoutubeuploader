@@ -62,7 +62,7 @@ public final class UploadViewPanel
 	private         JPanel                uploadPanel;
 	private         JButton               reset;
 	private         JButton               submit;
-	private         JCheckBox             playlistCheckBox;
+	private         JCheckBox             playlistCheckbox;
 	private         JButton               searchFile;
 	private         JComboBox             fileList;
 	private         JComboBox             categoryList;
@@ -79,15 +79,15 @@ public final class UploadViewPanel
 	private         JComboBox             commentList;
 	private         JComboBox             videoresponseList;
 	private         JComboBox             visibilityList;
-	private         JCheckBox             kommentareBewertenCheckBox;
-	private         JCheckBox             bewertenCheckBox;
-	private         JCheckBox             mobileCheckBox;
-	private         JCheckBox             embedCheckBox;
+	private         JCheckBox             commentVoteCheckbox;
+	private         JCheckBox             rateCheckbox;
+	private         JCheckBox             mobileCheckbox;
+	private         JCheckBox             embedCheckbox;
 	private         JButton               defaultdirSearch;
 	private         JButton               deletePreset;
 	private         JButton               savePreset;
 	private         JButton               deleteAccount;
-	private         JSpinner              startzeitpunktSpinner;
+	private         JSpinner              starttimeSpinner;
 	private         JButton               synchronizePlaylistsButton;
 	private         JPanel                validationPanel;
 	private         JLabel                hintLabel;
@@ -105,6 +105,35 @@ public final class UploadViewPanel
 	private         JButton               savePlaceholderButton;
 	private         JTextField            placeholderPlaceholderTextfield;
 	private         JTextField            placeholderReplaceTextfield;
+	private         JSpinner              releasetimeSpinner;
+	private         JPanel                placeholderPanel;
+	private         JPanel                settingsPanel;
+	private         JPanel                partnerPanel;
+	private         JCheckBox             ansprücheErhebenCheckBox;
+	private         JComboBox             comboBox1;
+	private         JComboBox             comboBox2;
+	private         JCheckBox             standardmäßigeInStreamAnzeigenCheckBox;
+	private         JComboBox             comboBox3;
+	private         JTabbedPane           tabbedPane1;
+	private         JTextField            textField1;
+	private         JTextField            textField2;
+	private         JTextField            textField3;
+	private         JTextArea             textArea1;
+	private         JTextField            textField4;
+	private         JTextField            textField5;
+	private         JTextField            textField6;
+	private         JTextField            textField7;
+	private         JTextField            textField8;
+	private         JTextField            textField9;
+	private         JTextField            textField10;
+	private         JTextField            textField11;
+	private         JTextField            textField12;
+	private         JTextField            textField13;
+	private         JTextField            textField14;
+	private         JTextField            textField15;
+	private         JTextField            textField16;
+	private         JTextField            textField17;
+	private         JTextArea             textArea2;
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
@@ -155,10 +184,15 @@ public final class UploadViewPanel
 			}
 		});
 
-		startzeitpunktSpinner.setModel(new SpinnerDateModel());
-		final JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(startzeitpunktSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
-		startzeitpunktSpinner.setEditor(timeEditor);
-		startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
+		starttimeSpinner.setModel(new SpinnerDateModel());
+		final JSpinner.DateEditor timeEditorStartTime = new JSpinner.DateEditor(starttimeSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
+		starttimeSpinner.setEditor(timeEditorStartTime);
+		starttimeSpinner.setValue(Calendar.getInstance().getTime());
+
+		releasetimeSpinner.setModel(new SpinnerDateModel());
+		final JSpinner.DateEditor timeEditorReleaseTime = new JSpinner.DateEditor(releasetimeSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
+		releasetimeSpinner.setEditor(timeEditorReleaseTime);
+		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 
 		fileSearchMenuItem = new JMenuItem(resourceBundle.getString("menuitem.openfile"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/folder_explore.png"))); //NON-NLS
 		fileSearchMenuItem.addActionListener(new ActionListener()
@@ -189,10 +223,12 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString("visibilitylist.private")}));
-		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString("commentlist.denied"), resourceBundle.getString(
-				"commentlist.friendsonly")}));
-		videoresponseList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("videoresponselist.allowed"), resourceBundle.getString("videoresponselist.moderated"), resourceBundle.getString("videoresponselist.denied")}));
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
+				"visibilitylist.private")}));
+		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
+				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
+		videoresponseList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("videoresponselist.allowed"), resourceBundle.getString(
+				"videoresponselist.moderated"), resourceBundle.getString("videoresponselist.denied")}));
 
 		placeholderTable.setModel(controller.getPlaceholderModel());
 		placeholderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -225,14 +261,14 @@ public final class UploadViewPanel
 						preset.category = categoryList.getSelectedItem().toString();
 					}
 					preset.comment = (short) commentList.getSelectedIndex();
-					preset.commentvote = kommentareBewertenCheckBox.isSelected();
+					preset.commentvote = commentVoteCheckbox.isSelected();
 					preset.defaultDir = defaultdirTextField.getText();
 					preset.description = descriptionTextArea.getText();
-					preset.embed = embedCheckBox.isSelected();
+					preset.embed = embedCheckbox.isSelected();
 					preset.keywords = tagsTextArea.getText();
-					preset.mobile = mobileCheckBox.isSelected();
+					preset.mobile = mobileCheckbox.isSelected();
 					preset.numberModifier = Short.parseShort(numberModifierSpinner.getValue().toString());
-					preset.rate = bewertenCheckBox.isSelected();
+					preset.rate = rateCheckbox.isSelected();
 					preset.videoresponse = (short) videoresponseList.getSelectedIndex();
 					preset.visibility = (short) visibilityList.getSelectedIndex();
 					preset.account = (Account) accountList.getSelectedItem();
@@ -241,8 +277,9 @@ public final class UploadViewPanel
 					preset.monetizeTrueview = monetizeTrueviewCheckbox.isSelected();
 					preset.monetizeProduct = monetizeProductCheckbox.isSelected();
 					preset.enddir = enddirTextfield.getText();
+					preset.license = (short) licenseList.getSelectedIndex();
 
-					if (playlistCheckBox.isSelected()) {
+					if (playlistCheckbox.isSelected()) {
 						preset.playlist = (Playlist) playlistList.getSelectedItem();
 					}
 					controller.savePreset(preset);
@@ -455,7 +492,7 @@ public final class UploadViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				if (placeholderTable.getSelectedRow() != -1) {
-					final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					@SuppressWarnings("OverlyStrongTypeCast") final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
 					if (placeholder != null) {
 						controller.deletePlaceholder(placeholder);
 					}
@@ -468,7 +505,7 @@ public final class UploadViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				if (placeholderTable.getSelectedRow() != -1) {
-					final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					@SuppressWarnings("OverlyStrongTypeCast") final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
 					if (placeholder != null) {
 						placeholder.placeholder = placeholderPlaceholderTextfield.getText();
 						placeholder.replacement = placeholderReplaceTextfield.getText();
@@ -484,6 +521,40 @@ public final class UploadViewPanel
 			{
 				if (!e.getValueIsAdjusting()) {
 					System.out.println(placeholderTable.getSelectedRow());
+				}
+			}
+		});
+
+		licenseList.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (licenseList.getSelectedIndex() == 1) {
+					monetizeCheckbox.setSelected(false);
+					monetizeOverlayCheckbox.setSelected(false);
+					monetizeTrueviewCheckbox.setSelected(false);
+					monetizeProductCheckbox.setSelected(false);
+					monetizeCheckbox.setEnabled(false);
+					monetizeOverlayCheckbox.setEnabled(false);
+					monetizeTrueviewCheckbox.setEnabled(false);
+					monetizeProductCheckbox.setEnabled(false);
+				} else {
+					monetizeCheckbox.setEnabled(true);
+					monetizeOverlayCheckbox.setEnabled(true);
+					monetizeTrueviewCheckbox.setEnabled(true);
+					monetizeProductCheckbox.setEnabled(true);
+				}
+			}
+		});
+
+		visibilityList.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (visibilityList.getSelectedIndex() == 2) {
+					releasetimeSpinner.setEnabled(true);
+				} else {
+					releasetimeSpinner.setEnabled(false);
 				}
 			}
 		});
@@ -522,14 +593,20 @@ public final class UploadViewPanel
 		}
 
 		Playlist playlist = null;
-		if (playlistCheckBox.isSelected()) {
+		if (playlistCheckbox.isSelected()) {
 			playlist = (Playlist) playlistList.getSelectedItem();
 		}
 
-		controller.submitUpload((Account) accountList.getSelectedItem(), bewertenCheckBox.isSelected(), categoryList.getSelectedItem().toString(), (short) commentList.getSelectedIndex(), descriptionTextArea.getText(), embedCheckBox.isSelected(),
-								fileList.getSelectedItem().toString(), kommentareBewertenCheckBox.isSelected(), mobileCheckBox.isSelected(), playlist, tagsTextArea.getText(), titleTextField.getText(), (short) videoresponseList.getSelectedIndex(),
-								(short) visibilityList.getSelectedIndex(), (Date) startzeitpunktSpinner.getValue(), monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(), monetizeTrueviewCheckbox.isSelected(),
-								monetizeProductCheckbox.isSelected(), enddirTextfield.getText());
+		Date release = null;
+		if (visibilityList.getSelectedIndex() == 2) {
+			release = (Date) releasetimeSpinner.getValue();
+		}
+
+		controller.submitUpload(fileList.getSelectedItem().toString(), (Account) accountList.getSelectedItem(), categoryList.getSelectedItem().toString(), (short) visibilityList.getSelectedIndex(),
+		                        titleTextField.getText(), descriptionTextArea.getText(), tagsTextArea.getText(), playlist, (short) commentList.getSelectedIndex(),
+		                        (short) videoresponseList.getSelectedIndex(), rateCheckbox.isSelected(), embedCheckbox.isSelected(), commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(),
+		                        (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(), monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(),
+		                        monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex());
 
 		fileList.removeItem(fileList.getSelectedItem());
 	}
@@ -567,16 +644,16 @@ public final class UploadViewPanel
 			final Preset selectedPreset = (Preset) presetList.getSelectedItem();
 			autotitelCheckBox.setSelected(selectedPreset.autotitle);
 			autotitleTextField.setText(selectedPreset.autotitleFormat);
-			bewertenCheckBox.setSelected(selectedPreset.rate);
+			rateCheckbox.setSelected(selectedPreset.rate);
 			if ((selectedPreset.category == null) || !selectedPreset.category.equals("")) {
 				categoryList.setSelectedItem(selectedPreset.category);
 			}
 			commentList.setSelectedIndex(selectedPreset.comment);
 			defaultdirTextField.setText(selectedPreset.defaultDir);
 			descriptionTextArea.setText(selectedPreset.description);
-			embedCheckBox.setSelected(selectedPreset.embed);
-			kommentareBewertenCheckBox.setSelected(selectedPreset.commentvote);
-			mobileCheckBox.setSelected(selectedPreset.mobile);
+			embedCheckbox.setSelected(selectedPreset.embed);
+			commentVoteCheckbox.setSelected(selectedPreset.commentvote);
+			mobileCheckbox.setSelected(selectedPreset.mobile);
 			numberModifierSpinner.setValue(selectedPreset.numberModifier);
 			tagsTextArea.setText(selectedPreset.keywords);
 			videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
@@ -586,12 +663,13 @@ public final class UploadViewPanel
 			monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
 			monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
 			enddirTextfield.setText(selectedPreset.enddir);
+			licenseList.setSelectedIndex(selectedPreset.license);
 
 			if (selectedPreset.account != null) {
 				controller.getAccountListModel().setSelectedItem(selectedPreset.account);
 				controller.changeAccount(selectedPreset.account);
 				if (selectedPreset.playlist != null) {
-					playlistCheckBox.setSelected(true);
+					playlistCheckbox.setSelected(true);
 					controller.getPlaylistListModel().setSelectedItem(selectedPreset.playlist);
 				}
 			}
@@ -600,26 +678,28 @@ public final class UploadViewPanel
 		} else {
 			autotitelCheckBox.setSelected(false);
 			autotitleTextField.setText("");
-			bewertenCheckBox.setSelected(true);
+			rateCheckbox.setSelected(true);
 			categoryList.setSelectedIndex(0);
 			commentList.setSelectedIndex(0);
 			defaultdirTextField.setText("");
 			descriptionTextArea.setText("");
-			embedCheckBox.setSelected(true);
-			kommentareBewertenCheckBox.setSelected(true);
-			mobileCheckBox.setSelected(true);
+			embedCheckbox.setSelected(true);
+			commentVoteCheckbox.setSelected(true);
+			mobileCheckbox.setSelected(true);
 			numberModifierSpinner.setValue(0);
 			tagsTextArea.setText("");
 			videoresponseList.setSelectedIndex(0);
 			visibilityList.setSelectedIndex(0);
-			playlistCheckBox.setSelected(false);
+			playlistCheckbox.setSelected(false);
 			monetizeCheckbox.setSelected(false);
 			monetizeOverlayCheckbox.setSelected(false);
 			monetizeTrueviewCheckbox.setSelected(false);
 			monetizeProductCheckbox.setSelected(false);
 			enddirTextfield.setText("");
+			licenseList.setSelectedIndex(0);
 		}
-		startzeitpunktSpinner.setValue(Calendar.getInstance().getTime());
+		starttimeSpinner.setValue(Calendar.getInstance().getTime());
+		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 	}
 
 	public JPanel getJPanel()
@@ -635,16 +715,16 @@ public final class UploadViewPanel
 		if (queue.account != null) {
 			accountList.setSelectedItem(queue.account);
 		}
-		bewertenCheckBox.setSelected(queue.rate);
+		rateCheckbox.setSelected(queue.rate);
 		categoryList.setSelectedItem(queue.category);
 		commentList.setSelectedIndex(queue.comment);
 		descriptionTextArea.setText(queue.description);
-		embedCheckBox.setSelected(queue.embed);
+		embedCheckbox.setSelected(queue.embed);
 		final File file = new File(queue.file);
 		fileList.addItem(file);
 		fileList.setSelectedItem(file);
-		kommentareBewertenCheckBox.setSelected(queue.commentvote);
-		mobileCheckBox.setSelected(queue.mobile);
+		commentVoteCheckbox.setSelected(queue.commentvote);
+		mobileCheckbox.setSelected(queue.mobile);
 		tagsTextArea.setText(queue.keywords);
 		titleTextField.setText(queue.title);
 		videoresponseList.setSelectedIndex(queue.videoresponse);
@@ -655,6 +735,7 @@ public final class UploadViewPanel
 		monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
 		monetizeProductCheckbox.setSelected(queue.monetizeProduct);
 		enddirTextfield.setText(queue.enddir);
+		licenseList.setSelectedIndex(queue.license);
 
 		if (queue.privatefile) {
 			visibilityList.setSelectedIndex(2);
@@ -665,11 +746,15 @@ public final class UploadViewPanel
 		}
 
 		if (queue.started != null) {
-			startzeitpunktSpinner.setValue(queue.started);
+			starttimeSpinner.setValue(queue.started);
+		}
+
+		if (queue.release != null) {
+			releasetimeSpinner.setValue(queue.release);
 		}
 
 		if (queue.playlist != null) {
-			playlistCheckBox.setSelected(true);
+			playlistCheckbox.setSelected(true);
 			playlistList.setSelectedItem(queue.playlist);
 		}
 	}
@@ -691,14 +776,9 @@ public final class UploadViewPanel
 
 		//noinspection CallToStringEquals
 		if ((fileList.getItemCount() > 0) && titleTextField.getText().equals("")) {
-			// noinspection DuplicateStringLiteralInspection
-			//@TODO MALICIOUS CODE
-			try {
-				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(System.getProperty("file.separator")) + 1,
-																								  //NON-NLS
-																								  fileList.getSelectedItem().toString().lastIndexOf("."))));
-			} catch (StringIndexOutOfBoundsException ignored) {
-				throw new RuntimeException("This shouldn't happen");
+			if ((fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1) >= fileList.getSelectedItem().toString().lastIndexOf(".")) {
+				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1,
+				                                                                                  fileList.getSelectedItem().toString().lastIndexOf("."))));
 			}
 		}
 	}

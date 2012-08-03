@@ -26,6 +26,8 @@ import com.google.inject.Injector;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.plugin.PluginService;
@@ -40,15 +42,11 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.MenuViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.QueueViewPanel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.view.UploadViewPanel;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
-import org.intellij.lang.annotations.Language;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.tools.shell.Global;
+import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -73,13 +71,27 @@ public class CorePlugin implements Pluggable
 	public CorePlugin(final SqlSessionFactory sessionFactory) throws IOException
 	{
 		this.sessionFactory = sessionFactory;
+		AnnotationProcessor.process(this);
 		loadDatabase();
 	}
 
 	// uses the new MyBatis style of lookup
 	public void loadDatabase() throws IOException
 	{
-		final Reader schemaReader = Resources.getResourceAsReader("scheme.sql");//NON-NLS
+		final Reader schemaReader = Resources.getResourceAsReader("scripts/scheme.sql");//NON-NLS
+		final ScriptRunner scriptRunner = new ScriptRunner(sessionFactory.openSession().getConnection());
+		scriptRunner.setStopOnError(true);
+		scriptRunner.setLogWriter(null);
+		scriptRunner.setAutoCommit(true);
+		scriptRunner.setDelimiter(";");
+		scriptRunner.runScript(schemaReader);
+	}
+
+	@EventTopicSubscriber(topic = "UPDATE_APPLICATION")
+	public void updateAPP(final String topic, @NonNls final String version) throws IOException
+	{
+		System.out.println("Updating Coreplugin to version " + version); //NON-NLS
+		final Reader schemaReader = Resources.getResourceAsReader(String.format("scripts/update-%s.sql", version));//NON-NLS
 		final ScriptRunner scriptRunner = new ScriptRunner(sessionFactory.openSession().getConnection());
 		scriptRunner.setStopOnError(true);
 		scriptRunner.setLogWriter(null);
@@ -108,6 +120,35 @@ public class CorePlugin implements Pluggable
 		return "CHAOSFISCH"; //NON-NLS
 	}
 
+	public String convertStreamToString(final InputStream is)
+	{
+		try {
+			if (is != null) {
+				final Writer writer = new StringWriter();
+				final Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8")); //NON-NLS
+				try {
+
+					int n;
+					final char[] buffer = new char[1024];
+					while ((n = reader.read(buffer)) != -1) {
+						writer.write(buffer, 0, n);
+					}
+				} finally {
+					writer.close();
+					reader.close();
+					is.close();
+				}
+				return writer.toString();
+			} else {
+				return "";
+			}
+		} catch (UnsupportedEncodingException ignored) {
+			return "";
+		} catch (IOException ignored) {
+			return "";
+		}
+	}
+
 	@Override
 	public void init()
 	{
@@ -115,9 +156,9 @@ public class CorePlugin implements Pluggable
 
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
 		spinner.setEditor(new JSpinner.NumberEditor(spinner, resourceBundle.getString("chunksize_spinner")));
-		spinner.setValue(Integer.parseInt((String) settingService.get("coreplugin.general.chunk_size", "10")));
+		spinner.setValue(Integer.parseInt((String) settingService.get("coreplugin.general.chunk_size", "10"))); //NON-NLS
 
-		settingService.addSpinner("coreplugin.general.chunk_size", resourceBundle.getString("chunksize_spinner.label"), spinner);
+		settingService.addSpinner("coreplugin.general.chunk_size", resourceBundle.getString("chunksize_spinner.label"), spinner); //NON-NLS
 		if (!GraphicsEnvironment.isHeadless()) {
 			final UploadViewPanel uploadViewPanel = injector.getInstance(UploadViewPanel.class);
 			uploadViewPanel.run();
@@ -155,11 +196,25 @@ public class CorePlugin implements Pluggable
 	}
 
 	@Command(name = "addupload")
-	public void addUpload(@Param(name = "sAccount") final String account, @Param(name = "bRate") final boolean rate, @Param(name = "sCategory") final String category, @Param(name = "iComments") final int comment, @Param(
-			name = "sDescription") final String description, @Param(name = "bEmbed") final boolean embed, @Param(name = "sFile") final String file, @Param(name = "bCommentVote") final boolean commentvote, @Param(
-			name = "bMobile") final boolean mobile, @Param(name = "sPlaylist") final String playlist, @Param(name = "sTags") final String tags, @Param(name = "sTitle") final String title, @Param(
-			name = "iVideoResponse") final int videoresponse, @Param(name = "iVisibility") final int visibility, @Param(name = "sStarttime") final String starttime, @Param(
-			name = "bMonetize") final boolean monetize, @Param(name = "enddir") final String enddir)
+	public void addUpload(@Param(name = "sFile") final String file,
+	                      @Param(name = "sAccount") final String account,
+	                      @Param(name = "sCategory") final String category,
+	                      @Param(name = "iVisibility") final int visibility,
+	                      @Param(name = "sTitle") final String title,
+	                      @Param(name = "sDescription") final String description,
+	                      @Param(name = "sTags") final String tags,
+	                      @NonNls @Param(name = "sPlaylist") final String playlist,
+	                      @Param(name = "iComments") final int comment,
+	                      @Param(name = "iVideoResponse") final int videoresponse,
+	                      @Param(name = "bRate") final boolean rate,
+	                      @Param(name = "bEmbed") final boolean embed,
+	                      @Param(name = "bCommentVote") final boolean commentvote,
+	                      @Param(name = "bMobile") final boolean mobile,
+	                      @Param(name = "enddir") final String enddir,
+	                      @NonNls @Param(name = "sStarttime") final String starttime,
+	                      @NonNls @Param(name = "sRelease") final String releasetime,
+	                      @Param(name = "bMonetize") boolean monetize,
+	                      @Param(name = "iLicense") final int license)
 	{
 		try {
 			final Account account_find = new Account();
@@ -167,7 +222,7 @@ public class CorePlugin implements Pluggable
 
 			final Account account_result = accountService.find(account_find);
 			if (account_result == null) {
-				System.out.printf("Account %s not found!\r\n", account);
+				System.out.printf("Account %s not found!\r\n", account); //NON-NLS
 				return;
 			}
 
@@ -177,20 +232,29 @@ public class CorePlugin implements Pluggable
 			final Playlist playlist_result = playlistService.find(playlist_find);
 
 			if (!playlist.equalsIgnoreCase("null") && (playlist_result == null)) {
-				System.out.printf("Playlist %s not found!\r\n", playlist);
+				System.out.printf("Playlist %s not found!\r\n", playlist); //NON-NLS
 				return;
 			}
 
-			Date date = null;
+			Date start = null;
 			if (!starttime.equalsIgnoreCase("null")) {
-				date = DateFormat.getInstance().parse(starttime);
+				start = DateFormat.getInstance().parse(starttime);
 			}
 
-			uploadController.submitUpload(account_result, rate, category, (short) comment, description, embed, file, commentvote, mobile, playlist_result, tags, title, (short) videoresponse, (short) visibility, date, monetize, true, true, false,
-										  enddir);
-			System.out.println("Upload added!\r\n");
+			Date release = null;
+			if (!releasetime.equalsIgnoreCase("null") && (visibility == 2)) {
+				release = DateFormat.getInstance().parse(releasetime);
+			}
+
+			if (license == 1) {
+				monetize = false;
+			}
+
+			uploadController.submitUpload(file, account_result, category, (short) visibility, title, description, tags, playlist_result, (short) comment, (short) videoresponse, rate, embed,
+			                              commentvote, mobile, start, release, enddir, monetize, true, true, false, (short) license);
+			System.out.println("Upload added!\r\n"); //NON-NLS
 		} catch (ParseException ignored) {
-			System.out.println("Starttime is formatted incorrectly.\r\n");
+			System.out.println("Starttime is formatted incorrectly.\r\n"); //NON-NLS
 		}
 	}
 
@@ -226,20 +290,6 @@ public class CorePlugin implements Pluggable
 	public void onStart()
 	{
 		uploader.runStarttimeChecker();
-
-		@Language("JavaScript") String script = "load('F:/env.js');";
-
-		try {
-			final Context cx = Context.enter();
-			final Global scope = new Global();
-			scope.init(cx);
-			final Scriptable scriptable = cx.newObject(scope);
-			cx.evaluateString(scope, script, "script", 1, null);
-		} catch (Exception e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} finally {
-			Context.exit();
-		}
 	}
 
 	@Override

@@ -165,8 +165,8 @@ public class DesignManager
 	public void onDesignChanged(final String topic, final String o)
 	{
 		// noinspection CallToStringEquals
-		if (o.equals("application.general.laf")) {
-			changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel"));
+		if (o.equals("application.general.laf")) { //NON-NLS
+			changeDesign((String) settingsService.get("application.general.laf", "SubstanceGraphiteGlassLookAndFeel")); //NON-NLS
 			EventBus.publish(DesignManager.UPDATE_UI, null);
 		}
 	}

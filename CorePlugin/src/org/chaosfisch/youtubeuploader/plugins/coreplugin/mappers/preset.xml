@@ -53,10 +53,10 @@
 
 	<sql id="insertValuesList">
 		(autotitle, autotitleFormat, category, comment, commentVote, defaultDir, description, embed, keywords, mobile,
-		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id, monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir)
+		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id, monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir, license)
 		VALUES (#{autotitle}, #{autotitleFormat}, #{category}, #{comment}, #{commentvote}, #{defaultDir}, #{description}, #{embed}, #{keywords},
 		#{mobile}, #{name}, #{numberModifier}, #{videoresponse}, #{visibility}, #{rate}, #{account.identity}, #{playlist.identity}, #{monetize},
-		#{monetizeOverlay}, #{monetizeTrueview}, #{monetizeProduct}, #{enddir})
+		#{monetizeOverlay}, #{monetizeTrueview}, #{monetizeProduct}, #{enddir}, #{license})
 	</sql>
 
 	<sql id="updateSetList">
@@ -82,7 +82,8 @@
 		monetizeOverlay = #{monetizeOverlay},
 		monetizeTrueview = #{monetizeTrueview},
 		monetizeProduct = #{monetizeProduct},
-		enddir 			= #{enddir}
+		enddir 			= #{enddir},
+		license = #{license}
 	</sql>
 
 	<select id="findPreset" parameterType="int" resultMap="presetMap">

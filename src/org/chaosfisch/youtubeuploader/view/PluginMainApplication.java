@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
@@ -39,6 +40,7 @@ import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.PluginLoader;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
+import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
@@ -87,15 +89,26 @@ public class PluginMainApplication
 		initPlugins();
 		showFrame();
 		initCommandline(args);
+		updateApplication(args);
+	}
+
+	private void updateApplication(final String... args)
+	{
+		for (int i = 0, argsLength = args.length; i < argsLength; i++) {
+			@NonNls final String arg = args[i];
+			if (arg.equalsIgnoreCase("update")) {
+				EventBus.publish("UPDATE_APPLICATION", args[i + 1]);
+			}
+		}
 	}
 
 	private void initCommandline(final String... args)
 	{
 		if (GraphicsEnvironment.isHeadless()) {
 			try {
-				final Shell shell = ShellFactory.createConsoleShell("sjy-uploader", "Simple Java Youtube Uploader by CHAOSFISCH: CLI Interface", this);
+				final Shell shell = ShellFactory.createConsoleShell("sjy-uploader", "Simple Java Youtube Uploader by CHAOSFISCH: CLI Interface", this); //NON-NLS
 				for (final Pluggable plugin : pluginManager.getPlugins().values()) {
-					shell.addMainHandler(plugin, String.format("%s-", plugin.getCLIName()));
+					shell.addMainHandler(plugin, String.format("%s-", plugin.getCLIName())); //NON-NLS
 				}
 				for (final String line : args) {
 					shell.processLine(line);
@@ -225,7 +238,8 @@ public class PluginMainApplication
 					}
 				}
 			});
-			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
+			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource(
+					"/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
 			aboutMenuItem.addActionListener(new ActionListener()
 			{
 				@Override

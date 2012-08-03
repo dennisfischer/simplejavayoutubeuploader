@@ -45,7 +45,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@SuppressWarnings({"CallToStringEquals", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"}) public class NanoHTTPD
+@SuppressWarnings({"CallToStringEquals", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"})
+public class NanoHTTPD
 {
 	// ==================================================
 	// API parts
@@ -110,6 +111,7 @@ import java.util.*;
 			{
 
 				try {
+					//noinspection SocketOpenedButNotSafelyClosed
 					myServerSocket = new ServerSocket(port);
 					final Socket socket = myServerSocket.accept();
 
@@ -156,7 +158,8 @@ import java.util.*;
 	 * and returns the response.
 	 */
 	@SuppressWarnings(
-			{"CallToStringEqualsIgnoreCase", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"}) private class HTTPSession implements Runnable
+			{"CallToStringEqualsIgnoreCase", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"})
+	private class HTTPSession implements Runnable
 	{
 		public HTTPSession(final Socket s)
 		{
@@ -883,29 +886,29 @@ import java.util.*;
 
 	static {
 		@SuppressWarnings("StringConcatenation") final StringTokenizer st = new StringTokenizer("css		text/css " +
-																										"htm		text/html " +
-																										"html		text/html " +
-																										"xml		text/xml " +
-																										"txt		text/plain " +
-																										"asc		text/plain " +
-																										"gif		image/gif " +
-																										"jpg		image/jpeg " +
-																										"jpeg		image/jpeg " +
-																										"png		image/png " +
-																										"mp3		audio/mpeg " +
-																										"m3u		audio/mpeg-url " +
-																										"mp4		video/mp4 " +
-																										"ogv		video/ogg " +
-																										"flv		video/x-flv " +
-																										"mov		video/quicktime " +
-																										"swf		application/x-shockwave-flash " +
-																										"js			application/javascript " +
-																										"pdf		application/pdf " +
-																										"doc		application/msword " +
-																										"ogg		application/x-ogg " +
-																										"zip		application/octet-stream " +
-																										"exe		application/octet-stream " +
-																										"class		application/octet-stream ");
+				                                                                                        "htm		text/html " +
+				                                                                                        "html		text/html " +
+				                                                                                        "xml		text/xml " +
+				                                                                                        "txt		text/plain " +
+				                                                                                        "asc		text/plain " +
+				                                                                                        "gif		image/gif " +
+				                                                                                        "jpg		image/jpeg " +
+				                                                                                        "jpeg		image/jpeg " +
+				                                                                                        "png		image/png " +
+				                                                                                        "mp3		audio/mpeg " +
+				                                                                                        "m3u		audio/mpeg-url " +
+				                                                                                        "mp4		video/mp4 " +
+				                                                                                        "ogv		video/ogg " +
+				                                                                                        "flv		video/x-flv " +
+				                                                                                        "mov		video/quicktime " +
+				                                                                                        "swf		application/x-shockwave-flash " +
+				                                                                                        "js			application/javascript " +
+				                                                                                        "pdf		application/pdf " +
+				                                                                                        "doc		application/msword " +
+				                                                                                        "ogg		application/x-ogg " +
+				                                                                                        "zip		application/octet-stream " +
+				                                                                                        "exe		application/octet-stream " +
+				                                                                                        "class		application/octet-stream ");
 		while (st.hasMoreTokens()) {
 			//noinspection unchecked
 			NanoHTTPD.theMimeTypes.put(st.nextToken(), st.nextToken());

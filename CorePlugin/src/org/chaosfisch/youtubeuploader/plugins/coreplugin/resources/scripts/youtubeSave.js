@@ -17,21 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
+var move = function () {
+    window.location("https://www.youtube.com/");
+};
 
-/**
- * Created with IntelliJ IDEA.
- * User: Dennis
- * Date: 15.05.12
- * Time: 19:49
- * To change this template use File | Settings | File Templates.
- */
-public class UploaderResumeException extends Throwable
-{
-	private static final long serialVersionUID = 4654579354152960064L;
-
-	public UploaderResumeException(final String format)
-	{
-		super(format);
-	}
-}
+var evtClick = document.createEvent("HTMLEvents");
+evtClick.initEvent("click", true, true);
+var button = document.getElementsByClassName('save-changes-button')[0];
+button.click();
+button.dispatchEvent(evtClick);
+setTimeout('move()', 3000);

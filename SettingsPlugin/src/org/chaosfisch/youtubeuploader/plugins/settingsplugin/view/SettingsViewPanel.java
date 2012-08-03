@@ -136,13 +136,13 @@ public class SettingsViewPanel
 								final JTextField jTextField = (JTextField) component;
 								jTextField.setText((String) settingsService.get(jTextField.getName(), jTextField.getText()));
 							} else if (component instanceof JComboBox) {
-								final JComboBox jComboBox = (JComboBox) component;
+								@SuppressWarnings("UnusedAssignment") final JComboBox jComboBox = (JComboBox) component;
 								//TODO FINISH COMBOBOX
 							} else if (component instanceof JCheckBox) {
 								final JCheckBox jCheckBox = (JCheckBox) component;
 								jCheckBox.setSelected(Boolean.parseBoolean((String) settingsService.get(jCheckBox.getName(), jCheckBox.isSelected() + "")));
 							} else if (component instanceof JSpinner) {
-								final JSpinner jSpinner = (JSpinner) component;
+								@SuppressWarnings("UnusedAssignment") final JSpinner jSpinner = (JSpinner) component;
 								//TODO FINISH Spinner
 							} else if (component instanceof JButton) {
 								final JButton jButton = (JButton) component;

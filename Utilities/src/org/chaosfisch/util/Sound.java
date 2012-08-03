@@ -137,57 +137,55 @@ public class Sound implements Runnable
 	 */
 	public void run()
 	{
-		do {
-			if (!(song.exists() && song.isFile())) {
-				break;
+		if (!(song.exists() && song.isFile())) {
+			return;
+		}
+		try {
+			final AudioInputStream in = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(song));
+			final AudioFormat audioFormat = in.getFormat();
+			@SuppressWarnings("ObjectAllocationInLoop") final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, audioFormat));
+			line.open(audioFormat);
+			final FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+			line.start();
+			final long songLaenge = song.length();
+			final int sampleSizeInBits = audioFormat.getSampleSizeInBits();
+
+			if (in.getFrameLength() == -1) {
+				songTime.setTime((songLaenge / sampleSizeInBits) - Sound.timeZoneKorrektur);
+			} else {
+				songTime.setTime(((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000) - Sound.timeZoneKorrektur);
 			}
-			try {
-				final AudioInputStream in = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(song));
-				final AudioFormat audioFormat = in.getFormat();
-				@SuppressWarnings("ObjectAllocationInLoop") final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, audioFormat));
-				line.open(audioFormat);
-				final FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
-				line.start();
-				final long songLaenge = song.length();
-				final int sampleSizeInBits = audioFormat.getSampleSizeInBits();
 
-				if (in.getFrameLength() == -1) {
-					songTime.setTime((songLaenge / sampleSizeInBits) - Sound.timeZoneKorrektur);
-				} else {
-					songTime.setTime(((in.getFrameLength() / (long) audioFormat.getFrameRate()) * 1000) - Sound.timeZoneKorrektur);
-				}
-
-				in.mark(in.available());
-				long resetKorrektur = 0;
-				while ((!stop)) {
-					isPlaying = true;
-					final int gainLevel = (int) ((int) gainControl.getMinimum() + (((gainControl.getMaximum() - gainControl.getMinimum()) / 100) * gainPercent));
-					gainControl.setValue(gainLevel);
-					if (!pause) {
-						final int n = in.read(Sound.buffer, 0, Sound.buffer.length);
-						if ((n < 0) || (stop)) {
-							break;
-						}
-						if (reset) {
-							resetKorrektur = line.getMicrosecondPosition() / 1000;
-							in.reset();
-							reset = false;
-						}
-						time.setTime((line.getMicrosecondPosition() / 1000) - Sound.timeZoneKorrektur - resetKorrektur);
-						line.write(Sound.buffer, 0, n);
+			in.mark(in.available());
+			long resetKorrektur = 0;
+			while ((!stop)) {
+				isPlaying = true;
+				final int gainLevel = (int) ((int) gainControl.getMinimum() + (((gainControl.getMaximum() - gainControl.getMinimum()) / 100) * gainPercent));
+				gainControl.setValue(gainLevel);
+				if (!pause) {
+					final int n = in.read(Sound.buffer, 0, Sound.buffer.length);
+					if ((n < 0) || (stop)) {
+						break;
 					}
+					if (reset) {
+						resetKorrektur = line.getMicrosecondPosition() / 1000;
+						in.reset();
+						reset = false;
+					}
+					time.setTime((line.getMicrosecondPosition() / 1000) - Sound.timeZoneKorrektur - resetKorrektur);
+					line.write(Sound.buffer, 0, n);
 				}
-				line.drain();
-				line.close();
-				in.close();
-			} catch (UnsupportedAudioFileException ignored) {
-				System.out.println("nicht unterstütztes Format"); //NON-NLS
-			} catch (IOException e) {
-				System.out.printf("Datei nicht gefunden %s%n", e); //NON-NLS
-			} catch (LineUnavailableException ignored) {
-				System.out.println("Soundkartenfehler"); //NON-NLS
 			}
-		} while (loopPlay && !stop);
+			line.drain();
+			line.close();
+			in.close();
+		} catch (UnsupportedAudioFileException ignored) {
+			System.out.println("nicht unterstütztes Format"); //NON-NLS
+		} catch (IOException e) {
+			System.out.printf("Datei nicht gefunden %s%n", e); //NON-NLS
+		} catch (LineUnavailableException ignored) {
+			System.out.println("Soundkartenfehler"); //NON-NLS
+		}
 		isPlaying = false;
 	}
 
