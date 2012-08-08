@@ -31,13 +31,15 @@ var evtChange = document.createEvent("HTMLEvents");
 evtChange.initEvent("change", true, true);
 
 var input = document.getElementsByClassName("metadata-privacy-input")[0];
-input.selectedIndex = 3;
-input.dispatchEvent(evtChange);
+if (input.options.length == 4) {
+    input.selectedIndex = 3;
+    input.dispatchEvent(evtChange);
 
-var date = document.getElementsByClassName("publish-date-formatted")[0];
-date.value = "%s";
-date.dispatchEvent(evtChange);
+    var date = document.getElementsByClassName("publish-date-formatted")[0];
+    date.value = "%s";
+    date.dispatchEvent(evtChange);
 
-var time = document.getElementsByClassName("publish-time-formatted")[0];
-selectOptionByValue(time, "%d");
-time.dispatchEvent(evtChange);
+    var time = document.getElementsByClassName("publish-time-formatted")[0];
+    selectOptionByValue(time, "%d");
+    time.dispatchEvent(evtChange);
+}

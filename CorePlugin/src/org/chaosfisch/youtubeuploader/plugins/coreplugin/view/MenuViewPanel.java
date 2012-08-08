@@ -24,6 +24,8 @@ import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.DefaultValidationResultModel;
 import com.jgoodies.validation.view.ValidationResultViewFactory;
+import org.chaosfisch.google.auth.AuthenticationException;
+import org.chaosfisch.google.auth.GoogleAuthorization;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadController;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
@@ -130,7 +132,8 @@ public class MenuViewPanel
 			}
 		});
 
-		addAccountMenuItem = new JMenuItem(resourceBundle.getString("accountDialog.addAccountMenuLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/key_add.png"))); //NON-NLS
+		addAccountMenuItem = new JMenuItem(resourceBundle.getString("accountDialog.addAccountMenuLabel"), new ImageIcon(getClass().getResource(
+				"/youtubeuploader/resources/images/key_add.png"))); //NON-NLS
 		addAccountMenuItem.addActionListener(new ActionListener()
 		{
 			@SuppressWarnings("CallToStringEquals") @Override
@@ -149,14 +152,15 @@ public class MenuViewPanel
 							final Account account = new Account();
 							account.name = nameTextField.getText().trim();
 							account.setPassword(String.valueOf(passwordField.getPassword()).trim());
-							//try {
-
-							accountService.create(account);
-							break;
-							/*} catch (AuthenticationException ex) {
+							try {
+								final GoogleAuthorization googleAuthorization = new GoogleAuthorization(GoogleAuthorization.TYPE.CLIENTLOGIN, account.name, account.getPassword());
+								System.out.println(googleAuthorization.getAuthHeader());
+								accountService.create(account);
+								break;
+							} catch (AuthenticationException ignored) {
 								nameTextField.setBackground(Color.RED);
 								passwordField.setBackground(Color.RED);
-							} */
+							}
 						} else {
 							nameTextField.setBackground(Color.RED);
 							passwordField.setBackground(Color.RED);
@@ -168,7 +172,8 @@ public class MenuViewPanel
 			}
 		});
 
-		addPlaylistMenuItem = new JMenuItem(resourceBundle.getString("playlistDialog.addPlaylistLabel"), new ImageIcon(getClass().getResource(String.format("/youtubeuploader/resources/images/table_add.png")))); //NON-NLS
+		addPlaylistMenuItem = new JMenuItem(resourceBundle.getString("playlistDialog.addPlaylistLabel"), new ImageIcon(getClass().getResource(String.format(
+				"/youtubeuploader/resources/images/table_add.png")))); //NON-NLS
 		addPlaylistMenuItem.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)
@@ -187,7 +192,8 @@ public class MenuViewPanel
 				accountService.getAll().toArray(accounts);
 				final JComboBox accountList = new JComboBox(accounts);
 
-				final Object[] message = {resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, resourceBundle.getString("playlistDialog.descriptionLabel"), scrollPane, "Account", accountList, validationPanel};
+				final Object[] message = {resourceBundle.getString("playlistDialog.playlistLabel"), nameTextField, resourceBundle.getString(
+						"playlistDialog.descriptionLabel"), scrollPane, "Account", accountList, validationPanel};
 
 				while (true) {
 					final int result = JOptionPane.showConfirmDialog(null, message, resourceBundle.getString("playlistDialog.addPlaylistLabel"), JOptionPane.OK_CANCEL_OPTION);
@@ -220,7 +226,8 @@ public class MenuViewPanel
 			}
 		});
 
-		addPresetMenuItem = new JMenuItem(resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(getClass().getResource(String.format("/youtubeuploader/resources/images/report_add.png")))); //NON-NLS
+		addPresetMenuItem = new JMenuItem(resourceBundle.getString("presetDialog.addPresetLabel"), new ImageIcon(getClass().getResource(String.format(
+				"/youtubeuploader/resources/images/report_add.png")))); //NON-NLS
 		addPresetMenuItem.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(final ActionEvent e)

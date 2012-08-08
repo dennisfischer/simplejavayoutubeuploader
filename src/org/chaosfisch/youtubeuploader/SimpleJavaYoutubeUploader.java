@@ -31,15 +31,15 @@ package org.chaosfisch.youtubeuploader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.xbean.finder.ResourceFinder;
+import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
+import org.chaosfisch.youtubeuploader.util.LogfileComitter;
 import org.chaosfisch.youtubeuploader.view.PluginMainApplication;
 import org.jetbrains.annotations.NonNls;
 
@@ -51,7 +51,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -115,7 +114,6 @@ public class SimpleJavaYoutubeUploader
 		{
 			@Override public void uncaughtException(final Thread t, final Throwable e)
 			{
-				System.out.println(e.getMessage());
 				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER"); //NON-NLS
 				logger.warn(e.getMessage(), e);
 				if (!GraphicsEnvironment.isHeadless()) {
@@ -141,7 +139,7 @@ public class SimpleJavaYoutubeUploader
 								@Override public void actionPerformed(final ActionEvent ev)
 								{
 									try {
-										SimpleJavaYoutubeUploader.sendMail(e);
+										LogfileComitter.sendMail();
 										sendLogfilesButton.setBackground(Color.green);
 										sendLogfilesButton.setAction(new AbstractAction("Logfiles sent!!! - We're working on it!")
 										{
@@ -178,7 +176,7 @@ public class SimpleJavaYoutubeUploader
 					try {
 						@NonNls final String data = br.readLine();
 						if (data.equals("y")) {
-							SimpleJavaYoutubeUploader.sendMail(e);
+							LogfileComitter.sendMail();
 						}
 					} catch (IOException ex) {
 						throw new RuntimeException("This shouldn't happen", ex);
@@ -194,34 +192,15 @@ public class SimpleJavaYoutubeUploader
 				}
 			}
 		});
+
+		String userHome = System.getProperty("user.home");
+		if (Computer.isMac()) {
+			userHome += "Library/"; //NON-NLS
+		}
+
+		System.setProperty("user.home", userHome);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new DebugKeyDispatcher());
 		new SimpleJavaYoutubeUploader(args);
-	}
-
-	private static void sendMail(final Throwable e) throws EmailException
-	{
-		final EmailAttachment attachment = new EmailAttachment();
-		attachment.setPath(String.format("%s/SimpleJavaYoutubeUploader/logs/applog.log", System.getProperty("user.home"))); //NON-NLS
-		attachment.setDisposition(EmailAttachment.ATTACHMENT);
-		attachment.setDescription("Logfiles"); //NON-NLS
-		attachment.setName("Logfile.txt"); //NON-NLS
-
-		// Create the email message
-		final MultiPartEmail email = new MultiPartEmail();
-		email.addTo("dennis0912@live.de", "Dennis Fischer"); //NON-NLS
-
-		email.setHostName("mail.gmx.net"); //NON-NLS
-		email.setAuthentication("simplejavayoutubeuploader@gmx.de", "simplejavayoutubeuploader"); //NON-NLS
-		email.setFrom("simplejavayoutubeuploader@gmx.de", "Me"); //NON-NLS
-
-		email.setSubject("Logfiles"); //NON-NLS
-		email.setMsg(String.format("Logfiles attached\r\n%s\r\n%s", e.getMessage(), Arrays.toString(e.getStackTrace())));//NON-NLS
-
-		// add the attachment
-		email.attach(attachment);
-
-		// send the email
-		email.send();
 	}
 
 	private static class DebugKeyDispatcher implements KeyEventDispatcher

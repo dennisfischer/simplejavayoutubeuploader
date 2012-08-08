@@ -19,6 +19,7 @@
     <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="JxBrowser" level="project" />
+    <orderEntry type="library" name="org.apache.directory.studio:org.apache.commons.codec:1.6" level="project" />
   </component>
 </module>
 

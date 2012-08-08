@@ -153,6 +153,8 @@ public class SystemTrayPlugin implements Pluggable
 	@EventTopicSubscriber(topic = SystemTrayPlugin.MESSAGE)
 	public void onMessage(final String topic, final Object o)
 	{
-		trayIcon.displayMessage(resourceBundle.getString("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
+		if (trayIcon != null) {
+			trayIcon.displayMessage(resourceBundle.getString("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
+		}
 	}
 }

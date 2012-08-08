@@ -314,11 +314,9 @@ public class NanoHTTPD
 				try {
 					sendError(HTTP_STATUS.INTERNALERROR.toString(), String.format("SERVER INTERNAL ERROR: IOException: %s", ioe.getMessage()));
 				} catch (InterruptedException ignored) {
-					throw new RuntimeException("This shouldn't happen");
 				}
 			} catch (InterruptedException ignored) {
 				// Thrown by sendError, ignore and exit the thread.
-				throw new RuntimeException("This shouldn't happen");
 			}
 		}
 

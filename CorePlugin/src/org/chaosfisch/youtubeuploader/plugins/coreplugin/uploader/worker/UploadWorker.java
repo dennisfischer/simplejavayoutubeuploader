@@ -54,6 +54,7 @@ import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -143,7 +144,7 @@ public class UploadWorker extends BetterSwingWorker
 		//Einstiegspunkt in diesen Thread.
 		/* Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch fehlschlagen und muss wiederholbar sein. */
 		//noinspection EqualsCalledOnEnumConstant
-		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED))) {
+		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)) && !(numberOfRetries > UploadWorker.MAX_RETRIES)) {
 			try {
 				switch (currentStatus) {
 					case INITIALIZE:
@@ -178,6 +179,7 @@ public class UploadWorker extends BetterSwingWorker
 				currentStatus = STATUS.FAILED;
 			} catch (AuthenticationException e) {
 				logger.warn("AuthException", e); //NON-NLS
+				numberOfRetries++;
 			} catch (UploadException e) {
 				logger.warn("UploadException", e); //NON-NLS
 				currentStatus = STATUS.RESUMEINFO;
@@ -205,6 +207,14 @@ public class UploadWorker extends BetterSwingWorker
 				queue.started = null;
 				saveQueueObject();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Beendet auf Userrequest")); //NON-NLS
+				break;
+
+			default:
+				queue.inprogress = false;
+				queue.failed = true;
+				queue.started = null;
+				saveQueueObject();
+				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Authentication-Error")); //NON-NLS
 				break;
 		}
 	}
@@ -238,7 +248,9 @@ public class UploadWorker extends BetterSwingWorker
 	private void postprocess()
 	{
 		playlistAction();
-		browserAction();
+		if (!GraphicsEnvironment.isHeadless()) {
+			browserAction();
+		}
 		enddirAction();
 		currentStatus = STATUS.DONE;
 	}
@@ -334,7 +346,7 @@ public class UploadWorker extends BetterSwingWorker
 			final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
 			@NonNls final String RELEASE_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + String.format(convertStreamToString(
-					getClass().getResourceAsStream("/scripts/youtubeRelease.js")), dateFormat.format(calendar.getTime()), (calendar.get(Calendar.HOUR) * 60) + calendar.get(Calendar.MINUTE));
+					getClass().getResourceAsStream("/scripts/youtubeRelease.js")), dateFormat.format(calendar.getTime()), (calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE));
 			browser.executeScript(RELEASE_SCRIPT);
 		} else {
 			@NonNls final String PUBLISH_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + convertStreamToString(
@@ -751,7 +763,7 @@ public class UploadWorker extends BetterSwingWorker
 	{
 		final XStream xStream = new XStream(new DomDriver());
 		xStream.processAnnotations(VideoEntry.class);
-		System.out.println(atomData);
+		logger.info(atomData);
 		final VideoEntry videoEntry = (VideoEntry) xStream.fromXML(atomData);
 		return videoEntry.mediaGroup.videoID;
 	}

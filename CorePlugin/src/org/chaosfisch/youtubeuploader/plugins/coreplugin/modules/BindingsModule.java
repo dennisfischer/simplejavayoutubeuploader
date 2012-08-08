@@ -32,13 +32,11 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.log4j.Logger;
 import org.apache.xbean.finder.ResourceFinder;
-import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGeneratorImpl;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
-import org.jetbrains.annotations.NonNls;
 import org.mybatis.guice.mappers.MapperProvider;
 import org.mybatis.guice.session.SqlSessionManagerProvider;
 import org.mybatis.guice.transactional.Transactional;
@@ -71,12 +69,8 @@ public class BindingsModule extends AbstractModule
 		{
 			@Override protected void initialize()
 			{
-				final File outputFile;
-				if (Computer.isMac()) {
-					outputFile = new File(String.format("%s/Library/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
-				} else {
-					outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home"))); //NON-NLS
-				}
+
+				final File outputFile = new File(String.format("%s/SimpleJavaYoutubeUploader/mybatis.xml", System.getProperty("user.home")));
 				try {
 					final File templateFile = new File("mybatis_config_template.xml");
 					Logger.getLogger(CorePlugin.class).info(String.format("Searching file mybatis template in %s", templateFile.getAbsolutePath()));//NON-NLS
@@ -105,11 +99,7 @@ public class BindingsModule extends AbstractModule
 						}
 						typeAliases += "</typeAliases>"; //NON-NLS
 						mappers += "</mappers>"; //NON-NLS
-						@NonNls String macpath = "";
-						if (Computer.isMac()) {
-							macpath = "Library/";
-						}
-						bufferedWriter.write(String.format(fileContent, typeAliases, macpath, mappers));
+						bufferedWriter.write(String.format(fileContent, typeAliases, mappers));
 					} catch (IOException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					} finally {

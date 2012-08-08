@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="org.apache.directory.studio:org.apache.commons.codec:1.6" type="repository">
+    <properties maven-id="org.apache.directory.studio:org.apache.commons.codec:1.6" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/org.apache.commons.codec-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-codec-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/annotations-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/commons-codec-1.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/org.apache.commons.codec-1.6-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-codec-1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

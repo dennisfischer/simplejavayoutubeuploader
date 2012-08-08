@@ -191,6 +191,7 @@ public final class UploadViewPanel
 
 		releasetimeSpinner.setModel(new SpinnerDateModel());
 		final JSpinner.DateEditor timeEditorReleaseTime = new JSpinner.DateEditor(releasetimeSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); //NON-NLS
+
 		releasetimeSpinner.setEditor(timeEditorReleaseTime);
 		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 

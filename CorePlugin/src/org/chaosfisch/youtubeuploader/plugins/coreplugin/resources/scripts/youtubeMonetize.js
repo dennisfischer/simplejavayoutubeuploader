@@ -28,13 +28,26 @@ if (disclaimer != null) {
 }
 
 var overlay = document.getElementsByClassName("ads-settings-enable-overlay-ads")[0];
-overlay.checked = !"%s";
-overlay.dispatchEvent(evtClick);
+var overlayBool = "%s";
+if (overlayBool == "true" && overlay.checked == false) {
+    overlay.dispatchEvent(evtClick);
+} else if (overlayBool != "true" && overlay.checked == true) {
+    overlay.dispatchEvent(evtClick);
+}
 
 var trueview = document.getElementsByClassName("ads-settings-trueview-instream")[0];
-trueview.checked = !"%s";
-trueview.dispatchEvent(evtClick);
+var trueviewBool = "%s";
+if (trueviewBool == "true" && trueview.checked == false) {
+    trueview.dispatchEvent(evtClick);
+} else if (trueviewBool != "true" && trueview.checked == true) {
+    trueview.dispatchEvent(evtClick);
+}
 
 var product = document.getElementsByClassName("ads-settings-paid-product")[0];
-product.checked = !"%s";
-product.dispatchEvent(evtClick);
+var productBool = "%s";
+if (productBool == "true" && product.checked == false) {
+    product.dispatchEvent(evtClick);
+}
+else if (productBool != "true" && product.checked == true) {
+    product.dispatchEvent(evtClick);
+}

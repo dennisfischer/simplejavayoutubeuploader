@@ -34,7 +34,7 @@ public class PluginManagerImpl implements PluginManager
 	@Inject private       PluginLoader           pluginLoader;
 
 	@Override
-	public Collection<Pluggable> loadPlugins(final String... disabledPlugins)
+	public List<Pluggable> loadPlugins(final String... disabledPlugins)
 	{
 		logger.info("Loading Plugins...: Disabled -> %s"); //NON-NLS
 		plugins = pluginLoader.loadPlugins(Arrays.asList(disabledPlugins));
@@ -52,7 +52,7 @@ public class PluginManagerImpl implements PluginManager
 			}
 		}
 
-		return plugins.values();
+		return new ArrayList<Pluggable>(plugins.values());
 	}
 
 	@Override

@@ -33,6 +33,7 @@
         <element id="library" level="project" name="org.hsqldb:hsqldb:2.2.8" />
         <element id="library" level="project" name="com.github.insubstantial:substance:7.1" />
         <element id="library" level="project" name="xstream-1.4.2" />
+        <element id="library" level="project" name="commons-codec:commons-codec:1.6" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />

@@ -45,6 +45,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGener
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -330,7 +331,13 @@ public class UploadController
 		}
 
 		if ((releasetime != null) && releasetime.after(new Date(System.currentTimeMillis() + (300000)))) {
-			queue.release = new Date(releasetime.getTime());
+			final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(releasetime);
+			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
+			final int mod = unroundedMinutes % 30;
+			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+
+			queue.release = calendar.getTime();
 		}
 
 		queueService.create(queue);

@@ -25,8 +25,7 @@ import org.chaosfisch.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.controller.PluginController;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class PluginViewPanel extends JDialog
 {
@@ -49,12 +48,12 @@ public class PluginViewPanel extends JDialog
 		pluginTable.setModel(pluginController.getPluginTableModel());
 	}
 
-	public void setPluggableList(final Collection<Pluggable> pluggableList)
+	public void setPluggableList(final List<Pluggable> pluggableList)
 	{
 		final RowTableModel<Pluggable> rowTableModel = pluginController.getPluginTableModel();
 		if (rowTableModel.getRowCount() > 0) {
 			rowTableModel.removeRowRange(0, rowTableModel.getRowCount() - 1);
 		}
-		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), new ArrayList<Pluggable>(pluggableList));
+		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), pluggableList);
 	}
 }

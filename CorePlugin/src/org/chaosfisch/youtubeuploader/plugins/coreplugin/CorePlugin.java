@@ -211,10 +211,7 @@ public class CorePlugin implements Pluggable
 	                      @Param(name = "bCommentVote") final boolean commentvote,
 	                      @Param(name = "bMobile") final boolean mobile,
 	                      @Param(name = "enddir") final String enddir,
-	                      @NonNls @Param(name = "sStarttime") final String starttime,
-	                      @NonNls @Param(name = "sRelease") final String releasetime,
-	                      @Param(name = "bMonetize") boolean monetize,
-	                      @Param(name = "iLicense") final int license)
+	                      @NonNls @Param(name = "sStarttime") final String starttime)
 	{
 		try {
 			final Account account_find = new Account();
@@ -241,18 +238,9 @@ public class CorePlugin implements Pluggable
 				start = DateFormat.getInstance().parse(starttime);
 			}
 
-			Date release = null;
-			if (!releasetime.equalsIgnoreCase("null") && (visibility == 2)) {
-				release = DateFormat.getInstance().parse(releasetime);
-			}
-
-			if (license == 1) {
-				monetize = false;
-			}
-
 			uploadController.submitUpload(file, account_result, category, (short) visibility, title, description, tags, playlist_result, (short) comment, (short) videoresponse, rate, embed,
-			                              commentvote, mobile, start, release, enddir, monetize, true, true, false, (short) license);
-			System.out.println("Upload added!\r\n"); //NON-NLS
+			                              commentvote, mobile, start, null, enddir, false, false, false, false, (short) 0);
+			System.out.println("Upload added!"); //NON-NLS
 		} catch (ParseException ignored) {
 			System.out.println("Starttime is formatted incorrectly.\r\n"); //NON-NLS
 		}
@@ -272,12 +260,13 @@ public class CorePlugin implements Pluggable
 	@Command(name = "startqueue")
 	public void startQueue()
 	{
-
+		uploader.start();
 	}
 
 	@Command(name = "stopqueue")
 	public void stopQueue()
 	{
+		uploader.stop();
 	}
 
 	@Command(name = "viewqueue")
@@ -290,6 +279,28 @@ public class CorePlugin implements Pluggable
 	public void onStart()
 	{
 		uploader.runStarttimeChecker();
+/*
+		final Context cx = ContextFactory.getGlobal().enterContext();
+		cx.setOptimizationLevel(-1);
+		cx.setLanguageVersion(Context.VERSION_1_5);
+		final Global global = Main.getGlobal();
+		global.init(cx);
+
+		final Scripter scripter = new Scripter(global,cx);
+
+		final Object controller = Context.javaToJS(scripter, global);
+		final Object out = Context.javaToJS(System.out, global);
+		final Object inject = Context.javaToJS(injector, global);
+		ScriptableObject.putProperty(global, "out", out);
+		ScriptableObject.putProperty(global, "injector", inject);
+		ScriptableObject.putProperty(global, "Scripter", scripter);
+		global.defineProperty("arguments", "",
+		                      0);
+		try {
+			Main.processSource(cx, "./envjs/rhino.js");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}*/
 	}
 
 	@Override

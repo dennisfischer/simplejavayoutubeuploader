@@ -22,10 +22,7 @@ package org.chaosfisch.youtubeuploader.controller;
 import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.table.RowTableModel;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,8 +39,9 @@ public class PluginController
 	public RowTableModel<Pluggable> getPluginTableModel(final List<Pluggable> pluggableList)
 	{
 		if (pluginTableModel == null) {
-			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString("pluginTable.disableCheckbox"));
-			pluginTableModel = new RowTableModel<Pluggable>(Collections.unmodifiableList(pluggableList), columns, Pluggable.class)
+			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString(
+					"pluginTable.disableCheckbox"));
+			pluginTableModel = new RowTableModel<Pluggable>(new ArrayList<Pluggable>(0), columns, Pluggable.class)
 			{
 				private static final long serialVersionUID = 3423121373666600098L;
 
@@ -60,6 +58,7 @@ public class PluginController
 					}
 				}
 			};
+			pluginTableModel.insertRows(0, pluggableList);
 			pluginTableModel.setColumnClass(2, Boolean.class);
 			pluginTableModel.setModelEditable(false);
 		}

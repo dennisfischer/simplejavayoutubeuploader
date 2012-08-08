@@ -25,6 +25,7 @@ import asg.cliche.ShellFactory;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
+import org.apache.commons.mail.EmailException;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
@@ -38,6 +39,7 @@ import org.chaosfisch.plugin.PluginService;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
+import org.chaosfisch.youtubeuploader.util.LogfileComitter;
 import org.chaosfisch.youtubeuploader.util.PluginLoader;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.jetbrains.annotations.NonNls;
@@ -50,7 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -144,7 +146,7 @@ public class PluginMainApplication
 
 	private void initPlugins()
 	{
-		final Collection<Pluggable> pluggableList = pluginManager.loadPlugins(PluginMainApplication.DISABLED_PLUGINS); //NON-NLS
+		final List<Pluggable> pluggableList = pluginManager.loadPlugins(PluginMainApplication.DISABLED_PLUGINS); //NON-NLS
 		for (final Pluggable p : pluggableList) {
 			p.init();
 		}
@@ -253,6 +255,22 @@ public class PluginMainApplication
 				}
 			});
 
+			final JMenuItem logfileCommitMenuItem = new JMenuItem(resourceBundle.getString("application.logfileLabel"), new ImageIcon(getClass().getResource(
+					"/youtubeuploader/resources/images/logfile_commit.png"))); //NON-NLS
+			logfileCommitMenuItem.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(final ActionEvent e)
+				{
+					try {
+						LogfileComitter.sendMail();
+						JOptionPane.showMessageDialog(mainFrame, "Logfile sent."); //NON-NLS
+					} catch (EmailException ignored) {
+						JOptionPane.showMessageDialog(mainFrame, "Failed sending logfile."); //NON-NLS
+					}
+				}
+			});
+
 			final JMenuItem pluginMenuItem = new JMenuItem(resourceBundle.getString("application.pluginsLabel"));
 			pluginMenuItem.addActionListener(new ActionListener()
 			{
@@ -275,6 +293,7 @@ public class PluginMainApplication
 			helpMenu.add(changelogMenuItem);
 			helpMenu.add(aboutMenuItem);
 			helpMenu.add(pluginMenuItem);
+			helpMenu.add(logfileCommitMenuItem);
 			menuBar.add(helpMenu);
 		}
 	}

@@ -28,7 +28,7 @@
 			<dataSource type="UNPOOLED">
 				<property name="driver" value="org.hsqldb.jdbc.JDBCDriver"/>
 				<property name="url"
-						  value="jdbc:hsqldb:file:${user.home}/%sSimpleJavaYoutubeUploader/db/youtubeuploader.db;encoding=UTF-8;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish;"/>
+						  value="jdbc:hsqldb:file:${user.home}/SimpleJavaYoutubeUploader/db/youtubeuploader.db;encoding=UTF-8;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish;"/>
 				<property name="username" value="sa"/>
 				<property name="password" value=""/>
 			</dataSource>
