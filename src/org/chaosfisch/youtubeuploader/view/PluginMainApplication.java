@@ -42,7 +42,6 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 import org.chaosfisch.youtubeuploader.util.LogfileComitter;
 import org.chaosfisch.youtubeuploader.util.PluginLoader;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
-import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
@@ -91,16 +90,17 @@ public class PluginMainApplication
 		initPlugins();
 		showFrame();
 		initCommandline(args);
-		updateApplication(args);
+		updateApplication();
 	}
 
-	private void updateApplication(final String... args)
+	private void updateApplication()
 	{
-		for (int i = 0, argsLength = args.length; i < argsLength; i++) {
-			@NonNls final String arg = args[i];
-			if (arg.equalsIgnoreCase("update")) {
-				EventBus.publish("UPDATE_APPLICATION", args[i + 1]);
-			}
+
+		if (settingsService.get("version-20rc20", "null").equals("null")) {
+			EventBus.publish("UPDATE_APPLICATION", "2.0");
+
+			settingsService.set("version-20rc20", "true");
+			settingsService.save();
 		}
 	}
 
