@@ -44,7 +44,7 @@ public class QueueServiceImpl implements QueueService
 	{
 		queue.sequence = queueMapper.countQueued();
 		queueMapper.createQueue(queue);
-		EventBus.publish(QueueService.QUEUE_ENTRY_ADDED, queue);
+		EventBus.publish(QueueService.QUEUE_ADDED, queue);
 		return queue;
 	}
 
@@ -52,14 +52,14 @@ public class QueueServiceImpl implements QueueService
 	{
 		sort(queue, QueuePosition.QUEUE_BOTTOM);
 		queueMapper.deleteQueue(queue);
-		EventBus.publish(QueueService.QUEUE_ENTRY_REMOVED, queue);
+		EventBus.publish(QueueService.QUEUE_REMOVED, queue);
 		return queue;
 	}
 
 	@Transactional @Override public Queue update(final Queue queue)
 	{
 		queueMapper.updateQueue(queue);
-		EventBus.publish(QueueService.QUEUE_ENTRY_UPDATED, queue);
+		EventBus.publish(QueueService.QUEUE_UPDATED, queue);
 		return queue;
 	}
 

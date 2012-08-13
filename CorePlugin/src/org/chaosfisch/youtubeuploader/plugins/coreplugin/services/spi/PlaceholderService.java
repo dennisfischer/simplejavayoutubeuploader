@@ -19,9 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,19 +29,9 @@ import java.util.List;
  * Time: 21:14
  * To change this template use File | Settings | File Templates.
  */
-public interface PlaceholderService
+public interface PlaceholderService extends CRUDService<Placeholder>
 {
 	String PLACEHOLDER_ADDED   = "placeholderAdded"; //NON-NLS
 	String PLACEHOLDER_REMOVED = "placeholderRemoved"; //NON-NLS
 	String PLACEHOLDER_UPDATED = "placeholderUpdated"; //NON-NLS
-
-	Placeholder create(Placeholder placeholder);
-
-	Placeholder delete(Placeholder placeholder);
-
-	Placeholder update(Placeholder placeholder);
-
-	Placeholder find(int identifier);
-
-	List<Placeholder> getAll();
 }

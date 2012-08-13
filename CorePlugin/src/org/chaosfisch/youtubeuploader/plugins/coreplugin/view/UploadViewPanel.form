@@ -13,7 +13,7 @@
     <colspec value="fill:max(m;300dlu):noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
     <constraints>
-      <xy x="1" y="12" width="1297" height="515"/>
+      <xy x="1" y="12" width="1029" height="483"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -603,24 +603,6 @@
                   <model/>
                 </properties>
               </component>
-              <component id="7f04d" class="javax.swing.JCheckBox" binding="monetizeCheckbox">
-                <constraints>
-                  <grid row="26" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="checkbox.monetize"/>
-                </properties>
-              </component>
-              <component id="dd0e5" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="26" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.partner"/>
-                </properties>
-              </component>
               <component id="e3b89" class="javax.swing.JCheckBox" binding="monetizeOverlayCheckbox">
                 <constraints>
                   <grid row="26" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -724,6 +706,24 @@
                   <enabled value="false"/>
                 </properties>
               </component>
+              <component id="7f04d" class="javax.swing.JCheckBox" binding="monetizeCheckbox">
+                <constraints>
+                  <grid row="26" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="checkbox.monetize"/>
+                </properties>
+              </component>
+              <component id="d8e74" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="26" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="checkbox.monetize"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <grid id="692df" binding="partnerPanel" layout-manager="FormLayout">
@@ -733,9 +733,9 @@
             <rowspec value="top:4dlu:noGrow"/>
             <rowspec value="center:max(d;4px):noGrow"/>
             <rowspec value="top:4dlu:noGrow"/>
-            <rowspec value="center:max(d;4px):noGrow"/>
-            <rowspec value="top:4dlu:noGrow"/>
             <rowspec value="center:max(d;4px):grow"/>
+            <colspec value="fill:d:grow"/>
+            <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:d:noGrow"/>
             <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:max(d;4px):grow"/>
@@ -744,26 +744,18 @@
             <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:max(d;4px):noGrow"/>
             <constraints>
-              <tabbedpane title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" title-key="settingstablabel.partner" enabled="false"/>
+              <tabbedpane title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" title-key="settingstablabel.partner"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="9d7a0" class="javax.swing.JCheckBox" binding="ansprücheErhebenCheckBox" default-binding="true">
+              <component id="d62e9" class="javax.swing.JComboBox" binding="claimtypeComboBox">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="7" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
-                  <text value="Ansprüche erheben"/>
-                </properties>
-              </component>
-              <component id="d62e9" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
+                  <enabled value="false"/>
                   <model>
                     <item value="Audiovisuell"/>
                     <item value="Nur visueller Teil"/>
@@ -771,21 +763,13 @@
                   </model>
                 </properties>
               </component>
-              <component id="96da1" class="javax.swing.JLabel">
+              <component id="40911" class="javax.swing.JComboBox" binding="claimpolicyComboBox">
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="2" row-span="1" col-span="7" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
-                  <text value="Nutzungsrichtlinie:"/>
-                </properties>
-              </component>
-              <component id="40911" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
-                <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
+                  <enabled value="false"/>
                   <model>
                     <item value="Monetize in all countries"/>
                     <item value="Block in all countries"/>
@@ -793,35 +777,16 @@
                   </model>
                 </properties>
               </component>
-              <component id="2dd39" class="javax.swing.JLabel">
+              <tabbedpane id="cffef" binding="asset">
                 <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text value="Content-Syndication:"/>
-                </properties>
-              </component>
-              <component id="1dfb2" class="javax.swing.JComboBox" binding="comboBox3" default-binding="true">
-                <constraints>
-                  <grid row="6" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <model>
-                    <item value="Überall"/>
-                    <item value="Monetarisierte Platformen"/>
-                  </model>
-                </properties>
-              </component>
-              <tabbedpane id="cffef" binding="tabbedPane1" default-binding="true">
-                <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="7" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="6" column="0" row-span="1" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="200" height="200"/>
                   </grid>
                   <forms defaultalign-vert="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <enabled value="false"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <grid id="430d0" layout-manager="FormLayout">
@@ -837,7 +802,7 @@
                     <colspec value="left:4dlu:noGrow"/>
                     <colspec value="fill:d:grow"/>
                     <constraints>
-                      <tabbedpane title="Web"/>
+                      <tabbedpane title="Web" noi18n="true"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -878,44 +843,55 @@
                           <text value="Hinweise (optional):"/>
                         </properties>
                       </component>
-                      <component id="685b4" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                      <component id="685b4" class="javax.swing.JTextField" binding="webTitleTextfield">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="218ba" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                      <component id="218ba" class="javax.swing.JTextField" binding="webIDTextfield">
                         <constraints>
                           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="30335" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+                      <component id="30335" class="javax.swing.JTextField" binding="webDescriptionTextfield">
                         <constraints>
                           <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
                       <scrollpane id="7243c">
                         <constraints>
                           <grid row="6" column="2" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                           <forms defaultalign-horz="false" defaultalign-vert="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                         <border type="none"/>
                         <children>
-                          <component id="4d5b9" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+                          <component id="4d5b9" class="javax.swing.JTextArea" binding="webNotesTextfield">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <enabled value="false"/>
+                              <wrapStyleWord value="true"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>
@@ -943,7 +919,7 @@
                     <colspec value="left:4dlu:noGrow"/>
                     <colspec value="fill:d:grow"/>
                     <constraints>
-                      <tabbedpane title="TV-Folge"/>
+                      <tabbedpane title="TV" noi18n="true"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -1029,86 +1005,112 @@
                           <text value="Hinweise (optional):"/>
                         </properties>
                       </component>
-                      <component id="3c7fe" class="javax.swing.JTextField" binding="textField4" default-binding="true">
+                      <component id="3c7fe" class="javax.swing.JTextField" binding="tvTMSIDTextfield">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="47c14" class="javax.swing.JTextField" binding="textField5" default-binding="true">
+                      <component id="47c14" class="javax.swing.JTextField" binding="tvSeasonNbTextfield">
                         <constraints>
                           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="cbfc8" class="javax.swing.JTextField" binding="textField6" default-binding="true">
+                      <component id="cbfc8" class="javax.swing.JTextField" binding="tvEpisodeNbTextfield">
                         <constraints>
                           <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="e19bc" class="javax.swing.JTextField" binding="textField7" default-binding="true">
+                      <component id="e19bc" class="javax.swing.JTextField" binding="tvISANTextfield">
                         <constraints>
                           <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="a25e6" class="javax.swing.JTextField" binding="textField8" default-binding="true">
+                      <component id="a25e6" class="javax.swing.JTextField" binding="tvEIDRTextfield">
                         <constraints>
                           <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="763de" class="javax.swing.JTextField" binding="textField9" default-binding="true">
+                      <component id="763de" class="javax.swing.JTextField" binding="tvIDTextfield">
                         <constraints>
                           <grid row="10" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="80037" class="javax.swing.JTextField" binding="textField10" default-binding="true">
+                      <component id="80037" class="javax.swing.JTextField" binding="tvTitleTextfield">
                         <constraints>
                           <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="92012" class="javax.swing.JTextField" binding="textField11" default-binding="true">
+                      <component id="92012" class="javax.swing.JTextField" binding="tvEpisodeTitleTextfield">
                         <constraints>
                           <grid row="14" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
                       <scrollpane id="e0103">
                         <constraints>
                           <grid row="16" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                           <forms defaultalign-horz="false" defaultalign-vert="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                         <border type="none"/>
-                        <children/>
+                        <children>
+                          <component id="196bc" class="javax.swing.JTextArea" binding="tvNotesTextfield">
+                            <constraints/>
+                            <properties>
+                              <enabled value="false"/>
+                              <wrapStyleWord value="true"/>
+                            </properties>
+                          </component>
+                        </children>
                       </scrollpane>
                     </children>
                   </grid>
@@ -1130,7 +1132,7 @@
                     <colspec value="left:4dlu:noGrow"/>
                     <colspec value="fill:d:grow"/>
                     <constraints>
-                      <tabbedpane title="Film"/>
+                      <tabbedpane title="Movie" noi18n="true"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -1198,71 +1200,88 @@
                           <text value="Hinweise (optional):"/>
                         </properties>
                       </component>
-                      <component id="ea897" class="javax.swing.JTextField" binding="textField12" default-binding="true">
+                      <component id="ea897" class="javax.swing.JTextField" binding="movieTitleTextfield">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="9747e" class="javax.swing.JTextField" binding="textField13" default-binding="true">
+                      <component id="9747e" class="javax.swing.JTextField" binding="movieDescriptionTextfield">
                         <constraints>
                           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="81274" class="javax.swing.JTextField" binding="textField14" default-binding="true">
+                      <component id="81274" class="javax.swing.JTextField" binding="movieEIDRTextfield">
                         <constraints>
                           <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="4f48a" class="javax.swing.JTextField" binding="textField15" default-binding="true">
+                      <component id="4f48a" class="javax.swing.JTextField" binding="movieIDTextfield">
                         <constraints>
                           <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="6e99a" class="javax.swing.JTextField" binding="textField16" default-binding="true">
+                      <component id="6e99a" class="javax.swing.JTextField" binding="movieTMSIDTextfield">
                         <constraints>
                           <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="a787d" class="javax.swing.JTextField" binding="textField17" default-binding="true">
+                      <component id="a787d" class="javax.swing.JTextField" binding="movieISANTextfield">
                         <constraints>
                           <grid row="10" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                           <forms defaultalign-horz="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
                       <scrollpane id="d2d6e">
                         <constraints>
                           <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                           <forms defaultalign-horz="false" defaultalign-vert="false"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                         <border type="none"/>
                         <children>
-                          <component id="59455" class="javax.swing.JTextArea" binding="textArea2" default-binding="true">
+                          <component id="59455" class="javax.swing.JTextArea" binding="movieNotesTextfield">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <enabled value="false"/>
+                              <wrapStyleWord value="true"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>
@@ -1270,48 +1289,74 @@
                   </grid>
                 </children>
               </tabbedpane>
-              <component id="2558d" class="javax.swing.JCheckBox">
+              <component id="2558d" class="javax.swing.JCheckBox" binding="partnerProduct">
                 <constraints>
-                  <grid row="4" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
-                  <enabled value="true"/>
+                  <enabled value="false"/>
                   <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.monetizeProduct"/>
                   <visible value="true"/>
                 </properties>
               </component>
-              <component id="6672f" class="javax.swing.JCheckBox">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <selected value="false"/>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.monetizeOverlay"/>
-                  <visible value="true"/>
-                </properties>
-              </component>
-              <component id="9a509" class="javax.swing.JCheckBox">
+              <component id="6672f" class="javax.swing.JCheckBox" binding="partnerOverlay">
                 <constraints>
                   <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
-                  <enabled value="true"/>
+                  <enabled value="false"/>
                   <selected value="false"/>
-                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.monetizeTrueview"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.monetizeOverlay"/>
                   <visible value="true"/>
                 </properties>
               </component>
-              <component id="49942" class="javax.swing.JCheckBox" binding="standardmäßigeInStreamAnzeigenCheckBox" default-binding="true">
+              <component id="9a509" class="javax.swing.JCheckBox" binding="partnerTrueview">
                 <constraints>
                   <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                   <forms/>
                 </constraints>
                 <properties>
-                  <text value="Standardmäßige In-Stream Anzeigen"/>
+                  <enabled value="false"/>
+                  <selected value="false"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.monetizeTrueview"/>
+                  <visible value="true"/>
+                </properties>
+              </component>
+              <component id="49942" class="javax.swing.JCheckBox" binding="partnerInstream">
+                <constraints>
+                  <grid row="4" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="checkbox.partnerInstream"/>
+                </properties>
+              </component>
+              <hspacer id="665c8">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-horz="false"/>
+                </constraints>
+              </hspacer>
+              <component id="96da1" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="label.claimpolicy"/>
+                </properties>
+              </component>
+              <component id="9d7a0" class="javax.swing.JCheckBox" binding="claimCheckbox">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <selected value="false"/>
+                  <text resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" key="checkbox.claim"/>
                 </properties>
               </component>
             </children>
@@ -1334,7 +1379,7 @@
             <colspec value="left:4dlu:noGrow"/>
             <colspec value="fill:max(d;4px):noGrow"/>
             <constraints>
-              <tabbedpane title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" title-key="placeholdertable.placeholder" enabled="false"/>
+              <tabbedpane title-resource-bundle="org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/coreplugin" title-key="placeholdertable.placeholder"/>
             </constraints>
             <properties/>
             <border type="none"/>

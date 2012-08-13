@@ -28,30 +28,63 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
  */
 public class Preset implements IModel
 {
-	public           boolean  autotitle;
-	public           String   autotitleFormat;
-	public           String   category;
-	public           short    comment;
-	public           boolean  commentvote;
-	public           String   defaultDir;
-	public           String   description;
-	public           boolean  embed;
-	public           String   keywords;
-	public           boolean  mobile;
-	public           String   name;
-	public           short    numberModifier;
-	public           short    videoresponse;
-	public           short    visibility;
-	public           boolean  rate;
+	public boolean autotitle;
+	public String  autotitleFormat;
+	public String  category;
+	public short   comment;
+	public boolean commentvote;
+	public String  defaultDir;
+	public String  description;
+	public boolean embed;
+	public String  keywords;
+	public boolean mobile;
+	public String  name;
+	public short   numberModifier;
+	public short   videoresponse;
+	public short   visibility;
+	public boolean rate;
+	public boolean monetize;
+	public boolean monetizeOverlay;
+	public boolean monetizeTrueview;
+	public boolean monetizeProduct;
+	public String  enddir;
+	public short   license;
+
 	public transient Integer  identity;
 	public transient Account  account;
 	public transient Playlist playlist;
-	public           boolean  monetize;
-	public           boolean  monetizeOverlay;
-	public           boolean  monetizeTrueview;
-	public           boolean  monetizeProduct;
-	public           String   enddir;
-	public           short    license;
+
+	public boolean claim;
+	public short   claimtype;
+	public short   claimpolicy;
+	public boolean partnerOverlay;
+	public boolean partnerTrueview;
+	public boolean partnerProduct;
+	public boolean partnerInstream;
+	public String  asset;
+
+	public String webTitle;
+	public String webDescription;
+	public String webID;
+	public String webNotes;
+
+	public String tvTMSID;
+	public String tvISAN;
+	public String tvEIDR;
+	public String showTitle;
+	public String episodeTitle;
+	public String seasonNb;
+	public String episodeNb;
+	public String tvID;
+	public String tvNotes;
+
+	public String movieTitle;
+	public String movieDescription;
+	public String movieTMSID;
+	public String movieISAN;
+	public String movieEIDR;
+	public String movieID;
+	public String movieNotes;
 
 	@Override public Integer getIdentity()
 	{

@@ -102,6 +102,13 @@ public class PluginMainApplication
 			settingsService.set("version-20rc20", "true");
 			settingsService.save();
 		}
+
+		if (settingsService.get("version-20rc21", "null").equals("null")) {
+			EventBus.publish("UPDATE_APPLICATION", "2.1");
+
+			settingsService.set("version-20rc21", "true");
+			settingsService.save();
+		}
 	}
 
 	private void initCommandline(final String... args)
@@ -263,7 +270,7 @@ public class PluginMainApplication
 				public void actionPerformed(final ActionEvent e)
 				{
 					try {
-						LogfileComitter.sendMail();
+						LogfileComitter.sendMail("menu");
 						JOptionPane.showMessageDialog(mainFrame, "Logfile sent."); //NON-NLS
 					} catch (EmailException ignored) {
 						JOptionPane.showMessageDialog(mainFrame, "Failed sending logfile."); //NON-NLS

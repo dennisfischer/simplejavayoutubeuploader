@@ -17,6 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-document.getElementById('Email').value = "%s";
-document.getElementById('Passwd').value = "%s";
-document.getElementById('gaia_loginform').submit();
+var username = "%s";
+var password = "%s";
+var interval = setInterval(login, 1000);
+var infos = false;
+
+function login() {
+	if (document.getElementById('Email') == null) {
+		return;
+	}
+	if (infos == false) {
+		document.getElementById('Email').value = username;
+		document.getElementById('Passwd').value = password;
+		infos = true;
+	} else {
+		clearInterval(interval);
+		document.getElementById("gaia_loginform").submit();
+	}
+}

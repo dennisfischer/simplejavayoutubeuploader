@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../repositories/other/filedrop.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-forms-1.5.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../repositories/other/JTattoo.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/jgoodies-common-1.3.0.jar!/" />
       <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
       <root url="jar://$PROJECT_DIR$/../repositories/other/swingx.jar!/" />

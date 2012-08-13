@@ -131,6 +131,9 @@ public class SimpleJavaYoutubeUploader
 							final JScrollPane scrollPane = new JScrollPane(textArea);
 							scrollPane.setPreferredSize(new Dimension(400, 400));
 
+							final JLabel nameLabel = new JLabel("Name / Email:"); //NON-NLS
+							final JTextField nameTextfield = new JTextField();
+
 							final JButton sendLogfilesButton = new JButton(); //NON-NLS
 							final Action action = new AbstractAction("Send logfiles")
 							{
@@ -139,7 +142,7 @@ public class SimpleJavaYoutubeUploader
 								@Override public void actionPerformed(final ActionEvent ev)
 								{
 									try {
-										LogfileComitter.sendMail();
+										LogfileComitter.sendMail(nameTextfield.getText());
 										sendLogfilesButton.setBackground(Color.green);
 										sendLogfilesButton.setAction(new AbstractAction("Logfiles sent!!! - We're working on it!")
 										{
@@ -164,7 +167,7 @@ public class SimpleJavaYoutubeUploader
 							};
 							sendLogfilesButton.setAction(action);
 
-							final Object[] object = {scrollPane, sendLogfilesButton};
+							final Object[] object = {scrollPane, nameLabel, nameTextfield, sendLogfilesButton};
 
 							// pass the scrollpane to the joptionpane.
 							JOptionPane.showMessageDialog(null, object, "An Error Has Occurred", JOptionPane.ERROR_MESSAGE); //NON-NLS
@@ -176,7 +179,7 @@ public class SimpleJavaYoutubeUploader
 					try {
 						@NonNls final String data = br.readLine();
 						if (data.equals("y")) {
-							LogfileComitter.sendMail();
+							LogfileComitter.sendMail("console");
 						}
 					} catch (IOException ex) {
 						throw new RuntimeException("This shouldn't happen", ex);
@@ -195,9 +198,8 @@ public class SimpleJavaYoutubeUploader
 
 		String userHome = System.getProperty("user.home");
 		if (Computer.isMac()) {
-			userHome += "Library/"; //NON-NLS
+			userHome += "/Library/Application Support/"; //NON-NLS
 		}
-
 		System.setProperty("user.home", userHome);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new DebugKeyDispatcher());
 		new SimpleJavaYoutubeUploader(args);

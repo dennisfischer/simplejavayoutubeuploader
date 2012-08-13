@@ -19,6 +19,9 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl;
 
+import com.google.inject.Inject;
+import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PlaceholderMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaceholderService;
 
@@ -33,28 +36,35 @@ import java.util.List;
  */
 public class PlaceholderServiceImpl implements PlaceholderService
 {
+	@Inject PlaceholderMapper placeholderMapper;
+
 	@Override public Placeholder create(final Placeholder placeholder)
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		placeholderMapper.createPlaceholder(placeholder);
+		EventBus.publish(PlaceholderService.PLACEHOLDER_ADDED, placeholder);
+		return placeholder;
 	}
 
-	@Override public Placeholder delete(final Placeholder placeholder)
+	@Override public void delete(final Placeholder placeholder)
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		placeholderMapper.deletePlaceholder(placeholder);
+		EventBus.publish(PlaceholderService.PLACEHOLDER_REMOVED, placeholder);
 	}
 
 	@Override public Placeholder update(final Placeholder placeholder)
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		placeholderMapper.updatePlaceholder(placeholder);
+		EventBus.publish(PlaceholderService.PLACEHOLDER_UPDATED, placeholder);
+		return placeholder;
 	}
 
-	@Override public Placeholder find(final int identifier)
+	@Override public Placeholder find(final Placeholder placeholder)
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return placeholderMapper.findPlaceholder(placeholder);
 	}
 
 	@Override public List<Placeholder> getAll()
 	{
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return placeholderMapper.getPlaceholders();
 	}
 }

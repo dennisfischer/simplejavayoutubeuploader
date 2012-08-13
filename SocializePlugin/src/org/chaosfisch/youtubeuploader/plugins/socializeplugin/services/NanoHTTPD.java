@@ -125,11 +125,9 @@ public class NanoHTTPD
 							myServerSocket.close();
 							socket.close();
 						} catch (IOException ignored) {
-							throw new RuntimeException("This shouldn't happen");
 						}
 					}
 				} catch (IOException ignored) {
-					throw new RuntimeException("This shouldn't happen");
 				}
 			}
 		});

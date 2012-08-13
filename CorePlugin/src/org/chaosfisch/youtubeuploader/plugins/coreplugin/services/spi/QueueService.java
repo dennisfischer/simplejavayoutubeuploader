@@ -32,9 +32,9 @@ import java.util.List;
  */
 public interface QueueService
 {
-	String QUEUE_ENTRY_ADDED   = "queueEntryAdded"; //NON-NLS
-	String QUEUE_ENTRY_REMOVED = "queueEntryRemoved"; //NON-NLS
-	String QUEUE_ENTRY_UPDATED = "queueEntryUpdated"; //NON-NLS
+	String QUEUE_ADDED   = "queueAdded"; //NON-NLS
+	String QUEUE_REMOVED = "queueRemoved"; //NON-NLS
+	String QUEUE_UPDATED = "queueUpdated"; //NON-NLS
 
 	/**
 	 * Adds / Persists a Queue(Entry)

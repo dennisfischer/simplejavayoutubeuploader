@@ -109,31 +109,34 @@ public final class UploadViewPanel
 	private         JPanel                placeholderPanel;
 	private         JPanel                settingsPanel;
 	private         JPanel                partnerPanel;
-	private         JCheckBox             ansprücheErhebenCheckBox;
-	private         JComboBox             comboBox1;
-	private         JComboBox             comboBox2;
-	private         JCheckBox             standardmäßigeInStreamAnzeigenCheckBox;
-	private         JComboBox             comboBox3;
-	private         JTabbedPane           tabbedPane1;
-	private         JTextField            textField1;
-	private         JTextField            textField2;
-	private         JTextField            textField3;
-	private         JTextArea             textArea1;
-	private         JTextField            textField4;
-	private         JTextField            textField5;
-	private         JTextField            textField6;
-	private         JTextField            textField7;
-	private         JTextField            textField8;
-	private         JTextField            textField9;
-	private         JTextField            textField10;
-	private         JTextField            textField11;
-	private         JTextField            textField12;
-	private         JTextField            textField13;
-	private         JTextField            textField14;
-	private         JTextField            textField15;
-	private         JTextField            textField16;
-	private         JTextField            textField17;
-	private         JTextArea             textArea2;
+	private         JCheckBox             claimCheckbox;
+	private         JComboBox             claimtypeComboBox;
+	private         JComboBox             claimpolicyComboBox;
+	private         JCheckBox             partnerInstream;
+	private         JTabbedPane           asset;
+	private         JTextField            webTitleTextfield;
+	private         JTextField            webIDTextfield;
+	private         JTextField            webDescriptionTextfield;
+	private         JTextArea             webNotesTextfield;
+	private         JTextField            tvTMSIDTextfield;
+	private         JTextField            tvSeasonNbTextfield;
+	private         JTextField            tvEpisodeNbTextfield;
+	private         JTextField            tvISANTextfield;
+	private         JTextField            tvEIDRTextfield;
+	private         JTextField            tvIDTextfield;
+	private         JTextField            tvTitleTextfield;
+	private         JTextField            tvEpisodeTitleTextfield;
+	private         JTextField            movieTitleTextfield;
+	private         JTextField            movieDescriptionTextfield;
+	private         JTextField            movieEIDRTextfield;
+	private         JTextField            movieIDTextfield;
+	private         JTextField            movieTMSIDTextfield;
+	private         JTextField            movieISANTextfield;
+	private         JTextArea             movieNotesTextfield;
+	private         JTextArea             tvNotesTextfield;
+	private         JCheckBox             partnerOverlay;
+	private         JCheckBox             partnerTrueview;
+	private         JCheckBox             partnerProduct;
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
@@ -164,6 +167,9 @@ public final class UploadViewPanel
 		}
 		for (final Preset preset : controller.getPresetService().getAll()) {
 			controller.getPresetListModel().addElement(preset);
+		}
+		for (final Placeholder placeholder : controller.getPlaceholderService().getAll()) {
+			controller.getPlaceholderModel().addRow(placeholder);
 		}
 
 		controller.synchronizePlaylists(controller.getAccountListModel().getAll());
@@ -279,6 +285,39 @@ public final class UploadViewPanel
 					preset.monetizeProduct = monetizeProductCheckbox.isSelected();
 					preset.enddir = enddirTextfield.getText();
 					preset.license = (short) licenseList.getSelectedIndex();
+
+					//Partnerfeatures
+					preset.claim = claimCheckbox.isSelected();
+					preset.claimtype = (short) claimtypeComboBox.getSelectedIndex();
+					preset.claimpolicy = (short) claimpolicyComboBox.getSelectedIndex();
+					preset.partnerOverlay = partnerOverlay.isSelected();
+					preset.partnerTrueview = partnerTrueview.isSelected();
+					preset.partnerProduct = partnerProduct.isSelected();
+					preset.partnerInstream = partnerInstream.isSelected();
+					if (asset.getSelectedIndex() == -1) {
+						asset.setSelectedIndex(0);
+					}
+					preset.asset = asset.getTitleAt(asset.getSelectedIndex());
+					preset.webTitle = webTitleTextfield.getText();
+					preset.webDescription = webDescriptionTextfield.getText();
+					preset.webID = webIDTextfield.getText();
+					preset.webNotes = webNotesTextfield.getText();
+					preset.tvTMSID = tvTMSIDTextfield.getText();
+					preset.tvISAN = tvISANTextfield.getText();
+					preset.tvEIDR = tvEIDRTextfield.getText();
+					preset.showTitle = tvTitleTextfield.getText();
+					preset.episodeTitle = tvEpisodeTitleTextfield.getText();
+					preset.seasonNb = tvSeasonNbTextfield.getText();
+					preset.episodeNb = tvEpisodeNbTextfield.getText();
+					preset.tvID = tvIDTextfield.getText();
+					preset.tvNotes = tvNotesTextfield.getText();
+					preset.movieTitle = movieTitleTextfield.getText();
+					preset.movieDescription = movieDescriptionTextfield.getText();
+					preset.movieTMSID = movieTMSIDTextfield.getText();
+					preset.movieISAN = movieISANTextfield.getText();
+					preset.movieEIDR = movieEIDRTextfield.getText();
+					preset.movieID = movieIDTextfield.getText();
+					preset.movieNotes = movieNotesTextfield.getText();
 
 					if (playlistCheckbox.isSelected()) {
 						preset.playlist = (Playlist) playlistList.getSelectedItem();
@@ -469,14 +508,39 @@ public final class UploadViewPanel
 		{
 			@Override public void actionPerformed(final ActionEvent e)
 			{
-				if (monetizeCheckbox.isSelected()) {
+				if (monetizeCheckbox.isSelected() && monetizeCheckbox.isEnabled()) {
 					monetizeOverlayCheckbox.setEnabled(true);
 					monetizeTrueviewCheckbox.setEnabled(true);
 					monetizeProductCheckbox.setEnabled(true);
+
+					claimCheckbox.setSelected(false);
+					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+						aCom.setEnabled(false);
+					}
+					settingsTabbedPane.setEnabledAt(1, false);
 				} else {
 					monetizeOverlayCheckbox.setEnabled(false);
 					monetizeTrueviewCheckbox.setEnabled(false);
 					monetizeProductCheckbox.setEnabled(false);
+					claimCheckbox.setEnabled(true);
+					settingsTabbedPane.setEnabledAt(1, true);
+				}
+			}
+		});
+
+		claimCheckbox.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				if (claimCheckbox.isSelected()) {
+					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+						aCom.setEnabled(true);
+					}
+				} else {
+					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+						aCom.setEnabled(false);
+					}
+					claimCheckbox.setEnabled(true);
 				}
 			}
 		});
@@ -493,7 +557,7 @@ public final class UploadViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				if (placeholderTable.getSelectedRow() != -1) {
-					@SuppressWarnings("OverlyStrongTypeCast") final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
 					if (placeholder != null) {
 						controller.deletePlaceholder(placeholder);
 					}
@@ -506,7 +570,7 @@ public final class UploadViewPanel
 			@Override public void actionPerformed(final ActionEvent e)
 			{
 				if (placeholderTable.getSelectedRow() != -1) {
-					@SuppressWarnings("OverlyStrongTypeCast") final Placeholder placeholder = ((PlaceholderTableModel) placeholderTable.getModel()).getRow(placeholderTable.getSelectedRow());
+					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
 					if (placeholder != null) {
 						placeholder.placeholder = placeholderPlaceholderTextfield.getText();
 						placeholder.replacement = placeholderReplaceTextfield.getText();
@@ -520,8 +584,10 @@ public final class UploadViewPanel
 		{
 			@Override public void valueChanged(final ListSelectionEvent e)
 			{
-				if (!e.getValueIsAdjusting()) {
-					System.out.println(placeholderTable.getSelectedRow());
+				if (!e.getValueIsAdjusting() && !(placeholderTable.getSelectedRow() == -1)) {
+					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
+					placeholderPlaceholderTextfield.setText(placeholder.placeholder);
+					placeholderReplaceTextfield.setText(placeholder.replacement);
 				}
 			}
 		});
@@ -539,11 +605,18 @@ public final class UploadViewPanel
 					monetizeOverlayCheckbox.setEnabled(false);
 					monetizeTrueviewCheckbox.setEnabled(false);
 					monetizeProductCheckbox.setEnabled(false);
+					claimCheckbox.setSelected(false);
+					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+						aCom.setEnabled(false);
+					}
+					settingsTabbedPane.setEnabledAt(1, false);
 				} else {
 					monetizeCheckbox.setEnabled(true);
 					monetizeOverlayCheckbox.setEnabled(true);
 					monetizeTrueviewCheckbox.setEnabled(true);
 					monetizeProductCheckbox.setEnabled(true);
+					claimCheckbox.setEnabled(true);
+					settingsTabbedPane.setEnabledAt(1, true);
 				}
 			}
 		});
@@ -559,6 +632,19 @@ public final class UploadViewPanel
 				}
 			}
 		});
+	}
+
+	public static List<Component> getAllComponents(final Container c)
+	{
+		final Component[] comps = c.getComponents();
+		final List<Component> compList = new ArrayList<Component>();
+		for (final Component comp : comps) {
+			compList.add(comp);
+			if (comp instanceof Container) {
+				compList.addAll(UploadViewPanel.getAllComponents((Container) comp));
+			}
+		}
+		return compList;
 	}
 
 	private void searchFileDialogOpen()
@@ -607,7 +693,13 @@ public final class UploadViewPanel
 		                        titleTextField.getText(), descriptionTextArea.getText(), tagsTextArea.getText(), playlist, (short) commentList.getSelectedIndex(),
 		                        (short) videoresponseList.getSelectedIndex(), rateCheckbox.isSelected(), embedCheckbox.isSelected(), commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(),
 		                        (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(), monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(),
-		                        monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex());
+		                        monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex(), claimCheckbox.isSelected(),
+		                        (short) claimtypeComboBox.getSelectedIndex(), (short) claimpolicyComboBox.getSelectedIndex(), partnerOverlay.isSelected(), partnerTrueview.isSelected(),
+		                        partnerInstream.isSelected(), partnerProduct.isSelected(), asset.getTitleAt(asset.getSelectedIndex()), webTitleTextfield.getText(), webIDTextfield.getText(),
+		                        webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(), tvSeasonNbTextfield.getText(), tvEpisodeNbTextfield.getText(),
+		                        tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(), tvEpisodeTitleTextfield.getText(),
+		                        tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(), movieIDTextfield.getText(),
+		                        movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText());
 
 		fileList.removeItem(fileList.getSelectedItem());
 	}
@@ -666,6 +758,45 @@ public final class UploadViewPanel
 			enddirTextfield.setText(selectedPreset.enddir);
 			licenseList.setSelectedIndex(selectedPreset.license);
 
+			if (!selectedPreset.claim) {
+				for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+					aCom.setEnabled(false);
+				}
+			} else {
+				for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+					aCom.setEnabled(true);
+				}
+			}
+			claimCheckbox.setEnabled(true);
+			claimCheckbox.setSelected(selectedPreset.claim);
+			claimpolicyComboBox.setSelectedIndex(selectedPreset.claimpolicy);
+			claimtypeComboBox.setSelectedIndex(selectedPreset.claimtype);
+			partnerOverlay.setSelected(selectedPreset.partnerOverlay);
+			partnerTrueview.setSelected(selectedPreset.partnerTrueview);
+			partnerInstream.setSelected(selectedPreset.partnerInstream);
+			partnerProduct.setSelected(selectedPreset.partnerProduct);
+			webTitleTextfield.setText(selectedPreset.webTitle);
+			webIDTextfield.setText(selectedPreset.webID);
+			webDescriptionTextfield.setText(selectedPreset.webDescription);
+			webNotesTextfield.setText(selectedPreset.webNotes);
+			tvTMSIDTextfield.setText(selectedPreset.tvTMSID);
+			tvSeasonNbTextfield.setText(selectedPreset.seasonNb);
+			tvEpisodeNbTextfield.setText(selectedPreset.episodeNb);
+			tvISANTextfield.setText(selectedPreset.tvISAN);
+			tvEIDRTextfield.setText(selectedPreset.tvEIDR);
+			tvIDTextfield.setText(selectedPreset.tvID);
+			tvTitleTextfield.setText(selectedPreset.showTitle);
+			tvEpisodeTitleTextfield.setText(selectedPreset.episodeTitle);
+			tvNotesTextfield.setText(selectedPreset.tvNotes);
+			movieTitleTextfield.setText(selectedPreset.movieTitle);
+			movieDescriptionTextfield.setText(selectedPreset.movieDescription);
+			movieEIDRTextfield.setText(selectedPreset.movieEIDR);
+			movieIDTextfield.setText(selectedPreset.movieID);
+			movieTMSIDTextfield.setText(selectedPreset.movieTMSID);
+			movieISANTextfield.setText(selectedPreset.movieISAN);
+			movieNotesTextfield.setText(selectedPreset.movieNotes);
+			asset.setSelectedIndex(asset.indexOfTab(selectedPreset.asset));
+
 			if (selectedPreset.account != null) {
 				controller.getAccountListModel().setSelectedItem(selectedPreset.account);
 				controller.changeAccount(selectedPreset.account);
@@ -698,7 +829,41 @@ public final class UploadViewPanel
 			monetizeProductCheckbox.setSelected(false);
 			enddirTextfield.setText("");
 			licenseList.setSelectedIndex(0);
+
+			claimCheckbox.setSelected(false);
+			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+				aCom.setEnabled(false);
+			}
+			claimCheckbox.setEnabled(true);
+			claimpolicyComboBox.setSelectedIndex(0);
+			claimtypeComboBox.setSelectedIndex(0);
+			partnerOverlay.setSelected(false);
+			partnerTrueview.setSelected(false);
+			partnerInstream.setSelected(false);
+			partnerProduct.setSelected(false);
+			asset.setSelectedIndex(0);
+			webTitleTextfield.setText("");
+			webIDTextfield.setText("");
+			webDescriptionTextfield.setText("");
+			webNotesTextfield.setText("");
+			tvTMSIDTextfield.setText("");
+			tvSeasonNbTextfield.setText("");
+			tvEpisodeNbTextfield.setText("");
+			tvISANTextfield.setText("");
+			tvEIDRTextfield.setText("");
+			tvIDTextfield.setText("");
+			tvTitleTextfield.setText("");
+			tvEpisodeTitleTextfield.setText("");
+			tvNotesTextfield.setText("");
+			movieTitleTextfield.setText("");
+			movieDescriptionTextfield.setText("");
+			movieEIDRTextfield.setText("");
+			movieIDTextfield.setText("");
+			movieTMSIDTextfield.setText("");
+			movieISANTextfield.setText("");
+			movieNotesTextfield.setText("");
 		}
+		titleTextField.setText("");
 		starttimeSpinner.setValue(Calendar.getInstance().getTime());
 		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 	}
@@ -737,6 +902,45 @@ public final class UploadViewPanel
 		monetizeProductCheckbox.setSelected(queue.monetizeProduct);
 		enddirTextfield.setText(queue.enddir);
 		licenseList.setSelectedIndex(queue.license);
+
+		if (!queue.claim) {
+			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+				aCom.setEnabled(false);
+			}
+		} else {
+			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
+				aCom.setEnabled(true);
+			}
+		}
+		claimCheckbox.setEnabled(true);
+		claimCheckbox.setSelected(queue.claim);
+		claimpolicyComboBox.setSelectedIndex(queue.claimpolicy);
+		claimtypeComboBox.setSelectedIndex(queue.claimtype);
+		partnerOverlay.setSelected(queue.partnerOverlay);
+		partnerTrueview.setSelected(queue.partnerTrueview);
+		partnerInstream.setSelected(queue.partnerInstream);
+		partnerProduct.setSelected(queue.partnerProduct);
+		webTitleTextfield.setText(queue.webTitle);
+		webIDTextfield.setText(queue.webID);
+		webDescriptionTextfield.setText(queue.webDescription);
+		webNotesTextfield.setText(queue.webNotes);
+		tvTMSIDTextfield.setText(queue.tvTMSID);
+		tvSeasonNbTextfield.setText(queue.seasonNb);
+		tvEpisodeNbTextfield.setText(queue.episodeNb);
+		tvISANTextfield.setText(queue.tvISAN);
+		tvEIDRTextfield.setText(queue.tvEIDR);
+		tvIDTextfield.setText(queue.tvID);
+		tvTitleTextfield.setText(queue.showTitle);
+		tvEpisodeTitleTextfield.setText(queue.episodeTitle);
+		tvNotesTextfield.setText(queue.tvNotes);
+		movieTitleTextfield.setText(queue.movieTitle);
+		movieDescriptionTextfield.setText(queue.movieDescription);
+		movieEIDRTextfield.setText(queue.movieEIDR);
+		movieIDTextfield.setText(queue.movieID);
+		movieTMSIDTextfield.setText(queue.movieTMSID);
+		movieISANTextfield.setText(queue.movieISAN);
+		movieNotesTextfield.setText(queue.movieNotes);
+		asset.setSelectedIndex(asset.indexOfTab(queue.asset));
 
 		if (queue.privatefile) {
 			visibilityList.setSelectedIndex(2);

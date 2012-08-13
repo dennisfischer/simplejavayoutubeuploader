@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ Copyright (c) 2012, Dennis Fischer
   ~
@@ -23,39 +21,39 @@
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.AccountMapper">
+<mapper namespace="org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PlaceholderMapper">
 
-	<select id="findAccount" parameterType="Account" resultType="Account">
-		SELECT * FROM ACCOUNTS
+	<select id="findPlaceholder" parameterType="Placeholder" resultType="Placeholder">
+		SELECT * FROM PLACEHOLDER
 		<where>
 			<if test="identity != null">
 				identity = #{identity}
 			</if>
-			<if test="name != null">
-				AND name = #{name}
+			<if test="placeholder != null">
+				AND placeholder = #{placeholder}
 			</if>
 		</where>
 	</select>
 
-	<select id="getAccounts" resultType="Account">
-		SELECT * FROM ACCOUNTS
+	<select id="getPlaceholders" resultType="Placeholder">
+		SELECT * FROM PLACEHOLDER
 	</select>
 
-	<delete id="deleteAccount" parameterType="Account" flushCache="true">
-		DELETE FROM ACCOUNTS WHERE identity = #{identity}
+	<delete id="deletePlaceholder" parameterType="Placeholder" flushCache="true">
+		DELETE FROM PLACEHOLDER WHERE identity = #{identity}
 	</delete>
 
-	<insert id="createAccount" parameterType="Account">
-		INSERT INTO ACCOUNTS (identity, name, password) VALUES (null, #{name}, #{password})
+	<insert id="createPlaceholder" parameterType="Placeholder">
+		INSERT INTO PLACEHOLDER (identity, placeholder, replacement) VALUES (null, #{placeholder}, #{replacement})
 		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
 			CALL IDENTITY();
 		</selectKey>
 	</insert>
 
-	<update id="updateAccount" parameterType="Account">
-		UPDATE ACCOUNTS SET identity	= #{identity},
-							name 		= #{name},
-							password 	= #{password}
+	<update id="updatePlaceholder" parameterType="Placeholder">
+		UPDATE PLACEHOLDER SET identity	= #{identity},
+							placeholder = #{placeholder},
+							replacement = #{replacement}
 		WHERE identity = #{identity}
 	</update>
 

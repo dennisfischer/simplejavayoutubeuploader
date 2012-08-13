@@ -37,10 +37,7 @@ import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.*;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PresetService;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,10 +49,15 @@ import java.util.List;
 public class UploadController
 {
 
+	/**
+	 * Injected services
+	 */
 	private final AccountService     accountService;
 	private final QueueService       queueService;
 	private final PresetService      presetService;
 	private final PlaylistService    playlistService;
+	private final PlaceholderService placeholderService;
+
 	private final AutoTitleGenerator autoTitleGenerator;
 	private final ImportManager      importManager;
 	private final ExportManager      exportManager;
@@ -135,8 +137,10 @@ public class UploadController
 			}
 		}
 	};
-	private boolean autotitle;
+
 	private final PlaceholderTableModel placeholderModel = new PlaceholderTableModel();
+
+	private boolean autotitle;
 
 	@Inject
 	public UploadController(final AccountService accountService,
@@ -144,6 +148,7 @@ public class UploadController
 	                        final QueueService queueService,
 	                        final AutoTitleGenerator autoTitleGenerator,
 	                        final PlaylistService playlistService,
+	                        final PlaceholderService placeholderService,
 	                        final JFileChooser fileChooser)
 	{
 		this.accountService = accountService;
@@ -151,6 +156,7 @@ public class UploadController
 		this.queueService = queueService;
 		this.autoTitleGenerator = autoTitleGenerator;
 		this.playlistService = playlistService;
+		this.placeholderService = placeholderService;
 
 		final XStream xStream = new XStream(new DomDriver());
 		importManager = new ImportManager(xStream, accountService, presetService, queueService, fileChooser);
@@ -289,6 +295,63 @@ public class UploadController
 	                         final boolean monetizeProduct,
 	                         final short license)
 	{
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir, monetize,
+		             monetizeOverlay, monetizeTrueview, monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null, null, null,
+		             null, null, null, null, null, null, null, null, null, null, null);
+	}
+
+	public void submitUpload(final String filepath,
+	                         final Account account,
+	                         final String category,
+	                         final short visibility,
+	                         final String title,
+	                         final String description,
+	                         final String tags,
+	                         @Nullable final Playlist playlist,
+	                         final short comment,
+	                         final short videoresponse,
+	                         final boolean rate,
+	                         final boolean embed,
+	                         final boolean commentvote,
+	                         final boolean mobile,
+	                         @Nullable final Date starttime,
+	                         @Nullable final Date releasetime,
+	                         @Nullable final String enddir,
+	                         final boolean monetize,
+	                         final boolean monetizeOverlay,
+	                         final boolean monetizeTrueview,
+	                         final boolean monetizeProduct,
+	                         final short license,
+	                         final boolean claim,
+	                         final short claimtype,
+	                         final short claimpolicy,
+	                         final boolean partnerOverlay,
+	                         final boolean partnerTrueview,
+	                         final boolean partnerProduct,
+	                         final boolean partnerInstream,
+	                         @Nullable final String asset,
+	                         @Nullable final String webTitle,
+	                         @Nullable final String webDescription,
+	                         @Nullable final String webID,
+	                         @Nullable final String webNotes,
+	                         @Nullable final String tvTMSID,
+	                         @Nullable final String tvISAN,
+	                         @Nullable final String tvEIDR,
+	                         @Nullable final String showTitle,
+	                         @Nullable final String episodeTitle,
+	                         @Nullable final String seasonNb,
+	                         @Nullable final String episodeNb,
+	                         @Nullable final String tvID,
+	                         @Nullable final String tvNotes,
+	                         @Nullable final String movieTitle,
+	                         @Nullable final String movieDescription,
+	                         @Nullable final String movieTMSID,
+	                         @Nullable final String movieISAN,
+	                         @Nullable final String movieEIDR,
+	                         @Nullable final String movieID,
+	                         @Nullable final String movieNotes)
+	{
+
 		final Queue queue = new Queue();
 		queue.account = account;
 		queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
@@ -339,6 +402,36 @@ public class UploadController
 
 			queue.release = calendar.getTime();
 		}
+
+		//Partnerfeatures
+		queue.claim = claim;
+		queue.claimtype = claimtype;
+		queue.claimpolicy = claimpolicy;
+		queue.partnerOverlay = partnerOverlay;
+		queue.partnerTrueview = partnerTrueview;
+		queue.partnerProduct = partnerProduct;
+		queue.partnerInstream = partnerInstream;
+		queue.asset = asset;
+		queue.webTitle = webTitle;
+		queue.webDescription = webDescription;
+		queue.webID = webID;
+		queue.webNotes = webNotes;
+		queue.tvTMSID = tvTMSID;
+		queue.tvISAN = tvISAN;
+		queue.tvEIDR = tvEIDR;
+		queue.showTitle = showTitle;
+		queue.episodeTitle = episodeTitle;
+		queue.seasonNb = seasonNb;
+		queue.episodeNb = episodeNb;
+		queue.tvID = tvID;
+		queue.tvNotes = tvNotes;
+		queue.movieTitle = movieTitle;
+		queue.movieDescription = movieDescription;
+		queue.movieTMSID = movieTMSID;
+		queue.movieISAN = movieISAN;
+		queue.movieEIDR = movieEIDR;
+		queue.movieID = movieID;
+		queue.movieNotes = movieNotes;
 
 		queueService.create(queue);
 	}
@@ -409,25 +502,29 @@ public class UploadController
 
 	public void addPlaceholder(final String placeholder, final String replacement)
 	{
+		final Placeholder placeholderObject = new Placeholder();
+		placeholderObject.placeholder = placeholder;
+		placeholderObject.replacement = replacement;
+		placeholderService.create(placeholderObject);
 	}
 
 	public void deletePlaceholder(final Placeholder placeholder)
 	{
-
+		placeholderService.delete(placeholder);
 	}
 
 	public void savePlaceholder(final Placeholder placeholder)
 	{
+		placeholderService.update(placeholder);
 	}
 
 	@SuppressWarnings("TypeMayBeWeakened") public PlaceholderTableModel getPlaceholderModel()
 	{
-		final Placeholder placeholder = new Placeholder();
-		placeholder.placeholder = "WTF"; //NON-NLS
-		placeholder.replacement = "OMG"; //NON-NLS
-		placeholderModel.addRow(placeholder);
-		placeholderModel.addRow(placeholder);
-		placeholderModel.addRow(placeholder);
 		return placeholderModel;
+	}
+
+	public PlaceholderService getPlaceholderService()
+	{
+		return placeholderService;
 	}
 }

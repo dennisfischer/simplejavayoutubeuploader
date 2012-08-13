@@ -41,9 +41,10 @@ public class Computer
 		String command = "";
 		if (Computer.isWindows()) {
 			command = "rundll32 powrprof.dll,SetSuspendState";
-		}
-		if (Computer.isUnix()) {
+		} else if (Computer.isUnix()) {
 			command = "pm-hibernate";
+		} else if (Computer.isMac()) {
+			command = "osascript -e 'tell application \"Finder\" to sleep'";
 		}
 
 		try {
@@ -59,10 +60,12 @@ public class Computer
 		String command = "";
 		if (Computer.isWindows()) {
 			command = "shutdown -t 60 -s -f";
-		}
-		if (Computer.isUnix()) {
+		} else if (Computer.isUnix()) {
 			command = "shutdown -t 60 -h -f";
+		} else if (Computer.isMac()) {
+			command = "osascript -e 'tell application\"Finder\" to shut down'";
 		}
+
 		try {
 			Runtime.getRuntime().exec(command);
 		} catch (IOException e) {

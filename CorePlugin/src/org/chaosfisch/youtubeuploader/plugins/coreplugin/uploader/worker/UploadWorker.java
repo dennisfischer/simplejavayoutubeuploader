@@ -43,17 +43,17 @@ import org.chaosfisch.google.request.RequestUtilities;
 import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.QueueServiceImpl;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaceholderService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
-import org.jetbrains.annotations.NonNls;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -62,7 +62,9 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -122,10 +124,11 @@ public class UploadWorker extends BetterSwingWorker
 	private long   start;
 	private double bytesToUpload;
 
-	private         Queue            queue;
-	@Inject private QueueServiceImpl queueService;
-	@Inject private PlaylistService  playlistService;
-	@InjectLogger   Logger           logger;
+	private         Queue              queue;
+	@Inject private QueueServiceImpl   queueService;
+	@Inject private PlaylistService    playlistService;
+	@Inject private PlaceholderService placeholderService;
+	@InjectLogger   Logger             logger;
 
 	public UploadWorker()
 	{
@@ -260,56 +263,74 @@ public class UploadWorker extends BetterSwingWorker
 
 		final BetterSwingWorker swingWorker = new BetterSwingWorker()
 		{
-			@Override protected void background()
+			@SuppressWarnings({"IOResourceOpenedButNotSafelyClosed", "HardCodedStringLiteral", "CallToStringEquals"}) @Override protected void background()
 			{
 
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					@Override public void run()
-					{
+				final BrowserServices browserServices = BrowserServices.getInstance();
+				browserServices.setPromptService(new SilentPromptService());
 
-						final BrowserServices browserServices = BrowserServices.getInstance();
-						browserServices.setPromptService(new SilentPromptService());
+				final Browser browser = BrowserFactory.createBrowser();
 
-						final Browser browser = BrowserFactory.createBrowser();
+				final String LOGIN_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/workarounds.js")) + String.format(convertStreamToString(getClass().getResourceAsStream(
+						"/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
 
-						final String LOGIN_URL = new StringBuilder(240).append("https://accounts.google.com/ServiceLogin?uilel=3&service=youtube&passive=true&continue=http%3A%2F%2Fwww.youtube")
-						                                               .append(".com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dheader%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&hl")
-						                                               .append("=en_US&ltmpl=sso")
-						                                               .toString(); //NON-NLS
-						final String LOGIN_SCRIPT = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
-						browser.navigate(LOGIN_URL);
-						//noinspection CallToStringEquals
-						if (browser.getCurrentLocation().equals(LOGIN_URL)) {
-							browser.waitReady();
-							browser.executeScript(LOGIN_SCRIPT);
-						}
-						final String VIDEO_EDIT_URL = String.format("http://www.youtube.com/my_videos_edit?ns=1&feature=vm&video_id=%s", queue.videoId); //NON-NLS
-
-						browser.navigate(VIDEO_EDIT_URL);
-						browser.waitReady();
-
-						logger.info("Monetizing"); //NON-NLS
-						monetizeAction(browser);
-						logger.info("Licensing"); //NON-NLS
-						licenseAction(browser);
-						logger.info("Releasing"); //NON-NLS
-						releaseAction(browser);
-						logger.info("Saving..."); //NON-NLS
-						saveAction(browser);
-
-						//noinspection CallToStringEquals
-						while (!browser.getCurrentLocation().equals("https://www.youtube.com/")) { //NON-NLS
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException ignored) {
-								throw new RuntimeException("This shouldn't happen");
-							}
-						}
-						browser.stop();
-						browser.dispose();
+				logger.info("Logout from Google");
+				final String LOGOUT_URL = "https://accounts.google.com/Logout";
+				browser.navigate(LOGOUT_URL);
+				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login")) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 					}
-				});
+				}
+
+				logger.info("Login at Google");
+				final String LOGIN_URL = "https://accounts.google.com/ServiceLogin?uilel=3&service=youtube&passive=true&continue=http%3A%2F%2Fwww.youtube" + "" +
+						".com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dheader%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&hl=en_US&ltmpl=sso"; //NON-NLS
+				browser.navigate(LOGIN_URL);
+				browser.waitReady();
+				browser.executeScript(LOGIN_SCRIPT);
+
+				while (!browser.getCurrentLocation().equals("http://www.youtube.com/")) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						throw new RuntimeException("This shouldn't happen", e);
+					}
+				}
+
+				final String VIDEO_EDIT_URL = String.format("http://www.youtube.com/my_videos_edit?ns=1&feature=vm&video_id=%s", queue.videoId); //NON-NLS
+
+				browser.navigate(VIDEO_EDIT_URL);
+
+				while (!browser.getCurrentLocation().equals(VIDEO_EDIT_URL)) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+					}
+				}
+
+				logger.info("Monetizing"); //NON-NLS
+				logger.info("Licensing"); //NON-NLS
+				logger.info("Releasing"); //NON-NLS
+				logger.info("Partner-features"); //NON-NLS
+				logger.info("Saving..."); //NON-NLS
+				saveAction(browser);
+
+				//noinspection CallToStringEquals
+				while (!browser.getCurrentLocation().equals("https://www.youtube.com/")) { //NON-NLS
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException ignored) {
+						throw new RuntimeException("This shouldn't happen");
+					}
+				}
+				browser.navigate("http://www.google.com/");
+				browser.waitReady();
+				browser.stop();
+				browser.dispose();
 			}
 
 			@Override protected void onDone()
@@ -327,41 +348,36 @@ public class UploadWorker extends BetterSwingWorker
 		}
 	}
 
+	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
 	private void saveAction(final ScriptRunner browser)
 	{
-		browser.executeScript(convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + convertStreamToString(getClass().getResourceAsStream(
-				"/scripts/youtubeSave.js")));
-	}
+		final boolean license = queue.license == 1;
+		boolean release = false;
+		boolean publish = false;
+		String date = "";
+		int time = 0;
+		if (queue.release != null) {
+			if (queue.release.after(Calendar.getInstance().getTime())) {
+				release = true;
+				final Calendar calendar = Calendar.getInstance();
+				calendar.setTime(queue.release);
 
-	private void releaseAction(final ScriptRunner browser)
-	{
-		if (queue.release == null) {
-			return;
+				final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()); //NON-NLS
+
+				date = dateFormat.format(calendar.getTime());
+				time = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE));
+			} else {
+				publish = true;
+			}
 		}
-		if (queue.release.after(Calendar.getInstance().getTime())) {
 
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(queue.release);
-
-			final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-			@NonNls final String RELEASE_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + String.format(convertStreamToString(
-					getClass().getResourceAsStream("/scripts/youtubeRelease.js")), dateFormat.format(calendar.getTime()), (calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE));
-			browser.executeScript(RELEASE_SCRIPT);
-		} else {
-			@NonNls final String PUBLISH_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + convertStreamToString(
-					getClass().getResourceAsStream("/scripts/youtubeReleasePublish.js"));
-			browser.executeScript(PUBLISH_SCRIPT);
-		}
-	}
-
-	private void licenseAction(final ScriptRunner browser)
-	{
-		if (queue.license == 1) {
-			@NonNls final String LICENSE_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + String.format(convertStreamToString(
-					getClass().getResourceAsStream("/scripts/youtubeLicense.js")), "cc");
-			browser.executeScript(LICENSE_SCRIPT);
-		}
+		final String script = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/youtubeEdit.js")),//NON-NLS
+		                                    license, queue.monetize, queue.monetizeOverlay, queue.monetizeTrueview, queue.monetizeProduct, release, date, time, publish, queue.claim, queue.claimtype,
+		                                    queue.claimpolicy, queue.partnerOverlay, queue.partnerTrueview, queue.partnerInstream, queue.partnerProduct, queue.asset.toLowerCase(Locale.getDefault()),
+		                                    queue.webTitle, queue.webDescription, queue.webID, queue.webNotes, queue.tvTMSID, queue.tvISAN, queue.tvEIDR, queue.showTitle, queue.episodeTitle,
+		                                    queue.seasonNb, queue.episodeNb, queue.tvID, queue.tvNotes, queue.movieTitle, queue.movieDescription, queue.movieTMSID, queue.movieISAN, queue.movieEIDR,
+		                                    queue.movieID, queue.movieNotes);
+		browser.executeScript(script);
 	}
 
 	private void playlistAction()
@@ -378,7 +394,7 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			if (is != null) {
 				final Writer writer = new StringWriter();
-				final Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8")); //NON-NLS
+				final Reader reader = new BufferedReader(new InputStreamReader(is, "windows-1252")); //NON-NLS
 				try {
 
 					int n;
@@ -399,15 +415,6 @@ public class UploadWorker extends BetterSwingWorker
 			return "";
 		} catch (IOException ignored) {
 			return "";
-		}
-	}
-
-	private void monetizeAction(final ScriptRunner browser)
-	{
-		if (queue.monetize) {
-			final String MONETIZE_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/getElementsByClassNameWorkaround.js")) + String.format(convertStreamToString(
-					getClass().getResourceAsStream("/scripts/youtubeMonetize.js")), queue.monetizeOverlay + "", queue.monetizeTrueview + "", queue.monetizeProduct + "");
-			browser.executeScript(MONETIZE_SCRIPT);
 		}
 	}
 
@@ -492,7 +499,7 @@ public class UploadWorker extends BetterSwingWorker
 					bufferedInputStream.close();
 					throttledOutputStream.close();
 				} catch (IOException ignored) {
-					throw new RuntimeException("This shouldn't happen");
+					//throw new RuntimeException("This shouldn't happen", e);
 				}
 			}
 		} catch (FileNotFoundException ex) {
@@ -581,6 +588,7 @@ public class UploadWorker extends BetterSwingWorker
 	private String atomBuilder()
 	{
 		//create atom xml metadata - create object first, then convert with xstream
+
 		final VideoEntry videoEntry = new VideoEntry();
 		videoEntry.mediaGroup.title = queue.title;
 		videoEntry.mediaGroup.description = queue.description;
@@ -607,6 +615,13 @@ public class UploadWorker extends BetterSwingWorker
 
 		if (queue.comment == 3) {
 			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends")); //NON-NLS
+		}
+
+		//replace important placeholders NOW
+		for (final Placeholder placeholder : placeholderService.getAll()) {
+			videoEntry.mediaGroup.title = videoEntry.mediaGroup.title.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			videoEntry.mediaGroup.description = videoEntry.mediaGroup.description.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			videoEntry.mediaGroup.keywords = videoEntry.mediaGroup.keywords.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
 		}
 
 		//convert metadata with xstream

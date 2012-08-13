@@ -19,17 +19,6 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.view;
 
-import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-import com.jtattoo.plaf.aero.AeroLookAndFeel;
-import com.jtattoo.plaf.aluminium.AluminiumLookAndFeel;
-import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
-import com.jtattoo.plaf.fast.FastLookAndFeel;
-import com.jtattoo.plaf.graphite.GraphiteLookAndFeel;
-import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
-import com.jtattoo.plaf.luna.LunaLookAndFeel;
-import com.jtattoo.plaf.mint.MintLookAndFeel;
-import com.jtattoo.plaf.noire.NoireLookAndFeel;
-import com.jtattoo.plaf.smart.SmartLookAndFeel;
 import org.chaosfisch.youtubeuploader.designmanager.spi.DesignMap;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.DesignImpl;
 import org.pushingpixels.substance.api.skin.*;
@@ -82,17 +71,5 @@ public class LookAndFeels extends DesignMap
 		add(new DesignImpl(SubstanceRavenLookAndFeel.class, "SubstanceRavenLookAndFeel", "Substance Raven")); //NON-NLS
 		add(new DesignImpl(SubstanceSaharaLookAndFeel.class, "SubstanceSaharaLookAndFeel", "Substance Sahara")); //NON-NLS
 		add(new DesignImpl(SubstanceTwilightLookAndFeel.class, "SubstanceTwilightLookAndFeel", "Substance Twilight")); //NON-NLS
-
-		add(new DesignImpl(AcrylLookAndFeel.class, "AcrylLookAndFeel", "Acryl")); //NON-NLS NON-NLS
-		add(new DesignImpl(AeroLookAndFeel.class, "AeroLookAndFeel", "Aero")); //NON-NLS NON-NLS
-		add(new DesignImpl(AluminiumLookAndFeel.class, "AlumuniumLookAndFeel", "Aluminium")); //NON-NLS NON-NLS
-		add(new DesignImpl(BernsteinLookAndFeel.class, "BernsteinLookAndFeel", "Bernstein")); //NON-NLS NON-NLS
-		add(new DesignImpl(FastLookAndFeel.class, "FastLookAndFeel", "Fast")); //NON-NLS NON-NLS
-		add(new DesignImpl(GraphiteLookAndFeel.class, "GraphiteLookAndFeel", "Graphite")); //NON-NLS NON-NLS
-		add(new DesignImpl(HiFiLookAndFeel.class, "HiFiLookAndFeel", "Hifi")); //NON-NLS NON-NLS
-		add(new DesignImpl(LunaLookAndFeel.class, "LunaLookAndFeel", "Luna")); //NON-NLS NON-NLS
-		add(new DesignImpl(MintLookAndFeel.class, "MintLookAndFeel", "Mint")); //NON-NLS NON-NLS
-		add(new DesignImpl(NoireLookAndFeel.class, "NoireLookAndFeel", "Noire")); //NON-NLS NON-NLS
-		add(new DesignImpl(SmartLookAndFeel.class, "SmartLookAndFeel", "Smart")); //NON-NLS NON-NLS
 	}
 }                                                                       

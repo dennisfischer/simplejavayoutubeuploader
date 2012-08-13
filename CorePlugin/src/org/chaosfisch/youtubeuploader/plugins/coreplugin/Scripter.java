@@ -21,6 +21,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicPatternSubscriber;
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.tools.shell.Global;
@@ -57,7 +58,7 @@ public class Scripter
 	{
 		if (scripts.containsKey(topic)) {
 			for (final String function : scripts.get(topic)) {
-				final Function fct = (Function) scope.get(function, scope);
+				final Callable fct = (Callable) scope.get(function, scope);
 				if (fct != Function.NOT_FOUND) {
 					fct.call(cx, scope, scope, new Object[]{o});
 				}

@@ -17,9 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-var evtChange = document.createEvent("HTMLEvents");
-evtChange.initEvent("change", true, true);
+package org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers;
 
-var input = document.getElementsByClassName("metadata-privacy-input")[0];
-input.selectedIndex = 0;
-input.dispatchEvent(evtChange);
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
+
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Dennis
+ * Date: 09.08.12
+ * Time: 17:41
+ * To change this template use File | Settings | File Templates.
+ */
+public interface PlaceholderMapper
+{
+	Placeholder findPlaceholder(Placeholder placeholder);
+
+	List<Placeholder> getPlaceholders();
+
+	void deletePlaceholder(Placeholder placeholder);
+
+	void createPlaceholder(Placeholder placeholder);
+
+	void updatePlaceholder(Placeholder placeholder);
+}

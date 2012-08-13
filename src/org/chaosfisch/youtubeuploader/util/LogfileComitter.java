@@ -34,12 +34,12 @@ import java.util.Map;
  */
 public class LogfileComitter
 {
-	public static void sendMail() throws EmailException
+	public static void sendMail(final String username) throws EmailException
 	{
 		final EmailAttachment attachment = new EmailAttachment();
 		attachment.setPath(String.format("%s/SimpleJavaYoutubeUploader/logs/applog.log", System.getProperty("user.home"))); //NON-NLS
 		attachment.setDisposition(EmailAttachment.ATTACHMENT);
-		attachment.setDescription("Logfiles"); //NON-NLS
+		attachment.setDescription("Logfiles from " + username); //NON-NLS
 		attachment.setName("Logfile.txt"); //NON-NLS
 
 		// Create the email message
@@ -50,7 +50,7 @@ public class LogfileComitter
 		email.setAuthentication("simplejavayoutubeuploader@gmx.de", "simplejavayoutubeuploader"); //NON-NLS
 		email.setFrom("simplejavayoutubeuploader@gmx.de", "Me"); //NON-NLS
 
-		email.setSubject("Logfiles"); //NON-NLS
+		email.setSubject("Logfiles from " + username); //NON-NLS
 
 		final StringBuilder message = new StringBuilder();
 

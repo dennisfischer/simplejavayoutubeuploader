@@ -19,8 +19,8 @@
   -->
 
 <updateDescriptor baseUrl="http://simple-java-youtube-uploader.googlecode.com/files/">
-	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_2.0.exe" newVersion="2.0 RC 2.0" newMediaFileId="22"
-		   fileSize="11803136" bundledJre="" archive="false">
+	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_3.0.exe" newVersion="2.0 RC 3.0" newMediaFileId="22"
+		   fileSize="11745792" bundledJre="" archive="false">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 
@@ -180,8 +180,8 @@
 			Fixed Issue 38
 		</comment>
 	</entry>
-	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x86_2.0_RC_2.0.exe" newVersion="2.0 RC 2.0" newMediaFileId="30"
-		   fileSize="12098048" bundledJre="" archive="false">
+	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x86_2.0_RC_3.0.exe" newVersion="2.0 RC 3.0" newMediaFileId="30"
+		   fileSize="12040704" bundledJre="" archive="false">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 
@@ -341,8 +341,8 @@
 			Fixed Issue 38
 		</comment>
 	</entry>
-	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x86_2.0_RC_2.0.sh" newVersion="2.0 RC 2.0" newMediaFileId="228"
-		   fileSize="11843861" bundledJre="" archive="false">
+	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x86_2.0_RC_3.0.sh" newVersion="2.0 RC 3.0" newMediaFileId="228"
+		   fileSize="11787151" bundledJre="" archive="false">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 
@@ -502,8 +502,8 @@
 			Fixed Issue 38
 		</comment>
 	</entry>
-	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x64_2.0_RC_2.0.sh" newVersion="2.0 RC 2.0" newMediaFileId="372"
-		   fileSize="11842271" bundledJre="" archive="false">
+	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x64_2.0_RC_3.0.sh" newVersion="2.0 RC 3.0" newMediaFileId="372"
+		   fileSize="11786719" bundledJre="" archive="false">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 
@@ -663,8 +663,8 @@
 			Fixed Issue 38
 		</comment>
 	</entry>
-	<entry targetMediaFileId="373" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Platform_Independent_Archive_2.0_RC_2.0.tar.gz" newVersion="2.0 RC 2.0"
-		   newMediaFileId="373" fileSize="18503327" bundledJre="" archive="true">
+	<entry targetMediaFileId="373" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Platform_Independent_Archive_2.0_RC_3.0.tar.gz" newVersion="2.0 RC 3.0"
+		   newMediaFileId="373" fileSize="17975933" bundledJre="" archive="true">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 
@@ -824,8 +824,8 @@
 			Fixed Issue 38
 		</comment>
 	</entry>
-	<entry targetMediaFileId="639" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Mac_OS_X_2.0_RC_2.0.dmg" newVersion="2.0 RC 2.0" newMediaFileId="639"
-		   fileSize="12460032" bundledJre="" archive="false">
+	<entry targetMediaFileId="639" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Mac_OS_X_2.0_RC_3.0.dmg" newVersion="2.0 RC 3.0" newMediaFileId="639"
+		   fileSize="12402688" bundledJre="" archive="false">
 		<comment language="en">Changelog
 			v. 2.0 Release Candidate 2.0
 

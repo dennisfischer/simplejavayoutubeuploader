@@ -55,8 +55,9 @@ public class QueueTableModel extends RowTableModel<Queue>
 	public QueueTableModel(final Iterable<Queue> queues)
 	{
 		super(Queue.class);
-		setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(resourceBundle.getString("table.columns.id"), resourceBundle.getString("table.columns.title"), resourceBundle.getString("table.columns.file"), resourceBundle.getString(
-				"table.columns.starttime"), resourceBundle.getString("table.columns.eta"), resourceBundle.getString("table.columns.status"), resourceBundle.getString("table.columns.progress")));
+		setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(resourceBundle.getString("table.columns.id"), resourceBundle.getString("table.columns.title"), resourceBundle.getString(
+				"table.columns.file"), resourceBundle.getString("table.columns.starttime"), resourceBundle.getString("table.columns.eta"), resourceBundle.getString("table.columns.status"),
+		                                                               resourceBundle.getString("table.columns.progress")));
 
 		for (final Queue queue : queues) {
 			addRow(queue);
@@ -176,19 +177,19 @@ public class QueueTableModel extends RowTableModel<Queue>
 		fireTableDataChanged();
 	}
 
-	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_ADDED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_ADDED)
 	public void onQueueEntryAdded(final String topic, final Queue queue)
 	{
 		addRow(queue);
 	}
 
-	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_REMOVED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_REMOVED)
 	public void onQueueEntryRemoved(final String topic, final Queue queue)
 	{
 		removeElement(queue);
 	}
 
-	@EventTopicSubscriber(topic = QueueService.QUEUE_ENTRY_UPDATED)
+	@EventTopicSubscriber(topic = QueueService.QUEUE_UPDATED)
 	public void onQueueEntryUpdated(final String topic, final Queue queue)
 	{
 		if (modelData.contains(queue)) {
@@ -235,7 +236,8 @@ public class QueueTableModel extends RowTableModel<Queue>
 				final double speed = uploadProgress.getDiffBytes() / 1024 / uploadProgress.getDiffTime();
 
 				setValueAt(eta, index, 4);
-				setValueAt(MessageFormat.format(resourceBundle.getString("uploadProgressMessage"), uploadProgress.getTotalBytesUploaded() / 1048576, uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
+				setValueAt(MessageFormat.format(resourceBundle.getString("uploadProgressMessage"), uploadProgress.getTotalBytesUploaded() / 1048576, uploadProgress.getFileSize() / 1048576,
+				                                speed * 1000), index, 5);
 				setValueAt(percent, index, 6);
 			}
 		}
