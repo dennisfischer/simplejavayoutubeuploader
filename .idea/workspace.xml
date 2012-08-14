@@ -11,17 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5335d0ef-e57f-4763-a4a6-180dcc35faf7" name="Default" comment="">
-      <change type="DELETED" beforePath="F:\Daten\SimpleJavaYoutubeUploader\.idea\libraries\JXBrowser.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/SimpleJavaYoutubeUploader_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/SimpleJavaYoutubeUploader_jar.xml" />
+      <change type="MODIFICATION" beforePath="F:\Daten\SimpleJavaYoutubeUploader\.idea\libraries\JXBrowser.xml" afterPath="$PROJECT_DIR$/.idea/libraries/JXBrowser.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlugin/CorePlugin.iml" afterPath="$PROJECT_DIR$/CorePlugin/CorePlugin.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/CorePlugin.java" afterPath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/CorePlugin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/uploader/worker/UploadWorker.java" afterPath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/uploader/worker/UploadWorker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/view/UploadViewPanel.java" afterPath="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/view/UploadViewPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" afterPath="$PROJECT_DIR$/SimpleJavaYoutubeUploader.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SocializePlugin/SocializePlugin.iml" afterPath="$PROJECT_DIR$/SocializePlugin/SocializePlugin.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/chaosfisch/youtubeuploader/resources/application_de.properties" afterPath="$PROJECT_DIR$/src/org/chaosfisch/youtubeuploader/resources/application_de.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/chaosfisch/youtubeuploader/resources/application_en.properties" afterPath="$PROJECT_DIR$/src/org/chaosfisch/youtubeuploader/resources/application_en.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/updates.xml" afterPath="$PROJECT_DIR$/updates.xml" />
     </list>
     <ignored path="SimpleJavaYoutubeUploader.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -1576,7 +1568,11 @@
       <created>1344845367224</created>
       <updated>1344845367224</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="14.08.2012 - arrayindexoutofboundsexception bugfix">
+      <created>1344942878424</created>
+      <updated>1344942878424</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
