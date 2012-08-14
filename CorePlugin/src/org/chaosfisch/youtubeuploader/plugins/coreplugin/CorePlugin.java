@@ -46,7 +46,8 @@ import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -118,35 +119,6 @@ public class CorePlugin implements Pluggable
 	@Override public String getAuthor()
 	{
 		return "CHAOSFISCH"; //NON-NLS
-	}
-
-	public String convertStreamToString(final InputStream is)
-	{
-		try {
-			if (is != null) {
-				final Writer writer = new StringWriter();
-				final Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8")); //NON-NLS
-				try {
-
-					int n;
-					final char[] buffer = new char[1024];
-					while ((n = reader.read(buffer)) != -1) {
-						writer.write(buffer, 0, n);
-					}
-				} finally {
-					writer.close();
-					reader.close();
-					is.close();
-				}
-				return writer.toString();
-			} else {
-				return "";
-			}
-		} catch (UnsupportedEncodingException ignored) {
-			return "";
-		} catch (IOException ignored) {
-			return "";
-		}
 	}
 
 	@Override

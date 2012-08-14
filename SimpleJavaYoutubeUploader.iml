@@ -15,7 +15,7 @@
     <orderEntry type="library" name="cliche" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-email:1.2" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
-    <orderEntry type="library" name="JxBrowser" level="project" />
+    <orderEntry type="library" name="JXBrowser" level="project" />
     <orderEntry type="library" name="org.apache.xbean:xbean-finder:3.9" level="project" />
     <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="module-library">

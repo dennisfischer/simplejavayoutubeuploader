@@ -21,7 +21,7 @@
         <element id="library" level="project" name="Scribe Fork" />
         <element id="library" level="project" name="jgoodies-validation-2.4" />
         <element id="library" level="project" name="JxDevelopmentLicense" />
-        <element id="library" level="project" name="JxBrowser" />
+        <element id="library" level="project" name="JXBrowser" />
         <element id="library" level="project" name="JxFileWatcher" />
         <element id="library" level="project" name="cliche" />
         <element id="library" level="project" name="org.apache.commons:commons-email:1.2" />

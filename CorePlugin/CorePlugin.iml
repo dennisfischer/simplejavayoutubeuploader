@@ -14,7 +14,7 @@
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
     <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
     <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="JxBrowser" level="project" />
+    <orderEntry type="library" name="JXBrowser" level="project" />
     <orderEntry type="library" name="JxFileWatcher" level="project" />
     <orderEntry type="library" name="JxDevelopmentLicense" level="project" />
     <orderEntry type="module-library">

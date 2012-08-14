@@ -20,6 +20,7 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 import com.google.inject.Inject;
+import com.jniwrapper.win32.ie.Browsers;
 import com.teamdev.jxbrowser.Browser;
 import com.teamdev.jxbrowser.BrowserFactory;
 import com.teamdev.jxbrowser.BrowserServices;
@@ -271,8 +272,15 @@ public class UploadWorker extends BetterSwingWorker
 
 				final Browser browser = BrowserFactory.createBrowser();
 
-				final String LOGIN_SCRIPT = convertStreamToString(getClass().getResourceAsStream("/scripts/workarounds.js")) + String.format(convertStreamToString(getClass().getResourceAsStream(
-						"/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
+				logger.info("Browser version: " + Browsers.getIEVersion());
+				try {
+					Browsers.turnOnCompatibilityMode(Browsers.getIEVersion());
+				} catch (Exception ignored) {
+					// Cannot update compatibility mode, because this process
+					// doesn't have rights to modify Windows registry.
+				}
+
+				final String LOGIN_SCRIPT = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
 
 				logger.info("Logout from Google");
 				final String LOGOUT_URL = "https://accounts.google.com/Logout";
@@ -327,9 +335,8 @@ public class UploadWorker extends BetterSwingWorker
 						throw new RuntimeException("This shouldn't happen");
 					}
 				}
-				browser.navigate("http://www.google.com/");
+				browser.navigate("about:blank");
 				browser.waitReady();
-				browser.stop();
 				browser.dispose();
 			}
 
@@ -377,6 +384,7 @@ public class UploadWorker extends BetterSwingWorker
 		                                    queue.webTitle, queue.webDescription, queue.webID, queue.webNotes, queue.tvTMSID, queue.tvISAN, queue.tvEIDR, queue.showTitle, queue.episodeTitle,
 		                                    queue.seasonNb, queue.episodeNb, queue.tvID, queue.tvNotes, queue.movieTitle, queue.movieDescription, queue.movieTMSID, queue.movieISAN, queue.movieEIDR,
 		                                    queue.movieID, queue.movieNotes);
+		System.out.println(script);
 		browser.executeScript(script);
 	}
 

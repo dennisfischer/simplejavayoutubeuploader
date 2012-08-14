@@ -230,7 +230,8 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"),
+				resourceBundle.getString(
 				"visibilitylist.private")}));
 		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
 				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
@@ -687,6 +688,9 @@ public final class UploadViewPanel
 		Date release = null;
 		if (visibilityList.getSelectedIndex() == 2) {
 			release = (Date) releasetimeSpinner.getValue();
+		}
+		if (asset.getSelectedIndex() == -1) {
+			asset.setSelectedIndex(0);
 		}
 
 		controller.submitUpload(fileList.getSelectedItem().toString(), (Account) accountList.getSelectedItem(), categoryList.getSelectedItem().toString(), (short) visibilityList.getSelectedIndex(),
