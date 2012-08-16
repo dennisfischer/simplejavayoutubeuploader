@@ -150,8 +150,8 @@
 		SELECT * FROM QUEUE WHERE playlist_id = #{identity}
 	</select>
 
-	<select id="findQueue" resultType="Queue" parameterType="int">
-		SELECT * FROM QUEUE WHERE identity = #{id}
+	<select id="findQueue" resultType="Queue" parameterType="Queue">
+		SELECT * FROM QUEUE WHERE identity = #{identity}
 	</select>
 
 	<insert id="createQueue" parameterType="Queue" keyProperty="identity" useGeneratedKeys="true">
@@ -195,10 +195,14 @@
 
 
 
+
+
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN 0
 		ELSE SEQUENCE+1
 		END WHERE SEQUENCE <= #{sequence}
+
+
 
 
 
@@ -215,10 +219,14 @@
 
 
 
+
+
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN (SELECT COUNT(*) FROM QUEUE WHERE archived = false) - 1
 		ELSE SEQUENCE-1
 		END WHERE SEQUENCE >= #{sequence}
+
+
 
 
 

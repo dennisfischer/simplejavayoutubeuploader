@@ -285,11 +285,15 @@ public class UploadWorker extends BetterSwingWorker
 				logger.info("Logout from Google");
 				final String LOGOUT_URL = "https://accounts.google.com/Logout";
 				browser.navigate(LOGOUT_URL);
-				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login")) {
+				final int timeout = 10000;
+				int time = 0;
+
+				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login") && (timeout > time)) {
 					try {
 						Thread.sleep(500);
+						time += 500;
 					} catch (InterruptedException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
 
@@ -300,9 +304,10 @@ public class UploadWorker extends BetterSwingWorker
 				browser.waitReady();
 				browser.executeScript(LOGIN_SCRIPT);
 
-				while (!browser.getCurrentLocation().equals("http://www.youtube.com/")) {
+				while (!browser.getCurrentLocation().equals("http://www.youtube.com/") && (timeout > time)) {
 					try {
 						Thread.sleep(500);
+						time += 500;
 					} catch (InterruptedException e) {
 						throw new RuntimeException("This shouldn't happen", e);
 					}
@@ -312,11 +317,13 @@ public class UploadWorker extends BetterSwingWorker
 
 				browser.navigate(VIDEO_EDIT_URL);
 
-				while (!browser.getCurrentLocation().equals(VIDEO_EDIT_URL)) {
+				time = 0;
+				while (!browser.getCurrentLocation().equals(VIDEO_EDIT_URL) && (timeout > time)) {
 					try {
 						Thread.sleep(500);
+						time += 500;
 					} catch (InterruptedException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
 
@@ -328,9 +335,11 @@ public class UploadWorker extends BetterSwingWorker
 				saveAction(browser);
 
 				//noinspection CallToStringEquals
-				while (!browser.getCurrentLocation().equals("https://www.youtube.com/")) { //NON-NLS
+				time = 0;
+				while (!browser.getCurrentLocation().equals("https://www.youtube.com/") && (timeout > time)) { //NON-NLS
 					try {
 						Thread.sleep(500);
+						time += 500;
 					} catch (InterruptedException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					}
@@ -774,7 +783,7 @@ public class UploadWorker extends BetterSwingWorker
 		try {
 			final int sleepSeconds = (int) Math.pow(UploadWorker.BACKOFF, numberOfRetries);
 			logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds)); //NON-NLS
-			Thread.sleep(sleepSeconds * 1000);
+			Thread.sleep(sleepSeconds * 1000L);
 			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds)); //NON-NLS
 		} catch (InterruptedException ignored) {
 			return false;

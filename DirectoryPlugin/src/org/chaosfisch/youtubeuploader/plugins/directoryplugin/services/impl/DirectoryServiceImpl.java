@@ -49,9 +49,8 @@ public class DirectoryServiceImpl implements DirectoryService
 
 	@Override @Transactional public Directory findFile(final File file)
 	{
-		final String directory = new String(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1));
 		final Directory findEntry = new Directory();
-		findEntry.directory = directory;
+		findEntry.directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1);
 		return directoryMapper.findDirectories(findEntry);
 	}
 
@@ -62,6 +61,7 @@ public class DirectoryServiceImpl implements DirectoryService
 
 	@Override @Transactional public Directory create(final Directory directory)
 	{
+		EventBus.publish(DirectoryService.DIRECTORY_PRE_ADDED, directory);
 		directoryMapper.createDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_ADDED, directory);
 		return directory;
@@ -69,12 +69,14 @@ public class DirectoryServiceImpl implements DirectoryService
 
 	@Override @Transactional public void delete(final Directory directory)
 	{
+		EventBus.publish(DirectoryService.DIRECTORY_PRE_REMOVED, directory);
 		directoryMapper.deleteDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_REMOVED, directory);
 	}
 
 	@Override @Transactional public Directory update(final Directory directory)
 	{
+		EventBus.publish(DirectoryService.DIRECTORY_PRE_UPDATED, directory);
 		directoryMapper.updateDirectory(directory);
 		EventBus.publish(DirectoryService.DIRECTORY_UPDATED, directory);
 		return directory;

@@ -20,6 +20,7 @@
 package org.chaosfisch.util;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -77,7 +78,7 @@ public class Computer
 	private static boolean isWindows()
 	{
 
-		final String os = System.getProperty("os.name").toLowerCase();
+		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 		//windows
 		return os.contains("win");
 	}
@@ -85,7 +86,7 @@ public class Computer
 	public static boolean isMac()
 	{
 
-		final String os = System.getProperty("os.name").toLowerCase();
+		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 		//Mac
 		return os.contains("mac");
 	}
@@ -93,7 +94,7 @@ public class Computer
 	private static boolean isUnix()
 	{
 
-		final String os = System.getProperty("os.name").toLowerCase();
+		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 		//linux or unix
 		return os.contains("nix") || os.contains("nux");
 	}

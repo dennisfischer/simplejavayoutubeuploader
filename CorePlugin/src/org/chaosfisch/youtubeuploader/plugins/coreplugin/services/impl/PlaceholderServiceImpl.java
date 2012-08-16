@@ -24,6 +24,7 @@ import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.mappers.PlaceholderMapper;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaceholderService;
+import org.mybatis.guice.transactional.Transactional;
 
 import java.util.List;
 
@@ -38,32 +39,35 @@ public class PlaceholderServiceImpl implements PlaceholderService
 {
 	@Inject PlaceholderMapper placeholderMapper;
 
-	@Override public Placeholder create(final Placeholder placeholder)
+	@Transactional @Override public Placeholder create(final Placeholder placeholder)
 	{
+		EventBus.publish(PlaceholderService.PLACEHOLDER_PRE_ADDED, placeholder);
 		placeholderMapper.createPlaceholder(placeholder);
 		EventBus.publish(PlaceholderService.PLACEHOLDER_ADDED, placeholder);
 		return placeholder;
 	}
 
-	@Override public void delete(final Placeholder placeholder)
+	@Transactional @Override public void delete(final Placeholder placeholder)
 	{
+		EventBus.publish(PlaceholderService.PLACEHOLDER_PRE_REMOVED, placeholder);
 		placeholderMapper.deletePlaceholder(placeholder);
 		EventBus.publish(PlaceholderService.PLACEHOLDER_REMOVED, placeholder);
 	}
 
-	@Override public Placeholder update(final Placeholder placeholder)
+	@Transactional @Override public Placeholder update(final Placeholder placeholder)
 	{
+		EventBus.publish(PlaceholderService.PLACEHOLDER_PRE_UPDATED, placeholder);
 		placeholderMapper.updatePlaceholder(placeholder);
 		EventBus.publish(PlaceholderService.PLACEHOLDER_UPDATED, placeholder);
 		return placeholder;
 	}
 
-	@Override public Placeholder find(final Placeholder placeholder)
+	@Transactional @Override public Placeholder find(final Placeholder placeholder)
 	{
 		return placeholderMapper.findPlaceholder(placeholder);
 	}
 
-	@Override public List<Placeholder> getAll()
+	@Transactional @Override public List<Placeholder> getAll()
 	{
 		return placeholderMapper.getPlaceholders();
 	}

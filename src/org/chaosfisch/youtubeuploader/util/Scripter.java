@@ -17,15 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin;
+package org.chaosfisch.youtubeuploader.util;
 
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicPatternSubscriber;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.tools.shell.Main;
+import org.w3c.css.sac.CSSParseException;
+import org.w3c.css.sac.ErrorHandler;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +60,53 @@ public class Scripter
 		scripts.get(event).add(function);
 	}
 
+	public HtmlPage getPage(final String page) throws IOException
+	{
+		final WebClient webClient = new WebClient();
+		final CookieManager cookies = new CookieManager();
+		cookies.setCookiesEnabled(true);
+
+		final AlertHandler alertHandler = new AlertHandler()
+		{
+			@Override public void handleAlert(final Page page, final String s)
+			{
+				System.out.println(s);
+			}
+		};
+		final ErrorHandler defaultCssErrorHandler = new DefaultCssErrorHandler()
+		{
+			private static final long serialVersionUID = -1833065661110977428L;
+
+			@Override public void error(final CSSParseException exception)
+			{
+
+			}
+
+			@Override public void warning(final CSSParseException exception)
+			{
+
+			}
+
+			@Override public void fatalError(final CSSParseException exception)
+			{
+
+			}
+		};
+		final IncorrectnessListener incorrectnessListener = new IncorrectnessListener()
+		{
+			@Override public void notify(final String s, final Object o)
+			{
+				System.out.println(s);
+			}
+		};
+		webClient.setIncorrectnessListener(incorrectnessListener);
+		webClient.setCssErrorHandler(defaultCssErrorHandler);
+		webClient.setAlertHandler(alertHandler);
+		webClient.setCookieManager(cookies);
+
+		return (HtmlPage) webClient.getPage(page);
+	}
+
 	@EventTopicPatternSubscriber(topicPattern = "(.*)", priority = -1)
 	public void onEvent(final String topic, final Object o)
 	{
@@ -61,6 +115,26 @@ public class Scripter
 				final Callable fct = (Callable) scope.get(function, scope);
 				if (fct != Function.NOT_FOUND) {
 					fct.call(cx, scope, scope, new Object[]{o});
+				}
+			}
+		}
+	}
+
+	public void processDirectory(final File directory)
+	{
+		if (!directory.exists()) {
+			return;
+		} else if (!directory.isDirectory()) {
+			throw new IllegalArgumentException("Required directory, not a file" + directory.getAbsolutePath());
+		}
+
+		final File[] files = directory.listFiles();
+		if (files != null) {
+			for (final File file : files) {
+				try {
+					Main.processFile(cx, scope, file.getAbsolutePath());
+				} catch (IOException e) {
+					throw new RuntimeException("This shouldn't happen.", e);
 				}
 			}
 		}

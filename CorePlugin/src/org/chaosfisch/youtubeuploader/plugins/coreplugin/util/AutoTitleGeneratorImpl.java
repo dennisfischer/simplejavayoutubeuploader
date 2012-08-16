@@ -122,12 +122,12 @@ public class AutoTitleGeneratorImpl implements AutoTitleGenerator
 		if ((fileName != null) && !fileName.equals("")) {
 			//noinspection DuplicateStringLiteralInspection,MagicCharacter
 			formated = formated.replaceAll(resourceBundle.getString("autotitle.file"), new String(fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator")) + 1, //NON-NLS
-																													 fileName.lastIndexOf('.'))));
+			                                                                                                         fileName.lastIndexOf('.'))));
 		}
 		return formated;
 	}
 
-	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
+	@SuppressWarnings("CallToStringEquals") @EventTopicSubscriber(topic = PlaylistService.PLAYLIST_UPDATED)
 	public void onPlaylistUpdate(final String topic, final Playlist playlist)
 	{
 		if (playlist.title.equals(playlistName)) {

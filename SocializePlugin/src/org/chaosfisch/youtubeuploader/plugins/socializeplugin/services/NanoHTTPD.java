@@ -300,11 +300,7 @@ public class NanoHTTPD
 
 				// Ok, now do the serve()
 				final Response r = serve(uri, method, header, parms, files);
-				if (r == null) {
-					sendError(HTTP_STATUS.INTERNALERROR.toString(), "SERVER INTERNAL ERROR: Serve() returned a null response.");
-				} else {
-					sendResponse(r.status, r.mimeType, r.header, r.data);
-				}
+				sendResponse(r.status, r.mimeType, r.header, r.data);
 
 				in.close();
 				is.close();

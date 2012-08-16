@@ -86,20 +86,20 @@ public class BindingsModule extends AbstractModule
 
 						final Iterable<Properties> appProps = finder.findAvailableProperties("mappers.properties"); //NON-NLS
 
-						String typeAliases = "<typeAliases>"; //NON-NLS
-						String mappers = "<mappers>"; //NON-NLS
+						final StringBuilder typeAliases = new StringBuilder("<typeAliases>"); //NON-NLS
+						final StringBuilder mappers = new StringBuilder("<mappers>"); //NON-NLS
 						for (final Properties prop : appProps) {
 							for (final Map.Entry<Object, Object> element : prop.entrySet()) {
 								if (element.getKey().toString().startsWith("mapper")) { //NON-NLS
-									mappers += String.format("<mapper resource=\"%s\" />", element.getValue()); //NON-NLS
+									mappers.append(String.format("<mapper resource=\"%s\" />", element.getValue())); //NON-NLS
 								} else {
-									typeAliases += String.format("<typeAlias alias=\"%s\" type=\"%s\" />", element.getKey(), element.getValue()); //NON-NLS
+									typeAliases.append(String.format("<typeAlias alias=\"%s\" type=\"%s\" />", element.getKey(), element.getValue())); //NON-NLS
 								}
 							}
 						}
-						typeAliases += "</typeAliases>"; //NON-NLS
-						mappers += "</mappers>"; //NON-NLS
-						bufferedWriter.write(String.format(fileContent, typeAliases, mappers));
+						typeAliases.append("</typeAliases>"); //NON-NLS
+						mappers.append("</mappers>"); //NON-NLS
+						bufferedWriter.write(String.format(fileContent, typeAliases.toString(), mappers.toString()));
 					} catch (IOException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					} finally {

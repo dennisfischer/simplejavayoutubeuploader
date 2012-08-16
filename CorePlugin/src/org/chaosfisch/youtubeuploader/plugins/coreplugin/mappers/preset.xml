@@ -120,14 +120,14 @@
 		movieNotes      	= #{movieNotes}
 	</sql>
 
-	<select id="findPreset" parameterType="int" resultMap="presetMap">
+	<select id="findPreset" parameterType="Preset" resultMap="presetMap">
 		SELECT presets.*,
 		<include refid="accountColumns"/>,
 		<include refid="playlistColumns"/>
 		FROM PRESETS
 		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
 		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
-		WHERE identity = #{id}
+		WHERE identity = #{identity}
 	</select>
 
 	<select id="findByAccount" parameterType="Account" resultMap="presetMap">

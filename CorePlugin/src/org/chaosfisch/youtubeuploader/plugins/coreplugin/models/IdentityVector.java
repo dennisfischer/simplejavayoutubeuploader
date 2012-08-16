@@ -34,12 +34,12 @@ public class IdentityVector<E> extends Vector<E>
 
 	public IdentityVector(final int initialCapacity, final int capacityIncrement)
 	{
-		super(initialCapacity, capacityIncrement);    //To change body of overridden methods use File | Settings | File Templates.
+		super(initialCapacity, capacityIncrement);
 	}
 
 	public IdentityVector(final int initialCapacity)
 	{
-		super(initialCapacity);    //To change body of overridden methods use File | Settings | File Templates.
+		super(initialCapacity);
 	}
 
 	public IdentityVector()

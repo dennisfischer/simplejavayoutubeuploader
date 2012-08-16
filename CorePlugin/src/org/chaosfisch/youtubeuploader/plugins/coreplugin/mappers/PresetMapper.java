@@ -34,7 +34,7 @@ import java.util.List;
  */
 public interface PresetMapper
 {
-	Preset findPreset(int id);
+	Preset findPreset(Preset preset);
 
 	List<Preset> findByAccount(Account account);
 

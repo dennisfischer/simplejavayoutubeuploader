@@ -42,7 +42,7 @@ public class LookAndFeels extends DesignMap
 			//noinspection unchecked
 			add(new DesignImpl((Class<? extends LookAndFeel>) Class.forName(UIManager.getSystemLookAndFeelClassName()), "System-Default", "System default")); //NON-NLS
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Something terrible went wrong.", e);
+			throw new IllegalArgumentException("LaF class couldn't be found.", e);
 		}
 		add(new DesignImpl(SubstanceAutumnLookAndFeel.class, "SubstanceAutumnLookAndFeel", "Substance Autumn")); //NON-NLS
 		add(new DesignImpl(SubstanceBusinessBlackSteelLookAndFeel.class, "SubstanceBusinessBlackSteelLookAndFeel", "Substance Buisness Black Steel")); //NON-NLS

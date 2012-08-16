@@ -31,7 +31,10 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
  */
 public interface AccountService extends CRUDService<Account>
 {
-	String ACCOUNT_ADDED   = "accountAdded"; //NON-NLS
-	String ACCOUNT_REMOVED = "accountyRemoved"; //NON-NLS
-	String ACCOUNT_UPDATED = "accountUpdated"; //NON-NLS
+	String ACCOUNT_PRE_ADDED   = "accountPreAdded"; //NON-NLS
+	String ACCOUNT_ADDED       = "accountAdded"; //NON-NLS
+	String ACCOUNT_PRE_REMOVED = "accountPreRemoved"; //NON-NLS
+	String ACCOUNT_REMOVED     = "accountyRemoved"; //NON-NLS
+	String ACCOUNT_PRE_UPDATED = "accountPreUpdated"; //NON-NLS
+	String ACCOUNT_UPDATED     = "accountUpdated"; //NON-NLS
 }

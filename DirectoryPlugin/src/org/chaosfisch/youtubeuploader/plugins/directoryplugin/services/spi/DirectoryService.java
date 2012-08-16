@@ -28,9 +28,12 @@ import java.util.List;
 
 public interface DirectoryService extends CRUDService<Directory>
 {
-	String DIRECTORY_REMOVED = "onDirectoryRemoved"; //NON-NLS
-	String DIRECTORY_ADDED   = "onDirectoryAdded"; //NON-NLS
-	String DIRECTORY_UPDATED = "onDirectoryUpdated"; //NON-NLS
+	String DIRECTORY_PRE_ADDED   = "directoryPreAdded"; //NON-NLS
+	String DIRECTORY_ADDED       = "directoryAdded"; //NON-NLS
+	String DIRECTORY_PRE_REMOVED = "directoryPreRemoved"; //NON-NLS
+	String DIRECTORY_REMOVED     = "directoryRemoved"; //NON-NLS
+	String DIRECTORY_PRE_UPDATED = "directoryPreUpdated"; //NON-NLS
+	String DIRECTORY_UPDATED     = "directoryUpdated"; //NON-NLS
 
 	List<Directory> getActive();
 

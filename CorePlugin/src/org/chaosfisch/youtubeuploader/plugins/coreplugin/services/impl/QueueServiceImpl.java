@@ -43,21 +43,23 @@ public class QueueServiceImpl implements QueueService
 	@Transactional @Override public Queue create(final Queue queue)
 	{
 		queue.sequence = queueMapper.countQueued();
+		EventBus.publish(QueueService.QUEUE_PRE_ADDED, queue);
 		queueMapper.createQueue(queue);
 		EventBus.publish(QueueService.QUEUE_ADDED, queue);
 		return queue;
 	}
 
-	@Transactional @Override public Queue delete(final Queue queue)
+	@Transactional @Override public void delete(final Queue queue)
 	{
 		sort(queue, QueuePosition.QUEUE_BOTTOM);
+		EventBus.publish(QueueService.QUEUE_PRE_REMOVED, queue);
 		queueMapper.deleteQueue(queue);
 		EventBus.publish(QueueService.QUEUE_REMOVED, queue);
-		return queue;
 	}
 
 	@Transactional @Override public Queue update(final Queue queue)
 	{
+		EventBus.publish(QueueService.QUEUE_PRE_UPDATED, queue);
 		queueMapper.updateQueue(queue);
 		EventBus.publish(QueueService.QUEUE_UPDATED, queue);
 		return queue;
@@ -104,9 +106,9 @@ public class QueueServiceImpl implements QueueService
 		return queueMapper.getArchived();
 	}
 
-	@Transactional @Override public Queue find(final int identifier)
+	@Transactional @Override public Queue find(final Queue queue)
 	{
-		return queueMapper.findQueue(identifier);
+		return queueMapper.findQueue(queue);
 	}
 
 	@Transactional @Override public Queue poll()

@@ -26,7 +26,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
  * Time: 15:57
  * To change this template use File | Settings | File Templates.
  */
-public class MetadataException extends Throwable
+public class MetadataException extends Exception
 {
 
 	private static final long serialVersionUID = 1453709249687249732L;

@@ -251,28 +251,6 @@ public class CorePlugin implements Pluggable
 	public void onStart()
 	{
 		uploader.runStarttimeChecker();
-/*
-		final Context cx = ContextFactory.getGlobal().enterContext();
-		cx.setOptimizationLevel(-1);
-		cx.setLanguageVersion(Context.VERSION_1_5);
-		final Global global = Main.getGlobal();
-		global.init(cx);
-
-		final Scripter scripter = new Scripter(global,cx);
-
-		final Object controller = Context.javaToJS(scripter, global);
-		final Object out = Context.javaToJS(System.out, global);
-		final Object inject = Context.javaToJS(injector, global);
-		ScriptableObject.putProperty(global, "out", out);
-		ScriptableObject.putProperty(global, "injector", inject);
-		ScriptableObject.putProperty(global, "Scripter", scripter);
-		global.defineProperty("arguments", "",
-		                      0);
-		try {
-			Main.processSource(cx, "./envjs/rhino.js");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}*/
 	}
 
 	@Override

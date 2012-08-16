@@ -34,9 +34,12 @@ import java.util.List;
  */
 public interface PlaylistService extends CRUDService<Playlist>
 {
-	String PLAYLIST_ENTRY_ADDED   = "playlistEntryAdded"; //NON-NLS
-	String PLAYLIST_ENTRY_REMOVED = "playlistEntryRemoved"; //NON-NLS
-	String PLAYLIST_ENTRY_UPDATED = "playlistEntryUpdated"; //NON-NLS
+	String PLAYLIST_PRE_ADDED   = "playlistPreAdded"; //NON-NLS
+	String PLAYLIST_ADDED       = "playlistAdded"; //NON-NLS
+	String PLAYLIST_PRE_REMOVED = "playlistPreRemoved"; //NON-NLS
+	String PLAYLIST_REMOVED     = "playlistRemoved"; //NON-NLS
+	String PLAYLIST_PRE_UPDATED = "playlistPreUpdated"; //NON-NLS
+	String PLAYLIST_UPDATED     = "playlistUpdated"; //NON-NLS
 
 	void synchronizePlaylists(List<Account> accounts);
 

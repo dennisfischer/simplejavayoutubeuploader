@@ -19,9 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Preset;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,19 +29,12 @@ import java.util.List;
  * Time: 21:47
  * To change this template use File | Settings | File Templates.
  */
-public interface PresetService
+public interface PresetService extends CRUDService<Preset>
 {
-	String PRESET_ENTRY_ADDED   = "presetEntryAdded"; //NON-NLS
-	String PRESET_ENTRY_REMOVED = "presetEntryRemoved"; //NON-NLS
-	String PRESET_ENTRY_UPDATED = "presetEntryUpdated"; //NON-NLS
-
-	Preset create(Preset preset);
-
-	Preset delete(Preset preset);
-
-	Preset update(Preset preset);
-
-	List<Preset> getAll();
-
-	Preset find(int identifier);
+	String PRESET_PRE_ADDED   = "presetPreAdded"; //NON-NLS
+	String PRESET_ADDED       = "presetAdded"; //NON-NLS
+	String PRESET_PRE_REMOVED = "presetPreRemoved"; //NON-NLS
+	String PRESET_REMOVED     = "presetRemoved"; //NON-NLS
+	String PRESET_PRE_UPDATED = "presetPreUpdated"; //NON-NLS
+	String PRESET_UPDATED     = "presetUpdated"; //NON-NLS
 }

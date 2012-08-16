@@ -91,13 +91,13 @@ public class UploadController
 
 		private static final long serialVersionUID = 5531366617857937110L;
 
-		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_ADDED)
+		@EventTopicSubscriber(topic = PresetService.PRESET_ADDED)
 		public void onPresetAdded(final String topic, final Preset preset)
 		{
 			addElement(preset);
 		}
 
-		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_UPDATED)
+		@EventTopicSubscriber(topic = PresetService.PRESET_UPDATED)
 		public void onPresetUpdated(final String topic, final Preset preset)
 		{
 			final int index = getIndexOf(preset);
@@ -106,7 +106,7 @@ public class UploadController
 			}
 		}
 
-		@EventTopicSubscriber(topic = PresetService.PRESET_ENTRY_REMOVED)
+		@EventTopicSubscriber(topic = PresetService.PRESET_REMOVED)
 		public void onPresetRemoved(final String topic, final Preset preset)
 		{
 			removeElement(preset);
@@ -116,19 +116,19 @@ public class UploadController
 	{
 		private static final long serialVersionUID = 8997201386145568022L;
 
-		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_ADDED)
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ADDED)
 		public void onPlaylistAdded(final String topic, final Playlist playlist)
 		{
 			addElement(playlist);
 		}
 
-		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_REMOVED)
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_REMOVED)
 		public void onPlaylistRemoved(final String topic, final Playlist playlist)
 		{
 			removeElement(playlist);
 		}
 
-		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_ENTRY_UPDATED)
+		@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_UPDATED)
 		public void onPlaylistUpdated(final String topic, final Playlist playlist)
 		{
 			final int index = getIndexOf(playlist);

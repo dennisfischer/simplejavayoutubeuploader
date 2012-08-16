@@ -18,12 +18,10 @@
         <element id="artifact" artifact-name="Images:jar" />
         <element id="library" level="project" name="GoogleYoutubeJavaApi" />
         <element id="library" level="project" name="other" />
-        <element id="library" level="project" name="Scribe Fork" />
         <element id="library" level="project" name="jgoodies-validation-2.4" />
         <element id="library" level="project" name="JxDevelopmentLicense" />
         <element id="library" level="project" name="JXBrowser" />
         <element id="library" level="project" name="JxFileWatcher" />
-        <element id="library" level="project" name="cliche" />
         <element id="library" level="project" name="org.apache.commons:commons-email:1.2" />
         <element id="library" level="project" name="org.apache.xbean:xbean-finder:3.9" />
         <element id="library" level="project" name="com.google.inject:guice:3.0" />
@@ -34,6 +32,7 @@
         <element id="library" level="project" name="com.github.insubstantial:substance:7.1" />
         <element id="library" level="project" name="xstream-1.4.2" />
         <element id="library" level="project" name="commons-codec:commons-codec:1.6" />
+        <element id="library" level="project" name="htmlunit" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
@@ -46,6 +45,9 @@
       <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
       <element id="file-copy" path="$PROJECT_DIR$/README" />
       <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/mappers/mybatis_config_template.xml" />
+      <element id="directory" name="scripts">
+        <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/scripts/test.js" />
+      </element>
     </root>
   </artifact>
 </component>

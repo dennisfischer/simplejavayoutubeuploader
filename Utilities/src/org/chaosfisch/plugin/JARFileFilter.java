@@ -21,6 +21,7 @@ package org.chaosfisch.plugin;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Locale;
 
 @SuppressWarnings("ALL")
 public class JARFileFilter implements FileFilter
@@ -29,6 +30,6 @@ public class JARFileFilter implements FileFilter
 	public boolean accept(File f)
 	{
 		//noinspection StringToUpperCaseOrToLowerCaseWithoutLocale
-		return f.getName().toLowerCase().endsWith(".jar");
+		return f.getName().toLowerCase(Locale.getDefault()).endsWith(".jar");
 	}
 }

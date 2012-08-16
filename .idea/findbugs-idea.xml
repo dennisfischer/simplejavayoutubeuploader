@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="true">
-    <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-    </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Utilities" />
-    <orderEntry type="module" module-name="CorePlugin" />
-    <orderEntry type="library" name="other" level="project" />
-    <orderEntry type="module" module-name="SimpleJavaYoutubeUploader" />
-    <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="JxFileWatcher" level="project" />
-    <orderEntry type="library" name="org.mybatis:mybatis-guice:3.3" level="project" />
-    <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
-    <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
-    <orderEntry type="library" name="log4j:log4j:1.2.17" level="project" />
-  </component>
+<project version="4">
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
       <map>
-        <entry key="property.analysisEffortLevel" value="default" />
+        <entry key="property.analysisEffortLevel" value="max" />
         <entry key="property.analyzeAfterCompile" value="false" />
         <entry key="property.exportAsHtml" value="true" />
         <entry key="property.exportAsXml" value="true" />
         <entry key="property.exportBaseDir" value="" />
         <entry key="property.exportCreateArchiveDir" value="false" />
         <entry key="property.exportOpenBrowser" value="true" />
-        <entry key="property.minPriorityToReport" value="Medium" />
+        <entry key="property.minPriorityToReport" value="Low" />
         <entry key="property.runAnalysisInBackground" value="false" />
         <entry key="property.showHiddenDetectors" value="false" />
         <entry key="property.toolWindowToFront" value="true" />
@@ -206,6 +188,18 @@
         <entry key="STYLE" value="true" />
       </map>
     </option>
+    <option name="_includeFilters">
+      <list>
+        <option value="F:\Downloads\findbugs-2.0.1\findbugs-2.0.1\bin\fb" />
+      </list>
+    </option>
+    <option name="_enabledModuleConfigs">
+      <list>
+        <option value="CorePlugin" />
+        <option value="DirectoryPlugin" />
+        <option value="SimpleJavaYoutubeUploader" />
+      </list>
+    </option>
   </component>
-</module>
+</project>
 

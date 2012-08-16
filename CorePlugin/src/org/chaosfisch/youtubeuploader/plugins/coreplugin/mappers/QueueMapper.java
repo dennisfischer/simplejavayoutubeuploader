@@ -44,7 +44,7 @@ public interface QueueMapper
 
 	List<Queue> findByPlaylist(Playlist playlist);
 
-	Queue findQueue(int id);
+	Queue findQueue(Queue queue);
 
 	Queue poll();
 

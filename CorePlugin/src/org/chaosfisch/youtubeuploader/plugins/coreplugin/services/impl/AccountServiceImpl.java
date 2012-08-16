@@ -50,6 +50,7 @@ public class AccountServiceImpl implements AccountService
 
 	@Transactional @Override public Account create(final Account account)
 	{
+		EventBus.publish(AccountService.ACCOUNT_PRE_ADDED, account);
 		accountMapper.createAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_ADDED, account);
 		return account;
@@ -73,12 +74,14 @@ public class AccountServiceImpl implements AccountService
 			queue.playlist = null;
 			queueMapper.updateQueue(queue);
 		}
+		EventBus.publish(AccountService.ACCOUNT_PRE_REMOVED, account);
 		accountMapper.deleteAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_REMOVED, account);
 	}
 
 	@Transactional @Override public Account update(final Account account)
 	{
+		EventBus.publish(AccountService.ACCOUNT_PRE_UPDATED, account);
 		accountMapper.updateAccount(account);
 		EventBus.publish(AccountService.ACCOUNT_UPDATED, account);
 		return account;

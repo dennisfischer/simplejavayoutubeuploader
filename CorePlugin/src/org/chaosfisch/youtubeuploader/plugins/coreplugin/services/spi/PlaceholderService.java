@@ -31,7 +31,10 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
  */
 public interface PlaceholderService extends CRUDService<Placeholder>
 {
-	String PLACEHOLDER_ADDED   = "placeholderAdded"; //NON-NLS
-	String PLACEHOLDER_REMOVED = "placeholderRemoved"; //NON-NLS
-	String PLACEHOLDER_UPDATED = "placeholderUpdated"; //NON-NLS
+	String PLACEHOLDER_PRE_ADDED   = "placeholderPreAdded"; //NON-NLS
+	String PLACEHOLDER_ADDED       = "placeholderAdded"; //NON-NLS
+	String PLACEHOLDER_PRE_REMOVED = "placeholderPreRemoved"; //NON-NLS
+	String PLACEHOLDER_REMOVED     = "placeholderRemoved"; //NON-NLS
+	String PLACEHOLDER_PRE_UPDATED = "placeholderPreUpdated"; //NON-NLS
+	String PLACEHOLDER_UPDATED     = "placeholderUpdated"; //NON-NLS
 }

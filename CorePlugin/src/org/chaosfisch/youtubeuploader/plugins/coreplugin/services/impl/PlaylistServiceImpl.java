@@ -97,15 +97,17 @@ public class PlaylistServiceImpl implements PlaylistService
 
 	@Transactional @Override public Playlist create(final Playlist playlist)
 	{
+		EventBus.publish(PlaylistService.PLAYLIST_PRE_ADDED, playlist);
 		playlistMapper.createPlaylist(playlist);
-		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_ADDED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_ADDED, playlist);
 		return playlist;
 	}
 
 	@Transactional @Override public Playlist update(final Playlist playlist)
 	{
+		EventBus.publish(PlaylistService.PLAYLIST_PRE_UPDATED, playlist);
 		playlistMapper.updatePlaylist(playlist);
-		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_UPDATED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_UPDATED, playlist);
 		return playlist;
 	}
 
@@ -122,8 +124,9 @@ public class PlaylistServiceImpl implements PlaylistService
 			queueMapper.updateQueue(queue);
 		}
 
+		EventBus.publish(PlaylistService.PLAYLIST_PRE_REMOVED, playlist);
 		playlistMapper.deletePlaylist(playlist);
-		EventBus.publish(PlaylistService.PLAYLIST_ENTRY_REMOVED, playlist);
+		EventBus.publish(PlaylistService.PLAYLIST_REMOVED, playlist);
 	}
 
 	@Override

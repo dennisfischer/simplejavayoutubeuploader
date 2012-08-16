@@ -19,6 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi;
 
+import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.util.List;
@@ -30,23 +31,14 @@ import java.util.List;
  * Time: 10:14
  * To change this template use File | Settings | File Templates.
  */
-public interface QueueService
+public interface QueueService extends CRUDService<Queue>
 {
-	String QUEUE_ADDED   = "queueAdded"; //NON-NLS
-	String QUEUE_REMOVED = "queueRemoved"; //NON-NLS
-	String QUEUE_UPDATED = "queueUpdated"; //NON-NLS
-
-	/**
-	 * Adds / Persists a Queue(Entry)
-	 *
-	 * @param queue the Queue(Entry) that should be added
-	 * @return the added Queue(Entry)
-	 */
-	Queue create(Queue queue);
-
-	Queue delete(Queue queue);
-
-	Queue update(Queue queue);
+	String QUEUE_PRE_ADDED   = "queuePreAdded"; //NON-NLS
+	String QUEUE_ADDED       = "queueAdded"; //NON-NLS
+	String QUEUE_PRE_REMOVED = "queuePreRemoved"; //NON-NLS
+	String QUEUE_REMOVED     = "queueRemoved"; //NON-NLS
+	String QUEUE_PRE_UPDATED = "queuePreUpdated"; //NON-NLS
+	String QUEUE_UPDATED     = "queueUpdated"; //NON-NLS
 
 	/**
 	 * Assigns a new place / new sequence to the entry
@@ -61,8 +53,6 @@ public interface QueueService
 	List<Queue> getQueued();
 
 	List<Queue> getArchived();
-
-	Queue find(int identifier);
 
 	/**
 	 * Polls item and updates inProgress to true
