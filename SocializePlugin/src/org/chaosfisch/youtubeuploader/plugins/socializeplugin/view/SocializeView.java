@@ -28,6 +28,7 @@ import com.jgoodies.validation.util.DefaultValidationResultModel;
 import com.jgoodies.validation.util.ValidationUtils;
 import com.jgoodies.validation.view.ValidationResultViewFactory;
 import org.chaosfisch.util.BetterSwingWorker;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.DisabledGlassPane;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.controller.MessageController;
@@ -60,10 +61,10 @@ public class SocializeView implements SocializeViewBinding
 	private       JTextArea         messageTextArea;
 	private       JComboBox         publishComboBox;
 	private       JButton           addButton;
-	private       JSpinner          uploadIDSpinner;
 	private       JButton           deleteButton;
 	private       JTable            messagesTable;
 	private       JPanel            validationComponent;
+	private       JComboBox         uploadsCombobox;
 	private final MessageController controller;
 	private final SettingsService   settings;
 	private final Injector          injector;
@@ -85,14 +86,13 @@ public class SocializeView implements SocializeViewBinding
 	private void initComponents()
 	{
 		controller.setup();
-		final SpinnerModel spinnerNumberModel = new SpinnerNumberModel(1, 1, 10000, 1);
-		uploadIDSpinner.setModel(spinnerNumberModel);
-		uploadIDSpinner.setEditor(new JSpinner.NumberEditor(uploadIDSpinner));
-
 		messagesTable.setModel(controller.getMessageTableModel());
 		messagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
+		uploadsCombobox.setModel(controller.getUploadsModel());
+
+		publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message(
+				"publishlist.now")}));
 	}
 
 	private void initListeners()
@@ -102,9 +102,9 @@ public class SocializeView implements SocializeViewBinding
 			@Override public void itemStateChanged(final ItemEvent e)
 			{
 				if ((e.getStateChange() == ItemEvent.SELECTED) && (publishComboBox.getSelectedIndex() == 0)) {
-					uploadIDSpinner.setEnabled(true);
+					uploadsCombobox.setEnabled(true);
 				} else {
-					uploadIDSpinner.setEnabled(false);
+					uploadsCombobox.setEnabled(false);
 				}
 			}
 		});
@@ -187,7 +187,8 @@ public class SocializeView implements SocializeViewBinding
 								if (!socialProvider.hasValidAccessToken()) {
 									facebookButton.setSelected(false);
 								} else {
-									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
+									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(),
+									                                                           socialProvider.getAccessToken().getSecret())); //NON-NLS
 									settings.save();
 								}
 							}
@@ -253,7 +254,6 @@ public class SocializeView implements SocializeViewBinding
 		googlePlusButton.setSelected(data.googleplus);
 		youtubeButton.setSelected(data.youtube);
 		publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
-		uploadIDSpinner.setValue(data.uploadid);
 	}
 
 	public Message getData()
@@ -264,7 +264,7 @@ public class SocializeView implements SocializeViewBinding
 		data.twitter = twitterButton.isSelected();
 		data.youtube = youtubeButton.isSelected();
 		data.googleplus = googlePlusButton.isSelected();
-		data.uploadid = (Integer) uploadIDSpinner.getValue();
+		data.uploadid = ((IModel) uploadsCombobox.getSelectedItem()).getIdentity();
 
 		return data;
 	}

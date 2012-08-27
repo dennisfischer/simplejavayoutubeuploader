@@ -100,12 +100,18 @@ class ImportManager
 		if (file == null) {
 			return;
 		}
-		final Object object = readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
-		if (object instanceof List<?>) {
-			final Iterable<?> entries = (Iterable<?>) object;
-			for (final Object entry : entries) {
-				queueService.create((Queue) entry);
+		final Iterable<Queue> queues = (Iterable<Queue>) readObjectFromXMLFile(file, "UTF-8"); //NON-NLS
+		for (final Queue queue : queues) {
+			if (queue.account != null) {
+				final Account findObject = new Account();
+				findObject.name = queue.account.name;
+				queue.account = accountService.find(findObject);
 			}
+			final File queueFileTest = new File(queue.file);
+			if ((queue.account == null) || !queueFileTest.exists()) {
+				queue.locked = true;
+			}
+			queueService.create(queue);
 		}
 	}
 

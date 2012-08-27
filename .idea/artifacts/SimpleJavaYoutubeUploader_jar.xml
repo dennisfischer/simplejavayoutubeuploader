@@ -33,6 +33,7 @@
         <element id="library" level="project" name="xstream-1.4.2" />
         <element id="library" level="project" name="commons-codec:commons-codec:1.6" />
         <element id="library" level="project" name="htmlunit" />
+        <element id="library" level="project" name="org.scribe:scribe:1.3.1" />
       </element>
       <element id="directory" name="plugins">
         <element id="artifact" artifact-name="CorePlugin:jar" />
@@ -45,9 +46,7 @@
       <element id="file-copy" path="$PROJECT_DIR$/LIZENZ" />
       <element id="file-copy" path="$PROJECT_DIR$/README" />
       <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/mappers/mybatis_config_template.xml" />
-      <element id="directory" name="scripts">
-        <element id="file-copy" path="$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/resources/scripts/test.js" />
-      </element>
+      <element id="directory" name="scripts" />
     </root>
   </artifact>
 </component>

@@ -2,7 +2,6 @@
   <library name="other">
     <CLASSES>
       <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/Scribe.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/cliche.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/filedrop.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jgoodies-common-1.3.0.jar!/" />

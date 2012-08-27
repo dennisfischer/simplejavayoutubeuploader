@@ -22,7 +22,9 @@ package org.chaosfisch.youtubeuploader.plugins.socializeplugin.controller;
 import com.google.inject.Injector;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.GenericListModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.Message;
 import org.chaosfisch.youtubeuploader.plugins.socializeplugin.models.MessageTableModel;
@@ -33,6 +35,7 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 import org.scribe.model.Token;
 
 import javax.inject.Inject;
+import javax.swing.*;
 import javax.swing.table.TableModel;
 
 /**
@@ -49,6 +52,33 @@ public class MessageController
 	@Inject private MessageService    messageService;
 	@Inject private Injector          injector;
 	@Inject private SettingsService   settingsService;
+	@Inject private QueueService      queueService;
+	private final GenericListModel<Queue> uploadListModel = new GenericListModel<Queue>()
+	{
+
+		private static final long serialVersionUID = -2639047965085414029L;
+
+		@EventTopicSubscriber(topic = QueueService.QUEUE_ADDED)
+		public void onQueueAdded(final String topic, final Queue queue)
+		{
+			addElement(queue);
+		}
+
+		@EventTopicSubscriber(topic = QueueService.QUEUE_REMOVED)
+		public void onQueueRemoved(final String topic, final Queue queue)
+		{
+			removeElement(queue);
+		}
+
+		@EventTopicSubscriber(topic = QueueService.QUEUE_UPDATED)
+		public void onQueueUpdated(final String topic, final Queue queue)
+		{
+			final int index = getIndexOf(queue);
+			if (index != -1) {
+				replaceRow(index, queue);
+			}
+		}
+	};
 
 	public MessageController()
 	{
@@ -142,5 +172,13 @@ public class MessageController
 			final Message message = messageTableModel.getRow(selectedRow);
 			messageService.delete(message);
 		}
+	}
+
+	public ComboBoxModel getUploadsModel()
+	{
+		for (final Queue queue : queueService.getQueued()) {
+			uploadListModel.addElement(queue);
+		}
+		return uploadListModel;
 	}
 }

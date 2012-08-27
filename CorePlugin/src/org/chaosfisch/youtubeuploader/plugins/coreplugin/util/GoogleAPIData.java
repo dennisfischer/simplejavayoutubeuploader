@@ -17,32 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi;
-
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
+package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Dennis
- * Date: 10.01.12
- * Time: 18:06
+ * Date: 22.04.12
+ * Time: 17:55
  * To change this template use File | Settings | File Templates.
  */
-public interface AutoTitleGenerator
+public class GoogleAPIData
 {
-	String AUTOTITLE_CHANGED = "autoTitleChanged"; //NON-NLS
-
-	String getFormatString();
-
-	void setFormatString(String formatString);
-
-	String getFileName();
-
-	void setFileName(String fileName);
-
-	String gernerate();
-
-	void setPlaylist(Playlist playlist);
-
-	void setNumber(int number);
+	public static final String GOOGLE_APIKEY    = "584002212402.apps.googleusercontent.com";//NON-NLS
+	public static final String GOOGLE_APISECRET = "eSn2KQCZ0RiLwHFFAqRHamlu";//NON-NLS
 }

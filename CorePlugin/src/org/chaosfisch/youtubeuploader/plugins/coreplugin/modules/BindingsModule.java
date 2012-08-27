@@ -35,8 +35,7 @@ import org.apache.xbean.finder.ResourceFinder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.CorePlugin;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.impl.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.*;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.AutoTitleGeneratorImpl;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.mybatis.guice.mappers.MapperProvider;
 import org.mybatis.guice.session.SqlSessionManagerProvider;
 import org.mybatis.guice.transactional.Transactional;
@@ -122,7 +121,7 @@ public class BindingsModule extends AbstractModule
 		bind(PresetService.class).to(PresetServiceImpl.class).in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(PlaceholderService.class).to(PlaceholderServiceImpl.class).in(Singleton.class);
-		bind(AutoTitleGenerator.class).to(AutoTitleGeneratorImpl.class);
+		bind(Uploader.class).in(Singleton.class);
 	}
 
 	private static String readFileAsString(final File file) throws FileNotFoundException

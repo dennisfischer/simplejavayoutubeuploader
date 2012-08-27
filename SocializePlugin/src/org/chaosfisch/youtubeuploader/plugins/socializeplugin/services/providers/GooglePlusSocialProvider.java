@@ -19,21 +19,7 @@
 
 package org.chaosfisch.youtubeuploader.plugins.socializeplugin.services.providers;
 
-import org.apache.log4j.Logger;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.APIData;
-import org.chaosfisch.youtubeuploader.plugins.socializeplugin.I18nSupport;
-import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,45 +30,12 @@ import java.net.URISyntaxException;
  */
 public class GooglePlusSocialProvider implements ISocialProvider
 {
-	private Token accessToken;
-	private final OAuthService oAuthService = new ServiceBuilder().provider(GoogleApi.class).scope("https://www.googleapis.com/auth/plus.me")  //NON-NLS
-			.apiKey(APIData.GOOGLE_APIKEY).apiSecret(APIData.GOOGLE_APISECRET).build();
-	@InjectLogger private Logger logger;
-	private static final String GOOGLE_ACCESS_TOKEN = "onGoogleAccessToken"; //NON-NLS
-
 	@Override public Token getAccessToken()
 	{
-		return accessToken;  //To change body of implemented methods use File | Settings | File Templates.
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override public void setAccessToken(final Token accessToken)
-	{
-		this.accessToken = accessToken;
-	}
-
-	@Override public void authenticate()
-	{
-		if (accessToken != null) {
-			return;
-		}
-
-		final Token requestToken = oAuthService.getRequestToken();
-		try {
-			Desktop.getDesktop().browse(new URI(oAuthService.getAuthorizationUrl(requestToken)));
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (URISyntaxException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-
-		final String verifier = JOptionPane.showInputDialog(null, I18nSupport.message("googleOAuth.code.label"), I18nSupport.message("googleOAuth.account.label"), JOptionPane.INFORMATION_MESSAGE);
-
-		if (verifier != null) {
-			accessToken = oAuthService.getAccessToken(requestToken, new Verifier(verifier));
-		}
-	}
-
-	@Override public void publish(final String message)
 	{
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
@@ -90,5 +43,17 @@ public class GooglePlusSocialProvider implements ISocialProvider
 	@Override public boolean hasValidAccessToken()
 	{
 		return false;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override public void authenticate()
+	{
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override public void publish(final String message)
+	{
+		//Login
+		//Navigate to http://www.youtube.com/user/USERNAME/feed
+		//Execute Javascript "Postbulletin.js";
 	}
 }

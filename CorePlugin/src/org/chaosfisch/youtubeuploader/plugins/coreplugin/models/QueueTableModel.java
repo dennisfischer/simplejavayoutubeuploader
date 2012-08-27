@@ -103,6 +103,8 @@ public class QueueTableModel extends RowTableModel<Queue>
 					return String.format("%s http://youtu.be/%s", resourceBundle.getString("table.columns.status.finished"), queue.videoId);//NON-NLS
 				} else if (queue.inprogress) {
 					return resourceBundle.getString("table.columns.status.inprogress");
+				} else if (queue.failed) {
+					return resourceBundle.getString("table.columns.status.failed");
 				} else {
 					return resourceBundle.getString("table.columns.status.waiting");
 				}

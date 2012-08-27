@@ -27,10 +27,7 @@ import org.chaosfisch.plugin.Pluggable;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PluginLoader
 {
@@ -57,6 +54,6 @@ public class PluginLoader
 		} catch (IOException ignored) {
 			logger.error("Pluginloader fatal error: 1x00001");//NON-NLS
 		}
-		return new HashMap<String, Pluggable>(0);
+		return new WeakHashMap<String, Pluggable>(0);
 	}
 }

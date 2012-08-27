@@ -90,15 +90,16 @@ class ExportManager
 		}
 
 		final List<Queue> queueEntries = queueService.getQueued();
+		for (final Queue queue : queueEntries) {
+			queue.account.setPassword(null);
+		}
 		writeObjectToXMLFile(file, queueEntries, "UTF-8"); //NON-NLS
 	}
 
 	private void writeObjectToXMLFile(final File file, final Object object, final String charset)
 	{
 		try {
-			final FileOutputStream fileOutputStream = new FileOutputStream(file);
-			final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream, Charset.forName(charset));
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)), Charset.forName(charset));
 
 			try {
 				outputStreamWriter.write(ExportManager.XML_HEADER);
@@ -108,8 +109,6 @@ class ExportManager
 			} finally {
 				try {
 					outputStreamWriter.close();
-					bufferedOutputStream.close();
-					fileOutputStream.close();
 				} catch (IOException ignored) {
 					throw new RuntimeException("This shouldn't happen");
 				}

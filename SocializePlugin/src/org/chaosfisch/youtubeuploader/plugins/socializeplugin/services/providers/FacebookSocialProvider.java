@@ -59,6 +59,10 @@ public class FacebookSocialProvider implements ISocialProvider
 		if (accessToken == null) {
 			return;
 		}
+
+		if (!hasValidAccessToken()) {
+			refreshAccessToken();
+		}
 		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed"); //NON-NLS
 		oAuthRequest.addBodyParameter("message", message); //NON-NLS
 		oAuthRequest.addBodyParameter("link", extractUrl(message)); //NON-NLS
@@ -69,6 +73,12 @@ public class FacebookSocialProvider implements ISocialProvider
 			logger.warn(String.format("Wrong response code: %d", response.getCode()));//NON-NLS
 			logger.warn(response.getBody());
 		}
+	}
+
+	private void refreshAccessToken()
+	{
+		final String url = new StringBuilder().append("https://graph.facebook.com/oauth/access_token?client_id=").append(APIData.FACEBOOK_APIKEY).append("&client_secret=").append(
+				APIData.FACEBOOK_APISECRET).append("&grant_type=fb_exchange_token&fb_exchange_token=").append(accessToken.getToken()).toString();
 	}
 
 	@Override

@@ -19,6 +19,8 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -47,7 +49,7 @@ public class Account implements IModel
 		return password;
 	}
 
-	public void setPassword(final String password)
+	public void setPassword(@Nullable final String password)
 	{
 		this.password = password;
 	}

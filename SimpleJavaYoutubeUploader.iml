@@ -28,6 +28,7 @@
     </orderEntry>
     <orderEntry type="library" name="org.mozilla:rhino:1.7R4" level="project" />
     <orderEntry type="library" name="htmlunit" level="project" />
+    <orderEntry type="library" name="org.hsqldb:hsqldb:2.2.8" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

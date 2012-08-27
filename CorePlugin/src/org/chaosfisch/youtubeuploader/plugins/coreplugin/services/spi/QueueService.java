@@ -62,4 +62,6 @@ public interface QueueService extends CRUDService<Queue>
 	Queue poll();
 
 	boolean hasStarttime();
+
+	List<Queue> getValidQueued();
 }

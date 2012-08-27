@@ -19,6 +19,8 @@
 
 package org.chaosfisch.util;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +34,9 @@ import java.util.concurrent.ExecutionException;
  */
 public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 {
+
+	private final Logger logger = Logger.getLogger(getClass().getName());
+
 	@Override
 	protected Void doInBackground() throws Exception
 	{
@@ -45,11 +50,11 @@ public abstract class BetterSwingWorker extends SwingWorker<Void, Void>
 		try {
 			get();
 		} catch (InterruptedException ex) {
-			throw new RuntimeException("This shouldn't happen", ex);
+			logger.warn(ex.getMessage(), ex);
 		} catch (CancellationException ex) {
-			throw new RuntimeException("This shouldn't happen", ex);
+			logger.warn(ex.getMessage(), ex);
 		} catch (ExecutionException ex) {
-			throw new RuntimeException("This shouldn't happen", ex);
+			logger.warn(ex.getMessage(), ex);
 		}
 		onDone();
 	}

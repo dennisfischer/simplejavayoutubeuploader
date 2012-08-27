@@ -72,10 +72,11 @@ public class Uploader
 	private boolean inProgress;
 	private short   runningUploads;
 	private short   actionOnFinish;
-	private              short   maxUploads           = 1;
-	private              int     speedLimit           = 1000 * 1024;
-	private static final long    QUEUE_SLEEPTIME      = 30000;
-	private              boolean startTimeCheckerFlag = true;
+	private short   maxUploads           = 1;
+	private int     speedLimit           = 1000 * 1024;
+	private boolean startTimeCheckerFlag = true;
+
+	private static final long QUEUE_SLEEPTIME = 30000;
 
 	public Uploader()
 	{
@@ -97,17 +98,19 @@ public class Uploader
 						final Queue polled = queueService.poll();
 						if (polled != null) {
 							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
+							setSpeedLimit(speedLimit);
 							uploadWorker.run(polled, speedLimit, 1048576 * Integer.parseInt((String) settingsService.get("coreplugin.general.CHUNK_SIZE", "10")));
 							executorService.submit(uploadWorker);
-							setSpeedLimit(speedLimit);
-							runningUploads++;
+							synchronized (this) {
+								runningUploads++;
+							}
 						}
 					}
 
 					try {
 						Thread.sleep(Uploader.QUEUE_SLEEPTIME);
-					} catch (InterruptedException ignored) {
-						throw new RuntimeException("This shouldn't happen");
+					} catch (InterruptedException e) {
+						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
 			}
@@ -132,12 +135,16 @@ public class Uploader
 
 	public boolean isRunning()
 	{
-		return inProgress && (runningUploads != 0);
+		synchronized (this) {
+			return inProgress && (runningUploads != 0);
+		}
 	}
 
 	private boolean hasFreeUploadSpace()
 	{
-		return runningUploads < maxUploads;
+		synchronized (this) {
+			return runningUploads < maxUploads;
+		}
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
@@ -156,34 +163,40 @@ public class Uploader
 
 	private void uploadFinished(final Queue queue)
 	{
-		logger.info(String.format("Upload finished: %s; %s", queue.title, queue.videoId));
-		runningUploads--;
-		logger.info(String.format("Running uploads: %s", runningUploads));
-		queueService.update(queue);
-		if (queueService.getQueued().isEmpty() && (runningUploads == 0)) {
-			logger.info("All uploads finished");
-			final Timer timer = new Timer();
-			timer.schedule(new TimerTask()
-			{
-				@Override public void run()
+		synchronized (this) {
+			logger.info(String.format("Upload finished: %s; %s", queue.title, queue.videoId));
+			runningUploads--;
+			logger.info(String.format("Running uploads: %s", runningUploads));
+			queueService.update(queue);
+			if (queueService.getValidQueued().isEmpty() && (runningUploads <= 0)) {
+				logger.info("All uploads finished");
+				final Timer timer = new Timer();
+				timer.schedule(new TimerTask()
 				{
-					switch (actionOnFinish) {
-						case 0:
-							return;
-						case 1:
-							System.exit(0);
-							return;
-						case 2:
-							Computer.shutdownComputer();
-							return;
-						case 3:
-							Computer.hibernateComputer();
+					@Override public void run()
+					{
+						switch (actionOnFinish) {
+							case 0:
+								return;
+							case 1:
+								System.out.println("CLOSING APPLICATION");
+								System.exit(0);
+								return;
+							case 2:
+								System.out.println("SHUTDOWN COMPUTER");
+								Computer.shutdownComputer();
+								return;
+							case 3:
+								System.out.println("HIBERNATE COMPUTER");
+								Computer.hibernateComputer();
+								return;
+						}
 					}
-				}
-			}, 30000);
-		}
+				}, 60000);
+			}
 
-		logger.info(String.format("Left uploads: %d", queueService.getQueued().size()));
+			logger.info(String.format("Left uploads: %d", queueService.getValidQueued().size()));
+		}
 	}
 
 	public void setActionOnFinish(final short actionOnFinish)
@@ -229,8 +242,8 @@ public class Uploader
 
 					try {
 						Thread.sleep(60000);
-					} catch (InterruptedException ignored) {
-						throw new RuntimeException("This shouldn't happen");
+					} catch (InterruptedException e) {
+						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
 			}

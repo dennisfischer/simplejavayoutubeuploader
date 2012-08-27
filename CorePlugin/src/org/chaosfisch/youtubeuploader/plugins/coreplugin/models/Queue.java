@@ -98,9 +98,15 @@ public class Queue implements IModel
 	public String movieNotes;
 
 	public transient Integer identity;
+	public           int     number;
 
 	@Override public Integer getIdentity()
 	{
 		return identity;
+	}
+
+	@Override public String toString()
+	{
+		return title;
 	}
 }

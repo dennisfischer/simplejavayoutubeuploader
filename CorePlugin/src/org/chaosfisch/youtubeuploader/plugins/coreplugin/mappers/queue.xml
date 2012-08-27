@@ -31,14 +31,14 @@
 		 monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir, license, release, claim, claimtype, claimpolicy,
 		 partnerOverlay, partnerTrueview, partnerProduct, partnerInstream, asset, webTitle, webDescription, webID, webNotes,
 		 tvTMSID, tvISAN, tvEIDR, showTitle, episodeTitle, seasonNb, episodeNb, tvID, tvNotes, movieTitle, movieDescription,
-		 movieTMSID, movieISAN, movieEIDR, movieID, movieNotes)
+		 movieTMSID, movieISAN, movieEIDR, movieID, movieNotes, number)
 		 VALUES (#{category}, #{description}, #{file}, #{keywords}, #{mimetype}, #{title}, #{uploadurl}, #{videoId},
 		 	#{archived}, #{commentvote}, #{inprogress}, #{locked}, #{mobile}, #{privatefile}, #{rate}, #{unlisted}, #{embed}, #{failed}, #{comment},
 		 	#{videoresponse}, #{sequence}, #{started}, #{account.identity}, #{playlist.identity}, #{monetize}, #{monetizeOverlay}, #{monetizeTrueview},
 		 	#{monetizeProduct}, #{enddir}, #{license}, #{release}, #{claim}, #{claimtype}, #{claimpolicy}, #{partnerOverlay}, #{partnerTrueview},
 		 	#{partnerProduct}, #{partnerInstream}, #{asset}, #{webTitle}, #{webDescription}, #{webID}, #{webNotes}, #{tvTMSID}, #{tvISAN}, #{tvEIDR},
 		 	#{showTitle}, #{episodeTitle}, #{seasonNb}, #{episodeNb}, #{tvID}, #{tvNotes}, #{movieTitle}, #{movieDescription}, #{movieTMSID}, #{movieISAN},
-		 	#{movieEIDR}, #{movieID}, #{movieNotes})
+		 	#{movieEIDR}, #{movieID}, #{movieNotes}, #{number})
 	</sql>
 
 	<sql id="queueSetList">
@@ -101,7 +101,8 @@
 		movieISAN       = #{movieISAN},
 		movieEIDR       = #{movieEIDR},
 		movieID         = #{movieID},
-		movieNotes      = #{movieNotes}
+		movieNotes      = #{movieNotes},
+		number			= #{number}
 	</sql>
 
 	<sql id="accountColumns">
@@ -134,8 +135,24 @@
 		SELECT * FROM QUEUE ORDER BY sequence ASC
 	</select>
 
-	<select id="getQueued" resultType="Queue">
-		SELECT * FROM Queue WHERE archived = false ORDER BY sequence ASC
+	<select id="getQueued" resultMap="queueMap">
+		SELECT Queue.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM Queue
+		LEFT JOIN ACCOUNTS AS A ON (A.identity = Queue.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = Queue.playlist_id)
+		WHERE archived = false ORDER BY sequence ASC
+	</select>
+
+	<select id="getValidQueued" resultMap="queueMap">
+		SELECT Queue.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM Queue
+		INNER JOIN ACCOUNTS AS A ON (A.identity = Queue.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = Queue.playlist_id)
+		WHERE archived = false AND failed = false ORDER BY sequence ASC
 	</select>
 
 	<select id="getArchived" resultType="Queue">
@@ -187,7 +204,8 @@
 		FROM Queue AS Q
 		INNER JOIN ACCOUNTS AS A ON (A.identity = Q.account_id)
 		LEFT JOIN PLAYLISTS AS P ON (P.identity = Q.playlist_id)
-		WHERE Q.archived = false AND Q.inprogress = false AND (Q.started &lt; NOW() OR Q.started IS NULL) AND Q.locked = false ORDER BY Q.started DESC, Q.sequence ASC, Q.failed ASC LIMIT 1
+		WHERE Q.archived = false AND Q.inprogress = false AND Q.failed = false AND (Q.started &lt; NOW() OR Q.started IS NULL) AND Q.locked = false ORDER BY Q.started DESC, Q.sequence ASC,
+		Q.failed ASC LIMIT 1
 	</select>
 
 	<update id="moveTop">
@@ -195,14 +213,10 @@
 
 
 
-
-
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN 0
 		ELSE SEQUENCE+1
 		END WHERE SEQUENCE <= #{sequence}
-
-
 
 
 
@@ -219,14 +233,10 @@
 
 
 
-
-
 		UPDATE QUEUE SET SEQUENCE = CASE
 		WHEN identity = #{identity} THEN (SELECT COUNT(*) FROM QUEUE WHERE archived = false) - 1
 		ELSE SEQUENCE-1
 		END WHERE SEQUENCE >= #{sequence}
-
-
 
 
 

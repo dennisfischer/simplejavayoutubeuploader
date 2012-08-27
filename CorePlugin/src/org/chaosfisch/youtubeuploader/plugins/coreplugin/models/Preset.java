@@ -28,8 +28,7 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
  */
 public class Preset implements IModel
 {
-	public boolean autotitle;
-	public String  autotitleFormat;
+	public String  title;
 	public String  category;
 	public short   comment;
 	public boolean commentvote;

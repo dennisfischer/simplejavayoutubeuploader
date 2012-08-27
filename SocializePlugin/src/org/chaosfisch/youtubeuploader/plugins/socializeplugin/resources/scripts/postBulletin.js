@@ -17,17 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.youtubeuploader.plugins.coreplugin.util;
+var message = "%s";
+var videoUrl = "%s";
 
-/**
- * Created with IntelliJ IDEA.
- * User: Dennis
- * Date: 22.04.12
- * Time: 17:55
- * To change this template use File | Settings | File Templates.
- */
-public class OAuthAPIData
-{
-	public static final String GOOGLE_APIKEY    = "584002212402.apps.googleusercontent.com";//NON-NLS
-	public static final String GOOGLE_APISECRET = "eSn2KQCZ0RiLwHFFAqRHamlu";//NON-NLS
+function postBulletin() {
+	if (document.getElementById('post-bulletin-message') == null) {
+		return;
+	} else {
+		clearInterval(interval);
+	}
+	document.getElementById('post-bulletin-message').value = message;
+	document.getElementsByName('video_url')[0].value = videoUrl;
+	document.getElementsByClassName('post-bulletin')[0].click();
 }
+var interval = setInterval(postBulletin, 1000);

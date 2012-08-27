@@ -40,14 +40,15 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.controller.UploadContro
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -70,9 +71,7 @@ public final class UploadViewPanel
 	private         JTextArea             descriptionTextArea;
 	private         JTextArea             tagsTextArea;
 	private         JComboBox             playlistList;
-	private         JCheckBox             autotitelCheckBox;
 	private         JComboBox             presetList;
-	private         JTextField            autotitleTextField;
 	private         JSpinner              numberModifierSpinner;
 	private         JTextField            defaultdirTextField;
 	private         JComboBox             accountList;
@@ -223,15 +222,13 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(categoryList, resourceBundle.getString("inputhint.category"));
 		ValidationComponentUtils.setInputHint(descriptionTextArea, resourceBundle.getString("inputhint.description"));
 		ValidationComponentUtils.setInputHint(tagsTextArea, resourceBundle.getString("inputhint.tags"));
-		ValidationComponentUtils.setInputHint(autotitleTextField, resourceBundle.getString("inputhint.autotitle"));
 		ValidationComponentUtils.setInputHint(defaultdirTextField, resourceBundle.getString("inputhint.defaultdir"));
 		ValidationComponentUtils.setInputHint(visibilityList, resourceBundle.getString("inputhint.visibilitylist"));
 		ValidationComponentUtils.setInputHint(videoresponseList, resourceBundle.getString("inputhint.videoresponselist"));
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"),
-				resourceBundle.getString(
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
 				"visibilitylist.private")}));
 		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
 				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
@@ -263,8 +260,7 @@ public final class UploadViewPanel
 			{
 				if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex())) {
 					final Preset preset = (Preset) presetList.getSelectedItem();
-					preset.autotitle = autotitelCheckBox.isSelected();
-					preset.autotitleFormat = autotitleTextField.getText();
+					preset.title = titleTextField.getText();
 					if (categoryList.getSelectedIndex() != -1) {
 						preset.category = categoryList.getSelectedItem().toString();
 					}
@@ -398,75 +394,6 @@ public final class UploadViewPanel
 				if (result == JFileChooser.APPROVE_OPTION) {
 					enddirTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
-			}
-		});
-
-		//Autotitle
-		numberModifierSpinner.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(final ChangeEvent e)
-			{
-				controller.changeAutotitleNumber(numberModifierSpinner.getValue());
-			}
-		});
-
-		final Document plainDocument = new PlainDocument();
-		autotitleTextField.setDocument(plainDocument);
-		plainDocument.addDocumentListener(new DocumentListener()
-		{
-			@Override public void insertUpdate(final DocumentEvent e)
-			{
-				controller.changeAutotitleFormat(autotitleTextField.getText());
-			}
-
-			@Override public void removeUpdate(final DocumentEvent e)
-			{
-				controller.changeAutotitleFormat(autotitleTextField.getText());
-			}
-
-			@Override public void changedUpdate(final DocumentEvent e)
-			{
-				controller.changeAutotitleFormat(autotitleTextField.getText());
-			}
-		});
-
-		autotitelCheckBox.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				controller.changeAutotitleCheckbox(autotitelCheckBox.isSelected());
-			}
-		});
-		fileList.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(final ItemEvent e)
-			{
-				controller.changeAutotitleFile(e.getItem());
-			}
-		});
-
-		playlistList.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(final ItemEvent e)
-			{
-
-				if (autotitelCheckBox.isSelected()) {
-					controller.changeAutotitlePlaylist(e.getItem());
-				}
-			}
-		});
-
-		titleTextField.addKeyListener(new KeyAdapter()
-		{
-			@Override
-			public void keyTyped(final KeyEvent e)
-			{
-				autotitelCheckBox.setSelected(false);
-				controller.changeAutotitleCheckbox(false);
 			}
 		});
 
@@ -694,16 +621,16 @@ public final class UploadViewPanel
 		}
 
 		controller.submitUpload(fileList.getSelectedItem().toString(), (Account) accountList.getSelectedItem(), categoryList.getSelectedItem().toString(), (short) visibilityList.getSelectedIndex(),
-		                        titleTextField.getText(), descriptionTextArea.getText(), tagsTextArea.getText(), playlist, (short) commentList.getSelectedIndex(),
-		                        (short) videoresponseList.getSelectedIndex(), rateCheckbox.isSelected(), embedCheckbox.isSelected(), commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(),
-		                        (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(), monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(),
-		                        monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex(), claimCheckbox.isSelected(),
-		                        (short) claimtypeComboBox.getSelectedIndex(), (short) claimpolicyComboBox.getSelectedIndex(), partnerOverlay.isSelected(), partnerTrueview.isSelected(),
-		                        partnerInstream.isSelected(), partnerProduct.isSelected(), asset.getTitleAt(asset.getSelectedIndex()), webTitleTextfield.getText(), webIDTextfield.getText(),
-		                        webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(), tvSeasonNbTextfield.getText(), tvEpisodeNbTextfield.getText(),
-		                        tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(), tvEpisodeTitleTextfield.getText(),
-		                        tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(), movieIDTextfield.getText(),
-		                        movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText());
+		                        titleTextField.getText(), descriptionTextArea.getText(), tagsTextArea.getText(), playlist, Integer.parseInt(numberModifierSpinner.getValue().toString()),
+		                        (short) commentList.getSelectedIndex(), (short) videoresponseList.getSelectedIndex(), rateCheckbox.isSelected(), embedCheckbox.isSelected(),
+		                        commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(), (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(), monetizeCheckbox.isSelected(),
+		                        monetizeOverlayCheckbox.isSelected(), monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex(),
+		                        claimCheckbox.isSelected(), (short) claimtypeComboBox.getSelectedIndex(), (short) claimpolicyComboBox.getSelectedIndex(), partnerOverlay.isSelected(),
+		                        partnerTrueview.isSelected(), partnerInstream.isSelected(), partnerProduct.isSelected(), asset.getTitleAt(asset.getSelectedIndex()), webTitleTextfield.getText(),
+		                        webIDTextfield.getText(), webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(), tvSeasonNbTextfield.getText(),
+		                        tvEpisodeNbTextfield.getText(), tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(),
+		                        tvEpisodeTitleTextfield.getText(), tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(),
+		                        movieIDTextfield.getText(), movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText());
 
 		fileList.removeItem(fileList.getSelectedItem());
 	}
@@ -739,8 +666,7 @@ public final class UploadViewPanel
 	{
 		if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex())) {
 			final Preset selectedPreset = (Preset) presetList.getSelectedItem();
-			autotitelCheckBox.setSelected(selectedPreset.autotitle);
-			autotitleTextField.setText(selectedPreset.autotitleFormat);
+			titleTextField.setText(selectedPreset.title);
 			rateCheckbox.setSelected(selectedPreset.rate);
 			if ((selectedPreset.category == null) || !selectedPreset.category.equals("")) {
 				categoryList.setSelectedItem(selectedPreset.category);
@@ -809,11 +735,8 @@ public final class UploadViewPanel
 					controller.getPlaylistListModel().setSelectedItem(selectedPreset.playlist);
 				}
 			}
-			controller.changeAutotitleCheckbox(autotitelCheckBox.isSelected());
-			controller.changeAutotitleFormat(autotitleTextField.getText());
 		} else {
-			autotitelCheckBox.setSelected(false);
-			autotitleTextField.setText("");
+			titleTextField.setText("");
 			rateCheckbox.setSelected(true);
 			categoryList.setSelectedIndex(0);
 			commentList.setSelectedIndex(0);
@@ -867,7 +790,6 @@ public final class UploadViewPanel
 			movieISANTextfield.setText("");
 			movieNotesTextfield.setText("");
 		}
-		titleTextField.setText("");
 		starttimeSpinner.setValue(Calendar.getInstance().getTime());
 		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 	}
@@ -945,6 +867,7 @@ public final class UploadViewPanel
 		movieISANTextfield.setText(queue.movieISAN);
 		movieNotesTextfield.setText(queue.movieNotes);
 		asset.setSelectedIndex(asset.indexOfTab(queue.asset));
+		numberModifierSpinner.setValue(queue.number);
 
 		if (queue.privatefile) {
 			visibilityList.setSelectedIndex(2);
@@ -966,12 +889,6 @@ public final class UploadViewPanel
 			playlistCheckbox.setSelected(true);
 			playlistList.setSelectedItem(queue.playlist);
 		}
-	}
-
-	@EventTopicSubscriber(topic = AutoTitleGenerator.AUTOTITLE_CHANGED)
-	public void updateAutotitle(final String topic, final String title)
-	{
-		titleTextField.setText(title);
 	}
 
 	private void updateInsertedFiles(final File... selectedFiles)

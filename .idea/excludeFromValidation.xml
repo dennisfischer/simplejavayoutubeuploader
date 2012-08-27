@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ExcludeFromValidation">
     <file url="file://$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/util/TagParser.java" />
+    <file url="file://$PROJECT_DIR$/CorePlugin/src/org/chaosfisch/youtubeuploader/plugins/coreplugin/uploader/worker/UploadWorker.java" />
   </component>
 </project>
 

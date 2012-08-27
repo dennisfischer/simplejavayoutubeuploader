@@ -65,5 +65,7 @@ public interface QueueMapper
 	int countQueued();
 
 	int countStarttime();
+
+	List<Queue> getValidQueued();
 }
 

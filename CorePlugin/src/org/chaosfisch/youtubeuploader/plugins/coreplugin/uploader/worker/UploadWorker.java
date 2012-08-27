@@ -26,6 +26,9 @@ import com.teamdev.jxbrowser.BrowserFactory;
 import com.teamdev.jxbrowser.BrowserServices;
 import com.teamdev.jxbrowser.ScriptRunner;
 import com.teamdev.jxbrowser.prompt.SilentPromptService;
+import com.teamdev.jxbrowser.security.HttpSecurityAction;
+import com.teamdev.jxbrowser.security.HttpSecurityHandler;
+import com.teamdev.jxbrowser.security.SecurityProblem;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.log4j.Logger;
@@ -43,6 +46,7 @@ import org.chaosfisch.google.request.Request;
 import org.chaosfisch.google.request.RequestUtilities;
 import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
+import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
@@ -51,6 +55,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.Placeholde
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ExtendedPlacerholders;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
@@ -64,6 +69,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -82,7 +88,7 @@ public class UploadWorker extends BetterSwingWorker
 	 */
 	@SuppressWarnings("PublicInnerClass") protected enum STATUS
 	{
-		INITIALIZE, AUTHENTICATION, METADATA, UPLOAD, POSTPROCESS, DONE, FAILED, ABORTED, RESUMEINFO
+		INITIALIZE, AUTHENTICATION, METADATA, UPLOAD, POSTPROCESS, DONE, FAILED, FAILED_META, FAILED_FILE, ABORTED, RESUMEINFO
 	}
 
 	public STATUS currentStatus = STATUS.INITIALIZE;
@@ -125,11 +131,12 @@ public class UploadWorker extends BetterSwingWorker
 	private long   start;
 	private double bytesToUpload;
 
-	private         Queue              queue;
-	@Inject private QueueServiceImpl   queueService;
-	@Inject private PlaylistService    playlistService;
-	@Inject private PlaceholderService placeholderService;
-	@InjectLogger   Logger             logger;
+	private         Queue                 queue;
+	@Inject private QueueServiceImpl      queueService;
+	@Inject private PlaylistService       playlistService;
+	@Inject private PlaceholderService    placeholderService;
+	private         ExtendedPlacerholders extendedPlacerholders;
+	@InjectLogger   Logger                logger;
 
 	public UploadWorker()
 	{
@@ -148,7 +155,8 @@ public class UploadWorker extends BetterSwingWorker
 		//Einstiegspunkt in diesen Thread.
 		/* Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch fehlschlagen und muss wiederholbar sein. */
 		//noinspection EqualsCalledOnEnumConstant
-		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)) && !(numberOfRetries > UploadWorker.MAX_RETRIES)) {
+		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED) || currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(
+				STATUS.FAILED_META)) && !(numberOfRetries > UploadWorker.MAX_RETRIES)) {
 			try {
 				switch (currentStatus) {
 					case INITIALIZE:
@@ -177,10 +185,11 @@ public class UploadWorker extends BetterSwingWorker
 				}
 				numberOfRetries = 0;
 			} catch (FileNotFoundException ignored) {
-				currentStatus = STATUS.FAILED;
-			} catch (MetadataException e) {
-				logger.warn("MetadataException - upload aborted", e); //NON-NLS
-				currentStatus = STATUS.FAILED;
+				logger.warn("File not found - upload failed"); //NON-NLS
+				currentStatus = STATUS.FAILED_FILE;
+			} catch (MetadataException ignored) {
+				logger.warn("MetadataException - upload aborted"); //NON-NLS
+				currentStatus = STATUS.FAILED_META;
 			} catch (AuthenticationException e) {
 				logger.warn("AuthException", e); //NON-NLS
 				numberOfRetries++;
@@ -189,24 +198,40 @@ public class UploadWorker extends BetterSwingWorker
 				currentStatus = STATUS.RESUMEINFO;
 			}
 		}
+	}
 
+	@Override protected void onDone()
+	{
+
+		queue.inprogress = false;
 		switch (currentStatus) {
 			case DONE:
 				queue.archived = true;
-				queue.inprogress = false;
 				saveQueueObject();
 				EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(queue, fileSize, fileSize, 0, 0, 0));
 				EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, queue);
 				break;
 			case FAILED:
-				queue.inprogress = false;
 				queue.failed = true;
 				queue.started = null;
-				queueService.update(queue);
+				saveQueueObject();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Upload failed!"));//NON-NLS
 				break;
+			case FAILED_FILE:
+				queue.failed = true;
+				queue.started = null;
+				queue.status = "File not found!"; //NON-NLS
+				saveQueueObject();
+				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "File not found!"));//NON-NLS
+				break;
+			case FAILED_META:
+				queue.failed = true;
+				queue.started = null;
+				queue.status = "Corrupted Uploadinformation!"; //NON-NLS
+				saveQueueObject();
+				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Corrupted Uploadinformation!"));//NON-NLS
+				break;
 			case ABORTED:
-				queue.inprogress = false;
 				queue.failed = true;
 				queue.started = null;
 				saveQueueObject();
@@ -214,18 +239,12 @@ public class UploadWorker extends BetterSwingWorker
 				break;
 
 			default:
-				queue.inprogress = false;
 				queue.failed = true;
 				queue.started = null;
 				saveQueueObject();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Authentication-Error")); //NON-NLS
 				break;
 		}
-	}
-
-	@Override protected void onDone()
-	{
-
 	}
 
 	private void initialize() throws FileNotFoundException
@@ -261,6 +280,9 @@ public class UploadWorker extends BetterSwingWorker
 
 	private void browserAction()
 	{
+		if ((!queue.monetize) && (!queue.claim) && (queue.license == 0) && (queue.release == null)) {
+			return;
+		}
 
 		final BetterSwingWorker swingWorker = new BetterSwingWorker()
 		{
@@ -271,13 +293,23 @@ public class UploadWorker extends BetterSwingWorker
 				browserServices.setPromptService(new SilentPromptService());
 
 				final Browser browser = BrowserFactory.createBrowser();
+				browser.setHttpSecurityHandler(new HttpSecurityHandler()
+				{
+					public HttpSecurityAction onSecurityProblem(final Set<SecurityProblem> problems)
+					{
+						return HttpSecurityAction.CONTINUE;
+					}
+				});
 
-				logger.info("Browser version: " + Browsers.getIEVersion());
-				try {
-					Browsers.turnOnCompatibilityMode(Browsers.getIEVersion());
-				} catch (Exception ignored) {
-					// Cannot update compatibility mode, because this process
-					// doesn't have rights to modify Windows registry.
+				if (Computer.isWindows()) {
+					logger.info("Browser version: " + Browsers.getIEVersion());
+
+					try {
+						Browsers.turnOnCompatibilityMode(Browsers.getIEVersion());
+					} catch (Exception ignored) {
+						// Cannot update compatibility mode, because this process
+						// doesn't have rights to modify Windows registry.
+					}
 				}
 
 				final String LOGIN_SCRIPT = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
@@ -285,7 +317,8 @@ public class UploadWorker extends BetterSwingWorker
 				logger.info("Logout from Google");
 				final String LOGOUT_URL = "https://accounts.google.com/Logout";
 				browser.navigate(LOGOUT_URL);
-				final int timeout = 10000;
+				browser.waitReady();
+				final int timeout = 20000;
 				int time = 0;
 
 				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login") && (timeout > time)) {
@@ -297,6 +330,10 @@ public class UploadWorker extends BetterSwingWorker
 					}
 				}
 
+				if (timeout <= time) {
+					logger.warn("Timeout reached");
+				}
+
 				logger.info("Login at Google");
 				final String LOGIN_URL = "https://accounts.google.com/ServiceLogin?uilel=3&service=youtube&passive=true&continue=http%3A%2F%2Fwww.youtube" + "" +
 						".com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dheader%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&hl=en_US&ltmpl=sso"; //NON-NLS
@@ -304,6 +341,7 @@ public class UploadWorker extends BetterSwingWorker
 				browser.waitReady();
 				browser.executeScript(LOGIN_SCRIPT);
 
+				time = 0;
 				while (!browser.getCurrentLocation().equals("http://www.youtube.com/") && (timeout > time)) {
 					try {
 						Thread.sleep(500);
@@ -312,11 +350,14 @@ public class UploadWorker extends BetterSwingWorker
 						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
+				if (timeout <= time) {
+					logger.warn("Timeout reached");
+				}
 
 				final String VIDEO_EDIT_URL = String.format("http://www.youtube.com/my_videos_edit?ns=1&feature=vm&video_id=%s", queue.videoId); //NON-NLS
 
 				browser.navigate(VIDEO_EDIT_URL);
-
+				browser.waitReady();
 				time = 0;
 				while (!browser.getCurrentLocation().equals(VIDEO_EDIT_URL) && (timeout > time)) {
 					try {
@@ -325,6 +366,9 @@ public class UploadWorker extends BetterSwingWorker
 					} catch (InterruptedException e) {
 						throw new RuntimeException("This shouldn't happen", e);
 					}
+				}
+				if (timeout <= time) {
+					logger.warn("Timeout reached");
 				}
 
 				logger.info("Monetizing"); //NON-NLS
@@ -343,6 +387,9 @@ public class UploadWorker extends BetterSwingWorker
 					} catch (InterruptedException ignored) {
 						throw new RuntimeException("This shouldn't happen");
 					}
+				}
+				if (timeout <= time) {
+					logger.warn("Timeout reached");
 				}
 				browser.navigate("about:blank");
 				browser.waitReady();
@@ -387,13 +434,63 @@ public class UploadWorker extends BetterSwingWorker
 			}
 		}
 
+		extendedPlacerholders.register("{title}", queue.title); //NON-NLS
+		extendedPlacerholders.register("{description}", queue.description); //NON-NLS
+
+		for (final Placeholder placeholder : placeholderService.getAll()) {
+			queue.webTitle = queue.webTitle.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.webDescription = queue.webDescription.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.webID = queue.webID.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.webNotes = queue.webNotes.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+
+			queue.tvTMSID = queue.tvTMSID.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.tvISAN = queue.tvISAN.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.tvEIDR = queue.tvEIDR.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.showTitle = queue.showTitle.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.episodeTitle = queue.episodeTitle.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.seasonNb = queue.seasonNb.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.episodeNb = queue.episodeNb.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.tvID = queue.tvID.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.tvNotes = queue.tvNotes.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+
+			queue.movieTitle = queue.movieTitle.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieDescription = queue.movieDescription.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieTMSID = queue.movieTMSID.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieISAN = queue.movieISAN.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieEIDR = queue.movieEIDR.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieID = queue.movieID.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.movieNotes = queue.movieNotes.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+		}
+
+		queue.webTitle = extendedPlacerholders.replace(queue.webTitle);
+		queue.webDescription = extendedPlacerholders.replace(queue.webDescription);
+		queue.webID = extendedPlacerholders.replace(queue.webID);
+		queue.webNotes = extendedPlacerholders.replace(queue.webNotes);
+
+		queue.tvTMSID = extendedPlacerholders.replace(queue.tvTMSID);
+		queue.tvISAN = extendedPlacerholders.replace(queue.tvISAN);
+		queue.tvEIDR = extendedPlacerholders.replace(queue.tvEIDR);
+		queue.showTitle = extendedPlacerholders.replace(queue.showTitle);
+		queue.episodeTitle = extendedPlacerholders.replace(queue.episodeTitle);
+		queue.seasonNb = extendedPlacerholders.replace(queue.seasonNb);
+		queue.episodeNb = extendedPlacerholders.replace(queue.episodeNb);
+		queue.tvID = extendedPlacerholders.replace(queue.tvID);
+		queue.tvNotes = extendedPlacerholders.replace(queue.tvNotes);
+
+		queue.movieTitle = extendedPlacerholders.replace(queue.movieTitle);
+		queue.movieDescription = extendedPlacerholders.replace(queue.movieDescription);
+		queue.movieTMSID = extendedPlacerholders.replace(queue.movieTMSID);
+		queue.movieISAN = extendedPlacerholders.replace(queue.movieISAN);
+		queue.movieEIDR = extendedPlacerholders.replace(queue.movieEIDR);
+		queue.movieID = extendedPlacerholders.replace(queue.movieID);
+		queue.movieNotes = extendedPlacerholders.replace(queue.movieNotes);
+
 		final String script = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/youtubeEdit.js")),//NON-NLS
 		                                    license, queue.monetize, queue.monetizeOverlay, queue.monetizeTrueview, queue.monetizeProduct, release, date, time, publish, queue.claim, queue.claimtype,
 		                                    queue.claimpolicy, queue.partnerOverlay, queue.partnerTrueview, queue.partnerInstream, queue.partnerProduct, queue.asset.toLowerCase(Locale.getDefault()),
 		                                    queue.webTitle, queue.webDescription, queue.webID, queue.webNotes, queue.tvTMSID, queue.tvISAN, queue.tvEIDR, queue.showTitle, queue.episodeTitle,
 		                                    queue.seasonNb, queue.episodeNb, queue.tvID, queue.tvNotes, queue.movieTitle, queue.movieDescription, queue.movieTMSID, queue.movieISAN, queue.movieEIDR,
 		                                    queue.movieID, queue.movieNotes);
-		System.out.println(script);
 		browser.executeScript(script);
 	}
 
@@ -584,9 +681,8 @@ public class UploadWorker extends BetterSwingWorker
 				try {
 					//close to save resources
 					outStreamWriter.close();
-				} catch (IOException e) {
+				} catch (IOException ignored) {
 					//unexpected error
-					throw new RuntimeException("This shouldn't happen", e);
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -604,12 +700,14 @@ public class UploadWorker extends BetterSwingWorker
 
 	private String atomBuilder()
 	{
+
+		if (queue.playlist != null) {
+			queue.playlist.number++;
+			playlistService.update(queue.playlist);
+		}
 		//create atom xml metadata - create object first, then convert with xstream
 
 		final VideoEntry videoEntry = new VideoEntry();
-		videoEntry.mediaGroup.title = queue.title;
-		videoEntry.mediaGroup.description = queue.description;
-		videoEntry.mediaGroup.keywords = TagParser.parseAll(queue.keywords).replace("\"", "");
 
 		videoEntry.mediaGroup.category = new ArrayList<MediaCategory>(1);
 		final MediaCategory mediaCategory = new MediaCategory();
@@ -636,10 +734,19 @@ public class UploadWorker extends BetterSwingWorker
 
 		//replace important placeholders NOW
 		for (final Placeholder placeholder : placeholderService.getAll()) {
-			videoEntry.mediaGroup.title = videoEntry.mediaGroup.title.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
-			videoEntry.mediaGroup.description = videoEntry.mediaGroup.description.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
-			videoEntry.mediaGroup.keywords = videoEntry.mediaGroup.keywords.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.title = queue.title.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.description = queue.description.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.keywords = TagParser.parseAll(queue.keywords).replace("\"", "").replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
 		}
+
+		extendedPlacerholders = new ExtendedPlacerholders(fileToUpload, queue.playlist, queue.number);
+		queue.title = extendedPlacerholders.replace(queue.title);
+		queue.description = extendedPlacerholders.replace(queue.description);
+		queue.keywords = extendedPlacerholders.replace(queue.keywords);
+
+		videoEntry.mediaGroup.title = queue.title;
+		videoEntry.mediaGroup.description = queue.description;
+		videoEntry.mediaGroup.keywords = queue.keywords;
 
 		//convert metadata with xstream
 		final XStream xStream = new XStream(new DomDriver("UTF-8")); //NON-NLS

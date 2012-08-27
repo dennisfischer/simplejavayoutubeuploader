@@ -75,7 +75,7 @@ public class Computer
 		System.exit(0);
 	}
 
-	private static boolean isWindows()
+	public static boolean isWindows()
 	{
 
 		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
@@ -91,7 +91,7 @@ public class Computer
 		return os.contains("mac");
 	}
 
-	private static boolean isUnix()
+	public static boolean isUnix()
 	{
 
 		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());

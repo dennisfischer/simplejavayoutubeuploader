@@ -31,14 +31,12 @@ package org.chaosfisch.youtubeuploader.plugins.coreplugin.controller;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.*;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.*;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -58,9 +56,8 @@ public class UploadController
 	private final PlaylistService    playlistService;
 	private final PlaceholderService placeholderService;
 
-	private final AutoTitleGenerator autoTitleGenerator;
-	private final ImportManager      importManager;
-	private final ExportManager      exportManager;
+	private final ImportManager importManager;
+	private final ExportManager exportManager;
 	private final GenericListModel<Account>  accountListModel  = new GenericListModel<Account>()
 	{
 		private static final long serialVersionUID = 7368872570202779563L;
@@ -146,7 +143,6 @@ public class UploadController
 	public UploadController(final AccountService accountService,
 	                        final PresetService presetService,
 	                        final QueueService queueService,
-	                        final AutoTitleGenerator autoTitleGenerator,
 	                        final PlaylistService playlistService,
 	                        final PlaceholderService placeholderService,
 	                        final JFileChooser fileChooser)
@@ -154,7 +150,6 @@ public class UploadController
 		this.accountService = accountService;
 		this.presetService = presetService;
 		this.queueService = queueService;
-		this.autoTitleGenerator = autoTitleGenerator;
 		this.playlistService = playlistService;
 		this.placeholderService = placeholderService;
 
@@ -181,44 +176,6 @@ public class UploadController
 		presetService.update(preset);
 	}
 
-	public void changeAutotitleCheckbox(final boolean selected)
-	{
-		autotitle = selected;
-		updateAutotitle();
-	}
-
-	public void changeAutotitleFile(final Object item)
-	{
-		autoTitleGenerator.setFileName(item.toString());
-		updateAutotitle();
-	}
-
-	public void changeAutotitlePlaylist(final Object item)
-	{
-		autoTitleGenerator.setPlaylist((Playlist) item);
-		updateAutotitle();
-	}
-
-	public void changeAutotitleFormat(final String text)
-	{
-		autoTitleGenerator.setFormatString(text);
-		updateAutotitle();
-	}
-
-	public void changeAutotitleNumber(final Object value)
-	{
-		autoTitleGenerator.setNumber(Integer.parseInt(value.toString()));
-		updateAutotitle();
-	}
-
-	private void updateAutotitle()
-	{
-		if (autotitle) {
-			//noinspection DuplicateStringLiteralInspection
-			EventBus.publish(AutoTitleGenerator.AUTOTITLE_CHANGED, autoTitleGenerator.gernerate()); //NON-NLS
-		}
-	}
-
 	public GenericListModel<Account> getAccountListModel()
 	{
 		return accountListModel;
@@ -231,13 +188,13 @@ public class UploadController
 
 	public void submitUpload(final String filepath, final Account account, final String category)
 	{
-		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null, (short) 0, (short) 0, true, true, true, true, null,
-		             null, null, false, false, false, false, (short) 0);
+		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null, 0, (short) 0, (short) 0, true, true, true, true,
+		             null, null, null, false, false, false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, null, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -249,7 +206,7 @@ public class UploadController
 	                         final String tags,
 	                         @Nullable final Playlist playlist)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
 		             (short) 0);
 	}
 
@@ -261,6 +218,7 @@ public class UploadController
 	                         final String description,
 	                         final String tags,
 	                         @Nullable final Playlist playlist,
+	                         final int number,
 	                         final short comment,
 	                         final short videoresponse,
 	                         final boolean rate,
@@ -268,8 +226,8 @@ public class UploadController
 	                         final boolean commentvote,
 	                         final boolean mobile)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, comment, videoresponse, rate, embed, commentvote, mobile, null, null, null, false, false, false,
-		             false, (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, rate, embed, commentvote, mobile, null, null, null, false, false,
+		             false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -280,6 +238,7 @@ public class UploadController
 	                         final String description,
 	                         final String tags,
 	                         @Nullable final Playlist playlist,
+	                         final int number,
 	                         final short comment,
 	                         final short videoresponse,
 	                         final boolean rate,
@@ -295,9 +254,9 @@ public class UploadController
 	                         final boolean monetizeProduct,
 	                         final short license)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir, monetize,
-		             monetizeOverlay, monetizeTrueview, monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null, null, null,
-		             null, null, null, null, null, null, null, null, null, null, null);
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir,
+		             monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null,
+		             null, null, null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	public void submitUpload(final String filepath,
@@ -308,6 +267,7 @@ public class UploadController
 	                         final String description,
 	                         final String tags,
 	                         @Nullable final Playlist playlist,
+	                         final int number,
 	                         final short comment,
 	                         final short videoresponse,
 	                         final boolean rate,
@@ -375,11 +335,6 @@ public class UploadController
 		queue.enddir = enddir;
 		queue.license = license;
 
-		if (playlist != null) {
-			playlist.number++;
-			playlistService.update(playlist);
-		}
-
 		switch (visibility) {
 			case 1:
 				queue.unlisted = true;
@@ -432,6 +387,8 @@ public class UploadController
 		queue.movieEIDR = movieEIDR;
 		queue.movieID = movieID;
 		queue.movieNotes = movieNotes;
+
+		queue.number = number;
 
 		queueService.create(queue);
 	}

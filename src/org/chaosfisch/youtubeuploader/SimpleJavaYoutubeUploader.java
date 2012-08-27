@@ -42,6 +42,7 @@ import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsServi
 import org.chaosfisch.youtubeuploader.util.LogfileComitter;
 import org.chaosfisch.youtubeuploader.util.Scripter;
 import org.chaosfisch.youtubeuploader.view.PluginMainApplication;
+import org.hsqldb.HsqlException;
 import org.jetbrains.annotations.NonNls;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -87,7 +88,7 @@ public class SimpleJavaYoutubeUploader
 			if (!GraphicsEnvironment.isHeadless()) {
 				final DesignManager designManager = injector.getInstance(DesignManager.class);
 				designManager.run();
-				designManager.changeDesign((String) settingsService.get("application.general.laf", "Substance Graphite Glass"));//NON-NLS
+				designManager.changeDesign((String) settingsService.get("application.general.laf", "System default"));//NON-NLS
 				JFrame.setDefaultLookAndFeelDecorated(true);
 
 				SwingUtilities.invokeLater(new Runnable()
@@ -127,7 +128,7 @@ public class SimpleJavaYoutubeUploader
 		final Object inject = Context.javaToJS(injector, global);
 		ScriptableObject.putProperty(global, "out", out); //NON-NLS
 		ScriptableObject.putProperty(global, "injector", inject); //NON-NLS
-		ScriptableObject.putProperty(global, "Scripter", scripter); //NON-NLS
+		ScriptableObject.putProperty(global, "Scripter", controller); //NON-NLS
 
 		scripter.processDirectory(directory);
 	}
@@ -142,6 +143,11 @@ public class SimpleJavaYoutubeUploader
 			@Override public void uncaughtException(final Thread t, final Throwable e)
 			{
 				final Logger logger = Logger.getLogger("UNCAUGHT EXCEPTION LOGGER"); //NON-NLS
+				if ((e.getCause().getCause().getCause() instanceof HsqlException) && e.getCause().getCause().getCause().getMessage().contains("Database lock acquisition failure")) {
+					logger.info("Database locked - Application already running!");
+					System.exit(0);
+				}
+
 				logger.warn(e.getMessage(), e);
 				if (!GraphicsEnvironment.isHeadless()) {
 					SwingUtilities.invokeLater(new Runnable()

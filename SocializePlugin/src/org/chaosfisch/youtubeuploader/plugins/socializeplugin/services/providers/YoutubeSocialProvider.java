@@ -52,6 +52,8 @@ public class YoutubeSocialProvider implements ISocialProvider
 
 	@Override public void publish(final String message)
 	{
-		//To change body of implemented methods use File | Settings | File Templates.
+		//Login
+		//Navigate to http://www.youtube.com/user/USERNAME/feed
+		//Execute Javascript "Postbulletin.js";
 	}
 }

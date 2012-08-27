@@ -30,7 +30,6 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.QueueService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.spi.AutoTitleGenerator;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.models.Directory;
 import org.chaosfisch.youtubeuploader.plugins.directoryplugin.services.spi.DirectoryService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
@@ -47,11 +46,10 @@ import java.util.*;
  */
 public class DirectoryWorker extends Thread
 {
-	@Inject private       QueueService       queueService;
-	@Inject private       DirectoryService   directoryService;
-	@Inject private       PlaylistService    playlistService;
-	@Inject private       AutoTitleGenerator autoTitleGenerator;
-	@InjectLogger private Logger             logger;
+	@Inject private       QueueService     queueService;
+	@Inject private       DirectoryService directoryService;
+	@Inject private       PlaylistService  playlistService;
+	@InjectLogger private Logger           logger;
 	final Collection<FileWatcher> fileWatcherList = new ArrayList<FileWatcher>(50);
 	final Collection<File>        inProgress      = new ArrayList<File>(10);
 
@@ -108,11 +106,8 @@ public class DirectoryWorker extends Thread
 		final Queue queue = new Queue();
 		final Playlist playlist = preset.playlist;
 
-		if (preset.autotitle) {
-			autoTitleGenerator.setFileName(file.getName());
-			autoTitleGenerator.setFormatString(preset.autotitleFormat);
-			autoTitleGenerator.setPlaylist(preset.playlist);
-			queue.title = autoTitleGenerator.gernerate();
+		if ((preset.title != null) && !preset.title.isEmpty()) {
+			queue.title = preset.title;
 		} else {
 			queue.title = file.getName();
 		}

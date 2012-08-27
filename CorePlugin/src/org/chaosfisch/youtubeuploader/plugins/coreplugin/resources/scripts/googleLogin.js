@@ -19,7 +19,6 @@
 
 var username = "%s";
 var password = "%s";
-var interval = setInterval(login, 1000);
 var infos = false;
 
 function login() {
@@ -35,3 +34,5 @@ function login() {
 		document.getElementById("gaia_loginform").submit();
 	}
 }
+
+var interval = setInterval(login, 1000);

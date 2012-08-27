@@ -125,4 +125,9 @@ public class QueueServiceImpl implements QueueService
 	{
 		return queueMapper.countStarttime() > 0;
 	}
+
+	@Transactional @Override public List<Queue> getValidQueued()
+	{
+		return queueMapper.getValidQueued();
+	}
 }

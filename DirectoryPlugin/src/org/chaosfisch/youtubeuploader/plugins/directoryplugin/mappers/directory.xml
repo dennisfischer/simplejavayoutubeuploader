@@ -51,8 +51,7 @@
 
 	<sql id="presetSelectList">
 		identity as preset_identity,
-		autotitle as preset_autotitle,
-		autotitleFormat as preset_autotitleFormat,
+		title as preset_title,
 		category as preset_category,
 		comment as preset_comment,
 		commentVote as preset_commentVote,
@@ -73,8 +72,7 @@
 	<resultMap id="directoryMap" type="Directory" autoMapping="true">
 		<association property="preset" javaType="Preset">
 			<id property="identity" column="preset_identity"/>
-			<result property="autotitle" column="preset_autotitle"/>
-			<result property="autotitleFormat" column="preset_autotitleFormat"/>
+			<result property="autotitle" column="preset_title"/>
 			<result property="category" column="preset_category"/>
 			<result property="comment" column="preset_comment"/>
 			<result property="commentvote" column="preset_commentVote"/>
