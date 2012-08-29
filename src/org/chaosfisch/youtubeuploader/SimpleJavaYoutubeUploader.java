@@ -138,6 +138,7 @@ public class SimpleJavaYoutubeUploader
 	 */
 	public static void main(final String... args)
 	{
+		System.setProperty("java.net.useSystemProxies", "true");
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
 		{
 			@Override public void uncaughtException(final Thread t, final Throwable e)

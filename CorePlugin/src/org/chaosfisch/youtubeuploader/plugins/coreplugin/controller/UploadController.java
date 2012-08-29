@@ -194,7 +194,8 @@ public class UploadController
 
 	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
+		             (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -256,7 +257,7 @@ public class UploadController
 	{
 		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir,
 		             monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null,
-		             null, null, null, null, null, null, null, null, null, null, null, null, null);
+		             null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	public void submitUpload(final String filepath,
@@ -291,8 +292,8 @@ public class UploadController
 	                         final boolean partnerInstream,
 	                         @Nullable final String asset,
 	                         @Nullable final String webTitle,
-	                         @Nullable final String webDescription,
 	                         @Nullable final String webID,
+	                         @Nullable final String webDescription,
 	                         @Nullable final String webNotes,
 	                         @Nullable final String tvTMSID,
 	                         @Nullable final String tvISAN,
@@ -309,7 +310,8 @@ public class UploadController
 	                         @Nullable final String movieISAN,
 	                         @Nullable final String movieEIDR,
 	                         @Nullable final String movieID,
-	                         @Nullable final String movieNotes)
+	                         @Nullable final String movieNotes,
+	                         @Nullable final String thumbnail)
 	{
 
 		final Queue queue = new Queue();
@@ -389,6 +391,11 @@ public class UploadController
 		queue.movieNotes = movieNotes;
 
 		queue.number = number;
+
+		if ((thumbnail != null) && !thumbnail.isEmpty()) {
+			queue.thumbnail = true;
+			queue.thumbnailimage = thumbnail;
+		}
 
 		queueService.create(queue);
 	}

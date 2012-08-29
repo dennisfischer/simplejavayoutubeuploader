@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="JxProductionLicense">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../repositories/jxbrowser-3.0-cross-desktop-win_mac_linux/Dennis Fischer - JxBrowser Open-Source License/runtime.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../repositories/jxbrowser-3.2.3-cross-desktop/Dennis Fischer - JxBrowser Open-Source License/runtime.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

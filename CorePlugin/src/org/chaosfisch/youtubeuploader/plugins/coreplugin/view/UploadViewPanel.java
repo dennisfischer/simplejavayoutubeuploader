@@ -136,6 +136,8 @@ public final class UploadViewPanel
 	private         JCheckBox             partnerOverlay;
 	private         JCheckBox             partnerTrueview;
 	private         JCheckBox             partnerProduct;
+	private         JButton               thumbnailSelectButton;
+	private         JTextField            thumbnailTextfield;
 	private         JMenuItem             fileSearchMenuItem;
 	private         ValidationResultModel validationResultModel;
 
@@ -228,7 +230,8 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"),
+				resourceBundle.getString(
 				"visibilitylist.private")}));
 		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
 				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
@@ -445,13 +448,13 @@ public final class UploadViewPanel
 					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
 						aCom.setEnabled(false);
 					}
-					settingsTabbedPane.setEnabledAt(1, false);
+					thumbnailTextfield.setEnabled(true);
+					thumbnailSelectButton.setEnabled(true);
 				} else {
 					monetizeOverlayCheckbox.setEnabled(false);
 					monetizeTrueviewCheckbox.setEnabled(false);
 					monetizeProductCheckbox.setEnabled(false);
 					claimCheckbox.setEnabled(true);
-					settingsTabbedPane.setEnabledAt(1, true);
 				}
 			}
 		});
@@ -469,6 +472,8 @@ public final class UploadViewPanel
 						aCom.setEnabled(false);
 					}
 					claimCheckbox.setEnabled(true);
+					thumbnailTextfield.setEnabled(true);
+					thumbnailSelectButton.setEnabled(true);
 				}
 			}
 		});
@@ -537,14 +542,14 @@ public final class UploadViewPanel
 					for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel)) {
 						aCom.setEnabled(false);
 					}
-					settingsTabbedPane.setEnabledAt(1, false);
+					thumbnailTextfield.setEnabled(true);
+					thumbnailSelectButton.setEnabled(true);
 				} else {
 					monetizeCheckbox.setEnabled(true);
 					monetizeOverlayCheckbox.setEnabled(true);
 					monetizeTrueviewCheckbox.setEnabled(true);
 					monetizeProductCheckbox.setEnabled(true);
 					claimCheckbox.setEnabled(true);
-					settingsTabbedPane.setEnabledAt(1, true);
 				}
 			}
 		});
@@ -557,6 +562,23 @@ public final class UploadViewPanel
 					releasetimeSpinner.setEnabled(true);
 				} else {
 					releasetimeSpinner.setEnabled(false);
+				}
+			}
+		});
+
+		thumbnailSelectButton.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(final ActionEvent e)
+			{
+				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
+				fileChooser.setAcceptAllFileFilterUsed(true);
+				fileChooser.setDragEnabled(true);
+				fileChooser.setMultiSelectionEnabled(false);
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				final int result = fileChooser.showOpenDialog(null);
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					thumbnailTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
@@ -630,7 +652,7 @@ public final class UploadViewPanel
 		                        webIDTextfield.getText(), webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(), tvSeasonNbTextfield.getText(),
 		                        tvEpisodeNbTextfield.getText(), tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(),
 		                        tvEpisodeTitleTextfield.getText(), tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(),
-		                        movieIDTextfield.getText(), movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText());
+		                        movieIDTextfield.getText(), movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText(), thumbnailTextfield.getText());
 
 		fileList.removeItem(fileList.getSelectedItem());
 	}
@@ -698,6 +720,8 @@ public final class UploadViewPanel
 				}
 			}
 			claimCheckbox.setEnabled(true);
+			thumbnailTextfield.setEnabled(true);
+			thumbnailSelectButton.setEnabled(true);
 			claimCheckbox.setSelected(selectedPreset.claim);
 			claimpolicyComboBox.setSelectedIndex(selectedPreset.claimpolicy);
 			claimtypeComboBox.setSelectedIndex(selectedPreset.claimtype);
@@ -762,6 +786,8 @@ public final class UploadViewPanel
 				aCom.setEnabled(false);
 			}
 			claimCheckbox.setEnabled(true);
+			thumbnailTextfield.setEnabled(true);
+			thumbnailSelectButton.setEnabled(true);
 			claimpolicyComboBox.setSelectedIndex(0);
 			claimtypeComboBox.setSelectedIndex(0);
 			partnerOverlay.setSelected(false);
@@ -790,6 +816,7 @@ public final class UploadViewPanel
 			movieISANTextfield.setText("");
 			movieNotesTextfield.setText("");
 		}
+		thumbnailTextfield.setText("");
 		starttimeSpinner.setValue(Calendar.getInstance().getTime());
 		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 	}
@@ -805,7 +832,10 @@ public final class UploadViewPanel
 
 		resetForm();
 		if (queue.account != null) {
-			accountList.setSelectedItem(queue.account);
+			if (accountList.getModel() instanceof GenericListModel) {
+				final GenericListModel<Account> model = (GenericListModel<Account>) accountList.getModel();
+				accountList.setSelectedIndex(model.getIndexOf(queue.account));
+			}
 		}
 		rateCheckbox.setSelected(queue.rate);
 		categoryList.setSelectedItem(queue.category);
@@ -839,6 +869,8 @@ public final class UploadViewPanel
 			}
 		}
 		claimCheckbox.setEnabled(true);
+		thumbnailTextfield.setEnabled(true);
+		thumbnailSelectButton.setEnabled(true);
 		claimCheckbox.setSelected(queue.claim);
 		claimpolicyComboBox.setSelectedIndex(queue.claimpolicy);
 		claimtypeComboBox.setSelectedIndex(queue.claimtype);
@@ -869,6 +901,9 @@ public final class UploadViewPanel
 		asset.setSelectedIndex(asset.indexOfTab(queue.asset));
 		numberModifierSpinner.setValue(queue.number);
 
+		if (queue.thumbnailimage != null) {
+			thumbnailTextfield.setText(queue.thumbnailimage);
+		}
 		if (queue.privatefile) {
 			visibilityList.setSelectedIndex(2);
 		} else if (queue.unlisted) {

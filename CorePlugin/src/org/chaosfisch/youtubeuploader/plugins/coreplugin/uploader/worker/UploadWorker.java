@@ -20,17 +20,28 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 import com.google.inject.Inject;
-import com.jniwrapper.win32.ie.Browsers;
-import com.teamdev.jxbrowser.Browser;
-import com.teamdev.jxbrowser.BrowserFactory;
-import com.teamdev.jxbrowser.BrowserServices;
-import com.teamdev.jxbrowser.ScriptRunner;
+import com.jniwrapper.win32.LastErrorException;
+import com.teamdev.jxbrowser.*;
+import com.teamdev.jxbrowser.cookie.HttpCookie;
+import com.teamdev.jxbrowser.events.NavigationEvent;
 import com.teamdev.jxbrowser.prompt.SilentPromptService;
 import com.teamdev.jxbrowser.security.HttpSecurityAction;
 import com.teamdev.jxbrowser.security.HttpSecurityHandler;
 import com.teamdev.jxbrowser.security.SecurityProblem;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
@@ -184,11 +195,11 @@ public class UploadWorker extends BetterSwingWorker
 						break;
 				}
 				numberOfRetries = 0;
-			} catch (FileNotFoundException ignored) {
-				logger.warn("File not found - upload failed"); //NON-NLS
+			} catch (FileNotFoundException e) {
+				logger.warn("File not found - upload failed", e); //NON-NLS
 				currentStatus = STATUS.FAILED_FILE;
-			} catch (MetadataException ignored) {
-				logger.warn("MetadataException - upload aborted"); //NON-NLS
+			} catch (MetadataException e) {
+				logger.warn("MetadataException - upload aborted", e); //NON-NLS
 				currentStatus = STATUS.FAILED_META;
 			} catch (AuthenticationException e) {
 				logger.warn("AuthException", e); //NON-NLS
@@ -272,7 +283,11 @@ public class UploadWorker extends BetterSwingWorker
 	{
 		playlistAction();
 		if (!GraphicsEnvironment.isHeadless()) {
-			browserAction();
+			try {
+				browserAction();
+			} catch (LastErrorException ex) {
+				logger.info("failed" + ex.getCause().getMessage());
+			}
 		}
 		enddirAction();
 		currentStatus = STATUS.DONE;
@@ -280,7 +295,7 @@ public class UploadWorker extends BetterSwingWorker
 
 	private void browserAction()
 	{
-		if ((!queue.monetize) && (!queue.claim) && (queue.license == 0) && (queue.release == null)) {
+		if ((!queue.monetize) && (!queue.claim) && (queue.license == 0) && (queue.release == null) && !queue.thumbnail) {
 			return;
 		}
 
@@ -288,29 +303,48 @@ public class UploadWorker extends BetterSwingWorker
 		{
 			@SuppressWarnings({"IOResourceOpenedButNotSafelyClosed", "HardCodedStringLiteral", "CallToStringEquals"}) @Override protected void background()
 			{
-
+				BrowserType browserType = BrowserType.getPlatformSpecificBrowser();
+				if (Computer.isWindows()) {
+					browserType = BrowserType.Mozilla15;
+				}
 				final BrowserServices browserServices = BrowserServices.getInstance();
 				browserServices.setPromptService(new SilentPromptService());
+				final Browser browser = BrowserFactory.createBrowser(browserType);
+				browserServices.setNewWindowManager(new NewWindowManager()
+				{
+					public NewWindowContainer evaluateWindow(final NewWindowParams params)
+					{
+						return null;
+					}
+				});
+				browserServices.setWebPolicyDelegate(new WebPolicyDelegate()
+				{
+					@Override public boolean allowNavigation(final NavigationEvent navigationEvent)
+					{
 
-				final Browser browser = BrowserFactory.createBrowser();
-				browser.setHttpSecurityHandler(new HttpSecurityHandler()
+						return !(navigationEvent.getUrl().contains("youtube.com/embed") || navigationEvent.getUrl().contains("doubleclick") || navigationEvent.getUrl().contains("plus.google.com"));
+					}
+
+					@Override public boolean allowMimeType(final String s, final NavigationEvent navigationEvent)
+					{
+						return true;
+					}
+				});
+
+				final HttpSecurityHandler httpSecurityHandler = new HttpSecurityHandler()
 				{
 					public HttpSecurityAction onSecurityProblem(final Set<SecurityProblem> problems)
 					{
 						return HttpSecurityAction.CONTINUE;
 					}
-				});
+				};
 
-				if (Computer.isWindows()) {
-					logger.info("Browser version: " + Browsers.getIEVersion());
-
-					try {
-						Browsers.turnOnCompatibilityMode(Browsers.getIEVersion());
-					} catch (Exception ignored) {
-						// Cannot update compatibility mode, because this process
-						// doesn't have rights to modify Windows registry.
-					}
-				}
+				browser.setHttpSecurityHandler(httpSecurityHandler);
+				browser.getCacheStorage().clearCache();
+				browser.getCookieStorage().deleteCookie(browser.getCookieStorage().getCookies());
+				browser.getConfigurable().enableFeature(Feature.JAVASCRIPT);
+				browser.getConfigurable().enableFeature(Feature.DOWNLOAD_IMAGES);
+				browser.getConfigurable().disableFeature(Feature.PLUGINS);
 
 				final String LOGIN_SCRIPT = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
 
@@ -318,7 +352,7 @@ public class UploadWorker extends BetterSwingWorker
 				final String LOGOUT_URL = "https://accounts.google.com/Logout";
 				browser.navigate(LOGOUT_URL);
 				browser.waitReady();
-				final int timeout = 20000;
+				final int timeout = 15000;
 				int time = 0;
 
 				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login") && (timeout > time)) {
@@ -335,14 +369,13 @@ public class UploadWorker extends BetterSwingWorker
 				}
 
 				logger.info("Login at Google");
-				final String LOGIN_URL = "https://accounts.google.com/ServiceLogin?uilel=3&service=youtube&passive=true&continue=http%3A%2F%2Fwww.youtube" + "" +
-						".com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dheader%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&hl=en_US&ltmpl=sso"; //NON-NLS
-				browser.navigate(LOGIN_URL);
+				final String VIDEO_EDIT_URL = String.format("https://www.youtube.com/my_videos_edit?ns=1&video_id=%s", queue.videoId); //NON-NLS
+				browser.navigate(VIDEO_EDIT_URL);
 				browser.waitReady();
 				browser.executeScript(LOGIN_SCRIPT);
 
 				time = 0;
-				while (!browser.getCurrentLocation().equals("http://www.youtube.com/") && (timeout > time)) {
+				while (!browser.getCurrentLocation().contains("https://www.youtube.com/my_videos_edit") && (timeout > time)) {
 					try {
 						Thread.sleep(500);
 						time += 500;
@@ -353,13 +386,17 @@ public class UploadWorker extends BetterSwingWorker
 				if (timeout <= time) {
 					logger.warn("Timeout reached");
 				}
-
-				final String VIDEO_EDIT_URL = String.format("http://www.youtube.com/my_videos_edit?ns=1&feature=vm&video_id=%s", queue.videoId); //NON-NLS
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				}
 
 				browser.navigate(VIDEO_EDIT_URL);
 				browser.waitReady();
 				time = 0;
-				while (!browser.getCurrentLocation().equals(VIDEO_EDIT_URL) && (timeout > time)) {
+				while (!browser.getCurrentLocation().contains("https://www.youtube.com/my_videos_edit") && (timeout > time)) {
+					System.out.println(browser.getCurrentLocation());
 					try {
 						Thread.sleep(500);
 						time += 500;
@@ -367,10 +404,24 @@ public class UploadWorker extends BetterSwingWorker
 						throw new RuntimeException("This shouldn't happen", e);
 					}
 				}
+
 				if (timeout <= time) {
 					logger.warn("Timeout reached");
 				}
 
+				try {
+					if (queue.thumbnail) {
+						final OutputStream output = uploadThumbnail(browser);
+						final String thumbnail = output.toString();
+						queue.thumbnailId = Integer.parseInt(thumbnail.substring(thumbnail.indexOf("{\"version\": ") + 12, thumbnail.indexOf(",")));
+					}
+				} catch (NumberFormatException e) {
+					logger.warn("Thumbnail invalid", e);
+					queue.thumbnail = false;
+				} catch (IOException e) {
+					logger.warn("Thumbnail failed", e);
+					queue.thumbnail = false;
+				}
 				logger.info("Monetizing"); //NON-NLS
 				logger.info("Licensing"); //NON-NLS
 				logger.info("Releasing"); //NON-NLS
@@ -378,9 +429,8 @@ public class UploadWorker extends BetterSwingWorker
 				logger.info("Saving..."); //NON-NLS
 				saveAction(browser);
 
-				//noinspection CallToStringEquals
 				time = 0;
-				while (!browser.getCurrentLocation().equals("https://www.youtube.com/") && (timeout > time)) { //NON-NLS
+				while (!browser.getCurrentLocation().equals("about:blank") && (timeout > time)) { //NON-NLS
 					try {
 						Thread.sleep(500);
 						time += 500;
@@ -388,12 +438,68 @@ public class UploadWorker extends BetterSwingWorker
 						throw new RuntimeException("This shouldn't happen");
 					}
 				}
-				if (timeout <= time) {
+
+				if (timeout <= time)
+
+				{
 					logger.warn("Timeout reached");
 				}
-				browser.navigate("about:blank");
-				browser.waitReady();
+
 				browser.dispose();
+			}
+
+			private OutputStream uploadThumbnail(final Browser browser) throws IOException, ClientProtocolException, UnsupportedEncodingException, FileNotFoundException
+			{
+				final File thumnailFile = new File(queue.thumbnailimage);
+				if (!thumnailFile.exists()) {
+					throw new FileNotFoundException("Datei nicht vorhanden für Thumbnail " + thumnailFile.getName());
+				}
+				final HttpClient httpclient = new DefaultHttpClient();
+				final HttpPost httppost = new HttpPost("http://www.youtube.com/my_thumbnail_post");//NON-NLS
+
+				final StringBuilder cookies = new StringBuilder();
+
+				for (final HttpCookie cookie : browser.getCookieStorage().getCookies()) {
+					cookies.append(cookie.getName()).append("=").append(cookie.getValue()).append(";");
+				}
+
+				httppost.setHeader("Cookie", cookies.toString()); //NON-NLS
+
+				final MultipartEntity reqEntity = new MultipartEntity();
+
+				reqEntity.addPart("video_id", new StringBody(queue.videoId)); //NON-NLS
+				reqEntity.addPart("is_ajax", new StringBody("1")); //NON-NLS
+
+				final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \""; //NON-NLS
+				final int pos1 = browser.getContent().indexOf(search) + search.length();
+				final int pos2 = browser.getContent().indexOf("\"", pos1);
+				final String sessiontoken = browser.getContent().substring(pos1, pos2);
+				reqEntity.addPart("session_token", new StringBody(sessiontoken)); //NON-NLS
+
+				reqEntity.addPart("imagefile", new FileBody(thumnailFile)); //NON-NLS
+
+				httppost.setEntity(reqEntity);
+				final HttpResponse response = httpclient.execute(httppost);
+
+				final OutputStream output = new OutputStream()
+				{
+					private final StringBuilder string = new StringBuilder();
+
+					@Override
+					public void write(final int b)
+					{
+						string.append((char) b);
+					}
+
+					public String toString()
+					{
+						return string.toString();
+					}
+				};
+
+				response.getEntity().writeTo(output);
+				System.out.println(output);
+				return output;
 			}
 
 			@Override protected void onDone()
@@ -402,17 +508,20 @@ public class UploadWorker extends BetterSwingWorker
 			}
 		};
 		swingWorker.execute();
-		try {
+		try
+
+		{
 			swingWorker.get();
-		} catch (InterruptedException ignored) {
-			throw new RuntimeException("This shouldn't happen");
-		} catch (ExecutionException ignored) {
-			throw new RuntimeException("This shouldn't happen");
+		} catch (InterruptedException ignored)
+
+		{
+		} catch (ExecutionException ignored)
+
+		{
 		}
 	}
 
-	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-	private void saveAction(final ScriptRunner browser)
+	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed") private void saveAction(final ScriptRunner browser)
 	{
 		final boolean license = queue.license == 1;
 		boolean release = false;
@@ -425,7 +534,7 @@ public class UploadWorker extends BetterSwingWorker
 				final Calendar calendar = Calendar.getInstance();
 				calendar.setTime(queue.release);
 
-				final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()); //NON-NLS
+				final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()); //NON-NLS
 
 				date = dateFormat.format(calendar.getTime());
 				time = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE));
@@ -490,7 +599,7 @@ public class UploadWorker extends BetterSwingWorker
 		                                    queue.claimpolicy, queue.partnerOverlay, queue.partnerTrueview, queue.partnerInstream, queue.partnerProduct, queue.asset.toLowerCase(Locale.getDefault()),
 		                                    queue.webTitle, queue.webDescription, queue.webID, queue.webNotes, queue.tvTMSID, queue.tvISAN, queue.tvEIDR, queue.showTitle, queue.episodeTitle,
 		                                    queue.seasonNb, queue.episodeNb, queue.tvID, queue.tvNotes, queue.movieTitle, queue.movieDescription, queue.movieTMSID, queue.movieISAN, queue.movieEIDR,
-		                                    queue.movieID, queue.movieNotes);
+		                                    queue.movieID, queue.movieNotes, queue.thumbnail, queue.thumbnailId);
 		browser.executeScript(script);
 	}
 
@@ -658,7 +767,7 @@ public class UploadWorker extends BetterSwingWorker
 				final Response response = request.send();
 				//Check the response code for any problematic codes.
 				if (response.code == HTTP_STATUS.BADREQUEST.getCode()) {
-					throw new MetadataException("Die gegebenen Videoinformationen sind ungültig!");
+					throw new MetadataException("Die gegebenen Videoinformationen sind ungültig! " + response.message + response.body);
 				}
 				//Check if uploadurl is available
 				if (response.headerFields.containsKey("Location")) {  //NON-NLS
@@ -675,7 +784,6 @@ public class UploadWorker extends BetterSwingWorker
 					currentStatus = STATUS.UPLOAD;
 				} else {
 					//unexpected error
-					throw new RuntimeException("This shouldn't happen!");
 				}
 			} finally {
 				try {
@@ -736,9 +844,10 @@ public class UploadWorker extends BetterSwingWorker
 		for (final Placeholder placeholder : placeholderService.getAll()) {
 			queue.title = queue.title.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
 			queue.description = queue.description.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
-			queue.keywords = TagParser.parseAll(queue.keywords).replace("\"", "").replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
+			queue.keywords = queue.keywords.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
 		}
-
+		queue.keywords = TagParser.parseAll(queue.keywords);
+		queue.keywords = queue.keywords.replaceAll("\"", "");
 		extendedPlacerholders = new ExtendedPlacerholders(fileToUpload, queue.playlist, queue.number);
 		queue.title = extendedPlacerholders.replace(queue.title);
 		queue.description = extendedPlacerholders.replace(queue.description);
@@ -749,7 +858,33 @@ public class UploadWorker extends BetterSwingWorker
 		videoEntry.mediaGroup.keywords = queue.keywords;
 
 		//convert metadata with xstream
-		final XStream xStream = new XStream(new DomDriver("UTF-8")); //NON-NLS
+		final XStream xStream = new XStream(new XppDriver()
+		{
+			public HierarchicalStreamWriter createWriter(final Writer out)
+			{
+				return new PrettyPrintWriter(out)
+				{
+					boolean isCDATA;
+
+					@SuppressWarnings("unchecked") @Override public void startNode(final String name, final Class clazz)
+					{
+						super.startNode(name, clazz);
+						isCDATA = name.equals("media:description") || name.equals("media:keywords") || name.equals("media:title");
+					}
+
+					@Override protected void writeText(final QuickWriter writer, final String text)
+					{
+						if (isCDATA) {
+							writer.write("<![CDATA[");
+							writer.write(text);
+							writer.write("]]>");
+						} else {
+							super.writeText(writer, text);
+						}
+					}
+				};
+			}
+		});
 		xStream.autodetectAnnotations(true);
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry)); //NON-NLS
 

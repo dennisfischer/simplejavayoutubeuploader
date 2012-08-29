@@ -97,8 +97,12 @@ public class Queue implements IModel
 	public String movieID;
 	public String movieNotes;
 
+	public int     number;
+	public boolean thumbnail;
+	public String  thumbnailimage;
+	public int     thumbnailId;
+
 	public transient Integer identity;
-	public           int     number;
 
 	@Override public Integer getIdentity()
 	{

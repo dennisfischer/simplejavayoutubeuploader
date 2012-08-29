@@ -62,6 +62,99 @@ var movieEIDR = "%s";
 var movieID = "%s";
 var movieNotes = "%s";
 
+var thumbnail = "%s";
+var thumbnailId = "%s";
+
+
+if (typeof document.getElementsByClassName != 'function') {
+	document.getElementsByClassName = function () {
+		var elms = document.getElementsByTagName('*');
+		var ei = new Array();
+		for (var i = 0; i < elms.length; i++) {
+			if (elms[i].getAttribute('class')) {
+				var ecl = elms[i].getAttribute('class').split(' ');
+				for (var j = 0; j < ecl.length; j++) {
+					if (ecl[j].toLowerCase() == arguments[0].toLowerCase()) {
+						ei.push(elms[i]);
+					}
+				}
+			}
+			else if (elms[i].className) {
+				ecl = elms[i].className.split(' ');
+				for (j = 0; j < ecl.length; j++) {
+					if (ecl[j].toLowerCase() == arguments[0].toLowerCase()) {
+						ei.push(elms[i]);
+					}
+				}
+			}
+		}
+		return ei;
+	};
+}
+
+if (typeof fireEvent != 'function') {
+	/**
+	 * Fire an event handler to the specified node. Event handlers can detect that the event was fired programatically
+	 * by testing for a 'synthetic=true' property on the event object
+	 * @param {Node} node The node to fire the event handler on.
+	 * @param {String} eventName The name of the event without the "on" (e.g., "focus")
+	 */
+	function fireEvent(node, eventName) {
+		// Make sure we use the ownerDocument from the provided node to avoid cross-window problems
+		var doc;
+		if (node.ownerDocument) {
+			doc = node.ownerDocument;
+		} else if (node.nodeType == 9) {
+			// the node may be the document itself, nodeType 9 = DOCUMENT_NODE
+			doc = node;
+		} else {
+			throw new Error("Invalid node passed to JSUtil.fireEvent: " + node.id);
+		}
+
+		var event;
+		// Gecko-style approach is much more difficult.
+		var eventClass = "";
+
+		// Different events have different event classes.
+		// If this switch statement can't map an eventName to an eventClass,
+		// the event firing is going to fail.
+		switch (eventName) {
+			case "click": // Dispatching of 'click' appears to not work correctly in Safari. Use 'mousedown' or 'mouseup' instead.
+			case "mousedown":
+			case "mouseup":
+				eventClass = "MouseEvents";
+				break;
+
+			case "focus":
+			case "change":
+			case "blur":
+			case "select":
+				eventClass = "HTMLEvents";
+				break;
+
+			default:
+				throw "JSUtil.fireEvent: Couldn't find an event class for event '" + eventName + "'.";
+				break;
+		}
+		event = doc.createEvent(eventClass);
+		var bubbles = eventName != "change";
+		event.initEvent(eventName, bubbles, true); // All events created as bubbling and cancelable.
+
+		event.synthetic = true; // allow detection of synthetic events
+		node.dispatchEvent(event);
+	}
+}
+
+function selectOptionByValue(selObj, val) {
+	var L = selObj.options.length;
+	while (L != 0) {
+		if (selObj.options[--L].value == val) {
+			selObj.selectedIndex = L;
+			L = 0;
+		}
+	}
+}
+
 
 function loaded() {
 
@@ -71,16 +164,11 @@ function loaded() {
 	else {
 		clearInterval(interval);
 	}
-	if (license == "true") {
-		var inputLicense = document.getElementsByClassName("license-input")[0];
-		inputLicense.selectedIndex = 1;
-		fireEvent(inputLicense, "change");
-	}
 
 	var monetizeCheckbox = document.getElementsByClassName('enable-monetization')[0];
 	if (monetize == "true") {
-
-		fireEvent(monetizeCheckbox, "click");
+		monetizeCheckbox.checked = true;
+		fireEvent(monetizeCheckbox, "change");
 
 		var disclaimer = document.getElementsByClassName('monetization-disclaimer-accept')[0];
 		if (disclaimer != null) {
@@ -90,7 +178,8 @@ function loaded() {
 		var overlay = document.getElementsByClassName("ads-settings-enable-overlay-ads")[0];
 
 		if (monetizeOverlay == "true" && overlay.checked == false || monetizeOverlay != "true" && overlay.checked == true) {
-			fireEvent(overlay, "click");
+			overlay.checked = true;
+			fireEvent(overlay, "change");
 		}
 
 		var trueview = document.getElementsByClassName("ads-settings-trueview-instream")[0];
@@ -115,6 +204,7 @@ function loaded() {
 
 			var date = document.getElementsByClassName("publish-date-formatted")[0];
 			date.value = releaseDate;
+			fireEvent(date, "change");
 
 			var time = document.getElementsByClassName("publish-time-formatted")[0];
 			selectOptionByValue(time, releaseTime);
@@ -126,7 +216,6 @@ function loaded() {
 		var inputPublish = document.getElementsByClassName("metadata-privacy-input")[0];
 		inputPublish.selectedIndex = 0;
 		fireEvent(inputPublish, "change");
-
 	}
 
 	if (partner == "true") {
@@ -197,111 +286,34 @@ function loaded() {
 				document.getElementsByName("movie_notes")[0].value = movieNotes;
 			}
 		}
+
+
 	}
 
-	document.getElementsByClassName("save-changes-button")[0].click();
+	if (thumbnail == "true") {
+		document.getElementsByName("still_id")[0].value = 0;
+		document.getElementsByName("still_id_custom_thumb_version")[0].value = thumbnailId;
+		var helpInput = document.getElementsByName("privacy")[0];
+		var backup = helpInput.selectedIndex;
+		helpInput.selectedIndex = 3;
+		fireEvent(helpInput, "change");
+		helpInput.selectedIndex = backup;
+		fireEvent(helpInput, "change");
+	}
+
+	if (license == "true") {
+		var inputLicense = document.getElementsByClassName("license-input")[0];
+		inputLicense.selectedIndex = 1;
+		fireEvent(inputLicense, "change");
+	}
 
 	setTimeout(function () {
-		window.location = "https://www.youtube.com/";
+		document.getElementsByClassName("save-changes-button")[0].click();
+	}, 3000);
+
+	setTimeout(function () {
+		window.location = "about:blank";
 	}, 5000);
 }
-
-if (typeof document.getElementsByClassName != 'function') {
-	document.getElementsByClassName = function () {
-		var elms = document.getElementsByTagName('*');
-		var ei = new Array();
-		for (var i = 0; i < elms.length; i++) {
-			if (elms[i].getAttribute('class')) {
-				var ecl = elms[i].getAttribute('class').split(' ');
-				for (var j = 0; j < ecl.length; j++) {
-					if (ecl[j].toLowerCase() == arguments[0].toLowerCase()) {
-						ei.push(elms[i]);
-					}
-				}
-			}
-			else if (elms[i].className) {
-				ecl = elms[i].className.split(' ');
-				for (j = 0; j < ecl.length; j++) {
-					if (ecl[j].toLowerCase() == arguments[0].toLowerCase()) {
-						ei.push(elms[i]);
-					}
-				}
-			}
-		}
-		return ei;
-	};
-}
-
-if (typeof fireEvent != 'function') {
-	/**
-	 * Fire an event handler to the specified node. Event handlers can detect that the event was fired programatically
-	 * by testing for a 'synthetic=true' property on the event object
-	 * @param {Node} node The node to fire the event handler on.
-	 * @param {String} eventName The name of the event without the "on" (e.g., "focus")
-	 */
-	function fireEvent(node, eventName) {
-		// Make sure we use the ownerDocument from the provided node to avoid cross-window problems
-		var doc;
-		if (node.ownerDocument) {
-			doc = node.ownerDocument;
-		} else if (node.nodeType == 9) {
-			// the node may be the document itself, nodeType 9 = DOCUMENT_NODE
-			doc = node;
-		} else {
-			throw new Error("Invalid node passed to JSUtil.fireEvent: " + node.id);
-		}
-
-		var event;
-		if (node.dispatchEvent) {
-			// Gecko-style approach is much more difficult.
-			var eventClass = "";
-
-			// Different events have different event classes.
-			// If this switch statement can't map an eventName to an eventClass,
-			// the event firing is going to fail.
-			switch (eventName) {
-				case "click": // Dispatching of 'click' appears to not work correctly in Safari. Use 'mousedown' or 'mouseup' instead.
-				case "mousedown":
-				case "mouseup":
-					eventClass = "MouseEvents";
-					break;
-
-				case "focus":
-				case "change":
-				case "blur":
-				case "select":
-					eventClass = "HTMLEvents";
-					break;
-
-				default:
-					throw "JSUtil.fireEvent: Couldn't find an event class for event '" + eventName + "'.";
-					break;
-			}
-			event = doc.createEvent(eventClass);
-			var bubbles = eventName != "change";
-			event.initEvent(eventName, bubbles, true); // All events created as bubbling and cancelable.
-
-			event.synthetic = true; // allow detection of synthetic events
-			node.dispatchEvent(event);
-		}
-		else if (node.fireEvent) {
-			// IE-style
-			event = doc.createEventObject();
-			event.synthetic = true; // allow detection of synthetic events
-			node.fireEvent("on" + eventName, event);
-		}
-	}
-}
-
-function selectOptionByValue(selObj, val) {
-	var L = selObj.options.length;
-	while (L != 0) {
-		if (selObj.options[--L].value == val) {
-			selObj.selectedIndex = L;
-			L = 0;
-		}
-	}
-}
-
 
 var interval = setInterval(loaded, 500);
