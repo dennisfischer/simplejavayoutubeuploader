@@ -96,17 +96,31 @@ public class PluginMainApplication
 	private void updateApplication()
 	{
 
-		if (settingsService.get("version-20rc21", "null").equals("null")) {
-			EventBus.publish("UPDATE_APPLICATION", "2.1");
+		if (settingsService.get("version-20rc2.0", "null").equals("null")) {
+			EventBus.publish("UPDATE_APPLICATION", "2.0");
 
-			settingsService.set("version-20rc21", "true");
+			settingsService.set("version-20rc2.0", "true");
 			settingsService.save();
 		}
 
-		if (settingsService.get("version-20rc22", "null").equals("null")) {
+		if (settingsService.get("version-20rc2.1", "null").equals("null")) {
+			EventBus.publish("UPDATE_APPLICATION", "2.1");
+
+			settingsService.set("version-20rc2.1", "true");
+			settingsService.save();
+		}
+
+		if (settingsService.get("version-20rc2.2", "null").equals("null")) {
 			EventBus.publish("UPDATE_APPLICATION", "2.2");
 
-			settingsService.set("version-20rc22", "true");
+			settingsService.set("version-20rc2.2", "true");
+			settingsService.save();
+		}
+
+		if (settingsService.get("version-20rc2.3", "null").equals("null")) {
+			EventBus.publish("UPDATE_APPLICATION", "2.3");
+
+			settingsService.set("version-20rc2.3", "true");
 			settingsService.save();
 		}
 	}

@@ -8,6 +8,7 @@
       <root url="jar://$PROJECT_DIR$/lib/asm-3.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/asm-commons-3.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/asm-tree-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-log4j12-1.5.8.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/lib/xbean-finder-3.9-javadoc.jar!/" />

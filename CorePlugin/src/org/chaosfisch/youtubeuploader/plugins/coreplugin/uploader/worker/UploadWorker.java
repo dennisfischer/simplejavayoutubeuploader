@@ -20,28 +20,12 @@
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.worker;
 
 import com.google.inject.Inject;
-import com.jniwrapper.win32.LastErrorException;
-import com.teamdev.jxbrowser.*;
-import com.teamdev.jxbrowser.cookie.HttpCookie;
-import com.teamdev.jxbrowser.events.NavigationEvent;
-import com.teamdev.jxbrowser.prompt.SilentPromptService;
-import com.teamdev.jxbrowser.security.HttpSecurityAction;
-import com.teamdev.jxbrowser.security.HttpSecurityHandler;
-import com.teamdev.jxbrowser.security.SecurityProblem;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
@@ -57,7 +41,6 @@ import org.chaosfisch.google.request.Request;
 import org.chaosfisch.google.request.RequestUtilities;
 import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
-import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
@@ -69,19 +52,15 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ExtendedPlacerholders;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.TagParser;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.util.ThrottledOutputStream;
+import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 
-import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 /**
@@ -146,6 +125,7 @@ public class UploadWorker extends BetterSwingWorker
 	@Inject private QueueServiceImpl      queueService;
 	@Inject private PlaylistService       playlistService;
 	@Inject private PlaceholderService    placeholderService;
+	@Inject private SettingsService       settingsService;
 	private         ExtendedPlacerholders extendedPlacerholders;
 	@InjectLogger   Logger                logger;
 
@@ -282,13 +262,7 @@ public class UploadWorker extends BetterSwingWorker
 	private void postprocess()
 	{
 		playlistAction();
-		if (!GraphicsEnvironment.isHeadless()) {
-			try {
-				browserAction();
-			} catch (LastErrorException ex) {
-				logger.info("failed" + ex.getCause().getMessage());
-			}
-		}
+		browserAction();
 		enddirAction();
 		currentStatus = STATUS.DONE;
 	}
@@ -299,249 +273,11 @@ public class UploadWorker extends BetterSwingWorker
 			return;
 		}
 
-		final BetterSwingWorker swingWorker = new BetterSwingWorker()
-		{
-			@SuppressWarnings({"IOResourceOpenedButNotSafelyClosed", "HardCodedStringLiteral", "CallToStringEquals"}) @Override protected void background()
-			{
-				BrowserType browserType = BrowserType.getPlatformSpecificBrowser();
-				if (Computer.isWindows()) {
-					browserType = BrowserType.Mozilla15;
-				}
-				final BrowserServices browserServices = BrowserServices.getInstance();
-				browserServices.setPromptService(new SilentPromptService());
-				final Browser browser = BrowserFactory.createBrowser(browserType);
-				browserServices.setNewWindowManager(new NewWindowManager()
-				{
-					public NewWindowContainer evaluateWindow(final NewWindowParams params)
-					{
-						return null;
-					}
-				});
-				browserServices.setWebPolicyDelegate(new WebPolicyDelegate()
-				{
-					@Override public boolean allowNavigation(final NavigationEvent navigationEvent)
-					{
-
-						return !(navigationEvent.getUrl().contains("youtube.com/embed") || navigationEvent.getUrl().contains("doubleclick") || navigationEvent.getUrl().contains("plus.google.com"));
-					}
-
-					@Override public boolean allowMimeType(final String s, final NavigationEvent navigationEvent)
-					{
-						return true;
-					}
-				});
-
-				final HttpSecurityHandler httpSecurityHandler = new HttpSecurityHandler()
-				{
-					public HttpSecurityAction onSecurityProblem(final Set<SecurityProblem> problems)
-					{
-						return HttpSecurityAction.CONTINUE;
-					}
-				};
-
-				browser.setHttpSecurityHandler(httpSecurityHandler);
-				browser.getCacheStorage().clearCache();
-				browser.getCookieStorage().deleteCookie(browser.getCookieStorage().getCookies());
-				browser.getConfigurable().enableFeature(Feature.JAVASCRIPT);
-				browser.getConfigurable().enableFeature(Feature.DOWNLOAD_IMAGES);
-				browser.getConfigurable().disableFeature(Feature.PLUGINS);
-
-				final String LOGIN_SCRIPT = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/googleLogin.js")), queue.account.name, queue.account.getPassword());
-
-				logger.info("Logout from Google");
-				final String LOGOUT_URL = "https://accounts.google.com/Logout";
-				browser.navigate(LOGOUT_URL);
-				browser.waitReady();
-				final int timeout = 15000;
-				int time = 0;
-
-				while (!browser.getCurrentLocation().equals("https://accounts.google.com/Login") && (timeout > time)) {
-					try {
-						Thread.sleep(500);
-						time += 500;
-					} catch (InterruptedException e) {
-						throw new RuntimeException("This shouldn't happen", e);
-					}
-				}
-
-				if (timeout <= time) {
-					logger.warn("Timeout reached");
-				}
-
-				logger.info("Login at Google");
-				final String VIDEO_EDIT_URL = String.format("https://www.youtube.com/my_videos_edit?ns=1&video_id=%s", queue.videoId); //NON-NLS
-				browser.navigate(VIDEO_EDIT_URL);
-				browser.waitReady();
-				browser.executeScript(LOGIN_SCRIPT);
-
-				time = 0;
-				while (!browser.getCurrentLocation().contains("https://www.youtube.com/my_videos_edit") && (timeout > time)) {
-					try {
-						Thread.sleep(500);
-						time += 500;
-					} catch (InterruptedException e) {
-						throw new RuntimeException("This shouldn't happen", e);
-					}
-				}
-				if (timeout <= time) {
-					logger.warn("Timeout reached");
-				}
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-				}
-
-				browser.navigate(VIDEO_EDIT_URL);
-				browser.waitReady();
-				time = 0;
-				while (!browser.getCurrentLocation().contains("https://www.youtube.com/my_videos_edit") && (timeout > time)) {
-					System.out.println(browser.getCurrentLocation());
-					try {
-						Thread.sleep(500);
-						time += 500;
-					} catch (InterruptedException e) {
-						throw new RuntimeException("This shouldn't happen", e);
-					}
-				}
-
-				if (timeout <= time) {
-					logger.warn("Timeout reached");
-				}
-
-				try {
-					if (queue.thumbnail) {
-						final OutputStream output = uploadThumbnail(browser);
-						final String thumbnail = output.toString();
-						queue.thumbnailId = Integer.parseInt(thumbnail.substring(thumbnail.indexOf("{\"version\": ") + 12, thumbnail.indexOf(",")));
-					}
-				} catch (NumberFormatException e) {
-					logger.warn("Thumbnail invalid", e);
-					queue.thumbnail = false;
-				} catch (IOException e) {
-					logger.warn("Thumbnail failed", e);
-					queue.thumbnail = false;
-				}
-				logger.info("Monetizing"); //NON-NLS
-				logger.info("Licensing"); //NON-NLS
-				logger.info("Releasing"); //NON-NLS
-				logger.info("Partner-features"); //NON-NLS
-				logger.info("Saving..."); //NON-NLS
-				saveAction(browser);
-
-				time = 0;
-				while (!browser.getCurrentLocation().equals("about:blank") && (timeout > time)) { //NON-NLS
-					try {
-						Thread.sleep(500);
-						time += 500;
-					} catch (InterruptedException ignored) {
-						throw new RuntimeException("This shouldn't happen");
-					}
-				}
-
-				if (timeout <= time)
-
-				{
-					logger.warn("Timeout reached");
-				}
-
-				browser.dispose();
-			}
-
-			private OutputStream uploadThumbnail(final Browser browser) throws IOException, ClientProtocolException, UnsupportedEncodingException, FileNotFoundException
-			{
-				final File thumnailFile = new File(queue.thumbnailimage);
-				if (!thumnailFile.exists()) {
-					throw new FileNotFoundException("Datei nicht vorhanden für Thumbnail " + thumnailFile.getName());
-				}
-				final HttpClient httpclient = new DefaultHttpClient();
-				final HttpPost httppost = new HttpPost("http://www.youtube.com/my_thumbnail_post");//NON-NLS
-
-				final StringBuilder cookies = new StringBuilder();
-
-				for (final HttpCookie cookie : browser.getCookieStorage().getCookies()) {
-					cookies.append(cookie.getName()).append("=").append(cookie.getValue()).append(";");
-				}
-
-				httppost.setHeader("Cookie", cookies.toString()); //NON-NLS
-
-				final MultipartEntity reqEntity = new MultipartEntity();
-
-				reqEntity.addPart("video_id", new StringBody(queue.videoId)); //NON-NLS
-				reqEntity.addPart("is_ajax", new StringBody("1")); //NON-NLS
-
-				final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \""; //NON-NLS
-				final int pos1 = browser.getContent().indexOf(search) + search.length();
-				final int pos2 = browser.getContent().indexOf("\"", pos1);
-				final String sessiontoken = browser.getContent().substring(pos1, pos2);
-				reqEntity.addPart("session_token", new StringBody(sessiontoken)); //NON-NLS
-
-				reqEntity.addPart("imagefile", new FileBody(thumnailFile)); //NON-NLS
-
-				httppost.setEntity(reqEntity);
-				final HttpResponse response = httpclient.execute(httppost);
-
-				final OutputStream output = new OutputStream()
-				{
-					private final StringBuilder string = new StringBuilder();
-
-					@Override
-					public void write(final int b)
-					{
-						string.append((char) b);
-					}
-
-					public String toString()
-					{
-						return string.toString();
-					}
-				};
-
-				response.getEntity().writeTo(output);
-				System.out.println(output);
-				return output;
-			}
-
-			@Override protected void onDone()
-			{
-				//To change body of implemented methods use File | Settings | File Templates.
-			}
-		};
-		swingWorker.execute();
-		try
-
-		{
-			swingWorker.get();
-		} catch (InterruptedException ignored)
-
-		{
-		} catch (ExecutionException ignored)
-
-		{
-		}
-	}
-
-	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed") private void saveAction(final ScriptRunner browser)
-	{
-		final boolean license = queue.license == 1;
-		boolean release = false;
-		boolean publish = false;
-		String date = "";
-		int time = 0;
-		if (queue.release != null) {
-			if (queue.release.after(Calendar.getInstance().getTime())) {
-				release = true;
-				final Calendar calendar = Calendar.getInstance();
-				calendar.setTime(queue.release);
-
-				final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()); //NON-NLS
-
-				date = dateFormat.format(calendar.getTime());
-				time = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE));
-			} else {
-				publish = true;
-			}
-		}
+		logger.info("Monetizing"); //NON-NLS
+		logger.info("Licensing"); //NON-NLS
+		logger.info("Releasing"); //NON-NLS
+		logger.info("Partner-features"); //NON-NLS
+		logger.info("Saving..."); //NON-NLS
 
 		extendedPlacerholders.register("{title}", queue.title); //NON-NLS
 		extendedPlacerholders.register("{description}", queue.description); //NON-NLS
@@ -594,13 +330,8 @@ public class UploadWorker extends BetterSwingWorker
 		queue.movieID = extendedPlacerholders.replace(queue.movieID);
 		queue.movieNotes = extendedPlacerholders.replace(queue.movieNotes);
 
-		final String script = String.format(convertStreamToString(getClass().getResourceAsStream("/scripts/youtubeEdit.js")),//NON-NLS
-		                                    license, queue.monetize, queue.monetizeOverlay, queue.monetizeTrueview, queue.monetizeProduct, release, date, time, publish, queue.claim, queue.claimtype,
-		                                    queue.claimpolicy, queue.partnerOverlay, queue.partnerTrueview, queue.partnerInstream, queue.partnerProduct, queue.asset.toLowerCase(Locale.getDefault()),
-		                                    queue.webTitle, queue.webDescription, queue.webID, queue.webNotes, queue.tvTMSID, queue.tvISAN, queue.tvEIDR, queue.showTitle, queue.episodeTitle,
-		                                    queue.seasonNb, queue.episodeNb, queue.tvID, queue.tvNotes, queue.movieTitle, queue.movieDescription, queue.movieTMSID, queue.movieISAN, queue.movieEIDR,
-		                                    queue.movieID, queue.movieNotes, queue.thumbnail, queue.thumbnailId);
-		browser.executeScript(script);
+		final MetadataChanger metadataChanger = new MetadataChanger(queue);
+		metadataChanger.run();
 	}
 
 	private void playlistAction()
@@ -643,12 +374,17 @@ public class UploadWorker extends BetterSwingWorker
 
 	private void enddirAction()
 	{//noinspection CallToStringEquals
-		if (!queue.enddir.equals("")) {
+		if ((queue.enddir != null) && !queue.enddir.isEmpty()) {
 			final File enddir = new File(queue.enddir);
 			if (enddir.exists()) {
 				logger.info(String.format("Moving file to %s", enddir)); //NON-NLS
 				final File queueFile = new File(queue.file);
-				final File endFile = new File(enddir.getAbsolutePath() + "/" + queueFile.getName());
+				final File endFile;
+				if (settingsService.get("coreplugin.general.enddirtitle", "false").equals("true")) { //NON-NLS
+					endFile = new File(enddir.getAbsolutePath() + "/" + queue.title + queue.file.substring(queue.file.lastIndexOf(".")));
+				} else {
+					endFile = new File(enddir.getAbsolutePath() + "/" + queueFile.getName());
+				}
 				if (queueFile.renameTo(endFile)) {
 					logger.info(String.format("Done moving: %s", endFile.getAbsolutePath())); //NON-NLS
 				} else {

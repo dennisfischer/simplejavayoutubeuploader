@@ -194,8 +194,7 @@ public class UploadController
 
 	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
-		             (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -288,8 +287,8 @@ public class UploadController
 	                         final short claimpolicy,
 	                         final boolean partnerOverlay,
 	                         final boolean partnerTrueview,
-	                         final boolean partnerProduct,
 	                         final boolean partnerInstream,
+	                         final boolean partnerProduct,
 	                         @Nullable final String asset,
 	                         @Nullable final String webTitle,
 	                         @Nullable final String webID,

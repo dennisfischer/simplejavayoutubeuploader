@@ -72,7 +72,7 @@
 	<resultMap id="directoryMap" type="Directory" autoMapping="true">
 		<association property="preset" javaType="Preset">
 			<id property="identity" column="preset_identity"/>
-			<result property="autotitle" column="preset_title"/>
+			<result property="title" column="preset_title"/>
 			<result property="category" column="preset_category"/>
 			<result property="comment" column="preset_comment"/>
 			<result property="commentvote" column="preset_commentVote"/>

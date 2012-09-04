@@ -61,7 +61,7 @@ public class CorePlugin implements Pluggable
 	private               Uploader          uploader;
 	@Inject private       PluginService     pluginService;
 	@Inject private       Injector          injector;
-	@Inject private       SettingsService   settingService;
+	@Inject private       SettingsService   settingsService;
 	@Inject private final SqlSessionFactory sessionFactory;
 	private               UploadController  uploadController;
 	private               QueueController   queueController;
@@ -89,16 +89,21 @@ public class CorePlugin implements Pluggable
 	}
 
 	@EventTopicSubscriber(topic = "UPDATE_APPLICATION")
-	public void updateAPP(final String topic, @NonNls final String version) throws IOException
+	public void updateAPP(final String topic, @NonNls final String version)
 	{
 		System.out.println("Updating Coreplugin to version " + version); //NON-NLS
-		final Reader schemaReader = Resources.getResourceAsReader(String.format("scripts/update-%s.sql", version));//NON-NLS
-		final ScriptRunner scriptRunner = new ScriptRunner(sessionFactory.openSession().getConnection());
-		scriptRunner.setStopOnError(true);
-		scriptRunner.setLogWriter(null);
-		scriptRunner.setAutoCommit(true);
-		scriptRunner.setDelimiter(";");
-		scriptRunner.runScript(schemaReader);
+		try {
+			final Reader schemaReader = Resources.getResourceAsReader(String.format("scripts/update-%s.sql", version));//NON-NLS
+			final ScriptRunner scriptRunner = new ScriptRunner(sessionFactory.openSession().getConnection());
+			scriptRunner.setStopOnError(false);
+			scriptRunner.setLogWriter(null);
+			scriptRunner.setAutoCommit(true);
+			scriptRunner.setDelimiter(";");
+			scriptRunner.runScript(schemaReader);
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (Exception ignored) {
+		}
 	}
 
 	@Override public String[] getDependencies()
@@ -128,9 +133,10 @@ public class CorePlugin implements Pluggable
 
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 5, 500, 5));
 		spinner.setEditor(new JSpinner.NumberEditor(spinner, resourceBundle.getString("chunksize_spinner")));
-		spinner.setValue(Integer.parseInt((String) settingService.get("coreplugin.general.chunk_size", "10"))); //NON-NLS
+		spinner.setValue(Integer.parseInt((String) settingsService.get("coreplugin.general.chunk_size", "10"))); //NON-NLS
 
-		settingService.addSpinner("coreplugin.general.chunk_size", resourceBundle.getString("chunksize_spinner.label"), spinner); //NON-NLS
+		settingsService.addSpinner("coreplugin.general.chunk_size", resourceBundle.getString("chunksize_spinner.label"), spinner); //NON-NLS
+		settingsService.addCheckbox("coreplugin.general.enddirtitle", resourceBundle.getString("enddircheckbox.label")); //NON-NLS
 		if (!GraphicsEnvironment.isHeadless()) {
 			final UploadViewPanel uploadViewPanel = injector.getInstance(UploadViewPanel.class);
 			uploadViewPanel.run();

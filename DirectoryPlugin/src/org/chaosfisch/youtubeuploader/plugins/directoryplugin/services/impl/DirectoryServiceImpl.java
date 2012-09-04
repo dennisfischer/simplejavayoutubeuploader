@@ -50,7 +50,7 @@ public class DirectoryServiceImpl implements DirectoryService
 	@Override @Transactional public Directory findFile(final File file)
 	{
 		final Directory findEntry = new Directory();
-		findEntry.directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator) + 1);
+		findEntry.directory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator));
 		return directoryMapper.findDirectories(findEntry);
 	}
 

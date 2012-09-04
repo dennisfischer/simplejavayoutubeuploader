@@ -13,9 +13,7 @@
     <orderEntry type="library" name="GoogleYoutubeJavaApi" level="project" />
     <orderEntry type="library" name="jgoodies-validation-2.4" level="project" />
     <orderEntry type="module" module-name="Images" />
-    <orderEntry type="library" name="JXBrowser" level="project" />
     <orderEntry type="library" name="JxFileWatcher" level="project" />
-    <orderEntry type="library" name="JxDevelopmentLicense" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -28,7 +26,6 @@
     <orderEntry type="library" name="commons-codec:commons-codec:1.6" level="project" />
     <orderEntry type="library" name="org.mybatis:mybatis-guice:3.3" level="project" />
     <orderEntry type="library" name="org.mozilla:rhino:1.7R4" level="project" />
-    <orderEntry type="library" name="log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="com.github.insubstantial:substance:7.1" level="project" />
     <orderEntry type="library" name="org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="library" name="org.hsqldb:hsqldb:2.2.8" level="project" />
@@ -45,6 +42,16 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="htmlunit" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/log4j-1.2.15.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="log4j:log4j:1.2.17" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
