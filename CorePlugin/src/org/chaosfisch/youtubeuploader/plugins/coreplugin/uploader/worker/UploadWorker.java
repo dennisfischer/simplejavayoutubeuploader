@@ -41,6 +41,7 @@ import org.chaosfisch.google.request.Request;
 import org.chaosfisch.google.request.RequestUtilities;
 import org.chaosfisch.google.request.Response;
 import org.chaosfisch.util.BetterSwingWorker;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.IModel;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Placeholder;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
@@ -61,6 +62,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -274,7 +276,6 @@ public class UploadWorker extends BetterSwingWorker
 		}
 
 		logger.info("Monetizing"); //NON-NLS
-		logger.info("Licensing"); //NON-NLS
 		logger.info("Releasing"); //NON-NLS
 		logger.info("Partner-features"); //NON-NLS
 		logger.info("Saving..."); //NON-NLS
@@ -379,11 +380,16 @@ public class UploadWorker extends BetterSwingWorker
 			if (enddir.exists()) {
 				logger.info(String.format("Moving file to %s", enddir)); //NON-NLS
 				final File queueFile = new File(queue.file);
-				final File endFile;
+				File endFile;
 				if (settingsService.get("coreplugin.general.enddirtitle", "false").equals("true")) { //NON-NLS
-					endFile = new File(enddir.getAbsolutePath() + "/" + queue.title + queue.file.substring(queue.file.lastIndexOf(".")));
+					final String fileName = queue.title.replaceAll("[\\?\\*:\\\\<>\"/]", "");
+					endFile = new File(enddir.getAbsolutePath() + "/" + fileName + queue.file.substring(queue.file.lastIndexOf(".")));
 				} else {
 					endFile = new File(enddir.getAbsolutePath() + "/" + queueFile.getName());
+				}
+				if (endFile.exists()) {
+					endFile = new File(endFile.getAbsolutePath().substring(0, endFile.getAbsolutePath().lastIndexOf(".")) + "(2)" + endFile.getAbsolutePath().substring(
+							endFile.getAbsolutePath().lastIndexOf(".")));
 				}
 				if (queueFile.renameTo(endFile)) {
 					logger.info(String.format("Done moving: %s", endFile.getAbsolutePath())); //NON-NLS
@@ -546,8 +552,9 @@ public class UploadWorker extends BetterSwingWorker
 	{
 
 		if (queue.playlist != null) {
-			queue.playlist.number++;
-			playlistService.update(queue.playlist);
+			final List<Account> accountList = new ArrayList<Account>(1);
+			accountList.add(queue.account);
+			playlistService.synchronizePlaylists(accountList);
 		}
 		//create atom xml metadata - create object first, then convert with xstream
 
@@ -559,6 +566,8 @@ public class UploadWorker extends BetterSwingWorker
 		mediaCategory.scheme = "http://gdata.youtube.com/schemas/2007/categories.cat"; //NON-NLS
 		mediaCategory.category = queue.category;
 		videoEntry.mediaGroup.category.add(mediaCategory);
+
+		videoEntry.mediaGroup.license = (queue.license == 0) ? "youtube" : "cc"; //NON-NLS
 
 		if (queue.privatefile) {
 			videoEntry.mediaGroup.ytPrivate = new Object();
@@ -576,6 +585,11 @@ public class UploadWorker extends BetterSwingWorker
 			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends")); //NON-NLS
 		}
 
+		extendedPlacerholders = new ExtendedPlacerholders(fileToUpload, queue.playlist, queue.number);
+		queue.title = extendedPlacerholders.replace(queue.title);
+		queue.description = extendedPlacerholders.replace(queue.description);
+		queue.keywords = extendedPlacerholders.replace(queue.keywords);
+
 		//replace important placeholders NOW
 		for (final Placeholder placeholder : placeholderService.getAll()) {
 			queue.title = queue.title.replaceAll(Pattern.quote(placeholder.placeholder), placeholder.replacement);
@@ -584,10 +598,6 @@ public class UploadWorker extends BetterSwingWorker
 		}
 		queue.keywords = TagParser.parseAll(queue.keywords);
 		queue.keywords = queue.keywords.replaceAll("\"", "");
-		extendedPlacerholders = new ExtendedPlacerholders(fileToUpload, queue.playlist, queue.number);
-		queue.title = extendedPlacerholders.replace(queue.title);
-		queue.description = extendedPlacerholders.replace(queue.description);
-		queue.keywords = extendedPlacerholders.replace(queue.keywords);
 
 		videoEntry.mediaGroup.title = queue.title;
 		videoEntry.mediaGroup.description = queue.description;

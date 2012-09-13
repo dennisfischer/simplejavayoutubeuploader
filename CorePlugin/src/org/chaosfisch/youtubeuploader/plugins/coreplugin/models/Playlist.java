@@ -33,7 +33,7 @@ public class Playlist implements IModel
 	public           String  title;
 	public           String  url;
 	public           String  summary;
-	public           int     number;
+	public           Integer number;
 	public           Account account;
 
 	@Override public Integer getIdentity()

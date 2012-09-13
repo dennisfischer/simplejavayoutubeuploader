@@ -181,11 +181,6 @@ public class MetadataChanger
 			}
 		}
 
-		if (queue.license == 0) {
-			postMetaDataValues.add(new BasicNameValuePair("reuse", "all_rights_reserved")); //NON-NLS
-		} else {
-			postMetaDataValues.add(new BasicNameValuePair("reuse", "creative_commons")); //NON-NLS
-		}
 		if (queue.monetize) {
 			postMetaDataValues.add(new BasicNameValuePair("enable_monetization", boolConverter(queue.monetize))); //NON-NLS
 			postMetaDataValues.add(new BasicNameValuePair("enable_overlay_ads", boolConverter(queue.monetizeOverlay))); //NON-NLS
@@ -246,7 +241,7 @@ public class MetadataChanger
 			postMetaDataValues.add(new BasicNameValuePair("movie_notes", queue.movieNotes)); //NON-NLS
 		}
 		final String modified = new StringBuilder(
-				"still_id,still_id_custom_thumb_version,publish_time,privacy,reuse,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,").append(
+				"still_id,still_id_custom_thumb_version,publish_time,privacy,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,").append(
 				"asset_type,web_title,web_description,web_custom_id,web_notes,tv_tms_id,tv_isan,tv_eidr,show_title,episode_title,season_nb,episode_nb,tv_custom_id,tv_notes,movie_title,").append(
 				"movie_description,movie_tms_id,movie_tms_id,movie_isan,movie_eidr,movie_custom_id,movie_custom_id").toString(); //NON-NLS
 		postMetaDataValues.add(new BasicNameValuePair("modified_fields", modified)); //NON-NLS
@@ -295,7 +290,7 @@ public class MetadataChanger
 			for (final Header cookie : cookies) {
 				tmpCook += cookie.getValue().substring(0, cookie.getValue().indexOf(";") + 1);
 			}
-
+			System.out.println(content);
 			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "=")); //NON-NLS
 
 			redirectGet.setHeader("Cookie", tmpCook); //NON-NLS

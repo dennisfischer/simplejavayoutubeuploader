@@ -230,8 +230,7 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"),
-				resourceBundle.getString(
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
 				"visibilitylist.private")}));
 		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
 				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
@@ -936,8 +935,8 @@ public final class UploadViewPanel
 		}
 
 		//noinspection CallToStringEquals
-		if ((fileList.getItemCount() > 0) && titleTextField.getText().equals("")) {
-			if ((fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1) >= fileList.getSelectedItem().toString().lastIndexOf(".")) {
+		if ((fileList.getItemCount() > 0) && titleTextField.getText().isEmpty()) {
+			if ((fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1) <= fileList.getSelectedItem().toString().lastIndexOf(".")) {
 				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1,
 				                                                                                  fileList.getSelectedItem().toString().lastIndexOf("."))));
 			}
