@@ -28,14 +28,20 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.chaosfisch.google.request.Request;
+import org.chaosfisch.google.request.Response;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -91,6 +97,7 @@ public class MetadataChanger
 				return isRedirect;
 			}
 		});
+		httpclient.setCookieStore(new BasicCookieStore());
 	}
 
 	public void run()
@@ -240,8 +247,7 @@ public class MetadataChanger
 			}
 			postMetaDataValues.add(new BasicNameValuePair("movie_notes", queue.movieNotes)); //NON-NLS
 		}
-		final String modified = new StringBuilder(
-				"still_id,still_id_custom_thumb_version,publish_time,privacy,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,").append(
+		final String modified = new StringBuilder("still_id,still_id_custom_thumb_version,publish_time,privacy,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,").append(
 				"asset_type,web_title,web_description,web_custom_id,web_notes,tv_tms_id,tv_isan,tv_eidr,show_title,episode_title,season_nb,episode_nb,tv_custom_id,tv_notes,movie_title,").append(
 				"movie_description,movie_tms_id,movie_tms_id,movie_isan,movie_eidr,movie_custom_id,movie_custom_id").toString(); //NON-NLS
 		postMetaDataValues.add(new BasicNameValuePair("modified_fields", modified)); //NON-NLS
@@ -290,7 +296,6 @@ public class MetadataChanger
 			for (final Header cookie : cookies) {
 				tmpCook += cookie.getValue().substring(0, cookie.getValue().indexOf(";") + 1);
 			}
-			System.out.println(content);
 			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "=")); //NON-NLS
 
 			redirectGet.setHeader("Cookie", tmpCook); //NON-NLS
@@ -307,6 +312,7 @@ public class MetadataChanger
 	{
 		private String       content;
 		private HttpResponse loginPostResponse;
+		private static final String REDIRECT_URL = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
 
 		public String getContent()
 		{
@@ -318,42 +324,37 @@ public class MetadataChanger
 			return loginPostResponse;
 		}
 
-		public LoginGoogle invoke() throws IOException, ClientProtocolException, UnsupportedEncodingException
+		public LoginGoogle invoke() throws IOException, ClientProtocolException, UnsupportedEncodingException, MalformedURLException
 		{
-			final HttpUriRequest loginGet = new HttpGet("https://accounts.google.com/ServiceLogin"); //NON-NLS
 
-			final HttpResponse loginGetResponse = httpclient.execute(loginGet);
-			final HttpEntity loginGetResponseEntity = loginGetResponse.getEntity();
+			final String clientLoginParameters = String.format("Email=%s&Passwd=%s&service=%s&PesistentCookie=0&accountType=HOSTED_OR_GOOGLE&source=googletalk", queue.account.name, queue.account.getPassword(), "gaia"); //NON-NLS
+			final Request clientLoginRequest = new Request.Builder(Request.Method.POST, new URL("https://accounts.google.com/ClientLogin")).build();
+			clientLoginRequest.setContentType("application/x-www-form-urlencoded"); //NON-NLS
+			final DataOutputStream dataOutputStream = new DataOutputStream(clientLoginRequest.setContent());
+			dataOutputStream.writeBytes(clientLoginParameters);
+			dataOutputStream.flush();
+			final Response clientLoginResponse = clientLoginRequest.send();
+			if (clientLoginResponse.code != 200) {
+				throw new IOException(String.format("Message: %s; Body %s", clientLoginResponse.message, clientLoginResponse.body)); //NON-NLS
+			}
 
-			loginGetResponseEntity.writeTo(output);
+			final String sid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("SID=") + 4, clientLoginResponse.body.indexOf("LSID=")); //NON-NLS
+			final String lsid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("LSID=") + 5, clientLoginResponse.body.indexOf("Auth=")); //NON-NLS
 
-			content = output.toString();
+			final String data = String.format("SID=%s&LSID=%s&service=gaia&Session=true&source=googletalk", sid, lsid);
+			final Request issueTokenRequest = new Request.Builder("POST", new URL("https://www.google.com/accounts/IssueAuthToken")).build();
+			issueTokenRequest.setContentType("application/x-www-form-urlencoded"); //NON-NLS
+			issueTokenRequest.setFollowRedirects(false);
+			final DataOutputStream testStream = new DataOutputStream(issueTokenRequest.setContent());
+			testStream.writeBytes(data);
+			testStream.flush();
+			final Response issueTokenResponse = issueTokenRequest.send();
 
-			EntityUtils.consume(loginGetResponseEntity);
+			final String tokenAuthUrl = "https://www.google.com/accounts/TokenAuth?auth=" + URLEncoder.encode(issueTokenResponse.body) + "&service=youtube&continue=" + URLEncoder.encode(String.format(LoginGoogle.REDIRECT_URL,
+			                                                                                                                                                                                            queue.videoId)) + "&source=googletalk";
 
-			final HttpPost loginPost = new HttpPost("https://accounts.google.com/ServiceLoginAuth"); //NON-NLS
-
-			final List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			nameValuePairs.add(new BasicNameValuePair("dnCon", "")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("timeStmp", "")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("secTok", "")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("signIn", "Sign in")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("PersistentCookie", "yes")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("rmShown", "1")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("dsh", extractor(content, "name=\"dsh\" id=\"dsh\" value=\"", "\""))); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("GALX", extractor(content, "name=\"GALX\"\n         value=\"", "\""))); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("checkedDomains", "youtube")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("checkedConnection", "")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("hl", "en_US")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("uilel", "3")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("continue", String.format(
-					"http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s", queue.videoId))); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("pstMsg", "0")); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("Email", queue.account.name)); //NON-NLS
-			nameValuePairs.add(new BasicNameValuePair("Passwd", queue.account.getPassword())); //NON-NLS
-			loginPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			loginPostResponse = httpclient.execute(loginPost);
+			final HttpUriRequest loginGet = new HttpGet(tokenAuthUrl);
+			loginPostResponse = httpclient.execute(loginGet);
 			final HttpEntity loginPostResponseEntity = loginPostResponse.getEntity();
 			loginPostResponseEntity.writeTo(output);
 			content = output.toString();

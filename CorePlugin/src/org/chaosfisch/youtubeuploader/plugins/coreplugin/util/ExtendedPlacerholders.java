@@ -60,7 +60,6 @@ public class ExtendedPlacerholders
 			final Pattern p = Pattern.compile(resourceBundle.getString("autotitle.numberPattern"));
 			final Matcher m = p.matcher(input);
 
-			System.out.println(playlist.number + 1 + number);
 			if (m.find()) {
 				input = m.replaceAll(zeroFill(playlist.number + 1 + number, Integer.parseInt(m.group(1))));
 				input = input.replaceAll(resourceBundle.getString("autotitle.numberDefault"), String.valueOf(playlist.number + 1 + number));

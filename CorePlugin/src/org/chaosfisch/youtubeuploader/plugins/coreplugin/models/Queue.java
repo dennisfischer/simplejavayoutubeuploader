@@ -19,6 +19,11 @@
 
 package org.chaosfisch.youtubeuploader.plugins.coreplugin.models;
 
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.AccountService;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.PlaylistService;
+
 import java.util.Date;
 
 /**
@@ -104,6 +109,11 @@ public class Queue implements IModel
 
 	public transient Integer identity;
 
+	public Queue()
+	{
+		AnnotationProcessor.process(this);
+	}
+
 	@Override public Integer getIdentity()
 	{
 		return identity;
@@ -112,5 +122,21 @@ public class Queue implements IModel
 	@Override public String toString()
 	{
 		return title;
+	}
+
+	@EventTopicSubscriber(topic = AccountService.ACCOUNT_UPDATED)
+	public void onAccountUpdated(final String topic, final Account account)
+	{
+		if ((this.account != null) && this.account.getIdentity().equals(account.getIdentity())) {
+			this.account = account;
+		}
+	}
+
+	@EventTopicSubscriber(topic = PlaylistService.PLAYLIST_UPDATED)
+	public void onPlaylistUpdated(final String topic, final Playlist playlist)
+	{
+		if ((this.playlist != null) && this.playlist.playlistKey.equals(playlist.playlistKey)) {
+			this.playlist = playlist;
+		}
 	}
 }

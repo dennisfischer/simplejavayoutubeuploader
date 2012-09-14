@@ -23,6 +23,7 @@ import org.chaosfisch.util.CRUDService;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Playlist;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public interface PlaylistService extends CRUDService<Playlist>
 	String PLAYLIST_PRE_UPDATED = "playlistPreUpdated"; //NON-NLS
 	String PLAYLIST_UPDATED     = "playlistUpdated"; //NON-NLS
 
-	void synchronizePlaylists(List<Account> accounts);
+	SwingWorker<Void, Void> synchronizePlaylists(List<Account> accounts);
 
 	List<Playlist> getByAccount(Account account);
 

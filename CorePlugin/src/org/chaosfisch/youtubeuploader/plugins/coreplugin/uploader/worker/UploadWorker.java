@@ -388,8 +388,7 @@ public class UploadWorker extends BetterSwingWorker
 					endFile = new File(enddir.getAbsolutePath() + "/" + queueFile.getName());
 				}
 				if (endFile.exists()) {
-					endFile = new File(endFile.getAbsolutePath().substring(0, endFile.getAbsolutePath().lastIndexOf(".")) + "(2)" + endFile.getAbsolutePath().substring(
-							endFile.getAbsolutePath().lastIndexOf(".")));
+					endFile = new File(endFile.getAbsolutePath().substring(0, endFile.getAbsolutePath().lastIndexOf(".")) + "(2)" + endFile.getAbsolutePath().substring(endFile.getAbsolutePath().lastIndexOf(".")));
 				}
 				if (queueFile.renameTo(endFile)) {
 					logger.info(String.format("Done moving: %s", endFile.getAbsolutePath())); //NON-NLS
@@ -554,7 +553,10 @@ public class UploadWorker extends BetterSwingWorker
 		if (queue.playlist != null) {
 			final List<Account> accountList = new ArrayList<Account>(1);
 			accountList.add(queue.account);
-			playlistService.synchronizePlaylists(accountList);
+			try {
+				playlistService.synchronizePlaylists(accountList).get();
+			} catch (Exception ignored) {
+			}
 		}
 		//create atom xml metadata - create object first, then convert with xstream
 

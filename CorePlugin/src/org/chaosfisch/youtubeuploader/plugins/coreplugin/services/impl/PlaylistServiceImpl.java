@@ -49,6 +49,7 @@ import org.chaosfisch.youtubeuploader.plugins.coreplugin.services.spi.YTService;
 import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
 import org.mybatis.guice.transactional.Transactional;
 
+import javax.swing.*;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -130,14 +131,20 @@ public class PlaylistServiceImpl implements PlaylistService
 	}
 
 	@Override
-	public void synchronizePlaylists(final List<Account> accounts)
+	public SwingWorker<Void, Void> synchronizePlaylists(final List<Account> accounts)
 	{
 		if (synchronizeFlag) {
-			return;
+			return new SwingWorker<Void, Void>()
+			{
+				@Override protected Void doInBackground() throws Exception
+				{
+					return null;  //To change body of implemented methods use File | Settings | File Templates.
+				}
+			};
 		}
 		logger.info("Synchronizing playlists."); //NON-NLS
 		synchronizeFlag = true;
-		new BetterSwingWorker()
+		final BetterSwingWorker betterSwingWorker = new BetterSwingWorker()
 		{
 			@Override
 			protected void background()
@@ -197,7 +204,10 @@ public class PlaylistServiceImpl implements PlaylistService
 				logger.info("Playlists synchronized"); //NON-NLS
 				synchronizeFlag = false;
 			}
-		}.execute();
+		};
+
+		betterSwingWorker.execute();
+		return betterSwingWorker;
 	}
 
 	private void createOrUpdate(final Playlist playlist)
