@@ -39,8 +39,7 @@ public class PluginController
 	public RowTableModel<Pluggable> getPluginTableModel(final List<Pluggable> pluggableList)
 	{
 		if (pluginTableModel == null) {
-			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString(
-					"pluginTable.disableCheckbox"));
+			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString("pluginTable.disableCheckbox"));
 			pluginTableModel = new RowTableModel<Pluggable>(new ArrayList<Pluggable>(0), columns, Pluggable.class)
 			{
 				private static final long serialVersionUID = 3423121373666600098L;

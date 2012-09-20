@@ -306,8 +306,7 @@ public class BindingsModule extends AbstractModule
 					}
 
 					// request injection for type handlers
-					@SuppressWarnings("unchecked") final Iterable<Map<JdbcType, TypeHandler<?>>> mappedTypeHandlers = (Iterable<Map<JdbcType, TypeHandler<?>>>) getValue(
-							CustomMyBatisModule.TYPE_HANDLERS, context, configuration);
+					@SuppressWarnings("unchecked") final Iterable<Map<JdbcType, TypeHandler<?>>> mappedTypeHandlers = (Iterable<Map<JdbcType, TypeHandler<?>>>) getValue(CustomMyBatisModule.TYPE_HANDLERS, context, configuration);
 					for (final Map<JdbcType, TypeHandler<?>> mappedTypeHandler : mappedTypeHandlers) {
 						for (final TypeHandler<?> handler : mappedTypeHandler.values()) {
 							requestInjection(handler);

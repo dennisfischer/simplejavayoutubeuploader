@@ -155,8 +155,7 @@ public class NanoHTTPD
 	 * Handles one session, i.e. parses the HTTP request
 	 * and returns the response.
 	 */
-	@SuppressWarnings(
-			{"CallToStringEqualsIgnoreCase", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"})
+	@SuppressWarnings({"CallToStringEqualsIgnoreCase", "StringToUpperCaseOrToLowerCaseWithoutLocale", "HardCodedStringLiteral", "MagicCharacter", "UseOfStringTokenizer", "IOResourceOpenedButNotSafelyClosed"})
 	private class HTTPSession implements Runnable
 	{
 		public HTTPSession(final Socket s)

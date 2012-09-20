@@ -216,8 +216,8 @@ public class CorePlugin implements Pluggable
 				start = DateFormat.getInstance().parse(starttime);
 			}
 
-			uploadController.submitUpload(file, account_result, category, (short) visibility, title, description, tags, playlist_result, 0, (short) comment, (short) videoresponse, rate, embed,
-			                              commentvote, mobile, start, null, enddir, false, false, false, false, (short) 0);
+			uploadController.submitUpload(file, account_result, category, (short) visibility, title, description, tags, playlist_result, 0, (short) comment, (short) videoresponse, rate, embed, commentvote, mobile, start, null, enddir, false, false,
+			                              false, false, (short) 0);
 			System.out.println("Upload added!"); //NON-NLS
 		} catch (ParseException ignored) {
 			System.out.println("Starttime is formatted incorrectly.\r\n"); //NON-NLS

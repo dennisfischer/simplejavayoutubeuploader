@@ -91,8 +91,7 @@ public class SocializeView implements SocializeViewBinding
 
 		uploadsCombobox.setModel(controller.getUploadsModel());
 
-		publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message(
-				"publishlist.now")}));
+		publishComboBox.setModel(new DefaultComboBoxModel(new String[]{I18nSupport.message("publishlist.uploadid"), I18nSupport.message("publishlist.uploadsfinished"), I18nSupport.message("publishlist.now")}));
 	}
 
 	private void initListeners()
@@ -187,8 +186,7 @@ public class SocializeView implements SocializeViewBinding
 								if (!socialProvider.hasValidAccessToken()) {
 									facebookButton.setSelected(false);
 								} else {
-									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(),
-									                                                           socialProvider.getAccessToken().getSecret())); //NON-NLS
+									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); //NON-NLS
 									settings.save();
 								}
 							}

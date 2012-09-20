@@ -140,12 +140,7 @@ public class UploadController
 	private boolean autotitle;
 
 	@Inject
-	public UploadController(final AccountService accountService,
-	                        final PresetService presetService,
-	                        final QueueService queueService,
-	                        final PlaylistService playlistService,
-	                        final PlaceholderService placeholderService,
-	                        final JFileChooser fileChooser)
+	public UploadController(final AccountService accountService, final PresetService presetService, final QueueService queueService, final PlaylistService playlistService, final PlaceholderService placeholderService, final JFileChooser fileChooser)
 	{
 		this.accountService = accountService;
 		this.presetService = presetService;
@@ -188,8 +183,8 @@ public class UploadController
 
 	public void submitUpload(final String filepath, final Account account, final String category)
 	{
-		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null, 0, (short) 0, (short) 0, true, true, true, true,
-		             null, null, null, false, false, false, false, (short) 0);
+		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
+		             (short) 0);
 	}
 
 	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags)
@@ -197,17 +192,9 @@ public class UploadController
 		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
 	}
 
-	public void submitUpload(final String filepath,
-	                         final Account account,
-	                         final String category,
-	                         final short visibility,
-	                         final String title,
-	                         final String description,
-	                         final String tags,
-	                         @Nullable final Playlist playlist)
+	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title, final String description, final String tags, @Nullable final Playlist playlist)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false,
-		             (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, 0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -226,8 +213,7 @@ public class UploadController
 	                         final boolean commentvote,
 	                         final boolean mobile)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, rate, embed, commentvote, mobile, null, null, null, false, false,
-		             false, false, (short) 0);
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, rate, embed, commentvote, mobile, null, null, null, false, false, false, false, (short) 0);
 	}
 
 	public void submitUpload(final String filepath,
@@ -254,9 +240,8 @@ public class UploadController
 	                         final boolean monetizeProduct,
 	                         final short license)
 	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir,
-		             monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null,
-		             null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, commentvote, rate, embed, mobile, starttime, releasetime, enddir, monetize, monetizeOverlay, monetizeTrueview,
+		             monetizeProduct, license, false, (short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	public void submitUpload(final String filepath,

@@ -55,9 +55,8 @@ public class QueueTableModel extends RowTableModel<Queue>
 	public QueueTableModel(final Iterable<Queue> queues)
 	{
 		super(Queue.class);
-		setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(resourceBundle.getString("table.columns.id"), resourceBundle.getString("table.columns.title"), resourceBundle.getString(
-				"table.columns.file"), resourceBundle.getString("table.columns.starttime"), resourceBundle.getString("table.columns.eta"), resourceBundle.getString("table.columns.status"),
-		                                                               resourceBundle.getString("table.columns.progress")));
+		setDataAndColumnNames(new IdentityList<Queue>(), Arrays.asList(resourceBundle.getString("table.columns.id"), resourceBundle.getString("table.columns.title"), resourceBundle.getString("table.columns.file"), resourceBundle.getString(
+				"table.columns.starttime"), resourceBundle.getString("table.columns.eta"), resourceBundle.getString("table.columns.status"), resourceBundle.getString("table.columns.progress")));
 
 		for (final Queue queue : queues) {
 			addRow(queue);
@@ -238,8 +237,7 @@ public class QueueTableModel extends RowTableModel<Queue>
 				final double speed = uploadProgress.getDiffBytes() / 1024 / uploadProgress.getDiffTime();
 
 				setValueAt(eta, index, 4);
-				setValueAt(MessageFormat.format(resourceBundle.getString("uploadProgressMessage"), uploadProgress.getTotalBytesUploaded() / 1048576, uploadProgress.getFileSize() / 1048576,
-				                                speed * 1000), index, 5);
+				setValueAt(MessageFormat.format(resourceBundle.getString("uploadProgressMessage"), uploadProgress.getTotalBytesUploaded() / 1048576, uploadProgress.getFileSize() / 1048576, speed * 1000), index, 5);
 				setValueAt(percent, index, 6);
 			}
 		}
