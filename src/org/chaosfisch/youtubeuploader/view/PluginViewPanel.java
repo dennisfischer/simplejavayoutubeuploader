@@ -19,23 +19,29 @@
 
 package org.chaosfisch.youtubeuploader.view;
 
-import com.google.inject.Inject;
-import org.chaosfisch.plugin.Pluggable;
-import org.chaosfisch.table.RowTableModel;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+
+import org.chaosfisch.util.plugin.Pluggable;
+import org.chaosfisch.util.table.RowTableModel;
 import org.chaosfisch.youtubeuploader.controller.PluginController;
 
-import javax.swing.*;
-import java.util.List;
+import com.google.inject.Inject;
 
 public class PluginViewPanel extends JDialog
 {
-	private static final long serialVersionUID = -7964085115455095508L;
-	private JPanel  contentPane;
-	private JTable  pluginTable;
-	private JButton addButton;
-	private JButton removeButton;
+	private static final long	serialVersionUID	= -7964085115455095508L;
+	private JPanel				contentPane;
+	private JTable				pluginTable;
+	private JButton				addButton;
+	private JButton				removeButton;
 
-	@Inject private PluginController pluginController;
+	@Inject
+	private PluginController	pluginController;
 
 	public PluginViewPanel()
 	{
@@ -51,7 +57,8 @@ public class PluginViewPanel extends JDialog
 	public void setPluggableList(final List<Pluggable> pluggableList)
 	{
 		final RowTableModel<Pluggable> rowTableModel = pluginController.getPluginTableModel();
-		if (rowTableModel.getRowCount() > 0) {
+		if (rowTableModel.getRowCount() > 0)
+		{
 			rowTableModel.removeRowRange(0, rowTableModel.getRowCount() - 1);
 		}
 		rowTableModel.insertRows(pluginTable.getModel().getRowCount(), pluggableList);

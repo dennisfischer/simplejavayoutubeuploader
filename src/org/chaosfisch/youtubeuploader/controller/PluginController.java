@@ -19,34 +19,38 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
-import org.chaosfisch.plugin.Pluggable;
-import org.chaosfisch.table.RowTableModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
-import java.util.*;
+import org.chaosfisch.util.plugin.Pluggable;
+import org.chaosfisch.util.table.RowTableModel;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 13.03.12
- * Time: 08:23
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: Dennis Date: 13.03.12 Time: 08:23 To change
+ * this template use File | Settings | File Templates.
  */
 public class PluginController
 {
-	private RowTableModel<Pluggable> pluginTableModel;
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); //NON-NLS
+	private RowTableModel<Pluggable>	pluginTableModel;
+	private final ResourceBundle		resourceBundle	= ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); // NON-NLS
 
 	public RowTableModel<Pluggable> getPluginTableModel(final List<Pluggable> pluggableList)
 	{
-		if (pluginTableModel == null) {
-			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"), resourceBundle.getString("pluginTable.disableCheckbox"));
-			pluginTableModel = new RowTableModel<Pluggable>(new ArrayList<Pluggable>(0), columns, Pluggable.class)
-			{
-				private static final long serialVersionUID = 3423121373666600098L;
+		if (pluginTableModel == null)
+		{
+			final List<String> columns = Arrays.asList(resourceBundle.getString("pluginTable.name"), resourceBundle.getString("pluginTable.author"),
+					resourceBundle.getString("pluginTable.disableCheckbox"));
+			pluginTableModel = new RowTableModel<Pluggable>(new ArrayList<Pluggable>(0), columns, Pluggable.class) {
+				private static final long	serialVersionUID	= 3423121373666600098L;
 
-				@Override public Object getValueAt(final int rowIndex, final int columnIndex)
+				@Override
+				public Object getValueAt(final int rowIndex, final int columnIndex)
 				{
-					switch (columnIndex) {
+					switch (columnIndex)
+					{
 						case 0:
 							return getRow(rowIndex).getName();
 						case 1:
@@ -66,6 +70,6 @@ public class PluginController
 
 	public RowTableModel<Pluggable> getPluginTableModel()
 	{
-		return getPluginTableModel(Collections.<Pluggable>emptyList());
+		return getPluginTableModel(Collections.<Pluggable> emptyList());
 	}
 }

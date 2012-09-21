@@ -19,34 +19,17 @@
 
 package org.chaosfisch.youtubeuploader.view;
 
-import asg.cliche.CLIException;
-import asg.cliche.Shell;
-import asg.cliche.ShellFactory;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.name.Named;
-import org.apache.commons.mail.EmailException;
-import org.apache.log4j.Logger;
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.plugin.ExtensionPoints.ExitExtensionPoint;
-import org.chaosfisch.plugin.ExtensionPoints.ExtensionPoint;
-import org.chaosfisch.plugin.ExtensionPoints.JComponentExtensionPoint;
-import org.chaosfisch.plugin.Pluggable;
-import org.chaosfisch.plugin.PluginManager;
-import org.chaosfisch.plugin.PluginService;
-import org.chaosfisch.util.Computer;
-import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
-import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
-import org.chaosfisch.youtubeuploader.util.LogfileComitter;
-import org.chaosfisch.youtubeuploader.util.PluginLoader;
-import org.chaosfisch.youtubeuploader.util.logger.InjectLogger;
-
-import javax.swing.*;
-import javax.swing.text.DefaultEditorKit;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -54,30 +37,73 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.text.DefaultEditorKit;
+
+import org.apache.commons.mail.EmailException;
+import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.chaosfisch.util.Computer;
+import org.chaosfisch.util.InjectLogger;
+import org.chaosfisch.util.LogfileComitter;
+import org.chaosfisch.util.PluginLoader;
+import org.chaosfisch.util.plugin.Pluggable;
+import org.chaosfisch.util.plugin.PluginManager;
+import org.chaosfisch.util.plugin.PluginService;
+import org.chaosfisch.util.plugin.ExtensionPoints.ExitExtensionPoint;
+import org.chaosfisch.util.plugin.ExtensionPoints.ExtensionPoint;
+import org.chaosfisch.util.plugin.ExtensionPoints.JComponentExtensionPoint;
+import org.chaosfisch.youtubeuploader.services.spi.SettingsService;
+
+import asg.cliche.CLIException;
+import asg.cliche.Shell;
+import asg.cliche.ShellFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.name.Named;
+
 /**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 29.12.11
- * Time: 16:08
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: Dennis Date: 29.12.11 Time: 16:08 To change
+ * this template use File | Settings | File Templates.
  */
 public class PluginMainApplication
 {
 
-	private static final String   MENU_BAR         = "menuBar"; //NON-NLS
-	private static final String[] DISABLED_PLUGINS = new String[0];
+	private static final String		MENU_BAR			= "menuBar";																		// NON-NLS
+	private static final String[]	DISABLED_PLUGINS	= new String[0];
 
-	private                                              JTabbedPane     tabbedPane;
-	private                                              JMenuBar        menuBar;
-	@Inject(optional = true) @Named("mainFrame") private JFrame          mainFrame;
-	@Inject private                                      PluginManager   pluginManager;
-	@Inject private                                      PluginService   pluginService;
-	@Inject private                                      PluginLoader    pluginLoader;
-	@Inject private                                      DesignManager   designManager;
-	@Inject private                                      SettingsService settingsService;
-	@Inject private                                      Injector        injector;
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); //NON-NLS
-	@InjectLogger private Logger logger;
+	private JTabbedPane				tabbedPane;
+	private JMenuBar				menuBar;
+	@Inject(optional = true)
+	@Named("mainFrame")
+	private JFrame					mainFrame;
+	@Inject
+	private PluginManager			pluginManager;
+	@Inject
+	private PluginService			pluginService;
+	@Inject
+	private PluginLoader			pluginLoader;
+	@Inject
+	private SettingsService			settingsService;
+	@Inject
+	private Injector				injector;
+	private final ResourceBundle	resourceBundle		= ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"); // NON-NLS
+	@InjectLogger
+	private Logger					logger;
 
 	public PluginMainApplication()
 	{
@@ -96,28 +122,32 @@ public class PluginMainApplication
 	private void updateApplication()
 	{
 
-		if (settingsService.get("version-20rc2.0", "null").equals("null")) {
+		if (settingsService.get("version-20rc2.0", "null").equals("null"))
+		{
 			EventBus.publish("UPDATE_APPLICATION", "2.0");
 
 			settingsService.set("version-20rc2.0", "true");
 			settingsService.save();
 		}
 
-		if (settingsService.get("version-20rc2.1", "null").equals("null")) {
+		if (settingsService.get("version-20rc2.1", "null").equals("null"))
+		{
 			EventBus.publish("UPDATE_APPLICATION", "2.1");
 
 			settingsService.set("version-20rc2.1", "true");
 			settingsService.save();
 		}
 
-		if (settingsService.get("version-20rc2.2", "null").equals("null")) {
+		if (settingsService.get("version-20rc2.2", "null").equals("null"))
+		{
 			EventBus.publish("UPDATE_APPLICATION", "2.2");
 
 			settingsService.set("version-20rc2.2", "true");
 			settingsService.save();
 		}
 
-		if (settingsService.get("version-20rc2.3", "null").equals("null")) {
+		if (settingsService.get("version-20rc2.3", "null").equals("null"))
+		{
 			EventBus.publish("UPDATE_APPLICATION", "2.3");
 
 			settingsService.set("version-20rc2.3", "true");
@@ -127,33 +157,40 @@ public class PluginMainApplication
 
 	private void initCommandline(final String... args)
 	{
-		if (GraphicsEnvironment.isHeadless()) {
-			try {
-				final Shell shell = ShellFactory.createConsoleShell("sjy-uploader", "Simple Java Youtube Uploader by CHAOSFISCH: CLI Interface", this); //NON-NLS
-				for (final Pluggable plugin : pluginManager.getPlugins().values()) {
-					shell.addMainHandler(plugin, String.format("%s-", plugin.getCLIName())); //NON-NLS
+		if (GraphicsEnvironment.isHeadless())
+		{
+			try
+			{
+				final Shell shell = ShellFactory
+						.createConsoleShell("sjy-uploader", "Simple Java Youtube Uploader by CHAOSFISCH: CLI Interface", this); // NON-NLS
+				for (final Pluggable plugin : pluginManager.getPlugins().values())
+				{
+					shell.addMainHandler(plugin, String.format("%s-", plugin.getCLIName())); // NON-NLS
 				}
-				for (final String line : args) {
+				for (final String line : args)
+				{
 					shell.processLine(line);
 				}
 				shell.commandLoop(); // and three.
-			} catch (IOException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			} catch (CLIException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			} catch (IOException e)
+			{
+				e.printStackTrace(); // To change body of catch statement use
+										// File | Settings | File Templates.
+			} catch (CLIException e)
+			{
+				e.printStackTrace(); // To change body of catch statement use
+										// File | Settings | File Templates.
 			}
 		}
 	}
 
 	private void showFrame()
 	{
-		if (GraphicsEnvironment.isHeadless()) {
-			return;
-		}
+		if (GraphicsEnvironment.isHeadless()) { return; }
 		mainFrame.setTitle(resourceBundle.getString("application.title"));
 		mainFrame.setJMenuBar(menuBar);
-		final Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png"));//NON-NLS
-		mainFrame.setIconImage(image); //NON-NLS
+		final Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png"));// NON-NLS
+		mainFrame.setIconImage(image); // NON-NLS
 		mainFrame.add(tabbedPane);
 
 		// Get the size of the screen
@@ -167,41 +204,48 @@ public class PluginMainApplication
 
 	private void initPlugins()
 	{
-		final List<Pluggable> pluggableList = pluginManager.loadPlugins(PluginMainApplication.DISABLED_PLUGINS); //NON-NLS
-		for (final Pluggable p : pluggableList) {
+		final List<Pluggable> pluggableList = pluginManager.loadPlugins(PluginMainApplication.DISABLED_PLUGINS); // NON-NLS
+		for (final Pluggable p : pluggableList)
+		{
 			p.init();
 		}
 
-		logger.debug("Start Plugins"); //NON-NLS
+		logger.debug("Start Plugins"); // NON-NLS
 		pluginManager.startPlugins();
-		logger.debug("Process Extensionpoints"); //NON-NLS
-		if (!GraphicsEnvironment.isHeadless()) {
+		logger.debug("Process Extensionpoints"); // NON-NLS
+		if (!GraphicsEnvironment.isHeadless())
+		{
 
-			for (final ExtensionPoint tabs : pluginService.getExtensions("panel_tabs")) { //NON-NLS
-				logger.debug("Extension point"); //NON-NLS
-				if ((tabs instanceof JComponentExtensionPoint) && (((JComponentExtensionPoint) tabs).getJComponent() instanceof JPanel)) {
-					logger.debug(String.format("Adding panel_tab: %s", ((JComponentExtensionPoint) tabs).getTitle())); //NON-NLS
+			for (final ExtensionPoint tabs : pluginService.getExtensions("panel_tabs"))
+			{ // NON-NLS
+				logger.debug("Extension point"); // NON-NLS
+				if ((tabs instanceof JComponentExtensionPoint) && (((JComponentExtensionPoint) tabs).getJComponent() instanceof JPanel))
+				{
+					logger.debug(String.format("Adding panel_tab: %s", ((JComponentExtensionPoint) tabs).getTitle())); // NON-NLS
 					tabbedPane.addTab(((JComponentExtensionPoint) tabs).getTitle(), ((JComponentExtensionPoint) tabs).getJComponent());
 				}
 			}
 
 			final JMenu fileMenu = new JMenu(resourceBundle.getString("application.fileLabel"));
 
-			for (final ExtensionPoint fileMenuItem : pluginService.getExtensions("file_menu")) { //NON-NLS
-				if (fileMenuItem instanceof JComponentExtensionPoint) {
-					if (((JComponentExtensionPoint) fileMenuItem).getJComponent() instanceof JMenuItem) {
+			for (final ExtensionPoint fileMenuItem : pluginService.getExtensions("file_menu"))
+			{ // NON-NLS
+				if (fileMenuItem instanceof JComponentExtensionPoint)
+				{
+					if (((JComponentExtensionPoint) fileMenuItem).getJComponent() instanceof JMenuItem)
+					{
 						fileMenu.add((JMenuItem) ((JComponentExtensionPoint) fileMenuItem).getJComponent());
-					} else if (((JComponentExtensionPoint) fileMenuItem).getJComponent() instanceof JMenu) {
+					} else if (((JComponentExtensionPoint) fileMenuItem).getJComponent() instanceof JMenu)
+					{
 						fileMenu.add((JMenuItem) ((JComponentExtensionPoint) fileMenuItem).getJComponent());
 					}
 				}
 			}
 			final JMenuItem exitMenuItem = new JMenuItem();
-			exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/delete.png"))); //NON-NLS
+			exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/delete.png"))); // NON-NLS
 			exitMenuItem.setText(resourceBundle.getString("exitMenuItem.text"));
-			exitMenuItem.setName("exitMenuItem"); //NON-NLS
-			exitMenuItem.addActionListener(new ActionListener()
-			{
+			exitMenuItem.setName("exitMenuItem"); // NON-NLS
+			exitMenuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
@@ -214,56 +258,67 @@ public class PluginMainApplication
 
 			final JMenu editMenu = new JMenu(resourceBundle.getString("application.editLabel"));
 
-			for (final ExtensionPoint editMenuItem : pluginService.getExtensions("edit_menu")) { //NON-NLS
-				if (editMenuItem instanceof JComponentExtensionPoint) {
-					if (((JComponentExtensionPoint) editMenuItem).getJComponent() instanceof JMenuItem) {
+			for (final ExtensionPoint editMenuItem : pluginService.getExtensions("edit_menu"))
+			{ // NON-NLS
+				if (editMenuItem instanceof JComponentExtensionPoint)
+				{
+					if (((JComponentExtensionPoint) editMenuItem).getJComponent() instanceof JMenuItem)
+					{
 						editMenu.add((JMenuItem) ((JComponentExtensionPoint) editMenuItem).getJComponent());
-					} else if (((JComponentExtensionPoint) editMenuItem).getJComponent() instanceof JMenu) {
+					} else if (((JComponentExtensionPoint) editMenuItem).getJComponent() instanceof JMenu)
+					{
 						editMenu.add((JMenuItem) ((JComponentExtensionPoint) editMenuItem).getJComponent());
 					}
 				}
 			}
-			if (editMenu.getItemCount() > 0) {
+			if (editMenu.getItemCount() > 0)
+			{
 				menuBar.add(editMenu);
 			}
 
 			final JMenuItem wikiMenuItem = new JMenuItem(resourceBundle.getString("application.wikiLabel"));
-			wikiMenuItem.addActionListener(new ActionListener()
-			{
+			wikiMenuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
-					if (Desktop.isDesktopSupported()) {
-						try {
+					if (Desktop.isDesktopSupported())
+					{
+						try
+						{
 							Desktop.getDesktop().browse(new URI(resourceBundle.getString("wikiURI")));
-						} catch (IOException e1) {
+						} catch (IOException e1)
+						{
 							e1.printStackTrace();
-						} catch (URISyntaxException e1) {
+						} catch (URISyntaxException e1)
+						{
 							e1.printStackTrace();
 						}
 					}
 				}
 			});
 			final JMenuItem changelogMenuItem = new JMenuItem(resourceBundle.getString("application.changelogLabel"));
-			changelogMenuItem.addActionListener(new ActionListener()
-			{
+			changelogMenuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
-					if (Desktop.isDesktopSupported()) {
-						try {
+					if (Desktop.isDesktopSupported())
+					{
+						try
+						{
 							Desktop.getDesktop().browse(new URI(resourceBundle.getString("changeLog")));
-						} catch (IOException e1) {
+						} catch (IOException e1)
+						{
 							e1.printStackTrace();
-						} catch (URISyntaxException e1) {
+						} catch (URISyntaxException e1)
+						{
 							e1.printStackTrace();
 						}
 					}
 				}
 			});
-			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
-			aboutMenuItem.addActionListener(new ActionListener()
-			{
+			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource(
+					"/youtubeuploader/resources/images/application_home.png"))); // NON-NLS
+			aboutMenuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
@@ -275,31 +330,34 @@ public class PluginMainApplication
 				}
 			});
 
-			final JMenuItem logfileCommitMenuItem = new JMenuItem(resourceBundle.getString("application.logfileLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/logfile_commit.png"))); //NON-NLS
-			logfileCommitMenuItem.addActionListener(new ActionListener()
-			{
+			final JMenuItem logfileCommitMenuItem = new JMenuItem(resourceBundle.getString("application.logfileLabel"), new ImageIcon(getClass()
+					.getResource("/youtubeuploader/resources/images/logfile_commit.png"))); // NON-NLS
+			logfileCommitMenuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
-					try {
+					try
+					{
 						LogfileComitter.sendMail("menu");
-						JOptionPane.showMessageDialog(mainFrame, "Logfile sent."); //NON-NLS
-					} catch (EmailException ignored) {
-						JOptionPane.showMessageDialog(mainFrame, "Failed sending logfile."); //NON-NLS
+						JOptionPane.showMessageDialog(mainFrame, "Logfile sent."); // NON-NLS
+					} catch (EmailException ignored)
+					{
+						JOptionPane.showMessageDialog(mainFrame, "Failed sending logfile."); // NON-NLS
 					}
 				}
 			});
 
 			final JMenuItem pluginMenuItem = new JMenuItem(resourceBundle.getString("application.pluginsLabel"));
-			pluginMenuItem.addActionListener(new ActionListener()
-			{
-				@Override public void actionPerformed(final ActionEvent e)
+			pluginMenuItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e)
 				{
 					final PluginViewPanel pluginViewPanel = injector.getInstance(PluginViewPanel.class);
 					pluginViewPanel.run();
 					pluginViewPanel.setPluggableList(pluggableList);
-					pluginViewPanel.setTitle(resourceBundle.getString("pluginDialogTitle")); //NON-NLS
-					pluginViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/youtubeuploader/resources/images/film.png"))); //NON-NLS
+					pluginViewPanel.setTitle(resourceBundle.getString("pluginDialogTitle")); // NON-NLS
+					pluginViewPanel.setIconImage(Toolkit.getDefaultToolkit().getImage(
+							getClass().getResource("/youtubeuploader/resources/images/film.png"))); // NON-NLS
 					pluginViewPanel.pack();
 					pluginViewPanel.setLocationRelativeTo(mainFrame);
 					pluginViewPanel.setVisible(true);
@@ -319,9 +377,7 @@ public class PluginMainApplication
 
 	private void initComponents()
 	{
-		if (GraphicsEnvironment.isHeadless()) {
-			return;
-		}
+		if (GraphicsEnvironment.isHeadless()) { return; }
 		menuBar = new JMenuBar();
 		menuBar.setMinimumSize(new Dimension(111, 21));
 		menuBar.setName(PluginMainApplication.MENU_BAR);
@@ -329,51 +385,34 @@ public class PluginMainApplication
 		mainFrame.setPreferredSize(new Dimension(1050, 575));
 		mainFrame.setMinimumSize(new Dimension(1050, 575));
 		mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		mainFrame.addWindowListener(new WindowAdapter()
-		{
+		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent e)
 			{
 				boolean flag = true;
-				for (final ExtensionPoint element : pluginService.getExtensions("exit")) { //NON-NLS
+				for (final ExtensionPoint element : pluginService.getExtensions("exit"))
+				{ // NON-NLS
 					final ExitExtensionPoint exitExtensionPoint = (ExitExtensionPoint) element;
 					flag = exitExtensionPoint.canExit();
-					if (!flag) {
+					if (!flag)
+					{
 						break;
 					}
 				}
-				if (flag) {
+				if (flag)
+				{
 					pluginManager.endPlugins();
 					System.exit(0);
 				}
 			}
 		});
-		if (Computer.isMac()) {
-			final InputMap im = (InputMap) UIManager.get("TextField.focusInputMap"); //NON-NLS
+		if (Computer.isMac())
+		{
+			final InputMap im = (InputMap) UIManager.get("TextField.focusInputMap"); // NON-NLS
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
 		}
 		injector.getInstance(JFileChooser.class).setCurrentDirectory(new File(System.getProperty("user.home")));
 	}
-
-	@EventTopicSubscriber(topic = DesignManager.UPDATE_UI)
-	public void onDesignChanged(final String topic, final String o)
-	{
-		if (GraphicsEnvironment.isHeadless()) {
-			return;
-		}
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override public void run()
-			{
-				try {
-					SwingUtilities.updateComponentTreeUI(mainFrame);
-				} catch (Exception ignored) {
-					throw new RuntimeException("This shouldn't happen");
-				}
-			}
-		});
-	}
 }
-

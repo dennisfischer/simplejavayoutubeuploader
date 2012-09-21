@@ -19,31 +19,30 @@
 
 package org.chaosfisch.youtubeuploader.modules;
 
+import java.awt.GraphicsEnvironment;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+import org.chaosfisch.util.Log4JTypeListener;
+import org.chaosfisch.util.PluginManagerImpl;
+import org.chaosfisch.util.PluginServiceImpl;
+import org.chaosfisch.util.plugin.PluginManager;
+import org.chaosfisch.util.plugin.PluginService;
+import org.chaosfisch.youtubeuploader.controller.PluginController;
+import org.chaosfisch.youtubeuploader.services.impl.PropertyFileSettingsPersisterImpl;
+import org.chaosfisch.youtubeuploader.services.impl.SettingsServiceImpl;
+import org.chaosfisch.youtubeuploader.services.spi.SettingsPersister;
+import org.chaosfisch.youtubeuploader.services.spi.SettingsService;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
-import org.chaosfisch.plugin.PluginManager;
-import org.chaosfisch.plugin.PluginService;
-import org.chaosfisch.youtubeuploader.controller.PluginController;
-import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
-import org.chaosfisch.youtubeuploader.services.settingsservice.impl.PropertyFileSettingsPersisterImpl;
-import org.chaosfisch.youtubeuploader.services.settingsservice.impl.SettingsServiceImpl;
-import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsPersister;
-import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
-import org.chaosfisch.youtubeuploader.util.PluginManagerImpl;
-import org.chaosfisch.youtubeuploader.util.PluginServiceImpl;
-import org.chaosfisch.youtubeuploader.util.logger.Log4JTypeListener;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 26.02.12
- * Time: 17:33
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: Dennis Date: 26.02.12 Time: 17:33 To change
+ * this template use File | Settings | File Templates.
  */
 public class BindingsModule extends AbstractModule
 {
@@ -52,11 +51,11 @@ public class BindingsModule extends AbstractModule
 	{
 		bind(PluginManager.class).to(PluginManagerImpl.class).in(Singleton.class);
 		bind(PluginService.class).toInstance(new PluginServiceImpl());
-		bind(DesignManager.class).in(Singleton.class);
 		bind(PluginController.class).in(Singleton.class);
 		bindListener(Matchers.any(), new Log4JTypeListener());
-		if (!GraphicsEnvironment.isHeadless()) {
-			bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); //NON-NLS
+		if (!GraphicsEnvironment.isHeadless())
+		{
+			bind(JFrame.class).annotatedWith(Names.named("mainFrame")).to(JFrame.class).in(Singleton.class); // NON-NLS
 			bind(JFileChooser.class).in(Singleton.class);
 		}
 		bind(SettingsService.class).to(SettingsServiceImpl.class).in(Singleton.class);
