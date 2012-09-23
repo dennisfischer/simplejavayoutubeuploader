@@ -1,0 +1,43 @@
+#refreshPlaylists {
+	-fx-graphic:url("images/refresh.png");
+}
+
+#removeAccount, #removePreset, #removeQueue {
+	-fx-graphic:url("images/delete.png");
+}
+
+#addUpload {
+	-fx-graphic:url("images/add.png");
+}
+
+#openFiles, #openDefaultdir, #openEnddir{
+	-fx-graphic: url("images/folder_explore.png");
+}
+
+#resetUpload, #abortQueue {
+	-fx-graphic: url("images/cancel.png");
+}
+
+#savePreset{
+	-fx-graphic: url("images/save.png");
+}
+
+#editQueue{
+	-fx-graphic: url("images/pencil.png");
+}
+
+#queueTop{
+	-fx-graphic: url("images/arrow-double-up.png");
+}
+
+#queueUp{
+	-fx-graphic: url("images/arrow_up.png");
+}
+
+#queueDown{
+	-fx-graphic: url("images/arrow_down.png");
+}
+
+#queueBottom{
+	-fx-graphic: url("images/arrow-double-down.png");
+}

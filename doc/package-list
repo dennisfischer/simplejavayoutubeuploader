@@ -1,0 +1,15 @@
+org.chaosfisch.util
+org.chaosfisch.util.plugin
+org.chaosfisch.util.plugin.ExtensionPoints
+org.chaosfisch.youtubeuploader
+org.chaosfisch.youtubeuploader.controller
+org.chaosfisch.youtubeuploader.dao.impl
+org.chaosfisch.youtubeuploader.dao.mappers
+org.chaosfisch.youtubeuploader.dao.spi
+org.chaosfisch.youtubeuploader.models
+org.chaosfisch.youtubeuploader.modules
+org.chaosfisch.youtubeuploader.services
+org.chaosfisch.youtubeuploader.services.socialize
+org.chaosfisch.youtubeuploader.services.socialize.providers
+org.chaosfisch.youtubeuploader.services.uploader
+org.chaosfisch.youtubeuploader.view

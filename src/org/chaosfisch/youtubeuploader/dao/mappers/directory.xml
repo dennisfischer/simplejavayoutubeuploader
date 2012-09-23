@@ -1,0 +1,184 @@
+<!--
+  Copyright (c) 2012 Dennis Fischer.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/gpl.html
+  
+  Contributors:
+      Dennis Fischer
+-->
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.chaosfisch.youtubeuploader.dao.mappers.DirectoryMapper">
+
+	<sql id="accountColumns">
+		A.identity AS account_identity, A.name AS account_name, A.password AS account_password, A.secret AS account_secret
+	</sql>
+	<sql id="playlistColumns">
+		P.identity AS playlist_identity, P.playlistKey as playlist_key, P.title AS playlist_title,
+		P.url AS playlist_url, P.summary AS playlist_summary, P.number as playlist_number
+	</sql>
+
+	<resultMap id="presetMap" type="Preset" autoMapping="true">
+		<id property="identity" column="identity"/>
+		<association property="account" javaType="Account">
+			<id property="identity" column="account_identity"/>
+			<result property="name" column="account_name"/>
+			<result property="password" column="account_password"/>
+			<result property="secret" column="account_secret"/>
+		</association>
+		<association property="playlist" javaType="Playlist">
+			<id property="identity" column="playlist_identity"/>
+			<result property="playlistKey" column="playlist_key"/>
+			<result property="title" column="playlist_title"/>
+			<result property="url" column="playlist_url"/>
+			<result property="summary" column="playlist_summary"/>
+			<result property="number" column="playlist_number"/>
+		</association>
+	</resultMap>
+
+	<sql id="presetSelectList">
+		identity as preset_identity,
+		title as preset_title,
+		category as preset_category,
+		comment as preset_comment,
+		commentVote as preset_commentVote,
+		defaultDir as preset_defaultDir,
+		description as preset_description,
+		embed as preset_embed,
+		keywords as preset_keywords,
+		mobile as preset_mobile,
+		name as preset_name,
+		numberModifier as preset_numberModifier,
+		videoResponse as preset_videoResponse,
+		visibility as preset_visibility,
+		rate as preset_rate,
+		account_id as preset_account_id,
+		playlist_id as preset_playlist_id
+	</sql>
+
+	<resultMap id="directoryMap" type="Directory" autoMapping="true">
+		<association property="preset" javaType="Preset">
+			<id property="identity" column="preset_identity"/>
+			<result property="title" column="preset_title"/>
+			<result property="category" column="preset_category"/>
+			<result property="comment" column="preset_comment"/>
+			<result property="commentvote" column="preset_commentVote"/>
+			<result property="defaultDir" column="preset_defaultDir"/>
+			<result property="description" column="preset_description"/>
+			<result property="embed" column="preset_embed"/>
+			<result property="keywords" column="preset_keywords"/>
+			<result property="mobile" column="preset_mobile"/>
+			<result property="name" column="preset_name"/>
+			<result property="numberModifier" column="preset_numberModifier"/>
+			<result property="videoresponse" column="preset_videoResponse"/>
+			<result property="visibility" column="preset_visibility"/>
+			<result property="rate" column="preset_rate"/>
+			<result property="account" column="preset_account_id"/>
+			<result property="playlist" column="preset_playlist_id"/>
+			<association property="account" javaType="Account">
+				<id property="identity" column="account_identity"/>
+				<result property="name" column="account_name"/>
+				<result property="password" column="account_password"/>
+				<result property="secret" column="account_secret"/>
+			</association>
+			<association property="playlist" javaType="Playlist">
+				<id property="identity" column="playlist_identity"/>
+				<result property="playlistKey" column="playlist_key"/>
+				<result property="title" column="playlist_title"/>
+				<result property="url" column="playlist_url"/>
+				<result property="summary" column="playlist_summary"/>
+				<result property="number" column="playlist_number"/>
+			</association>
+		</association>
+	</resultMap>
+
+	<select id="findDirectories" parameterType="Directory" resultMap="directoryMap">
+		SELECT directories.*,
+		<include refid="presetSelectList"/>,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM DIRECTORIES
+		INNER JOIN PRESETS ON (presets.identity = directories.preset_id)
+		INNER JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		<where>
+			<if test="identity != null">identity = #{identity}</if>
+			<if test="directory != null">AND directory = #{directory}</if>
+			<if test="active != null">AND active = #{active}</if>
+			<if test="locked != null">AND locked = #{locked}</if>
+			<if test="preset != null">
+				<if test="preset.identity != null">AND preset_id = #{preset.identity}</if>
+			</if>
+		</where>
+		ORDER BY directory ASC
+	</select>
+
+	<select id="findMultiple" parameterType="Directory" resultMap="directoryMap">
+		SELECT directories.*,
+		<include refid="presetSelectList"/>,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM DIRECTORIES
+		INNER JOIN PRESETS ON (presets.identity = directories.preset_id)
+		INNER JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		<where>
+			<if test="identity != null">identity = #{identity}</if>
+			<if test="directory != null">AND directory = #{directory}</if>
+			<if test="active != null">AND active = #{active}</if>
+			<if test="locked != null">AND locked = #{locked}</if>
+			<if test="preset != null">
+				<if test="preset.identity != null">AND preset_id = #{preset.identity}</if>
+			</if>
+		</where>
+		ORDER BY directory ASC
+	</select>
+
+	<select id="getDirectories" resultMap="directoryMap">
+		SELECT directories.*,
+		<include refid="presetSelectList"/>,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM DIRECTORIES
+		INNER JOIN PRESETS ON (presets.identity = directories.preset_id)
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		ORDER BY directory ASC
+	</select>
+
+	<select id="getQualifiedPresets" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE presets.description IS NOT NULL AND presets.keywords IS NOT NULL AND presets.category IS NOT NULL AND presets.account_id IS NOT NULL AND
+		presets.description != '' AND presets.keywords != '' AND presets.category != ''
+	</select>
+
+	<delete id="deleteDirectory" parameterType="Directory" flushCache="true">
+		DELETE FROM DIRECTORIES WHERE identity = #{identity}
+	</delete>
+
+	<insert id="createDirectory" parameterType="Directory">
+		INSERT INTO DIRECTORIES (identity, directory, active, locked, preset_id) VALUES (null, #{directory}, #{active}, #{locked}, #{preset.identity})
+		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
+			CALL IDENTITY();
+		</selectKey>
+	</insert>
+
+	<update id="updateDirectory" parameterType="Directory">
+		UPDATE DIRECTORIES SET identity	= #{identity},
+							directory 	= #{directory},
+							active 		= #{active},
+							locked 		= #{locked},
+							preset_id   = #{preset.identity}
+		WHERE identity = #{identity}
+	</update>
+</mapper>
+

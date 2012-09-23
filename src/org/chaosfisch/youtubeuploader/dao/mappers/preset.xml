@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012 Dennis Fischer.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/gpl.html
+  
+  Contributors:
+      Dennis Fischer
+-->
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.chaosfisch.youtubeuploader.dao.mappers.PresetMapper">
+
+	<sql id="accountColumns">
+		A.identity AS account_identity, A.name AS account_name, A.password AS account_password, A.secret AS account_secret
+	</sql>
+	<sql id="playlistColumns">
+		P.identity AS playlist_identity, P.playlistKey as playlist_key, P.title AS playlist_title,
+		P.url AS playlist_url, P.summary AS playlist_summary, P.number as playlist_number
+	</sql>
+
+	<resultMap id="presetMap" type="Preset" autoMapping="true">
+		<id property="identity" column="identity"/>
+		<association property="account" javaType="Account">
+			<id property="identity" column="account_identity"/>
+			<result property="name" column="account_name"/>
+			<result property="password" column="account_password"/>
+			<result property="secret" column="account_secret"/>
+		</association>
+		<association property="playlist" javaType="Playlist">
+			<id property="identity" column="playlist_identity"/>
+			<result property="playlistKey" column="playlist_key"/>
+			<result property="title" column="playlist_title"/>
+			<result property="url" column="playlist_url"/>
+			<result property="summary" column="playlist_summary"/>
+			<result property="number" column="playlist_number"/>
+		</association>
+	</resultMap>
+
+	<sql id="insertValuesList">
+		(title, category, comment, commentVote, defaultDir, description, embed, keywords, mobile,
+		 name, numberModifier, videoResponse, visibility, rate, account_id, playlist_id, monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, enddir, license,
+		 claim, claimtype, claimpolicy, partnerOverlay, partnerTrueview, partnerProduct, partnerInstream, asset, webTitle, webDescription, webID, webNotes,
+		 tvTMSID, tvISAN, tvEIDR, showTitle, episodeTitle, seasonNb, episodeNb, tvID, tvNotes, movieTitle, movieDescription,
+		 movieTMSID, movieISAN, movieEIDR, movieID, movieNotes)
+		VALUES (#{title}, #{category}, #{comment}, #{commentvote}, #{defaultDir}, #{description}, #{embed}, #{keywords},
+			#{mobile}, #{name}, #{numberModifier}, #{videoresponse}, #{visibility}, #{rate}, #{account.identity}, #{playlist.identity}, #{monetize},
+			#{monetizeOverlay}, #{monetizeTrueview}, #{monetizeProduct}, #{enddir}, #{license}, #{claim}, #{claimtype}, #{claimpolicy}, #{partnerOverlay}, #{partnerTrueview},
+		 	#{partnerProduct}, #{partnerInstream}, #{asset}, #{webTitle}, #{webDescription}, #{webID}, #{webNotes}, #{tvTMSID}, #{tvISAN}, #{tvEIDR},
+		 	#{showTitle}, #{episodeTitle}, #{seasonNb}, #{episodeNb}, #{tvID}, #{tvNotes}, #{movieTitle}, #{movieDescription}, #{movieTMSID}, #{movieISAN},
+		 	#{movieEIDR}, #{movieID}, #{movieNotes})
+	</sql>
+
+	<sql id="updateSetList">
+		account_id 			= #{account.identity},
+		playlist_id 		= #{playlist.identity},
+		identity 			= #{identity},
+		title 				= #{title},
+		category 			= #{category},
+		comment 			= #{comment},
+		commentvote 		= #{commentvote},
+		defaultDir 			= #{defaultDir},
+		description 		= #{description},
+		embed 				= #{embed},
+		keywords 			= #{keywords},
+		mobile 				= #{mobile},
+		name 				= #{name},
+		numberModifier 		= #{numberModifier},
+		videoresponse 		= #{videoresponse},
+		visibility 			= #{visibility},
+		rate 				= #{rate},
+		monetize 			= #{monetize},
+		monetizeOverlay 	= #{monetizeOverlay},
+		monetizeTrueview 	= #{monetizeTrueview},
+		monetizeProduct 	= #{monetizeProduct},
+		enddir 				= #{enddir},
+		license 			= #{license},
+		claim				= #{claim},
+	  	claimtype  			= #{claimtype},
+	 	claimpolicy    		= #{claimpolicy},
+	 	partnerOverlay  	= #{partnerOverlay},
+		partnerTrueview 	= #{partnerTrueview},
+		partnerProduct  	= #{partnerProduct},
+		partnerInstream 	= #{partnerInstream},
+ 		asset           	= #{asset},
+		webTitle        	= #{webTitle},
+		webDescription  	= #{webDescription},
+ 		webID          		= #{webID},
+ 		webNotes        	= #{webNotes},
+		tvTMSID         	= #{tvTMSID},
+		tvISAN          	= #{tvISAN},
+		tvEIDR          	= #{tvEIDR},
+		showTitle       	= #{showTitle},
+		episodeTitle   		= #{episodeTitle},
+		seasonNb        	= #{seasonNb},
+		episodeNb       	= #{episodeNb},
+		tvID            	= #{tvID},
+		tvNotes        		= #{tvNotes},
+		movieTitle      	= #{movieTitle},
+		movieDescription	= #{movieDescription},
+		movieTMSID      	= #{movieTMSID},
+		movieISAN       	= #{movieISAN},
+		movieEIDR       	= #{movieEIDR},
+		movieID         	= #{movieID},
+		movieNotes      	= #{movieNotes}
+	</sql>
+
+	<select id="findPreset" parameterType="Preset" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE identity = #{identity}
+	</select>
+
+	<select id="findByAccount" parameterType="Account" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE account_id = #{identity}
+	</select>
+
+	<select id="findByPlaylist" parameterType="Playlist" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM QUEUE
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		WHERE playlist_id = #{identity}
+	</select>
+
+	<select id="getPresets" resultMap="presetMap">
+		SELECT presets.*,
+		<include refid="accountColumns"/>,
+		<include refid="playlistColumns"/>
+		FROM PRESETS
+		LEFT JOIN ACCOUNTS as A ON (A.identity = presets.account_id)
+		LEFT JOIN PLAYLISTS AS P ON (P.identity = presets.playlist_id)
+		ORDER BY name
+	</select>
+
+	<insert id="createPreset" parameterType="Preset">
+		INSERT INTO PRESETS
+		<include refid="insertValuesList"/>
+		<selectKey resultType="int" keyProperty="identity" order="AFTER" statementType="STATEMENT">
+			CALL IDENTITY();
+		</selectKey>
+	</insert>
+
+	<update id="updatePreset" parameterType="Preset">
+		UPDATE PRESETS SET
+		<include refid="updateSetList"/>
+		WHERE identity = #{identity}
+	</update>
+
+	<delete id="deletePreset" parameterType="Preset">
+		DELETE FROM PRESETS WHERE identity = #{identity}
+	</delete>
+</mapper>
