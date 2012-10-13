@@ -25,17 +25,12 @@ import javax.swing.SwingWorker;
 
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.MessageController;
-import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.models.Message;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.socialize.FacebookSocialProvider;
 import org.chaosfisch.youtubeuploader.services.socialize.TwitterSocialProvider;
-import org.scribe.model.Token;
 
 import com.google.inject.Inject;
-import com.jgoodies.validation.ValidationResult;
-import com.jgoodies.validation.ValidationResultModel;
-import com.jgoodies.validation.util.ValidationUtils;
 
 public class SocializeView
 {

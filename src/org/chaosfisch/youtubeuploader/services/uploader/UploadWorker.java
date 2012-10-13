@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.SwingWorker;
 
-import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -47,11 +46,7 @@ import org.chaosfisch.google.auth.GoogleRequestSigner;
 import org.chaosfisch.util.ExtendedPlacerholders;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.ThrottledOutputStream;
-import org.chaosfisch.util.logger.InjectLogger;
 import org.chaosfisch.youtubeuploader.APIData;
-import org.chaosfisch.youtubeuploader.dao.impl.QueueDaoImpl;
-import org.chaosfisch.youtubeuploader.dao.spi.PlaceholderDao;
-import org.chaosfisch.youtubeuploader.dao.spi.PlaylistDao;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Queue;

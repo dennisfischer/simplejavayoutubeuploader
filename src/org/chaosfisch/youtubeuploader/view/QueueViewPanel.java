@@ -35,10 +35,8 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.QueueController;
-import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
-import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
 import com.google.inject.Inject;
 

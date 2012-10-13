@@ -14,13 +14,10 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.Computer;
-import org.chaosfisch.util.logger.InjectLogger;
-import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
 import org.chaosfisch.youtubeuploader.models.Queue;
 
 import com.google.inject.Inject;

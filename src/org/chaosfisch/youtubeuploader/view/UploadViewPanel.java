@@ -40,10 +40,6 @@ import org.chaosfisch.youtubeuploader.models.Queue;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.jgoodies.validation.ValidationResult;
-import com.jgoodies.validation.ValidationResultModel;
-import com.jgoodies.validation.util.ValidationUtils;
-import com.jgoodies.validation.view.ValidationComponentUtils;
 
 public final class UploadViewPanel
 {

@@ -11,7 +11,6 @@ package org.chaosfisch.youtubeuploader;
 
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.inject.Inject;
