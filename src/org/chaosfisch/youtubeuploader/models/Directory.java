@@ -5,77 +5,85 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
-public class Directory
-{
-	public String				directory;
-	public Boolean				active;
-	public Boolean				locked;
-	public transient Integer	identity;
-	public Preset				preset;
+import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
+@Table("DIRECTORIES")
+public class Directory extends Model implements ModelEvents
+{/*
+ * (non-Javadoc)
+ * 
+ * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+ */
 	@Override
-	public String toString()
+	protected void beforeSave()
 	{
-		return "Directory [directory=" + directory + ", active=" + active + ", locked=" + locked + ", preset=" + preset + "]";
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
 	 */
 	@Override
-	public int hashCode()
+	protected void afterSave()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((active == null) ? 0 : active.hashCode());
-		result = prime * result + ((directory == null) ? 0 : directory.hashCode());
-		result = prime * result + ((locked == null) ? 0 : locked.hashCode());
-		result = prime * result + ((preset == null) ? 0 : preset.hashCode());
-		return result;
+		super.afterSave();
+		EventBus.publish(MODEL_POST_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
 	 */
 	@Override
-	public boolean equals(Object obj)
+	protected void beforeCreate()
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Directory)) { return false; }
-		Directory other = (Directory) obj;
-		if (active == null)
-		{
-			if (other.active != null) { return false; }
-		} else if (!active.equals(other.active)) { return false; }
-		if (directory == null)
-		{
-			if (other.directory != null) { return false; }
-		} else if (!directory.equals(other.directory)) { return false; }
-		if (locked == null)
-		{
-			if (other.locked != null) { return false; }
-		} else if (!locked.equals(other.locked)) { return false; }
-		if (preset == null)
-		{
-			if (other.preset != null) { return false; }
-		} else if (!preset.equals(other.preset)) { return false; }
-		return true;
+		super.beforeCreate();
+		EventBus.publish(MODEL_PRE_ADDED, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
+	@Override
+	protected void afterCreate()
+	{
+		super.afterCreate();
+		EventBus.publish(MODEL_POST_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
+	 */
+	@Override
+	protected void beforeDelete()
+	{
+		super.beforeDelete();
+		EventBus.publish(MODEL_PRE_REMOVED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 */
+	@Override
+	protected void afterDelete()
+	{
+		super.afterDelete();
+		EventBus.publish(MODEL_POST_REMOVED, this);
+	}
 }

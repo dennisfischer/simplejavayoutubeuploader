@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.view;
 
 import java.awt.Color;
@@ -35,9 +33,10 @@ import javax.swing.event.ChangeListener;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.QueueController;
+import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.services.SettingsService;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 
@@ -45,25 +44,24 @@ import com.google.inject.Inject;
 
 public final class QueueViewPanel
 {
-	private final QueueController	controller;
-	private JPanel					queuePanel;
-	public JTable					queueTable;
-	private JButton					startenButton;
-	private JButton					stoppenButton;
+	private JButton					abortButton;
+	private JButton					arrowBottom;
+	private JButton					arrowDown;
 	private JButton					arrowTop;
 	private JButton					arrowUp;
-	private JButton					arrowDown;
-	private JButton					arrowBottom;
-	private JComboBox				queueFinishedList;
-	private JButton					editButton;
+	private final QueueController	controller;
 	private JButton					deleteButton;
-	private JComboBox				queueViewList;
-	private JButton					abortButton;
-	private JSpinner				speedLimitSpinner;
+	private JButton					editButton;
 	private JSpinner				maxUploadsSpinner;
+	private JComboBox				queueFinishedList;
+	private JPanel					queuePanel;
+	public JTable					queueTable;
+	private JComboBox				queueViewList;
+	@Inject private SettingsDao		settingsDao;
+	private JSpinner				speedLimitSpinner;
+	private JButton					startenButton;
 
-	@Inject
-	private SettingsService			settingsService;
+	private JButton					stoppenButton;
 
 	@Inject
 	public QueueViewPanel(final QueueController controller)
@@ -75,15 +73,6 @@ public final class QueueViewPanel
 		initListeners();
 
 		AnnotationProcessor.process(this);
-		setup();
-	}
-
-	private void setup()
-	{
-		for (final Queue queue : controller.getQueueService().getAll())
-		{
-			controller.getQueueList().addRow(queue);
-		}
 	}
 
 	private void initComponents()
@@ -112,9 +101,6 @@ public final class QueueViewPanel
 			}
 		});
 
-		queueTable.getColumn(queueTable.getColumnName(6)).setCellRenderer(new ProgressbarTableCellRenderer());
-		queueTable.addMouseListener(new HyperlinkMouseAdapter(5));
-
 		queueTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		// ColumnsAutoSizer.sizeColumnsToFit(this.queueTable);
 		stoppenButton.setEnabled(false);
@@ -125,11 +111,11 @@ public final class QueueViewPanel
 		maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(maxUploadsSpinner, "Max: # Uploads")); // NON-NLS
 
-		queueFinishedList.setModel(new DefaultComboBoxModel(new String[] { resourceBundle.getString("queuefinishedlist.donothing"),
-				resourceBundle.getString("queuefinishedlist.closeapplication"), resourceBundle.getString("queuefinishedlist.shutdown"),
-				resourceBundle.getString("queuefinishedlist.hibernate") }));
-		queueViewList.setModel(new DefaultComboBoxModel(new String[] { resourceBundle.getString("queueviewlist.all"),
-				resourceBundle.getString("queueviewlist.uploads"), resourceBundle.getString("queueviewlist.queue") }));
+		queueFinishedList.setModel(new DefaultComboBoxModel(new String[] { I18nHelper.message("queuefinishedlist.donothing"),
+				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
+				I18nHelper.message("queuefinishedlist.hibernate") }));
+		queueViewList.setModel(new DefaultComboBoxModel(new String[] { I18nHelper.message("queueviewlist.all"),
+				I18nHelper.message("queueviewlist.uploads"), I18nHelper.message("queueviewlist.queue") }));
 	}
 
 	private void initListeners()
@@ -139,19 +125,19 @@ public final class QueueViewPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (Boolean.parseBoolean((String) settingsService.get("coreplugin.general.uploadconfirmation", "true")))
+				if (Boolean.parseBoolean((String) settingsDao.get("coreplugin.general.uploadconfirmation", "true")))
 				{ // NON-NLS
-					final JCheckBox checkBox = new JCheckBox(resourceBundle.getString("upload.confirmdialog.checkbox"));
-					final Object[] message = { resourceBundle.getString("upload.confirmdialog.message"), checkBox };
+					final JCheckBox checkBox = new JCheckBox(I18nHelper.message("upload.confirmdialog.checkbox"));
+					final Object[] message = { I18nHelper.message("upload.confirmdialog.message"), checkBox };
 
-					final int result = JOptionPane.showConfirmDialog(null, message, resourceBundle.getString("youtube.confirmdialog.title"),
+					final int result = JOptionPane.showConfirmDialog(null, message, I18nHelper.message("youtube.confirmdialog.title"),
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (result != 0) { return; }
 
 					if (checkBox.isSelected())
 					{
-						settingsService.set("coreplugin.general.uploadconfirmation", "false"); // NON-NLS
-						settingsService.save();
+						settingsDao.set("coreplugin.general.uploadconfirmation", "false"); // NON-NLS
+						settingsDao.save();
 					}
 				}
 
@@ -299,6 +285,13 @@ public final class QueueViewPanel
 		});
 	}
 
+	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
+	public void onQueueStart(final String topic, final Object o)
+	{
+		startenButton.setEnabled(false);
+		stoppenButton.setEnabled(true);
+	}
+
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
 	public void onUploadFinished(final String topic, final Object o)
 	{
@@ -306,10 +299,4 @@ public final class QueueViewPanel
 		stoppenButton.setEnabled(false);
 	}
 
-	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
-	public void onQueueStart(final String topic, final Object o)
-	{
-		startenButton.setEnabled(false);
-		stoppenButton.setEnabled(true);
-	}
 }

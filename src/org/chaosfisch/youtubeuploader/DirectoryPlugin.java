@@ -5,8 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
 /*
  * Copyright (c) 2012, Dennis Fischer
@@ -30,7 +29,6 @@
 package org.chaosfisch.youtubeuploader;
 
 import org.apache.log4j.Logger;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicPatternSubscriber;
 import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.logger.InjectLogger;
@@ -42,16 +40,13 @@ import com.google.inject.Injector;
 
 public class DirectoryPlugin
 {
-	@Inject
-	DirectoryWorker	directoryWorker;
-	@Inject
-	Injector		injector;
-	@InjectLogger
-	Logger			logger;
+	@Inject DirectoryWorker	directoryWorker;
+	@Inject Injector		injector;
+	@InjectLogger Logger	logger;
 
-	public DirectoryPlugin()
+	public void onEnd()
 	{
-		AnnotationProcessor.process(this);
+		directoryWorker.interrupt();
 	}
 
 	public void onStart()
@@ -59,15 +54,10 @@ public class DirectoryPlugin
 		directoryWorker.start();
 	}
 
-	public void onEnd()
-	{
-		directoryWorker.interrupt();
-	}
-
 	@EventTopicPatternSubscriber(topicPattern = "onDirectory(.*)", referenceStrength = ReferenceStrength.WEAK)
 	public void refreshDirectoryWorker(final String topic, final Directory directory)
 	{
-		logger.debug("Refreshing directory worker!");
+		logger.info("Refreshing directory worker!");
 		directoryWorker.stopActions();
 		directoryWorker.interrupt();
 		directoryWorker = injector.getInstance(DirectoryWorker.class);

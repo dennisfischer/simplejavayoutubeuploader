@@ -5,13 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
 public enum QueuePosition
 {
-	QUEUE_TOP, QUEUE_UP, QUEUE_DOWN, QUEUE_BOTTOM
+	QUEUE_BOTTOM, QUEUE_DOWN, QUEUE_TOP, QUEUE_UP
 }

@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader;
 
 import java.awt.AWTException;
@@ -21,21 +19,31 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.event.MouseInputAdapter;
-
-import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 
 public class SystemTrayPlugin
 {
 
-	private TrayIcon			trayIcon;
 	public static final String	MESSAGE	= "onMessage";
+	private TrayIcon			trayIcon;
 
-	public SystemTrayPlugin()
+	public void onEnd()
 	{
-		AnnotationProcessor.process(this);
+		if (SystemTray.isSupported())
+		{
+			SystemTray.getSystemTray().remove(trayIcon);
+		}
+	}
+
+	@EventTopicSubscriber(topic = SystemTrayPlugin.MESSAGE)
+	public void onMessage(final String topic, final Object o)
+	{
+		if (trayIcon != null)
+		{
+			trayIcon.displayMessage(I18nHelper.message("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
+		}
 	}
 
 	public void onStart()
@@ -67,41 +75,50 @@ public class SystemTrayPlugin
 		popup.add(itemEnd);
 		trayIcon = new TrayIcon(image, I18nHelper.message("application.title"), popup);
 		trayIcon.setImageAutoSize(true);
-		trayIcon.addMouseListener(new MouseInputAdapter() {
+		trayIcon.addMouseListener(new MouseListener() {
 
 			@Override
-			public void mouseClicked(final MouseEvent e)
+			public void mouseReleased(MouseEvent e)
 			{
-				if (e.getButton() == MouseEvent.BUTTON1)
-				{
-					// @TODO Show Window
-				}
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
 			}
 		});
 
 		try
 		{
 			SystemTray.getSystemTray().add(trayIcon);
-		} catch (AWTException e1)
+		} catch (final AWTException e1)
 		{
 			e1.printStackTrace();
-		}
-	}
-
-	public void onEnd()
-	{
-		if (SystemTray.isSupported())
-		{
-			SystemTray.getSystemTray().remove(trayIcon);
-		}
-	}
-
-	@EventTopicSubscriber(topic = SystemTrayPlugin.MESSAGE)
-	public void onMessage(final String topic, final Object o)
-	{
-		if (trayIcon != null)
-		{
-			trayIcon.displayMessage(I18nHelper.message("informationMessageLabel"), o.toString(), TrayIcon.MessageType.INFO);
 		}
 	}
 }

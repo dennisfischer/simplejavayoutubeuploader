@@ -5,8 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
 /*
  * Copyright (c) 2012, Dennis Fischer
@@ -40,16 +39,12 @@ package org.chaosfisch.youtubeuploader.controller;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import javax.swing.ComboBoxModel;
-
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.dao.spi.AccountDao;
 import org.chaosfisch.youtubeuploader.dao.spi.PlaceholderDao;
 import org.chaosfisch.youtubeuploader.dao.spi.PresetDao;
+import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
@@ -59,31 +54,42 @@ import org.chaosfisch.youtubeuploader.models.Queue;
 public class UploadController
 {
 
+	private PlaceholderDao	placeholderDao;
+	private AccountDao		accountDao;
+	private PresetDao		presetDao;
+	private QueueDao		queueDao;
+
+	public void addPlaceholder(final String placeholder, final String replacement)
+	{
+		final Placeholder placeholderObject = new Placeholder();
+		placeholderObject.placeholder = placeholder;
+		placeholderObject.replacement = replacement;
+		placeholderDao.create(placeholderObject);
+	}
+
 	public void deleteAccount(final Account account)
 	{
-		accountService.delete(account);
+		accountDao.delete(account);
+	}
+
+	public void deletePlaceholder(final Placeholder placeholder)
+	{
+		placeholderDao.delete(placeholder);
 	}
 
 	public void deletePreset(final Preset preset)
 	{
+		presetDao.delete(preset);
+	}
 
-		presetListModel.removeElement(preset);
-		presetService.delete(preset);
+	public void savePlaceholder(final Placeholder placeholder)
+	{
+		placeholderDao.update(placeholder);
 	}
 
 	public void savePreset(final Preset preset)
 	{
-		presetService.update(preset);
-	}
-
-	public GenericListModel<Account> getAccountListModel()
-	{
-		return accountListModel;
-	}
-
-	public AccountDao getAccountService()
-	{
-		return accountService;
+		presetDao.update(preset);
 	}
 
 	public void submitUpload(final String filepath, final Account account, final String category)
@@ -226,99 +232,6 @@ public class UploadController
 			queue.thumbnailimage = thumbnail;
 		}
 
-		queueService.create(queue);
-	}
-
-	public GenericListModel<Preset> getPresetListModel()
-	{
-		return presetListModel;
-	}
-
-	public ComboBoxModel getPlaylistListModel()
-	{
-		return playlistListModel;
-	}
-
-	public void synchronizePlaylists(final List<Account> accounts)
-	{
-		playlistService.synchronizePlaylists(accounts);
-	}
-
-	@EventTopicSubscriber(topic = "playlistsSynchronized", referenceStrength = ReferenceStrength.STRONG)
-	public void onPlaylistSynchronize(final String topic, final Object object)
-	{
-		changeAccount((Account) accountListModel.getSelectedItem());
-	}
-
-	public void changeAccount(final Account account)
-	{
-		playlistListModel.removeAllElements();
-		for (final Playlist playlist : playlistService.getByAccount(account))
-		{
-			playlistListModel.addElement(playlist);
-		}
-	}
-
-	public void importAccount()
-	{
-		importManager.importAccount();
-	}
-
-	public void importPreset()
-	{
-		importManager.importPreset();
-	}
-
-	public void importQueue()
-	{
-		importManager.importQueue();
-	}
-
-	public void exportAccount()
-	{
-		exportManager.exportAccount();
-	}
-
-	public void exportPreset()
-	{
-		exportManager.exportPreset();
-	}
-
-	public void exportQueue()
-	{
-		exportManager.exportQueue();
-	}
-
-	public PresetDao getPresetService()
-	{
-		return presetService;
-	}
-
-	public void addPlaceholder(final String placeholder, final String replacement)
-	{
-		final Placeholder placeholderObject = new Placeholder();
-		placeholderObject.placeholder = placeholder;
-		placeholderObject.replacement = replacement;
-		placeholderService.create(placeholderObject);
-	}
-
-	public void deletePlaceholder(final Placeholder placeholder)
-	{
-		placeholderService.delete(placeholder);
-	}
-
-	public void savePlaceholder(final Placeholder placeholder)
-	{
-		placeholderService.update(placeholder);
-	}
-
-	public PlaceholderTableModel getPlaceholderModel()
-	{
-		return placeholderModel;
-	}
-
-	public PlaceholderDao getPlaceholderService()
-	{
-		return placeholderService;
+		queueDao.create(queue);
 	}
 }

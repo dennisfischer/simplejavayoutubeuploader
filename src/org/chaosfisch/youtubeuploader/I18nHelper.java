@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader;
 
 import java.util.ResourceBundle;
@@ -21,6 +19,16 @@ public class I18nHelper
 	static final ResourceBundle	resourceBundle	= ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application");
 
 	/**
+	 * Returns the class resourceBundle
+	 * 
+	 * @return the resourceBundle
+	 */
+	public static ResourceBundle getResourceBundle()
+	{
+		return resourceBundle;
+	}
+
+	/**
 	 * Translates key to user language
 	 * 
 	 * @param key
@@ -29,16 +37,6 @@ public class I18nHelper
 	 */
 	public static String message(final String key)
 	{
-		return resourceBundle.getString(key);
-	}
-
-	/**
-	 * Returns the class resourceBundle
-	 * 
-	 * @return the resourceBundle
-	 */
-	public static ResourceBundle getResourceBundle()
-	{
-		return resourceBundle;
+		return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : "====I18N Missing====";
 	}
 }

@@ -5,45 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
-public class Playlist
+import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
+
+@Table("PLAYLISTS")
+public class Playlist extends Model implements ModelEvents
 {
-	public transient Integer	identity;
-	public String				playlistKey;
-	public String				title;
-	public String				url;
-	public String				summary;
-	public Integer				number;
-	public Account				account;
 
 	@Override
 	public String toString()
 	{
-		return title;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((account == null) ? 0 : account.hashCode());
-		result = prime * result + ((number == null) ? 0 : number.hashCode());
-		result = prime * result + ((playlistKey == null) ? 0 : playlistKey.hashCode());
-		result = prime * result + ((summary == null) ? 0 : summary.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
+		return "[" + get("id") + "," + get("pkey") + "," + get("title") + "]";
 	}
 
 	/*
@@ -52,37 +30,87 @@ public class Playlist
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(Object object)
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Playlist)) { return false; }
-		Playlist other = (Playlist) obj;
-		if (account == null)
-		{
-			if (other.account != null) { return false; }
-		} else if (!account.equals(other.account)) { return false; }
-		if (number == null)
-		{
-			if (other.number != null) { return false; }
-		} else if (!number.equals(other.number)) { return false; }
-		if (playlistKey == null)
-		{
-			if (other.playlistKey != null) { return false; }
-		} else if (!playlistKey.equals(other.playlistKey)) { return false; }
-		if (summary == null)
-		{
-			if (other.summary != null) { return false; }
-		} else if (!summary.equals(other.summary)) { return false; }
-		if (title == null)
-		{
-			if (other.title != null) { return false; }
-		} else if (!title.equals(other.title)) { return false; }
-		if (url == null)
-		{
-			if (other.url != null) { return false; }
-		} else if (!url.equals(other.url)) { return false; }
-		return true;
+
+		if (object == null) return false;
+		else if (!(object instanceof Playlist)) return false;
+		else if (((Model) object).get("pkey").equals(this.get("pkey"))) return true;
+		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+	 */
+	@Override
+	protected void beforeSave()
+	{
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
+	 */
+	@Override
+	protected void afterSave()
+	{
+		super.afterSave();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_UPDATED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
+	 */
+	@Override
+	protected void beforeCreate()
+	{
+		super.beforeCreate();
+		EventBus.publish(MODEL_PRE_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
+	@Override
+	protected void afterCreate()
+	{
+		super.afterCreate();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
+	 */
+	@Override
+	protected void beforeDelete()
+	{
+		super.beforeDelete();
+		EventBus.publish(MODEL_PRE_REMOVED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 */
+	@Override
+	protected void afterDelete()
+	{
+		super.afterDelete();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_REMOVED, this);
+	}
 }

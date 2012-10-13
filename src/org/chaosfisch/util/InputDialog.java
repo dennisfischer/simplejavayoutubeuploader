@@ -1,0 +1,60 @@
+package org.chaosfisch.util;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+
+public class InputDialog extends Stage
+{
+	Button	submit	= new Button("Okay");
+
+	public InputDialog(String title, Object[] data)
+	{
+		super();
+		initOwner(null);
+
+		setTitle(title);
+
+		if (data.length % 2 != 0) { throw new IllegalArgumentException("Object data must be even!"); }
+
+		Group root = new Group();
+		Scene scene = new Scene(root);
+		setScene(scene);
+
+		GridPane gridpane = new GridPane();
+		gridpane.setPadding(new Insets(5));
+		gridpane.setHgap(5);
+		gridpane.setVgap(5);
+
+		for (int i = 0; i < data.length; i++)
+		{
+			if (i % 2 == 0)
+			{
+				final Label label = new Label((String) data[i]);
+				gridpane.add(label, 0, (i) / 2);
+			} else
+			{
+				gridpane.add((Node) data[i], 1, (i - 1) / 2);
+			}
+		}
+
+		gridpane.add(submit, 1, (data.length / 2) + 1);
+		GridPane.setHalignment(submit, HPos.RIGHT);
+		root.getChildren().add(gridpane);
+		sizeToScene();
+		show();
+	}
+
+	public void setCallback(EventHandler<ActionEvent> callback)
+	{
+		submit.setOnAction(callback);
+	}
+}

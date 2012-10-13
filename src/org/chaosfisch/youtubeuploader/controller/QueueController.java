@@ -5,8 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
 /*
  * Copyright (c) 2012, Dennis Fischer
@@ -37,12 +36,9 @@ import javax.swing.UIManager;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.util.plugin.ExtensionPoints.ExitExtensionPoint;
-import org.chaosfisch.util.plugin.ExtensionPoints.ExtensionPoint;
+import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.models.QueueTableModel;
-import org.chaosfisch.youtubeuploader.services.spi.QueuePosition;
-import org.chaosfisch.youtubeuploader.services.spi.QueueService;
+import org.chaosfisch.youtubeuploader.models.QueuePosition;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.view.UploadViewPanel;
 
@@ -51,20 +47,20 @@ import com.google.inject.Inject;
 public class QueueController
 {
 
+	public static final String		ETA_PROPERTY			= "ETA";																						// NON-NLS
+	public static final String		FILE_PROPERTY			= "File";																						// NON-NLS
+	public static final String		PROGRESS_PROPERTY		= "Progress";																					// NON-NLS
+	public static final String		STARTTIME_PROPERTY		= "Starttime";																					// NON-NLS
 	public static final String		STATUS_PROPERTY			= "Status";																					// NON-NLS
 	public static final String		TITLE_PROPERTY			= "Title";																						// NON-NLS
-	public static final String		FILE_PROPERTY			= "File";																						// NON-NLS
-	public static final String		STARTTIME_PROPERTY		= "Starttime";																					// NON-NLS
 	public static final String		UPLOADED_BYTES_PROPERTY	= "Uploaded Bytes";																			// NON-NLS
-	public static final String		ETA_PROPERTY			= "ETA";																						// NON-NLS
-	public static final String		PROGRESS_PROPERTY		= "Progress";																					// NON-NLS
 
 	private final QueueTableModel	queueList;
-	private final QueueDao		queueService;
-	private final Uploader			uploader;
-
+	private final QueueDao			queueService;
 	private final ResourceBundle	resourceBundle			= ResourceBundle
 																	.getBundle("org.chaosfisch.youtubeuploader.plugins.coreplugin.resources.coreplugin");	// NON-NLS
+
+	private final Uploader			uploader;
 
 	@Inject
 	public QueueController(final QueueTableModel queueTableModel, final QueueDao queueService, final Uploader uploader)
@@ -75,48 +71,19 @@ public class QueueController
 		AnnotationProcessor.process(this);
 	}
 
-	public void startQueue()
-	{
-		uploader.start();
-	}
-
-	public void stopQueue()
-	{
-		uploader.stop();
-	}
-
 	public void abortUpload(final Queue queue)
 	{
 		uploader.abort(queue);
 	}
 
+	public void changeMaxUpload(final short maxUploads)
+	{
+		uploader.setMaxUploads(maxUploads);
+	}
+
 	public void changeQueueFinished(final int item)
 	{
 		uploader.setActionOnFinish((short) item);
-	}
-
-	public void moveTop(final Queue queue)
-	{
-		queueService.sort(queue, QueuePosition.QUEUE_TOP);
-		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_TOP);
-	}
-
-	public void moveUp(final Queue queue)
-	{
-		queueService.sort(queue, QueuePosition.QUEUE_UP);
-		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_UP);
-	}
-
-	public void moveDown(final Queue queue)
-	{
-		queueService.sort(queue, QueuePosition.QUEUE_DOWN);
-		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_DOWN);
-	}
-
-	public void moveBottom(final Queue queue)
-	{
-		queueService.sort(queue, QueuePosition.QUEUE_BOTTOM);
-		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_BOTTOM);
 	}
 
 	public void changeQueueView(final short item)
@@ -149,6 +116,11 @@ public class QueueController
 		}
 	}
 
+	public void changeSpeedLimit(final int bytes)
+	{
+		uploader.setSpeedLimit(bytes);
+	}
+
 	public void deleteEntry(final Queue queue)
 	{
 		uploader.abort(queue);
@@ -171,14 +143,47 @@ public class QueueController
 		return queueService;
 	}
 
-	public void changeSpeedLimit(final int bytes)
+	public void moveBottom(final Queue queue)
 	{
-		uploader.setSpeedLimit(bytes);
+		queueService.sort(queue, QueuePosition.QUEUE_BOTTOM);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_BOTTOM);
 	}
 
-	public void changeMaxUpload(final short maxUploads)
+	public void moveDown(final Queue queue)
 	{
-		uploader.setMaxUploads(maxUploads);
+		queueService.sort(queue, QueuePosition.QUEUE_DOWN);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_DOWN);
+	}
+
+	public void moveTop(final Queue queue)
+	{
+		queueService.sort(queue, QueuePosition.QUEUE_TOP);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_TOP);
+	}
+
+	public void moveUp(final Queue queue)
+	{
+		queueService.sort(queue, QueuePosition.QUEUE_UP);
+		queueList.sortQueueEntry(queue, QueuePosition.QUEUE_UP);
+	}
+
+	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
+	public void onQueueStart(final String topic, final Object o)
+	{
+		if (!uploader.isRunning())
+		{
+			uploader.start();
+		}
+	}
+
+	public void startQueue()
+	{
+		uploader.start();
+	}
+
+	public void stopQueue()
+	{
+		uploader.stop();
 	}
 
 	public ExtensionPoint uploadExitPoint()
@@ -198,14 +203,5 @@ public class QueueController
 				return true;
 			}
 		};
-	}
-
-	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
-	public void onQueueStart(final String topic, final Object o)
-	{
-		if (!uploader.isRunning())
-		{
-			uploader.start();
-		}
 	}
 }

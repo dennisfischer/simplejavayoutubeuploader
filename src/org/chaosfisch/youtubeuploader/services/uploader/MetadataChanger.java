@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.services.uploader;
 
 import java.io.DataOutputStream;
@@ -50,30 +48,128 @@ import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.chaosfisch.google.request.Request;
-import org.chaosfisch.google.request.Response;
 import org.chaosfisch.youtubeuploader.models.Queue;
 
 public class MetadataChanger
 {
+	private class LoginGoogle
+	{
+		private static final String	REDIRECT_URL	= "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+		private String				content;
+		private HttpResponse		loginPostResponse;
+
+		public String getContent()
+		{
+			return content;
+		}
+
+		public HttpResponse getLoginPostResponse()
+		{
+			return loginPostResponse;
+		}
+
+		public LoginGoogle invoke() throws IOException, ClientProtocolException, UnsupportedEncodingException, MalformedURLException
+		{
+
+			final String clientLoginParameters = String.format(
+					"Email=%s&Passwd=%s&service=%s&PesistentCookie=0&accountType=HOSTED_OR_GOOGLE&source=googletalk", queue.account.name,
+					queue.account.password, "gaia");
+			final Request clientLoginRequest = new Request.Builder(Request.Method.POST, new URL("https://accounts.google.com/ClientLogin")).build();
+			clientLoginRequest.setContentType("application/x-www-form-urlencoded");
+			final DataOutputStream dataOutputStream = new DataOutputStream(clientLoginRequest.setContent());
+			dataOutputStream.writeBytes(clientLoginParameters);
+			dataOutputStream.flush();
+			final Response clientLoginResponse = clientLoginRequest.send();
+			if (clientLoginResponse.code != 200) { throw new IOException(String.format("Message: %s; Body %s", clientLoginResponse.message,
+					clientLoginResponse.body)); }
+
+			final String sid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("SID=") + 4,
+					clientLoginResponse.body.indexOf("LSID="));
+			final String lsid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("LSID=") + 5,
+					clientLoginResponse.body.indexOf("Auth="));
+
+			final String data = String.format("SID=%s&LSID=%s&service=gaia&Session=true&source=googletalk", sid, lsid);
+			final Request issueTokenRequest = new Request.Builder("POST", new URL("https://www.google.com/accounts/IssueAuthToken")).build();
+			issueTokenRequest.setContentType("application/x-www-form-urlencoded");
+			issueTokenRequest.setFollowRedirects(false);
+			final DataOutputStream testStream = new DataOutputStream(issueTokenRequest.setContent());
+			testStream.writeBytes(data);
+			testStream.flush();
+			final Response issueTokenResponse = issueTokenRequest.send();
+
+			final String tokenAuthUrl = "https://www.google.com/accounts/TokenAuth?auth=" + URLEncoder.encode(issueTokenResponse.body)
+					+ "&service=youtube&continue=" + URLEncoder.encode(String.format(LoginGoogle.REDIRECT_URL, queue.videoId)) + "&source=googletalk";
+
+			final HttpUriRequest loginGet = new HttpGet(tokenAuthUrl);
+			loginPostResponse = httpclient.execute(loginGet);
+			final HttpEntity loginPostResponseEntity = loginPostResponse.getEntity();
+			loginPostResponseEntity.writeTo(output);
+			content = output.toString();
+			EntityUtils.consume(loginPostResponseEntity);
+			return this;
+		}
+	}
+
+	private class RedirectYoutube
+	{
+		private String	content;
+		private String	tmpCook;
+
+		public RedirectYoutube(final String content)
+		{
+			this.content = content;
+		}
+
+		public String getContent()
+		{
+			return content;
+		}
+
+		public String getTmpCook()
+		{
+			return tmpCook;
+		}
+
+		public RedirectYoutube invoke(final HttpMessage loginPostResponse) throws IOException, ClientProtocolException
+		{
+			final Header[] cookies = loginPostResponse.getHeaders("Set-Cookie");
+			tmpCook = "";
+			for (final Header cookie : cookies)
+			{
+				tmpCook += cookie.getValue().substring(0, cookie.getValue().indexOf(";") + 1);
+			}
+			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
+					.replaceAll(Pattern.quote("\\x3d"), "="));
+
+			redirectGet.setHeader("Cookie", tmpCook);
+
+			final HttpResponse redirectResponse = httpclient.execute(redirectGet);
+			final HttpEntity redirectResponseEntity = redirectResponse.getEntity();
+			redirectResponseEntity.writeTo(output);
+			content = output.toString();
+			return this;
+		}
+	}
+
 	final DefaultHttpClient	httpclient	= new DefaultHttpClient();
-	private final Queue		queue;
 
 	final OutputStream		output		= new OutputStream() {
 											private final StringBuilder	string	= new StringBuilder(10000);
-
-											@Override
-											public void write(final int b)
-											{
-												string.append((char) b);
-											}
 
 											@Override
 											public String toString()
 											{
 												return string.toString();
 											}
+
+											@Override
+											public void write(final int b)
+											{
+												string.append((char) b);
+											}
 										};
+
+	private final Queue		queue;
 
 	public MetadataChanger(final Queue queue)
 	{
@@ -86,7 +182,7 @@ public class MetadataChanger
 				try
 				{
 					isRedirect = super.isRedirected(request, response, context);
-				} catch (ProtocolException e)
+				} catch (final ProtocolException e)
 				{
 					e.printStackTrace();
 				}
@@ -101,56 +197,9 @@ public class MetadataChanger
 		httpclient.setCookieStore(new BasicCookieStore());
 	}
 
-	public void run()
+	private String boolConverter(final boolean flag)
 	{
-		try
-		{
-			final LoginGoogle loginGoogle = new LoginGoogle().invoke();
-			final RedirectYoutube redirectYoutube = new RedirectYoutube(loginGoogle.getContent()).invoke(loginGoogle.getLoginPostResponse());
-			changeMetadata(redirectYoutube.getContent(), redirectYoutube.getTmpCook());
-		} catch (ClientProtocolException e)
-		{
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		} finally
-		{
-			// When HttpClient instance is no longer needed,
-			// shut down the connection manager to ensure
-			// immediate deallocation of all system resources
-			httpclient.getConnectionManager().shutdown();
-		}
-	}
-
-	private String uploadThumbnail(final String content, final String tmpCookie) throws IOException, UnsupportedEncodingException,
-			FileNotFoundException, ClientProtocolException
-	{
-		final File thumnailFile = new File(queue.thumbnailimage);
-		if (!thumnailFile.exists()) { throw new FileNotFoundException("Datei nicht vorhanden für Thumbnail " + thumnailFile.getName()); }
-
-		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");
-
-		final MultipartEntity reqEntity = new MultipartEntity();
-
-		reqEntity.addPart("video_id", new StringBody(queue.videoId));
-		reqEntity.addPart("is_ajax", new StringBody("1"));
-
-		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(),
-				content.indexOf("\"", content.indexOf(search) + search.length()));
-		reqEntity.addPart("session_token", new StringBody(sessiontoken));
-
-		reqEntity.addPart("imagefile", new FileBody(thumnailFile));
-
-		thumbnailPost.setEntity(reqEntity);
-		final HttpResponse response = httpclient.execute(thumbnailPost);
-
-		response.getEntity().writeTo(output);
-		return output.toString();
+		return flag ? "yes" : "no";
 	}
 
 	private void changeMetadata(final String content, final String tmpCook) throws IOException, UnsupportedEncodingException, ClientProtocolException
@@ -163,10 +212,10 @@ public class MetadataChanger
 				queue.thumbnailId = Integer.parseInt(thumbnail.substring(thumbnail.indexOf("{\"version\": ") + 12,
 						thumbnail.indexOf(",", thumbnail.indexOf("{\"version\": ") + 12)));
 			}
-		} catch (NumberFormatException ignored)
+		} catch (final NumberFormatException ignored)
 		{
 			queue.thumbnail = false;
-		} catch (IOException ignored)
+		} catch (final IOException ignored)
 		{
 			queue.thumbnail = false;
 		}
@@ -292,107 +341,55 @@ public class MetadataChanger
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length()));
 	}
 
-	private String boolConverter(final boolean flag)
+	public void run()
 	{
-		return flag ? "yes" : "no";
-	}
-
-	private class RedirectYoutube
-	{
-		private String	content;
-		private String	tmpCook;
-
-		public RedirectYoutube(final String content)
+		try
 		{
-			this.content = content;
-		}
-
-		public String getContent()
+			final LoginGoogle loginGoogle = new LoginGoogle().invoke();
+			final RedirectYoutube redirectYoutube = new RedirectYoutube(loginGoogle.getContent()).invoke(loginGoogle.getLoginPostResponse());
+			changeMetadata(redirectYoutube.getContent(), redirectYoutube.getTmpCook());
+		} catch (final ClientProtocolException e)
 		{
-			return content;
-		}
-
-		public String getTmpCook()
+			e.printStackTrace();
+		} catch (final UnsupportedEncodingException e)
 		{
-			return tmpCook;
-		}
-
-		public RedirectYoutube invoke(final HttpMessage loginPostResponse) throws IOException, ClientProtocolException
+			e.printStackTrace();
+		} catch (final IOException e)
 		{
-			final Header[] cookies = loginPostResponse.getHeaders("Set-Cookie");
-			tmpCook = "";
-			for (final Header cookie : cookies)
-			{
-				tmpCook += cookie.getValue().substring(0, cookie.getValue().indexOf(";") + 1);
-			}
-			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
-					.replaceAll(Pattern.quote("\\x3d"), "="));
-
-			redirectGet.setHeader("Cookie", tmpCook);
-
-			final HttpResponse redirectResponse = httpclient.execute(redirectGet);
-			final HttpEntity redirectResponseEntity = redirectResponse.getEntity();
-			redirectResponseEntity.writeTo(output);
-			content = output.toString();
-			return this;
+			e.printStackTrace();
+		} finally
+		{
+			// When HttpClient instance is no longer needed,
+			// shut down the connection manager to ensure
+			// immediate deallocation of all system resources
+			httpclient.getConnectionManager().shutdown();
 		}
 	}
 
-	private class LoginGoogle
+	private String uploadThumbnail(final String content, final String tmpCookie) throws IOException, UnsupportedEncodingException,
+			FileNotFoundException, ClientProtocolException
 	{
-		private String				content;
-		private HttpResponse		loginPostResponse;
-		private static final String	REDIRECT_URL	= "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+		final File thumnailFile = new File(queue.thumbnailimage);
+		if (!thumnailFile.exists()) { throw new FileNotFoundException("Datei nicht vorhanden für Thumbnail " + thumnailFile.getName()); }
 
-		public String getContent()
-		{
-			return content;
-		}
+		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");
 
-		public HttpResponse getLoginPostResponse()
-		{
-			return loginPostResponse;
-		}
+		final MultipartEntity reqEntity = new MultipartEntity();
 
-		public LoginGoogle invoke() throws IOException, ClientProtocolException, UnsupportedEncodingException, MalformedURLException
-		{
+		reqEntity.addPart("video_id", new StringBody(queue.videoId));
+		reqEntity.addPart("is_ajax", new StringBody("1"));
 
-			final String clientLoginParameters = String.format(
-					"Email=%s&Passwd=%s&service=%s&PesistentCookie=0&accountType=HOSTED_OR_GOOGLE&source=googletalk", queue.account.name,
-					queue.account.getPassword(), "gaia");
-			final Request clientLoginRequest = new Request.Builder(Request.Method.POST, new URL("https://accounts.google.com/ClientLogin")).build();
-			clientLoginRequest.setContentType("application/x-www-form-urlencoded");
-			final DataOutputStream dataOutputStream = new DataOutputStream(clientLoginRequest.setContent());
-			dataOutputStream.writeBytes(clientLoginParameters);
-			dataOutputStream.flush();
-			final Response clientLoginResponse = clientLoginRequest.send();
-			if (clientLoginResponse.code != 200) { throw new IOException(String.format("Message: %s; Body %s", clientLoginResponse.message,
-					clientLoginResponse.body)); }
+		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
+		final String sessiontoken = content.substring(content.indexOf(search) + search.length(),
+				content.indexOf("\"", content.indexOf(search) + search.length()));
+		reqEntity.addPart("session_token", new StringBody(sessiontoken));
 
-			final String sid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("SID=") + 4,
-					clientLoginResponse.body.indexOf("LSID="));
-			final String lsid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("LSID=") + 5,
-					clientLoginResponse.body.indexOf("Auth="));
+		reqEntity.addPart("imagefile", new FileBody(thumnailFile));
 
-			final String data = String.format("SID=%s&LSID=%s&service=gaia&Session=true&source=googletalk", sid, lsid);
-			final Request issueTokenRequest = new Request.Builder("POST", new URL("https://www.google.com/accounts/IssueAuthToken")).build();
-			issueTokenRequest.setContentType("application/x-www-form-urlencoded");
-			issueTokenRequest.setFollowRedirects(false);
-			final DataOutputStream testStream = new DataOutputStream(issueTokenRequest.setContent());
-			testStream.writeBytes(data);
-			testStream.flush();
-			final Response issueTokenResponse = issueTokenRequest.send();
+		thumbnailPost.setEntity(reqEntity);
+		final HttpResponse response = httpclient.execute(thumbnailPost);
 
-			final String tokenAuthUrl = "https://www.google.com/accounts/TokenAuth?auth=" + URLEncoder.encode(issueTokenResponse.body)
-					+ "&service=youtube&continue=" + URLEncoder.encode(String.format(LoginGoogle.REDIRECT_URL, queue.videoId)) + "&source=googletalk";
-
-			final HttpUriRequest loginGet = new HttpGet(tokenAuthUrl);
-			loginPostResponse = httpclient.execute(loginGet);
-			final HttpEntity loginPostResponseEntity = loginPostResponse.getEntity();
-			loginPostResponseEntity.writeTo(output);
-			content = output.toString();
-			EntityUtils.consume(loginPostResponseEntity);
-			return this;
-		}
+		response.getEntity().writeTo(output);
+		return output.toString();
 	}
 }

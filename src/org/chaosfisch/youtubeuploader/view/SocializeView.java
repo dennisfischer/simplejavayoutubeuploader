@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.view;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +17,6 @@ import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
@@ -28,47 +25,55 @@ import javax.swing.SwingWorker;
 
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.MessageController;
+import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.models.Message;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.services.SettingsService;
-import org.chaosfisch.youtubeuploader.services.socialize.Provider;
-import org.chaosfisch.youtubeuploader.services.socialize.providers.ISocialProvider;
+import org.chaosfisch.youtubeuploader.services.socialize.FacebookSocialProvider;
+import org.chaosfisch.youtubeuploader.services.socialize.TwitterSocialProvider;
 import org.scribe.model.Token;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.ValidationUtils;
 
 public class SocializeView
 {
-	private JPanel					panel;
-	private JToggleButton			googlePlusButton;
-	private JToggleButton			facebookButton;
-	private JToggleButton			twitterButton;
-	private JToggleButton			youtubeButton;
-	private JTextArea				messageTextArea;
-	private JComboBox				publishComboBox;
 	private JButton					addButton;
-	private JButton					deleteButton;
-	private JTable					messagesTable;
-	private JPanel					validationComponent;
-	private JComboBox				uploadsCombobox;
 	private final MessageController	controller;
-	private final SettingsService	settings;
-	private final Injector			injector;
-
+	private JButton					deleteButton;
+	private JToggleButton			facebookButton;
+	private JToggleButton			googlePlusButton;
+	private JTable					messagesTable;
+	private JTextArea				messageTextArea;
+	private JComboBox<String>		publishComboBox;
+	private final SettingsDao		settingsDao;
+	private JToggleButton			twitterButton;
+	private JComboBox<String>		uploadsCombobox;
 	private ValidationResultModel	validationResultModel;
 
+	private JToggleButton			youtubeButton;
+
 	@Inject
-	public SocializeView(final MessageController messageController, final SettingsService settingsService, final Injector injector)
+	public SocializeView(final MessageController messageController, final SettingsDao settingsDao)
 	{
 		controller = messageController;
-		settings = settingsService;
-		this.injector = injector;
+		this.settingsDao = settingsDao;
 		initComponents();
 		initListeners();
+	}
+
+	public Message getData()
+	{
+		final Message data = new Message();
+		data.message = messageTextArea.getText();
+		data.facebook = facebookButton.isSelected();
+		data.twitter = twitterButton.isSelected();
+		data.youtube = youtubeButton.isSelected();
+		data.googleplus = googlePlusButton.isSelected();
+		data.uploadid = ((Queue) uploadsCombobox.getSelectedItem()).identity;
+
+		return data;
 	}
 
 	private void initComponents()
@@ -79,7 +84,7 @@ public class SocializeView
 
 		uploadsCombobox.setModel(controller.getUploadsModel());
 
-		publishComboBox.setModel(new DefaultComboBoxModel(new String[] { I18nHelper.message("publishlist.uploadid"),
+		publishComboBox.setModel(new DefaultComboBoxModel<String>(new String[] { I18nHelper.message("publishlist.uploadid"),
 				I18nHelper.message("publishlist.uploadsfinished"), I18nHelper.message("publishlist.now") }));
 	}
 
@@ -113,8 +118,8 @@ public class SocializeView
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				final ISocialProvider socialProvider = controller.getMessageService().get(Provider.TWITTER);
-				final String settingsString = (String) settings.get("socialize.socialize.twitter", " ___ "); // NON-NLS
+				final TwitterSocialProvider socialProvider = new TwitterSocialProvider();
+				final String settingsString = settingsDao.get("socialize.socialize.twitter"); // NON-NLS
 				if (twitterButton.isSelected())
 				{
 					if (settingsString.contains("___"))
@@ -133,9 +138,9 @@ public class SocializeView
 							twitterButton.setSelected(false);
 						} else
 						{
-							settings.set("socialize.socialize.twitter",
+							settingsDao.set("socialize.socialize.twitter",
 									String.format("%s___%s", socialProvider.getAccessToken().getToken(), socialProvider.getAccessToken().getSecret())); // NON-NLS
-							settings.save();
+							settingsDao.save();
 						}
 					}
 				}
@@ -150,8 +155,8 @@ public class SocializeView
 					@Override
 					protected Void doInBackground() throws Exception
 					{
-						final ISocialProvider socialProvider = controller.getMessageService().get(Provider.FACEBOOK);
-						final String settingsString = (String) settings.get("socialize.socialize.facebook", " ___ "); // NON-NLS
+						final FacebookSocialProvider socialProvider = new FacebookSocialProvider();
+						final String settingsString = settingsDao.get("socialize.socialize.facebook"); // NON-NLS
 						if (facebookButton.isSelected())
 						{
 							if (settingsString.contains("___"))
@@ -171,9 +176,9 @@ public class SocializeView
 									facebookButton.setSelected(false);
 								} else
 								{
-									settings.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken().getToken(),
-											socialProvider.getAccessToken().getSecret())); // NON-NLS
-									settings.save();
+									settingsDao.set("socialize.socialize.facebook", String.format("%s___%s", socialProvider.getAccessToken()
+											.getToken(), socialProvider.getAccessToken().getSecret())); // NON-NLS
+									settingsDao.save();
 								}
 							}
 						}
@@ -193,6 +198,16 @@ public class SocializeView
 				controller.removeEntryAt(messagesTable.getSelectedRow());
 			}
 		});
+	}
+
+	public void setData(final Message data)
+	{
+		messageTextArea.setText(data.message);
+		facebookButton.setSelected(data.facebook);
+		twitterButton.setSelected(data.twitter);
+		googlePlusButton.setSelected(data.googleplus);
+		youtubeButton.setSelected(data.youtube);
+		publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
 	}
 
 	// validate each of the three input fields
@@ -216,28 +231,5 @@ public class SocializeView
 		}
 
 		return validationResult;
-	}
-
-	public void setData(final Message data)
-	{
-		messageTextArea.setText(data.message);
-		facebookButton.setSelected(data.facebook);
-		twitterButton.setSelected(data.twitter);
-		googlePlusButton.setSelected(data.googleplus);
-		youtubeButton.setSelected(data.youtube);
-		publishComboBox.setSelectedIndex((data.uploadid == null) ? 0 : 1);
-	}
-
-	public Message getData()
-	{
-		final Message data = new Message();
-		data.message = messageTextArea.getText();
-		data.facebook = facebookButton.isSelected();
-		data.twitter = twitterButton.isSelected();
-		data.youtube = youtubeButton.isSelected();
-		data.googleplus = googlePlusButton.isSelected();
-		data.uploadid = ((Queue) uploadsCombobox.getSelectedItem()).identity;
-
-		return data;
 	}
 }

@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.services.uploader;
 
 import java.util.Timer;
@@ -24,7 +22,6 @@ import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.logger.InjectLogger;
 import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.services.SettingsService;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,34 +32,30 @@ public class Uploader
 	public static final String		DENIED					= "denied";
 	public static final String		MODERATED				= "moderated";
 
-	public static final String		UPLOAD_JOB_FINISHED		= "uploadJobFinished";
+	private static final long		QUEUE_SLEEPTIME			= 30000;
+	public static final String		QUEUE_START				= "queueStart";
 	public static final String		UPLOAD_ABORT			= "uploadAbort";
 	public static final String		UPLOAD_FAILED			= "uploadFailed";
+	public static final String		UPLOAD_FINISHED			= "uploadFinished";
+	public static final String		UPLOAD_JOB_FINISHED		= "uploadJobFinished";
+	public static final String		UPLOAD_LIMIT			= "uploadLimit";
 	public static final String		UPLOAD_LOG				= "uploadLog";
 	public static final String		UPLOAD_PROGRESS			= "uploadProgress";
+
 	public static final String		UPLOAD_STARTED			= "uploadStarted";
-	public static final String		UPLOAD_FINISHED			= "uploadFinished";
-	public static final String		UPLOAD_LIMIT			= "uploadLimit";
-	public static final String		QUEUE_START				= "queueStart";
-
-	private final ExecutorService	executorService;
-	@Inject
-	private QueueDao				queueService;
-	@Inject
-	private SettingsService			settingsService;
-	@Inject
-	private Injector				injector;
-	@InjectLogger
-	private Logger					logger;
-
-	private boolean					inProgress;
-	private short					runningUploads;
 	private short					actionOnFinish;
-	private short					maxUploads				= 1;
-	private int						speedLimit				= 1000 * 1024;
-	private boolean					startTimeCheckerFlag	= true;
+	private final ExecutorService	executorService;
+	@Inject private Injector		injector;
+	private boolean					inProgress;
 
-	private static final long		QUEUE_SLEEPTIME			= 30000;
+	@InjectLogger private Logger	logger;
+	private short					maxUploads				= 1;
+	@Inject private QueueDao		queueService;
+	private short					runningUploads;
+	@Inject private SettingsService	settingsService;
+	private int						speedLimit				= 1000 * 1024;
+
+	private boolean					startTimeCheckerFlag	= true;
 
 	public Uploader()
 	{
@@ -70,61 +63,14 @@ public class Uploader
 		AnnotationProcessor.process(this);
 	}
 
-	public void start()
-	{
-		inProgress = true;
-
-		new BetterSwingWorker() {
-			@Override
-			protected void background()
-			{
-				while (inProgress)
-				{
-					if (hasFreeUploadSpace())
-					{
-						final Queue polled = queueService.poll();
-						if (polled != null)
-						{
-							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
-							setSpeedLimit(speedLimit);
-							uploadWorker.run(polled, speedLimit,
-									1048576 * Integer.parseInt((String) settingsService.get("coreplugin.general.CHUNK_SIZE", "10")));
-							executorService.submit(uploadWorker);
-							synchronized (this)
-							{
-								runningUploads++;
-							}
-						}
-					}
-
-					try
-					{
-						Thread.sleep(Uploader.QUEUE_SLEEPTIME);
-					} catch (InterruptedException e)
-					{
-						throw new RuntimeException("This shouldn't happen", e);
-					}
-				}
-			}
-		}.execute();
-	}
-
-	public void stop()
-	{
-		inProgress = false;
-	}
-
 	public void abort(final Queue queue)
 	{
 		EventBus.publish(Uploader.UPLOAD_ABORT, queue);
 	}
 
-	public boolean isRunning()
+	public void exit()
 	{
-		synchronized (this)
-		{
-			return inProgress && (runningUploads != 0);
-		}
+		executorService.shutdownNow();
 	}
 
 	private boolean hasFreeUploadSpace()
@@ -135,11 +81,12 @@ public class Uploader
 		}
 	}
 
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final Queue queue)
+	public boolean isRunning()
 	{
-		logger.info("Upload successful");
-		uploadFinished(queue);
+		synchronized (this)
+		{
+			return inProgress && (runningUploads != 0);
+		}
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
@@ -147,6 +94,106 @@ public class Uploader
 	{
 		logger.info("Upload failed");
 		uploadFinished(uploadFailed.getQueue());
+	}
+
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
+	public void onUploadJobFinished(final String topic, final Queue queue)
+	{
+		logger.info("Upload successful");
+		uploadFinished(queue);
+	}
+
+	public void runStarttimeChecker()
+	{
+		{
+			while (!Thread.currentThread().isInterrupted() && startTimeCheckerFlag)
+			{
+
+				if (queueService.hasStarttime() && !inProgress)
+				{
+					start();
+				}
+
+				try
+				{
+					Thread.sleep(60000);
+				} catch (final InterruptedException e)
+				{
+					throw new RuntimeException("This shouldn't happen", e);
+				}
+			}
+		}
+	}
+
+	public void setActionOnFinish(final short actionOnFinish)
+	{
+		this.actionOnFinish = actionOnFinish;
+	}
+
+	public void setMaxUploads(final short maxUploads)
+	{
+		if (maxUploads > 10)
+		{
+			this.maxUploads = 10;
+		} else
+		{
+			this.maxUploads = maxUploads;
+		}
+	}
+
+	public void setSpeedLimit(final int bytes)
+	{
+		speedLimit = bytes * 1024;
+		if (runningUploads > 0)
+		{
+			speedLimit = Math.round((bytes * 1024) / runningUploads);
+			EventBus.publish(Uploader.UPLOAD_LIMIT, speedLimit);
+		}
+	}
+
+	public void start()
+	{
+		inProgress = true;
+
+		{
+			while (inProgress)
+			{
+				if (hasFreeUploadSpace())
+				{
+					final Queue polled = queueService.poll();
+					if (polled != null)
+					{
+						final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
+						setSpeedLimit(speedLimit);
+						uploadWorker.run(polled, speedLimit,
+								1048576 * Integer.parseInt((String) settingsService.get("coreplugin.general.CHUNK_SIZE", "10")));
+						executorService.submit(uploadWorker);
+						synchronized (this)
+						{
+							runningUploads++;
+						}
+					}
+				}
+
+				try
+				{
+					Thread.sleep(Uploader.QUEUE_SLEEPTIME);
+				} catch (final InterruptedException e)
+				{
+					throw new RuntimeException("This shouldn't happen", e);
+				}
+			}
+		}
+	}
+
+	public void stop()
+	{
+		inProgress = false;
+	}
+
+	public void stopStarttimeChecker()
+	{
+		startTimeCheckerFlag = false;
 	}
 
 	private void uploadFinished(final Queue queue)
@@ -188,69 +235,5 @@ public class Uploader
 
 			logger.info(String.format("Left uploads: %d", queueService.getValidQueued().size()));
 		}
-	}
-
-	public void setActionOnFinish(final short actionOnFinish)
-	{
-		this.actionOnFinish = actionOnFinish;
-	}
-
-	public void setSpeedLimit(final int bytes)
-	{
-		speedLimit = bytes * 1024;
-		if (runningUploads > 0)
-		{
-			speedLimit = Math.round((bytes * 1024) / runningUploads);
-			EventBus.publish(Uploader.UPLOAD_LIMIT, speedLimit);
-		}
-	}
-
-	public void setMaxUploads(final short maxUploads)
-	{
-		if (maxUploads > 10)
-		{
-			this.maxUploads = 10;
-		} else
-		{
-			this.maxUploads = maxUploads;
-		}
-	}
-
-	public void exit()
-	{
-		executorService.shutdownNow();
-	}
-
-	public void runStarttimeChecker()
-	{
-		final BetterSwingWorker startTimeChecker = new BetterSwingWorker() {
-			@Override
-			protected void background()
-			{
-				while (!Thread.currentThread().isInterrupted() && startTimeCheckerFlag)
-				{
-
-					if (queueService.hasStarttime() && !inProgress)
-					{
-						start();
-					}
-
-					try
-					{
-						Thread.sleep(60000);
-					} catch (InterruptedException e)
-					{
-						throw new RuntimeException("This shouldn't happen", e);
-					}
-				}
-			}
-
-		};
-		startTimeChecker.execute();
-	}
-
-	public void stopStarttimeChecker()
-	{
-		startTimeCheckerFlag = false;
 	}
 }

@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.util;
 
 import java.io.File;
@@ -28,9 +26,9 @@ public class ExtendedPlacerholders
 	private final File					file;
 
 	/**
-	 * The playlist for the {playlist} and {number} placeholders
+	 * Custom user defined placeholders
 	 */
-	private final Playlist				playlist;
+	private final Map<String, String>	map	= new WeakHashMap<String, String>(10);
 
 	/**
 	 * The number which modifies {number} placeholder
@@ -38,9 +36,9 @@ public class ExtendedPlacerholders
 	private final int					number;
 
 	/**
-	 * Custom user defined placeholders
+	 * The playlist for the {playlist} and {number} placeholders
 	 */
-	private final Map<String, String>	map	= new WeakHashMap<String, String>(10);
+	private final Playlist				playlist;
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
@@ -60,6 +58,19 @@ public class ExtendedPlacerholders
 	}
 
 	/**
+	 * Registers a new custom placeholder
+	 * 
+	 * @param placeholder
+	 *            the placeholder
+	 * @param replacement
+	 *            the replacement
+	 */
+	public void register(final String placeholder, final String replacement)
+	{
+		map.put(placeholder, replacement);
+	}
+
+	/**
 	 * Replaces all placeholders
 	 * 
 	 * @param input
@@ -70,22 +81,24 @@ public class ExtendedPlacerholders
 	{
 		if (playlist != null)
 		{
-			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.title);
+			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getString("title"));
 
 			final Pattern p = Pattern.compile(I18nHelper.message("autotitle.numberPattern"));
 			final Matcher m = p.matcher(input);
 
 			if (m.find())
 			{
-				input = m.replaceAll(zeroFill(playlist.number + 1 + number, Integer.parseInt(m.group(1))));
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.number + 1 + number));
+				input = m.replaceAll(zeroFill(playlist.getInteger("number") + 1 + number, Integer.parseInt(m.group(1))));
+				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getInteger("number") + 1 + number));
 			} else
 			{
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.number + 1 + number));
+				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getInteger("number") + 1 + number));
 			}
 		}
 		if (file.exists())
 		{
+			int index = file.getName().lastIndexOf(".");
+			if (index == -1) index = file.getName().length();
 			input = input.replaceAll(I18nHelper.message("autotitle.file"),
 					file.getName().substring(file.getName().lastIndexOf(File.separator) + 1, file.getName().lastIndexOf(".")));
 		}
@@ -109,18 +122,5 @@ public class ExtendedPlacerholders
 	private String zeroFill(final int number, final int width)
 	{
 		return String.format(String.format("%%0%dd", width), number);
-	}
-
-	/**
-	 * Registers a new custom placeholder
-	 * 
-	 * @param placeholder
-	 *            the placeholder
-	 * @param replacement
-	 *            the replacement
-	 */
-	public void register(final String placeholder, final String replacement)
-	{
-		map.put(placeholder, replacement);
 	}
 }

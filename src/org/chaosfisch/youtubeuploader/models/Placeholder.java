@@ -5,65 +5,85 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
-public class Placeholder
-{
-	public transient Integer	identity;
-	public String				placeholder;
-	public String				replacement;
+import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
+@Table("PLACEHOLDER")
+public class Placeholder extends Model implements ModelEvents
+{/*
+ * (non-Javadoc)
+ * 
+ * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+ */
 	@Override
-	public String toString()
+	protected void beforeSave()
 	{
-		return "Placeholder [identity=" + identity + ", placeholder=" + placeholder + ", replacement=" + replacement + "]";
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
 	 */
 	@Override
-	public int hashCode()
+	protected void afterSave()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((placeholder == null) ? 0 : placeholder.hashCode());
-		result = prime * result + ((replacement == null) ? 0 : replacement.hashCode());
-		return result;
+		super.afterSave();
+		EventBus.publish(MODEL_POST_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
 	 */
 	@Override
-	public boolean equals(Object obj)
+	protected void beforeCreate()
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Placeholder)) { return false; }
-		Placeholder other = (Placeholder) obj;
-		if (placeholder == null)
-		{
-			if (other.placeholder != null) { return false; }
-		} else if (!placeholder.equals(other.placeholder)) { return false; }
-		if (replacement == null)
-		{
-			if (other.replacement != null) { return false; }
-		} else if (!replacement.equals(other.replacement)) { return false; }
-		return true;
+		super.beforeCreate();
+		EventBus.publish(MODEL_PRE_ADDED, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
+	@Override
+	protected void afterCreate()
+	{
+		super.afterCreate();
+		EventBus.publish(MODEL_POST_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
+	 */
+	@Override
+	protected void beforeDelete()
+	{
+		super.beforeDelete();
+		EventBus.publish(MODEL_PRE_REMOVED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 */
+	@Override
+	protected void afterDelete()
+	{
+		super.afterDelete();
+		EventBus.publish(MODEL_POST_REMOVED, this);
+	}
 }

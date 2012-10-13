@@ -5,90 +5,85 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
-public class Message
-{
-	public transient Integer	identity;
-	public String				message;
-	public Integer				uploadid;
-	public Boolean				facebook;
-	public Boolean				twitter;
-	public Boolean				youtube;
-	public Boolean				googleplus;
+import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
+@Table("MESSAGES")
+public class Message extends Model implements ModelEvents
+{/*
+ * (non-Javadoc)
+ * 
+ * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+ */
 	@Override
-	public String toString()
+	protected void beforeSave()
 	{
-		return "Message [message=" + message + ", uploadid=" + uploadid + ", facebook=" + facebook + ", twitter=" + twitter + ", youtube=" + youtube
-				+ ", googleplus=" + googleplus + "]";
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
 	 */
 	@Override
-	public int hashCode()
+	protected void afterSave()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((facebook == null) ? 0 : facebook.hashCode());
-		result = prime * result + ((googleplus == null) ? 0 : googleplus.hashCode());
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
-		result = prime * result + ((twitter == null) ? 0 : twitter.hashCode());
-		result = prime * result + ((uploadid == null) ? 0 : uploadid.hashCode());
-		result = prime * result + ((youtube == null) ? 0 : youtube.hashCode());
-		return result;
+		super.afterSave();
+		EventBus.publish(MODEL_POST_UPDATED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
 	 */
 	@Override
-	public boolean equals(Object obj)
+	protected void beforeCreate()
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Message)) { return false; }
-		Message other = (Message) obj;
-		if (facebook == null)
-		{
-			if (other.facebook != null) { return false; }
-		} else if (!facebook.equals(other.facebook)) { return false; }
-		if (googleplus == null)
-		{
-			if (other.googleplus != null) { return false; }
-		} else if (!googleplus.equals(other.googleplus)) { return false; }
-		if (message == null)
-		{
-			if (other.message != null) { return false; }
-		} else if (!message.equals(other.message)) { return false; }
-		if (twitter == null)
-		{
-			if (other.twitter != null) { return false; }
-		} else if (!twitter.equals(other.twitter)) { return false; }
-		if (uploadid == null)
-		{
-			if (other.uploadid != null) { return false; }
-		} else if (!uploadid.equals(other.uploadid)) { return false; }
-		if (youtube == null)
-		{
-			if (other.youtube != null) { return false; }
-		} else if (!youtube.equals(other.youtube)) { return false; }
-		return true;
+		super.beforeCreate();
+		EventBus.publish(MODEL_PRE_ADDED, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
+	@Override
+	protected void afterCreate()
+	{
+		super.afterCreate();
+		EventBus.publish(MODEL_POST_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
+	 */
+	@Override
+	protected void beforeDelete()
+	{
+		super.beforeDelete();
+		EventBus.publish(MODEL_PRE_REMOVED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 */
+	@Override
+	protected void afterDelete()
+	{
+		super.afterDelete();
+		EventBus.publish(MODEL_POST_REMOVED, this);
+	}
 }

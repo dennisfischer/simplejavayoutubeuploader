@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.util;
 
 import java.io.IOException;
@@ -37,50 +35,11 @@ public class Computer
 		try
 		{
 			Runtime.getRuntime().exec(command);
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
 		System.exit(0);
-	}
-
-	/**
-	 * Sends this system to shutdown mode
-	 */
-	public static void shutdownComputer()
-	{
-		String command = "";
-		if (Computer.isWindows())
-		{
-			command = "shutdown -t 60 -s -f";
-		} else if (Computer.isUnix())
-		{
-			command = "shutdown -t 60 -h -f";
-		} else if (Computer.isMac())
-		{
-			command = "osascript -e 'tell application\"Finder\" to shut down'";
-		}
-
-		try
-		{
-			Runtime.getRuntime().exec(command);
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		System.exit(0);
-	}
-
-	/**
-	 * Checks if this system is a windows computer
-	 * 
-	 * @return boolean true if windows
-	 */
-	public static boolean isWindows()
-	{
-
-		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
-		return os.contains("win");
 	}
 
 	/**
@@ -105,5 +64,44 @@ public class Computer
 
 		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 		return os.contains("nix") || os.contains("nux");
+	}
+
+	/**
+	 * Checks if this system is a windows computer
+	 * 
+	 * @return boolean true if windows
+	 */
+	public static boolean isWindows()
+	{
+
+		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
+		return os.contains("win");
+	}
+
+	/**
+	 * Sends this system to shutdown mode
+	 */
+	public static void shutdownComputer()
+	{
+		String command = "";
+		if (Computer.isWindows())
+		{
+			command = "shutdown -t 60 -s -f";
+		} else if (Computer.isUnix())
+		{
+			command = "shutdown -t 60 -h -f";
+		} else if (Computer.isMac())
+		{
+			command = "osascript -e 'tell application\"Finder\" to shut down'";
+		}
+
+		try
+		{
+			Runtime.getRuntime().exec(command);
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+		System.exit(0);
 	}
 }

@@ -5,10 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.util;
 
 import java.io.FilterOutputStream;
@@ -17,9 +15,11 @@ import java.io.OutputStream;
 
 public class ThrottledOutputStream extends FilterOutputStream
 {
-	private final long	maxBps;
-	private final long	start;
-	private long		bytes;
+	private long			bytes;
+	private final long		maxBps;
+	private final byte[]	oneByte	= new byte[1];
+
+	private final long		start;
 
 	/**
 	 * Constructs a new ThrotteldOutputStream
@@ -35,23 +35,6 @@ public class ThrottledOutputStream extends FilterOutputStream
 		this.maxBps = maxBps;
 		bytes = 0;
 		start = System.currentTimeMillis();
-	}
-
-	private final byte[]	oneByte	= new byte[1];
-
-	/**
-	 * Writes a byte. This method will block until the byte is actually written
-	 * 
-	 * @param b
-	 *            the byte to be written
-	 * @throws IOException
-	 *             if an I/O error has occured
-	 */
-	@Override
-	public void write(final int b) throws IOException
-	{
-		oneByte[0] = (byte) b;
-		write(oneByte, 0, 1);
 	}
 
 	/**
@@ -81,7 +64,7 @@ public class ThrottledOutputStream extends FilterOutputStream
 			try
 			{
 				Thread.sleep(wakeElapsed - elapsed);
-			} catch (InterruptedException ignored)
+			} catch (final InterruptedException ignored)
 			{
 				throw new RuntimeException("This shouldn't happen");
 			}
@@ -89,5 +72,20 @@ public class ThrottledOutputStream extends FilterOutputStream
 
 		// Write the bytes.
 		out.write(b, off, len);
+	}
+
+	/**
+	 * Writes a byte. This method will block until the byte is actually written
+	 * 
+	 * @param b
+	 *            the byte to be written
+	 * @throws IOException
+	 *             if an I/O error has occured
+	 */
+	@Override
+	public void write(final int b) throws IOException
+	{
+		oneByte[0] = (byte) b;
+		write(oneByte, 0, 1);
 	}
 }

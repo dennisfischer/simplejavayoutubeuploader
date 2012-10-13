@@ -5,52 +5,43 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.models;
 
-import java.util.List;
+import org.bushe.swing.event.EventBus;
+import org.chaosfisch.youtubeuploader.I18nHelper;
+import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
+import org.javalite.common.Convert;
 
-public class Account
+@Table("ACCOUNTS")
+public class Account extends Model implements ModelEvents
 {
-	public String					name;
-	private String					password;
-	public transient Integer		identity;
-	public transient List<Playlist>	presets;
-	public transient List<Queue>	queue;
-	public transient List<Playlist>	playlists;
-
-	public String getPassword()
+	public enum Type
 	{
-		return password;
-	}
+		YOUTUBE("enum.youtube"), FACEBOOK("enum.facebook"), TWITTER("enum.twitter"), GOOGLEPLUS("enum.googleplus");
 
-	public void setPassword(final String password)
-	{
-		this.password = password;
+		private final String	name;
+
+		Type(final String name)
+		{
+			this.name = name;
+		}
+
+		@Override
+		public String toString()
+		{
+			return I18nHelper.message(name);
+		}
 	}
 
 	@Override
 	public String toString()
 	{
-		return name;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		return result;
+		if (!this.isFrozen()) return "[" + getInteger("id") + "," + getString("name") + "]";
+		return super.toString();
 	}
 
 	/*
@@ -59,21 +50,93 @@ public class Account
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(Object object)
 	{
-		if (this == obj) { return true; }
-		if (obj == null) { return false; }
-		if (!(obj instanceof Account)) { return false; }
-		Account other = (Account) obj;
-		if (name == null)
+
+		if (object == null || !(object instanceof Account))
 		{
-			if (other.name != null) { return false; }
-		} else if (!name.equals(other.name)) { return false; }
-		if (password == null)
-		{
-			if (other.password != null) { return false; }
-		} else if (!password.equals(other.password)) { return false; }
-		return true;
+			return false;
+		} else if (((Account) object).getUnfrozen().equals(this.getUnfrozen())) { return true; }
+		return false;
 	}
 
+	public Long getUnfrozen()
+	{
+		return Convert.toLong(this.getAttributes().get("id"));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+	 */
+	@Override
+	protected void beforeSave()
+	{
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
+	 */
+	@Override
+	protected void afterSave()
+	{
+		super.afterSave();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_UPDATED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
+	 */
+	@Override
+	protected void beforeCreate()
+	{
+		super.beforeCreate();
+		EventBus.publish(MODEL_PRE_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
+	@Override
+	protected void afterCreate()
+	{
+		super.afterCreate();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_ADDED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
+	 */
+	@Override
+	protected void beforeDelete()
+	{
+		super.beforeDelete();
+		EventBus.publish(MODEL_PRE_REMOVED, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 */
+	@Override
+	protected void afterDelete()
+	{
+		super.afterDelete();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_REMOVED, this);
+	}
 }

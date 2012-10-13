@@ -1,2 +1,3 @@
 jfx.build.stagingdir = ${workspace}/simple-java-youtube-uploader-javafx/build
 jfx.build.apptitle = simple-java-youtube-uploader-javafx
+jfx.build.applicationClass = org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader

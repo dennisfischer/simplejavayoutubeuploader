@@ -5,8 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
 /*
  * Copyright (c) 2012, Dennis Fischer
@@ -29,41 +28,22 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
+import org.chaosfisch.youtubeuploader.dao.spi.DirectoryDao;
+import org.chaosfisch.youtubeuploader.dao.spi.PresetDao;
+import org.chaosfisch.youtubeuploader.models.Directory;
+import org.chaosfisch.youtubeuploader.models.Preset;
+
 import com.google.inject.Inject;
 
-import org.chaosfisch.youtubeuploader.models.Directory;
-import org.chaosfisch.youtubeuploader.models.DirectoryTableModel;
-import org.chaosfisch.youtubeuploader.models.Preset;
-import org.chaosfisch.youtubeuploader.services.spi.DirectoryService;
-import org.chaosfisch.youtubeuploader.services.spi.PresetService;
-
 /**
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 15.03.12
- * Time: 20:57
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: Dennis Date: 15.03.12 Time: 20:57 To change
+ * this template use File | Settings | File Templates.
  */
 public class DirectoryController
 {
-	@Inject private DirectoryTableModel directoryTableModel;
-	@Inject private DirectoryDao    directoryService;
-	@Inject private PresetDao       presetService;
-
-	public void run()
-	{
-		if (directoryTableModel.getRowCount() > 0) {
-			directoryTableModel.removeRowRange(0, directoryTableModel.getRowCount() - 1);
-		}
-		for (final Directory directory : directoryService.getAll()) {
-			directoryTableModel.addRow(directory);
-		}
-	}
-
-	public DirectoryTableModel getDirectoryTableModel()
-	{
-		return directoryTableModel;
-	}
+	@Inject private DirectoryDao		directoryService;
+	@Inject private DirectoryTableModel	directoryTableModel;
+	@Inject private PresetDao			presetService;
 
 	public void addAction(final boolean activeCheckboxSelected, final String directoryTextFieldText, final Preset presetListSelectedItem)
 	{
@@ -74,14 +54,31 @@ public class DirectoryController
 		directoryService.create(directory);
 	}
 
+	public void checkboxChangeAction(final boolean activeCheckboxSelected, final Directory directory)
+	{
+		directory.active = activeCheckboxSelected;
+		directoryService.update(directory);
+	}
+
 	public void deleteAction(final Directory directory)
 	{
 		directoryService.delete(directory);
 	}
 
-	public void checkboxChangeAction(final boolean activeCheckboxSelected, final Directory directory)
+	public DirectoryTableModel getDirectoryTableModel()
 	{
-		directory.active = activeCheckboxSelected;
-		directoryService.update(directory);
+		return directoryTableModel;
+	}
+
+	public void run()
+	{
+		if (directoryTableModel.getRowCount() > 0)
+		{
+			directoryTableModel.removeRowRange(0, directoryTableModel.getRowCount() - 1);
+		}
+		for (final Directory directory : directoryService.getAll())
+		{
+			directoryTableModel.addRow(directory);
+		}
 	}
 }

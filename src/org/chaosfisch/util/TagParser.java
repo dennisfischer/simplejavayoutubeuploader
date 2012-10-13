@@ -5,19 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.util;
 
 public class TagParser
 {
-	/**
-	 * the separator between tags
-	 */
-	private static final char	DELIMITER		= ' ';
-
 	/**
 	 * the separator between "block" tags
 	 */
@@ -27,6 +20,30 @@ public class TagParser
 	 * flag if block is open
 	 */
 	private static boolean		blockOpen;
+
+	/**
+	 * the separator between tags
+	 */
+	private static final char	DELIMITER		= ' ';
+
+	/**
+	 * Checks validity of the given string
+	 * 
+	 * @param input
+	 *            the string to be checked
+	 * @return true if input is valid
+	 */
+	public static boolean isValid(final String input)
+	{
+		final String parsed = TagParser.parseAll(input);
+		if ((parsed.length() > 500) || (parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) { return false; }
+		final String[] tags = parsed.split(",");
+		for (final String tag : tags)
+		{
+			if ((tag.length() > 30) || (tag.length() < 2) || (tag.getBytes().length > 30)) { return false; }
+		}
+		return true;
+	}
 
 	/**
 	 * Returns a parsed input string, invalid tags are removed
@@ -104,24 +121,5 @@ public class TagParser
 			}
 		}
 		return stringBuilder.toString();
-	}
-
-	/**
-	 * Checks validity of the given string
-	 * 
-	 * @param input
-	 *            the string to be checked
-	 * @return true if input is valid
-	 */
-	public static boolean isValid(final String input)
-	{
-		final String parsed = TagParser.parseAll(input);
-		if ((parsed.length() > 500) || (parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) { return false; }
-		final String[] tags = parsed.split(",");
-		for (final String tag : tags)
-		{
-			if ((tag.length() > 30) || (tag.length() < 2) || (tag.getBytes().length > 30)) { return false; }
-		}
-		return true;
 	}
 }

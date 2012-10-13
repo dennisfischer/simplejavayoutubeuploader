@@ -5,18 +5,16 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.services.uploader;
 
 import org.chaosfisch.youtubeuploader.models.Queue;
 
 public class UploadFailed
 {
-	private final Queue		queue;
 	private final String	message;
+	private final Queue		queue;
 
 	public UploadFailed(final Queue queue, final String message)
 	{
@@ -24,13 +22,13 @@ public class UploadFailed
 		this.message = message;
 	}
 
-	public Queue getQueue()
-	{
-		return queue;
-	}
-
 	public String getMessage()
 	{
 		return message;
+	}
+
+	public Queue getQueue()
+	{
+		return queue;
 	}
 }

@@ -5,43 +5,27 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.view;
 
-import java.awt.Component;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import net.iharder.dnd.FileDrop;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -60,108 +44,81 @@ import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.ValidationUtils;
 import com.jgoodies.validation.view.ValidationComponentUtils;
-import com.jgoodies.validation.view.ValidationResultViewFactory;
 
 public final class UploadViewPanel
 {
 
-	@Inject
-	private UploadController		controller;
-	@Inject
-	private Injector				injector;
-	private JPanel					uploadPanel;
-	private JButton					reset;
-	private JButton					submit;
-	private JCheckBox				playlistCheckbox;
-	private JButton					searchFile;
-	private JComboBox<File>			fileList;
-	private JComboBox<String>		categoryList;
-	private JTextField				titleTextField;
-	private JTextArea				descriptionTextArea;
-	private JTextArea				tagsTextArea;
-	private JComboBox<Playlist>		playlistList;
-	private JComboBox<Preset>		presetList;
-	private JSpinner				numberModifierSpinner;
-	private JTextField				defaultdirTextField;
-	private JComboBox<Account>		accountList;
-	private JComboBox<String>		commentList;
-	private JComboBox<String>		videoresponseList;
-	private JComboBox<String>		visibilityList;
-	private JCheckBox				commentVoteCheckbox;
-	private JCheckBox				rateCheckbox;
-	private JCheckBox				mobileCheckbox;
-	private JCheckBox				embedCheckbox;
-	private JButton					defaultdirSearch;
-	private JButton					deletePreset;
-	private JButton					savePreset;
-	private JButton					deleteAccount;
-	private JSpinner				starttimeSpinner;
-	private JButton					synchronizePlaylistsButton;
-	private JPanel					validationPanel;
-	private JLabel					hintLabel;
-	private JCheckBox				monetizeCheckbox;
-	private JCheckBox				monetizeOverlayCheckbox;
-	private JCheckBox				monetizeTrueviewCheckbox;
-	private JCheckBox				monetizeProductCheckbox;
-	private JTextField				enddirTextfield;
-	private JButton					enddirSearch;
-	private JComboBox<String>		licenseList;
-	private JTabbedPane				settingsTabbedPane;
-	private JTable					placeholderTable;
-	private JButton					addPlaceholderButton;
-	private JButton					deletePlaceholderButton;
-	private JButton					savePlaceholderButton;
-	private JTextField				placeholderPlaceholderTextfield;
-	private JTextField				placeholderReplaceTextfield;
-	private JSpinner				releasetimeSpinner;
-	private JPanel					placeholderPanel;
-	private JPanel					settingsPanel;
-	private JPanel					partnerPanel;
-	private JCheckBox				claimCheckbox;
-	private JComboBox<String>		claimtypeComboBox;
-	private JComboBox<String>		claimpolicyComboBox;
-	private JCheckBox				partnerInstream;
-	private JTabbedPane				asset;
-	private JTextField				webTitleTextfield;
-	private JTextField				webIDTextfield;
-	private JTextField				webDescriptionTextfield;
-	private JTextArea				webNotesTextfield;
-	private JTextField				tvTMSIDTextfield;
-	private JTextField				tvSeasonNbTextfield;
-	private JTextField				tvEpisodeNbTextfield;
-	private JTextField				tvISANTextfield;
-	private JTextField				tvEIDRTextfield;
-	private JTextField				tvIDTextfield;
-	private JTextField				tvTitleTextfield;
-	private JTextField				tvEpisodeTitleTextfield;
-	private JTextField				movieTitleTextfield;
-	private JTextField				movieDescriptionTextfield;
-	private JTextField				movieEIDRTextfield;
-	private JTextField				movieIDTextfield;
-	private JTextField				movieTMSIDTextfield;
-	private JTextField				movieISANTextfield;
-	private JTextArea				movieNotesTextfield;
-	private JTextArea				tvNotesTextfield;
-	private JCheckBox				partnerOverlay;
-	private JCheckBox				partnerTrueview;
-	private JCheckBox				partnerProduct;
-	private JButton					thumbnailSelectButton;
-	private JTextField				thumbnailTextfield;
-	private JMenuItem				fileSearchMenuItem;
-	private ValidationResultModel	validationResultModel;
+	public static final String			EDIT_QUEUE_ENTRY	= "editQueueEntry"; // NON-NLS
+	private JComboBox<Account>			accountList;
+	private JTabbedPane					asset;
+	private JComboBox<String>			categoryList;
+	private JCheckBox					claimCheckbox;
+	private JComboBox<String>			claimpolicyComboBox;
+	private JComboBox<String>			claimtypeComboBox;
+	private JComboBox<String>			commentList;
+	private JCheckBox					commentVoteCheckbox;
+	@Inject private UploadController	controller;
+	private JTextField					defaultdirTextField;
+	private JTextArea					descriptionTextArea;
+	private JCheckBox					embedCheckbox;
+	private JTextField					enddirTextfield;
+	private JComboBox<File>				fileList;
+	private JMenuItem					fileSearchMenuItem;
+	@Inject private Injector			injector;
+	private JComboBox<String>			licenseList;
+	private JCheckBox					mobileCheckbox;
+	private JCheckBox					monetizeCheckbox;
+	private JCheckBox					monetizeOverlayCheckbox;
+	private JCheckBox					monetizeProductCheckbox;
+	private JCheckBox					monetizeTrueviewCheckbox;
+	private JTextField					movieDescriptionTextfield;
+	private JTextField					movieEIDRTextfield;
+	private JTextField					movieIDTextfield;
+	private JTextField					movieISANTextfield;
+	private JTextArea					movieNotesTextfield;
+	private JTextField					movieTitleTextfield;
+	private JTextField					movieTMSIDTextfield;
+	private JSpinner					numberModifierSpinner;
+	private JCheckBox					partnerInstream;
+	private JCheckBox					partnerOverlay;
+	private JCheckBox					partnerProduct;
+	private JCheckBox					partnerTrueview;
+	private JTextField					placeholderPlaceholderTextfield;
+	private JTextField					placeholderReplaceTextfield;
+	private JTable						placeholderTable;
+	private JCheckBox					playlistCheckbox;
+	private JComboBox<Playlist>			playlistList;
+	private JComboBox<Preset>			presetList;
+	private JCheckBox					rateCheckbox;
+	private JSpinner					releasetimeSpinner;
+	private JButton						savePlaceholderButton;
+	private JButton						savePreset;
+	private JSpinner					starttimeSpinner;
+	private JTextArea					tagsTextArea;
+	private JButton						thumbnailSelectButton;
+	private JTextField					thumbnailTextfield;
+	private JTextField					titleTextField;
+	private JTextField					tvEIDRTextfield;
+	private JTextField					tvEpisodeNbTextfield;
+	private JTextField					tvEpisodeTitleTextfield;
+	private JTextField					tvIDTextfield;
+	private JTextField					tvISANTextfield;
+	private JTextArea					tvNotesTextfield;
+	private JTextField					tvSeasonNbTextfield;
+	private JTextField					tvTitleTextfield;
+	private JTextField					tvTMSIDTextfield;
+	private ValidationResultModel		validationResultModel;
+	private JComboBox<String>			videoresponseList;
+	private JComboBox<String>			visibilityList;
+	private JTextField					webDescriptionTextfield;
+	private JTextField					webIDTextfield;
+	private JTextArea					webNotesTextfield;
 
-	public static final String		EDIT_QUEUE_ENTRY	= "editQueueEntry"; // NON-NLS
+	private JTextField					webTitleTextfield;
 
 	public UploadViewPanel()
 	{
 		AnnotationProcessor.process(this);
-	}
-
-	public void run()
-	{
-		initComponents();
-		initListeners();
-		setup();
 	}
 
 	public JMenuItem[] getFileMenuItem()
@@ -169,38 +126,8 @@ public final class UploadViewPanel
 		return new JMenuItem[] { fileSearchMenuItem };
 	}
 
-	private void setup()
-	{
-		for (final Account account : controller.getAccountService().getAll())
-		{
-			controller.getAccountListModel().addElement(account);
-		}
-		for (final Preset preset : controller.getPresetService().getAll())
-		{
-			controller.getPresetListModel().addElement(preset);
-		}
-		for (final Placeholder placeholder : controller.getPlaceholderService().getAll())
-		{
-			controller.getPlaceholderModel().addRow(placeholder);
-		}
-
-		controller.synchronizePlaylists(controller.getAccountListModel().getAll());
-	}
-
 	private void initComponents()
 	{
-		accountList.setModel(controller.getAccountListModel());
-		presetList.setModel(controller.getPresetListModel());
-		playlistList.setModel(controller.getPlaylistListModel());
-
-		new FileDrop(getJPanel(), new FileDrop.Listener() {
-			@Override
-			public void filesDropped(final File[] files)
-			{
-				updateInsertedFiles(files);
-			}
-		});
-
 		starttimeSpinner.setModel(new SpinnerDateModel());
 		final JSpinner.DateEditor timeEditorStartTime = new JSpinner.DateEditor(starttimeSpinner, "EEEE, dd. MMMM yyyy 'um' HH:mm"); // NON-NLS
 		starttimeSpinner.setEditor(timeEditorStartTime);
@@ -211,23 +138,6 @@ public final class UploadViewPanel
 
 		releasetimeSpinner.setEditor(timeEditorReleaseTime);
 		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
-
-		fileSearchMenuItem = new JMenuItem(I18nHelper.message("menuitem.openfile"), new ImageIcon(getClass().getResource(
-				"/youtubeuploader/resources/images/folder_explore.png"))); // NON-NLS
-		fileSearchMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				searchFileDialogOpen();
-			}
-		});
-
-		descriptionTextArea.setDocument(new TextDocument(5000));
-		tagsTextArea.setDocument(new TextDocument(600));
-		titleTextField.setDocument(new TextDocument(100));
-
-		hintLabel.setIcon(ValidationResultViewFactory.getInfoIcon());
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(new FocusChangeHandler());
 
 		ValidationComponentUtils.setInputHint(fileList, I18nHelper.message("inputhint.filelist"));
 		ValidationComponentUtils.setInputHint(titleTextField, I18nHelper.message("inputhint.title"));
@@ -247,201 +157,80 @@ public final class UploadViewPanel
 						I18nHelper.message("commentlist.denied"), I18nHelper.message("commentlist.friendsonly") }));
 		videoresponseList.setModel(new DefaultComboBoxModel<String>(new String[] { I18nHelper.message("videoresponselist.allowed"),
 				I18nHelper.message("videoresponselist.moderated"), I18nHelper.message("videoresponselist.denied") }));
-
-		placeholderTable.setModel(controller.getPlaceholderModel());
-		placeholderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 
 	private void initListeners()
 	{
 
-		// Buttons
-		deleteAccount.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				if (controller.getAccountListModel().hasIndex(accountList.getSelectedIndex()))
-				{
-					controller.deleteAccount((Account) accountList.getSelectedItem());
-				}
-			}
-		});
 		savePreset.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex()))
+				final Preset preset = (Preset) presetList.getSelectedItem();
+				preset.title = titleTextField.getText();
+				if (categoryList.getSelectedIndex() != -1)
 				{
-					final Preset preset = (Preset) presetList.getSelectedItem();
-					preset.title = titleTextField.getText();
-					if (categoryList.getSelectedIndex() != -1)
-					{
-						preset.category = categoryList.getSelectedItem().toString();
-					}
-					preset.comment = (short) commentList.getSelectedIndex();
-					preset.commentvote = commentVoteCheckbox.isSelected();
-					preset.defaultDir = defaultdirTextField.getText();
-					preset.description = descriptionTextArea.getText();
-					preset.embed = embedCheckbox.isSelected();
-					preset.keywords = tagsTextArea.getText();
-					preset.mobile = mobileCheckbox.isSelected();
-					preset.numberModifier = Short.parseShort(numberModifierSpinner.getValue().toString());
-					preset.rate = rateCheckbox.isSelected();
-					preset.videoresponse = (short) videoresponseList.getSelectedIndex();
-					preset.visibility = (short) visibilityList.getSelectedIndex();
-					preset.account = (Account) accountList.getSelectedItem();
-					preset.monetize = monetizeCheckbox.isSelected();
-					preset.monetizeOverlay = monetizeOverlayCheckbox.isSelected();
-					preset.monetizeTrueview = monetizeTrueviewCheckbox.isSelected();
-					preset.monetizeProduct = monetizeProductCheckbox.isSelected();
-					preset.enddir = enddirTextfield.getText();
-					preset.license = (short) licenseList.getSelectedIndex();
-
-					// Partnerfeatures
-					preset.claim = claimCheckbox.isSelected();
-					preset.claimtype = (short) claimtypeComboBox.getSelectedIndex();
-					preset.claimpolicy = (short) claimpolicyComboBox.getSelectedIndex();
-					preset.partnerOverlay = partnerOverlay.isSelected();
-					preset.partnerTrueview = partnerTrueview.isSelected();
-					preset.partnerProduct = partnerProduct.isSelected();
-					preset.partnerInstream = partnerInstream.isSelected();
-					if (asset.getSelectedIndex() == -1)
-					{
-						asset.setSelectedIndex(0);
-					}
-					preset.asset = asset.getTitleAt(asset.getSelectedIndex());
-					preset.webTitle = webTitleTextfield.getText();
-					preset.webDescription = webDescriptionTextfield.getText();
-					preset.webID = webIDTextfield.getText();
-					preset.webNotes = webNotesTextfield.getText();
-					preset.tvTMSID = tvTMSIDTextfield.getText();
-					preset.tvISAN = tvISANTextfield.getText();
-					preset.tvEIDR = tvEIDRTextfield.getText();
-					preset.showTitle = tvTitleTextfield.getText();
-					preset.episodeTitle = tvEpisodeTitleTextfield.getText();
-					preset.seasonNb = tvSeasonNbTextfield.getText();
-					preset.episodeNb = tvEpisodeNbTextfield.getText();
-					preset.tvID = tvIDTextfield.getText();
-					preset.tvNotes = tvNotesTextfield.getText();
-					preset.movieTitle = movieTitleTextfield.getText();
-					preset.movieDescription = movieDescriptionTextfield.getText();
-					preset.movieTMSID = movieTMSIDTextfield.getText();
-					preset.movieISAN = movieISANTextfield.getText();
-					preset.movieEIDR = movieEIDRTextfield.getText();
-					preset.movieID = movieIDTextfield.getText();
-					preset.movieNotes = movieNotesTextfield.getText();
-
-					if (playlistCheckbox.isSelected())
-					{
-						preset.playlist = (Playlist) playlistList.getSelectedItem();
-					}
-					controller.savePreset(preset);
+					preset.category = categoryList.getSelectedItem().toString();
 				}
-			}
-		});
+				preset.comment = (short) commentList.getSelectedIndex();
+				preset.commentvote = commentVoteCheckbox.isSelected();
+				preset.defaultDir = defaultdirTextField.getText();
+				preset.description = descriptionTextArea.getText();
+				preset.embed = embedCheckbox.isSelected();
+				preset.keywords = tagsTextArea.getText();
+				preset.mobile = mobileCheckbox.isSelected();
+				preset.numberModifier = Short.parseShort(numberModifierSpinner.getValue().toString());
+				preset.rate = rateCheckbox.isSelected();
+				preset.videoresponse = (short) videoresponseList.getSelectedIndex();
+				preset.visibility = (short) visibilityList.getSelectedIndex();
+				preset.account = (Account) accountList.getSelectedItem();
+				preset.monetize = monetizeCheckbox.isSelected();
+				preset.monetizeOverlay = monetizeOverlayCheckbox.isSelected();
+				preset.monetizeTrueview = monetizeTrueviewCheckbox.isSelected();
+				preset.monetizeProduct = monetizeProductCheckbox.isSelected();
+				preset.enddir = enddirTextfield.getText();
+				preset.license = (short) licenseList.getSelectedIndex();
 
-		deletePreset.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex()))
+				// Partnerfeatures
+				preset.claim = claimCheckbox.isSelected();
+				preset.claimtype = (short) claimtypeComboBox.getSelectedIndex();
+				preset.claimpolicy = (short) claimpolicyComboBox.getSelectedIndex();
+				preset.partnerOverlay = partnerOverlay.isSelected();
+				preset.partnerTrueview = partnerTrueview.isSelected();
+				preset.partnerProduct = partnerProduct.isSelected();
+				preset.partnerInstream = partnerInstream.isSelected();
+				if (asset.getSelectedIndex() == -1)
 				{
-					controller.deletePreset((Preset) presetList.getSelectedItem());
+					asset.setSelectedIndex(0);
 				}
-			}
-		});
+				preset.asset = asset.getTitleAt(asset.getSelectedIndex());
+				preset.webTitle = webTitleTextfield.getText();
+				preset.webDescription = webDescriptionTextfield.getText();
+				preset.webID = webIDTextfield.getText();
+				preset.webNotes = webNotesTextfield.getText();
+				preset.tvTMSID = tvTMSIDTextfield.getText();
+				preset.tvISAN = tvISANTextfield.getText();
+				preset.tvEIDR = tvEIDRTextfield.getText();
+				preset.showTitle = tvTitleTextfield.getText();
+				preset.episodeTitle = tvEpisodeTitleTextfield.getText();
+				preset.seasonNb = tvSeasonNbTextfield.getText();
+				preset.episodeNb = tvEpisodeNbTextfield.getText();
+				preset.tvID = tvIDTextfield.getText();
+				preset.tvNotes = tvNotesTextfield.getText();
+				preset.movieTitle = movieTitleTextfield.getText();
+				preset.movieDescription = movieDescriptionTextfield.getText();
+				preset.movieTMSID = movieTMSIDTextfield.getText();
+				preset.movieISAN = movieISANTextfield.getText();
+				preset.movieEIDR = movieEIDRTextfield.getText();
+				preset.movieID = movieIDTextfield.getText();
+				preset.movieNotes = movieNotesTextfield.getText();
 
-		reset.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				resetForm();
-			}
-		});
-		submit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				submitForm();
-			}
-		});
-
-		searchFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				searchFileDialogOpen();
-			}
-		});
-
-		defaultdirSearch.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
-				fileChooser.setAcceptAllFileFilterUsed(true);
-				fileChooser.setDragEnabled(true);
-				fileChooser.setMultiSelectionEnabled(true);
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				final int result = fileChooser.showOpenDialog(null);
-
-				if (result == JFileChooser.APPROVE_OPTION)
+				if (playlistCheckbox.isSelected())
 				{
-					defaultdirTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+					preset.playlist = (Playlist) playlistList.getSelectedItem();
 				}
-			}
-		});
+				controller.savePreset(preset);
 
-		enddirSearch.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
-				fileChooser.setAcceptAllFileFilterUsed(true);
-				fileChooser.setDragEnabled(true);
-				fileChooser.setMultiSelectionEnabled(true);
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				final int result = fileChooser.showOpenDialog(null);
-
-				if (result == JFileChooser.APPROVE_OPTION)
-				{
-					enddirTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
-				}
-			}
-		});
-
-		// Presets
-		presetList.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(final ItemEvent e)
-			{
-				final Preset selectedPreset = (Preset) presetList.getSelectedItem();
-				if (selectedPreset != null)
-				{
-					resetForm();
-				}
-			}
-		});
-
-		// Account changed
-		accountList.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(final ItemEvent e)
-			{
-				controller.changeAccount((Account) e.getItem());
-			}
-		});
-
-		synchronizePlaylistsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				if (accountList.getSelectedItem() != null)
-				{
-					final List<Account> accounts = new ArrayList<Account>(1);
-					accounts.add((Account) accountList.getSelectedItem());
-					controller.synchronizePlaylists(accounts);
-				}
 			}
 		});
 
@@ -482,54 +271,16 @@ public final class UploadViewPanel
 			}
 		});
 
-		addPlaceholderButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				controller.addPlaceholder(placeholderPlaceholderTextfield.getText(), placeholderReplaceTextfield.getText());
-			}
-		});
-		deletePlaceholderButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				if (placeholderTable.getSelectedRow() != -1)
-				{
-					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
-					if (placeholder != null)
-					{
-						controller.deletePlaceholder(placeholder);
-					}
-				}
-			}
-		});
-
 		savePlaceholderButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (placeholderTable.getSelectedRow() != -1)
 				{
-					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
-					if (placeholder != null)
-					{
-						placeholder.placeholder = placeholderPlaceholderTextfield.getText();
-						placeholder.replacement = placeholderReplaceTextfield.getText();
-						controller.savePlaceholder(placeholder);
-					}
-				}
-			}
-		});
-
-		placeholderTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(final ListSelectionEvent e)
-			{
-				if (!e.getValueIsAdjusting() && !(placeholderTable.getSelectedRow() == -1))
-				{
-					final Placeholder placeholder = controller.getPlaceholderModel().getRow(placeholderTable.getSelectedRow());
-					placeholderPlaceholderTextfield.setText(placeholder.placeholder);
-					placeholderReplaceTextfield.setText(placeholder.replacement);
+					final Placeholder placeholder = new Placeholder();
+					placeholder.placeholder = placeholderPlaceholderTextfield.getText();
+					placeholder.replacement = placeholderReplaceTextfield.getText();
+					controller.savePlaceholder(placeholder);
 				}
 			}
 		});
@@ -576,49 +327,219 @@ public final class UploadViewPanel
 			}
 		});
 
-		thumbnailSelectButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
-				fileChooser.setAcceptAllFileFilterUsed(true);
-				fileChooser.setDragEnabled(true);
-				fileChooser.setMultiSelectionEnabled(false);
-				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				final int result = fileChooser.showOpenDialog(null);
-
-				if (result == JFileChooser.APPROVE_OPTION)
-				{
-					thumbnailTextfield.setText(fileChooser.getSelectedFile().getAbsolutePath());
-				}
-			}
-		});
 	}
 
-	private void searchFileDialogOpen()
+	@EventTopicSubscriber(topic = UploadViewPanel.EDIT_QUEUE_ENTRY)
+	public void onEditQueueEntry(final String topic, final Queue queue)
 	{
-		final JFileChooser fileChooser = injector.getInstance(JFileChooser.class);
-		fileChooser.setAcceptAllFileFilterUsed(true);
-		fileChooser.setDragEnabled(true);
-		fileChooser.setMultiSelectionEnabled(true);
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		final Preset selectedPreset = (Preset) presetList.getSelectedItem();
-		// noinspection CallToStringEquals
-		if ((selectedPreset != null) && (selectedPreset.defaultDir != null) && !selectedPreset.defaultDir.equals(""))
 
+		resetForm();
+		if (queue.account != null)
+		{}
+		rateCheckbox.setSelected(queue.rate);
+		categoryList.setSelectedItem(queue.category);
+		commentList.setSelectedIndex(queue.comment);
+		descriptionTextArea.setText(queue.description);
+		embedCheckbox.setSelected(queue.embed);
+		final File file = new File(queue.file);
+		fileList.addItem(file);
+		fileList.setSelectedItem(file);
+		commentVoteCheckbox.setSelected(queue.commentvote);
+		mobileCheckbox.setSelected(queue.mobile);
+		tagsTextArea.setText(queue.keywords);
+		titleTextField.setText(queue.title);
+		videoresponseList.setSelectedIndex(queue.videoresponse);
+		monetizeCheckbox.setSelected(queue.monetize);
+		monetizeCheckbox.doClick();
+		monetizeCheckbox.doClick();
+		monetizeOverlayCheckbox.setSelected(queue.monetizeOverlay);
+		monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
+		monetizeProductCheckbox.setSelected(queue.monetizeProduct);
+		enddirTextfield.setText(queue.enddir);
+		licenseList.setSelectedIndex(queue.license);
+		claimCheckbox.setEnabled(true);
+		thumbnailTextfield.setEnabled(true);
+		thumbnailSelectButton.setEnabled(true);
+		claimCheckbox.setSelected(queue.claim);
+		claimpolicyComboBox.setSelectedIndex(queue.claimpolicy);
+		claimtypeComboBox.setSelectedIndex(queue.claimtype);
+		partnerOverlay.setSelected(queue.partnerOverlay);
+		partnerTrueview.setSelected(queue.partnerTrueview);
+		partnerInstream.setSelected(queue.partnerInstream);
+		partnerProduct.setSelected(queue.partnerProduct);
+		webTitleTextfield.setText(queue.webTitle);
+		webIDTextfield.setText(queue.webID);
+		webDescriptionTextfield.setText(queue.webDescription);
+		webNotesTextfield.setText(queue.webNotes);
+		tvTMSIDTextfield.setText(queue.tvTMSID);
+		tvSeasonNbTextfield.setText(queue.seasonNb);
+		tvEpisodeNbTextfield.setText(queue.episodeNb);
+		tvISANTextfield.setText(queue.tvISAN);
+		tvEIDRTextfield.setText(queue.tvEIDR);
+		tvIDTextfield.setText(queue.tvID);
+		tvTitleTextfield.setText(queue.showTitle);
+		tvEpisodeTitleTextfield.setText(queue.episodeTitle);
+		tvNotesTextfield.setText(queue.tvNotes);
+		movieTitleTextfield.setText(queue.movieTitle);
+		movieDescriptionTextfield.setText(queue.movieDescription);
+		movieEIDRTextfield.setText(queue.movieEIDR);
+		movieIDTextfield.setText(queue.movieID);
+		movieTMSIDTextfield.setText(queue.movieTMSID);
+		movieISANTextfield.setText(queue.movieISAN);
+		movieNotesTextfield.setText(queue.movieNotes);
+		asset.setSelectedIndex(asset.indexOfTab(queue.asset));
+		numberModifierSpinner.setValue(queue.number);
+
+		if (queue.thumbnailimage != null)
 		{
-			final File presetDir = new File(selectedPreset.defaultDir);
-			if (presetDir.exists())
+			thumbnailTextfield.setText(queue.thumbnailimage);
+		}
+		if (queue.privatefile)
+		{
+			visibilityList.setSelectedIndex(2);
+		} else if (queue.unlisted)
+		{
+			visibilityList.setSelectedIndex(1);
+		} else
+		{
+			visibilityList.setSelectedIndex(0);
+		}
+
+		if (queue.started != null)
+		{
+			starttimeSpinner.setValue(queue.started);
+		}
+
+		if (queue.release != null)
+		{
+			releasetimeSpinner.setValue(queue.release);
+		}
+
+		if (queue.playlist != null)
+		{
+			playlistCheckbox.setSelected(true);
+			playlistList.setSelectedItem(queue.playlist);
+		}
+	}
+
+	private void resetForm()
+	{
+		boolean hasPreset = true;
+		if (hasPreset)
+		{
+			final Preset selectedPreset = (Preset) presetList.getSelectedItem();
+			titleTextField.setText(selectedPreset.title);
+			rateCheckbox.setSelected(selectedPreset.rate);
+			if ((selectedPreset.category == null) || !selectedPreset.category.equals(""))
 			{
-				fileChooser.setCurrentDirectory(presetDir);
+				categoryList.setSelectedItem(selectedPreset.category);
 			}
-		}
-		final int result = fileChooser.showOpenDialog(null);
+			commentList.setSelectedIndex(selectedPreset.comment);
+			defaultdirTextField.setText(selectedPreset.defaultDir);
+			descriptionTextArea.setText(selectedPreset.description);
+			embedCheckbox.setSelected(selectedPreset.embed);
+			commentVoteCheckbox.setSelected(selectedPreset.commentvote);
+			mobileCheckbox.setSelected(selectedPreset.mobile);
+			numberModifierSpinner.setValue(selectedPreset.numberModifier);
+			tagsTextArea.setText(selectedPreset.keywords);
+			videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
+			visibilityList.setSelectedIndex(selectedPreset.visibility);
+			monetizeCheckbox.setSelected(selectedPreset.monetize);
+			monetizeOverlayCheckbox.setSelected(selectedPreset.monetizeOverlay);
+			monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
+			monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
+			enddirTextfield.setText(selectedPreset.enddir);
+			licenseList.setSelectedIndex(selectedPreset.license);
+			claimCheckbox.setEnabled(true);
+			thumbnailTextfield.setEnabled(true);
+			thumbnailSelectButton.setEnabled(true);
+			claimCheckbox.setSelected(selectedPreset.claim);
+			claimpolicyComboBox.setSelectedIndex(selectedPreset.claimpolicy);
+			claimtypeComboBox.setSelectedIndex(selectedPreset.claimtype);
+			partnerOverlay.setSelected(selectedPreset.partnerOverlay);
+			partnerTrueview.setSelected(selectedPreset.partnerTrueview);
+			partnerInstream.setSelected(selectedPreset.partnerInstream);
+			partnerProduct.setSelected(selectedPreset.partnerProduct);
+			webTitleTextfield.setText(selectedPreset.webTitle);
+			webIDTextfield.setText(selectedPreset.webID);
+			webDescriptionTextfield.setText(selectedPreset.webDescription);
+			webNotesTextfield.setText(selectedPreset.webNotes);
+			tvTMSIDTextfield.setText(selectedPreset.tvTMSID);
+			tvSeasonNbTextfield.setText(selectedPreset.seasonNb);
+			tvEpisodeNbTextfield.setText(selectedPreset.episodeNb);
+			tvISANTextfield.setText(selectedPreset.tvISAN);
+			tvEIDRTextfield.setText(selectedPreset.tvEIDR);
+			tvIDTextfield.setText(selectedPreset.tvID);
+			tvTitleTextfield.setText(selectedPreset.showTitle);
+			tvEpisodeTitleTextfield.setText(selectedPreset.episodeTitle);
+			tvNotesTextfield.setText(selectedPreset.tvNotes);
+			movieTitleTextfield.setText(selectedPreset.movieTitle);
+			movieDescriptionTextfield.setText(selectedPreset.movieDescription);
+			movieEIDRTextfield.setText(selectedPreset.movieEIDR);
+			movieIDTextfield.setText(selectedPreset.movieID);
+			movieTMSIDTextfield.setText(selectedPreset.movieTMSID);
+			movieISANTextfield.setText(selectedPreset.movieISAN);
+			movieNotesTextfield.setText(selectedPreset.movieNotes);
+			asset.setSelectedIndex(asset.indexOfTab(selectedPreset.asset));
 
-		if (result == JFileChooser.APPROVE_OPTION)
+		} else
 		{
-			updateInsertedFiles(fileChooser.getSelectedFiles());
+			titleTextField.setText("");
+			rateCheckbox.setSelected(true);
+			categoryList.setSelectedIndex(0);
+			commentList.setSelectedIndex(0);
+			defaultdirTextField.setText("");
+			descriptionTextArea.setText("");
+			embedCheckbox.setSelected(true);
+			commentVoteCheckbox.setSelected(true);
+			mobileCheckbox.setSelected(true);
+			numberModifierSpinner.setValue(0);
+			tagsTextArea.setText("");
+			videoresponseList.setSelectedIndex(0);
+			visibilityList.setSelectedIndex(0);
+			playlistCheckbox.setSelected(false);
+			monetizeCheckbox.setSelected(false);
+			monetizeOverlayCheckbox.setSelected(false);
+			monetizeTrueviewCheckbox.setSelected(false);
+			monetizeProductCheckbox.setSelected(false);
+			enddirTextfield.setText("");
+			licenseList.setSelectedIndex(0);
+
+			claimCheckbox.setSelected(false);
+			claimCheckbox.setEnabled(true);
+			thumbnailTextfield.setEnabled(true);
+			thumbnailSelectButton.setEnabled(true);
+			claimpolicyComboBox.setSelectedIndex(0);
+			claimtypeComboBox.setSelectedIndex(0);
+			partnerOverlay.setSelected(false);
+			partnerTrueview.setSelected(false);
+			partnerInstream.setSelected(false);
+			partnerProduct.setSelected(false);
+			asset.setSelectedIndex(0);
+			webTitleTextfield.setText("");
+			webIDTextfield.setText("");
+			webDescriptionTextfield.setText("");
+			webNotesTextfield.setText("");
+			tvTMSIDTextfield.setText("");
+			tvSeasonNbTextfield.setText("");
+			tvEpisodeNbTextfield.setText("");
+			tvISANTextfield.setText("");
+			tvEIDRTextfield.setText("");
+			tvIDTextfield.setText("");
+			tvTitleTextfield.setText("");
+			tvEpisodeTitleTextfield.setText("");
+			tvNotesTextfield.setText("");
+			movieTitleTextfield.setText("");
+			movieDescriptionTextfield.setText("");
+			movieEIDRTextfield.setText("");
+			movieIDTextfield.setText("");
+			movieTMSIDTextfield.setText("");
+			movieISANTextfield.setText("");
+			movieNotesTextfield.setText("");
 		}
+		thumbnailTextfield.setText("");
+		starttimeSpinner.setValue(Calendar.getInstance().getTime());
+		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
 	}
 
 	private void submitForm()
@@ -695,290 +616,5 @@ public final class UploadViewPanel
 		}
 
 		return validationResult;
-	}
-
-	private void resetForm()
-	{
-		if (controller.getPresetListModel().hasIndex(presetList.getSelectedIndex()))
-		{
-			final Preset selectedPreset = (Preset) presetList.getSelectedItem();
-			titleTextField.setText(selectedPreset.title);
-			rateCheckbox.setSelected(selectedPreset.rate);
-			if ((selectedPreset.category == null) || !selectedPreset.category.equals(""))
-			{
-				categoryList.setSelectedItem(selectedPreset.category);
-			}
-			commentList.setSelectedIndex(selectedPreset.comment);
-			defaultdirTextField.setText(selectedPreset.defaultDir);
-			descriptionTextArea.setText(selectedPreset.description);
-			embedCheckbox.setSelected(selectedPreset.embed);
-			commentVoteCheckbox.setSelected(selectedPreset.commentvote);
-			mobileCheckbox.setSelected(selectedPreset.mobile);
-			numberModifierSpinner.setValue(selectedPreset.numberModifier);
-			tagsTextArea.setText(selectedPreset.keywords);
-			videoresponseList.setSelectedIndex(selectedPreset.videoresponse);
-			visibilityList.setSelectedIndex(selectedPreset.visibility);
-			monetizeCheckbox.setSelected(selectedPreset.monetize);
-			monetizeOverlayCheckbox.setSelected(selectedPreset.monetizeOverlay);
-			monetizeTrueviewCheckbox.setSelected(selectedPreset.monetizeTrueview);
-			monetizeProductCheckbox.setSelected(selectedPreset.monetizeProduct);
-			enddirTextfield.setText(selectedPreset.enddir);
-			licenseList.setSelectedIndex(selectedPreset.license);
-
-			if (!selectedPreset.claim)
-			{
-				for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel))
-				{
-					aCom.setEnabled(false);
-				}
-			} else
-			{
-				for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel))
-				{
-					aCom.setEnabled(true);
-				}
-			}
-			claimCheckbox.setEnabled(true);
-			thumbnailTextfield.setEnabled(true);
-			thumbnailSelectButton.setEnabled(true);
-			claimCheckbox.setSelected(selectedPreset.claim);
-			claimpolicyComboBox.setSelectedIndex(selectedPreset.claimpolicy);
-			claimtypeComboBox.setSelectedIndex(selectedPreset.claimtype);
-			partnerOverlay.setSelected(selectedPreset.partnerOverlay);
-			partnerTrueview.setSelected(selectedPreset.partnerTrueview);
-			partnerInstream.setSelected(selectedPreset.partnerInstream);
-			partnerProduct.setSelected(selectedPreset.partnerProduct);
-			webTitleTextfield.setText(selectedPreset.webTitle);
-			webIDTextfield.setText(selectedPreset.webID);
-			webDescriptionTextfield.setText(selectedPreset.webDescription);
-			webNotesTextfield.setText(selectedPreset.webNotes);
-			tvTMSIDTextfield.setText(selectedPreset.tvTMSID);
-			tvSeasonNbTextfield.setText(selectedPreset.seasonNb);
-			tvEpisodeNbTextfield.setText(selectedPreset.episodeNb);
-			tvISANTextfield.setText(selectedPreset.tvISAN);
-			tvEIDRTextfield.setText(selectedPreset.tvEIDR);
-			tvIDTextfield.setText(selectedPreset.tvID);
-			tvTitleTextfield.setText(selectedPreset.showTitle);
-			tvEpisodeTitleTextfield.setText(selectedPreset.episodeTitle);
-			tvNotesTextfield.setText(selectedPreset.tvNotes);
-			movieTitleTextfield.setText(selectedPreset.movieTitle);
-			movieDescriptionTextfield.setText(selectedPreset.movieDescription);
-			movieEIDRTextfield.setText(selectedPreset.movieEIDR);
-			movieIDTextfield.setText(selectedPreset.movieID);
-			movieTMSIDTextfield.setText(selectedPreset.movieTMSID);
-			movieISANTextfield.setText(selectedPreset.movieISAN);
-			movieNotesTextfield.setText(selectedPreset.movieNotes);
-			asset.setSelectedIndex(asset.indexOfTab(selectedPreset.asset));
-
-			if (selectedPreset.account != null)
-			{
-				controller.getAccountListModel().setSelectedItem(selectedPreset.account);
-				controller.changeAccount(selectedPreset.account);
-				if (selectedPreset.playlist != null)
-				{
-					playlistCheckbox.setSelected(true);
-					controller.getPlaylistListModel().setSelectedItem(selectedPreset.playlist);
-				}
-			}
-		} else
-		{
-			titleTextField.setText("");
-			rateCheckbox.setSelected(true);
-			categoryList.setSelectedIndex(0);
-			commentList.setSelectedIndex(0);
-			defaultdirTextField.setText("");
-			descriptionTextArea.setText("");
-			embedCheckbox.setSelected(true);
-			commentVoteCheckbox.setSelected(true);
-			mobileCheckbox.setSelected(true);
-			numberModifierSpinner.setValue(0);
-			tagsTextArea.setText("");
-			videoresponseList.setSelectedIndex(0);
-			visibilityList.setSelectedIndex(0);
-			playlistCheckbox.setSelected(false);
-			monetizeCheckbox.setSelected(false);
-			monetizeOverlayCheckbox.setSelected(false);
-			monetizeTrueviewCheckbox.setSelected(false);
-			monetizeProductCheckbox.setSelected(false);
-			enddirTextfield.setText("");
-			licenseList.setSelectedIndex(0);
-
-			claimCheckbox.setSelected(false);
-			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel))
-			{
-				aCom.setEnabled(false);
-			}
-			claimCheckbox.setEnabled(true);
-			thumbnailTextfield.setEnabled(true);
-			thumbnailSelectButton.setEnabled(true);
-			claimpolicyComboBox.setSelectedIndex(0);
-			claimtypeComboBox.setSelectedIndex(0);
-			partnerOverlay.setSelected(false);
-			partnerTrueview.setSelected(false);
-			partnerInstream.setSelected(false);
-			partnerProduct.setSelected(false);
-			asset.setSelectedIndex(0);
-			webTitleTextfield.setText("");
-			webIDTextfield.setText("");
-			webDescriptionTextfield.setText("");
-			webNotesTextfield.setText("");
-			tvTMSIDTextfield.setText("");
-			tvSeasonNbTextfield.setText("");
-			tvEpisodeNbTextfield.setText("");
-			tvISANTextfield.setText("");
-			tvEIDRTextfield.setText("");
-			tvIDTextfield.setText("");
-			tvTitleTextfield.setText("");
-			tvEpisodeTitleTextfield.setText("");
-			tvNotesTextfield.setText("");
-			movieTitleTextfield.setText("");
-			movieDescriptionTextfield.setText("");
-			movieEIDRTextfield.setText("");
-			movieIDTextfield.setText("");
-			movieTMSIDTextfield.setText("");
-			movieISANTextfield.setText("");
-			movieNotesTextfield.setText("");
-		}
-		thumbnailTextfield.setText("");
-		starttimeSpinner.setValue(Calendar.getInstance().getTime());
-		releasetimeSpinner.setValue(Calendar.getInstance().getTime());
-	}
-
-	@EventTopicSubscriber(topic = UploadViewPanel.EDIT_QUEUE_ENTRY)
-	public void onEditQueueEntry(final String topic, final Queue queue)
-	{
-
-		resetForm();
-		if (queue.account != null)
-		{
-			if (accountList.getModel() instanceof GenericListModel)
-			{
-				final GenericListModel<Account> model = (GenericListModel<Account>) accountList.getModel();
-				accountList.setSelectedIndex(model.getIndexOf(queue.account));
-			}
-		}
-		rateCheckbox.setSelected(queue.rate);
-		categoryList.setSelectedItem(queue.category);
-		commentList.setSelectedIndex(queue.comment);
-		descriptionTextArea.setText(queue.description);
-		embedCheckbox.setSelected(queue.embed);
-		final File file = new File(queue.file);
-		fileList.addItem(file);
-		fileList.setSelectedItem(file);
-		commentVoteCheckbox.setSelected(queue.commentvote);
-		mobileCheckbox.setSelected(queue.mobile);
-		tagsTextArea.setText(queue.keywords);
-		titleTextField.setText(queue.title);
-		videoresponseList.setSelectedIndex(queue.videoresponse);
-		monetizeCheckbox.setSelected(queue.monetize);
-		monetizeCheckbox.doClick();
-		monetizeCheckbox.doClick();
-		monetizeOverlayCheckbox.setSelected(queue.monetizeOverlay);
-		monetizeTrueviewCheckbox.setSelected(queue.monetizeTrueview);
-		monetizeProductCheckbox.setSelected(queue.monetizeProduct);
-		enddirTextfield.setText(queue.enddir);
-		licenseList.setSelectedIndex(queue.license);
-
-		if (!queue.claim)
-		{
-			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel))
-			{
-				aCom.setEnabled(false);
-			}
-		} else
-		{
-			for (final Component aCom : UploadViewPanel.getAllComponents(partnerPanel))
-			{
-				aCom.setEnabled(true);
-			}
-		}
-		claimCheckbox.setEnabled(true);
-		thumbnailTextfield.setEnabled(true);
-		thumbnailSelectButton.setEnabled(true);
-		claimCheckbox.setSelected(queue.claim);
-		claimpolicyComboBox.setSelectedIndex(queue.claimpolicy);
-		claimtypeComboBox.setSelectedIndex(queue.claimtype);
-		partnerOverlay.setSelected(queue.partnerOverlay);
-		partnerTrueview.setSelected(queue.partnerTrueview);
-		partnerInstream.setSelected(queue.partnerInstream);
-		partnerProduct.setSelected(queue.partnerProduct);
-		webTitleTextfield.setText(queue.webTitle);
-		webIDTextfield.setText(queue.webID);
-		webDescriptionTextfield.setText(queue.webDescription);
-		webNotesTextfield.setText(queue.webNotes);
-		tvTMSIDTextfield.setText(queue.tvTMSID);
-		tvSeasonNbTextfield.setText(queue.seasonNb);
-		tvEpisodeNbTextfield.setText(queue.episodeNb);
-		tvISANTextfield.setText(queue.tvISAN);
-		tvEIDRTextfield.setText(queue.tvEIDR);
-		tvIDTextfield.setText(queue.tvID);
-		tvTitleTextfield.setText(queue.showTitle);
-		tvEpisodeTitleTextfield.setText(queue.episodeTitle);
-		tvNotesTextfield.setText(queue.tvNotes);
-		movieTitleTextfield.setText(queue.movieTitle);
-		movieDescriptionTextfield.setText(queue.movieDescription);
-		movieEIDRTextfield.setText(queue.movieEIDR);
-		movieIDTextfield.setText(queue.movieID);
-		movieTMSIDTextfield.setText(queue.movieTMSID);
-		movieISANTextfield.setText(queue.movieISAN);
-		movieNotesTextfield.setText(queue.movieNotes);
-		asset.setSelectedIndex(asset.indexOfTab(queue.asset));
-		numberModifierSpinner.setValue(queue.number);
-
-		if (queue.thumbnailimage != null)
-		{
-			thumbnailTextfield.setText(queue.thumbnailimage);
-		}
-		if (queue.privatefile)
-		{
-			visibilityList.setSelectedIndex(2);
-		} else if (queue.unlisted)
-		{
-			visibilityList.setSelectedIndex(1);
-		} else
-		{
-			visibilityList.setSelectedIndex(0);
-		}
-
-		if (queue.started != null)
-		{
-			starttimeSpinner.setValue(queue.started);
-		}
-
-		if (queue.release != null)
-		{
-			releasetimeSpinner.setValue(queue.release);
-		}
-
-		if (queue.playlist != null)
-		{
-			playlistCheckbox.setSelected(true);
-			playlistList.setSelectedItem(queue.playlist);
-		}
-	}
-
-	private void updateInsertedFiles(final File... selectedFiles)
-	{
-		fileList.removeAllItems();
-		for (final File file : selectedFiles)
-		{
-			if (!file.isDirectory())
-			{
-				fileList.addItem(file);
-			}
-		}
-
-		// noinspection CallToStringEquals
-		if ((fileList.getItemCount() > 0) && titleTextField.getText().isEmpty())
-		{
-			if ((fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1) <= fileList.getSelectedItem().toString().lastIndexOf("."))
-			{
-				titleTextField.setText(new String(fileList
-						.getSelectedItem()
-						.toString()
-						.substring(fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1,
-								fileList.getSelectedItem().toString().lastIndexOf("."))));
-			}
-		}
 	}
 }

@@ -6,7 +6,7 @@
 	-fx-graphic:url("images/delete.png");
 }
 
-#addUpload {
+#addUpload, #addAccount {
 	-fx-graphic:url("images/add.png");
 }
 
@@ -14,7 +14,7 @@
 	-fx-graphic: url("images/folder_explore.png");
 }
 
-#resetUpload, #abortQueue {
+#resetUpload, #resetAccount, #abortQueue {
 	-fx-graphic: url("images/cancel.png");
 }
 

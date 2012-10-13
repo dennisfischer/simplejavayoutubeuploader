@@ -1,99 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/activation-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/annotations-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/aopalliance-1.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/asm-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/asm-commons-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/asm-tree-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/cliche.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.4-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/commons-email-1.2-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/commons-email-1.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-email-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/eventbus-1.4-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/eventbus-1.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/eventbus-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/filedrop.jar"/>
-	<classpathentry kind="lib" path="lib/guice-3.0-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/guice-3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/guice-multibindings-3.0-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/guice-multibindings-3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/guice-multibindings-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/hsqldb-2.2.8.jar"/>
-	<classpathentry kind="lib" path="lib/javaee-api-5.0-2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/javaee-api-5.0-2.jar"/>
-	<classpathentry kind="lib" path="lib/javax.inject-1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/javax.inject-1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/javax.inject-1.jar"/>
-	<classpathentry kind="lib" path="lib/jcip-annotations-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies-common-1.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies-forms-1.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/laf-plugin-7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/laf-plugin-7.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/laf-plugin-7.1.jar"/>
-	<classpathentry kind="lib" path="lib/laf-widget-7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/laf-widget-7.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/laf-widget-7.1.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.17-sources.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/mail-1.4.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/mail-1.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-3.1.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-3.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-3.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-guice-3.3-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-guice-3.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-guice-3.3.jar"/>
-	<classpathentry kind="lib" path="lib/org.apache.commons.codec-1.6-sources.jar"/>
-	<classpathentry kind="lib" path="lib/org.apache.commons.codec-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/org.osgi.core-4.2.0-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/org.osgi.core-4.2.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/org.osgi.core-4.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/scribe-1.3.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/scribe-1.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/scribe-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/serializer-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/substance-7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/substance-7.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/substance-7.1.jar"/>
-	<classpathentry kind="lib" path="lib/swingx.jar"/>
-	<classpathentry kind="lib" path="lib/trident-7.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/trident-7.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/trident-7.1-swing.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-bundleutils-3.9-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-bundleutils-3.9-sources.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-bundleutils-3.9.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-finder-3.9-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-finder-3.9-sources.jar"/>
-	<classpathentry kind="lib" path="lib/xbean-finder-3.9.jar"/>
-	<classpathentry kind="lib" path="lib/xmlpull-1.1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c-sources.jar"/>
-	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/guava-13.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-4.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/httpmime-4.2.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jfx-dialogs.jar" sourcepath="lib/jfx-dialogs-src.jar"/>
 	<classpathentry kind="lib" path="F:/Daten/repositories/jxfilewatcher-1.2-cross-desktop-win_mac_linux/jxfilewatcher-1.2.jar"/>
-	<classpathentry kind="lib" path="F:/Daten/GoogleYoutubeJavaApi/out/artifacts/GoogleYoutubeJavaApi_jar/GoogleYoutubeJavaApi.jar"/>
-	<classpathentry kind="lib" path="F:/Daten/repositories/jgoodies-validation-2.4.1/jgoodies-validation-2.4.1.jar"/>
 	<classpathentry kind="con" path="at.bestsolution.efxclipse.tooling.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Dennis/workspace/simple-java-youtube-uploader-javafx/lib/jfxtras-labs-2.2-r1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

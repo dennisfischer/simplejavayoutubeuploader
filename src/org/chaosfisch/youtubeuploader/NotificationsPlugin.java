@@ -5,17 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
- * Contributors:
- *     Dennis Fischer
+ * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader;
 
 import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
-import org.chaosfisch.util.Sound;
-import org.chaosfisch.youtubeuploader.services.SettingsService;
+import org.chaosfisch.youtubeuploader.dao.spi.SettingsDao;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.inject.Inject;
@@ -23,40 +19,24 @@ import com.google.inject.Inject;
 public class NotificationsPlugin
 {
 
-	@Inject
-	private SettingsService	settingsService;
+	@Inject private SettingsDao	settingsDao;
 
-	public NotificationsPlugin()
+	public void onUploadFailed(final String t, final Object o)
 	{
-		AnnotationProcessor.process(this);
-	}
-
-	public void init()
-	{
-		settingsService.addFilechooser("notification.general.sound_failed", I18nHelper.message("settings.uploadFailedLabel"));
-		settingsService.addFilechooser("notification.general.sound_finished", I18nHelper.message("settings.uploadSucceededLabel"));
-	}
-
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
-	public void onUploadStarted(final String t, final Object o)
-	{
-		EventBus.publish(SystemTrayPlugin.MESSAGE, I18nHelper.message("message.uploader_started"));
+		EventBus.publish(SystemTrayPlugin.MESSAGE, I18nHelper.message("message.upload_failed"));
+		settingsDao.get("notification.general.sound_failed");
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
 	public void onUploadFinished(final String t, final Object o)
 	{
 		EventBus.publish(SystemTrayPlugin.MESSAGE, I18nHelper.message("message.upload_successful"));
-		final Sound sound = new Sound();
-		sound.setSong((String) settingsService.get("notification.general.sound_finished", ""));
-		sound.play();
+		settingsDao.get("notification.general.sound_finished");
 	}
 
-	public void onUploadFailed(final String t, final Object o)
+	@EventTopicSubscriber(topic = Uploader.UPLOAD_STARTED)
+	public void onUploadStarted(final String t, final Object o)
 	{
-		EventBus.publish(SystemTrayPlugin.MESSAGE, I18nHelper.message("message.upload_failed"));
-		final Sound sound = new Sound();
-		sound.setSong((String) settingsService.get("notification.general.sound_failed", ""));
-		sound.play();
+		EventBus.publish(SystemTrayPlugin.MESSAGE, I18nHelper.message("message.uploader_started"));
 	}
 }

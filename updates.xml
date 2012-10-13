@@ -6,8 +6,7 @@
   which accompanies this distribution, and is available at
   http://www.gnu.org/licenses/gpl.html
   
-  Contributors:
-      Dennis Fischer
+  Contributors: Dennis Fischer
 -->
 <updateDescriptor baseUrl="http://simple-java-youtube-uploader.googlecode.com/files/">
 	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x86_2.0_RC_4.1.exe" newVersion="2.0 RC 4.1" newMediaFileId="30"

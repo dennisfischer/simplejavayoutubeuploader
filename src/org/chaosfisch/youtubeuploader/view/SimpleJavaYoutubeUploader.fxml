@@ -7,8 +7,7 @@
   which accompanies this distribution, and is available at
   http://www.gnu.org/licenses/gpl.html
   
-  Contributors:
-      Dennis Fischer
+  Contributors: Dennis Fischer
 -->
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -53,9 +52,8 @@
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.edit">
               <items>
-                <MenuItem id="menuAddAccount" mnemonicParsing="false" text="%menu.addAccount" fx:id="menuAddAccount" />
-                <MenuItem id="menuAddPreset" mnemonicParsing="false" text="%menu.addPreset" fx:id="menuAddPreset" />
-                <MenuItem id="menuAddPlaylist" mnemonicParsing="false" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
+                <MenuItem id="menuAddPreset" mnemonicParsing="false" onAction="#menuAddPreset" text="%menu.addPreset" fx:id="menuAddPreset" />
+                <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.help">
@@ -249,16 +247,11 @@
                                     <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
                                   </GridPane.margin>
                                 </Label>
-                                <ChoiceBox fx:id="accountList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="11">
+                                <ChoiceBox fx:id="accountList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
                                   <GridPane.margin>
                                     <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
                                   </GridPane.margin>
                                 </ChoiceBox>
-                                <Button fx:id="removeAccount" contentDisplay="GRAPHIC_ONLY" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeAccount" GridPane.columnIndex="5" GridPane.rowIndex="11">
-                                  <GridPane.margin>
-                                    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
-                                  </GridPane.margin>
-                                </Button>
                                 <GridPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="13">
                                   <children>
                                     <Button fx:id="addUpload" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addUpload" text="%button.addUpload" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -480,7 +473,20 @@
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>
                 </Tab>
-                <Tab closable="false" text="%tab.settings" />
+                <Tab closable="false" text="%tab.settings">
+                  <content>
+                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                <Tab closable="false" text="%tab.account">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <fx:include source="Accounts.fxml" prefHeight="421.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
               </tabs>
             </TabPane>
           </children>
