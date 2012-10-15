@@ -261,8 +261,7 @@ public class PluginMainApplication
 					}
 				}
 			});
-			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource(
-					"/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
+			final JMenuItem aboutMenuItem = new JMenuItem(resourceBundle.getString("application.aboutLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/application_home.png"))); //NON-NLS
 			aboutMenuItem.addActionListener(new ActionListener()
 			{
 				@Override
@@ -276,8 +275,7 @@ public class PluginMainApplication
 				}
 			});
 
-			final JMenuItem logfileCommitMenuItem = new JMenuItem(resourceBundle.getString("application.logfileLabel"), new ImageIcon(getClass().getResource(
-					"/youtubeuploader/resources/images/logfile_commit.png"))); //NON-NLS
+			final JMenuItem logfileCommitMenuItem = new JMenuItem(resourceBundle.getString("application.logfileLabel"), new ImageIcon(getClass().getResource("/youtubeuploader/resources/images/logfile_commit.png"))); //NON-NLS
 			logfileCommitMenuItem.addActionListener(new ActionListener()
 			{
 				@Override

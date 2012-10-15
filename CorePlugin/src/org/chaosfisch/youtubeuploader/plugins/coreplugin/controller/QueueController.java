@@ -171,8 +171,8 @@ public class QueueController
 			{
 				if (uploader.isRunning()) {
 					final int result = JOptionPane.showConfirmDialog(null, resourceBundle.getString("uploadsRunningExitMessage"), UIManager.getString("OptionPane.titleText"),
-																	 //NON-NLS
-																	 JOptionPane.YES_NO_OPTION);
+					                                                 //NON-NLS
+					                                                 JOptionPane.YES_NO_OPTION);
 					return result == 0;
 				}
 				return true;

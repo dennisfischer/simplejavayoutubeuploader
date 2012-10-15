@@ -77,8 +77,8 @@ public class FacebookSocialProvider implements ISocialProvider
 
 	private void refreshAccessToken()
 	{
-		final String url = new StringBuilder().append("https://graph.facebook.com/oauth/access_token?client_id=").append(APIData.FACEBOOK_APIKEY).append("&client_secret=").append(
-				APIData.FACEBOOK_APISECRET).append("&grant_type=fb_exchange_token&fb_exchange_token=").append(accessToken.getToken()).toString();
+		final String url = new StringBuilder().append("https://graph.facebook.com/oauth/access_token?client_id=").append(APIData.FACEBOOK_APIKEY).append("&client_secret=").append(APIData.FACEBOOK_APISECRET).append(
+				"&grant_type=fb_exchange_token&fb_exchange_token=").append(accessToken.getToken()).toString();
 	}
 
 	@Override

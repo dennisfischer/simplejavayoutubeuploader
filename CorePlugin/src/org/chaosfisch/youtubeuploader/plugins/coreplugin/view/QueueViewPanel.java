@@ -126,10 +126,9 @@ public final class QueueViewPanel
 		maxUploadsSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		maxUploadsSpinner.setEditor(new JSpinner.NumberEditor(maxUploadsSpinner, "Max: # Uploads")); //NON-NLS
 
-		queueFinishedList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queuefinishedlist.donothing"), resourceBundle.getString(
-				"queuefinishedlist.closeapplication"), resourceBundle.getString("queuefinishedlist.shutdown"), resourceBundle.getString("queuefinishedlist.hibernate")}));
-		queueViewList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queueviewlist.all"), resourceBundle.getString("queueviewlist.uploads"), resourceBundle.getString(
-				"queueviewlist.queue")}));
+		queueFinishedList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queuefinishedlist.donothing"), resourceBundle.getString("queuefinishedlist.closeapplication"), resourceBundle.getString(
+				"queuefinishedlist.shutdown"), resourceBundle.getString("queuefinishedlist.hibernate")}));
+		queueViewList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("queueviewlist.all"), resourceBundle.getString("queueviewlist.uploads"), resourceBundle.getString("queueviewlist.queue")}));
 	}
 
 	private void initListeners()

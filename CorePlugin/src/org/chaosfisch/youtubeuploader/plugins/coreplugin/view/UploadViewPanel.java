@@ -230,12 +230,10 @@ public final class UploadViewPanel
 		ValidationComponentUtils.setInputHint(commentList, resourceBundle.getString("inputhint.commentlist"));
 		ValidationComponentUtils.setInputHint(accountList, resourceBundle.getString("inputhint.accountlist"));
 
-		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString(
-				"visibilitylist.private")}));
-		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString(
-				"commentlist.denied"), resourceBundle.getString("commentlist.friendsonly")}));
-		videoresponseList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("videoresponselist.allowed"), resourceBundle.getString(
-				"videoresponselist.moderated"), resourceBundle.getString("videoresponselist.denied")}));
+		visibilityList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("visibilitylist.public"), resourceBundle.getString("visibilitylist.unlisted"), resourceBundle.getString("visibilitylist.private")}));
+		commentList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("commentlist.allowed"), resourceBundle.getString("commentlist.moderated"), resourceBundle.getString("commentlist.denied"), resourceBundle.getString(
+				"commentlist.friendsonly")}));
+		videoresponseList.setModel(new DefaultComboBoxModel(new String[]{resourceBundle.getString("videoresponselist.allowed"), resourceBundle.getString("videoresponselist.moderated"), resourceBundle.getString("videoresponselist.denied")}));
 
 		placeholderTable.setModel(controller.getPlaceholderModel());
 		placeholderTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -641,17 +639,15 @@ public final class UploadViewPanel
 			asset.setSelectedIndex(0);
 		}
 
-		controller.submitUpload(fileList.getSelectedItem().toString(), (Account) accountList.getSelectedItem(), categoryList.getSelectedItem().toString(), (short) visibilityList.getSelectedIndex(),
-		                        titleTextField.getText(), descriptionTextArea.getText(), tagsTextArea.getText(), playlist, Integer.parseInt(numberModifierSpinner.getValue().toString()),
-		                        (short) commentList.getSelectedIndex(), (short) videoresponseList.getSelectedIndex(), rateCheckbox.isSelected(), embedCheckbox.isSelected(),
-		                        commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(), (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(), monetizeCheckbox.isSelected(),
-		                        monetizeOverlayCheckbox.isSelected(), monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex(),
-		                        claimCheckbox.isSelected(), (short) claimtypeComboBox.getSelectedIndex(), (short) claimpolicyComboBox.getSelectedIndex(), partnerOverlay.isSelected(),
-		                        partnerTrueview.isSelected(), partnerInstream.isSelected(), partnerProduct.isSelected(), asset.getTitleAt(asset.getSelectedIndex()), webTitleTextfield.getText(),
-		                        webIDTextfield.getText(), webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(), tvSeasonNbTextfield.getText(),
-		                        tvEpisodeNbTextfield.getText(), tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(),
-		                        tvEpisodeTitleTextfield.getText(), tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(),
-		                        movieIDTextfield.getText(), movieTMSIDTextfield.getText(), movieISANTextfield.getText(), movieNotesTextfield.getText(), thumbnailTextfield.getText());
+		controller.submitUpload(fileList.getSelectedItem().toString(), (Account) accountList.getSelectedItem(), categoryList.getSelectedItem().toString(), (short) visibilityList.getSelectedIndex(), titleTextField.getText(),
+		                        descriptionTextArea.getText(), tagsTextArea.getText(), playlist, Integer.parseInt(numberModifierSpinner.getValue().toString()), (short) commentList.getSelectedIndex(), (short) videoresponseList.getSelectedIndex(),
+		                        rateCheckbox.isSelected(), embedCheckbox.isSelected(), commentVoteCheckbox.isSelected(), mobileCheckbox.isSelected(), (Date) starttimeSpinner.getValue(), release, enddirTextfield.getText(),
+		                        monetizeCheckbox.isSelected(), monetizeOverlayCheckbox.isSelected(), monetizeTrueviewCheckbox.isSelected(), monetizeProductCheckbox.isSelected(), (short) licenseList.getSelectedIndex(), claimCheckbox.isSelected(),
+		                        (short) claimtypeComboBox.getSelectedIndex(), (short) claimpolicyComboBox.getSelectedIndex(), partnerOverlay.isSelected(), partnerTrueview.isSelected(), partnerInstream.isSelected(), partnerProduct.isSelected(),
+		                        asset.getTitleAt(asset.getSelectedIndex()), webTitleTextfield.getText(), webIDTextfield.getText(), webDescriptionTextfield.getText(), webNotesTextfield.getText(), tvTMSIDTextfield.getText(),
+		                        tvSeasonNbTextfield.getText(), tvEpisodeNbTextfield.getText(), tvISANTextfield.getText(), tvEIDRTextfield.getText(), tvIDTextfield.getText(), tvTitleTextfield.getText(), tvEpisodeTitleTextfield.getText(),
+		                        tvNotesTextfield.getText(), movieTitleTextfield.getText(), movieDescriptionTextfield.getText(), movieEIDRTextfield.getText(), movieIDTextfield.getText(), movieTMSIDTextfield.getText(), movieISANTextfield.getText(),
+		                        movieNotesTextfield.getText(), thumbnailTextfield.getText());
 
 		fileList.removeItem(fileList.getSelectedItem());
 	}
@@ -937,8 +933,7 @@ public final class UploadViewPanel
 		//noinspection CallToStringEquals
 		if ((fileList.getItemCount() > 0) && titleTextField.getText().isEmpty()) {
 			if ((fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1) <= fileList.getSelectedItem().toString().lastIndexOf(".")) {
-				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1,
-				                                                                                  fileList.getSelectedItem().toString().lastIndexOf("."))));
+				titleTextField.setText(new String(fileList.getSelectedItem().toString().substring(fileList.getSelectedItem().toString().lastIndexOf(File.separator) + 1, fileList.getSelectedItem().toString().lastIndexOf("."))));
 			}
 		}
 	}

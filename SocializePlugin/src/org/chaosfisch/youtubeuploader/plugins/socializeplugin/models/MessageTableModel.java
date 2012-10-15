@@ -49,7 +49,7 @@ public class MessageTableModel extends RowTableModel<Message>
 	{
 		super(Message.class);
 		setDataAndColumnNames(new IdentityList<Message>(), Arrays.asList(I18nSupport.message("messagetable.id"), I18nSupport.message("messagetable.message"), I18nSupport.message("messagetable.uploadid"), I18nSupport.message("messagelabel.facebook"),
-																		 I18nSupport.message("messagelabel.twitter"), I18nSupport.message("messagelabel.googleplus"), I18nSupport.message("messagelabel.youtube")));
+		                                                                 I18nSupport.message("messagelabel.twitter"), I18nSupport.message("messagelabel.googleplus"), I18nSupport.message("messagelabel.youtube")));
 		for (final Message directory : messagges) {
 			addRow(directory);
 		}
