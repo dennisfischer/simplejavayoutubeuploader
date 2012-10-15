@@ -40,22 +40,15 @@ import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.designmanager.DesignManager;
 import org.chaosfisch.youtubeuploader.services.settingsservice.spi.SettingsService;
 import org.chaosfisch.youtubeuploader.util.LogfileComitter;
-import org.chaosfisch.youtubeuploader.util.Scripter;
 import org.chaosfisch.youtubeuploader.view.PluginMainApplication;
 import org.hsqldb.HsqlException;
 import org.jetbrains.annotations.NonNls;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.tools.shell.Global;
-import org.mozilla.javascript.tools.shell.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -81,8 +74,6 @@ public class SimpleJavaYoutubeUploader
 
 			final Injector injector = Guice.createInjector(modules);
 			modules.clear();
-
-			initScripter(injector, new File("scripts/"));
 
 			final SettingsService settingsService = injector.getInstance(SettingsService.class);
 			if (!GraphicsEnvironment.isHeadless()) {
@@ -113,24 +104,6 @@ public class SimpleJavaYoutubeUploader
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
-	}
-
-	private void initScripter(final Injector injector, final File directory)
-	{
-		final Context cx = ContextFactory.getGlobal().enterContext();
-		cx.setOptimizationLevel(-1);
-		cx.setLanguageVersion(Context.VERSION_1_5);
-		final Global global = Main.getGlobal();
-		global.init(cx);
-		final Scripter scripter = new Scripter(global, cx);
-		final Object controller = Context.javaToJS(scripter, global);
-		final Object out = Context.javaToJS(System.out, global);
-		final Object inject = Context.javaToJS(injector, global);
-		ScriptableObject.putProperty(global, "out", out); //NON-NLS
-		ScriptableObject.putProperty(global, "injector", inject); //NON-NLS
-		ScriptableObject.putProperty(global, "Scripter", controller); //NON-NLS
-
-		scripter.processDirectory(directory);
 	}
 
 	/**

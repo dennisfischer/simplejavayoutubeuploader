@@ -34,13 +34,11 @@ import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.chaosfisch.google.request.Request;
-import org.chaosfisch.google.request.Response;
+import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -80,12 +78,13 @@ public class MetadataChanger
 		this.queue = queue;
 		httpclient.setRedirectStrategy(new DefaultRedirectStrategy()
 		{
+			@Override
 			public boolean isRedirected(final HttpRequest request, final HttpResponse response, final HttpContext context)
 			{
 				boolean isRedirect = false;
 				try {
 					isRedirect = super.isRedirected(request, response, context);
-				} catch (ProtocolException e) {
+				} catch (final ProtocolException e) {
 					e.printStackTrace();
 				}
 				if (!isRedirect) {
@@ -104,7 +103,7 @@ public class MetadataChanger
 	{
 		try {
 			final LoginGoogle loginGoogle = new LoginGoogle().invoke();
-			final RedirectYoutube redirectYoutube = new RedirectYoutube(loginGoogle.getContent()).invoke(loginGoogle.getLoginPostResponse());
+			final RedirectYoutube redirectYoutube = new RedirectYoutube(loginGoogle.getContent()).invoke(loginGoogle.getTokenAuthResponse());
 			changeMetadata(redirectYoutube.getContent(), redirectYoutube.getTmpCook());
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -289,9 +288,9 @@ public class MetadataChanger
 			return tmpCook;
 		}
 
-		public RedirectYoutube invoke(final HttpMessage loginPostResponse) throws IOException, ClientProtocolException
+		public RedirectYoutube invoke(final HttpMessage tokenAuthResponse) throws IOException, ClientProtocolException
 		{
-			final Header[] cookies = loginPostResponse.getHeaders("Set-Cookie"); //NON-NLS
+			final Header[] cookies = tokenAuthResponse.getHeaders("Set-Cookie"); //NON-NLS
 			tmpCook = "";
 			for (final Header cookie : cookies) {
 				tmpCook += cookie.getValue().substring(0, cookie.getValue().indexOf(";") + 1);
@@ -302,8 +301,7 @@ public class MetadataChanger
 
 			final HttpResponse redirectResponse = httpclient.execute(redirectGet);
 			final HttpEntity redirectResponseEntity = redirectResponse.getEntity();
-			redirectResponseEntity.writeTo(output);
-			content = output.toString();
+			content = EntityUtils.toString(redirectResponseEntity);
 			return this;
 		}
 	}
@@ -311,54 +309,78 @@ public class MetadataChanger
 	private class LoginGoogle
 	{
 		private String       content;
-		private HttpResponse loginPostResponse;
-		private static final String REDIRECT_URL = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+		private HttpResponse tokenAuthResponse;
+		private static final String REDIRECT_URL         = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+		private static final String ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
+		private static final String CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 
 		public String getContent()
 		{
 			return content;
 		}
 
-		public HttpResponse getLoginPostResponse()
+		public HttpResponse getTokenAuthResponse()
 		{
-			return loginPostResponse;
+			return tokenAuthResponse;
 		}
 
 		public LoginGoogle invoke() throws IOException, ClientProtocolException, UnsupportedEncodingException, MalformedURLException
 		{
 
-			final String clientLoginParameters = String.format("Email=%s&Passwd=%s&service=%s&PesistentCookie=0&accountType=HOSTED_OR_GOOGLE&source=googletalk", queue.account.name, queue.account.getPassword(), "gaia"); //NON-NLS
-			final Request clientLoginRequest = new Request.Builder(Request.Method.POST, new URL("https://accounts.google.com/ClientLogin")).build();
-			clientLoginRequest.setContentType("application/x-www-form-urlencoded"); //NON-NLS
-			final DataOutputStream dataOutputStream = new DataOutputStream(clientLoginRequest.setContent());
-			dataOutputStream.writeBytes(clientLoginParameters);
-			dataOutputStream.flush();
-			final Response clientLoginResponse = clientLoginRequest.send();
-			if (clientLoginResponse.code != 200) {
-				throw new IOException(String.format("Message: %s; Body %s", clientLoginResponse.message, clientLoginResponse.body)); //NON-NLS
+			Account account = queue.account;
+
+			// STEP 1 CLIENT LOGIN
+			final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<BasicNameValuePair>();
+			clientLoginRequestParams.add(new BasicNameValuePair("Email", account.name));
+			clientLoginRequestParams.add(new BasicNameValuePair("Passwd", account.getPassword()));
+			clientLoginRequestParams.add(new BasicNameValuePair("service", "gaia"));
+			clientLoginRequestParams.add(new BasicNameValuePair("PesistentCookie", "0"));
+			clientLoginRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
+			clientLoginRequestParams.add(new BasicNameValuePair("source", "googletalk"));
+
+			final HttpPost clientLoginRequest = new HttpPost(CLIENT_LOGIN_URL);
+			clientLoginRequest.setEntity(new UrlEncodedFormEntity(clientLoginRequestParams));
+
+			HttpResponse clientLoginResponse = httpclient.execute(clientLoginRequest);
+			HttpEntity clientLoginEntity = clientLoginResponse.getEntity();
+			if (clientLoginResponse.getStatusLine().getStatusCode() != 200) {
+				System.out.println(clientLoginResponse.getStatusLine().toString());
 			}
 
-			final String sid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("SID=") + 4, clientLoginResponse.body.indexOf("LSID=")); //NON-NLS
-			final String lsid = clientLoginResponse.body.substring(clientLoginResponse.body.indexOf("LSID=") + 5, clientLoginResponse.body.indexOf("Auth=")); //NON-NLS
+			String clientLoginContent = EntityUtils.toString(clientLoginEntity);
+			EntityUtils.consume(clientLoginEntity);
+			// EXTRACT CLIENT LOGIN RESPONSE INFORMATIOn
+			// STEP 2 ISSUE AUTH TOKEN
+			final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
+			final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
 
-			final String data = String.format("SID=%s&LSID=%s&service=gaia&Session=true&source=googletalk", sid, lsid);
-			final Request issueTokenRequest = new Request.Builder("POST", new URL("https://www.google.com/accounts/IssueAuthToken")).build();
-			issueTokenRequest.setContentType("application/x-www-form-urlencoded"); //NON-NLS
-			issueTokenRequest.setFollowRedirects(false);
-			final DataOutputStream testStream = new DataOutputStream(issueTokenRequest.setContent());
-			testStream.writeBytes(data);
-			testStream.flush();
-			final Response issueTokenResponse = issueTokenRequest.send();
+			final List<BasicNameValuePair> issueAuthTokenParams = new ArrayList<BasicNameValuePair>();
+			issueAuthTokenParams.add(new BasicNameValuePair("SID", sid));
+			issueAuthTokenParams.add(new BasicNameValuePair("LSID", lsid));
+			issueAuthTokenParams.add(new BasicNameValuePair("service", "gaia"));
+			issueAuthTokenParams.add(new BasicNameValuePair("Session", "true"));
+			issueAuthTokenParams.add(new BasicNameValuePair("source", "googletalk"));
 
-			final String tokenAuthUrl = "https://www.google.com/accounts/TokenAuth?auth=" + URLEncoder.encode(issueTokenResponse.body) + "&service=youtube&continue=" + URLEncoder.encode(String.format(LoginGoogle.REDIRECT_URL,
-			                                                                                                                                                                                            queue.videoId)) + "&source=googletalk";
+			final HttpPost issueAuthTokenRequest = new HttpPost(ISSUE_AUTH_TOKEN_URL);
+			issueAuthTokenRequest.setEntity(new UrlEncodedFormEntity(issueAuthTokenParams));
 
-			final HttpUriRequest loginGet = new HttpGet(tokenAuthUrl);
-			loginPostResponse = httpclient.execute(loginGet);
-			final HttpEntity loginPostResponseEntity = loginPostResponse.getEntity();
-			loginPostResponseEntity.writeTo(output);
-			content = output.toString();
-			EntityUtils.consume(loginPostResponseEntity);
+			HttpResponse issueAuthTokenResponse = httpclient.execute(issueAuthTokenRequest);
+			HttpEntity issueAuthTokenEntity = issueAuthTokenResponse.getEntity();
+			if (issueAuthTokenResponse.getStatusLine().getStatusCode() != 200) {
+				System.out.println(clientLoginResponse.getStatusLine().toString());
+			}
+
+			String issueAuthTokenContent = EntityUtils.toString(issueAuthTokenEntity);
+			EntityUtils.consume(issueAuthTokenEntity);
+
+			// STEP 3 TOKEN AUTH
+			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder.encode(issueAuthTokenContent, "UTF-8"), URLEncoder.encode(String.format(
+					LoginGoogle.REDIRECT_URL, queue.videoId), "UTF-8"));
+
+			tokenAuthResponse = httpclient.execute(new HttpGet(tokenAuthUrl));
+			final HttpEntity tokenAuthEntity = tokenAuthResponse.getEntity();
+			content = EntityUtils.toString(tokenAuthEntity);
+			EntityUtils.consume(tokenAuthEntity);
 			return this;
 		}
 	}
