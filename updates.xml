@@ -19,33 +19,27 @@
   -->
 
 <updateDescriptor baseUrl="http://simple-java-youtube-uploader.googlecode.com/files/">
-	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x86_2.0_RC_4.1.exe" newVersion="2.0 RC 4.1" newMediaFileId="30"
-		   fileSize="6664704" bundledJre="" archive="false">
+	<entry targetMediaFileId="30" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x86_2.0_RC_4.2.exe" newVersion="2.0 RC 4.2" newMediaFileId="30" fileSize="5223424" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x86_2.0_RC_4.1.sh" newVersion="2.0 RC 4.1" newMediaFileId="228"
-		   fileSize="6407718" bundledJre="" archive="false">
+	<entry targetMediaFileId="228" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x86_2.0_RC_4.2.sh" newVersion="2.0 RC 4.2" newMediaFileId="228" fileSize="4839755" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x64_2.0_RC_4.1.sh" newVersion="2.0 RC 4.1" newMediaFileId="372"
-		   fileSize="6407759" bundledJre="" archive="false">
+	<entry targetMediaFileId="372" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Unix_x64_2.0_RC_4.2.sh" newVersion="2.0 RC 4.2" newMediaFileId="372" fileSize="4839047" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="639" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Mac_OS_X_2.0_RC_4.1.dmg" newVersion="2.0 RC 4.1" newMediaFileId="639"
-		   fileSize="7020544" bundledJre="" archive="false">
+	<entry targetMediaFileId="639" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Mac_OS_X_2.0_RC_4.2.dmg" newVersion="2.0 RC 4.2" newMediaFileId="639" fileSize="5455872" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="1055" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_4.1.exe" newVersion="2.0 RC 4.1" newMediaFileId="1055"
-		   fileSize="6369280" bundledJre="" archive="false">
+	<entry targetMediaFileId="1055" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_4.2.exe" newVersion="2.0 RC 4.2" newMediaFileId="1055" fileSize="5127168" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
-	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_4.1.exe" newVersion="2.0 RC 4.1" newMediaFileId="1055"
-		   fileSize="6369280" bundledJre="" archive="false">
+	<entry targetMediaFileId="22" updatableVersionMin="" updatableVersionMax="" fileName="SimpleJavaYoutubeUploader_Windows_x64_2.0_RC_4.2.exe" newVersion="2.0 RC 4.2" newMediaFileId="1055" fileSize="5127168" bundledJre="" archive="false">
 		<comment language="en"/>
 		<comment language="de"/>
 	</entry>
