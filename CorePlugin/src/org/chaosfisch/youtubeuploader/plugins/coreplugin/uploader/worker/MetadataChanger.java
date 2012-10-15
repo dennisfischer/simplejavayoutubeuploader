@@ -34,6 +34,7 @@ import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Account;
 import org.chaosfisch.youtubeuploader.plugins.coreplugin.models.Queue;
 
@@ -376,6 +377,11 @@ public class MetadataChanger
 			// STEP 3 TOKEN AUTH
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder.encode(issueAuthTokenContent, "UTF-8"), URLEncoder.encode(String.format(
 					LoginGoogle.REDIRECT_URL, queue.videoId), "UTF-8"));
+
+			Logger logger = Logger.getLogger("YOUTUBE URL");
+			logger.info("============================================= URL YOUTUBE =============================================");
+			logger.info(tokenAuthUrl);
+			logger.info("=======================================================================================================");
 
 			tokenAuthResponse = httpclient.execute(new HttpGet(tokenAuthUrl));
 			final HttpEntity tokenAuthEntity = tokenAuthResponse.getEntity();
