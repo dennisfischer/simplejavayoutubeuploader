@@ -7,9 +7,20 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.google.auth;
+package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
-public interface Authorization
+import java.util.List;
+
+import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.models.Playlist;
+
+public interface PlaylistService
 {
-	String getAuthHeader();
+	String	PLAYLISTS_SYNCHRONIZED	= "playlistsSynchronized";
+
+	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
+
+	void addYoutubePlaylist(Playlist playlist);
+
+	void synchronizePlaylists(List<Account> accounts);
 }

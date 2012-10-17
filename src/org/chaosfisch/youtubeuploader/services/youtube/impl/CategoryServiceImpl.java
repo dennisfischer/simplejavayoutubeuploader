@@ -16,11 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.chaosfisch.google.atom.AppCategories;
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.util.InputStreams;
+import org.chaosfisch.util.RequestHelper;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +37,9 @@ public class CategoryServiceImpl implements CategoryService
 	@Override
 	public List<AtomCategory> load()
 	{
-		final HttpGet httpGet = new HttpGet(CATEGORY_URL);
-		final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-
 		try
 		{
-			final HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
+			final HttpResponse httpResponse = RequestHelper.getFeed(CATEGORY_URL);
 
 			final XStream xstream = new XStream(new DomDriver("UTF-8"));
 			xstream.processAnnotations(AppCategories.class);

@@ -29,10 +29,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.swing.SwingWorker;
+import javafx.concurrent.Task;
 
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
@@ -41,15 +40,16 @@ import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.AuthenticationException;
-import org.chaosfisch.google.auth.GoogleAuthorization;
-import org.chaosfisch.google.auth.GoogleRequestSigner;
+import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.ExtendedPlacerholders;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.ThrottledOutputStream;
-import org.chaosfisch.youtubeuploader.APIData;
-import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
+import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
@@ -59,7 +59,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
-public class UploadWorker extends SwingWorker<Void, Void>
+public class UploadWorker extends Task<Void>
 {
 
 	/**
@@ -70,7 +70,7 @@ public class UploadWorker extends SwingWorker<Void, Void>
 		ABORTED, AUTHENTICATION, DONE, FAILED, FAILED_FILE, FAILED_META, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
 
-	private static final double		BACKOFF				= 3.13;																		// base
+	private static final double		BACKOFF				= 3.13;																			// base
 
 	// of
 	// exponential
@@ -86,7 +86,7 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	/**
 	 * Max size for each upload chunk
 	 */
-	private int						DEFAULT_CHUNK_SIZE;
+	private int						chunksize;
 
 	private ExtendedPlacerholders	extendedPlacerholders;
 
@@ -100,26 +100,20 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	 */
 	private File					fileToUpload;
 
-	/**
-	 * Authorization object
-	 */
-	private GoogleRequestSigner		googleRequestSigner;
+	@Inject RequestSigner			requestSigner;
 
-	@InjectLogger Logger			logger;
+	private final Logger			logger				= LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
 	private int						numberOfRetries;
 	/**
 	 * Dir that is used to access file
 	 */
 	private File					overWriteDir;
-	@Inject private PlaceholderDao	placeholderService;
-
-	@Inject private PlaylistDao		playlistService;
 	private Queue					queue;
-	@Inject private QueueDaoImpl	queueService;
-	@Inject private SettingsService	settingsService;
 	private int						speedLimit;
 	private long					start;
 	private double					totalBytesUploaded;
+
+	@Inject private PlaylistService	playlistService;
 
 	public UploadWorker()
 	{
@@ -128,17 +122,6 @@ public class UploadWorker extends SwingWorker<Void, Void>
 
 	private String atomBuilder()
 	{
-
-		if (queue.playlist != null)
-		{
-			final List<Account> accountList = new ArrayList<Account>(1);
-			accountList.add(queue.account);
-			try
-			{
-				playlistService.synchronizePlaylists(accountList).get();
-			} catch (final Exception ignored)
-			{}
-		}
 		// create atom xml metadata - create object first, then convert with
 		// xstream
 
@@ -231,7 +214,6 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	private void authenticate() throws AuthenticationException
 	{
 		// Create a new request signer with it's authorization object
-		googleRequestSigner = new GoogleRequestSigner(APIData.DEVELOPER_KEY, 2, new GoogleAuthorization(queue.account.name, queue.account.password));
 		currentStatus = STATUS.METADATA;
 	}
 
@@ -419,13 +401,13 @@ public class UploadWorker extends SwingWorker<Void, Void>
 
 	private void enddirAction()
 	{// noinspection CallToStringEquals
-		if ((queue.enddir != null) && !queue.enddir.isEmpty())
+		if ((queue.getString("enddir") != null) && !queue.getString("enddir").isEmpty())
 		{
-			final File enddir = new File(queue.enddir);
+			final File enddir = new File(queue.getString("enddir"));
 			if (enddir.exists())
 			{
 				logger.info(String.format("Moving file to %s", enddir));
-				final File queueFile = new File(queue.file);
+				final File queueFile = new File(queue.getString("file"));
 				File endFile;
 				if (settingsService.get("coreplugin.general.enddirtitle", "false").equals("true"))
 				{
@@ -459,9 +441,9 @@ public class UploadWorker extends SwingWorker<Void, Void>
 			if (!canResume())
 			{
 				currentStatus = STATUS.FAILED;
-				throw new UploadException(String.format("Giving up uploading '%s'.", queue.uploadurl));
+				throw new UploadException(String.format("Giving up uploading '%'.", queue.getString("uploadurl")));
 			}
-			resumeInfo = resumeFileUpload(queue.uploadurl);
+			resumeInfo = resumeFileUpload(queue.getString("uploadurl"));
 		} while (resumeInfo == null);
 		return resumeInfo;
 	}
@@ -499,9 +481,9 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	private long generateEndBytes(final long start, final double bytesToUpload)
 	{
 		final long end;
-		if ((bytesToUpload - DEFAULT_CHUNK_SIZE) > 0)
+		if ((bytesToUpload - chunksize) > 0)
 		{
-			end = (start + DEFAULT_CHUNK_SIZE) - 1;
+			end = (start + chunksize) - 1;
 		} else
 		{
 			end = (start + (int) bytesToUpload) - 1;
@@ -517,17 +499,17 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	private void initialize() throws FileNotFoundException
 	{
 		// Set the time uploaded started
-		queue.started = Calendar.getInstance().getTime();
+		queue.setDate("started", Calendar.getInstance().getTime());
 		// Push upload started event
 		EventBus.publish(Uploader.UPLOAD_STARTED, queue);
 
 		// Get File and Check if existing
 		if (overWriteDir == null)
 		{
-			fileToUpload = new File(queue.file);
+			fileToUpload = new File(queue.getString("file"));
 		} else
 		{
-			fileToUpload = new File(overWriteDir.getAbsolutePath() + new File(queue.file).getName());
+			fileToUpload = new File(overWriteDir.getAbsolutePath() + new File(queue.getString("file")).getName());
 		}
 
 		if (!fileToUpload.exists()) { throw new FileNotFoundException("Datei existiert nicht."); }
@@ -537,7 +519,7 @@ public class UploadWorker extends SwingWorker<Void, Void>
 
 	private void metadata() throws MetadataException
 	{
-		if (queue.uploadurl != null)
+		if (queue.getString("uploadurl") != null && !queue.getString("uploadurl").isEmpty())
 		{
 			logger.info("URL EXISTING!");
 			currentStatus = STATUS.RESUMEINFO;
@@ -612,57 +594,56 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT)
 	public void onAbortUpload(final String topic, final Queue abort)
 	{
-		if (abort.identity.equals(queue.identity))
+		if (abort.equals(queue))
 		{
 			currentStatus = STATUS.ABORTED;
 		}
 	}
 
-	@Override
 	protected void onDone()
 	{
 
-		queue.inprogress = false;
+		queue.setBoolean("inprogress", false);
 		switch (currentStatus)
 		{
 			case DONE:
-				queue.archived = true;
-				saveQueueObject();
+				queue.setBoolean("archived", true);
+				queue.saveIt();
 				EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(queue, fileSize, fileSize, 0, 0, 0));
 				EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, queue);
 				break;
 			case FAILED:
-				queue.failed = true;
-				queue.started = null;
-				saveQueueObject();
+				queue.setBoolean("failed", true);
+				queue.set("started", null);
+				queue.saveIt();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Upload failed!"));
 				break;
 			case FAILED_FILE:
-				queue.failed = true;
-				queue.started = null;
-				queue.status = "File not found!";
-				saveQueueObject();
+				queue.setBoolean("failed", true);
+				queue.set("started", null);
+				queue.setString("status", "File not found!");
+				queue.saveIt();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "File not found!"));
 				break;
 			case FAILED_META:
-				queue.failed = true;
-				queue.started = null;
-				queue.status = "Corrupted Uploadinformation!";
-				saveQueueObject();
+				queue.setBoolean("failed", true);
+				queue.set("started", null);
+				queue.setString("status", "Corrupted Uploadinformation!");
+				queue.saveIt();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Corrupted Uploadinformation!"));
 				break;
 			case ABORTED:
-				queue.failed = true;
-				queue.started = null;
-				saveQueueObject();
+				queue.setBoolean("failed", true);
+				queue.set("started", null);
+				queue.saveIt();
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Beendet auf Userrequest"));
 				break;
 
 			default:
-				queue.failed = true;
-				queue.started = null;
-				saveQueueObject();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Authentication-Error"));
+				queue.setBoolean("failed", true);
+				queue.set("started", null);
+				queue.saveIt();
+				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Unknown-Error"));
 				break;
 		}
 	}
@@ -685,10 +666,9 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	private void playlistAction()
 	{
 		// Add video to playlist
-		if (queue.playlist != null)
+		if (queue.parent(Playlist.class) != null)
 		{
-			queue.playlist.account = queue.account;
-			playlistService.addLatestVideoToPlaylist(queue.playlist, queue.videoId);
+			playlistService.addLatestVideoToPlaylist(queue.parent(Playlist.class), queue.getString("videoId"));
 		}
 	}
 
@@ -761,11 +741,11 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	private void resumeinfo() throws UploadException
 	{
 		final ResumeInfo resumeInfo = fetchResumeInfo();
-		logger.info(String.format("Resuming stalled upload to: %s.", queue.uploadurl));
+		logger.info("Resuming stalled upload to: {}", queue.getString("uploadurl"));
 		if (resumeInfo.videoId != null)
 		{ // upload actually complted despite the exception
 			final String videoId = resumeInfo.videoId;
-			logger.info(String.format("No need to resume video ID '%s'.", videoId));
+			logger.info("No need to resume video ID {}", videoId);
 			currentStatus = STATUS.POSTPROCESS;
 		} else
 		{
@@ -775,26 +755,16 @@ public class UploadWorker extends SwingWorker<Void, Void>
 			fileSize = fileToUpload.length();
 			bytesToUpload = fileSize - nextByteToUpload;
 			start = nextByteToUpload;
-			logger.info(String.format("Next byte to upload is '%d'.", nextByteToUpload));
+			logger.info("Next byte to upload is {].", nextByteToUpload);
 			currentStatus = STATUS.UPLOAD;
 		}
 	}
 
-	public void run(final Queue queue, final int speedLimit, final int chunkSize)
+	public void run(final Queue queue, final int speedLimit, final int chunksize)
 	{
 		this.queue = queue;
 		this.speedLimit = speedLimit;
-		DEFAULT_CHUNK_SIZE = chunkSize;
-	}
-
-	private void saveQueueObject()
-	{
-		queueService.update(queue);
-	}
-
-	public void setOverWriteDir(final File overWriteDir)
-	{
-		this.overWriteDir = overWriteDir;
+		this.chunksize = chunksize;
 	}
 
 	private void upload() throws UploadException
@@ -862,7 +832,7 @@ public class UploadWorker extends SwingWorker<Void, Void>
 						throw new UploadException(String.format("Unexpected return code : %d %s while uploading :%s", response.code,
 								response.message, response.url.toString()));
 				}
-				bytesToUpload -= DEFAULT_CHUNK_SIZE;
+				bytesToUpload -= chunksize;
 				start = end + 1;
 			} finally
 			{
@@ -893,7 +863,7 @@ public class UploadWorker extends SwingWorker<Void, Void>
 	}
 
 	@Override
-	protected Void doInBackground() throws Exception
+	protected Void call() throws Exception
 	{
 		// TODO Auto-generated method stub
 		return null;

@@ -13,5 +13,7 @@ import org.apache.http.HttpRequest;
 
 public interface RequestSigner
 {
-	public void sign(HttpRequest request) throws AuthenticationException;
+	void sign(final HttpRequest request);
+
+	void signWithAuthorization(final HttpRequest request, final String authtoken);
 }

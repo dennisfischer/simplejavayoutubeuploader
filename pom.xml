@@ -180,5 +180,10 @@
 			<artifactId>jfxtras-labs</artifactId>
 			<version>2.2-r2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.2.1</version>
+		</dependency>
 	</dependencies>
 </project>

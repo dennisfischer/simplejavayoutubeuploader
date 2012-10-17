@@ -11,6 +11,7 @@ package org.chaosfisch.youtubeuploader.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -45,8 +46,8 @@ import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Preset;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,24 +106,6 @@ public class ViewController implements Initializable
 
 	@FXML// fx:id="menuClose"
 	private MenuItem					menuClose;
-
-	@FXML// fx:id="menuExportAccount"
-	private MenuItem					menuExportAccount;
-
-	@FXML// fx:id="menuExportPreset"
-	private MenuItem					menuExportPreset;
-
-	@FXML// fx:id="menuExportQueue"
-	private MenuItem					menuExportQueue;
-
-	@FXML// fx:id="menuImportAccount"
-	private MenuItem					menuImportAccount;
-
-	@FXML// fx:id="menuImportPreset"
-	private MenuItem					menuImportPreset;
-
-	@FXML// fx:id="menuImportQueue"
-	private MenuItem					menuImportQueue;
 
 	@FXML// fx:id="menuLogfile"
 	private MenuItem					menuLogfile;
@@ -268,12 +251,6 @@ public class ViewController implements Initializable
 		assert menuAddPreset != null : "fx:id=\"menuAddPreset\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuChangelog != null : "fx:id=\"menuChangelog\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuClose != null : "fx:id=\"menuClose\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuExportAccount != null : "fx:id=\"menuExportAccount\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuExportPreset != null : "fx:id=\"menuExportPreset\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuExportQueue != null : "fx:id=\"menuExportQueue\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuImportAccount != null : "fx:id=\"menuImportAccount\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuImportPreset != null : "fx:id=\"menuImportPreset\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert menuImportQueue != null : "fx:id=\"menuImportQueue\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuLogfile != null : "fx:id=\"menuLogfile\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuOpenFile != null : "fx:id=\"menuOpenFile\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuPlugins != null : "fx:id=\"menuPlugins\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
@@ -463,7 +440,9 @@ public class ViewController implements Initializable
 	// Handler for Button[fx:id="refreshPlaylists"] onAction
 	public void refreshPlaylists(final ActionEvent event)
 	{
-		// handle the event here
+		final Account[] accountArray = new Account[accountItems.size()];
+		accountItems.toArray(accountArray);
+		playlistService.synchronizePlaylists(Arrays.asList(accountArray));
 	}
 
 	// Handler for Button[fx:id="removePreset"] onAction

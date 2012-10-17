@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bushe.swing.event.EventBus;
+import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Directory;
 import org.chaosfisch.youtubeuploader.models.Playlist;

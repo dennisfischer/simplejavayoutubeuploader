@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
+<?scenebuilder-stylesheet ../resources/style.css?>
+
+<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="269.0" prefWidth="510.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
+  <children>
+    <GridPane minHeight="24.0" prefHeight="421.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <TableView prefHeight="393.0" prefWidth="1000.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </TableView>
+        <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="stopQueue" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%button.stop" GridPane.columnIndex="1" GridPane.rowIndex="1">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="editQueue" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%button.edit" GridPane.columnIndex="0" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="removeQueue" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%button.delete" GridPane.columnIndex="1" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="queueTop" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="queueUp" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="queueDown" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="4" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="abortQueue" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%button.abort" GridPane.columnIndex="6" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <Button fx:id="queueBottom" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="5" GridPane.rowIndex="2">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Button>
+        <ChoiceBox fx:id="actionOnFinish" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </ChoiceBox>
+        <Label text="%label.actionOnFinish" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1">
+          <GridPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+          </GridPane.margin>
+        </Label>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+        <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+</fx:root>

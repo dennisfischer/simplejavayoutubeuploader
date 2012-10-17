@@ -7,89 +7,143 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-/*
- * Copyright (c) 2012, Dennis Fischer
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
-/*
- * DefaultController.java
- *
- * Created on January 22, 2007, 8:42 AM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.util.Calendar;
+import java.net.URL;
 import java.util.Date;
+import java.util.ResourceBundle;
 
-import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.dao.spi.AccountDao;
-import org.chaosfisch.youtubeuploader.dao.spi.PlaceholderDao;
-import org.chaosfisch.youtubeuploader.dao.spi.PresetDao;
-import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.chaosfisch.youtubeuploader.models.Preset;
-import org.chaosfisch.youtubeuploader.models.Queue;
 
-public class UploadController
+public class UploadController implements Initializable
 {
 
-	private PlaceholderDao	placeholderDao;
-	private AccountDao		accountDao;
-	private PresetDao		presetDao;
-	private QueueDao		queueDao;
+	@FXML// fx:id="accountList"
+	private ChoiceBox<?>	accountList;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="addUpload"
+	private Button			addUpload;			// Value injected by FXMLLoader
+
+	@FXML// fx:id="openFiles"
+	private Button			openFiles;			// Value injected by FXMLLoader
+
+	@FXML// fx:id="playlistCheckbox"
+	private CheckBox		playlistCheckbox;	// Value injected by FXMLLoader
+
+	@FXML// fx:id="playlistList"
+	private ChoiceBox<?>	playlistList;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="refreshPlaylists"
+	private Button			refreshPlaylists;	// Value injected by FXMLLoader
+
+	@FXML// fx:id="resetUpload"
+	private Button			resetUpload;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="uploadCategory"
+	private ChoiceBox<?>	uploadCategory;	// Value injected by FXMLLoader
+
+	@FXML// fx:id="uploadDescription"
+	private TextArea		uploadDescription;	// Value injected by FXMLLoader
+
+	@FXML// fx:id="uploadFile"
+	private ChoiceBox<?>	uploadFile;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="uploadTags"
+	private TextArea		uploadTags;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="uploadTitle"
+	private TextField		uploadTitle;		// Value injected by FXMLLoader
+
+	@FXML// fx:id="x2"
+	private TitledPane		x2;				// Value injected by FXMLLoader
+
+	// Handler for Button[fx:id="addUpload"] onAction
+	public void addUpload(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[id="openDefaultdir"] onAction
+	public void openDefaultdir(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[id="openEnddir"] onAction
+	public void openEnddir(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[fx:id="openFiles"] onAction
+	public void openFiles(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[fx:id="refreshPlaylists"] onAction
+	public void refreshPlaylists(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[id="removePreset"] onAction
+	public void removePreset(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[fx:id="resetUpload"] onAction
+	public void resetUpload(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[id="savePreset"] onAction
+	public void savePreset(ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	@Override
+	// This method is called by the FXMLLoader when initialization is complete
+	public void initialize(URL fxmlFileLocation, ResourceBundle resources)
+	{
+		assert accountList != null : "fx:id=\"accountList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistCheckbox != null : "fx:id=\"playlistCheckbox\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistList != null : "fx:id=\"playlistList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert resetUpload != null : "fx:id=\"resetUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadCategory != null : "fx:id=\"uploadCategory\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadDescription != null : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadFile != null : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert x2 != null : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
+
+		// initialize your logic here: all @FXML variables will have been
+		// injected
+
+	}
 
 	public void addPlaceholder(final String placeholder, final String replacement)
 	{
-		final Placeholder placeholderObject = new Placeholder();
-		placeholderObject.placeholder = placeholder;
-		placeholderObject.replacement = replacement;
-		placeholderDao.create(placeholderObject);
-	}
-
-	public void deleteAccount(final Account account)
-	{
-		accountDao.delete(account);
-	}
-
-	public void deletePlaceholder(final Placeholder placeholder)
-	{
-		placeholderDao.delete(placeholder);
-	}
-
-	public void deletePreset(final Preset preset)
-	{
-		presetDao.delete(preset);
-	}
-
-	public void savePlaceholder(final Placeholder placeholder)
-	{
-		placeholderDao.update(placeholder);
-	}
-
-	public void savePreset(final Preset preset)
-	{
-		presetDao.update(preset);
+		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
 	}
 
 	public void submitUpload(final String filepath, final Account account, final String category)
@@ -145,93 +199,95 @@ public class UploadController
 			final String thumbnail)
 	{
 
-		final Queue queue = new Queue();
-		queue.account = account;
-		queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
-		queue.mobile = mobile;
-		queue.title = title;
-		queue.category = category;
-		queue.comment = comment;
-		queue.commentvote = commentvote;
-		queue.description = description;
-		queue.embed = embed;
-		queue.file = filepath;
-		queue.keywords = tags;
-		queue.rate = rate;
-		queue.videoresponse = videoresponse;
-		queue.playlist = playlist;
-		queue.locked = false;
-		queue.monetize = monetize;
-		queue.monetizeOverlay = monetizeOverlay;
-		queue.monetizeTrueview = monetizeTrueview;
-		queue.monetizeProduct = monetizeProduct;
-		queue.enddir = enddir;
-		queue.license = license;
-
-		switch (visibility)
-		{
-			case 1:
-				queue.unlisted = true;
-				break;
-			case 2:
-				queue.privatefile = true;
-				break;
-		}
-
-		if ((starttime != null) && starttime.after(new Date(System.currentTimeMillis() + (300000))))
-		{
-			queue.started = new Date(starttime.getTime());
-		}
-
-		if ((releasetime != null) && releasetime.after(new Date(System.currentTimeMillis() + (300000))))
-		{
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(releasetime);
-			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
-			final int mod = unroundedMinutes % 30;
-			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
-
-			queue.release = calendar.getTime();
-		}
-
-		// Partnerfeatures
-		queue.claim = claim;
-		queue.claimtype = claimtype;
-		queue.claimpolicy = claimpolicy;
-		queue.partnerOverlay = partnerOverlay;
-		queue.partnerTrueview = partnerTrueview;
-		queue.partnerProduct = partnerProduct;
-		queue.partnerInstream = partnerInstream;
-		queue.asset = asset;
-		queue.webTitle = webTitle;
-		queue.webDescription = webDescription;
-		queue.webID = webID;
-		queue.webNotes = webNotes;
-		queue.tvTMSID = tvTMSID;
-		queue.tvISAN = tvISAN;
-		queue.tvEIDR = tvEIDR;
-		queue.showTitle = showTitle;
-		queue.episodeTitle = episodeTitle;
-		queue.seasonNb = seasonNb;
-		queue.episodeNb = episodeNb;
-		queue.tvID = tvID;
-		queue.tvNotes = tvNotes;
-		queue.movieTitle = movieTitle;
-		queue.movieDescription = movieDescription;
-		queue.movieTMSID = movieTMSID;
-		queue.movieISAN = movieISAN;
-		queue.movieEIDR = movieEIDR;
-		queue.movieID = movieID;
-		queue.movieNotes = movieNotes;
-
-		queue.number = number;
-
-		if ((thumbnail != null) && !thumbnail.isEmpty())
-		{
-			queue.thumbnail = true;
-			queue.thumbnailimage = thumbnail;
-		}
-
-		queueDao.create(queue);
+		// final Queue queue = new Queue();
+		// queue.account = account;
+		// queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
+		// queue.mobile = mobile;
+		// queue.title = title;
+		// queue.category = category;
+		// queue.comment = comment;
+		// queue.commentvote = commentvote;
+		// queue.description = description;
+		// queue.embed = embed;
+		// queue.file = filepath;
+		// queue.keywords = tags;
+		// queue.rate = rate;
+		// queue.videoresponse = videoresponse;
+		// queue.playlist = playlist;
+		// queue.locked = false;
+		// queue.monetize = monetize;
+		// queue.monetizeOverlay = monetizeOverlay;
+		// queue.monetizeTrueview = monetizeTrueview;
+		// queue.monetizeProduct = monetizeProduct;
+		// queue.enddir = enddir;
+		// queue.license = license;
+		//
+		// switch (visibility)
+		// {
+		// case 1:
+		// queue.unlisted = true;
+		// break;
+		// case 2:
+		// queue.privatefile = true;
+		// break;
+		// }
+		//
+		// if ((starttime != null) && starttime.after(new
+		// Date(System.currentTimeMillis() + (300000))))
+		// {
+		// queue.started = new Date(starttime.getTime());
+		// }
+		//
+		// if ((releasetime != null) && releasetime.after(new
+		// Date(System.currentTimeMillis() + (300000))))
+		// {
+		// final Calendar calendar = Calendar.getInstance();
+		// calendar.setTime(releasetime);
+		// final int unroundedMinutes = calendar.get(Calendar.MINUTE);
+		// final int mod = unroundedMinutes % 30;
+		// calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+		//
+		// queue.release = calendar.getTime();
+		// }
+		//
+		// // Partnerfeatures
+		// queue.claim = claim;
+		// queue.claimtype = claimtype;
+		// queue.claimpolicy = claimpolicy;
+		// queue.partnerOverlay = partnerOverlay;
+		// queue.partnerTrueview = partnerTrueview;
+		// queue.partnerProduct = partnerProduct;
+		// queue.partnerInstream = partnerInstream;
+		// queue.asset = asset;
+		// queue.webTitle = webTitle;
+		// queue.webDescription = webDescription;
+		// queue.webID = webID;
+		// queue.webNotes = webNotes;
+		// queue.tvTMSID = tvTMSID;
+		// queue.tvISAN = tvISAN;
+		// queue.tvEIDR = tvEIDR;
+		// queue.showTitle = showTitle;
+		// queue.episodeTitle = episodeTitle;
+		// queue.seasonNb = seasonNb;
+		// queue.episodeNb = episodeNb;
+		// queue.tvID = tvID;
+		// queue.tvNotes = tvNotes;
+		// queue.movieTitle = movieTitle;
+		// queue.movieDescription = movieDescription;
+		// queue.movieTMSID = movieTMSID;
+		// queue.movieISAN = movieISAN;
+		// queue.movieEIDR = movieEIDR;
+		// queue.movieID = movieID;
+		// queue.movieNotes = movieNotes;
+		//
+		// queue.number = number;
+		//
+		// if ((thumbnail != null) && !thumbnail.isEmpty())
+		// {
+		// queue.thumbnail = true;
+		// queue.thumbnailimage = thumbnail;
+		// }
+		//
+		// queueDao.create(queue);
 	}
 }
