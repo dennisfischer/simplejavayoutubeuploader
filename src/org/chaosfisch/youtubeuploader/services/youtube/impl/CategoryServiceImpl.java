@@ -16,18 +16,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.chaosfisch.google.atom.AppCategories;
 import org.chaosfisch.google.atom.AtomCategory;
-import org.chaosfisch.util.InputStreams;
+import org.chaosfisch.util.Request;
+import org.chaosfisch.util.Request.Method;
+import org.chaosfisch.util.RequestHelper;
+import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Ordering;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class CategoryServiceImpl implements CategoryService
 {
@@ -38,32 +38,32 @@ public class CategoryServiceImpl implements CategoryService
 	@Override
 	public List<AtomCategory> load()
 	{
-		final HttpGet httpGet = new HttpGet(CATEGORY_URL);
-		final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-
 		try
 		{
-			final HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
-
-			final XStream xstream = new XStream(new DomDriver("UTF-8"));
-			xstream.processAnnotations(AppCategories.class);
-			final String xml = InputStreams.toString(httpResponse.getEntity().getContent());
-			final AppCategories appCategories = (AppCategories) xstream.fromXML(xml);
-			final Iterator<AtomCategory> iterator = appCategories.categories.iterator();
-			while (iterator.hasNext())
+			final HttpResponse httpResponse = RequestHelper.execute(new Request.Builder(CATEGORY_URL, Method.GET).build());
+			if (httpResponse.getStatusLine().getStatusCode() == 200)
 			{
-				final AtomCategory atomCategory = iterator.next();
+				final AppCategories appCategories = XStreamHelper.parseFeed(EntityUtils.toString(httpResponse.getEntity()), AppCategories.class);
 
-				if ((atomCategory.ytDeprecated != null) || (atomCategory.ytAssignable == null))
+				final Iterator<AtomCategory> iterator = appCategories.categories.iterator();
+				while (iterator.hasNext())
 				{
-					iterator.remove();
-					continue;
+					final AtomCategory atomCategory = iterator.next();
+
+					if ((atomCategory.ytDeprecated != null) || (atomCategory.ytAssignable == null))
+					{
+						iterator.remove();
+						continue;
+					}
 				}
+
+				categories = appCategories.categories;
+
+				Collections.sort(categories, Ordering.usingToString());
+			} else
+			{
+				logger.warn("Couldn't fetch categories: {}", httpResponse.getStatusLine());
 			}
-
-			categories = appCategories.categories;
-
-			Collections.sort(categories, Ordering.usingToString());
 
 		} catch (final IOException e)
 		{

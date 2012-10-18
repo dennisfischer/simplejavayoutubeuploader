@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader;
 
-
 public class APIData
 {
 	public static final String	APPLICATION_NAME	= "dennis-fischer-youtube java uploader-2.0-alpha-1";

@@ -51,9 +51,9 @@ public class VideoEntry
 	public @XStreamAlias("yt:statistics") YoutubeStatistics									statistics;
 	public String																			title;
 	public String																			updated;
-	@XStreamAlias("xmlns") @XStreamAsAttribute String										xmlns			= "http://www.w3.org/2005/Atom";			// NON-NLS
-	@XStreamAlias("xmlns:media") @XStreamAsAttribute String									xmlnsMedia		= "http://search.yahoo.com/mrss/";			// NON-NLS
-	@XStreamAlias("xmlns:yt") @XStreamAsAttribute String									xmlnsYt			= "http://gdata.youtube.com/schemas/2007";	// NON-NLS
+	@XStreamAlias("xmlns") @XStreamAsAttribute String										xmlns			= "http://www.w3.org/2005/Atom";
+	@XStreamAlias("xmlns:media") @XStreamAsAttribute String									xmlnsMedia		= "http://search.yahoo.com/mrss/";
+	@XStreamAlias("xmlns:yt") @XStreamAsAttribute String									xmlnsYt			= "http://gdata.youtube.com/schemas/2007";
 	public @XStreamAlias("yt:availability") YoutubeAvailability								ytAvailability;
 	public @XStreamAlias("yt:episode") YoutubeEpisode										ytEpisode;
 	public @XStreamAlias("yt:firstReleased") String											ytFirstReleased;

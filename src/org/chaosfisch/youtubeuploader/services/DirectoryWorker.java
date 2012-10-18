@@ -17,12 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.bushe.swing.event.EventBus;
+import org.chaosfisch.util.Mimetype;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Directory;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Preset;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
+import org.javalite.activejdbc.Model;
 
 import com.teamdev.filewatch.FileEvent;
 import com.teamdev.filewatch.FileEventFilter;
@@ -75,7 +77,7 @@ public class DirectoryWorker extends Thread
 
 	private void addToUpload(final File file)
 	{
-		final Directory directory = Directory.findFirst("directory = ?",
+		final Directory directory = Model.findFirst("directory = ?",
 				file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator)));
 		if (directory == null) { return; }
 
@@ -106,7 +108,7 @@ public class DirectoryWorker extends Thread
 
 		// TODO MAYBE UPDATE PLAYLIST NUMBER; OR SOMETHING LIKE THAT!
 
-		final Queue queue = Queue.create("title", title, "file", file.getAbsolutePath(), "category", preset.getString("category"), "description",
+		final Queue queue = Model.create("title", title, "file", file.getAbsolutePath(), "category", preset.getString("category"), "description",
 				preset.getString("description"), "keywords", preset.getString("keywords"), "comment", preset.getInteger("comment"), "commentvote",
 				preset.getInteger("commentvote"), "embed", preset.getBoolean("embed"), "mobile", preset.getBoolean("mobile"), "rate",
 				preset.getBoolean("rate"), "vidoeresponse", preset.getInteger("videoresponse"), "monetize", preset.getBoolean("monetize"),
@@ -114,7 +116,10 @@ public class DirectoryWorker extends Thread
 				"monetizeProduct", preset.getBoolean("monetizeProduct"), "enddir", preset.getString("enddir"), "account_id",
 				preset.parent(Account.class).getLongId(), "mimetype", Mimetype.getMimetypeByExtension(extension), "unlisted", unlisted,
 				"privatefile", privatefile);
-		if (playlist != null) playlist.add(queue);
+		if (playlist != null)
+		{
+			playlist.add(queue);
+		}
 		queue.saveIt();
 
 		EventBus.publish(Uploader.QUEUE_START, null);
@@ -124,7 +129,7 @@ public class DirectoryWorker extends Thread
 	public void run()
 	{
 
-		final List<Directory> directories = Directory.find("active = ?", true);
+		final List<Directory> directories = Model.find("active = ?", true);
 		final FileEventsListener fileEventsAdapter = new FileEventsAdapter() {
 			@Override
 			public void fileAdded(final FileEvent.Added added)

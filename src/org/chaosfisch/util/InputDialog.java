@@ -16,27 +16,27 @@ public class InputDialog extends Stage
 {
 	Button	submit	= new Button("Okay");
 
-	public InputDialog(String title, Object[] data)
+	public InputDialog(final String title, final Object[] data)
 	{
 		super();
 		initOwner(null);
 
 		setTitle(title);
 
-		if (data.length % 2 != 0) { throw new IllegalArgumentException("Object data must be even!"); }
+		if ((data.length % 2) != 0) { throw new IllegalArgumentException("Object data must be even!"); }
 
-		Group root = new Group();
-		Scene scene = new Scene(root);
+		final Group root = new Group();
+		final Scene scene = new Scene(root);
 		setScene(scene);
 
-		GridPane gridpane = new GridPane();
+		final GridPane gridpane = new GridPane();
 		gridpane.setPadding(new Insets(5));
 		gridpane.setHgap(5);
 		gridpane.setVgap(5);
 
 		for (int i = 0; i < data.length; i++)
 		{
-			if (i % 2 == 0)
+			if ((i % 2) == 0)
 			{
 				final Label label = new Label((String) data[i]);
 				gridpane.add(label, 0, (i) / 2);
@@ -53,7 +53,7 @@ public class InputDialog extends Stage
 		show();
 	}
 
-	public void setCallback(EventHandler<ActionEvent> callback)
+	public void setCallback(final EventHandler<ActionEvent> callback)
 	{
 		submit.setOnAction(callback);
 	}

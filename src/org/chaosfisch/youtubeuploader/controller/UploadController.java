@@ -7,89 +7,367 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-/*
- * Copyright (c) 2012, Dennis Fischer
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
-/*
- * DefaultController.java
- *
- * Created on January 22, 2007, 8:42 AM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.util.Calendar;
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
-import org.chaosfisch.util.Mimetype;
-import org.chaosfisch.youtubeuploader.dao.spi.AccountDao;
-import org.chaosfisch.youtubeuploader.dao.spi.PlaceholderDao;
-import org.chaosfisch.youtubeuploader.dao.spi.PresetDao;
-import org.chaosfisch.youtubeuploader.dao.spi.QueueDao;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Preset;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.javalite.activejdbc.Model;
 
-public class UploadController
+import com.google.inject.Inject;
+
+public class UploadController implements Initializable
 {
 
-	private PlaceholderDao	placeholderDao;
-	private AccountDao		accountDao;
-	private PresetDao		presetDao;
-	private QueueDao		queueDao;
+	@FXML// fx:id="openDefaultdir"
+	private Button						openDefaultdir;
+
+	@FXML// fx:id="openEnddir"
+	private Button						openEnddir;
+
+	@FXML// fx:id="removePreset"
+	private Button						removePreset;
+
+	@FXML// fx:id="savePreset"
+	private Button						savePreset;
+
+	@FXML// fx:id="uploadComment"
+	private ChoiceBox<?>				uploadComment;
+
+	@FXML// fx:id="uploadCommentvote"
+	private CheckBox					uploadCommentvote;
+
+	@FXML// fx:id="uploadDefaultdir"
+	private TextField					uploadDefaultdir;
+
+	@FXML// fx:id="uploadEmbed"
+	private CheckBox					uploadEmbed;
+
+	@FXML// fx:id="uploadEnddir"
+	private TextField					uploadEnddir;
+
+	@FXML// fx:id="uploadLicense"
+	private ChoiceBox<?>				uploadLicense;
+
+	@FXML// fx:id="uploadMobile"
+	private CheckBox					uploadMobile;
+
+	@FXML// fx:id="uploadRate"
+	private CheckBox					uploadRate;
+
+	@FXML// fx:id="uploadVideoresponse"
+	private ChoiceBox<?>				uploadVideoresponse;
+
+	@FXML// fx:id="uploadVisibility"
+	private ChoiceBox<?>				uploadVisibility;
+	@FXML// fx:id="x3"
+	private TitledPane					x3;
+
+	@FXML// fx:id="accountList"
+	private ChoiceBox<Model>			accountList;
+
+	@FXML// fx:id="addUpload"
+	private Button						addUpload;
+
+	@FXML// fx:id="openFiles"
+	private Button						openFiles;
+
+	@FXML// fx:id="playlistCheckbox"
+	private CheckBox					playlistCheckbox;
+
+	@FXML// fx:id="playlistList"
+	private ChoiceBox<Model>			playlistList;
+
+	@FXML// fx:id="presetList"
+	private ChoiceBox<Model>			presetList;
+
+	@FXML// fx:id="refreshPlaylists"
+	private Button						refreshPlaylists;
+
+	@FXML// fx:id="resetUpload"
+	private Button						resetUpload;
+
+	@FXML// fx:id="uploadCategory"
+	private ChoiceBox<AtomCategory>		uploadCategory;
+
+	@FXML// fx:id="uploadDescription"
+	private TextArea					uploadDescription;
+
+	@FXML// fx:id="uploadFile"
+	private ChoiceBox<File>				uploadFile;
+
+	@FXML// fx:id="uploadTags"
+	private TextArea					uploadTags;
+
+	@FXML// fx:id="uploadTitle"
+	private TextField					uploadTitle;
+
+	@FXML// fx:id="x2"
+	private TitledPane					x2;
+
+	@Inject private PlaylistService		playlistService;
+	@Inject private CategoryService		categoryService;
+	@Inject private FileChooser			fileChooser;
+	@Inject private DirectoryChooser	directoryChooser;
+
+	private final ObservableList<Model>	accountItems	= FXCollections.observableArrayList();
+
+	private final ObservableList<Model>	playlistItems	= FXCollections.observableArrayList();
+
+	private final ObservableList<Model>	presetItems		= FXCollections.observableArrayList();
+
+	// Handler for Button[fx:id="addUpload"] onAction
+	public void addUpload(final ActionEvent event)
+	{
+	}
+
+	// Handler for Button[fx:id="resetUpload"] onAction
+	public void resetUpload(final ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	// Handler for Button[id="savePreset"] onAction
+	public void savePreset(final ActionEvent event)
+	{
+		// handle the event here
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	// This method is called by the FXMLLoader when initialization is complete
+	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources)
+	{
+		assert accountList != null : "fx:id=\"accountList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistCheckbox != null : "fx:id=\"playlistCheckbox\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistList != null : "fx:id=\"playlistList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert presetList != null : "fx:id=\"presetList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert removePreset != null : "fx:id=\"removePreset\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert resetUpload != null : "fx:id=\"resetUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert savePreset != null : "fx:id=\"savePreset\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadCategory != null : "fx:id=\"uploadCategory\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadComment != null : "fx:id=\"uploadComment\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadCommentvote != null : "fx:id=\"uploadCommentvote\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadDefaultdir != null : "fx:id=\"uploadDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadDescription != null : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadEmbed != null : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadEnddir != null : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadFile != null : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadLicense != null : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadMobile != null : "fx:id=\"uploadMobile\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert x2 != null : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert x3 != null : "fx:id=\"x3\" was not injected: check your FXML file 'Upload.fxml'.";
+		// initialize your logic here: all @FXML variables will have been
+		// injected
+
+		AnnotationProcessor.process(this);
+
+		accountItems.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
+		accountList.setItems(accountItems);
+		playlistList.setItems(playlistItems);
+		accountList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Model>() {
+
+			@Override
+			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue)
+			{
+				playlistList.getItems().clear();
+
+				if ((newValue != null) && (newValue.get("playlists") != null))
+				{
+					playlistItems.clear();
+					playlistItems.addAll((Collection<Model>) newValue.get("playlists"));
+					playlistList.getSelectionModel().selectFirst();
+				}
+			}
+		});
+		accountList.getSelectionModel().selectFirst();
+
+		uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
+		uploadCategory.getSelectionModel().selectFirst();
+
+		presetItems.addAll(Preset.findAll().include(Account.class, Playlist.class));
+		presetList.setItems(presetItems);
+		presetList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Model>() {
+
+			@Override
+			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue)
+			{
+				Account account;
+				if ((newValue != null) && ((account = newValue.parent(Account.class)) != null))
+				{
+					accountList.getSelectionModel().select(accountList.getItems().indexOf(account));
+					if (newValue.parent(Playlist.class) != null)
+					{
+						playlistList.getSelectionModel().select(newValue.parent(Playlist.class));
+					}
+				}
+			}
+		});
+		presetList.getSelectionModel().selectFirst();
+	}
+
+	// Handler for Button[fx:id="openDefaultdir"] onAction
+	public void openDefaultdir(final ActionEvent event)
+	{
+		final File directory = directoryChooser.showDialog(null);
+		if (directory != null)
+		{
+			uploadDefaultdir.setText(directory.getAbsolutePath());
+		}
+	}
+
+	// Handler for Button[fx:id="openEnddir"] onAction
+	public void openEnddir(final ActionEvent event)
+	{
+		final File directory = directoryChooser.showDialog(null);
+		if (directory != null)
+		{
+			uploadEnddir.setText(directory.getAbsolutePath());
+		}
+	}
+
+	// Handler for Button[fx:id="openFiles"] onAction
+	public void openFiles(final ActionEvent event)
+	{
+		final List<File> files = fileChooser.showOpenMultipleDialog(null);
+		if (files != null)
+		{
+			uploadFile.setItems(FXCollections.observableList(files));
+			uploadFile.getSelectionModel().selectFirst();
+		}
+	}
+
+	// Handler for Button[fx:id="refreshPlaylists"] onAction
+	public void refreshPlaylists(final ActionEvent event)
+	{
+		final Account[] accountArray = new Account[accountItems.size()];
+		accountItems.toArray(accountArray);
+		playlistService.synchronizePlaylists(Arrays.asList(accountArray));
+	}
+
+	// Handler for Button[fx:id="removePreset"] onAction
+	public void removePreset(final ActionEvent event)
+	{
+		if (presetList.getValue() != null)
+		{
+			presetList.getValue().delete();
+		}
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED)
+	public void onRemoved(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (model instanceof Account)
+				{
+					accountItems.remove(model);
+					if (accountList.getSelectionModel().isEmpty())
+					{
+						accountList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Preset)
+				{
+					presetItems.remove(model);
+					if (presetList.getSelectionModel().isEmpty())
+					{
+						presetList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Playlist)
+				{
+					playlistItems.remove(model);
+					if (playlistList.getSelectionModel().isEmpty())
+					{
+						playlistList.getSelectionModel().selectFirst();
+					}
+				}
+			}
+		});
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	public void onAdded(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if ((model instanceof Account) && model.get("type").equals(Account.Type.YOUTUBE.name()))
+				{
+					accountItems.add(model);
+					if (accountList.getValue() == null)
+					{
+						accountList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Preset)
+				{
+					presetItems.add(model);
+					if (presetList.getValue() == null)
+					{
+						presetList.getSelectionModel().selectFirst();
+					}
+				} else if ((model instanceof Playlist) && model.parent(Account.class).equals(accountList.getValue()))
+				{
+					playlistItems.add(model);
+					if (playlistList.getValue() == null)
+					{
+						playlistList.getSelectionModel().selectFirst();
+					}
+				}
+			}
+		});
+	}
 
 	public void addPlaceholder(final String placeholder, final String replacement)
 	{
-		final Placeholder placeholderObject = new Placeholder();
-		placeholderObject.placeholder = placeholder;
-		placeholderObject.replacement = replacement;
-		placeholderDao.create(placeholderObject);
-	}
-
-	public void deleteAccount(final Account account)
-	{
-		accountDao.delete(account);
-	}
-
-	public void deletePlaceholder(final Placeholder placeholder)
-	{
-		placeholderDao.delete(placeholder);
-	}
-
-	public void deletePreset(final Preset preset)
-	{
-		presetDao.delete(preset);
-	}
-
-	public void savePlaceholder(final Placeholder placeholder)
-	{
-		placeholderDao.update(placeholder);
-	}
-
-	public void savePreset(final Preset preset)
-	{
-		presetDao.update(preset);
+		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
 	}
 
 	public void submitUpload(final String filepath, final Account account, final String category)
@@ -145,93 +423,95 @@ public class UploadController
 			final String thumbnail)
 	{
 
-		final Queue queue = new Queue();
-		queue.account = account;
-		queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
-		queue.mobile = mobile;
-		queue.title = title;
-		queue.category = category;
-		queue.comment = comment;
-		queue.commentvote = commentvote;
-		queue.description = description;
-		queue.embed = embed;
-		queue.file = filepath;
-		queue.keywords = tags;
-		queue.rate = rate;
-		queue.videoresponse = videoresponse;
-		queue.playlist = playlist;
-		queue.locked = false;
-		queue.monetize = monetize;
-		queue.monetizeOverlay = monetizeOverlay;
-		queue.monetizeTrueview = monetizeTrueview;
-		queue.monetizeProduct = monetizeProduct;
-		queue.enddir = enddir;
-		queue.license = license;
-
-		switch (visibility)
-		{
-			case 1:
-				queue.unlisted = true;
-				break;
-			case 2:
-				queue.privatefile = true;
-				break;
-		}
-
-		if ((starttime != null) && starttime.after(new Date(System.currentTimeMillis() + (300000))))
-		{
-			queue.started = new Date(starttime.getTime());
-		}
-
-		if ((releasetime != null) && releasetime.after(new Date(System.currentTimeMillis() + (300000))))
-		{
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(releasetime);
-			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
-			final int mod = unroundedMinutes % 30;
-			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
-
-			queue.release = calendar.getTime();
-		}
-
-		// Partnerfeatures
-		queue.claim = claim;
-		queue.claimtype = claimtype;
-		queue.claimpolicy = claimpolicy;
-		queue.partnerOverlay = partnerOverlay;
-		queue.partnerTrueview = partnerTrueview;
-		queue.partnerProduct = partnerProduct;
-		queue.partnerInstream = partnerInstream;
-		queue.asset = asset;
-		queue.webTitle = webTitle;
-		queue.webDescription = webDescription;
-		queue.webID = webID;
-		queue.webNotes = webNotes;
-		queue.tvTMSID = tvTMSID;
-		queue.tvISAN = tvISAN;
-		queue.tvEIDR = tvEIDR;
-		queue.showTitle = showTitle;
-		queue.episodeTitle = episodeTitle;
-		queue.seasonNb = seasonNb;
-		queue.episodeNb = episodeNb;
-		queue.tvID = tvID;
-		queue.tvNotes = tvNotes;
-		queue.movieTitle = movieTitle;
-		queue.movieDescription = movieDescription;
-		queue.movieTMSID = movieTMSID;
-		queue.movieISAN = movieISAN;
-		queue.movieEIDR = movieEIDR;
-		queue.movieID = movieID;
-		queue.movieNotes = movieNotes;
-
-		queue.number = number;
-
-		if ((thumbnail != null) && !thumbnail.isEmpty())
-		{
-			queue.thumbnail = true;
-			queue.thumbnailimage = thumbnail;
-		}
-
-		queueDao.create(queue);
+		// final Queue queue = new Queue();
+		// queue.account = account;
+		// queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
+		// queue.mobile = mobile;
+		// queue.title = title;
+		// queue.category = category;
+		// queue.comment = comment;
+		// queue.commentvote = commentvote;
+		// queue.description = description;
+		// queue.embed = embed;
+		// queue.file = filepath;
+		// queue.keywords = tags;
+		// queue.rate = rate;
+		// queue.videoresponse = videoresponse;
+		// queue.playlist = playlist;
+		// queue.locked = false;
+		// queue.monetize = monetize;
+		// queue.monetizeOverlay = monetizeOverlay;
+		// queue.monetizeTrueview = monetizeTrueview;
+		// queue.monetizeProduct = monetizeProduct;
+		// queue.enddir = enddir;
+		// queue.license = license;
+		//
+		// switch (visibility)
+		// {
+		// case 1:
+		// queue.unlisted = true;
+		// break;
+		// case 2:
+		// queue.privatefile = true;
+		// break;
+		// }
+		//
+		// if ((starttime != null) && starttime.after(new
+		// Date(System.currentTimeMillis() + (300000))))
+		// {
+		// queue.started = new Date(starttime.getTime());
+		// }
+		//
+		// if ((releasetime != null) && releasetime.after(new
+		// Date(System.currentTimeMillis() + (300000))))
+		// {
+		// final Calendar calendar = Calendar.getInstance();
+		// calendar.setTime(releasetime);
+		// final int unroundedMinutes = calendar.get(Calendar.MINUTE);
+		// final int mod = unroundedMinutes % 30;
+		// calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+		//
+		// queue.release = calendar.getTime();
+		// }
+		//
+		// // Partnerfeatures
+		// queue.claim = claim;
+		// queue.claimtype = claimtype;
+		// queue.claimpolicy = claimpolicy;
+		// queue.partnerOverlay = partnerOverlay;
+		// queue.partnerTrueview = partnerTrueview;
+		// queue.partnerProduct = partnerProduct;
+		// queue.partnerInstream = partnerInstream;
+		// queue.asset = asset;
+		// queue.webTitle = webTitle;
+		// queue.webDescription = webDescription;
+		// queue.webID = webID;
+		// queue.webNotes = webNotes;
+		// queue.tvTMSID = tvTMSID;
+		// queue.tvISAN = tvISAN;
+		// queue.tvEIDR = tvEIDR;
+		// queue.showTitle = showTitle;
+		// queue.episodeTitle = episodeTitle;
+		// queue.seasonNb = seasonNb;
+		// queue.episodeNb = episodeNb;
+		// queue.tvID = tvID;
+		// queue.tvNotes = tvNotes;
+		// queue.movieTitle = movieTitle;
+		// queue.movieDescription = movieDescription;
+		// queue.movieTMSID = movieTMSID;
+		// queue.movieISAN = movieISAN;
+		// queue.movieEIDR = movieEIDR;
+		// queue.movieID = movieID;
+		// queue.movieNotes = movieNotes;
+		//
+		// queue.number = number;
+		//
+		// if ((thumbnail != null) && !thumbnail.isEmpty())
+		// {
+		// queue.thumbnail = true;
+		// queue.thumbnailimage = thumbnail;
+		// }
+		//
+		// queueDao.create(queue);
 	}
 }

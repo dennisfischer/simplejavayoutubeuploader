@@ -84,7 +84,7 @@ public class AccountController implements Initializable
 																	// FXMLLoader
 
 	// Handler for Button[fx:id="addAccount"] onAction
-	public void addAccount(ActionEvent event)
+	public void addAccount(final ActionEvent event)
 	{
 		// TODO VALIDATION HERE
 
@@ -93,7 +93,7 @@ public class AccountController implements Initializable
 	}
 
 	// Handler for Button[fx:id="resetAccount"] onAction
-	public void resetAccount(ActionEvent event)
+	public void resetAccount(final ActionEvent event)
 	{
 		accountType.getSelectionModel().selectFirst();
 		account.clear();
@@ -102,7 +102,7 @@ public class AccountController implements Initializable
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
-	public void initialize(URL fxmlFileLocation, ResourceBundle resources)
+	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources)
 	{
 		assert account != null : "fx:id=\"account\" was not injected: check your FXML file 'Accounts.fxml'.";
 		assert accountTable != null : "fx:id=\"accountTable\" was not injected: check your FXML file 'Accounts.fxml'.";
@@ -123,7 +123,7 @@ public class AccountController implements Initializable
 		columnAccount.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, String>, ObservableValue<String>>() {
 
 			@Override
-			public ObservableValue<String> call(CellDataFeatures<Account, String> param)
+			public ObservableValue<String> call(final CellDataFeatures<Account, String> param)
 			{
 				return new ReadOnlyStringWrapper(param.getValue().getString("name"));
 
@@ -133,7 +133,7 @@ public class AccountController implements Initializable
 		columnAccounttype.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, String>, ObservableValue<String>>() {
 
 			@Override
-			public ObservableValue<String> call(CellDataFeatures<Account, String> param)
+			public ObservableValue<String> call(final CellDataFeatures<Account, String> param)
 			{
 				return new ReadOnlyStringWrapper(param.getValue().getString("type"));
 			}
@@ -147,7 +147,7 @@ public class AccountController implements Initializable
 				final TableCell<Account, String> cell = new TableCell<Account, String>() {
 
 					@Override
-					public void updateItem(String item, boolean empty)
+					public void updateItem(final String item, final boolean empty)
 					{
 						super.updateItem(item, empty);
 						if (empty)
@@ -169,7 +169,7 @@ public class AccountController implements Initializable
 		columnActions.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, Number>, ObservableValue<Number>>() {
 
 			@Override
-			public ObservableValue<Number> call(CellDataFeatures<Account, Number> param)
+			public ObservableValue<Number> call(final CellDataFeatures<Account, Number> param)
 			{
 				return new ReadOnlyLongWrapper(param.getValue().getLongId());
 
@@ -183,7 +183,7 @@ public class AccountController implements Initializable
 				final TableCell<Account, Number> cell = new TableCell<Account, Number>() {
 
 					@Override
-					public void updateItem(Number item, boolean empty)
+					public void updateItem(final Number item, final boolean empty)
 					{
 						super.updateItem(item, empty);
 						if (empty)
@@ -197,10 +197,10 @@ public class AccountController implements Initializable
 							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
 
 								@Override
-								public void handle(ActionEvent event)
+								public void handle(final ActionEvent event)
 								{
 									param.getTableView().getSelectionModel().select(getIndex());
-									Account item = (Account) accountTable.getSelectionModel().getSelectedItem();
+									final Account item = (Account) accountTable.getSelectionModel().getSelectedItem();
 									if (item != null)
 									{
 										item.delete();

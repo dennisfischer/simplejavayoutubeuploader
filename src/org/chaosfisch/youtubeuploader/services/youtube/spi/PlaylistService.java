@@ -7,13 +7,20 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.google.auth;
+package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
-import org.apache.http.HttpRequest;
+import java.util.List;
 
-public interface RequestSigner
+import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.models.Playlist;
+
+public interface PlaylistService
 {
-	void sign(final HttpRequest request);
+	String	PLAYLISTS_SYNCHRONIZED	= "playlistsSynchronized";
 
-	void signWithAuthorization(final HttpRequest request, final String authtoken);
+	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
+
+	void addYoutubePlaylist(Playlist playlist);
+
+	void synchronizePlaylists(List<Account> accounts);
 }

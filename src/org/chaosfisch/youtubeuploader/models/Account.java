@@ -40,7 +40,7 @@ public class Account extends Model implements ModelEvents
 	@Override
 	public String toString()
 	{
-		if (!this.isFrozen()) return "[" + getInteger("id") + "," + getString("name") + "]";
+		if (!isFrozen()) { return "[" + getInteger("id") + "," + getString("name") + "]"; }
 		return super.toString();
 	}
 
@@ -50,19 +50,19 @@ public class Account extends Model implements ModelEvents
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object)
+	public boolean equals(final Object object)
 	{
 
-		if (object == null || !(object instanceof Account))
+		if ((object == null) || !(object instanceof Account))
 		{
 			return false;
-		} else if (((Account) object).getUnfrozen().equals(this.getUnfrozen())) { return true; }
+		} else if (((Account) object).getUnfrozen().equals(getUnfrozen())) { return true; }
 		return false;
 	}
 
 	public Long getUnfrozen()
 	{
-		return Convert.toLong(this.getAttributes().get("id"));
+		return Convert.toLong(getAttributes().get("id"));
 	}
 
 	/*

@@ -18,4 +18,9 @@ public class AuthenticationException extends Throwable
 	{
 		super(message);
 	}
+
+	public AuthenticationException(final String message, final Throwable t)
+	{
+		super(message, t);
+	}
 }

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="GoogleYoutubeJavaApi">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../GoogleYoutubeJavaApi/out/artifacts/GoogleYoutubeJavaApi_jar/GoogleYoutubeJavaApi.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

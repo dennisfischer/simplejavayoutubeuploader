@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.uploader;
 
-class PermissionStringConverter
+public class PermissionStringConverter
 {
 	/**
 	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed

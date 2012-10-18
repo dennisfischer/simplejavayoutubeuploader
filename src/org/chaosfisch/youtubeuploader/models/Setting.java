@@ -1,48 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- * 
- * Contributors: Dennis Fischer
- ******************************************************************************/
 package org.chaosfisch.youtubeuploader.models;
 
 import org.bushe.swing.event.EventBus;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.Table;
 
-@Table("PLAYLISTS")
-public class Playlist extends Model implements ModelEvents
+public class Setting extends Model implements ModelEvents
 {
-
-	@Override
-	public String toString()
-	{
-		return "[" + get("id") + "," + get("pkey") + "," + get("title") + "]";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object object)
-	{
-
-		if (object == null)
-		{
-			return false;
-		} else if (!(object instanceof Playlist))
-		{
-			return false;
-		} else if (((Model) object).get("pkey").equals(this.get("pkey"))) { return true; }
-		return false;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -117,4 +80,5 @@ public class Playlist extends Model implements ModelEvents
 		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_REMOVED, this);
 	}
+
 }
