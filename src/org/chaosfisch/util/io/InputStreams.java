@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.util;
+package org.chaosfisch.util.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;

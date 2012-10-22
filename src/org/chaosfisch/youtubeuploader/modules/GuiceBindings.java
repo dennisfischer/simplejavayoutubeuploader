@@ -14,7 +14,7 @@ import javafx.stage.FileChooser;
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
-import org.chaosfisch.util.RequestHelper;
+import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.APIData;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
@@ -35,10 +35,11 @@ public class GuiceBindings extends AbstractModule
 		bind(CategoryService.class).to(CategoryServiceImpl.class).in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(FileChooser.class).in(Singleton.class);
-		requestStaticInjection(RequestHelper.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);
 		bind(AuthTokenHelper.class).in(Singleton.class);
+
+		requestStaticInjection(RequestHelper.class);
 
 		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
 		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(APIData.DEVELOPER_KEY);

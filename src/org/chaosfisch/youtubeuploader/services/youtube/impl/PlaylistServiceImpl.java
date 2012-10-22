@@ -26,9 +26,9 @@ import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
-import org.chaosfisch.util.Request;
-import org.chaosfisch.util.Request.Method;
-import org.chaosfisch.util.RequestHelper;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
@@ -63,7 +63,7 @@ public class PlaylistServiceImpl implements PlaylistService
 
 			final HttpUriRequest request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getString("pkey")),
 					Method.POST).entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).build();
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestHelper.execute(request);
@@ -107,7 +107,7 @@ public class PlaylistServiceImpl implements PlaylistService
 		{
 			final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED, Method.POST)
 					.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).build();
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestHelper.execute(request);
@@ -145,7 +145,7 @@ public class PlaylistServiceImpl implements PlaylistService
 			HttpResponse response = null;
 			try
 			{
-				final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS, Method.GET).build();
+				final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS, Method.GET).buildHttpUriRequest();
 				requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
 				response = RequestHelper.execute(request);
 				if (response.getStatusLine().getStatusCode() == 200)

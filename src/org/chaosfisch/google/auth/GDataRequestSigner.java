@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.chaosfisch.google.auth;
 
+import java.net.HttpURLConnection;
+
 import org.apache.http.HttpRequest;
 
 import com.google.inject.Inject;
@@ -27,9 +29,23 @@ public class GDataRequestSigner implements RequestSigner
 	}
 
 	@Override
-	public void signWithAuthorization(final HttpRequest request, final String authtoken)
+	public void signWithAuthorization(final HttpRequest request, final String authHeader)
 	{
-		request.addHeader("Authorization", authtoken);
+		request.addHeader("Authorization", authHeader);
 		sign(request);
+	}
+
+	@Override
+	public void signWithAuthorization(final HttpURLConnection request, final String authHeader)
+	{
+		request.setRequestProperty("Authorization", authHeader);
+		sign(request);
+	}
+
+	@Override
+	public void sign(final HttpURLConnection request)
+	{
+		request.setRequestProperty("GData-Version", DEFAULT_GDATA_VERSION);
+		request.setRequestProperty("X-GData-Key", String.format("key=%s", DEFAULT_DEVELOPER_KEY));
 	}
 }

@@ -9,11 +9,17 @@
  ******************************************************************************/
 package org.chaosfisch.google.auth;
 
+import java.net.HttpURLConnection;
+
 import org.apache.http.HttpRequest;
 
 public interface RequestSigner
 {
-	void sign(final HttpRequest request);
+	void sign(HttpRequest request);
 
-	void signWithAuthorization(final HttpRequest request, final String authtoken);
+	void sign(HttpURLConnection request);
+
+	void signWithAuthorization(HttpRequest request, String authHeader);
+
+	void signWithAuthorization(HttpURLConnection request, String authHeader);
 }

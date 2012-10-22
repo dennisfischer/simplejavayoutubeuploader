@@ -17,8 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.regex.Pattern;
 
@@ -36,15 +35,19 @@ import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.util.Request;
-import org.chaosfisch.util.Request.Method;
-import org.chaosfisch.util.RequestHelper;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.XStreamHelper;
+import org.chaosfisch.util.io.InputStreams;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.Request.Method;
+import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.RequestUtilities;
+import org.chaosfisch.util.io.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataFrontendChangerServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
@@ -66,47 +69,32 @@ public class UploadWorker extends Task<Void>
 		ABORTED, AUTHENTICATION, DONE, FAILED, FAILED_FILE, FAILED_META, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
 
-	private static final double		BACKOFF			= 3.13;																			// base
+	private static final double		BACKOFF				= 3.13;
+	private static final int		DEFAULT_BUFFER_SIZE	= 65536;
+	private static final int		MAX_RETRIES			= 5;
 
-	// of
-	// exponential
-	// backoff
-	private static final int		bufferSize		= 8192;
+	private int						numberOfRetries;
+	private STATUS					currentStatus		= STATUS.INITIALIZE;
 
-	private static final int		MAX_RETRIES		= 5;
-	private double					bytesToUpload;
-	public STATUS					currentStatus	= STATUS.INITIALIZE;
-	/**
-	 * Max size for each upload chunk
-	 */
 	private int						chunksize;
-
-	private ExtendedPlaceholders	extendedPlacerholders;
-
-	/**
-	 * Upload vars
-	 */
+	private int						speedLimit;
+	private long					start;
+	private double					totalBytesUploaded;
+	private double					bytesToUpload;
 	private double					fileSize;
 
 	/**
 	 * File that is uploaded
 	 */
 	private File					fileToUpload;
-
-	private final Logger			logger			= LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
-	private int						numberOfRetries;
-	/**
-	 * Dir that is used to access file
-	 */
-	private File					overWriteDir;
 	private Queue					queue;
-	private int						speedLimit;
-	private long					start;
-	private double					totalBytesUploaded;
 
+	private ExtendedPlaceholders	extendedPlacerholders;
+
+	private final Logger			logger				= LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
 	@Inject private PlaylistService	playlistService;
-	@Inject RequestSigner			requestSigner;
-	@Inject MetadataService			metadataService;
+	@Inject private RequestSigner	requestSigner;
+	@Inject private MetadataService	metadataService;
 	@Inject private AuthTokenHelper	authTokenHelper;
 
 	public UploadWorker()
@@ -120,7 +108,8 @@ public class UploadWorker extends Task<Void>
 		currentStatus = STATUS.METADATA;
 	}
 
-	public void background()
+	@Override
+	protected Void call() throws Exception
 	{
 		// Einstiegspunkt in diesen Thread.
 		/*
@@ -180,6 +169,8 @@ public class UploadWorker extends Task<Void>
 				currentStatus = STATUS.RESUMEINFO;
 			}
 		}
+		onDone();
+		return null;
 	}
 
 	private void browserAction()
@@ -300,44 +291,39 @@ public class UploadWorker extends Task<Void>
 
 	private void enddirAction()
 	{
-		// if ((queue.getString("enddir") != null) &&
-		// !queue.getString("enddir").isEmpty())
-		// {
-		// final File enddir = new File(queue.getString("enddir"));
-		// if (enddir.exists())
-		// {
-		// logger.info(String.format("Moving file to %s", enddir));
-		// final File queueFile = new File(queue.getString("file"));
-		// File endFile;
-		// if (settingsService.get("coreplugin.general.enddirtitle",
-		// "false").equals("true"))
-		// {
-		// final String fileName = queue.title.replaceAll("[\\?\\*:\\\\<>\"/]",
-		// "");
-		// endFile = new File(enddir.getAbsolutePath() + "/" + fileName +
-		// queue.file.substring(queue.file.lastIndexOf(".")));
-		// } else
-		// {
-		// endFile = new File(enddir.getAbsolutePath() + "/" +
-		// queueFile.getName());
-		// }
-		// if (endFile.exists())
-		// {
-		// endFile = new File(endFile.getAbsolutePath().substring(0,
-		// endFile.getAbsolutePath().lastIndexOf(".")) + "(2)"
-		// +
-		// endFile.getAbsolutePath().substring(endFile.getAbsolutePath().lastIndexOf(".")));
-		// }
-		// if (queueFile.renameTo(endFile))
-		// {
-		// logger.info(String.format("Done moving: %s",
-		// endFile.getAbsolutePath()));
-		// } else
-		// {
-		// logger.info("Failed moving");
-		// }
-		// }
-		// }
+		if ((queue.getString("enddir") != null) && !queue.getString("enddir").isEmpty())
+		{
+			final File enddir = new File(queue.getString("enddir"));
+			if (enddir.exists())
+			{
+				logger.info("Moving file to {}", enddir);
+
+				final Boolean endDirRename = Setting.findById("coreplugin.general.enddirtitle").getBoolean("value");
+
+				File endFile;
+				if ((endDirRename != null) && (endDirRename == true))
+				{
+					final String fileName = queue.getString("title").replaceAll("[\\?\\*:\\\\<>\"/]", "");
+					endFile = new File(enddir.getAbsolutePath() + "/" + fileName
+							+ queue.getString("file").substring(queue.getString("file").lastIndexOf(".")));
+				} else
+				{
+					endFile = new File(enddir.getAbsolutePath() + "/" + fileToUpload.getName());
+				}
+				if (endFile.exists())
+				{
+					endFile = new File(endFile.getAbsolutePath().substring(0, endFile.getAbsolutePath().lastIndexOf(".")) + "(2)"
+							+ endFile.getAbsolutePath().substring(endFile.getAbsolutePath().lastIndexOf(".")));
+				}
+				if (fileToUpload.renameTo(endFile))
+				{
+					logger.info("Done moving: {}", endFile.getAbsolutePath());
+				} else
+				{
+					logger.info("Failed moving");
+				}
+			}
+		}
 	}
 
 	private ResumeInfo fetchResumeInfo() throws UploadException
@@ -359,13 +345,13 @@ public class UploadWorker extends Task<Void>
 			final UploadProgress uploadProgress) throws IOException
 	{
 		// Write Chunk
-		final byte[] buffer = new byte[UploadWorker.bufferSize];
+		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
 		long totalRead = 0;
 
-		while (totalRead != ((endByte - startByte) + 1))
+		while ((currentStatus == STATUS.UPLOAD) && (totalRead != ((endByte - startByte) + 1)))
 		{
 			// Upload bytes in buffer
-			final int bytesRead = RequestUtilities.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.bufferSize);
+			final int bytesRead = RequestUtilities.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
 			totalRead += bytesRead;
 			totalBytesUploaded += bytesRead;
@@ -379,7 +365,6 @@ public class UploadWorker extends Task<Void>
 				uploadProgress.setTotalBytesUploaded(totalBytesUploaded);
 				uploadProgress.setDiffTime(diffTime);
 				uploadProgress.setTime(uploadProgress.getTime() + diffTime);
-
 				EventBus.publish(Uploader.UPLOAD_PROGRESS, uploadProgress);
 			}
 		}
@@ -406,13 +391,7 @@ public class UploadWorker extends Task<Void>
 		EventBus.publish(Uploader.UPLOAD_STARTED, queue);
 
 		// Get File and Check if existing
-		if (overWriteDir == null)
-		{
-			fileToUpload = new File(queue.getString("file"));
-		} else
-		{
-			fileToUpload = new File(overWriteDir.getAbsolutePath() + new File(queue.getString("file")).getName());
-		}
+		fileToUpload = new File(queue.getString("file"));
 
 		if (!fileToUpload.exists()) { throw new FileNotFoundException("Datei existiert nicht."); }
 
@@ -421,6 +400,7 @@ public class UploadWorker extends Task<Void>
 
 	private void metadata() throws MetadataException
 	{
+
 		if ((queue.getString("uploadurl") != null) && !queue.getString("uploadurl").isEmpty())
 		{
 			logger.info("Uploadurl existing: {}", queue.getString("uploadurl"));
@@ -564,7 +544,8 @@ public class UploadWorker extends Task<Void>
 	{
 		try
 		{
-			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT).headers(ImmutableMap.of("Content-Range", "bytes */*")).build();
+			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT).headers(ImmutableMap.of("Content-Range", "bytes */*"))
+					.buildHttpUriRequest();
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
 			final HttpResponse response = RequestHelper.execute(request);
 
@@ -655,54 +636,48 @@ public class UploadWorker extends Task<Void>
 		logger.info(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
 		final UploadProgress uploadProgress = new UploadProgress(queue, fileSize, totalBytesUploaded, 0, Calendar.getInstance().getTimeInMillis(), 0);
 
-		// Building PUT Request for chunk data
-		final Request request;
-		try
-		{
-			request = new Request.Builder(Request.Method.POST, new URL(queue.uploadurl)).build();
-		} catch (final MalformedURLException e)
-		{
-			throw new UploadException(String.format("Upload URL malformed! %s", queue.uploadurl), e);
-		}
-
-		request.setContentType(queue.mimetype);
-		request.setHeaderParameter("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-
-		googleRequestSigner.sign(request);
-
 		// Calculating the chunk size
 		final int chunk = (int) ((end - start) + 1);
 
 		try
 		{
+			// Building PUT Request for chunk data
+			final HttpURLConnection request = new Request.Builder(queue.getString("uploadurl"), Method.POST).headers(
+					ImmutableMap.of("Content-Type", queue.getString("mimetype"), "Content-Range",
+							String.format("bytes %d-%d/%d", start, end, fileToUpload.length()))).buildHttpUrlConnection();
+
+			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
+
 			// Input
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
 			// Output
-			final ThrottledOutputStream throttledOutputStream = new ThrottledOutputStream(new BufferedOutputStream(request.setFixedContent(chunk)),
-					speedLimit);
+			request.setDoOutput(true);
+			request.setFixedLengthStreamingMode(chunk);
+			request.connect();
+			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(new ThrottledOutputStream(request.getOutputStream(),
+					speedLimit));
 
 			try
 			{
 				final long skipped = bufferedInputStream.skip(start);
 				if (start != skipped) { throw new UploadException("Fehler beim Lesen der Datei!"); }
 				flowChunk(bufferedInputStream, throttledOutputStream, start, end, uploadProgress);
-				final Response response = request.send();
-				switch (response.code)
+
+				switch (request.getResponseCode())
 				{
 					case 200:
 						throw new UploadException("Received 200 response during resumable uploading");
 					case 201:
-						queue.videoId = parseVideoId(response.body);
-						saveQueueObject();
+						queue.setString("videoid", parseVideoId(InputStreams.toString(request.getInputStream())));
+						queue.saveIt();
 						currentStatus = STATUS.POSTPROCESS;
 						break;
 					case 308:
 						// OK, the chunk completed succesfully
-						logger.info(String.format("responseCode=%d responseMessage=%s", response.code, response.message));
+						logger.debug("responseMessage={}", request.getResponseMessage());
 						break;
 					default:
-						throw new UploadException(String.format("Unexpected return code : %d %s while uploading :%s", response.code,
-								response.message, response.url.toString()));
+						throw new UploadException(String.format("Unexpected return code while uploading: %s", request.getResponseMessage()));
 				}
 				bytesToUpload -= chunksize;
 				start = end + 1;
@@ -722,15 +697,10 @@ public class UploadWorker extends Task<Void>
 			throw new UploadException("Datei konnte nicht gefunden werden!", ex);
 		} catch (final IOException ex)
 		{
-			throw new UploadException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d", response.message, response.message,
-					response.code), ex);
+			throw new UploadException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d"), ex);
+		} catch (final AuthenticationException e)
+		{
+			// TODO Auto-generated catch block
 		}
-	}
-
-	@Override
-	protected Void call() throws Exception
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

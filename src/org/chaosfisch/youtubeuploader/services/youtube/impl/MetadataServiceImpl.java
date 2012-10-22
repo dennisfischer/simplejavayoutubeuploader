@@ -15,9 +15,9 @@ import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
-import org.chaosfisch.util.Request;
-import org.chaosfisch.util.Request.Method;
-import org.chaosfisch.util.RequestHelper;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.MetadataException;
@@ -133,7 +133,7 @@ public class MetadataServiceImpl implements MetadataService
 		// Upload atomData and fetch uploadUrl
 		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST)
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
-				.entity(new StringEntity(atomData, Charset.forName("UTF-8"))).build();
+				.entity(new StringEntity(atomData, Charset.forName("UTF-8"))).buildHttpUriRequest();
 		// Sign the request
 		requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
 		// Write the atomData to GOOGLE

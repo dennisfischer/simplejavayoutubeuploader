@@ -7,28 +7,9 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-/*
- * Copyright (c) 2012, Dennis Fischer
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
 
 package org.chaosfisch.youtubeuploader.controller;
 
-import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.inject.Inject;
@@ -36,40 +17,79 @@ import com.google.inject.Inject;
 public class QueueController
 {
 
-	public static final String	ETA_PROPERTY			= "ETA";
-	public static final String	FILE_PROPERTY			= "File";
-	public static final String	PROGRESS_PROPERTY		= "Progress";
-	public static final String	STARTTIME_PROPERTY		= "Starttime";
-	public static final String	STATUS_PROPERTY			= "Status";
-	public static final String	TITLE_PROPERTY			= "Title";
-	public static final String	UPLOADED_BYTES_PROPERTY	= "Uploaded Bytes";
-
 	@Inject private Uploader	uploader;
 
-	public void abortUpload(final Queue queue)
+	private void initComponents()
 	{
-		uploader.abort(queue);
-	}
-
-	public void changeMaxUpload(final short maxUploads)
-	{
-		uploader.setMaxUploads(maxUploads);
-	}
-
-	public void changeQueueFinished(final int item)
-	{
-		uploader.setActionOnFinish((short) item);
-	}
-
-	public void changeSpeedLimit(final int bytes)
-	{
-		uploader.setSpeedLimit(bytes);
-	}
-
-	public void deleteEntry(final Queue queue)
-	{
-		uploader.abort(queue);
-		queue.delete();
+		// final String[] queuefinishedaction = new String[] {
+		// I18nHelper.message("queuefinishedlist.donothing"),
+		// I18nHelper.message("queuefinishedlist.closeapplication"),
+		// I18nHelper.message("queuefinishedlist.shutdown"),
+		// I18nHelper.message("queuefinishedlist.hibernate") };
+		// }
+		//
+		// final JCheckBox checkBox = new
+		// JCheckBox(I18nHelper.message("upload.confirmdialog.checkbox"));
+		// final Object[] message = {
+		// I18nHelper.message("upload.confirmdialog.message"), checkBox };
+		//
+		// final int result = JOptionPane.showConfirmDialog(null, message,
+		// I18nHelper.message("youtube.confirmdialog.title"),
+		// JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		// if (result != 0) { return; }
+		//
+		// if (checkBox.isSelected())
+		// {
+		// settingsDao.set("coreplugin.general.uploadconfirmation", "false"); //
+		// NON-NLS
+		// settingsDao.save();
+		// }
+		// // ADD Arrow Listeners
+		// arrowTop.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e)
+		// {
+		// final int selectedRow = queueTable.getSelectedRow();
+		// if (controller.getQueueList().hasIndex(selectedRow))
+		// {
+		// controller.moveTop(controller.getQueueList().getRow(selectedRow));
+		// }
+		// }
+		// });
+		// arrowUp.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e)
+		// {
+		// final int selectedRow = queueTable.getSelectedRow();
+		// if (controller.getQueueList().hasIndex(selectedRow))
+		// {
+		// controller.moveUp(controller.getQueueList().getRow(selectedRow));
+		// }
+		// }
+		// });
+		// arrowDown.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e)
+		// {
+		// final int selectedRow = queueTable.getSelectedRow();
+		// if (controller.getQueueList().hasIndex(selectedRow))
+		// {
+		// controller.moveDown(controller.getQueueList().getRow(selectedRow));
+		// }
+		// }
+		// });
+		// arrowBottom.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e)
+		// {
+		// final int selectedRow = queueTable.getSelectedRow();
+		// if (controller.getQueueList().hasIndex(selectedRow))
+		// {
+		// controller.moveBottom(controller.getQueueList().getRow(selectedRow));
+		// }
+		// }
+		// });
+		// });
 	}
 
 	/*
@@ -89,14 +109,4 @@ public class QueueController
 	 * QueuePosition.QUEUE_UP); queueList.sortQueueEntry(queue,
 	 * QueuePosition.QUEUE_UP); }
 	 */
-
-	public void startQueue()
-	{
-		uploader.start();
-	}
-
-	public void stopQueue()
-	{
-		uploader.stop();
-	}
 }

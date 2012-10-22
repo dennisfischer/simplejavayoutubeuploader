@@ -24,9 +24,9 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="1000.0" prefHeight="500.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.ViewController">
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="600.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.ViewController">
   <children>
-    <GridPane fx:id="grid_pane" prefHeight="541.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane fx:id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <MenuBar GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" GridPane.rowSpan="1">
           <menus>
@@ -53,18 +53,18 @@
             </Menu>
           </menus>
         </MenuBar>
-        <AnchorPane fx:id="content_pane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+        <AnchorPane fx:id="content_pane" prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
           <children>
-            <TabPane prefHeight="452.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane prefHeight="-1.0" prefWidth="-1.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <tabs>
                 <Tab closable="false" text="%tab.upload">
                   <content>
-                    <fx:include source="Upload.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="421.0" prefWidth="1000.0" />
+                    <fx:include source="Upload.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" text="%tab.queue">
                   <content>
-                    <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" text="%tab.directory">
@@ -91,19 +91,6 @@
             </TabPane>
           </children>
         </AnchorPane>
-        <GridPane fx:id="loading_pane" prefHeight="500.0" prefWidth="1000.0" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-          <children>
-            <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.5" prefHeight="168.0" prefWidth="309.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Please wait, the application is loading..." GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-          </children>
-          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
-          </rowConstraints>
-        </GridPane>
         <AnchorPane id="Content" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
           <children>
             <ProgressBar prefWidth="200.0" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="6.0" />

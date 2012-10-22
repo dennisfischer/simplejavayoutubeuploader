@@ -35,53 +35,30 @@ public class AccountController implements Initializable
 {
 
 	@FXML// fx:id="account"
-	private TextField							account;			// Value
-																	// injected
-																	// by
-																	// FXMLLoader
+	private TextField							account;
 
 	@FXML// fx:id="accountTable"
-	private TableView<Model>					accountTable;		// Value
-																	// injected
-																	// by
-	// FXMLLoader
+	private TableView<Model>					accountTable;
 
 	@FXML// fx:id="accountType"
-	private ChoiceBox<Account.Type>				accountType;		// Value
-																	// injected
-																	// by
-																	// FXMLLoader
+	private ChoiceBox<Account.Type>				accountType;
 
 	@FXML// fx:id="columnAccount"
-	private TableColumn<Account, String>		columnAccount;		// Value
-																	// injected
-																	// by
-	// FXMLLoader
+	private TableColumn<Account, String>		columnAccount;
 
 	@FXML// fx:id="columnAccounttype"
-	private TableColumn<Account, String>		columnAccounttype;	// Value
-	// injected by
-	// FXMLLoader
+	private TableColumn<Account, String>		columnAccounttype;
 
 	@FXML private TableColumn<Account, Number>	columnActions;
 
 	@FXML// fx:id="addAccount"
-	private Button								addAccount;		// Value
-																	// injected
-																	// by
-																	// FXMLLoader
+	private Button								addAccount;
 
 	@FXML// fx:id="password"
-	private PasswordField						password;			// Value
-																	// injected
-																	// by
-																	// FXMLLoader
+	private PasswordField						password;
 
 	@FXML// fx:id="resetAccount"
-	private Button								resetAccount;		// Value
-																	// injected
-																	// by
-																	// FXMLLoader
+	private Button								resetAccount;
 
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event)
@@ -115,7 +92,7 @@ public class AccountController implements Initializable
 		assert resetAccount != null : "fx:id=\"resetAccount\" was not injected: check your FXML file 'Accounts.fxml'.";
 
 		// initialize your logic here: all @FXML variables will have been
-		// injected
+
 		accountType.setItems(FXCollections.observableArrayList(Account.Type.values()));
 		accountType.getSelectionModel().selectFirst();
 

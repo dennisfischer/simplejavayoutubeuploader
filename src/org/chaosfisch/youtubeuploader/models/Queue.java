@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader.models;
 
 import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.Table;
 
@@ -36,6 +37,7 @@ public class Queue extends Model implements ModelEvents
 	protected void afterSave()
 	{
 		super.afterSave();
+		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_UPDATED, this);
 	}
 
@@ -60,6 +62,7 @@ public class Queue extends Model implements ModelEvents
 	protected void afterCreate()
 	{
 		super.afterCreate();
+		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_ADDED, this);
 	}
 
@@ -84,6 +87,7 @@ public class Queue extends Model implements ModelEvents
 	protected void afterDelete()
 	{
 		super.afterDelete();
+		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_REMOVED, this);
 	}
 }

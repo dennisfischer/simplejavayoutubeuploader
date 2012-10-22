@@ -69,4 +69,31 @@ public class MessageController
 	private void publish(final String message, final boolean facebook, final boolean twitter, final boolean googlePlus, final boolean youtube)
 	{
 	}
+
+	private void validate()
+	{
+		// final String[] publishlist = new String[] {
+		// I18nHelper.message("publishlist.uploadid"),
+		// I18nHelper.message("publishlist.uploadsfinished"),
+		// I18nHelper.message("publishlist.now") };
+		//
+		// if (!googlePlusButton.isSelected() && !facebookButton.isSelected() &&
+		// !twitterButton.isSelected() && !youtubeButton.isSelected())
+		// {
+		// I18nHelper.message("validation.service");
+		// }
+		//
+		// if (!ValidationUtils.hasBoundedLength(messageTextArea.getText(), 5,
+		// 140))
+		// {
+		// I18nHelper.message("validation.message");
+		// }
+		//
+		// if (messageTextArea.getText().contains("{video}") &&
+		// !ValidationUtils.hasBoundedLength(messageTextArea.getText(), 5, 120))
+		// {
+		// I18nHelper.message("validation.message.video");
+		// }
+
+	}
 }

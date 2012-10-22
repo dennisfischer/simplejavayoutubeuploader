@@ -7,14 +7,14 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.Date;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,20 +29,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.google.atom.AtomCategory;
+import org.chaosfisch.util.TagParser;
+import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Preset;
+import org.chaosfisch.youtubeuploader.models.QueueBuilder;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Model;
@@ -51,7 +54,6 @@ import com.google.inject.Inject;
 
 public class UploadController implements Initializable
 {
-
 	@FXML// fx:id="openDefaultdir"
 	private Button						openDefaultdir;
 
@@ -65,7 +67,7 @@ public class UploadController implements Initializable
 	private Button						savePreset;
 
 	@FXML// fx:id="uploadComment"
-	private ChoiceBox<?>				uploadComment;
+	private ChoiceBox<String>			uploadComment;
 
 	@FXML// fx:id="uploadCommentvote"
 	private CheckBox					uploadCommentvote;
@@ -80,7 +82,7 @@ public class UploadController implements Initializable
 	private TextField					uploadEnddir;
 
 	@FXML// fx:id="uploadLicense"
-	private ChoiceBox<?>				uploadLicense;
+	private ChoiceBox<String>			uploadLicense;
 
 	@FXML// fx:id="uploadMobile"
 	private CheckBox					uploadMobile;
@@ -89,12 +91,10 @@ public class UploadController implements Initializable
 	private CheckBox					uploadRate;
 
 	@FXML// fx:id="uploadVideoresponse"
-	private ChoiceBox<?>				uploadVideoresponse;
+	private ChoiceBox<String>			uploadVideoresponse;
 
 	@FXML// fx:id="uploadVisibility"
-	private ChoiceBox<?>				uploadVisibility;
-	@FXML// fx:id="x3"
-	private TitledPane					x3;
+	private ChoiceBox<String>			uploadVisibility;
 
 	@FXML// fx:id="accountList"
 	private ChoiceBox<Model>			accountList;
@@ -135,8 +135,8 @@ public class UploadController implements Initializable
 	@FXML// fx:id="uploadTitle"
 	private TextField					uploadTitle;
 
-	@FXML// fx:id="x2"
-	private TitledPane					x2;
+	@FXML// fx:id="validationText"
+	private Label						validationText;
 
 	@Inject private PlaylistService		playlistService;
 	@Inject private CategoryService		categoryService;
@@ -152,6 +152,53 @@ public class UploadController implements Initializable
 	// Handler for Button[fx:id="addUpload"] onAction
 	public void addUpload(final ActionEvent event)
 	{
+		final String validation = validate();
+		validationText.setText(validation);
+		if (!validation.equals(I18nHelper.message("validation.info.added")))
+		{
+			validationText.setId("validation_error");
+			return;
+		}
+		validationText.setId("validation_passed");
+
+		final QueueBuilder queueBuilder = new QueueBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().label,
+				(Account) accountList.getValue())
+				.setComment(uploadComment.getSelectionModel().getSelectedIndex())
+				.setCommentvote(uploadCommentvote.isSelected())
+				.setDescription(uploadDescription.getText().trim())
+				.setEmbed(uploadEmbed.isSelected())
+				.setEnddir(uploadEnddir.getText().trim())
+				.setLicense(uploadLicense.getSelectionModel().getSelectedIndex())
+				.setMobile(uploadMobile.isSelected())
+				.setNumber(0)
+				.setRate(uploadRate.isSelected())
+				.setTags(uploadTags.getText().trim())
+				.setVideoresponse(uploadVideoresponse.getSelectionModel().getSelectedIndex())
+				.setVisibility(uploadVisibility.getSelectionModel().getSelectedIndex());
+
+		if (playlistCheckbox.isSelected())
+		{
+			queueBuilder.setPlaylist((Playlist) playlistList.getValue());
+		}
+		final Date starttime = new Date(0);
+		final Date releasetime = new Date(0);
+
+		if (starttime.getTime() > System.currentTimeMillis())
+		{
+			queueBuilder.setStarted(starttime);
+		}
+
+		if (releasetime.getTime() > System.currentTimeMillis())
+		{
+			final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(releasetime);
+			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
+			final int mod = unroundedMinutes % 30;
+			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+			queueBuilder.setRelease(new Date(calendar.getTimeInMillis()));
+		}
+
+		queueBuilder.build();
 	}
 
 	// Handler for Button[fx:id="resetUpload"] onAction
@@ -164,6 +211,31 @@ public class UploadController implements Initializable
 	public void savePreset(final ActionEvent event)
 	{
 		// handle the event here
+	}
+
+	// validate each of the three input fields
+	private String validate()
+	{
+		if (uploadFile.getItems().isEmpty())
+		{
+			return I18nHelper.message("validation.filelist");
+		} else if ((uploadTitle.getText().getBytes().length < 5) || (uploadTitle.getText().getBytes().length > 100))
+		{
+			return I18nHelper.message("validation.title");
+		} else if (uploadCategory.getValue() == null)
+		{
+			return I18nHelper.message("validation.category");
+		} else if (uploadDescription.getText().getBytes().length > 5000)
+		{
+			return I18nHelper.message("validation.description");
+		} else if (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<"))
+		{
+			return I18nHelper.message("validation.description.characters");
+		} else if ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText()))
+		{
+			return I18nHelper.message("validation.tags");
+		} else if (accountList.getValue() == null) { return I18nHelper.message("validation.account"); }
+		return I18nHelper.message("validation.info.added");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -198,13 +270,31 @@ public class UploadController implements Initializable
 		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert x2 != null : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert x3 != null : "fx:id=\"x3\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert validationText != null : "fx:id=\"validationText\" was not injected: check your FXML file 'Upload.fxml'.";
 		// initialize your logic here: all @FXML variables will have been
 		// injected
 
 		AnnotationProcessor.process(this);
 
+		// Initial fill of lists
+		uploadVisibility.setItems(FXCollections.observableArrayList(I18nHelper.message("visibilitylist.public"),
+				I18nHelper.message("visibilitylist.unlisted"), I18nHelper.message("visibilitylist.private"),
+				I18nHelper.message("visibilitylist.scheduled")));
+		uploadVisibility.getSelectionModel().selectFirst();
+		uploadComment
+				.setItems(FXCollections.observableArrayList(I18nHelper.message("commentlist.allowed"), I18nHelper.message("commentlist.moderated"),
+						I18nHelper.message("commentlist.denied"), I18nHelper.message("commentlist.friendsonly")));
+		uploadComment.getSelectionModel().selectFirst();
+		uploadLicense.setItems(FXCollections.observableArrayList(I18nHelper.message("licenselist.youtube"), I18nHelper.message("licenselist.cc")));
+		uploadLicense.getSelectionModel().selectFirst();
+		uploadVideoresponse.setItems(FXCollections.observableArrayList(I18nHelper.message("videoresponselist.allowed"),
+				I18nHelper.message("videoresponselist.moderated"), I18nHelper.message("videoresponselist.denied")));
+		uploadVideoresponse.getSelectionModel().selectFirst();
+
+		uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
+		uploadCategory.getSelectionModel().selectFirst();
+
+		// Load dynamic list data
 		accountItems.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
 		accountList.setItems(accountItems);
 		playlistList.setItems(playlistItems);
@@ -224,9 +314,6 @@ public class UploadController implements Initializable
 			}
 		});
 		accountList.getSelectionModel().selectFirst();
-
-		uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
-		uploadCategory.getSelectionModel().selectFirst();
 
 		presetItems.addAll(Preset.findAll().include(Account.class, Playlist.class));
 		presetList.setItems(presetItems);
@@ -368,150 +455,5 @@ public class UploadController implements Initializable
 	public void addPlaceholder(final String placeholder, final String replacement)
 	{
 		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category)
-	{
-		submitUpload(filepath, account, category, (short) 0, new String(filepath.substring(0, filepath.lastIndexOf("."))), filepath, filepath, null,
-				0, (short) 0, (short) 0, true, true, true, true, null, null, null, false, false, false, false, (short) 0);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title,
-			final String description, final String tags)
-	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, null, 0, (short) 0, (short) 0, true, true, true, true, null,
-				null, null, false, false, false, false, (short) 0);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title,
-			final String description, final String tags, final Playlist playlist)
-	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, 0, (short) 0, (short) 0, true, true, true, true,
-				null, null, null, false, false, false, false, (short) 0);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title,
-			final String description, final String tags, final Playlist playlist, final int number, final short comment, final short videoresponse,
-			final boolean rate, final boolean embed, final boolean commentvote, final boolean mobile)
-	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, rate, embed,
-				commentvote, mobile, null, null, null, false, false, false, false, (short) 0);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title,
-			final String description, final String tags, final Playlist playlist, final int number, final short comment, final short videoresponse,
-			final boolean rate, final boolean embed, final boolean commentvote, final boolean mobile, final Date starttime, final Date releasetime,
-			final String enddir, final boolean monetize, final boolean monetizeOverlay, final boolean monetizeTrueview,
-			final boolean monetizeProduct, final short license)
-	{
-		submitUpload(filepath, account, category, visibility, title, description, tags, playlist, number, comment, videoresponse, commentvote, rate,
-				embed, mobile, starttime, releasetime, enddir, monetize, monetizeOverlay, monetizeTrueview, monetizeProduct, license, false,
-				(short) 0, (short) 0, false, false, false, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null);
-	}
-
-	public void submitUpload(final String filepath, final Account account, final String category, final short visibility, final String title,
-			final String description, final String tags, final Playlist playlist, final int number, final short comment, final short videoresponse,
-			final boolean rate, final boolean embed, final boolean commentvote, final boolean mobile, final Date starttime, final Date releasetime,
-			final String enddir, final boolean monetize, final boolean monetizeOverlay, final boolean monetizeTrueview,
-			final boolean monetizeProduct, final short license, final boolean claim, final short claimtype, final short claimpolicy,
-			final boolean partnerOverlay, final boolean partnerTrueview, final boolean partnerInstream, final boolean partnerProduct,
-			final String asset, final String webTitle, final String webID, final String webDescription, final String webNotes, final String tvTMSID,
-			final String tvISAN, final String tvEIDR, final String showTitle, final String episodeTitle, final String seasonNb,
-			final String episodeNb, final String tvID, final String tvNotes, final String movieTitle, final String movieDescription,
-			final String movieTMSID, final String movieISAN, final String movieEIDR, final String movieID, final String movieNotes,
-			final String thumbnail)
-	{
-
-		// final Queue queue = new Queue();
-		// queue.account = account;
-		// queue.mimetype = Mimetype.getMimetypeByExtension(filepath);
-		// queue.mobile = mobile;
-		// queue.title = title;
-		// queue.category = category;
-		// queue.comment = comment;
-		// queue.commentvote = commentvote;
-		// queue.description = description;
-		// queue.embed = embed;
-		// queue.file = filepath;
-		// queue.keywords = tags;
-		// queue.rate = rate;
-		// queue.videoresponse = videoresponse;
-		// queue.playlist = playlist;
-		// queue.locked = false;
-		// queue.monetize = monetize;
-		// queue.monetizeOverlay = monetizeOverlay;
-		// queue.monetizeTrueview = monetizeTrueview;
-		// queue.monetizeProduct = monetizeProduct;
-		// queue.enddir = enddir;
-		// queue.license = license;
-		//
-		// switch (visibility)
-		// {
-		// case 1:
-		// queue.unlisted = true;
-		// break;
-		// case 2:
-		// queue.privatefile = true;
-		// break;
-		// }
-		//
-		// if ((starttime != null) && starttime.after(new
-		// Date(System.currentTimeMillis() + (300000))))
-		// {
-		// queue.started = new Date(starttime.getTime());
-		// }
-		//
-		// if ((releasetime != null) && releasetime.after(new
-		// Date(System.currentTimeMillis() + (300000))))
-		// {
-		// final Calendar calendar = Calendar.getInstance();
-		// calendar.setTime(releasetime);
-		// final int unroundedMinutes = calendar.get(Calendar.MINUTE);
-		// final int mod = unroundedMinutes % 30;
-		// calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
-		//
-		// queue.release = calendar.getTime();
-		// }
-		//
-		// // Partnerfeatures
-		// queue.claim = claim;
-		// queue.claimtype = claimtype;
-		// queue.claimpolicy = claimpolicy;
-		// queue.partnerOverlay = partnerOverlay;
-		// queue.partnerTrueview = partnerTrueview;
-		// queue.partnerProduct = partnerProduct;
-		// queue.partnerInstream = partnerInstream;
-		// queue.asset = asset;
-		// queue.webTitle = webTitle;
-		// queue.webDescription = webDescription;
-		// queue.webID = webID;
-		// queue.webNotes = webNotes;
-		// queue.tvTMSID = tvTMSID;
-		// queue.tvISAN = tvISAN;
-		// queue.tvEIDR = tvEIDR;
-		// queue.showTitle = showTitle;
-		// queue.episodeTitle = episodeTitle;
-		// queue.seasonNb = seasonNb;
-		// queue.episodeNb = episodeNb;
-		// queue.tvID = tvID;
-		// queue.tvNotes = tvNotes;
-		// queue.movieTitle = movieTitle;
-		// queue.movieDescription = movieDescription;
-		// queue.movieTMSID = movieTMSID;
-		// queue.movieISAN = movieISAN;
-		// queue.movieEIDR = movieEIDR;
-		// queue.movieID = movieID;
-		// queue.movieNotes = movieNotes;
-		//
-		// queue.number = number;
-		//
-		// if ((thumbnail != null) && !thumbnail.isEmpty())
-		// {
-		// queue.thumbnail = true;
-		// queue.thumbnailimage = thumbnail;
-		// }
-		//
-		// queueDao.create(queue);
 	}
 }

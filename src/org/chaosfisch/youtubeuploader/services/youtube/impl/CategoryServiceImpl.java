@@ -19,9 +19,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.google.atom.AppCategories;
 import org.chaosfisch.google.atom.AtomCategory;
-import org.chaosfisch.util.Request;
-import org.chaosfisch.util.Request.Method;
-import org.chaosfisch.util.RequestHelper;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService
 	{
 		try
 		{
-			final HttpResponse httpResponse = RequestHelper.execute(new Request.Builder(CATEGORY_URL, Method.GET).build());
+			final HttpResponse httpResponse = RequestHelper.execute(new Request.Builder(CATEGORY_URL, Method.GET).buildHttpUriRequest());
 			if (httpResponse.getStatusLine().getStatusCode() == 200)
 			{
 				final AppCategories appCategories = XStreamHelper.parseFeed(EntityUtils.toString(httpResponse.getEntity()), AppCategories.class);

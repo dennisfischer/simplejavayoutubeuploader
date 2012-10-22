@@ -1,5 +1,8 @@
-package org.chaosfisch.util;
+package org.chaosfisch.util.io;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,7 +25,8 @@ public class Request
 		GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT
 	}
 
-	private final HttpUriRequest	httpRequest;
+	private HttpUriRequest		httpRequest;
+	private HttpURLConnection	urlConnection;
 
 	public static class Builder
 	{
@@ -56,9 +60,14 @@ public class Request
 			return this;
 		}
 
-		public HttpUriRequest build()
+		public HttpUriRequest buildHttpUriRequest()
 		{
 			return new Request(this).getHttpUriRequest();
+		}
+
+		public HttpURLConnection buildHttpUrlConnection() throws IOException
+		{
+			return new Request(this, false).getUrlConnection();
 		}
 	}
 
@@ -102,8 +111,25 @@ public class Request
 		httpRequest.setParams(builder.params != null ? builder.params : httpRequest.getParams());
 	}
 
+	public Request(final Builder builder, final boolean b) throws IOException
+	{
+		final URL url = new URL(builder.url);
+		urlConnection = (HttpURLConnection) url.openConnection();
+		urlConnection.setRequestMethod(builder.method.name());
+
+		for (final Entry<String, String> entry : builder.headers.entrySet())
+		{
+			urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
+		}
+	}
+
 	private HttpUriRequest getHttpUriRequest()
 	{
 		return httpRequest;
+	}
+
+	private HttpURLConnection getUrlConnection()
+	{
+		return urlConnection;
 	}
 }

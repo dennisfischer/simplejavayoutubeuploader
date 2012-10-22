@@ -41,3 +41,20 @@
 #queueBottom{
 	-fx-graphic: url("images/arrow-double-down.png");
 }
+
+#grid{
+	-fx-hgap: 5px;
+	-fx-vgap: 5px;
+}
+
+#validation_error{
+	-fx-padding: 5px;
+	-fx-text-fill: rgb(255,128,128);
+	-fx-graphic: url("images/cancel.png");
+}
+
+#validation_passed{
+	-fx-padding: 5px;
+	-fx-text-fill: rgb(0,128,192);
+	-fx-graphic: url("images/information.png");
+}

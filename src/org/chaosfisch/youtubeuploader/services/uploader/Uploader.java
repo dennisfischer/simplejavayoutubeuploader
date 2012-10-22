@@ -23,7 +23,6 @@ import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.models.Setting;
-import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +118,7 @@ public class Uploader
 				while (startTimeCheckerFlag && !isCancelled())
 				{
 
-					if ((Model.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)
+					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)
 					{
 						start();
 					}
@@ -168,7 +167,6 @@ public class Uploader
 		inProgress = true;
 
 		final Task<Void> task = new Task<Void>() {
-
 			@Override
 			protected Void call() throws Exception
 			{
@@ -176,7 +174,7 @@ public class Uploader
 				{
 					if (hasFreeUploadSpace())
 					{
-						final Queue polled = Model
+						final Queue polled = Queue
 								.findFirst("archived = false AND inprogress = false AND failed = false AND (started > NOW() OR started IS NULL) AND locked = false ORDER BY started DESC, sequence ASC, failed ASC");
 						if (polled != null)
 						{
@@ -192,7 +190,7 @@ public class Uploader
 							}
 							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 							setSpeedLimit(speedLimit);
-							final Setting setting = Model.findById("coreplugin.general.chunk_size");
+							final Setting setting = Setting.findById("coreplugin.general.chunk_size");
 							final Integer chunksize = (setting == null) || (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE : setting
 									.getInteger("value") * 1048576;
 							uploadWorker.run(polled, speedLimit, chunksize);
@@ -234,7 +232,7 @@ public class Uploader
 		{
 			inProgress = false;
 		}
-		final long leftUploads = Model.count("archived = false AND failed = false");
+		final long leftUploads = Queue.count("archived = false AND failed = false");
 		if ((inProgress == false) || ((leftUploads == 0) && (runningUploads <= 0)))
 		{
 			logger.info("All uploads finished");

@@ -10,7 +10,8 @@
 package org.chaosfisch.util;
 
 import java.io.IOException;
-import java.util.Locale;
+
+import com.sun.javafx.PlatformUtil;
 
 public class Computer
 {
@@ -21,13 +22,13 @@ public class Computer
 	public static void hibernateComputer()
 	{
 		String command = "";
-		if (Computer.isWindows())
+		if (PlatformUtil.isWindows())
 		{
 			command = "rundll32 powrprof.dll,SetSuspendState";
-		} else if (Computer.isUnix())
+		} else if (PlatformUtil.isLinux())
 		{
 			command = "pm-hibernate";
-		} else if (Computer.isMac())
+		} else if (PlatformUtil.isMac())
 		{
 			command = "osascript -e 'tell application \"Finder\" to sleep'";
 		}
@@ -35,47 +36,9 @@ public class Computer
 		try
 		{
 			Runtime.getRuntime().exec(command);
-		} catch (final IOException e)
-		{
-			e.printStackTrace();
-		}
+		} catch (final IOException ignored)
+		{}
 		System.exit(0);
-	}
-
-	/**
-	 * Checks if this system is a mac
-	 * 
-	 * @return boolean true if mac
-	 */
-	public static boolean isMac()
-	{
-
-		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
-		return os.contains("mac");
-	}
-
-	/**
-	 * Checks if this system is a unix
-	 * 
-	 * @return boolean true if unix
-	 */
-	public static boolean isUnix()
-	{
-
-		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
-		return os.contains("nix") || os.contains("nux");
-	}
-
-	/**
-	 * Checks if this system is a windows computer
-	 * 
-	 * @return boolean true if windows
-	 */
-	public static boolean isWindows()
-	{
-
-		final String os = System.getProperty("os.name").toLowerCase(Locale.getDefault());
-		return os.contains("win");
 	}
 
 	/**
@@ -84,13 +47,13 @@ public class Computer
 	public static void shutdownComputer()
 	{
 		String command = "";
-		if (Computer.isWindows())
+		if (PlatformUtil.isWindows())
 		{
 			command = "shutdown -t 60 -s -f";
-		} else if (Computer.isUnix())
+		} else if (PlatformUtil.isLinux())
 		{
 			command = "shutdown -t 60 -h -f";
-		} else if (Computer.isMac())
+		} else if (PlatformUtil.isMac())
 		{
 			command = "osascript -e 'tell application\"Finder\" to shut down'";
 		}
@@ -98,10 +61,8 @@ public class Computer
 		try
 		{
 			Runtime.getRuntime().exec(command);
-		} catch (final IOException e)
-		{
-			e.printStackTrace();
-		}
+		} catch (final IOException ignored)
+		{}
 		System.exit(0);
 	}
 }

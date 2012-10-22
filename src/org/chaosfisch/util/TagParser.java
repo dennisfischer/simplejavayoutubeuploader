@@ -36,7 +36,7 @@ public class TagParser
 	public static boolean isValid(final String input)
 	{
 		final String parsed = TagParser.parseAll(input);
-		if ((parsed.length() > 500) || (parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) { return false; }
+		if ((parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) { return false; }
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags)
 		{
