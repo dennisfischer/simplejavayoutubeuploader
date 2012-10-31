@@ -16,6 +16,8 @@ import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 
+import javax.sql.DataSource;
+
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -23,6 +25,7 @@ import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.models.Setting;
+import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +88,15 @@ public class Uploader
 		return inProgress && (runningUploads != 0);
 	}
 
+	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
+	public void onQueueStart(final String topic, final Object o)
+	{
+		if (!isRunning())
+		{
+			start();
+		}
+	}
+
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
 	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
 	{
@@ -97,15 +109,6 @@ public class Uploader
 	{
 		logger.info("Upload successful");
 		uploadFinished(queue);
-	}
-
-	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
-	public void onQueueStart(final String topic, final Object o)
-	{
-		if (!isRunning())
-		{
-			start();
-		}
 	}
 
 	public void runStarttimeChecker()
@@ -165,17 +168,18 @@ public class Uploader
 	public void start()
 	{
 		inProgress = true;
-
 		final Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception
 			{
+				Base.open(injector.getInstance(DataSource.class));
 				while (inProgress && !isCancelled())
 				{
+
 					if (hasFreeUploadSpace())
 					{
 						final Queue polled = Queue
-								.findFirst("archived = false AND inprogress = false AND failed = false AND (started > NOW() OR started IS NULL) AND locked = false ORDER BY started DESC, sequence ASC, failed ASC");
+								.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
 						if (polled != null)
 						{
 							if (polled.parent(Account.class) == null)
@@ -186,7 +190,7 @@ public class Uploader
 							} else
 							{
 								polled.setBoolean("inprogress", true);
-								polled.saveIt();
+								// polled.saveIt();
 							}
 							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 							setSpeedLimit(speedLimit);
@@ -197,18 +201,36 @@ public class Uploader
 							executorService.submit(uploadWorker);
 							runningUploads++;
 						}
-					}
 
+					}
 					try
 					{
 						Thread.sleep(Uploader.QUEUE_SLEEPTIME);
 					} catch (final InterruptedException e)
 					{}
 				}
+				Base.close();
+
 				return null;
 			}
+
+			@Override
+			protected void done()
+			{
+				// TODO Auto-generated method stub
+				super.done();
+				try
+				{
+					get();
+				} catch (final Throwable t)
+				{
+					logger.debug("ERROR", t);
+				}
+			}
 		};
-		task.run();
+		final Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	public void stop()

@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import javafx.concurrent.Task;
 
+import javax.sql.DataSource;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -51,12 +53,14 @@ import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataFrontendChangerServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class UploadWorker extends Task<Void>
 {
@@ -95,6 +99,7 @@ public class UploadWorker extends Task<Void>
 	@Inject private PlaylistService	playlistService;
 	@Inject private RequestSigner	requestSigner;
 	@Inject private MetadataService	metadataService;
+	@Inject private Injector		injector;
 	@Inject private AuthTokenHelper	authTokenHelper;
 
 	public UploadWorker()
@@ -108,71 +113,6 @@ public class UploadWorker extends Task<Void>
 		currentStatus = STATUS.METADATA;
 	}
 
-	@Override
-	protected Void call() throws Exception
-	{
-		// Einstiegspunkt in diesen Thread.
-		/*
-		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
-		 * fehlschlagen und muss wiederholbar sein.
-		 */
-		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)
-				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
-				&& !(numberOfRetries > UploadWorker.MAX_RETRIES))
-		{
-			try
-			{
-				switch (currentStatus)
-				{
-					case INITIALIZE:
-						initialize();
-						break;
-					case AUTHENTICATION:
-						// Schritt 1: Auth
-						authenticate();
-						break;
-					case METADATA:
-						// Schritt 2: MetadataUpload + UrlFetch
-						metadata();
-						break;
-					case UPLOAD:
-						// Schritt 3: Chunkupload
-						upload();
-						break;
-					case RESUMEINFO:
-						// Schritt 4: Fetchen des Resumeinfo
-						resumeinfo();
-						break;
-					case POSTPROCESS:
-						// Schritt 5: Postprocessing
-						postprocess();
-						break;
-					default:
-						break;
-				}
-				numberOfRetries = 0;
-			} catch (final FileNotFoundException e)
-			{
-				logger.warn("File not found - upload failed", e);
-				currentStatus = STATUS.FAILED_FILE;
-			} catch (final MetadataException e)
-			{
-				logger.warn("MetadataException - upload aborted", e);
-				currentStatus = STATUS.FAILED_META;
-			} catch (final AuthenticationException e)
-			{
-				logger.warn("AuthException", e);
-				numberOfRetries++;
-			} catch (final UploadException e)
-			{
-				logger.warn("UploadException", e);
-				currentStatus = STATUS.RESUMEINFO;
-			}
-		}
-		onDone();
-		return null;
-	}
-
 	private void browserAction()
 	{
 		if ((!queue.getBoolean("monetize")) && (!queue.getBoolean("claim")) && (queue.getInteger("license") == 0) && (queue.get("release") == null)
@@ -183,16 +123,22 @@ public class UploadWorker extends Task<Void>
 		for (final Model placeholder : Placeholder.findAll())
 		{
 
-			queue.setString("webTitle",
-					queue.getString("webTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+			queue
+					.setString(
+							"webTitle",
+							queue.getString("webTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+									placeholder.getString("replacement")));
 			queue.setString(
 					"webDescription",
 					queue.getString("webDescription").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
 							placeholder.getString("replacement")));
 			queue.setString("webID",
 					queue.getString("webID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue.setString("webNotes",
-					queue.getString("webNotes").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+			queue
+					.setString(
+							"webNotes",
+							queue.getString("webNotes").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+									placeholder.getString("replacement")));
 
 			queue.setString("tvTMSID",
 					queue.getString("tvTMSID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
@@ -207,8 +153,11 @@ public class UploadWorker extends Task<Void>
 					"episodeTitle",
 					queue.getString("episodeTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
 							placeholder.getString("replacement")));
-			queue.setString("seasonNb",
-					queue.getString("seasonNb").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+			queue
+					.setString(
+							"seasonNb",
+							queue.getString("seasonNb").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+									placeholder.getString("replacement")));
 			queue.setString("episodeNb",
 					queue.getString("episodeNb")
 							.replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
@@ -272,6 +221,73 @@ public class UploadWorker extends Task<Void>
 		metadataChanger.run();
 	}
 
+	@Override
+	protected Void call() throws Exception
+	{
+		// Einstiegspunkt in diesen Thread.
+		/*
+		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
+		 * fehlschlagen und muss wiederholbar sein.
+		 */
+		Base.open(injector.getInstance(DataSource.class));
+		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)
+				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
+				&& !(numberOfRetries > UploadWorker.MAX_RETRIES))
+		{
+			System.out.println("LOOP2");
+			try
+			{
+				switch (currentStatus)
+				{
+					case INITIALIZE:
+						initialize();
+						break;
+					case AUTHENTICATION:
+						// Schritt 1: Auth
+						authenticate();
+						break;
+					case METADATA:
+						// Schritt 2: MetadataUpload + UrlFetch
+						metadata();
+						break;
+					case UPLOAD:
+						// Schritt 3: Chunkupload
+						upload();
+						break;
+					case RESUMEINFO:
+						// Schritt 4: Fetchen des Resumeinfo
+						resumeinfo();
+						break;
+					case POSTPROCESS:
+						// Schritt 5: Postprocessing
+						postprocess();
+						break;
+					default:
+						break;
+				}
+				numberOfRetries = 0;
+			} catch (final FileNotFoundException e)
+			{
+				logger.warn("File not found - upload failed", e);
+				currentStatus = STATUS.FAILED_FILE;
+			} catch (final MetadataException e)
+			{
+				logger.warn("MetadataException - upload aborted", e);
+				currentStatus = STATUS.FAILED_META;
+			} catch (final AuthenticationException e)
+			{
+				logger.warn("AuthException", e);
+				numberOfRetries++;
+			} catch (final UploadException e)
+			{
+				logger.warn("UploadException", e);
+				currentStatus = STATUS.RESUMEINFO;
+			}
+		}
+		onDone();
+		return null;
+	}
+
 	private boolean canResume()
 	{
 		numberOfRetries++;
@@ -287,6 +303,20 @@ public class UploadWorker extends Task<Void>
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected void done()
+	{
+		// TODO Auto-generated method stub
+		super.done();
+		try
+		{
+			get();
+		} catch (final Throwable t)
+		{
+			logger.debug("ERROR", t);
+		}
 	}
 
 	private void enddirAction()
@@ -429,30 +459,6 @@ public class UploadWorker extends Task<Void>
 		}
 	}
 
-	private void replacePlaceholders()
-	{
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(queue.getString("file"), queue.parent(Playlist.class),
-				queue.getInteger("number"));
-		queue.setString("title", extendedPlaceholders.replace(queue.getString("title")));
-		queue.setString("description", extendedPlaceholders.replace(queue.getString("description")));
-		queue.setString("keywords", extendedPlaceholders.replace(queue.getString("keywords")));
-
-		// replace important placeholders NOW
-		for (final Model placeholder : Placeholder.findAll())
-		{
-			queue.setString("title",
-					queue.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue.setString(
-					"description",
-					queue.getString("description").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
-			queue.setString("keywords",
-					queue.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-		}
-		queue.setString("keywords", TagParser.parseAll(queue.getString("keywords")));
-		queue.setString("keywords", queue.getString("keywords").replaceAll("\"", ""));
-	}
-
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT)
 	public void onAbortUpload(final String topic, final Queue abort)
 	{
@@ -508,6 +514,7 @@ public class UploadWorker extends Task<Void>
 				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Unknown-Error"));
 				break;
 		}
+		Base.close();
 	}
 
 	@EventTopicSubscriber(topic = Uploader.UPLOAD_LIMIT)
@@ -540,11 +547,39 @@ public class UploadWorker extends Task<Void>
 		currentStatus = STATUS.DONE;
 	}
 
+	private void replacePlaceholders()
+	{
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(queue.getString("file"), queue.parent(Playlist.class),
+				queue.getInteger("number"));
+		queue.setString("title", extendedPlaceholders.replace(queue.getString("title")));
+		queue.setString("description", extendedPlaceholders.replace(queue.getString("description")));
+		queue.setString("keywords", extendedPlaceholders.replace(queue.getString("keywords")));
+
+		// replace important placeholders NOW
+		for (final Model placeholder : Placeholder.findAll())
+		{
+			queue.setString("title",
+					queue.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+			queue.setString(
+					"description",
+					queue.getString("description").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+							placeholder.getString("replacement")));
+			queue
+					.setString(
+							"keywords",
+							queue.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+									placeholder.getString("replacement")));
+		}
+		queue.setString("keywords", TagParser.parseAll(queue.getString("keywords")));
+		queue.setString("keywords", queue.getString("keywords").replaceAll("\"", ""));
+	}
+
 	private ResumeInfo resumeFileUpload(final String uploadUrl) throws UploadException
 	{
 		try
 		{
-			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT).headers(ImmutableMap.of("Content-Range", "bytes */*"))
+			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT)
+					.headers(ImmutableMap.of("Content-Range", "bytes */*"))
 					.buildHttpUriRequest();
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
 			final HttpResponse response = RequestHelper.execute(request);

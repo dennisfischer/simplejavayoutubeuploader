@@ -16,8 +16,8 @@ import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.util.io.Request.Method;
+import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.MetadataException;
@@ -64,7 +64,7 @@ public class MetadataServiceImpl implements MetadataService
 
 		videoEntry.mediaGroup.license = (queue.getInteger("license") == 0) ? "youtube" : "cc";
 
-		if (queue.getBoolean("privatefile"))
+		if (queue.getInteger("visibility") == 2)
 		{
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
@@ -77,7 +77,7 @@ public class MetadataServiceImpl implements MetadataService
 		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(queue
 				.getInteger("videoresponse"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(queue.getInteger("comment"))));
-		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(!queue.getBoolean("unlisted"))));
+		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(queue.getInteger("visibility") == 1)));
 
 		if (queue.getInteger("comment") == 3)
 		{
@@ -133,7 +133,8 @@ public class MetadataServiceImpl implements MetadataService
 		// Upload atomData and fetch uploadUrl
 		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST)
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
-				.entity(new StringEntity(atomData, Charset.forName("UTF-8"))).buildHttpUriRequest();
+				.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
+				.buildHttpUriRequest();
 		// Sign the request
 		requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
 		// Write the atomData to GOOGLE

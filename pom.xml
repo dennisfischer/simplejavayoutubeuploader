@@ -29,6 +29,20 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				
+				     <plugin>
+                <groupId>activejdbc</groupId>
+                <artifactId>activejdbc-instrumentation</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -102,6 +116,12 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.javalite</groupId>
+			<artifactId>activejdbc-instrumentation</artifactId>
+			<version>1.4.5</version>
+			<type>maven-plugin</type>
 		</dependency>
 	</dependencies>
 </project>

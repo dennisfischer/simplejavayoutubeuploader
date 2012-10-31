@@ -10,23 +10,16 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
+<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
   <children>
-    <GridPane id="grid" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="grid" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" minWidth="0.0" mnemonicParsing="false" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" minWidth="0.0" mnemonicParsing="false" onAction="#startQueue" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <GridPane.margin>
             <Insets fx:id="x1" />
           </GridPane.margin>
         </Button>
-        <Button fx:id="stopQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%button.stop" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="1" />
-        <Button fx:id="editQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%button.edit" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="removeQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%button.delete" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="queueTop" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="queueUp" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="queueDown" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="abortQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%button.abort" GridPane.columnIndex="6" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button fx:id="queueBottom" contentDisplay="GRAPHIC_ONLY" maxWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="5" GridPane.margin="$x1" GridPane.rowIndex="2" />
+        <Button fx:id="stopQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopQueue" text="%button.stop" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="1" />
         <ChoiceBox fx:id="actionOnFinish" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.margin="$x1" GridPane.rowIndex="1">
           <items>
             <FXCollections fx:factory="observableArrayList">
@@ -37,27 +30,8 @@
           </items>
         </ChoiceBox>
         <Label text="%label.actionOnFinish" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="1" />
-        <TableView prefHeight="393.0" prefWidth="1000.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
-          <columns>
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-            <TableColumn prefWidth="75.0" text="Column X" />
-          </columns>
-        </TableView>
+        <TableView fx:id="queueTableview" prefHeight="393.0" prefWidth="1000.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0" />
+        <Region prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="7" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
@@ -67,9 +41,10 @@
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints maxHeight="-Infinity" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
         <RowConstraints maxHeight="-Infinity" minHeight="-1.0" vgrow="SOMETIMES" />
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
       </rowConstraints>

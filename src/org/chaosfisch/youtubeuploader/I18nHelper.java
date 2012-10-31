@@ -37,6 +37,6 @@ public class I18nHelper
 	 */
 	public static String message(final String key)
 	{
-		return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : "====I18N Missing====";
+		return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : "====" + key + "====";
 	}
 }

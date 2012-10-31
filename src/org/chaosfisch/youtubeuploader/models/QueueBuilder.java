@@ -46,26 +46,17 @@ public class QueueBuilder
 		return Queue.createIt("file", file.getAbsolutePath(), "title", title, "category", category, "description", description, "keywords", tags,
 				"mimetype", mimetype, "commentvote", commentvote, "mobile", mobile, "embed", embed, "rate", rate, "comment", comment,
 				"videoresponse", videoresponse, "visibility", visibility, "license", license, "number", number, "started", started, "release",
-				release, "account_id", account.getLongId(), "playlist_id", playlist == null ? null : playlist.getLongId(), "enddir", enddir);
+				release, "account_id", account.getLongId(), "playlist_id", playlist == null ? null : playlist.getLongId(), "enddir", enddir,
+				"inprogress", false);
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param comment
+	 *            the comment to set
 	 */
-	public QueueBuilder setDescription(final String description)
+	public QueueBuilder setComment(final int comment)
 	{
-		this.description = description;
-		return this;
-	}
-
-	/**
-	 * @param tags
-	 *            the tags to set
-	 */
-	public QueueBuilder setTags(final String tags)
-	{
-		this.tags = tags;
+		this.comment = comment;
 		return this;
 	}
 
@@ -80,12 +71,12 @@ public class QueueBuilder
 	}
 
 	/**
-	 * @param mobile
-	 *            the mobile to set
+	 * @param description
+	 *            the description to set
 	 */
-	public QueueBuilder setMobile(final boolean mobile)
+	public QueueBuilder setDescription(final String description)
 	{
-		this.mobile = mobile;
+		this.description = description;
 		return this;
 	}
 
@@ -100,6 +91,56 @@ public class QueueBuilder
 	}
 
 	/**
+	 * @param enddir
+	 *            the enddir to set
+	 */
+	public QueueBuilder setEnddir(final String enddir)
+	{
+		this.enddir = enddir;
+		return this;
+	}
+
+	/**
+	 * @param license
+	 *            the license to set
+	 */
+	public QueueBuilder setLicense(final int license)
+	{
+		this.license = license;
+		return this;
+	}
+
+	/**
+	 * @param mobile
+	 *            the mobile to set
+	 */
+	public QueueBuilder setMobile(final boolean mobile)
+	{
+		this.mobile = mobile;
+		return this;
+	}
+
+	/**
+	 * @param number
+	 *            the number to set
+	 */
+	public QueueBuilder setNumber(final int number)
+	{
+		this.number = number;
+		return this;
+	}
+
+	/**
+	 * @param playlist
+	 *            the playlist to set
+	 */
+	public QueueBuilder setPlaylist(final Playlist playlist)
+	{
+		this.playlist = playlist;
+		return this;
+	}
+
+	/**
 	 * @param rate
 	 *            the rate to set
 	 */
@@ -110,12 +151,32 @@ public class QueueBuilder
 	}
 
 	/**
-	 * @param comment
-	 *            the comment to set
+	 * @param release
+	 *            the release to set
 	 */
-	public QueueBuilder setComment(final int comment)
+	public QueueBuilder setRelease(final Date release)
 	{
-		this.comment = comment;
+		this.release = release;
+		return this;
+	}
+
+	/**
+	 * @param started
+	 *            the started to set
+	 */
+	public QueueBuilder setStarted(final Date started)
+	{
+		this.started = started;
+		return this;
+	}
+
+	/**
+	 * @param tags
+	 *            the tags to set
+	 */
+	public QueueBuilder setTags(final String tags)
+	{
+		this.tags = tags;
 		return this;
 	}
 
@@ -136,66 +197,6 @@ public class QueueBuilder
 	public QueueBuilder setVisibility(final int visibility)
 	{
 		this.visibility = visibility;
-		return this;
-	}
-
-	/**
-	 * @param license
-	 *            the license to set
-	 */
-	public QueueBuilder setLicense(final int license)
-	{
-		this.license = license;
-		return this;
-	}
-
-	/**
-	 * @param number
-	 *            the number to set
-	 */
-	public QueueBuilder setNumber(final int number)
-	{
-		this.number = number;
-		return this;
-	}
-
-	/**
-	 * @param started
-	 *            the started to set
-	 */
-	public QueueBuilder setStarted(final Date started)
-	{
-		this.started = started;
-		return this;
-	}
-
-	/**
-	 * @param release
-	 *            the release to set
-	 */
-	public QueueBuilder setRelease(final Date release)
-	{
-		this.release = release;
-		return this;
-	}
-
-	/**
-	 * @param playlist
-	 *            the playlist to set
-	 */
-	public QueueBuilder setPlaylist(final Playlist playlist)
-	{
-		this.playlist = playlist;
-		return this;
-	}
-
-	/**
-	 * @param enddir
-	 *            the enddir to set
-	 */
-	public QueueBuilder setEnddir(final String enddir)
-	{
-		this.enddir = enddir;
 		return this;
 	}
 }

@@ -2,7 +2,7 @@
 <project name="simple-java-youtube-uploader-javafx" default="do-deploy" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
 	<buildnumber file="build.num"/>
 	<property resource="application_de.properties" >
-		<classpath path="C:\Users\Dennis\workspace\simple-java-youtube-uploader-javafx\src\org\chaosfisch\youtubeuploader\resources\" />
+		<classpath path="..\src\org\chaosfisch\youtubeuploader\resources\" />
 	</property>
 	<script language="javascript">
 	        var logger = project.getBuildListeners( ).firstElement( );
@@ -10,7 +10,7 @@
 	</script>
 	
 	<target name="init-fx-tasks">
-		<property name="javafx.tools.ant.jar" value="C:\Program Files\Java\lib\ant-javafx.jar" />
+		<property name="javafx.tools.ant.jar" value="C:\Program Files\Java\jdk1.7.0_09\lib\ant-javafx.jar" />
 
 		<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${javafx.tools.ant.jar}" />
 	</target>
@@ -22,144 +22,139 @@
 		<mkdir dir="externalLibs" />
 
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\c3p0\c3p0\0.9.1.2">
+			<fileset dir="${user.home}\.m2\repository\c3p0\c3p0\0.9.1.2">
 				<filename name="c3p0-0.9.1.2.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\apache\httpcomponents\httpclient\4.2.1">
+			<fileset dir="${user.home}\.m2\repository\org\apache\httpcomponents\httpclient\4.2.1">
 				<filename name="httpclient-4.2.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\slf4j\slf4j-api\1.7.1">
+			<fileset dir="${user.home}\.m2\repository\org\slf4j\slf4j-api\1.7.1">
 				<filename name="slf4j-api-1.7.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\xmlpull\xmlpull\1.1.3.1">
+			<fileset dir="${user.home}\.m2\repository\xmlpull\xmlpull\1.1.3.1">
 				<filename name="xmlpull-1.1.3.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\bushe\eventbus\1.4">
+			<fileset dir="${user.home}\.m2\repository\org\bushe\eventbus\1.4">
 				<filename name="eventbus-1.4.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\javax\activation\activation\1.1">
+			<fileset dir="${user.home}\.m2\repository\javax\activation\activation\1.1">
 				<filename name="activation-1.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\workspace\simple-java-youtube-uploader-javafx\lib">
+			<fileset dir="../lib">
 				<filename name="jfx-dialogs.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\commons-codec\commons-codec\1.6">
+			<fileset dir="${user.home}\.m2\repository\commons-codec\commons-codec\1.6">
 				<filename name="commons-codec-1.6.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\com\google\inject\guice\3.0">
+			<fileset dir="${user.home}\.m2\repository\com\google\inject\guice\3.0">
 				<filename name="guice-3.0.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\javalite\javalite-common\1.4.5">
+			<fileset dir="${user.home}\.m2\repository\org\javalite\javalite-common\1.4.5">
 				<filename name="javalite-common-1.4.5.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\ch\qos\logback\logback-core\1.0.7">
+			<fileset dir="${user.home}\.m2\repository\ch\qos\logback\logback-core\1.0.7">
 				<filename name="logback-core-1.0.7.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\apache\commons\commons-email\1.2">
+			<fileset dir="${user.home}\.m2\repository\org\apache\commons\commons-email\1.2">
 				<filename name="commons-email-1.2.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\com\google\guava\guava\13.0.1">
+			<fileset dir="${user.home}\.m2\repository\com\google\guava\guava\13.0.1">
 				<filename name="guava-13.0.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\apache\httpcomponents\httpcore\4.2.1">
+			<fileset dir="${user.home}\.m2\repository\org\apache\httpcomponents\httpcore\4.2.1">
 				<filename name="httpcore-4.2.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\com\h2database\h2\1.3.168">
+			<fileset dir="${user.home}\.m2\repository\com\h2database\h2\1.3.168">
 				<filename name="h2-1.3.168.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\javax\inject\javax.inject\1">
+			<fileset dir="${user.home}\.m2\repository\javax\inject\javax.inject\1">
 				<filename name="javax.inject-1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\xpp3\xpp3_min\1.1.4c">
+			<fileset dir="${user.home}\.m2\repository\xpp3\xpp3_min\1.1.4c">
 				<filename name="xpp3_min-1.1.4c.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\apache\httpcomponents\httpmime\4.2.1">
+			<fileset dir="${user.home}\.m2\repository\org\apache\httpcomponents\httpmime\4.2.1">
 				<filename name="httpmime-4.2.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\javax\mail\mail\1.4.5">
+			<fileset dir="${user.home}\.m2\repository\javax\mail\mail\1.4.5">
 				<filename name="mail-1.4.5.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\com\thoughtworks\xstream\xstream\1.4.3">
+			<fileset dir="${user.home}\.m2\repository\com\thoughtworks\xstream\xstream\1.4.3">
 				<filename name="xstream-1.4.3.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="F:\Daten\repositories\jxfilewatcher-1.2-cross-desktop-win_mac_linux">
-				<filename name="jxfilewatcher-1.2.jar" />
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\commons-logging\commons-logging\1.1.1">
+			<fileset dir="${user.home}\.m2\repository\commons-logging\commons-logging\1.1.1">
 				<filename name="commons-logging-1.1.1.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\ch\qos\logback\logback-classic\1.0.7">
+			<fileset dir="${user.home}\.m2\repository\ch\qos\logback\logback-classic\1.0.7">
 				<filename name="logback-classic-1.0.7.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\javalite\activejdbc\1.4.5">
+			<fileset dir="${user.home}\.m2\repository\org\javalite\activejdbc\1.4.5">
 				<filename name="activejdbc-1.4.5.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\junit\junit\4.8.2">
+			<fileset dir="${user.home}\.m2\repository\junit\junit\4.8.2">
 				<filename name="junit-4.8.2.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\org\jfxtras\jfxtras-labs\2.2-r2">
+			<fileset dir="${user.home}\.m2\repository\org\jfxtras\jfxtras-labs\2.2-r2">
 				<filename name="jfxtras-labs-2.2-r2.jar" />
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\Dennis\.m2\repository\aopalliance\aopalliance\1.0">
+			<fileset dir="${user.home}\.m2\repository\aopalliance\aopalliance\1.0">
 				<filename name="aopalliance-1.0.jar" />
 			</fileset>
 		</copy>
 
 		<mkdir dir="project" />
 		<copy todir="project">
-			<fileset dir="C:\Users\Dennis\workspace\simple-java-youtube-uploader-javafx">
+			<fileset dir="${user.home}\workspace\simple-java-youtube-uploader.javafx">
 				<include name="src/**" />
 			</fileset>
 		</copy>
@@ -281,7 +276,7 @@
 	</target>
 
 	<path id="instrument_classpath">
-		<pathelement location="${user.home}/workspace/simple-java-youtube-uploader-javafx/build/build/classes" />
+		<pathelement location="${user.home}/workspace/simple-java-youtube-uploader.javafx/build/build/classes" />
 		<path location="${user.home}/.m2/repository/org/javalite/activejdbc-instrumentation/1.4.5/activejdbc-instrumentation-1.4.5.jar" />
 		<path location="${user.home}/.m2/repository/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA.jar" />
 		<path location="${user.home}/.m2/repository/org/javalite/activejdbc/1.4.5/activejdbc-1.4.5.jar" />
@@ -289,7 +284,7 @@
 
 	<target name="instrument" depends="do-compile">
 		<java classname="org.javalite.instrumentation.Main">
-			<sysproperty key="outputDirectory" value="${user.home}/workspace/simple-java-youtube-uploader-javafx/build/build/classes" />
+			<sysproperty key="outputDirectory" value="${user.home}/workspace/simple-java-youtube-uploader.javafx/build/build/classes" />
 			<classpath refid="instrument_classpath" />
 		</java>
 	</target>

@@ -67,11 +67,6 @@
                     <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
-                <Tab closable="false" text="%tab.directory">
-                  <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
                 <Tab closable="false" text="%tab.socialize">
                   <content>
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
