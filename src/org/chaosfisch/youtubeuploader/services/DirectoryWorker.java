@@ -10,11 +10,17 @@
 package org.chaosfisch.youtubeuploader.services;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.util.Mimetype;
@@ -26,28 +32,28 @@ import org.chaosfisch.youtubeuploader.models.Queue;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.javalite.activejdbc.Model;
 
-import com.teamdev.filewatch.FileEvent;
-import com.teamdev.filewatch.FileEventFilter;
-import com.teamdev.filewatch.FileEventsAdapter;
-import com.teamdev.filewatch.FileEventsListener;
-import com.teamdev.filewatch.FileWatcher;
-import com.teamdev.filewatch.WatchingAttributes;
-
 public class DirectoryWorker extends Thread
 {
 
-	final Collection<FileWatcher>	fileWatcherList	= new ArrayList<FileWatcher>(50);
-	final Collection<File>			inProgress		= new ArrayList<File>(10);
+	final Collection<File>				inProgress		= new ArrayList<File>(10);
+	final WatchService					watcher;
+	final MediaFileFilter				mediaFileFilter	= new MediaFileFilter();
+	private final Collection<WatchKey>	watchKeys		= new ArrayList<WatchKey>(20);
 
-	private static class MediaFileFilter implements FileEventFilter
+	public DirectoryWorker() throws IOException
+	{
+		watcher = FileSystems.getDefault().newWatchService();
+	}
+
+	private static class MediaFileFilter
 	{
 
 		private static final long	WAIT_CHECKTIME	= 750;
 
-		@Override
-		public boolean accept(final FileEvent fileEvent)
+		public boolean accept(final Path path)
 		{
-			final File file = fileEvent.getFile();
+			final File file = path.toFile();
+			if (!file.isFile()) { return false; }
 			final String[] extensions = Mimetype.EXTENSIONS;
 			final int dotPos = file.toString().lastIndexOf(".") + 1;
 			final String fileExtension = file.toString().substring(dotPos);
@@ -68,9 +74,7 @@ public class DirectoryWorker extends Thread
 			{
 				Thread.sleep(MediaFileFilter.WAIT_CHECKTIME);
 			} catch (final InterruptedException ignored)
-			{
-				throw new RuntimeException("This shouldn't happen");
-			}
+			{}
 			return !((file.lastModified() != checkedAt) || (fileSizeAt != file.length()));
 		}
 	}
@@ -128,53 +132,68 @@ public class DirectoryWorker extends Thread
 	@Override
 	public void run()
 	{
-
 		final List<Directory> directories = Model.find("active = ?", true);
-		final FileEventsListener fileEventsAdapter = new FileEventsAdapter() {
-			@Override
-			public void fileAdded(final FileEvent.Added added)
-			{
-				if (!inProgress.contains(added.getFile()))
-				{
-					inProgress.add(added.getFile());
-					addToUpload(added.getFile());
-				}
-			}
-
-			@Override
-			public void fileChanged(final FileEvent.Changed changed)
-			{
-				if (!inProgress.contains(changed.getFile()))
-				{
-					inProgress.add(changed.getFile());
-					addToUpload(changed.getFile());
-				}
-			}
-		};
-
-		final Set<WatchingAttributes> watchingAttributes = EnumSet.allOf(WatchingAttributes.class);
-		watchingAttributes.remove(WatchingAttributes.DirectoryName);
-		watchingAttributes.remove(WatchingAttributes.Subtree);
-
-		final FileEventFilter fileMaskFilter = new MediaFileFilter();
 
 		for (final Directory directory : directories)
 		{
-			final File file = new File(directory.getString("directory"));
-			final FileWatcher fileWatcher = FileWatcher.create(file);
-			fileWatcher.addFileEventsListener(fileEventsAdapter);
-			fileWatcher.setOptions(watchingAttributes);
-			fileWatcher.setFilter(fileMaskFilter);
-			fileWatcher.start();
-			fileWatcherList.add(fileWatcher);
+			final Path dir = Paths.get(directory.getString("directory"));
+			try
+			{
+				final WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
+						StandardWatchEventKinds.ENTRY_MODIFY);
+				watchKeys.add(key);
+			} catch (final IOException ex)
+			{
+				ex.printStackTrace();
+			}
 		}
+
+		for (;;)
+		{
+			WatchKey key;
+			try
+			{
+				key = watcher.take();
+			} catch (final InterruptedException x)
+			{
+				return;
+			}
+
+			for (final WatchEvent<?> event : key.pollEvents())
+			{
+				final WatchEvent.Kind<?> kind = event.kind();
+
+				if (kind == StandardWatchEventKinds.OVERFLOW)
+				{
+					continue;
+				} else if ((kind == StandardWatchEventKinds.ENTRY_CREATE) || (kind == StandardWatchEventKinds.ENTRY_MODIFY))
+				{
+
+					final WatchEvent<Path> ev = (WatchEvent<Path>) event;
+					final Path filename = ev.context();
+
+					if (!inProgress.contains(filename.toFile()) && mediaFileFilter.accept(filename))
+					{
+						inProgress.add(filename.toFile());
+						addToUpload(filename.toFile());
+					}
+				}
+			}
+
+			final boolean valid = key.reset();
+			if (!valid)
+			{
+				break;
+			}
+		}
+
 	}
 
 	public void stopActions()
 	{
-		for (final FileWatcher fileWatcher : fileWatcherList)
+		for (final WatchKey key : watchKeys)
 		{
-			fileWatcher.stop();
+			key.cancel();
 		}
 	}
 }
