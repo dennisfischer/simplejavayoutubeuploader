@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import javax.sql.DataSource;
@@ -34,43 +35,34 @@ import com.google.inject.Injector;
 
 public class Uploader
 {
-	public static final String		ALLOWED					= "allowed";
-	public static final String		DENIED					= "denied";
-	public static final String		MODERATED				= "moderated";
-
 	private static final long		QUEUE_SLEEPTIME			= 30000;
-	public static final String		QUEUE_START				= "queueStart";
-	public static final String		UPLOAD_ABORT			= "uploadAbort";
-	public static final String		UPLOAD_FAILED			= "uploadFailed";
-	public static final String		UPLOAD_FINISHED			= "uploadFinished";
-	public static final String		UPLOAD_JOB_FINISHED		= "uploadJobFinished";
-	public static final String		UPLOAD_LIMIT			= "uploadLimit";
-	public static final String		UPLOAD_LOG				= "uploadLog";
-	public static final String		UPLOAD_PROGRESS			= "uploadProgress";
 
-	public static final String		UPLOAD_STARTED			= "uploadStarted";
+	public static final String		ABORT					= "uploadAbort";
+	public static final String		LIMIT					= "uploadLimit";
+	public static final String		PROGRESS				= "uploadProgress";
+	public static final String		STARTED					= "uploadStarted";
+	public static final String		STOPPED					= "uploadStopped";
+
 	private short					actionOnFinish;
-	private final ExecutorService	executorService;
-	@Inject private Injector		injector;
 	private volatile boolean		inProgress;
-
-	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	private short					maxUploads				= 1;
 	private volatile short			runningUploads;
 	private int						speedLimit				= 1000 * 1024;
 	private static final int		DEFAULT_CHUNKSIZE		= 10 * 1048576;
-
 	private boolean					startTimeCheckerFlag	= true;
+
+	private final ExecutorService	executorService			= Executors.newFixedThreadPool(10);
+	private final Logger			logger					= LoggerFactory.getLogger(getClass());
+	@Inject private Injector		injector;
 
 	public Uploader()
 	{
-		executorService = Executors.newFixedThreadPool(10);
 		AnnotationProcessor.process(this);
 	}
 
 	public void abort(final Queue queue)
 	{
-		EventBus.publish(Uploader.UPLOAD_ABORT, queue);
+		EventBus.publish(Uploader.ABORT, queue);
 	}
 
 	public void exit()
@@ -88,55 +80,17 @@ public class Uploader
 		return inProgress && (runningUploads != 0);
 	}
 
-	@EventTopicSubscriber(topic = Uploader.QUEUE_START)
-	public void onQueueStart(final String topic, final Object o)
+	@EventTopicSubscriber(topic = Uploader.PROGRESS)
+	public void onUploadJobDoneAndFailed(final String topic, final UploadProgress uploadProgress)
 	{
-		if (!isRunning())
+		if ((uploadProgress.done == true) || (uploadProgress.failed == true))
 		{
-			start();
+			logger.info(uploadProgress.status);
+			uploadFinished(uploadProgress.getQueue());
+		} else
+		{
+			logger.info("{}", uploadProgress.getTotalBytesUploaded());
 		}
-	}
-
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_FAILED)
-	public void onUploadJobFailed(final String topic, final UploadFailed uploadFailed)
-	{
-		logger.info("Upload failed");
-		uploadFinished(uploadFailed.getQueue());
-	}
-
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final Queue queue)
-	{
-		logger.info("Upload successful");
-		uploadFinished(queue);
-	}
-
-	public void runStarttimeChecker()
-	{
-		final Task<Void> task = new Task<Void>() {
-
-			@Override
-			protected Void call() throws Exception
-			{
-				while (startTimeCheckerFlag && !isCancelled())
-				{
-
-					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)
-					{
-						start();
-					}
-
-					try
-					{
-						Thread.sleep(60000);
-					} catch (final InterruptedException e)
-					{}
-				}
-				return null;
-			}
-
-		};
-		task.run();
 	}
 
 	public void setActionOnFinish(final short actionOnFinish)
@@ -161,7 +115,7 @@ public class Uploader
 		if (runningUploads > 0)
 		{
 			speedLimit = Math.round((bytes * 1024) / runningUploads);
-			EventBus.publish(Uploader.UPLOAD_LIMIT, speedLimit);
+			EventBus.publish(Uploader.LIMIT, speedLimit);
 		}
 	}
 
@@ -178,8 +132,7 @@ public class Uploader
 
 					if (hasFreeUploadSpace())
 					{
-						final Queue polled = Queue
-								.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
+						final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
 						if (polled != null)
 						{
 							if (polled.parent(Account.class) == null)
@@ -195,9 +148,9 @@ public class Uploader
 							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 							setSpeedLimit(speedLimit);
 							final Setting setting = Setting.findById("coreplugin.general.chunk_size");
-							final Integer chunksize = (setting == null) || (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE : setting
-									.getInteger("value") * 1048576;
-							uploadWorker.run(polled, speedLimit, chunksize);
+							final Integer chunksize = (setting == null) || (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE
+									: setting.getInteger("value") * 1048576;
+							uploadWorker.run(polled);
 							executorService.submit(uploadWorker);
 							runningUploads++;
 						}
@@ -245,16 +198,21 @@ public class Uploader
 
 	private void uploadFinished(final Queue queue)
 	{
-		logger.info(String.format("Upload finished: %s; %s", queue.getString("title"), queue.getString("videoid")));
+
+		Base.open(injector.getInstance(DataSource.class));
+
 		runningUploads--;
-		logger.info(String.format("Running uploads: %s", runningUploads));
-		queue.saveIt();
+
+		final long leftUploads = Queue.count("archived = false AND failed = false");
+		logger.info("Upload finished: {}; {}", queue.getString("title"), queue.getString("videoid"));
+		logger.info("Running uploads: {}", runningUploads);
+		logger.info("Left uploads: {}", leftUploads);
 
 		if (queue.getBoolean("PAUSEONFINISH") == true)
 		{
 			inProgress = false;
 		}
-		final long leftUploads = Queue.count("archived = false AND failed = false");
+
 		if ((inProgress == false) || ((leftUploads == 0) && (runningUploads <= 0)))
 		{
 			logger.info("All uploads finished");
@@ -268,23 +226,52 @@ public class Uploader
 						case 0:
 							return;
 						case 1:
-							System.out.println("CLOSING APPLICATION");
-							System.exit(0);
-							return;
+							logger.info("CLOSING APPLICATION");
+							break;
 						case 2:
-							System.out.println("SHUTDOWN COMPUTER");
+							logger.info("SHUTDOWN COMPUTER");
 							Computer.shutdownComputer();
-							return;
+							break;
 						case 3:
-							System.out.println("HIBERNATE COMPUTER");
+							logger.info("HIBERNATE COMPUTER");
 							Computer.hibernateComputer();
-							return;
+							break;
 					}
+					Platform.exit();
 				}
+
 			}, 60000);
 		}
+		Base.close();
+	}
 
-		logger.info(String.format("Left uploads: %d", leftUploads));
+	public void runStarttimeChecker()
+	{
+		final Task<Void> task = new Task<Void>() {
 
+			@Override
+			protected Void call() throws Exception
+			{
+				while (startTimeCheckerFlag && !isCancelled())
+				{
+
+					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)
+					{
+						start();
+					}
+
+					try
+					{
+						Thread.sleep(60000);
+					} catch (final InterruptedException e)
+					{}
+				}
+				return null;
+			}
+
+		};
+		final Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
 	}
 }

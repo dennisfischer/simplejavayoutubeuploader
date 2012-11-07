@@ -25,15 +25,15 @@ import java.io.OutputStream;
 
 public class ThrottledOutputStream extends FilterOutputStream
 {
-	private final long	maxBps;
-	private long		bytes;
-	private final long	start;
+	private long			bytes;
+	private final long		start;
+	private final Throttle	throttle;
 
 	// / Constructor.
-	public ThrottledOutputStream(final OutputStream out, final long maxBps)
+	public ThrottledOutputStream(final OutputStream out, final Throttle throttle)
 	{
 		super(out);
-		this.maxBps = maxBps;
+		this.throttle = throttle;
 		bytes = 0;
 		start = System.currentTimeMillis();
 	}
@@ -64,10 +64,10 @@ public class ThrottledOutputStream extends FilterOutputStream
 		final long elapsed = Math.max(System.currentTimeMillis() - start, 1);
 
 		final long bps = (bytes * 1000L) / elapsed;
-		if ((maxBps != 0) && (bps > maxBps))
+		if ((throttle.maxBps != 0) && (bps > throttle.maxBps))
 		{
 			// Oops, sending too fast.
-			final long wakeElapsed = (bytes * 1000L) / maxBps;
+			final long wakeElapsed = (bytes * 1000L) / throttle.maxBps;
 			try
 			{
 				Thread.sleep(wakeElapsed - elapsed);

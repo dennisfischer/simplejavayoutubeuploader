@@ -11,6 +11,10 @@ package org.chaosfisch.youtubeuploader.services.uploader;
 
 public class PermissionStringConverter
 {
+	public static final String	ALLOWED		= "allowed";
+	public static final String	DENIED		= "denied";
+	public static final String	MODERATED	= "moderated";
+
 	/**
 	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed
 	 * False:Denied
@@ -21,8 +25,7 @@ public class PermissionStringConverter
 	 */
 	public static String convertBoolean(final boolean value)
 	{
-		if (value) { return Uploader.ALLOWED; }
-		return Uploader.DENIED;
+		return value ? ALLOWED : DENIED;
 	}
 
 	/**
@@ -38,13 +41,13 @@ public class PermissionStringConverter
 		switch (value)
 		{
 			case 0:
-				return Uploader.ALLOWED;
+				return ALLOWED;
 			case 1:
 			case 3:
-				return Uploader.MODERATED;
+				return MODERATED;
 			case 2:
-				return Uploader.DENIED;
+				return DENIED;
 		}
-		return Uploader.ALLOWED;
+		return ALLOWED;
 	}
 }

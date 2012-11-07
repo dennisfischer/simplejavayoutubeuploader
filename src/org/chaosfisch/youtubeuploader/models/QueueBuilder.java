@@ -1,9 +1,10 @@
 package org.chaosfisch.youtubeuploader.models;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
-
-import org.chaosfisch.util.Mimetype;
 
 public class QueueBuilder
 {
@@ -35,7 +36,14 @@ public class QueueBuilder
 	public QueueBuilder(final File file, final String title, final String category, final Account account)
 	{
 		this.file = file;
-		mimetype = Mimetype.getMimetypeByExtension(file.getAbsolutePath());
+		String tmpType = null;
+		try
+		{
+			tmpType = Files.probeContentType(Paths.get(file.getAbsolutePath()));
+
+		} catch (final IOException ignored)
+		{}
+		mimetype = tmpType != null ? tmpType : "application/octet-stream";
 		this.title = title;
 		this.category = category;
 		this.account = account;

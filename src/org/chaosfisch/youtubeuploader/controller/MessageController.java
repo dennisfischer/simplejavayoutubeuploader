@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.youtubeuploader.models.Message;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.services.uploader.UploadProgress;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.javalite.activejdbc.Model;
 
@@ -39,30 +39,27 @@ public class MessageController
 		}
 	}
 
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_JOB_FINISHED)
-	public void onUploadJobFinished(final String topic, final Queue queue)
+	@EventTopicSubscriber(topic = Uploader.PROGRESS)
+	public void onUploadJobFinished(final String topic, final UploadProgress uploadProgress)
 	{
-		for (final Model message : Model.find("uploadid = ?", queue.getLongId()))
+		if (uploadProgress.done == false) { return; }
+		for (final Model message : Model.find("uploadid = ?", uploadProgress.queue.getLongId()))
 		{
-			publish(message.getString("message").replace("{video}", String.format("http://youtu.be/%s", queue.getString("videoid"))),
-					message.getBoolean("facebook"), message.getBoolean("twitter"), message.getBoolean("googleplus"), message.getBoolean("youtube")); // NON-NLS
-			message.delete();
-		}
-	}
-
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_FINISHED)
-	public void onUploadsFinished(final String topic, final Object o)
-	{
-		for (final Model message : Model.find("uploadid = null"))
-		{
-			publish((Message) message);
+			publish(message.getString("message").replace("{video}", String.format("http://youtu.be/%s", uploadProgress.queue.getString("videoid"))),
+					message.getBoolean("facebook"),
+					message.getBoolean("twitter"),
+					message.getBoolean("googleplus"),
+					message.getBoolean("youtube")); // NON-NLS
 			message.delete();
 		}
 	}
 
 	private void publish(final Message message)
 	{
-		publish(message.getString("message"), message.getBoolean("facebook"), message.getBoolean("twitter"), message.getBoolean("googleplus"),
+		publish(message.getString("message"),
+				message.getBoolean("facebook"),
+				message.getBoolean("twitter"),
+				message.getBoolean("googleplus"),
 				message.getBoolean("youtube"));
 	}
 

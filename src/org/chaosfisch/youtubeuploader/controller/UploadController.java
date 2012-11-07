@@ -161,7 +161,7 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		final QueueBuilder queueBuilder = new QueueBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().label,
+		final QueueBuilder queueBuilder = new QueueBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
 				(Account) accountList.getValue())
 				.setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())

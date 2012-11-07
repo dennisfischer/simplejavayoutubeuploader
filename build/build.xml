@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="simple-java-youtube-uploader-javafx" default="do-deploy" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
-	<buildnumber file="build.num"/>
-	<property resource="application_de.properties" >
+	<buildnumber file="build.num" />
+	<property resource="application_de.properties">
 		<classpath path="..\src\org\chaosfisch\youtubeuploader\resources\" />
 	</property>
 	<script language="javascript">
 	        var logger = project.getBuildListeners( ).firstElement( );
 	        logger.setMessageOutputLevel( 0 );
 	</script>
-	
+
 	<target name="init-fx-tasks">
 		<property name="javafx.tools.ant.jar" value="C:\Program Files\Java\jdk1.7.0_09\lib\ant-javafx.jar" />
 
@@ -252,7 +252,7 @@
 			<fileset dir="build/classes">
 			</fileset>
 			<fx:resources refid="appRes" />
-			
+
 			<manifest>
 				<attribute name="Implementation-Vendor" value="Dennis Fischer aka CHAOSFISCH" />
 				<attribute name="Implementation-Title" value="Simple Java Youtube Uploader" />
@@ -295,6 +295,7 @@
 		        logger.setMessageOutputLevel(2);
 		</script>
 		<echo level="info">Executing Application...</echo>
-		<java jar="dist/simple-java-youtube-uploader-javafx-${version}-${build.number}.jar" fork="true" />
+
+		<java failonerror="true" jar="dist/simple-java-youtube-uploader-javafx-${version}-${build.number}.jar" fork="true" />
 	</target>
 </project>

@@ -16,19 +16,17 @@ public class UploadProgress
 	private double			diffBytes;
 	private long			diffTime;
 	private final double	fileSize;
-	private final Queue		queue;
+	public final Queue		queue;
 	private long			time;
 	private double			totalBytesUploaded;
+	public boolean			failed;
+	public boolean			done;
+	public String			status;
 
-	public UploadProgress(final Queue queue, final double fileSize, final double totalBytesUploaded, final double diffBytes, final long time,
-			final long diffTime)
+	public UploadProgress(final Queue queue, final double fileSize)
 	{
 		this.queue = queue;
 		this.fileSize = fileSize;
-		this.totalBytesUploaded = totalBytesUploaded;
-		this.diffBytes = diffBytes;
-		this.time = time;
-		this.diffTime = diffTime;
 	}
 
 	public double getDiffBytes()
@@ -51,33 +49,25 @@ public class UploadProgress
 		return queue;
 	}
 
-	public long getTime()
-	{
-		return time;
-	}
-
 	public double getTotalBytesUploaded()
 	{
 		return totalBytesUploaded;
 	}
 
-	public void setDiffBytes(final double diffBytes)
+	public long getTime()
 	{
-		this.diffBytes = diffBytes;
+		return time;
 	}
 
-	public void setDiffTime(final long diffTime)
+	public void setBytes(final double addBytes)
+	{
+		diffBytes = addBytes - totalBytesUploaded;
+		totalBytesUploaded += diffBytes;
+	}
+
+	public void setTime(final long diffTime)
 	{
 		this.diffTime = diffTime;
-	}
-
-	public void setTime(final long time)
-	{
-		this.time = time;
-	}
-
-	public void setTotalBytesUploaded(final double totalBytesUploaded)
-	{
-		this.totalBytesUploaded = totalBytesUploaded;
+		time += diffTime;
 	}
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
@@ -74,10 +75,10 @@ public class MetadataServiceImpl implements MetadataService
 		videoEntry.accessControl.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(queue.getBoolean("mobile"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote",
 				PermissionStringConverter.convertBoolean(queue.getBoolean("commentvote"))));
-		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(queue
-				.getInteger("videoresponse"))));
+		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond",
+				PermissionStringConverter.convertInteger(queue.getInteger("videoresponse"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(queue.getInteger("comment"))));
-		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(queue.getInteger("visibility") == 1)));
+		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(queue.getInteger("visibility") == 0)));
 
 		if (queue.getInteger("comment") == 3)
 		{
@@ -131,8 +132,10 @@ public class MetadataServiceImpl implements MetadataService
 			AuthenticationException
 	{
 		// Upload atomData and fetch uploadUrl
-		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST)
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
+		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST).headers(ImmutableMap.of(	"Content-Type",
+																														"application/atom+xml; charset=UTF-8;",
+																														"Slug",
+																														fileToUpload.getAbsolutePath()))
 				.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
 				.buildHttpUriRequest();
 		// Sign the request
@@ -145,7 +148,7 @@ public class MetadataServiceImpl implements MetadataService
 			// Check the response code for any problematic codes.
 			if (response.getStatusLine().getStatusCode() == 400)
 			{
-				logger.warn("Invalid metadata information: {}", response.getStatusLine());
+				logger.warn("Invalid metadata information: {}; {}", response.getStatusLine(), EntityUtils.toString(response.getEntity()));
 				throw new MetadataException(String.format("Die gegebenen Videoinformationen sind ungültig! %s", response.getStatusLine()));
 			}
 			// Check if uploadurl is available

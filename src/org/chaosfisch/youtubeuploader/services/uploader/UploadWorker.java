@@ -44,6 +44,7 @@ import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.util.io.RequestUtilities;
+import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.util.io.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
@@ -80,8 +81,6 @@ public class UploadWorker extends Task<Void>
 	private int						numberOfRetries;
 	private STATUS					currentStatus		= STATUS.INITIALIZE;
 
-	private int						chunksize;
-	private int						speedLimit;
 	private long					start;
 	private double					totalBytesUploaded;
 	private double					bytesToUpload;
@@ -101,6 +100,9 @@ public class UploadWorker extends Task<Void>
 	@Inject private MetadataService	metadataService;
 	@Inject private Injector		injector;
 	@Inject private AuthTokenHelper	authTokenHelper;
+	@Inject private Throttle		throttle;
+
+	private UploadProgress			uploadProgress;
 
 	public UploadWorker()
 	{
@@ -109,87 +111,81 @@ public class UploadWorker extends Task<Void>
 
 	private void authenticate() throws AuthenticationException
 	{
-		// Create a new request signer with it's authorization object
+		// TODO Create a new request signer with it's authorization object
 		currentStatus = STATUS.METADATA;
 	}
 
 	private void browserAction()
 	{
-		if ((!queue.getBoolean("monetize")) && (!queue.getBoolean("claim")) && (queue.getInteger("license") == 0) && (queue.get("release") == null)
-				&& !queue.getBoolean("thumbnail")) { return; }
+		if ((!queue.getBoolean("monetize")) && (!queue.getBoolean("claim")) && (queue.get("release") == null) && !queue.getBoolean("thumbnail")) { return; }
 
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
 		for (final Model placeholder : Placeholder.findAll())
 		{
 
-			queue
-					.setString(
-							"webTitle",
-							queue.getString("webTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-									placeholder.getString("replacement")));
-			queue.setString(
-					"webDescription",
-					queue.getString("webDescription").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
+			queue.setString("webTitle",
+							queue.getString("webTitle").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
+			queue.setString("webDescription",
+							queue.getString("webDescription").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																			placeholder.getString("replacement")));
 			queue.setString("webID",
-					queue.getString("webID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue
-					.setString(
-							"webNotes",
-							queue.getString("webNotes").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-									placeholder.getString("replacement")));
+							queue.getString("webID").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																placeholder.getString("replacement")));
+			queue.setString("webNotes",
+							queue.getString("webNotes").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 
 			queue.setString("tvTMSID",
-					queue.getString("tvTMSID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("tvTMSID").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("tvISAN",
-					queue.getString("tvISAN").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("tvISAN").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("tvEIDR",
-					queue.getString("tvEIDR").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("tvEIDR").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("showTitle",
-					queue.getString("showTitle")
-							.replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue.setString(
-					"episodeTitle",
-					queue.getString("episodeTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
-			queue
-					.setString(
-							"seasonNb",
-							queue.getString("seasonNb").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-									placeholder.getString("replacement")));
+							queue.getString("showTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
+			queue.setString("episodeTitle",
+							queue.getString("episodeTitle").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
+			queue.setString("seasonNb",
+							queue.getString("seasonNb").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("episodeNb",
-					queue.getString("episodeNb")
-							.replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("episodeNb").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("tvID",
-					queue.getString("tvID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("tvID").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																placeholder.getString("replacement")));
 			queue.setString("tvNotes",
-					queue.getString("tvNotes").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("tvNotes").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 
-			queue.setString(
-					"movieTitle",
-					queue.getString("movieTitle").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
-			queue.setString(
-					"movieDescription",
-					queue.getString("movieDescription").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
-			queue.setString(
-					"movieTMSID",
-					queue.getString("movieTMSID").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
+			queue.setString("movieTitle",
+							queue.getString("movieTitle").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
+			queue.setString("movieDescription",
+							queue.getString("movieDescription").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																			placeholder.getString("replacement")));
+			queue.setString("movieTMSID",
+							queue.getString("movieTMSID").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
 			queue.setString("movieISAN",
-					queue.getString("movieISAN")
-							.replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("movieISAN").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("movieEIDR",
-					queue.getString("movieEIDR")
-							.replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
+							queue.getString("movieEIDR").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 			queue.setString("movieID",
-					queue.getString("movieID").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue.setString(
-					"movieNotes",
-					queue.getString("movieNotes").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
+							queue.getString("movieID").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
+			queue.setString("movieNotes",
+							queue.getString("movieNotes").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
 		}
 		extendedPlacerholders.register("{title}", queue.getString("title"));
 		extendedPlacerholders.register("{description}", queue.getString("description"));
@@ -234,7 +230,6 @@ public class UploadWorker extends Task<Void>
 				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
 				&& !(numberOfRetries > UploadWorker.MAX_RETRIES))
 		{
-			System.out.println("LOOP2");
 			try
 			{
 				switch (currentStatus)
@@ -284,7 +279,6 @@ public class UploadWorker extends Task<Void>
 				currentStatus = STATUS.RESUMEINFO;
 			}
 		}
-		onDone();
 		return null;
 	}
 
@@ -308,7 +302,6 @@ public class UploadWorker extends Task<Void>
 	@Override
 	protected void done()
 	{
-		// TODO Auto-generated method stub
 		super.done();
 		try
 		{
@@ -317,6 +310,33 @@ public class UploadWorker extends Task<Void>
 		{
 			logger.debug("ERROR", t);
 		}
+
+		queue.setBoolean("inprogress", false);
+		switch (currentStatus)
+		{
+			case DONE:
+				queue.setBoolean("archived", true);
+				queue.saveIt();
+				uploadProgress.done = true;
+				break;
+			case FAILED:
+				setFailedStatus("Upload failed!");
+				break;
+			case FAILED_FILE:
+				setFailedStatus("File not found!");
+				break;
+			case FAILED_META:
+				setFailedStatus("Corrupted Uploadinformation!");
+				break;
+			case ABORTED:
+				setFailedStatus("Beendet auf Userrequest");
+				break;
+			default:
+				setFailedStatus("Unknown-Error");
+				break;
+		}
+		EventBus.publish(Uploader.PROGRESS, uploadProgress);
+		Base.close();
 	}
 
 	private void enddirAction()
@@ -364,16 +384,17 @@ public class UploadWorker extends Task<Void>
 			if (!canResume())
 			{
 				currentStatus = STATUS.FAILED;
-				throw new UploadException(String.format("Giving up uploading '%'.", queue.getString("uploadurl")));
+				throw new UploadException(String.format("Giving up uploading '%s'.", queue.getString("uploadurl")));
 			}
 			resumeInfo = resumeFileUpload(queue.getString("uploadurl"));
 		} while (resumeInfo == null);
 		return resumeInfo;
 	}
 
-	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte,
-			final UploadProgress uploadProgress) throws IOException
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte)
+			throws IOException
 	{
+
 		// Write Chunk
 		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
 		long totalRead = 0;
@@ -387,15 +408,12 @@ public class UploadWorker extends Task<Void>
 			totalBytesUploaded += bytesRead;
 
 			// PropertyChangeEvent
-			final Calendar calendar = Calendar.getInstance();
-			final long diffTime = calendar.getTimeInMillis() - uploadProgress.getTime();
+			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
 			if ((diffTime > 1000) || (totalRead == ((endByte - startByte) + 1)))
 			{
-				uploadProgress.setDiffBytes(totalBytesUploaded - uploadProgress.getTotalBytesUploaded());
-				uploadProgress.setTotalBytesUploaded(totalBytesUploaded);
-				uploadProgress.setDiffTime(diffTime);
-				uploadProgress.setTime(uploadProgress.getTime() + diffTime);
-				EventBus.publish(Uploader.UPLOAD_PROGRESS, uploadProgress);
+				uploadProgress.setBytes(totalBytesUploaded);
+				uploadProgress.setTime(diffTime);
+				EventBus.publish(Uploader.PROGRESS, uploadProgress);
 			}
 		}
 	}
@@ -403,9 +421,9 @@ public class UploadWorker extends Task<Void>
 	private long generateEndBytes(final long start, final double bytesToUpload)
 	{
 		final long end;
-		if ((bytesToUpload - chunksize) > 0)
+		if ((bytesToUpload - throttle.chunkSize) > 0)
 		{
-			end = (start + chunksize) - 1;
+			end = (start + throttle.chunkSize) - 1;
 		} else
 		{
 			end = (start + (int) bytesToUpload) - 1;
@@ -418,7 +436,7 @@ public class UploadWorker extends Task<Void>
 		// Set the time uploaded started
 		queue.setDate("started", Calendar.getInstance().getTime());
 		// Push upload started event
-		EventBus.publish(Uploader.UPLOAD_STARTED, queue);
+		EventBus.publish(Uploader.STARTED, queue);
 
 		// Get File and Check if existing
 		fileToUpload = new File(queue.getString("file"));
@@ -459,7 +477,7 @@ public class UploadWorker extends Task<Void>
 		}
 	}
 
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_ABORT)
+	@EventTopicSubscriber(topic = Uploader.ABORT)
 	public void onAbortUpload(final String topic, final Queue abort)
 	{
 		if (abort.equals(queue))
@@ -468,59 +486,13 @@ public class UploadWorker extends Task<Void>
 		}
 	}
 
-	protected void onDone()
+	private void setFailedStatus(final String status)
 	{
-
-		queue.setBoolean("inprogress", false);
-		switch (currentStatus)
-		{
-			case DONE:
-				queue.setBoolean("archived", true);
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_PROGRESS, new UploadProgress(queue, fileSize, fileSize, 0, 0, 0));
-				EventBus.publish(Uploader.UPLOAD_JOB_FINISHED, queue);
-				break;
-			case FAILED:
-				queue.setBoolean("failed", true);
-				queue.set("started", null);
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Upload failed!"));
-				break;
-			case FAILED_FILE:
-				queue.setBoolean("failed", true);
-				queue.set("started", null);
-				queue.setString("status", "File not found!");
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "File not found!"));
-				break;
-			case FAILED_META:
-				queue.setBoolean("failed", true);
-				queue.set("started", null);
-				queue.setString("status", "Corrupted Uploadinformation!");
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Corrupted Uploadinformation!"));
-				break;
-			case ABORTED:
-				queue.setBoolean("failed", true);
-				queue.set("started", null);
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Beendet auf Userrequest"));
-				break;
-
-			default:
-				queue.setBoolean("failed", true);
-				queue.set("started", null);
-				queue.saveIt();
-				EventBus.publish(Uploader.UPLOAD_FAILED, new UploadFailed(queue, "Unknown-Error"));
-				break;
-		}
-		Base.close();
-	}
-
-	@EventTopicSubscriber(topic = Uploader.UPLOAD_LIMIT)
-	public void onSpeedLimit(final String topic, final Object o)
-	{
-		speedLimit = Integer.parseInt(o.toString());
+		queue.setBoolean("failed", true);
+		queue.set("started", null);
+		queue.saveIt();
+		uploadProgress.failed = true;
+		uploadProgress.status = status;
 	}
 
 	private String parseVideoId(final String atomData)
@@ -542,7 +514,7 @@ public class UploadWorker extends Task<Void>
 	private void postprocess()
 	{
 		playlistAction();
-		browserAction();
+		// browserAction();
 		enddirAction();
 		currentStatus = STATUS.DONE;
 	}
@@ -559,16 +531,14 @@ public class UploadWorker extends Task<Void>
 		for (final Model placeholder : Placeholder.findAll())
 		{
 			queue.setString("title",
-					queue.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")), placeholder.getString("replacement")));
-			queue.setString(
-					"description",
-					queue.getString("description").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-							placeholder.getString("replacement")));
-			queue
-					.setString(
-							"keywords",
-							queue.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-									placeholder.getString("replacement")));
+							queue.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																placeholder.getString("replacement")));
+			queue.setString("description",
+							queue.getString("description").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
+			queue.setString("keywords",
+							queue.getString("keywords").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																	placeholder.getString("replacement")));
 		}
 		queue.setString("keywords", TagParser.parseAll(queue.getString("keywords")));
 		queue.setString("keywords", queue.getString("keywords").replaceAll("\"", ""));
@@ -578,8 +548,7 @@ public class UploadWorker extends Task<Void>
 	{
 		try
 		{
-			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT)
-					.headers(ImmutableMap.of("Content-Range", "bytes */*"))
+			final HttpUriRequest request = new Request.Builder(uploadUrl, Method.PUT).headers(ImmutableMap.of("Content-Range", "bytes */*"))
 					.buildHttpUriRequest();
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
 			final HttpResponse response = RequestHelper.execute(request);
@@ -652,11 +621,9 @@ public class UploadWorker extends Task<Void>
 		}
 	}
 
-	public void run(final Queue queue, final int speedLimit, final int chunksize)
+	public void run(final Queue queue)
 	{
 		this.queue = queue;
-		this.speedLimit = speedLimit;
-		this.chunksize = chunksize;
 	}
 
 	private void upload() throws UploadException
@@ -669,7 +636,12 @@ public class UploadWorker extends Task<Void>
 
 		// Log operation
 		logger.info(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
-		final UploadProgress uploadProgress = new UploadProgress(queue, fileSize, totalBytesUploaded, 0, Calendar.getInstance().getTimeInMillis(), 0);
+
+		if (uploadProgress == null)
+		{
+			uploadProgress = new UploadProgress(queue, fileSize);
+			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
+		}
 
 		// Calculating the chunk size
 		final int chunk = (int) ((end - start) + 1);
@@ -677,9 +649,14 @@ public class UploadWorker extends Task<Void>
 		try
 		{
 			// Building PUT Request for chunk data
-			final HttpURLConnection request = new Request.Builder(queue.getString("uploadurl"), Method.POST).headers(
-					ImmutableMap.of("Content-Type", queue.getString("mimetype"), "Content-Range",
-							String.format("bytes %d-%d/%d", start, end, fileToUpload.length()))).buildHttpUrlConnection();
+			final HttpURLConnection request = new Request.Builder(queue.getString("uploadurl"), Method.POST).headers(ImmutableMap.of(	"Content-Type",
+																																		queue.getString("mimetype"),
+																																		"Content-Range",
+																																		String.format(	"bytes %d-%d/%d",
+																																						start,
+																																						end,
+																																						fileToUpload.length())))
+					.buildHttpUrlConnection();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
 
@@ -689,14 +666,13 @@ public class UploadWorker extends Task<Void>
 			request.setDoOutput(true);
 			request.setFixedLengthStreamingMode(chunk);
 			request.connect();
-			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(new ThrottledOutputStream(request.getOutputStream(),
-					speedLimit));
-
+			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(
+					new ThrottledOutputStream(request.getOutputStream(), throttle));
 			try
 			{
 				final long skipped = bufferedInputStream.skip(start);
 				if (start != skipped) { throw new UploadException("Fehler beim Lesen der Datei!"); }
-				flowChunk(bufferedInputStream, throttledOutputStream, start, end, uploadProgress);
+				flowChunk(bufferedInputStream, throttledOutputStream, start, end);
 
 				switch (request.getResponseCode())
 				{
@@ -714,7 +690,7 @@ public class UploadWorker extends Task<Void>
 					default:
 						throw new UploadException(String.format("Unexpected return code while uploading: %s", request.getResponseMessage()));
 				}
-				bytesToUpload -= chunksize;
+				bytesToUpload -= throttle.chunkSize;
 				start = end + 1;
 			} finally
 			{
@@ -732,7 +708,7 @@ public class UploadWorker extends Task<Void>
 			throw new UploadException("Datei konnte nicht gefunden werden!", ex);
 		} catch (final IOException ex)
 		{
-			throw new UploadException(String.format("Fehler beim Schreiben der Datei (0x00001) %s, %s, %d"), ex);
+			throw new UploadException("Fehler beim Schreiben der Datei (0x00001)", ex);
 		} catch (final AuthenticationException e)
 		{
 			// TODO Auto-generated catch block
