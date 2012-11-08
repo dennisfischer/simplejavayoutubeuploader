@@ -149,6 +149,11 @@ public class UploadController implements Initializable
 
 	private final ObservableList<Model>	presetItems		= FXCollections.observableArrayList();
 
+	public void addPlaceholder(final String placeholder, final String replacement)
+	{
+		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
+	}
+
 	// Handler for Button[fx:id="addUpload"] onAction
 	public void addUpload(final ActionEvent event)
 	{
@@ -161,9 +166,11 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		final QueueBuilder queueBuilder = new QueueBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
-				(Account) accountList.getValue())
-				.setComment(uploadComment.getSelectionModel().getSelectedIndex())
+		final QueueBuilder queueBuilder = new QueueBuilder(	uploadFile.getValue(),
+															uploadTitle.getText().trim(),
+															uploadCategory.getValue().term,
+															(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel()
+				.getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
 				.setDescription(uploadDescription.getText().trim())
 				.setEmbed(uploadEmbed.isSelected())
@@ -199,43 +206,6 @@ public class UploadController implements Initializable
 		}
 
 		queueBuilder.build();
-	}
-
-	// Handler for Button[fx:id="resetUpload"] onAction
-	public void resetUpload(final ActionEvent event)
-	{
-		// handle the event here
-	}
-
-	// Handler for Button[id="savePreset"] onAction
-	public void savePreset(final ActionEvent event)
-	{
-		// handle the event here
-	}
-
-	// validate each of the three input fields
-	private String validate()
-	{
-		if (uploadFile.getItems().isEmpty())
-		{
-			return I18nHelper.message("validation.filelist");
-		} else if ((uploadTitle.getText().getBytes().length < 5) || (uploadTitle.getText().getBytes().length > 100))
-		{
-			return I18nHelper.message("validation.title");
-		} else if (uploadCategory.getValue() == null)
-		{
-			return I18nHelper.message("validation.category");
-		} else if (uploadDescription.getText().getBytes().length > 5000)
-		{
-			return I18nHelper.message("validation.description");
-		} else if (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<"))
-		{
-			return I18nHelper.message("validation.description.characters");
-		} else if ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText()))
-		{
-			return I18nHelper.message("validation.tags");
-		} else if (accountList.getValue() == null) { return I18nHelper.message("validation.account"); }
-		return I18nHelper.message("validation.info.added");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -278,17 +248,20 @@ public class UploadController implements Initializable
 
 		// Initial fill of lists
 		uploadVisibility.setItems(FXCollections.observableArrayList(I18nHelper.message("visibilitylist.public"),
-				I18nHelper.message("visibilitylist.unlisted"), I18nHelper.message("visibilitylist.private"),
-				I18nHelper.message("visibilitylist.scheduled")));
+																	I18nHelper.message("visibilitylist.unlisted"),
+																	I18nHelper.message("visibilitylist.private"),
+																	I18nHelper.message("visibilitylist.scheduled")));
 		uploadVisibility.getSelectionModel().selectFirst();
-		uploadComment
-				.setItems(FXCollections.observableArrayList(I18nHelper.message("commentlist.allowed"), I18nHelper.message("commentlist.moderated"),
-						I18nHelper.message("commentlist.denied"), I18nHelper.message("commentlist.friendsonly")));
+		uploadComment.setItems(FXCollections.observableArrayList(	I18nHelper.message("commentlist.allowed"),
+																	I18nHelper.message("commentlist.moderated"),
+																	I18nHelper.message("commentlist.denied"),
+																	I18nHelper.message("commentlist.friendsonly")));
 		uploadComment.getSelectionModel().selectFirst();
 		uploadLicense.setItems(FXCollections.observableArrayList(I18nHelper.message("licenselist.youtube"), I18nHelper.message("licenselist.cc")));
 		uploadLicense.getSelectionModel().selectFirst();
-		uploadVideoresponse.setItems(FXCollections.observableArrayList(I18nHelper.message("videoresponselist.allowed"),
-				I18nHelper.message("videoresponselist.moderated"), I18nHelper.message("videoresponselist.denied")));
+		uploadVideoresponse.setItems(FXCollections.observableArrayList(	I18nHelper.message("videoresponselist.allowed"),
+																		I18nHelper.message("videoresponselist.moderated"),
+																		I18nHelper.message("videoresponselist.denied")));
 		uploadVideoresponse.getSelectionModel().selectFirst();
 
 		uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
@@ -334,6 +307,74 @@ public class UploadController implements Initializable
 			}
 		});
 		presetList.getSelectionModel().selectFirst();
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	public void onAdded(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if ((model instanceof Account) && model.get("type").equals(Account.Type.YOUTUBE.name()))
+				{
+					accountItems.add(model);
+					if (accountList.getValue() == null)
+					{
+						accountList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Preset)
+				{
+					presetItems.add(model);
+					if (presetList.getValue() == null)
+					{
+						presetList.getSelectionModel().selectFirst();
+					}
+				} else if ((model instanceof Playlist) && model.parent(Account.class).equals(accountList.getValue()))
+				{
+					playlistItems.add(model);
+					if (playlistList.getValue() == null)
+					{
+						playlistList.getSelectionModel().selectFirst();
+					}
+				}
+			}
+		});
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED)
+	public void onRemoved(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (model instanceof Account)
+				{
+					accountItems.remove(model);
+					if (accountList.getSelectionModel().isEmpty())
+					{
+						accountList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Preset)
+				{
+					presetItems.remove(model);
+					if (presetList.getSelectionModel().isEmpty())
+					{
+						presetList.getSelectionModel().selectFirst();
+					}
+				} else if (model instanceof Playlist)
+				{
+					playlistItems.remove(model);
+					if (playlistList.getSelectionModel().isEmpty())
+					{
+						playlistList.getSelectionModel().selectFirst();
+					}
+				}
+			}
+		});
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
@@ -384,76 +425,40 @@ public class UploadController implements Initializable
 		}
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED)
-	public void onRemoved(final String topic, final Model model)
+	// Handler for Button[fx:id="resetUpload"] onAction
+	public void resetUpload(final ActionEvent event)
 	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if (model instanceof Account)
-				{
-					accountItems.remove(model);
-					if (accountList.getSelectionModel().isEmpty())
-					{
-						accountList.getSelectionModel().selectFirst();
-					}
-				} else if (model instanceof Preset)
-				{
-					presetItems.remove(model);
-					if (presetList.getSelectionModel().isEmpty())
-					{
-						presetList.getSelectionModel().selectFirst();
-					}
-				} else if (model instanceof Playlist)
-				{
-					playlistItems.remove(model);
-					if (playlistList.getSelectionModel().isEmpty())
-					{
-						playlistList.getSelectionModel().selectFirst();
-					}
-				}
-			}
-		});
+		// handle the event here
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
-	public void onAdded(final String topic, final Model model)
+	// Handler for Button[id="savePreset"] onAction
+	public void savePreset(final ActionEvent event)
 	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if ((model instanceof Account) && model.get("type").equals(Account.Type.YOUTUBE.name()))
-				{
-					accountItems.add(model);
-					if (accountList.getValue() == null)
-					{
-						accountList.getSelectionModel().selectFirst();
-					}
-				} else if (model instanceof Preset)
-				{
-					presetItems.add(model);
-					if (presetList.getValue() == null)
-					{
-						presetList.getSelectionModel().selectFirst();
-					}
-				} else if ((model instanceof Playlist) && model.parent(Account.class).equals(accountList.getValue()))
-				{
-					playlistItems.add(model);
-					if (playlistList.getValue() == null)
-					{
-						playlistList.getSelectionModel().selectFirst();
-					}
-				}
-			}
-		});
+		// handle the event here
 	}
 
-	public void addPlaceholder(final String placeholder, final String replacement)
+	// validate each of the three input fields
+	private String validate()
 	{
-		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
+		if (uploadFile.getItems().isEmpty())
+		{
+			return I18nHelper.message("validation.filelist");
+		} else if ((uploadTitle.getText().getBytes().length < 5) || (uploadTitle.getText().getBytes().length > 100))
+		{
+			return I18nHelper.message("validation.title");
+		} else if (uploadCategory.getValue() == null)
+		{
+			return I18nHelper.message("validation.category");
+		} else if (uploadDescription.getText().getBytes().length > 5000)
+		{
+			return I18nHelper.message("validation.description");
+		} else if (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<"))
+		{
+			return I18nHelper.message("validation.description.characters");
+		} else if ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText()))
+		{
+			return I18nHelper.message("validation.tags");
+		} else if (accountList.getValue() == null) { return I18nHelper.message("validation.account"); }
+		return I18nHelper.message("validation.info.added");
 	}
 }

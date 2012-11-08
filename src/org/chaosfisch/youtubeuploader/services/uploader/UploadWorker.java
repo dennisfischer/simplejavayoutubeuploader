@@ -228,7 +228,7 @@ public class UploadWorker extends Task<Void>
 		Base.open(injector.getInstance(DataSource.class));
 		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)
 				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
-				&& !(numberOfRetries > UploadWorker.MAX_RETRIES))
+				&& !(numberOfRetries > UploadWorker.MAX_RETRIES) && !isCancelled())
 		{
 			try
 			{
@@ -399,7 +399,7 @@ public class UploadWorker extends Task<Void>
 		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
 		long totalRead = 0;
 
-		while ((currentStatus == STATUS.UPLOAD) && (totalRead != ((endByte - startByte) + 1)))
+		while (!isCancelled() && (currentStatus == STATUS.UPLOAD) && (totalRead != ((endByte - startByte) + 1)))
 		{
 			// Upload bytes in buffer
 			final int bytesRead = RequestUtilities.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
@@ -486,15 +486,6 @@ public class UploadWorker extends Task<Void>
 		}
 	}
 
-	private void setFailedStatus(final String status)
-	{
-		queue.setBoolean("failed", true);
-		queue.set("started", null);
-		queue.saveIt();
-		uploadProgress.failed = true;
-		uploadProgress.status = status;
-	}
-
 	private String parseVideoId(final String atomData)
 	{
 		logger.info(atomData);
@@ -521,8 +512,9 @@ public class UploadWorker extends Task<Void>
 
 	private void replacePlaceholders()
 	{
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(queue.getString("file"), queue.parent(Playlist.class),
-				queue.getInteger("number"));
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(	queue.getString("file"),
+																					queue.parent(Playlist.class),
+																					queue.getInteger("number"));
 		queue.setString("title", extendedPlaceholders.replace(queue.getString("title")));
 		queue.setString("description", extendedPlaceholders.replace(queue.getString("description")));
 		queue.setString("keywords", extendedPlaceholders.replace(queue.getString("keywords")));
@@ -626,6 +618,15 @@ public class UploadWorker extends Task<Void>
 		this.queue = queue;
 	}
 
+	private void setFailedStatus(final String status)
+	{
+		queue.setBoolean("failed", true);
+		queue.set("started", null);
+		queue.saveIt();
+		uploadProgress.failed = true;
+		uploadProgress.status = status;
+	}
+
 	private void upload() throws UploadException
 	{
 		// GET END SIZE
@@ -666,8 +667,7 @@ public class UploadWorker extends Task<Void>
 			request.setDoOutput(true);
 			request.setFixedLengthStreamingMode(chunk);
 			request.connect();
-			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(
-					new ThrottledOutputStream(request.getOutputStream(), throttle));
+			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(new ThrottledOutputStream(request.getOutputStream(), throttle));
 			try
 			{
 				final long skipped = bufferedInputStream.skip(start);

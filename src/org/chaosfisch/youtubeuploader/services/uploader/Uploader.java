@@ -252,7 +252,7 @@ public class Uploader
 			@Override
 			protected Void call() throws Exception
 			{
-				while (startTimeCheckerFlag && !isCancelled())
+				while (!isCancelled() && startTimeCheckerFlag)
 				{
 
 					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)

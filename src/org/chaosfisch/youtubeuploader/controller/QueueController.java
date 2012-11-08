@@ -10,6 +10,10 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,6 +37,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import name.antonsmirnov.javafx.dialog.Dialog;
@@ -172,6 +178,33 @@ public class QueueController implements Initializable
 
 							final Label label = new Label("");
 							label.setId("queue-text-" + queue.getLongId());
+							if (queue.getBoolean("archived"))
+							{
+								label.setText("http://youtu.be/" + queue.getString("videoid"));
+								label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+									@Override
+									public void handle(final MouseEvent mouseEvent)
+									{
+
+										if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && (mouseEvent.getClickCount() == 2)
+												&& Desktop.isDesktopSupported())
+										{
+											try
+											{
+												Desktop.getDesktop().browse(new URI("http://youtu.be/" + queue.getString("videoid")));
+											} catch (final URISyntaxException | IOException ignored)
+											{}
+										}
+
+									}
+								});
+								progressIndicator.setProgress(100);
+							} else if (queue.getBoolean("failed"))
+							{
+								label.setText("Fehlgeschlagen");
+								progressIndicator.setProgress(0);
+							}
 							hbox.getChildren().addAll(progressIndicator, label);
 							setGraphic(hbox);
 							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
@@ -191,7 +224,63 @@ public class QueueController implements Initializable
 
 		stopQueue.setDisable(true);
 
+		queueTableview.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
 		AnnotationProcessor.process(this);
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	public void onAdded(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (model instanceof Queue)
+				{
+					queueTableview.getItems().add(model);
+				}
+			}
+		});
+	}
+
+	@EventTopicSubscriber(topic = Uploader.PROGRESS)
+	public void onProgress(final String topic, final UploadProgress uploadProgress)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup("#queue-"
+						+ uploadProgress.getQueue().getLongId());
+				progressIndicator.setProgress(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize());
+
+				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
+				label.setText(String.format("%d MB/%d MB %dkbps",
+											(int) (uploadProgress.getTotalBytesUploaded() / 1048576),
+											(int) (uploadProgress.getFileSize() / 1048576),
+											(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
+
+			}
+		});
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_PRE_REMOVED)
+	public void onRemoved(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (model instanceof Queue)
+				{
+					queueTableview.getItems().remove(model);
+				}
+			}
+		});
 	}
 
 	// Handler for Button[fx:id="startQueue"] onAction
@@ -233,59 +322,5 @@ public class QueueController implements Initializable
 	{
 		startQueue.setDisable(!startQueue.isDisabled());
 		stopQueue.setDisable(!stopQueue.isDisabled());
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
-	public void onAdded(final String topic, final Model model)
-	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if (model instanceof Queue)
-				{
-					queueTableview.getItems().add(model);
-				}
-			}
-		});
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_PRE_REMOVED)
-	public void onRemoved(final String topic, final Model model)
-	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if (model instanceof Queue)
-				{
-					queueTableview.getItems().remove(model);
-				}
-			}
-		});
-	}
-
-	@EventTopicSubscriber(topic = Uploader.PROGRESS)
-	public void onProgress(final String topic, final UploadProgress uploadProgress)
-	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup("#queue-"
-						+ uploadProgress.getQueue().getLongId());
-				progressIndicator.setProgress(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize());
-
-				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
-				label.setText(String.format("%d MB/%d MB %dkbps",
-											(int) (uploadProgress.getTotalBytesUploaded() / 1048576),
-											(int) (uploadProgress.getFileSize() / 1048576),
-											(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
-
-			}
-		});
 	}
 }
