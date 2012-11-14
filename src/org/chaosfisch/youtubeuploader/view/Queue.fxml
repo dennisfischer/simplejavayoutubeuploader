@@ -35,6 +35,7 @@
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.id" fx:id="columnId" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.title" fx:id="columnTitle" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.category" fx:id="columnCategory" />
+            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.starttime" fx:id="columnStarttime" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.account" fx:id="columnAccount" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.progress" fx:id="columnProgress" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.actions" fx:id="columnActions" />

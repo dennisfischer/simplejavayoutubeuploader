@@ -12,6 +12,7 @@ package org.chaosfisch.youtubeuploader.controller;
 import java.io.File;
 import java.net.URL;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -26,14 +27,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import jfxtras.labs.scene.control.CalendarTextField;
+import jfxtras.labs.scene.control.ListSpinner;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -54,6 +59,9 @@ import com.google.inject.Inject;
 
 public class UploadController implements Initializable
 {
+	@FXML// fx:id="extendedSettingsGrid"
+	private GridPane					extendedSettingsGrid;
+
 	@FXML// fx:id="openDefaultdir"
 	private Button						openDefaultdir;
 
@@ -135,6 +143,14 @@ public class UploadController implements Initializable
 	@FXML// fx:id="uploadTitle"
 	private TextField					uploadTitle;
 
+	private final CalendarTextField		starttime		= new CalendarTextField().withValue(Calendar.getInstance())
+																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
+																.withShowTime(Boolean.TRUE);
+	private final CalendarTextField		releasetime		= new CalendarTextField().withValue(Calendar.getInstance())
+																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
+																.withShowTime(Boolean.TRUE);
+	private final ListSpinner<Integer>	number			= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
+
 	@FXML// fx:id="validationText"
 	private Label						validationText;
 
@@ -166,11 +182,8 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		final QueueBuilder queueBuilder = new QueueBuilder(	uploadFile.getValue(),
-															uploadTitle.getText().trim(),
-															uploadCategory.getValue().term,
-															(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel()
-				.getSelectedIndex())
+		final QueueBuilder queueBuilder = new QueueBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
+				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
 				.setDescription(uploadDescription.getText().trim())
 				.setEmbed(uploadEmbed.isSelected())
@@ -187,18 +200,15 @@ public class UploadController implements Initializable
 		{
 			queueBuilder.setPlaylist((Playlist) playlistList.getValue());
 		}
-		final Date starttime = new Date(0);
-		final Date releasetime = new Date(0);
 
-		if (starttime.getTime() > System.currentTimeMillis())
+		if (starttime.getValue().getTimeInMillis() > System.currentTimeMillis())
 		{
-			queueBuilder.setStarted(starttime);
+			queueBuilder.setStarted(new Date(starttime.getValue().getTimeInMillis()));
 		}
 
-		if (releasetime.getTime() > System.currentTimeMillis())
+		if (releasetime.getValue().getTimeInMillis() > System.currentTimeMillis())
 		{
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(releasetime);
+			final Calendar calendar = releasetime.getValue();
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 			final int mod = unroundedMinutes % 30;
 			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
@@ -241,10 +251,16 @@ public class UploadController implements Initializable
 		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert validationText != null : "fx:id=\"validationText\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
+
 		// initialize your logic here: all @FXML variables will have been
 		// injected
 
 		AnnotationProcessor.process(this);
+
+		extendedSettingsGrid.add(number, 1, 1, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(starttime, 1, 11, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(releasetime, 1, 12, GridPane.REMAINING, 1);
 
 		// Initial fill of lists
 		uploadVisibility.setItems(FXCollections.observableArrayList(I18nHelper.message("visibilitylist.public"),

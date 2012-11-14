@@ -34,12 +34,13 @@
 		<path location="${user.home}\.m2\repository\commons-logging\commons-logging\1.1.1\commons-logging-1.1.1.jar" />
 		<path location="${user.home}\.m2\repository\ch\qos\logback\logback-classic\1.0.7\logback-classic-1.0.7.jar" />
 		<path location="${user.home}\.m2\repository\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
-		<path location="${user.home}\.m2\repository\org\jfxtras\jfxtras-labs\2.2-r2\jfxtras-labs-2.2-r2.jar" />
+		<path location="lib\jfxtras-labs-2.2-r5-20121109.205502-2.jar" />
 		<path location="${user.home}\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar" />
 		<path location="C:\Program Files\Java\jre7\lib\jfxrt.jar" />
 		<path location="${user.home}/.m2/repository/org/javalite/activejdbc-instrumentation/1.4.5/activejdbc-instrumentation-1.4.5.jar" />
 		<path location="${user.home}/.m2/repository/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA.jar" />
 		<path location="${user.home}/.m2/repository/org/javalite/activejdbc/1.4.5/activejdbc-1.4.5.jar" />
+		<path location="${user.home}/.m2/repository/org\jfxtras\jfxtras-labs\2.2-r4\jfxtras-labs-2.2-r4.jar" />
 	</path>
 
 	<target name="init">
@@ -55,7 +56,7 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac includeantruntime="false" source="1.7" target="1.7" encoding="UTF-8" srcdir="${src}" destdir="${build}" optimize="true" classpathref="classpath" />
+		<javac debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" encoding="UTF-8" srcdir="${src}" destdir="${build}" classpathref="classpath" />
 
 		<copy todir="${build}">
 			<fileset dir="src">

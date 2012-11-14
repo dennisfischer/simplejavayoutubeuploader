@@ -5,10 +5,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyLongWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,7 +17,6 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -27,6 +24,7 @@ import javafx.util.Callback;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.util.ActiveCellValueFactory;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.javalite.activejdbc.Model;
@@ -49,7 +47,7 @@ public class AccountController implements Initializable
 	@FXML// fx:id="columnAccounttype"
 	private TableColumn<Account, String>		columnAccounttype;
 
-	@FXML private TableColumn<Account, Number>	columnActions;
+	@FXML private TableColumn<Account, Account>	columnActions;
 
 	@FXML// fx:id="addAccount"
 	private Button								addAccount;
@@ -93,28 +91,9 @@ public class AccountController implements Initializable
 
 		// initialize your logic here: all @FXML variables will have been
 
-		accountType.setItems(FXCollections.observableArrayList(Account.Type.values()));
-		accountType.getSelectionModel().selectFirst();
-
-		accountTable.setItems(FXCollections.observableArrayList(Account.findAll()));
-		columnAccount.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(final CellDataFeatures<Account, String> param)
-			{
-				return new ReadOnlyStringWrapper(param.getValue().getString("name"));
-
-			}
-		});
-
-		columnAccounttype.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(final CellDataFeatures<Account, String> param)
-			{
-				return new ReadOnlyStringWrapper(param.getValue().getString("type"));
-			}
-		});
+		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Account, String>("name"));
+		columnAccounttype.setCellValueFactory(new ActiveCellValueFactory<Account, String>("type"));
+		columnActions.setCellValueFactory(new ActiveCellValueFactory<Account, Account>("this"));
 
 		columnAccounttype.setCellFactory(new Callback<TableColumn<Account, String>, TableCell<Account, String>>() {
 
@@ -143,24 +122,15 @@ public class AccountController implements Initializable
 			}
 		});
 
-		columnActions.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Account, Number>, ObservableValue<Number>>() {
+		columnActions.setCellFactory(new Callback<TableColumn<Account, Account>, TableCell<Account, Account>>() {
 
 			@Override
-			public ObservableValue<Number> call(final CellDataFeatures<Account, Number> param)
+			public TableCell<Account, Account> call(final TableColumn<Account, Account> param)
 			{
-				return new ReadOnlyLongWrapper(param.getValue().getLongId());
-
-			}
-		});
-		columnActions.setCellFactory(new Callback<TableColumn<Account, Number>, TableCell<Account, Number>>() {
-
-			@Override
-			public TableCell<Account, Number> call(final TableColumn<Account, Number> param)
-			{
-				final TableCell<Account, Number> cell = new TableCell<Account, Number>() {
+				final TableCell<Account, Account> cell = new TableCell<Account, Account>() {
 
 					@Override
-					public void updateItem(final Number item, final boolean empty)
+					public void updateItem(final Account item, final boolean empty)
 					{
 						super.updateItem(item, empty);
 						if (empty)
@@ -177,7 +147,6 @@ public class AccountController implements Initializable
 								public void handle(final ActionEvent event)
 								{
 									param.getTableView().getSelectionModel().select(getIndex());
-									final Account item = (Account) accountTable.getSelectionModel().getSelectedItem();
 									if (item != null)
 									{
 										item.delete();
@@ -194,6 +163,14 @@ public class AccountController implements Initializable
 			}
 
 		});
+
+		accountType.setItems(FXCollections.observableArrayList(Account.Type.values()));
+		accountType.getSelectionModel().selectFirst();
+
+		final ObservableList<Model> list = FXCollections.observableArrayList(Account.findAll());
+		accountTable.setItems(list);
+
+		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 		AnnotationProcessor.process(this);
 	}

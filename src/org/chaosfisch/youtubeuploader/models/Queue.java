@@ -16,11 +16,12 @@ import org.javalite.activejdbc.annotations.Table;
 
 @Table("QUEUE")
 public class Queue extends Model implements ModelEvents
-{/*
- * (non-Javadoc)
- * 
- * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
- */
+{
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+	 */
 	@Override
 	protected void beforeSave()
 	{

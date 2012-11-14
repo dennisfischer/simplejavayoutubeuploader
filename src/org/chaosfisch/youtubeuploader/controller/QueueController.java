@@ -15,13 +15,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyLongWrapper;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -35,7 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +42,7 @@ import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
+import org.chaosfisch.util.ActiveCellValueFactory;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
@@ -59,36 +57,39 @@ public class QueueController implements Initializable
 {
 
 	@FXML// fx:id="actionOnFinish"
-	private ChoiceBox<String>			actionOnFinish;
+	private ChoiceBox<String>				actionOnFinish;
 
 	@FXML// fx:id="columnAccount"
-	private TableColumn<Queue, String>	columnAccount;
+	private TableColumn<Queue, String>		columnAccount;
 
 	@FXML// fx:id="columnActions"
-	private TableColumn<Queue, ?>		columnActions;
+	private TableColumn<Queue, Queue>		columnActions;
 
 	@FXML// fx:id="columnCategory"
-	private TableColumn<Queue, String>	columnCategory;
+	private TableColumn<Queue, String>		columnCategory;
 
 	@FXML// fx:id="columnId"
-	private TableColumn<Queue, Number>	columnId;
+	private TableColumn<Queue, Number>		columnId;
 
 	@FXML// fx:id="columnProgress"
-	private TableColumn<Queue, Object>	columnProgress;
+	private TableColumn<Queue, Queue>		columnProgress;
 
 	@FXML// fx:id="columnTitle"
-	private TableColumn<Queue, String>	columnTitle;
+	private TableColumn<Queue, String>		columnTitle;
+
+	@FXML// fx:id="columnStarttime"
+	private TableColumn<Queue, Timestamp>	columnStarttime;
 
 	@FXML// fx:id="queueTableview"
-	private TableView<Model>			queueTableview;
+	private TableView<Model>				queueTableview;
 
 	@FXML// fx:id="startQueue"
-	private Button						startQueue;
+	private Button							startQueue;
 
 	@FXML// fx:id="stopQueue"
-	private Button						stopQueue;
+	private Button							stopQueue;
 
-	@Inject Uploader					uploader;
+	@Inject Uploader						uploader;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -104,73 +105,60 @@ public class QueueController implements Initializable
 		assert queueTableview != null : "fx:id=\"queueTableview\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert startQueue != null : "fx:id=\"startQueue\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert stopQueue != null : "fx:id=\"stopQueue\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert columnStarttime != null : "fx:id=\"columnStarttime\" was not injected: check your FXML file 'Queue.fxml'.";
 
 		// initialize your logic here: all @FXML variables will have been
 		// injected
 
-		columnId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Queue, Number>, ObservableValue<Number>>() {
+		columnId.setCellValueFactory(new ActiveCellValueFactory<Queue, Number>("id"));
+		columnTitle.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("title"));
+		columnCategory.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("category"));
+		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("name", Account.class));
+		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
+		columnActions.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
+		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Queue, Timestamp>("started"));
+		columnStarttime.setCellFactory(new Callback<TableColumn<Queue, Timestamp>, TableCell<Queue, Timestamp>>() {
 
 			@Override
-			public ObservableValue<Number> call(final CellDataFeatures<Queue, Number> param)
+			public TableCell<Queue, Timestamp> call(final TableColumn<Queue, Timestamp> param)
 			{
-				return new ReadOnlyLongWrapper(param.getValue().getLongId());
-			}
-		});
-
-		columnTitle.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Queue, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(final CellDataFeatures<Queue, String> param)
-			{
-
-				return new ReadOnlyStringWrapper(param.getValue().getString("title"));
-			}
-		});
-
-		columnCategory.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Queue, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(final CellDataFeatures<Queue, String> param)
-			{
-				return new ReadOnlyStringWrapper(param.getValue().getString("category"));
-			}
-		});
-
-		columnAccount.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Queue, String>, ObservableValue<String>>() {
-
-			@Override
-			public ObservableValue<String> call(final CellDataFeatures<Queue, String> param)
-			{
-				return new ReadOnlyStringWrapper(param.getValue().parent(Account.class).getString("name"));
-			}
-		});
-
-		columnProgress.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Queue, Object>, ObservableValue<Object>>() {
-
-			@Override
-			public ObservableValue<Object> call(final CellDataFeatures<Queue, Object> param)
-			{
-				return new ReadOnlyObjectWrapper<Object>(param.getValue());
-			}
-		});
-		columnProgress.setCellFactory(new Callback<TableColumn<Queue, Object>, TableCell<Queue, Object>>() {
-
-			@Override
-			public TableCell<Queue, Object> call(final TableColumn<Queue, Object> param)
-			{
-				final TableCell<Queue, Object> cell = new TableCell<Queue, Object>() {
+				final TableCell<Queue, Timestamp> cell = new TableCell<Queue, Timestamp>() {
 
 					@Override
-					public void updateItem(final Object item, final boolean empty)
+					public void updateItem(final Timestamp date, final boolean empty)
 					{
-						super.updateItem(item, empty);
+						super.updateItem(date, empty);
 						if (empty)
 						{
 							setGraphic(null);
 							setContentDisplay(null);
 						} else
 						{
-							final Queue queue = (Queue) item;
+							setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format(date.getTime()));
+						}
+					}
+				};
+				return cell;
+			}
+		});
+
+		columnProgress.setCellFactory(new Callback<TableColumn<Queue, Queue>, TableCell<Queue, Queue>>() {
+
+			@Override
+			public TableCell<Queue, Queue> call(final TableColumn<Queue, Queue> param)
+			{
+				final TableCell<Queue, Queue> cell = new TableCell<Queue, Queue>() {
+
+					@Override
+					public void updateItem(final Queue queue, final boolean empty)
+					{
+						super.updateItem(queue, empty);
+						if (empty)
+						{
+							setGraphic(null);
+							setContentDisplay(null);
+						} else
+						{
 							final HBox hbox = new HBox(10);
 
 							final ProgressIndicator progressIndicator = new ProgressIndicator(queue.getBoolean("archived") == true ? 100 : 0);
@@ -213,6 +201,48 @@ public class QueueController implements Initializable
 				};
 				return cell;
 			}
+		});
+
+		columnActions.setCellFactory(new Callback<TableColumn<Queue, Queue>, TableCell<Queue, Queue>>() {
+
+			@Override
+			public TableCell<Queue, Queue> call(final TableColumn<Queue, Queue> param)
+			{
+				final TableCell<Queue, Queue> cell = new TableCell<Queue, Queue>() {
+
+					@Override
+					public void updateItem(final Queue item, final boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty)
+						{
+							setGraphic(null);
+							setContentDisplay(null);
+						} else
+						{
+							final Button btnRemove = new Button("Remove Upload");
+							btnRemove.setId("removeUpload");
+							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(final ActionEvent event)
+								{
+									param.getTableView().getSelectionModel().select(getIndex());
+									if (item != null)
+									{
+										item.delete();
+									}
+								}
+
+							});
+							setGraphic(btnRemove);
+							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+						}
+					}
+				};
+				return cell;
+			}
+
 		});
 
 		queueTableview.setItems(FXCollections.observableArrayList(Queue.findAll()));
