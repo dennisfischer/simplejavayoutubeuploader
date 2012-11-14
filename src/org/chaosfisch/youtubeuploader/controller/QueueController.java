@@ -34,6 +34,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -220,8 +221,8 @@ public class QueueController implements Initializable
 							setContentDisplay(null);
 						} else
 						{
-							final Button btnRemove = new Button("Remove Upload");
-							btnRemove.setId("removeUpload");
+							final Button btnRemove = new Button();
+							btnRemove.setId("removeQueue");
 							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
 
 								@Override
@@ -235,7 +236,44 @@ public class QueueController implements Initializable
 								}
 
 							});
-							setGraphic(btnRemove);
+
+							final Button btnEdit = new Button();
+							btnEdit.setId("editQueue");
+							btnEdit.setOnAction(new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(final ActionEvent event)
+								{
+								}
+
+							});
+
+							final Button btnAbort = new Button("Abbrechen");
+							btnAbort.setId("abortQueue");
+							btnAbort.setOnAction(new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(final ActionEvent arg0)
+								{
+								}
+							});
+
+							final ToggleButton btnPauseOnFinish = new ToggleButton();
+							btnPauseOnFinish.setId("pauseOnFinishQueue");
+							btnPauseOnFinish.setOnAction(new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(final ActionEvent arg0)
+								{
+									item.setBoolean("pauseOnFinish", btnPauseOnFinish.selectedProperty().get());
+									item.saveIt();
+								}
+							});
+							btnPauseOnFinish.selectedProperty().set(item.getBoolean("pauseOnFinish"));
+
+							final HBox hbox = new HBox(3d);
+							hbox.getChildren().addAll(btnRemove, btnEdit, btnAbort, btnPauseOnFinish);
+							setGraphic(hbox);
 							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 						}
 					}

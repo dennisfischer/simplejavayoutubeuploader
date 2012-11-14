@@ -34,7 +34,6 @@
 		<path location="${user.home}\.m2\repository\commons-logging\commons-logging\1.1.1\commons-logging-1.1.1.jar" />
 		<path location="${user.home}\.m2\repository\ch\qos\logback\logback-classic\1.0.7\logback-classic-1.0.7.jar" />
 		<path location="${user.home}\.m2\repository\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
-		<path location="lib\jfxtras-labs-2.2-r5-20121109.205502-2.jar" />
 		<path location="${user.home}\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar" />
 		<path location="C:\Program Files\Java\jre7\lib\jfxrt.jar" />
 		<path location="${user.home}/.m2/repository/org/javalite/activejdbc-instrumentation/1.4.5/activejdbc-instrumentation-1.4.5.jar" />

@@ -67,14 +67,6 @@ public class AccountController implements Initializable
 		resetAccount(event);
 	}
 
-	// Handler for Button[fx:id="resetAccount"] onAction
-	public void resetAccount(final ActionEvent event)
-	{
-		accountType.getSelectionModel().selectFirst();
-		account.clear();
-		password.clear();
-	}
-
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
 	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources)
@@ -205,5 +197,13 @@ public class AccountController implements Initializable
 				}
 			}
 		});
+	}
+
+	// Handler for Button[fx:id="resetAccount"] onAction
+	public void resetAccount(final ActionEvent event)
+	{
+		accountType.getSelectionModel().selectFirst();
+		account.clear();
+		password.clear();
 	}
 }

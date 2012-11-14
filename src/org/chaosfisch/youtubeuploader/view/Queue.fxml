@@ -10,9 +10,9 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
+<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
   <children>
-    <GridPane id="grid" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="grid" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" minWidth="0.0" mnemonicParsing="false" onAction="#startQueue" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <GridPane.margin>
@@ -30,7 +30,7 @@
           </items>
         </ChoiceBox>
         <Label text="%label.actionOnFinish" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="1" />
-        <TableView fx:id="queueTableview" prefHeight="393.0" prefWidth="1000.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
+        <TableView fx:id="queueTableview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
           <columns>
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.id" fx:id="columnId" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.title" fx:id="columnTitle" />
@@ -38,7 +38,7 @@
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.starttime" fx:id="columnStarttime" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.account" fx:id="columnAccount" />
             <TableColumn editable="false" prefWidth="75.0" text="%queuetable.progress" fx:id="columnProgress" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.actions" fx:id="columnActions" />
+            <TableColumn editable="false" prefWidth="75.0" resizable="true" text="%queuetable.actions" fx:id="columnActions" />
           </columns>
         </TableView>
         <Region prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="7" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
@@ -51,7 +51,7 @@
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
       </columnConstraints>
       <rowConstraints>
         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
