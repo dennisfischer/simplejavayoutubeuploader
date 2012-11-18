@@ -7,23 +7,20 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
-class ResumeInfo
+public class MetadataException extends Exception
 {
 
-	public final Long	nextByteToUpload;
-	public final String	videoId;
+	private static final long	serialVersionUID	= 1453709249687249732L;
 
-	ResumeInfo(final long nextByteToUpload)
+	public MetadataException(final String message)
 	{
-		this.nextByteToUpload = nextByteToUpload;
-		videoId = null;
+		super(message);
 	}
 
-	ResumeInfo(final String videoId)
+	public MetadataException(final String message, final Throwable cause)
 	{
-		this.videoId = videoId;
-		nextByteToUpload = null;
+		super(message, cause);
 	}
 }

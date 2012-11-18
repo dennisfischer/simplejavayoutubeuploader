@@ -13,10 +13,33 @@ import org.bushe.swing.event.EventBus;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.Table;
+import org.javalite.common.Convert;
 
 @Table("QUEUE")
 public class Queue extends Model implements ModelEvents
 {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object object)
+	{
+
+		if ((object == null) || !(object instanceof Queue))
+		{
+			return false;
+		} else if (((Queue) object).getUnfrozen().equals(getUnfrozen())) { return true; }
+		return false;
+	}
+
+	public Long getUnfrozen()
+	{
+		return Convert.toLong(getAttributes().get("id"));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

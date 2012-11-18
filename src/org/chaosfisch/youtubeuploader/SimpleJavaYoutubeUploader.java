@@ -22,7 +22,7 @@ import javafx.util.Callback;
 import javax.sql.DataSource;
 
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

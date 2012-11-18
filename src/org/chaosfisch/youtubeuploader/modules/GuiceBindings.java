@@ -20,13 +20,15 @@ import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.APIData;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.PlaylistServiceImpl;
+import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeableManagerImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
@@ -42,6 +44,7 @@ public class GuiceBindings extends AbstractModule
 		bind(CategoryService.class).to(CategoryServiceImpl.class).in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
+		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);
@@ -54,10 +57,9 @@ public class GuiceBindings extends AbstractModule
 
 		try
 		{
-			bind(DataSource.class)
-					.toInstance(
-							DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:~SimpleJavaYoutubeUploader/youtubeuploader",
-									"username", "")));
+			bind(DataSource.class).toInstance(DataSources.pooledDataSource(DataSources.unpooledDataSource(	"jdbc:h2:~SimpleJavaYoutubeUploader/youtubeuploader",
+																											"username",
+																											"")));
 		} catch (final SQLException e)
 		{
 			e.printStackTrace();

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
@@ -41,15 +42,17 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
+import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.util.TableViewUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.services.uploader.UploadProgress;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadProgress;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
@@ -58,39 +61,39 @@ public class QueueController implements Initializable
 {
 
 	@FXML// fx:id="actionOnFinish"
-	private ChoiceBox<String>				actionOnFinish;
+	private ChoiceBox<String>			actionOnFinish;
 
 	@FXML// fx:id="columnAccount"
-	private TableColumn<Queue, String>		columnAccount;
+	private TableColumn<Queue, String>	columnAccount;
 
 	@FXML// fx:id="columnActions"
-	private TableColumn<Queue, Queue>		columnActions;
+	private TableColumn<Queue, Queue>	columnActions;
 
 	@FXML// fx:id="columnCategory"
-	private TableColumn<Queue, String>		columnCategory;
+	private TableColumn<Queue, String>	columnCategory;
 
 	@FXML// fx:id="columnId"
-	private TableColumn<Queue, Number>		columnId;
+	private TableColumn<Queue, Number>	columnId;
 
 	@FXML// fx:id="columnProgress"
-	private TableColumn<Queue, Queue>		columnProgress;
+	private TableColumn<Queue, Queue>	columnProgress;
 
 	@FXML// fx:id="columnTitle"
-	private TableColumn<Queue, String>		columnTitle;
+	private TableColumn<Queue, String>	columnTitle;
 
 	@FXML// fx:id="columnStarttime"
-	private TableColumn<Queue, Timestamp>	columnStarttime;
+	private TableColumn<Queue, Object>	columnStarttime;
 
 	@FXML// fx:id="queueTableview"
-	private TableView<Model>				queueTableview;
+	private TableView<Model>			queueTableview;
 
 	@FXML// fx:id="startQueue"
-	private Button							startQueue;
+	private Button						startQueue;
 
 	@FXML// fx:id="stopQueue"
-	private Button							stopQueue;
+	private Button						stopQueue;
 
-	@Inject Uploader						uploader;
+	@Inject Uploader					uploader;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -117,16 +120,16 @@ public class QueueController implements Initializable
 		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("name", Account.class));
 		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
 		columnActions.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
-		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Queue, Timestamp>("started"));
-		columnStarttime.setCellFactory(new Callback<TableColumn<Queue, Timestamp>, TableCell<Queue, Timestamp>>() {
+		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Queue, Object>("started"));
+		columnStarttime.setCellFactory(new Callback<TableColumn<Queue, Object>, TableCell<Queue, Object>>() {
 
 			@Override
-			public TableCell<Queue, Timestamp> call(final TableColumn<Queue, Timestamp> param)
+			public TableCell<Queue, Object> call(final TableColumn<Queue, Object> param)
 			{
-				final TableCell<Queue, Timestamp> cell = new TableCell<Queue, Timestamp>() {
+				final TableCell<Queue, Object> cell = new TableCell<Queue, Object>() {
 
 					@Override
-					public void updateItem(final Timestamp date, final boolean empty)
+					public void updateItem(final Object date, final boolean empty)
 					{
 						super.updateItem(date, empty);
 						if (empty)
@@ -135,7 +138,13 @@ public class QueueController implements Initializable
 							setContentDisplay(null);
 						} else
 						{
-							setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format(date.getTime()));
+							if (date instanceof Date)
+							{
+								setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format((Date) date));
+							} else if (date instanceof Timestamp)
+							{
+								setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format(((Timestamp) date).getTime()));
+							}
 						}
 					}
 				};
@@ -228,14 +237,26 @@ public class QueueController implements Initializable
 								@Override
 								public void handle(final ActionEvent event)
 								{
-									param.getTableView().getSelectionModel().select(getIndex());
-									if (item != null)
-									{
-										item.delete();
-									}
-								}
+									if ((item == null) || item.getBoolean("inprogress")) { return; }
+									final Dialog dialog = Dialog.buildConfirmation("Upload entfernen", "Wirklich diesen Upload löschen?")
+											.addYesButton(new EventHandler<Event>() {
 
+												@Override
+												public void handle(final Event event)
+												{
+													if (item != null)
+													{
+														item.delete();
+													}
+
+												}
+											})
+											.addCancelButton(null)
+											.build();
+									dialog.showAndWait();
+								}
 							});
+							btnRemove.setDisable(item.getBoolean("inprogress"));
 
 							final Button btnEdit = new Button();
 							btnEdit.setId("editQueue");
@@ -244,9 +265,11 @@ public class QueueController implements Initializable
 								@Override
 								public void handle(final ActionEvent event)
 								{
+									if ((item == null) || item.getBoolean("inprogress")) { return; }
 								}
 
 							});
+							btnEdit.setDisable(item.getBoolean("inprogress") || item.getBoolean("archived"));
 
 							final Button btnAbort = new Button("Abbrechen");
 							btnAbort.setId("abortQueue");
@@ -255,8 +278,22 @@ public class QueueController implements Initializable
 								@Override
 								public void handle(final ActionEvent arg0)
 								{
+									if ((item == null) || !item.getBoolean("inprogress")) { return; }
+									final Dialog dialog = Dialog.buildConfirmation("Upload abbrechen", "Wirklich diesen Upload abbrechen?")
+											.addYesButton(new EventHandler<Event>() {
+
+												@Override
+												public void handle(final Event event)
+												{
+													EventBus.publish(Uploader.ABORT, item);
+												}
+											})
+											.addCancelButton(null)
+											.build();
+									dialog.showAndWait();
 								}
 							});
+							btnAbort.setDisable(!item.getBoolean("inprogress") || item.getBoolean("archived"));
 
 							final ToggleButton btnPauseOnFinish = new ToggleButton();
 							btnPauseOnFinish.setId("pauseOnFinishQueue");
@@ -292,7 +329,7 @@ public class QueueController implements Initializable
 
 		stopQueue.setDisable(true);
 
-		queueTableview.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		queueTableview.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
 		AnnotationProcessor.process(this);
 	}
@@ -313,6 +350,24 @@ public class QueueController implements Initializable
 		});
 	}
 
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_UPDATED)
+	public void onUpdated(final String topic, final Model model)
+	{
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (model instanceof Queue)
+				{
+					final int index = queueTableview.getItems().indexOf(model);
+					queueTableview.getItems().set(index, model);
+					TableViewUtil.refresh(queueTableview, queueTableview.getItems());
+				}
+			}
+		});
+	}
+
 	@EventTopicSubscriber(topic = Uploader.PROGRESS)
 	public void onProgress(final String topic, final UploadProgress uploadProgress)
 	{
@@ -323,6 +378,7 @@ public class QueueController implements Initializable
 			{
 				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup("#queue-"
 						+ uploadProgress.getQueue().getLongId());
+				if (progressIndicator == null) { return; }
 				progressIndicator.setProgress(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize());
 
 				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
@@ -370,8 +426,6 @@ public class QueueController implements Initializable
 					@Override
 					public void handle(final Event event)
 					{
-						uploader.stop();
-						toggleQueueButtons();
 					}
 				})
 				.build();

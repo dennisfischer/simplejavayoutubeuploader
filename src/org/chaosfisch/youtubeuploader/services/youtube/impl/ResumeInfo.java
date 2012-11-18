@@ -7,19 +7,23 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.impl;
 
-class UploadException extends Exception
+public class ResumeInfo
 {
-	private static final long	serialVersionUID	= 1097833255891875198L;
 
-	public UploadException(final String message)
+	public final Long	nextByteToUpload;
+	public final String	videoId;
+
+	ResumeInfo(final long nextByteToUpload)
 	{
-		super(message);
+		this.nextByteToUpload = nextByteToUpload;
+		videoId = null;
 	}
 
-	public UploadException(final String message, final Throwable cause)
+	ResumeInfo(final String videoId)
 	{
-		super(message, cause);
+		this.videoId = videoId;
+		nextByteToUpload = null;
 	}
 }

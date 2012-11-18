@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -87,9 +87,6 @@ public class Uploader
 		{
 			logger.info(uploadProgress.status);
 			uploadFinished(uploadProgress.getQueue());
-		} else
-		{
-			logger.info("{}", uploadProgress.getTotalBytesUploaded());
 		}
 	}
 
@@ -143,7 +140,7 @@ public class Uploader
 							} else
 							{
 								polled.setBoolean("inprogress", true);
-								// polled.saveIt();
+								polled.saveIt();
 							}
 							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 							setSpeedLimit(speedLimit);

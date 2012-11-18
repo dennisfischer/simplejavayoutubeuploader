@@ -42,6 +42,10 @@
 	-fx-graphic: url("images/arrow-double-down.png");
 }
 
+#pauseOnFinishQueue{
+	-fx-graphic: url("images/time_delete.png");
+}
+
 #grid{
 	-fx-hgap: 5px;
 	-fx-vgap: 5px;

@@ -21,9 +21,9 @@ import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.services.uploader.MetadataException;
-import org.chaosfisch.youtubeuploader.services.uploader.PermissionStringConverter;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.MetadataException;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.PermissionStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,6 @@ public class MetadataServiceImpl implements MetadataService
 	private final Logger			logger				= LoggerFactory.getLogger(getClass());
 
 	@Inject private RequestSigner	requestSigner;
-
 	@Inject private AuthTokenHelper	authTokenHelper;
 
 	@Override
@@ -165,6 +164,9 @@ public class MetadataServiceImpl implements MetadataService
 		{
 			logger.warn("Metadaten konnten nicht gesendet werden! {}", response != null ? response.getStatusLine() : "");
 			throw new MetadataException("Metadaten konnten nicht gesendet werden!");
+		} finally
+		{
+			EntityUtils.consumeQuietly(response.getEntity());
 		}
 
 	}

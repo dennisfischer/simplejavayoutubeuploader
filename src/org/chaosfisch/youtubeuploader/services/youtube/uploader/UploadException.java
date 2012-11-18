@@ -7,19 +7,18 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
-public class MetadataException extends Exception
+public class UploadException extends Exception
 {
+	private static final long	serialVersionUID	= 1097833255891875198L;
 
-	private static final long	serialVersionUID	= 1453709249687249732L;
-
-	public MetadataException(final String message)
+	public UploadException(final String message)
 	{
 		super(message);
 	}
 
-	public MetadataException(final String message, final Throwable cause)
+	public UploadException(final String message, final Throwable cause)
 	{
 		super(message, cause);
 	}

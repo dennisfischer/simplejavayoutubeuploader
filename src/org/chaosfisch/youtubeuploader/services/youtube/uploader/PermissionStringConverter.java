@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
 public class PermissionStringConverter
 {
