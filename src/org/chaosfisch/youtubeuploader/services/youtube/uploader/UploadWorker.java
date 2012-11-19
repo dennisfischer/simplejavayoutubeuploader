@@ -224,6 +224,7 @@ public class UploadWorker extends Task<Void>
 		}
 		EventBus.publish(Uploader.PROGRESS, uploadProgress);
 		Base.close();
+		cancel();
 	}
 
 	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte)

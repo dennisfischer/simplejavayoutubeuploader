@@ -9,12 +9,12 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 
 import javax.sql.DataSource;
@@ -24,9 +24,10 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Queue;
-import org.chaosfisch.youtubeuploader.models.Setting;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,23 +36,21 @@ import com.google.inject.Injector;
 
 public class Uploader
 {
-	private static final long		QUEUE_SLEEPTIME			= 30000;
-
 	public static final String		ABORT					= "uploadAbort";
 	public static final String		LIMIT					= "uploadLimit";
 	public static final String		PROGRESS				= "uploadProgress";
 	public static final String		STARTED					= "uploadStarted";
 	public static final String		STOPPED					= "uploadStopped";
 
-	private short					actionOnFinish;
-	private volatile boolean		inProgress;
+	public SimpleIntegerProperty	actionOnFinish			= new SimpleIntegerProperty(0);
+	public SimpleBooleanProperty	inProgressProperty		= new SimpleBooleanProperty(false);
 	private short					maxUploads				= 1;
 	private volatile short			runningUploads;
 	private int						speedLimit				= 1000 * 1024;
 	private static final int		DEFAULT_CHUNKSIZE		= 10 * 1048576;
 	private boolean					startTimeCheckerFlag	= true;
 
-	private final ExecutorService	executorService			= Executors.newFixedThreadPool(10);
+	private final ExecutorService	executorService			= Executors.newFixedThreadPool(2);
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	@Inject private Injector		injector;
 
@@ -77,7 +76,7 @@ public class Uploader
 
 	public boolean isRunning()
 	{
-		return inProgress && (runningUploads != 0);
+		return inProgressProperty.get() && (runningUploads != 0);
 	}
 
 	@EventTopicSubscriber(topic = Uploader.PROGRESS)
@@ -90,9 +89,13 @@ public class Uploader
 		}
 	}
 
-	public void setActionOnFinish(final short actionOnFinish)
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	public void onUploadAdded(final String topic, final Model model)
 	{
-		this.actionOnFinish = actionOnFinish;
+		if (model instanceof Queue)
+		{
+			sendUpload();
+		}
 	}
 
 	public void setMaxUploads(final short maxUploads)
@@ -118,74 +121,52 @@ public class Uploader
 
 	public void start()
 	{
-		inProgress = true;
-		final Task<Void> task = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception
+		inProgressProperty.set(true);
+		for (int i = 0; (i < maxUploads) && hasFreeUploadSpace(); i++)
+		{
+			sendUpload();
+		}
+	}
+
+	private void sendUpload()
+	{
+		if (!Base.hasConnection())
+		{
+			Base.open(injector.getInstance(DataSource.class));
+		}
+
+		if (inProgressProperty.get() && hasFreeUploadSpace())
+		{
+			final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
+			if (polled != null)
 			{
-				Base.open(injector.getInstance(DataSource.class));
-				while (inProgress && !isCancelled())
+				if (polled.parent(Account.class) == null)
 				{
-
-					if (hasFreeUploadSpace())
-					{
-						final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
-						if (polled != null)
-						{
-							if (polled.parent(Account.class) == null)
-							{
-								polled.setBoolean("locked", true);
-								polled.saveIt();
-								continue;
-							} else
-							{
-								polled.setBoolean("inprogress", true);
-								polled.saveIt();
-							}
-							final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
-							setSpeedLimit(speedLimit);
-							final Setting setting = Setting.findById("coreplugin.general.chunk_size");
-							final Integer chunksize = (setting == null) || (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE
-									: setting.getInteger("value") * 1048576;
-							uploadWorker.run(polled);
-							executorService.submit(uploadWorker);
-							runningUploads++;
-						}
-
-					}
-					try
-					{
-						Thread.sleep(Uploader.QUEUE_SLEEPTIME);
-					} catch (final InterruptedException e)
-					{}
-				}
-				Base.close();
-
-				return null;
-			}
-
-			@Override
-			protected void done()
-			{
-				// TODO Auto-generated method stub
-				super.done();
-				try
+					polled.setBoolean("locked", true);
+					polled.saveIt();
+				} else
 				{
-					get();
-				} catch (final Throwable t)
-				{
-					logger.debug("ERROR", t);
+					polled.setBoolean("inprogress", true);
+					polled.saveIt();
+					final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
+					setSpeedLimit(speedLimit);
+					// final Setting setting =
+					// Setting.findById("coreplugin.general.chunk_size");
+					// final Integer chunksize = (setting == null) ||
+					// (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE
+					// : setting.getInteger("value") * 1048576;
+					uploadWorker.run(polled);
+					executorService.submit(uploadWorker);
+					runningUploads++;
 				}
 			}
-		};
-		final Thread thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
+
+		}
 	}
 
 	public void stop()
 	{
-		inProgress = false;
+		inProgressProperty.set(false);
 	}
 
 	public void stopStarttimeChecker()
@@ -195,9 +176,10 @@ public class Uploader
 
 	private void uploadFinished(final Queue queue)
 	{
-
-		Base.open(injector.getInstance(DataSource.class));
-
+		if (!Base.hasConnection())
+		{
+			Base.open(injector.getInstance(DataSource.class));
+		}
 		runningUploads--;
 
 		final long leftUploads = Queue.count("archived = false AND failed = false");
@@ -207,39 +189,34 @@ public class Uploader
 
 		if (queue.getBoolean("PAUSEONFINISH") == true)
 		{
-			inProgress = false;
-		}
-
-		if ((inProgress == false) || ((leftUploads == 0) && (runningUploads <= 0)))
+			inProgressProperty.set(false);
+		} else
 		{
-			logger.info("All uploads finished");
-			final Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run()
-				{
-					switch (actionOnFinish)
-					{
-						case 0:
-							return;
-						case 1:
-							logger.info("CLOSING APPLICATION");
-							break;
-						case 2:
-							logger.info("SHUTDOWN COMPUTER");
-							Computer.shutdownComputer();
-							break;
-						case 3:
-							logger.info("HIBERNATE COMPUTER");
-							Computer.hibernateComputer();
-							break;
-					}
-					Platform.exit();
-				}
-
-			}, 60000);
+			sendUpload();
 		}
-		Base.close();
+
+		if ((!inProgressProperty.get()) || ((leftUploads == 0) && (runningUploads <= 0)))
+		{
+			inProgressProperty.set(false);
+			logger.info("All uploads finished");
+			switch (actionOnFinish.get())
+			{
+				case 0:
+					return;
+				case 1:
+					logger.info("CLOSING APPLICATION");
+					Platform.exit();
+					break;
+				case 2:
+					logger.info("SHUTDOWN COMPUTER");
+					Computer.shutdownComputer();
+					break;
+				case 3:
+					logger.info("HIBERNATE COMPUTER");
+					Computer.hibernateComputer();
+					break;
+			}
+		}
 	}
 
 	public void runStarttimeChecker()
@@ -252,7 +229,7 @@ public class Uploader
 				while (!isCancelled() && startTimeCheckerFlag)
 				{
 
-					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgress)
+					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgressProperty.get())
 					{
 						start();
 					}

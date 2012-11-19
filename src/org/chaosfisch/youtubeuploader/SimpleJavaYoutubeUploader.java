@@ -13,13 +13,19 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import javax.sql.DataSource;
+
+import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
@@ -85,6 +91,25 @@ public class SimpleJavaYoutubeUploader extends Application
 		primaryStage.setScene(scene);
 		primaryStage.setMinHeight(600);
 		primaryStage.setMinWidth(1000);
+		primaryStage.setOnHiding(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(final WindowEvent event)
+			{
+				final Dialog dialog = Dialog.buildConfirmation("Exit application", "Do you really want to exit the application?")
+						.addYesButton(null)
+						.addCancelButton(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent event)
+							{
+								primaryStage.show();
+							}
+						})
+						.build();
+				dialog.show();
+			}
+		});
 		primaryStage.show();
 	}
 
@@ -114,6 +139,7 @@ public class SimpleJavaYoutubeUploader extends Application
 	{
 		try
 		{
+			Platform.setImplicitExit(true);
 			initApplication(primaryStage);
 			// uploader.runStarttimeChecker();
 		} catch (final IOException e)

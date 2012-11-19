@@ -45,7 +45,7 @@
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build}" />
-		<tstamp/>
+		<tstamp />
 	</target>
 
 	<target name="clean" description="Destroys all generated files and dirs.">
@@ -87,5 +87,18 @@
 		<echo level="info">Executing Application...</echo>
 
 		<java fork="true" classname="org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader" classpathref="classpath" failonerror="true" />
+	</target>
+
+	<target name="debug" depends="instrument">
+		<script language="javascript">
+		        var logger = project.getBuildListeners().firstElement();
+		        logger.setMessageOutputLevel(2);
+		</script>
+		<echo level="info">Executing Application...</echo>
+
+		<java fork="true" classname="org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader" classpathref="classpath" failonerror="true">
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8765" />
+		</java>
 	</target>
 </project>

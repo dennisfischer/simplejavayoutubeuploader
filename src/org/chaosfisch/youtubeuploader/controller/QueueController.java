@@ -326,8 +326,10 @@ public class QueueController implements Initializable
 				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
 				I18nHelper.message("queuefinishedlist.hibernate") }));
 		actionOnFinish.getSelectionModel().selectFirst();
+		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 
-		stopQueue.setDisable(true);
+		startQueue.disableProperty().bind(uploader.inProgressProperty);
+		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
 
 		queueTableview.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
@@ -418,7 +420,6 @@ public class QueueController implements Initializable
 					public void handle(final Event event)
 					{
 						uploader.start();
-						toggleQueueButtons();
 					}
 				})
 				.addCancelButton(new EventHandler<Event>() {
@@ -437,12 +438,6 @@ public class QueueController implements Initializable
 	// Handler for Button[fx:id="stopQueue"] onAction
 	public void stopQueue(final ActionEvent event)
 	{
-		toggleQueueButtons();
-	}
-
-	private void toggleQueueButtons()
-	{
-		startQueue.setDisable(!startQueue.isDisabled());
-		stopQueue.setDisable(!stopQueue.isDisabled());
+		uploader.stop();
 	}
 }
