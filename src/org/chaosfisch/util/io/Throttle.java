@@ -1,13 +1,15 @@
 package org.chaosfisch.util.io;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Throttle
 {
-	public volatile int	maxBps;
-	public int			chunkSize	= 10 * 1048576;
+	public final SimpleIntegerProperty	maxBps		= new SimpleIntegerProperty(0);
+	public final SimpleIntegerProperty	chunkSize	= new SimpleIntegerProperty(10485760);
 
 	public Throttle(final int chunkSize)
 	{
-		this.chunkSize = chunkSize;
+		this.chunkSize.set(chunkSize);
 	}
 
 	public Throttle()

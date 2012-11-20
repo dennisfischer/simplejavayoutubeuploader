@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 
 import javax.sql.DataSource;
@@ -37,26 +39,31 @@ import com.google.inject.Injector;
 public class Uploader
 {
 	public static final String		ABORT					= "uploadAbort";
-	public static final String		LIMIT					= "uploadLimit";
 	public static final String		PROGRESS				= "uploadProgress";
-	public static final String		STARTED					= "uploadStarted";
-	public static final String		STOPPED					= "uploadStopped";
 
 	public SimpleIntegerProperty	actionOnFinish			= new SimpleIntegerProperty(0);
 	public SimpleBooleanProperty	inProgressProperty		= new SimpleBooleanProperty(false);
-	private short					maxUploads				= 1;
-	private volatile short			runningUploads;
-	private int						speedLimit				= 1000 * 1024;
-	private static final int		DEFAULT_CHUNKSIZE		= 10 * 1048576;
+	public SimpleIntegerProperty	maxUploads				= new SimpleIntegerProperty(1);
+
+	private volatile short			runningUploads			= 0;
 	private boolean					startTimeCheckerFlag	= true;
 
-	private final ExecutorService	executorService			= Executors.newFixedThreadPool(2);
+	private final ExecutorService	executorService			= Executors.newFixedThreadPool(5);
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	@Inject private Injector		injector;
 
 	public Uploader()
 	{
 		AnnotationProcessor.process(this);
+
+		maxUploads.addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue)
+			{
+				sendUpload();
+			}
+		});
 	}
 
 	public void abort(final Queue queue)
@@ -64,14 +71,9 @@ public class Uploader
 		EventBus.publish(Uploader.ABORT, queue);
 	}
 
-	public void exit()
-	{
-		executorService.shutdownNow();
-	}
-
 	private boolean hasFreeUploadSpace()
 	{
-		return runningUploads < maxUploads;
+		return runningUploads < maxUploads.get();
 	}
 
 	public boolean isRunning()
@@ -79,52 +81,22 @@ public class Uploader
 		return inProgressProperty.get() && (runningUploads != 0);
 	}
 
-	@EventTopicSubscriber(topic = Uploader.PROGRESS)
-	public void onUploadJobDoneAndFailed(final String topic, final UploadProgress uploadProgress)
+	public void exit()
 	{
-		if ((uploadProgress.done == true) || (uploadProgress.failed == true))
-		{
-			logger.info(uploadProgress.status);
-			uploadFinished(uploadProgress.getQueue());
-		}
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
-	public void onUploadAdded(final String topic, final Model model)
-	{
-		if (model instanceof Queue)
-		{
-			sendUpload();
-		}
-	}
-
-	public void setMaxUploads(final short maxUploads)
-	{
-		if (maxUploads > 10)
-		{
-			this.maxUploads = 10;
-		} else
-		{
-			this.maxUploads = maxUploads;
-		}
-	}
-
-	public void setSpeedLimit(final int bytes)
-	{
-		speedLimit = bytes * 1024;
-		if (runningUploads > 0)
-		{
-			speedLimit = Math.round((bytes * 1024) / runningUploads);
-			EventBus.publish(Uploader.LIMIT, speedLimit);
-		}
+		executorService.shutdownNow();
 	}
 
 	public void start()
 	{
 		inProgressProperty.set(true);
-		for (int i = 0; (i < maxUploads) && hasFreeUploadSpace(); i++)
+		for (int i = 0; (i < maxUploads.get()) && hasFreeUploadSpace(); i++)
 		{
 			sendUpload();
+			try
+			{
+				Thread.sleep(10000);
+			} catch (final InterruptedException e)
+			{}
 		}
 	}
 
@@ -149,12 +121,6 @@ public class Uploader
 					polled.setBoolean("inprogress", true);
 					polled.saveIt();
 					final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
-					setSpeedLimit(speedLimit);
-					// final Setting setting =
-					// Setting.findById("coreplugin.general.chunk_size");
-					// final Integer chunksize = (setting == null) ||
-					// (setting.getInteger("value") == null) ? DEFAULT_CHUNKSIZE
-					// : setting.getInteger("value") * 1048576;
 					uploadWorker.run(polled);
 					executorService.submit(uploadWorker);
 					runningUploads++;
@@ -247,5 +213,24 @@ public class Uploader
 		final Thread thread = new Thread(task);
 		thread.setDaemon(true);
 		thread.start();
+	}
+
+	@EventTopicSubscriber(topic = Uploader.PROGRESS)
+	public void onUploadJobDoneAndFailed(final String topic, final UploadProgress uploadProgress)
+	{
+		if ((uploadProgress.done == true) || (uploadProgress.failed == true))
+		{
+			logger.info(uploadProgress.status);
+			uploadFinished(uploadProgress.getQueue());
+		}
+	}
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	public void onUploadAdded(final String topic, final Model model)
+	{
+		if (model instanceof Queue)
+		{
+			sendUpload();
+		}
 	}
 }

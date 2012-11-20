@@ -27,6 +27,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
@@ -38,8 +39,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.bushe.swing.event.EventBus;
@@ -47,6 +51,7 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
 import org.chaosfisch.util.TableViewUtil;
+import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
@@ -84,6 +89,9 @@ public class QueueController implements Initializable
 	@FXML// fx:id="columnStarttime"
 	private TableColumn<Queue, Object>	columnStarttime;
 
+	@FXML// fx:id="queueActionsGridpane"
+	private GridPane					queueActionsGridpane;
+
 	@FXML// fx:id="queueTableview"
 	private TableView<Model>			queueTableview;
 
@@ -93,7 +101,18 @@ public class QueueController implements Initializable
 	@FXML// fx:id="stopQueue"
 	private Button						stopQueue;
 
+	private final ListSpinner<Integer>	numberOfUploads	= new ListSpinner<Integer>(1, 5).withValue(1)
+																.withAlignment(Pos.CENTER_RIGHT)
+																.withPostfix(" Upload(s)")
+																.withPrefix("max. ")
+																.withArrowPosition(ArrowPosition.LEADING);
+	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 50).withValue(0)
+																.withAlignment(Pos.CENTER_RIGHT)
+																.withArrowPosition(ArrowPosition.LEADING)
+																.withPostfix(" kb/s");
+
 	@Inject Uploader					uploader;
+	@Inject Throttle					throttle;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -110,9 +129,13 @@ public class QueueController implements Initializable
 		assert startQueue != null : "fx:id=\"startQueue\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert stopQueue != null : "fx:id=\"stopQueue\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert columnStarttime != null : "fx:id=\"columnStarttime\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert queueActionsGridpane != null : "fx:id=\"queueActionsGridpane\" was not injected: check your FXML file 'Queue.fxml'.";
 
 		// initialize your logic here: all @FXML variables will have been
 		// injected
+
+		queueActionsGridpane.add(numberOfUploads, 7, 1);
+		queueActionsGridpane.add(uploadSpeed, 8, 1);
 
 		columnId.setCellValueFactory(new ActiveCellValueFactory<Queue, Number>("id"));
 		columnTitle.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("title"));
@@ -326,10 +349,13 @@ public class QueueController implements Initializable
 				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
 				I18nHelper.message("queuefinishedlist.hibernate") }));
 		actionOnFinish.getSelectionModel().selectFirst();
-		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 
+		// Bindings
+		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 		startQueue.disableProperty().bind(uploader.inProgressProperty);
 		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
+		uploader.maxUploads.bind(numberOfUploads.valueProperty());
+		throttle.maxBps.bind(uploadSpeed.valueProperty());
 
 		queueTableview.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 

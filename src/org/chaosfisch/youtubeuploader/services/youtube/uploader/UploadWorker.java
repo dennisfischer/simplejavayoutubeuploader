@@ -257,9 +257,9 @@ public class UploadWorker extends Task<Void>
 	private long generateEndBytes(final long start, final double bytesToUpload)
 	{
 		final long end;
-		if ((bytesToUpload - throttle.chunkSize) > 0)
+		if ((bytesToUpload - throttle.chunkSize.get()) > 0)
 		{
-			end = (start + throttle.chunkSize) - 1;
+			end = (start + throttle.chunkSize.get()) - 1;
 		} else
 		{
 			end = (start + (int) bytesToUpload) - 1;
@@ -436,7 +436,7 @@ public class UploadWorker extends Task<Void>
 					default:
 						throw new UploadException(String.format("Unexpected return code while uploading: %s", request.getResponseMessage()));
 				}
-				bytesToUpload -= throttle.chunkSize;
+				bytesToUpload -= throttle.chunkSize.get();
 				start = end + 1;
 			} finally
 			{

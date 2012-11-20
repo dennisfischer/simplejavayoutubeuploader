@@ -19,6 +19,7 @@ import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.APIData;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataServiceImpl;
@@ -49,6 +50,7 @@ public class GuiceBindings extends AbstractModule
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);
 		bind(AuthTokenHelper.class).in(Singleton.class);
+		bind(Throttle.class).in(Singleton.class);
 
 		requestStaticInjection(RequestHelper.class);
 
