@@ -26,15 +26,11 @@ public class RequestUtilities
 	 *            output stream the output stream to write to.
 	 * @param buf
 	 *            the byte array to use as a buffer
-	 * @param off
-	 *            the offset to start reading
-	 * @param len
-	 *            the length of bytes to read
 	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException
+	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException
 	{
 		int numRead;
-		while ((numRead = is.read(buf, off, len)) >= 0)
+		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf)) >= 0))
 		{
 			os.write(buf, 0, numRead);
 		}
@@ -51,11 +47,15 @@ public class RequestUtilities
 	 *            output stream the output stream to write to.
 	 * @param buf
 	 *            the byte array to use as a buffer
+	 * @param off
+	 *            the offset to start reading
+	 * @param len
+	 *            the length of bytes to read
 	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException
+	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException
 	{
 		int numRead;
-		while ((numRead = is.read(buf)) >= 0)
+		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf, off, len)) >= 0))
 		{
 			os.write(buf, 0, numRead);
 		}

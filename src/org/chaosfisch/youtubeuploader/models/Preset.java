@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader.models;
 
 import org.bushe.swing.event.EventBus;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.Table;
 
@@ -17,22 +18,30 @@ import org.javalite.activejdbc.annotations.Table;
 public class Preset extends Model implements ModelEvents
 {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
+	 */
 	@Override
-	public String toString()
+	protected void afterCreate()
 	{
-		return "[" + get("id") + "," + get("name") + "]";
+		super.afterCreate();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_ADDED, this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
+	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
 	 */
 	@Override
-	protected void beforeSave()
+	protected void afterDelete()
 	{
-		super.beforeSave();
-		EventBus.publish(MODEL_PRE_UPDATED, this);
+		super.afterDelete();
+		Base.commitTransaction();
+		EventBus.publish(MODEL_POST_REMOVED, this);
 	}
 
 	/*
@@ -44,6 +53,7 @@ public class Preset extends Model implements ModelEvents
 	protected void afterSave()
 	{
 		super.afterSave();
+		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_UPDATED, this);
 	}
 
@@ -62,18 +72,6 @@ public class Preset extends Model implements ModelEvents
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
-	 */
-	@Override
-	protected void afterCreate()
-	{
-		super.afterCreate();
-		EventBus.publish(MODEL_POST_ADDED, this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
 	 */
 	@Override
@@ -86,12 +84,18 @@ public class Preset extends Model implements ModelEvents
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
+	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
 	 */
 	@Override
-	protected void afterDelete()
+	protected void beforeSave()
 	{
-		super.afterDelete();
-		EventBus.publish(MODEL_POST_REMOVED, this);
+		super.beforeSave();
+		EventBus.publish(MODEL_PRE_UPDATED, this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + get("id") + "," + get("name") + "]";
 	}
 }

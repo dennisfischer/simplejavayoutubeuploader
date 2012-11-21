@@ -76,6 +76,25 @@ public class ViewController implements Initializable
 
 	@Inject private PlaylistService	playlistService;
 
+	public static final Preset		standardPreset	= Preset.create("embed",
+																	true,
+																	"mobile",
+																	true,
+																	"commentvote",
+																	true,
+																	"rate",
+																	true,
+																	"comment",
+																	0,
+																	"category",
+																	0,
+																	"visibility",
+																	0,
+																	"videoresponse",
+																	1,
+																	"license",
+																	0);
+
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
 	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources)
@@ -121,8 +140,14 @@ public class ViewController implements Initializable
 			{
 				if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty())
 				{
-					playlistService.addYoutubePlaylist((Playlist) Playlist.create("title", title.getText(), "summary", summary.getText(), "private",
-							playlistPrivate.isSelected(), "account_id", accounts.getValue().getLongId()));
+					playlistService.addYoutubePlaylist((Playlist) Playlist.create(	"title",
+																					title.getText(),
+																					"summary",
+																					summary.getText(),
+																					"private",
+																					playlistPrivate.isSelected(),
+																					"account_id",
+																					accounts.getValue().getLongId()));
 					myDialog.close();
 				}
 			}
@@ -145,7 +170,11 @@ public class ViewController implements Initializable
 			{
 				if (!textfield.getText().isEmpty())
 				{
-					Preset.createIt("name", textfield.getText());
+
+					final Preset preset = Preset.create();
+					preset.copyFrom(standardPreset);
+					preset.setString("name", textfield.getText());
+					preset.save();
 					myDialog.close();
 				}
 			}
