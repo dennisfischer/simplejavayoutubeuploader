@@ -141,7 +141,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		{
 			Platform.setImplicitExit(true);
 			initApplication(primaryStage);
-			// uploader.runStarttimeChecker();
+			uploader.runStarttimeChecker();
 		} catch (final IOException e)
 		{
 			e.printStackTrace();

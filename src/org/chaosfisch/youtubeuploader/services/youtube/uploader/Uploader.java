@@ -109,7 +109,7 @@ public class Uploader
 
 		if (inProgressProperty.get() && hasFreeUploadSpace())
 		{
-			final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started > NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
+			final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
 			if (polled != null)
 			{
 				if (polled.parent(Account.class) == null)
@@ -195,7 +195,7 @@ public class Uploader
 				while (!isCancelled() && startTimeCheckerFlag)
 				{
 
-					if ((Queue.count("archived = false AND started > NOW() AND inprogress = false") != 0) && !inProgressProperty.get())
+					if ((Queue.count("archived = false AND started < NOW() AND inprogress = false") != 0))
 					{
 						start();
 					}
