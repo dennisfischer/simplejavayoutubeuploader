@@ -32,23 +32,19 @@
           <menus>
             <Menu mnemonicParsing="false" text="%menu.file">
               <items>
-                <MenuItem id="menuOpenFile" mnemonicParsing="false" text="%menu.openFile" fx:id="menuOpenFile" />
-                <MenuItem id="menuClose" mnemonicParsing="false" text="%menu.close" fx:id="menuClose" />
+                <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile" fx:id="menuOpenFile" />
+                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close" fx:id="menuClose" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.edit">
               <items>
-                <MenuItem id="menuAddPreset" mnemonicParsing="false" onAction="#menuAddPreset" text="%menu.addPreset" fx:id="menuAddPreset" />
+                <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate" text="%menu.addTemplate" fx:id="menuAddTemplate" />
                 <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.help">
               <items>
-                <MenuItem id="menuWiki" mnemonicParsing="false" text="%menu.wiki" fx:id="menuWiki" />
-                <MenuItem id="menuChangelog" mnemonicParsing="false" text="%menu.changelog" fx:id="menuChangelog" />
-                <MenuItem id="menuAbout" mnemonicParsing="false" text="%menu.about" fx:id="menuAbout" />
-                <MenuItem id="menuPlugins" mnemonicParsing="false" text="%menu.plugins" fx:id="menuPlugins" />
-                <MenuItem id="menuLogfile" mnemonicParsing="false" text="%menu.logfile" fx:id="menuLogfile" />
+                <MenuItem id="menuLogfile" mnemonicParsing="false" onAction="#sendLogfiles" text="%menu.logfile" fx:id="menuLogfile" />
               </items>
             </Menu>
           </menus>
@@ -67,25 +63,21 @@
                     <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
-                <Tab closable="false" text="%tab.settings">
-                  <content>
-                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
                 <Tab closable="false" text="%tab.account">
                   <content>
                     <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                  </content>
+                </Tab>
+                <Tab closable="false" text="%tab.settings">
+                  <content>
+                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                   </content>
                 </Tab>
               </tabs>
             </TabPane>
           </children>
         </AnchorPane>
-        <AnchorPane id="Content" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-          <children>
-            <ProgressBar prefWidth="200.0" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="6.0" />
-          </children>
-        </AnchorPane>
+        <AnchorPane id="Content" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

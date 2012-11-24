@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -37,20 +39,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.util.converter.DefaultStringConverter;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.google.atom.AtomCategory;
+import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.chaosfisch.youtubeuploader.models.Preset;
-import org.chaosfisch.youtubeuploader.models.QueueBuilder;
+import org.chaosfisch.youtubeuploader.models.Template;
+import org.chaosfisch.youtubeuploader.models.UploadBuilder;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Model;
@@ -59,12 +63,12 @@ import com.google.inject.Inject;
 
 public class UploadController implements Initializable
 {
+	@FXML// fx:id="accountList"
+	private ChoiceBox<Model>			accountList;
 
-	@FXML// fx:id="defaultDir"
-	private TextField					defaultDir;
+	@FXML// fx:id="addUpload"
+	private Button						addUpload;
 
-	@FXML// fx:id="deletePreset"
-	private Button						deletePreset;
 	@FXML// fx:id="extendedSettingsGrid"
 	private GridPane					extendedSettingsGrid;
 
@@ -73,51 +77,6 @@ public class UploadController implements Initializable
 
 	@FXML// fx:id="openEnddir"
 	private Button						openEnddir;
-
-	@FXML// fx:id="previewTitle"
-	private TextField					previewTitle;
-
-	@FXML// fx:id="removePreset"
-	private Button						removePreset;
-
-	@FXML// fx:id="savePreset"
-	private Button						savePreset;
-
-	@FXML// fx:id="uploadComment"
-	private ChoiceBox<String>			uploadComment;
-
-	@FXML// fx:id="uploadCommentvote"
-	private CheckBox					uploadCommentvote;
-
-	@FXML// fx:id="uploadDefaultdir"
-	private TextField					uploadDefaultdir;
-
-	@FXML// fx:id="uploadEmbed"
-	private CheckBox					uploadEmbed;
-
-	@FXML// fx:id="uploadEnddir"
-	private TextField					uploadEnddir;
-
-	@FXML// fx:id="uploadLicense"
-	private ChoiceBox<String>			uploadLicense;
-
-	@FXML// fx:id="uploadMobile"
-	private CheckBox					uploadMobile;
-
-	@FXML// fx:id="uploadRate"
-	private CheckBox					uploadRate;
-
-	@FXML// fx:id="uploadVideoresponse"
-	private ChoiceBox<String>			uploadVideoresponse;
-
-	@FXML// fx:id="uploadVisibility"
-	private ChoiceBox<String>			uploadVisibility;
-
-	@FXML// fx:id="accountList"
-	private ChoiceBox<Model>			accountList;
-
-	@FXML// fx:id="addUpload"
-	private Button						addUpload;
 
 	@FXML// fx:id="openFiles"
 	private Button						openFiles;
@@ -128,29 +87,71 @@ public class UploadController implements Initializable
 	@FXML// fx:id="playlistList"
 	private ChoiceBox<Model>			playlistList;
 
-	@FXML// fx:id="presetList"
-	private ChoiceBox<Model>			presetList;
+	@FXML// fx:id="previewTitle"
+	private TextField					previewTitle;
 
 	@FXML// fx:id="refreshPlaylists"
 	private Button						refreshPlaylists;
 
+	@FXML// fx:id="removeTemplate"
+	private Button						removeTemplate;
+
 	@FXML// fx:id="resetUpload"
 	private Button						resetUpload;
+
+	@FXML// fx:id="saveTemplate"
+	private Button						saveTemplate;
+
+	@FXML// fx:id="templateList"
+	private ChoiceBox<Model>			templateList;
 
 	@FXML// fx:id="uploadCategory"
 	private ChoiceBox<AtomCategory>		uploadCategory;
 
+	@FXML// fx:id="uploadComment"
+	private ChoiceBox<String>			uploadComment;
+
+	@FXML// fx:id="uploadCommentvote"
+	private CheckBox					uploadCommentvote;
+
+	@FXML// fx:id="uploadDefaultdir"
+	private TextField					uploadDefaultdir;
+
 	@FXML// fx:id="uploadDescription"
 	private TextArea					uploadDescription;
 
+	@FXML// fx:id="uploadEmbed"
+	private CheckBox					uploadEmbed;
+
+	@FXML// fx:id="uploadEnddir"
+	private TextField					uploadEnddir;
+
 	@FXML// fx:id="uploadFile"
 	private ChoiceBox<File>				uploadFile;
+
+	@FXML// fx:id="uploadLicense"
+	private ChoiceBox<String>			uploadLicense;
+
+	@FXML// fx:id="uploadMobile"
+	private CheckBox					uploadMobile;
+
+	@FXML// fx:id="uploadRate"
+	private CheckBox					uploadRate;
 
 	@FXML// fx:id="uploadTags"
 	private TextArea					uploadTags;
 
 	@FXML// fx:id="uploadTitle"
 	private TextField					uploadTitle;
+
+	@FXML// fx:id="uploadVideoresponse"
+	private ChoiceBox<String>			uploadVideoresponse;
+
+	@FXML// fx:id="uploadVisibility"
+	private ChoiceBox<String>			uploadVisibility;
+
+	@FXML// fx:id="validationText"
+	private Label						validationText;
 
 	private final CalendarTextField		starttime		= new CalendarTextField().withValue(Calendar.getInstance())
 																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
@@ -159,9 +160,6 @@ public class UploadController implements Initializable
 																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
 																.withShowTime(Boolean.TRUE);
 	private final ListSpinner<Integer>	number			= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
-
-	@FXML// fx:id="validationText"
-	private Label						validationText;
 
 	@Inject private PlaylistService		playlistService;
 	@Inject private CategoryService		categoryService;
@@ -172,26 +170,39 @@ public class UploadController implements Initializable
 
 	private final ObservableList<Model>	playlistItems	= FXCollections.observableArrayList();
 
-	private final ObservableList<Model>	presetItems		= FXCollections.observableArrayList();													;
+	private final ObservableList<Model>	templateItems	= FXCollections.observableArrayList();													;
 
-	private void _resetUpload(final Model preset)
+	private void _resetUpload(final Model template)
 	{
-		if (!(preset instanceof Preset)) { return; }
-		uploadCategory.getSelectionModel().select(preset.getInteger("category") != null ? preset.getInteger("category") : 0);
-		uploadComment.getSelectionModel().select(preset.getInteger("comment") != null ? preset.getInteger("comment") : 0);
-		uploadCommentvote.setSelected(preset.getBoolean("commentvote"));
-		uploadDefaultdir.setText(preset.getString("defaultdir"));
-		uploadDescription.setText(preset.getString("description"));
-		uploadEmbed.setSelected(preset.getBoolean("embed"));
-		uploadEnddir.setText(preset.getString("enddir"));
-		uploadLicense.getSelectionModel().select(preset.getInteger("license") != null ? preset.getInteger("license") : 0);
-		uploadMobile.setSelected(preset.getBoolean("mobile"));
-		uploadRate.setSelected(preset.getBoolean("rate"));
-		uploadTags.setText(preset.getString("keywords"));
-		uploadTitle.setText(preset.getString("title"));
-		uploadVideoresponse.getSelectionModel().select(preset.getInteger("videoresponse") != null ? preset.getInteger("videoresponse") : 1);
-		uploadVisibility.getSelectionModel().select(preset.getInteger("visibility") != null ? preset.getInteger("visibility") : 0);
-		number.setValue(preset.getInteger("number"));
+		if (!(template instanceof Template)) { return; }
+		uploadCategory.getSelectionModel().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
+		uploadComment.getSelectionModel().select(template.getInteger("comment") != null ? template.getInteger("comment") : 0);
+		uploadCommentvote.setSelected(template.getBoolean("commentvote"));
+		uploadDefaultdir.setText(template.getString("defaultdir"));
+		uploadDescription.setText(template.getString("description"));
+		uploadEmbed.setSelected(template.getBoolean("embed"));
+		uploadEnddir.setText(template.getString("enddir"));
+		uploadLicense.getSelectionModel().select(template.getInteger("license") != null ? template.getInteger("license") : 0);
+		uploadMobile.setSelected(template.getBoolean("mobile"));
+		uploadRate.setSelected(template.getBoolean("rate"));
+		uploadTags.setText(template.getString("keywords"));
+		uploadTitle.setText(template.getString("title"));
+		uploadVideoresponse.getSelectionModel().select(template.getInteger("videoresponse") != null ? template.getInteger("videoresponse") : 1);
+		uploadVisibility.getSelectionModel().select(template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
+		number.setValue(template.getInteger("number") != null ? template.getInteger("number") : 0);
+		if (template.parent(Account.class) != null)
+		{
+			accountList.getSelectionModel().select(template.parent(Account.class));
+		}
+		if (template.getAll(Playlist.class).size() > 0)
+		{
+			playlistList.getSelectionModel().select(template.getAll(Playlist.class).get(0));
+			playlistCheckbox.setSelected(true);
+		} else
+		{
+			playlistCheckbox.setSelected(false);
+		}
+
 	}
 
 	public void addPlaceholder(final String placeholder, final String replacement)
@@ -211,11 +222,8 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		final QueueBuilder queueBuilder = new QueueBuilder(	uploadFile.getValue(),
-															uploadTitle.getText().trim(),
-															uploadCategory.getValue().term,
-															(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel()
-				.getSelectedIndex())
+		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
+				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
 				.setDescription(uploadDescription.getText().trim())
 				.setEmbed(uploadEmbed.isSelected())
@@ -230,12 +238,12 @@ public class UploadController implements Initializable
 
 		if (playlistCheckbox.isSelected())
 		{
-			queueBuilder.setPlaylist((Playlist) playlistList.getValue());
+			uploadBuilder.addPlaylist((Playlist) playlistList.getValue());
 		}
 
 		if (starttime.getValue().getTimeInMillis() > System.currentTimeMillis())
 		{
-			queueBuilder.setStarted(new Date(starttime.getValue().getTimeInMillis()));
+			uploadBuilder.setStarted(new Date(starttime.getValue().getTimeInMillis()));
 		}
 
 		if (releasetime.getValue().getTimeInMillis() > System.currentTimeMillis())
@@ -244,10 +252,10 @@ public class UploadController implements Initializable
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 			final int mod = unroundedMinutes % 30;
 			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
-			queueBuilder.setRelease(new Date(calendar.getTimeInMillis()));
+			uploadBuilder.setRelease(new Date(calendar.getTimeInMillis()));
 		}
 
-		queueBuilder.build();
+		uploadBuilder.build();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -257,21 +265,22 @@ public class UploadController implements Initializable
 	{
 		assert accountList != null : "fx:id=\"accountList\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert defaultDir != null : "fx:id=\"defaultDir\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert deletePreset != null : "fx:id=\"deletePreset\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistCheckbox != null : "fx:id=\"playlistCheckbox\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistList != null : "fx:id=\"playlistList\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert presetList != null : "fx:id=\"presetList\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert previewTitle != null : "fx:id=\"previewTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert removeTemplate != null : "fx:id=\"removeTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert resetUpload != null : "fx:id=\"resetUpload\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert savePreset != null : "fx:id=\"savePreset\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert saveTemplate != null : "fx:id=\"saveTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert templateList != null : "fx:id=\"templateList\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadCategory != null : "fx:id=\"uploadCategory\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadComment != null : "fx:id=\"uploadComment\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadCommentvote != null : "fx:id=\"uploadCommentvote\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadDefaultdir != null : "fx:id=\"uploadDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadDescription != null : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadEmbed != null : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadEnddir != null : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -314,7 +323,6 @@ public class UploadController implements Initializable
 		uploadCategory.getSelectionModel().selectFirst();
 
 		releasetime.disableProperty().bind(uploadVisibility.getSelectionModel().selectedIndexProperty().lessThan(2));
-		previewTitle.textProperty().bind(uploadTitle.textProperty());
 
 		uploadFile.setItems(FXCollections.observableArrayList(new File("")));
 		uploadFile.getItems().clear();
@@ -340,27 +348,44 @@ public class UploadController implements Initializable
 		});
 		accountList.getSelectionModel().selectFirst();
 
-		presetItems.addAll(Preset.findAll().include(Account.class, Playlist.class));
-		presetList.setItems(presetItems);
-		presetList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Model>() {
+		templateItems.addAll(Template.findAll().include(Account.class, Playlist.class));
+		templateList.setItems(templateItems);
+		templateList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Model>() {
 
 			@Override
 			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue)
 			{
-				Account account;
-				if ((newValue != null) && ((account = newValue.parent(Account.class)) != null))
-				{
-					accountList.getSelectionModel().select(accountList.getItems().indexOf(account));
-					if (newValue.parent(Playlist.class) != null)
-					{
-						playlistList.getSelectionModel().select(newValue.parent(Playlist.class));
-					}
-				}
-
 				resetUpload(null);
 			}
 		});
-		presetList.getSelectionModel().selectFirst();
+		templateList.getSelectionModel().selectFirst();
+
+		previewTitle.textProperty().bindBidirectional(uploadTitle.textProperty(), new DefaultStringConverter() {
+
+			final ExtendedPlaceholders	extendedPlaceholders	= new ExtendedPlaceholders();
+
+			@Override
+			public String toString(final String value)
+			{
+				extendedPlaceholders.setFile(uploadFile.getValue() != null ? uploadFile.getValue().getAbsolutePath() : "{file-missing}");
+				extendedPlaceholders.setPlaylist((Playlist) playlistList.getValue());
+				extendedPlaceholders.setNumber(number.getValue());
+
+				return extendedPlaceholders.replace(value);
+			}
+		});
+
+		final InvalidationListener previewTitleChangeListener = new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable observable)
+			{
+				_refreshPreviewTitle();
+			}
+		};
+		playlistList.valueProperty().addListener(previewTitleChangeListener);
+		number.valueProperty().addListener(previewTitleChangeListener);
+		uploadFile.valueProperty().addListener(previewTitleChangeListener);
 	}
 
 	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
@@ -378,12 +403,12 @@ public class UploadController implements Initializable
 					{
 						accountList.getSelectionModel().selectFirst();
 					}
-				} else if (model instanceof Preset)
+				} else if (model instanceof Template)
 				{
-					presetItems.add(model);
-					if (presetList.getValue() == null)
+					templateItems.add(model);
+					if (templateList.getValue() == null)
 					{
-						presetList.getSelectionModel().selectFirst();
+						templateList.getSelectionModel().selectFirst();
 					}
 				} else if ((model instanceof Playlist) && model.parent(Account.class).equals(accountList.getValue()))
 				{
@@ -412,12 +437,12 @@ public class UploadController implements Initializable
 					{
 						accountList.getSelectionModel().selectFirst();
 					}
-				} else if (model instanceof Preset)
+				} else if (model instanceof Template)
 				{
-					presetItems.remove(model);
-					if (presetList.getSelectionModel().isEmpty())
+					templateItems.remove(model);
+					if (templateList.getSelectionModel().isEmpty())
 					{
-						presetList.getSelectionModel().selectFirst();
+						templateList.getSelectionModel().selectFirst();
 					}
 				} else if (model instanceof Playlist)
 				{
@@ -460,6 +485,16 @@ public class UploadController implements Initializable
 			uploadFile.getItems().clear();
 			uploadFile.getItems().addAll(files);
 			uploadFile.getSelectionModel().selectFirst();
+			if ((uploadTitle.getText() == null) || uploadTitle.getText().isEmpty())
+			{
+				final String file = files.get(0).getAbsolutePath();
+				int index = file.lastIndexOf(".");
+				if (index == -1)
+				{
+					index = file.length();
+				}
+				uploadTitle.setText(file.substring(file.lastIndexOf(File.separator) + 1, index));
+			}
 		}
 	}
 
@@ -471,54 +506,70 @@ public class UploadController implements Initializable
 		playlistService.synchronizePlaylists(Arrays.asList(accountArray));
 	}
 
-	// Handler for Button[fx:id="removePreset"] onAction
-	public void removePreset(final ActionEvent event)
+	// Handler for Button[fx:id="removeTemplate"] onAction
+	public void removeTemplate(final ActionEvent event)
 	{
-		if (presetList.getValue() != null)
+		if (templateList.getValue() != null)
 		{
-			presetList.getValue().delete();
+			templateList.getValue().delete();
 		}
 	}
 
 	// Handler for Button[fx:id="resetUpload"] onAction
 	public void resetUpload(final ActionEvent event)
 	{
-		if (presetList.getItems().isEmpty())
+		if (templateList.getItems().isEmpty())
 		{
-			_resetUpload(ViewController.standardPreset);
+			_resetUpload(ViewController.standardTemplate);
 		} else
 		{
-			_resetUpload(presetList.getValue());
+			_resetUpload(templateList.getValue());
 		}
 	}
 
-	// Handler for Button[id="savePreset"] onAction
-	public void savePreset(final ActionEvent event)
+	// Handler for Button[id="saveTemplate"] onAction
+	public void saveTemplate(final ActionEvent event)
 	{
-		final Preset preset = (Preset) presetList.getValue();
-		if (preset == null) { return; }
-		preset.setInteger("category", uploadCategory.getSelectionModel().getSelectedIndex());
-		preset.setInteger("comment", uploadComment.getSelectionModel().getSelectedIndex());
-		preset.setBoolean("commentvote", uploadCommentvote.isSelected());
-		preset.setString("defaultdir", uploadDefaultdir.getText() == null ? "" : uploadDefaultdir.getText());
-		preset.setString("description", uploadDescription.getText() == null ? "" : uploadDescription.getText());
-		preset.setBoolean("embed", uploadEmbed.isSelected());
-		preset.setString("enddir", uploadEnddir.getText() == null ? "" : uploadEnddir.getText());
-		preset.setInteger("license", uploadLicense.getSelectionModel().getSelectedIndex());
-		preset.setBoolean("mobile", uploadMobile.isSelected());
-		preset.setBoolean("rate", uploadRate.isSelected());
-		preset.setString("keywords", uploadTags.getText() == null ? "" : uploadTags.getText());
-		preset.setString("title", uploadTitle.getText() == null ? "" : uploadTitle.getText());
-		preset.setInteger("videoresponse", uploadVideoresponse.getSelectionModel().getSelectedIndex());
-		preset.setInteger("visibility", uploadVisibility.getSelectionModel().getSelectedIndex());
-		preset.setInteger("number", number.getValue());
-		preset.setParent(accountList.getValue());
+		final Template template = (Template) templateList.getValue();
+		if (template == null) { return; }
+		template.setInteger("category", uploadCategory.getSelectionModel().getSelectedIndex());
+		template.setInteger("comment", uploadComment.getSelectionModel().getSelectedIndex());
+		template.setBoolean("commentvote", uploadCommentvote.isSelected());
+		template.setString("defaultdir", uploadDefaultdir.getText() == null ? "" : uploadDefaultdir.getText());
+		template.setString("description", uploadDescription.getText() == null ? "" : uploadDescription.getText());
+		template.setBoolean("embed", uploadEmbed.isSelected());
+		template.setString("enddir", uploadEnddir.getText() == null ? "" : uploadEnddir.getText());
+		template.setInteger("license", uploadLicense.getSelectionModel().getSelectedIndex());
+		template.setBoolean("mobile", uploadMobile.isSelected());
+		template.setBoolean("rate", uploadRate.isSelected());
+		template.setString("keywords", uploadTags.getText() == null ? "" : uploadTags.getText());
+		template.setString("title", uploadTitle.getText() == null ? "" : uploadTitle.getText());
+		template.setInteger("videoresponse", uploadVideoresponse.getSelectionModel().getSelectedIndex());
+		template.setInteger("visibility", uploadVisibility.getSelectionModel().getSelectedIndex());
+		template.setInteger("number", number.getValue());
+		if (accountList.getValue() != null)
+		{
+			template.setParent(accountList.getValue());
+		}
 		if (playlistCheckbox.isSelected() && (playlistList.getValue() != null))
 		{
-			preset.setParent(playlistList.getValue());
+			template.add(playlistList.getValue());
+		} else
+		{
+			for (final Playlist playlist : template.getAll(Playlist.class))
+			{
+				template.remove(playlist);
+			}
 		}
-		preset.saveIt();
+		template.saveIt();
 
+	}
+
+	private void _refreshPreviewTitle()
+	{
+		final String value = uploadTitle.textProperty().get();
+		uploadTitle.textProperty().set(null);
+		uploadTitle.textProperty().set(value);
 	}
 
 	// validate each of the three input fields
@@ -527,19 +578,20 @@ public class UploadController implements Initializable
 		if (uploadFile.getItems().isEmpty())
 		{
 			return I18nHelper.message("validation.filelist");
-		} else if ((uploadTitle.getText().getBytes().length < 5) || (uploadTitle.getText().getBytes().length > 100))
+		} else if ((uploadTitle.getText() == null) || (uploadTitle.getText().getBytes().length < 5)
+				|| (uploadTitle.getText().getBytes().length > 100))
 		{
 			return I18nHelper.message("validation.title");
 		} else if (uploadCategory.getValue() == null)
 		{
 			return I18nHelper.message("validation.category");
-		} else if (uploadDescription.getText().getBytes().length > 5000)
+		} else if ((uploadDescription.getText() != null) && (uploadDescription.getText().getBytes().length > 5000))
 		{
 			return I18nHelper.message("validation.description");
-		} else if (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<"))
+		} else if ((uploadDescription.getText() != null) && (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<")))
 		{
 			return I18nHelper.message("validation.description.characters");
-		} else if ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText()))
+		} else if ((uploadTags.getText() != null) && ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText())))
 		{
 			return I18nHelper.message("validation.tags");
 		} else if (accountList.getValue() == null) { return I18nHelper.message("validation.account"); }

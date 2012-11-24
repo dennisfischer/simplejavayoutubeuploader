@@ -9,20 +9,20 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.socialize;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FacebookSocialProvider
 {
 
-	private String extractUrl(final String value)
-	{
-		final String urlPattern = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
-		final Pattern p = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
-		final Matcher m = p.matcher(value);
-		if (m.find()) { return new String(value.substring(m.start(0), m.end(0))); }
-		return "";
-	}
+	// private String extractUrl(final String value)
+	// {
+	// final String urlPattern =
+	// "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
+	// final Pattern p = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE);
+	// final Matcher m = p.matcher(value);
+	// if (m.find()) { return new String(value.substring(m.start(0), m.end(0)));
+	// }
+	// return "";
+	// }
 
 	public void hasValidAccessToken()
 	{

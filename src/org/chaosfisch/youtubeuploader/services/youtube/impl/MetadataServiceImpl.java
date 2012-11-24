@@ -20,7 +20,7 @@ import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.MetadataException;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.PermissionStringConverter;
@@ -48,7 +48,7 @@ public class MetadataServiceImpl implements MetadataService
 	@Inject private AuthTokenHelper	authTokenHelper;
 
 	@Override
-	public String atomBuilder(final Queue queue)
+	public String atomBuilder(final Upload queue)
 	{
 		// create atom xml metadata - create object first, then convert with
 		// xstream

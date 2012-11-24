@@ -55,7 +55,7 @@ import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadProgress;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Model;
@@ -69,25 +69,25 @@ public class QueueController implements Initializable
 	private ChoiceBox<String>			actionOnFinish;
 
 	@FXML// fx:id="columnAccount"
-	private TableColumn<Queue, String>	columnAccount;
+	private TableColumn<Upload, String>	columnAccount;
 
 	@FXML// fx:id="columnActions"
-	private TableColumn<Queue, Queue>	columnActions;
+	private TableColumn<Upload, Upload>	columnActions;
 
 	@FXML// fx:id="columnCategory"
-	private TableColumn<Queue, String>	columnCategory;
+	private TableColumn<Upload, String>	columnCategory;
 
 	@FXML// fx:id="columnId"
-	private TableColumn<Queue, Number>	columnId;
+	private TableColumn<Upload, Number>	columnId;
 
 	@FXML// fx:id="columnProgress"
-	private TableColumn<Queue, Queue>	columnProgress;
+	private TableColumn<Upload, Upload>	columnProgress;
 
 	@FXML// fx:id="columnTitle"
-	private TableColumn<Queue, String>	columnTitle;
+	private TableColumn<Upload, String>	columnTitle;
 
 	@FXML// fx:id="columnStarttime"
-	private TableColumn<Queue, Object>	columnStarttime;
+	private TableColumn<Upload, Object>	columnStarttime;
 
 	@FXML// fx:id="queueActionsGridpane"
 	private GridPane					queueActionsGridpane;
@@ -137,19 +137,19 @@ public class QueueController implements Initializable
 		queueActionsGridpane.add(numberOfUploads, 7, 1);
 		queueActionsGridpane.add(uploadSpeed, 8, 1);
 
-		columnId.setCellValueFactory(new ActiveCellValueFactory<Queue, Number>("id"));
-		columnTitle.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("title"));
-		columnCategory.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("category"));
-		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Queue, String>("name", Account.class));
-		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
-		columnActions.setCellValueFactory(new ActiveCellValueFactory<Queue, Queue>("this"));
-		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Queue, Object>("started"));
-		columnStarttime.setCellFactory(new Callback<TableColumn<Queue, Object>, TableCell<Queue, Object>>() {
+		columnId.setCellValueFactory(new ActiveCellValueFactory<Upload, Number>("id"));
+		columnTitle.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("title"));
+		columnCategory.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("category"));
+		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("name", Account.class));
+		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
+		columnActions.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
+		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Upload, Object>("started"));
+		columnStarttime.setCellFactory(new Callback<TableColumn<Upload, Object>, TableCell<Upload, Object>>() {
 
 			@Override
-			public TableCell<Queue, Object> call(final TableColumn<Queue, Object> param)
+			public TableCell<Upload, Object> call(final TableColumn<Upload, Object> param)
 			{
-				final TableCell<Queue, Object> cell = new TableCell<Queue, Object>() {
+				final TableCell<Upload, Object> cell = new TableCell<Upload, Object>() {
 
 					@Override
 					public void updateItem(final Object date, final boolean empty)
@@ -175,15 +175,15 @@ public class QueueController implements Initializable
 			}
 		});
 
-		columnProgress.setCellFactory(new Callback<TableColumn<Queue, Queue>, TableCell<Queue, Queue>>() {
+		columnProgress.setCellFactory(new Callback<TableColumn<Upload, Upload>, TableCell<Upload, Upload>>() {
 
 			@Override
-			public TableCell<Queue, Queue> call(final TableColumn<Queue, Queue> param)
+			public TableCell<Upload, Upload> call(final TableColumn<Upload, Upload> param)
 			{
-				final TableCell<Queue, Queue> cell = new TableCell<Queue, Queue>() {
+				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
 
 					@Override
-					public void updateItem(final Queue queue, final boolean empty)
+					public void updateItem(final Upload queue, final boolean empty)
 					{
 						super.updateItem(queue, empty);
 						if (empty)
@@ -236,15 +236,15 @@ public class QueueController implements Initializable
 			}
 		});
 
-		columnActions.setCellFactory(new Callback<TableColumn<Queue, Queue>, TableCell<Queue, Queue>>() {
+		columnActions.setCellFactory(new Callback<TableColumn<Upload, Upload>, TableCell<Upload, Upload>>() {
 
 			@Override
-			public TableCell<Queue, Queue> call(final TableColumn<Queue, Queue> param)
+			public TableCell<Upload, Upload> call(final TableColumn<Upload, Upload> param)
 			{
-				final TableCell<Queue, Queue> cell = new TableCell<Queue, Queue>() {
+				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
 
 					@Override
-					public void updateItem(final Queue item, final boolean empty)
+					public void updateItem(final Upload item, final boolean empty)
 					{
 						super.updateItem(item, empty);
 						if (empty)
@@ -343,7 +343,7 @@ public class QueueController implements Initializable
 
 		});
 
-		queueTableview.setItems(FXCollections.observableArrayList(Queue.findAll()));
+		queueTableview.setItems(FXCollections.observableArrayList(Upload.findAll()));
 
 		actionOnFinish.setItems(FXCollections.observableArrayList(new String[] { I18nHelper.message("queuefinishedlist.donothing"),
 				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
@@ -370,7 +370,7 @@ public class QueueController implements Initializable
 			@Override
 			public void run()
 			{
-				if (model instanceof Queue)
+				if (model instanceof Upload)
 				{
 					queueTableview.getItems().add(model);
 				}
@@ -386,7 +386,7 @@ public class QueueController implements Initializable
 			@Override
 			public void run()
 			{
-				if (model instanceof Queue)
+				if (model instanceof Upload)
 				{
 					final int index = queueTableview.getItems().indexOf(model);
 					queueTableview.getItems().set(index, model);
@@ -427,7 +427,7 @@ public class QueueController implements Initializable
 			@Override
 			public void run()
 			{
-				if (model instanceof Queue)
+				if (model instanceof Upload)
 				{
 					queueTableview.getItems().remove(model);
 				}

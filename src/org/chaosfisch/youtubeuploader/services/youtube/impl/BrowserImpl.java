@@ -4,14 +4,14 @@ import java.util.regex.Pattern;
 
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BrowserImpl
 {
-	Queue					queue;
+	Upload					queue;
 	Logger					logger	= LoggerFactory.getLogger(getClass());
 	ExtendedPlaceholders	extendedPlacerholders;
 

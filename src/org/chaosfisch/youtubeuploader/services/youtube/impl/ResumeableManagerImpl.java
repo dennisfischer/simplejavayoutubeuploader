@@ -15,7 +15,7 @@ import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadException;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ResumeableManagerImpl implements ResumeableManager
 	@Inject private RequestSigner	requestSigner;
 
 	@Override
-	public ResumeInfo fetchResumeInfo(final Queue queue) throws UploadException, AuthenticationException
+	public ResumeInfo fetchResumeInfo(final Upload queue) throws UploadException, AuthenticationException
 	{
 		ResumeInfo resumeInfo;
 		do
@@ -46,7 +46,7 @@ public class ResumeableManagerImpl implements ResumeableManager
 		return resumeInfo;
 	}
 
-	private ResumeInfo resumeFileUpload(final Queue queue) throws UploadException, AuthenticationException
+	private ResumeInfo resumeFileUpload(final Upload queue) throws UploadException, AuthenticationException
 	{
 		HttpResponse response = null;
 		try

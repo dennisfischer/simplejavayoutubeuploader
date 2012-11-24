@@ -1,7 +1,7 @@
 package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
 import org.chaosfisch.google.auth.AuthenticationException;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadException;
 
@@ -11,7 +11,7 @@ public interface ResumeableManager
 
 	boolean canContinue();
 
-	ResumeInfo fetchResumeInfo(Queue queue) throws UploadException, AuthenticationException;
+	ResumeInfo fetchResumeInfo(Upload queue) throws UploadException, AuthenticationException;
 
 	void setRetries(int i);
 

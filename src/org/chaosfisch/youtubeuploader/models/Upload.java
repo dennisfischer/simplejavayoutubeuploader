@@ -12,11 +12,9 @@ package org.chaosfisch.youtubeuploader.models;
 import org.bushe.swing.event.EventBus;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.Table;
 import org.javalite.common.Convert;
 
-@Table("QUEUE")
-public class Queue extends Model implements ModelEvents
+public class Upload extends Model implements ModelEvents
 {
 
 	/*
@@ -28,10 +26,10 @@ public class Queue extends Model implements ModelEvents
 	public boolean equals(final Object object)
 	{
 
-		if ((object == null) || !(object instanceof Queue))
+		if ((object == null) || !(object instanceof Upload))
 		{
 			return false;
-		} else if (((Queue) object).getUnfrozen().equals(getUnfrozen())) { return true; }
+		} else if (((Upload) object).getUnfrozen().equals(getUnfrozen())) { return true; }
 		return false;
 	}
 

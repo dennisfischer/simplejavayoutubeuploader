@@ -12,10 +12,8 @@ package org.chaosfisch.youtubeuploader.models;
 import org.bushe.swing.event.EventBus;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.Table;
 
-@Table("PRESETS")
-public class Preset extends Model implements ModelEvents
+public class Template extends Model implements ModelEvents
 {
 
 	/*

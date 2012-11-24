@@ -2,7 +2,7 @@
 	-fx-graphic:url("images/refresh.png");
 }
 
-#removeAccount, #removePreset, #removeQueue {
+#removeAccount, #removeTemplate, #removeUpload {
 	-fx-graphic:url("images/delete.png");
 }
 
@@ -14,31 +14,31 @@
 	-fx-graphic: url("images/folder_explore.png");
 }
 
-#resetUpload, #resetAccount, #abortQueue {
+#resetUpload, #resetAccount, #abortUpload {
 	-fx-graphic: url("images/cancel.png");
 }
 
-#savePreset{
+#saveTemplate{
 	-fx-graphic: url("images/save.png");
 }
 
-#editQueue{
+#editUpload{
 	-fx-graphic: url("images/pencil.png");
 }
 
-#queueTop{
+#uploadTop{
 	-fx-graphic: url("images/arrow-double-up.png");
 }
 
-#queueUp{
+#uploadUp{
 	-fx-graphic: url("images/arrow_up.png");
 }
 
-#queueDown{
+#uploadDown{
 	-fx-graphic: url("images/arrow_down.png");
 }
 
-#queueBottom{
+#uploadBottom{
 	-fx-graphic: url("images/arrow-double-down.png");
 }
 
@@ -49,6 +49,7 @@
 #grid{
 	-fx-hgap: 5px;
 	-fx-vgap: 5px;
+	-fx-padding: 5px 5px 5px 5px;
 }
 
 #validation_error{

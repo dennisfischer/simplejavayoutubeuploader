@@ -13,10 +13,8 @@ import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.Table;
 import org.javalite.common.Convert;
 
-@Table("ACCOUNTS")
 public class Account extends Model implements ModelEvents
 {
 	public enum Type

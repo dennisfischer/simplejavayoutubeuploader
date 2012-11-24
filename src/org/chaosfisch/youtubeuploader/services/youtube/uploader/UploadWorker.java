@@ -42,7 +42,7 @@ import org.chaosfisch.util.io.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
@@ -79,7 +79,7 @@ public class UploadWorker extends Task<Void>
 	 * File that is uploaded
 	 */
 	private File						fileToUpload;
-	private Queue						queue;
+	private Upload						upload;
 
 	private final Logger				logger				= LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
 	@Inject private PlaylistService		playlistService;
@@ -162,13 +162,13 @@ public class UploadWorker extends Task<Void>
 
 	private void resumeinfo() throws UploadException, AuthenticationException
 	{
-		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(queue);
+		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
 		if (resumeInfo == null)
 		{
 			currentStatus = STATUS.FAILED;
-			throw new UploadException(String.format("Giving up uploading '%s'.", queue.getString("uploadurl")));
+			throw new UploadException(String.format("Giving up uploading '%s'.", upload.getString("uploadurl")));
 		}
-		logger.info("Resuming stalled upload to: {}", queue.getString("uploadurl"));
+		logger.info("Resuming stalled upload to: {}", upload.getString("uploadurl"));
 		if (resumeInfo.videoId != null)
 		{ // upload actually completed despite the exception
 			final String videoId = resumeInfo.videoId;
@@ -198,12 +198,12 @@ public class UploadWorker extends Task<Void>
 			logger.debug("ERROR", t);
 		}
 
-		queue.setBoolean("inprogress", false);
+		upload.setBoolean("inprogress", false);
 		switch (currentStatus)
 		{
 			case DONE:
-				queue.setBoolean("archived", true);
-				queue.saveIt();
+				upload.setBoolean("archived", true);
+				upload.saveIt();
 				uploadProgress.done = true;
 				break;
 			case FAILED:
@@ -270,11 +270,11 @@ public class UploadWorker extends Task<Void>
 	private void initialize() throws FileNotFoundException
 	{
 		// Set the time uploaded started
-		queue.setDate("started", Calendar.getInstance().getTime());
-		queue.saveIt();
+		upload.setDate("started", Calendar.getInstance().getTime());
+		upload.saveIt();
 
 		// Get File and Check if existing
-		fileToUpload = new File(queue.getString("file"));
+		fileToUpload = new File(upload.getString("file"));
 
 		if (!fileToUpload.exists()) { throw new FileNotFoundException("Datei existiert nicht."); }
 
@@ -284,20 +284,20 @@ public class UploadWorker extends Task<Void>
 	private void metadata() throws MetadataException, AuthenticationException
 	{
 
-		if ((queue.getString("uploadurl") != null) && !queue.getString("uploadurl").isEmpty())
+		if ((upload.getString("uploadurl") != null) && !upload.getString("uploadurl").isEmpty())
 		{
-			logger.info("Uploadurl existing: {}", queue.getString("uploadurl"));
+			logger.info("Uploadurl existing: {}", upload.getString("uploadurl"));
 			currentStatus = STATUS.RESUMEINFO;
 			return;
 		}
 
 		replacePlaceholders();
-		final String atomData = metadataService.atomBuilder(queue);
-		queue.setString("uploadurl", metadataService.submitMetadata(atomData, fileToUpload, queue.parent(Account.class)));
-		queue.saveIt();
+		final String atomData = metadataService.atomBuilder(upload);
+		upload.setString("uploadurl", metadataService.submitMetadata(atomData, fileToUpload, upload.parent(Account.class)));
+		upload.saveIt();
 
 		// Log operation
-		logger.info("Uploadurl received: {}", queue.getString("uploadurl"));
+		logger.info("Uploadurl received: {}", upload.getString("uploadurl"));
 		// INIT Vars
 		fileSize = fileToUpload.length();
 		totalBytesUploaded = 0;
@@ -308,9 +308,9 @@ public class UploadWorker extends Task<Void>
 	}
 
 	@EventTopicSubscriber(topic = Uploader.ABORT)
-	public void onAbortUpload(final String topic, final Queue abort)
+	public void onAbortUpload(final String topic, final Upload abort)
 	{
-		if (abort.equals(queue))
+		if (abort.equals(upload))
 		{
 			currentStatus = STATUS.ABORTED;
 		}
@@ -319,9 +319,12 @@ public class UploadWorker extends Task<Void>
 	private void playlistAction()
 	{
 		// Add video to playlist
-		if (queue.parent(Playlist.class) != null)
+		if (upload.getAll(Playlist.class) != null)
 		{
-			playlistService.addLatestVideoToPlaylist(queue.parent(Playlist.class), queue.getString("videoId"));
+			for (final Playlist playlist : upload.getAll(Playlist.class))
+			{
+				playlistService.addLatestVideoToPlaylist(playlist, upload.getString("videoId"));
+			}
 		}
 	}
 
@@ -335,39 +338,39 @@ public class UploadWorker extends Task<Void>
 
 	private void replacePlaceholders()
 	{
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(queue.getString("file"), queue.parent(Playlist.class),
-				queue.getInteger("number"));
-		queue.setString("title", extendedPlaceholders.replace(queue.getString("title")));
-		queue.setString("description", extendedPlaceholders.replace(queue.getString("description")));
-		queue.setString("keywords", extendedPlaceholders.replace(queue.getString("keywords")));
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), upload.parent(Playlist.class),
+				upload.getInteger("number"));
+		upload.setString("title", extendedPlaceholders.replace(upload.getString("title")));
+		upload.setString("description", extendedPlaceholders.replace(upload.getString("description")));
+		upload.setString("keywords", extendedPlaceholders.replace(upload.getString("keywords")));
 
 		// replace important placeholders NOW
 		for (final Model placeholder : Placeholder.findAll())
 		{
-			queue.setString("title",
-							queue.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
-																placeholder.getString("replacement")));
-			queue.setString("description",
-							queue.getString("description").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+			upload.setString(	"title",
+								upload.getString("title").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
 																		placeholder.getString("replacement")));
-			queue.setString("keywords",
-							queue.getString("keywords").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
-																	placeholder.getString("replacement")));
+			upload.setString(	"description",
+								upload.getString("description").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+																			placeholder.getString("replacement")));
+			upload.setString(	"keywords",
+								upload.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+																		placeholder.getString("replacement")));
 		}
-		queue.setString("keywords", TagParser.parseAll(queue.getString("keywords")));
-		queue.setString("keywords", queue.getString("keywords").replaceAll("\"", ""));
+		upload.setString("keywords", TagParser.parseAll(upload.getString("keywords")));
+		upload.setString("keywords", upload.getString("keywords").replaceAll("\"", ""));
 	}
 
-	public void run(final Queue queue)
+	public void run(final Upload queue)
 	{
-		this.queue = queue;
+		upload = queue;
 	}
 
 	private void setFailedStatus(final String status)
 	{
-		queue.setBoolean("failed", true);
-		queue.set("started", null);
-		queue.saveIt();
+		upload.setBoolean("failed", true);
+		upload.set("started", null);
+		upload.saveIt();
 		uploadProgress.failed = true;
 		uploadProgress.status = status;
 	}
@@ -385,7 +388,7 @@ public class UploadWorker extends Task<Void>
 
 		if (uploadProgress == null)
 		{
-			uploadProgress = new UploadProgress(queue, fileSize);
+			uploadProgress = new UploadProgress(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 
@@ -395,8 +398,8 @@ public class UploadWorker extends Task<Void>
 		try
 		{
 			// Building PUT Request for chunk data
-			final HttpURLConnection request = new Request.Builder(queue.getString("uploadurl"), Method.POST).headers(ImmutableMap.of(	"Content-Type",
-																																		queue.getString("mimetype"),
+			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(ImmutableMap.of(	"Content-Type",
+																																		upload.getString("mimetype"),
 																																		"Content-Range",
 																																		String.format(	"bytes %d-%d/%d",
 																																						start,
@@ -404,7 +407,7 @@ public class UploadWorker extends Task<Void>
 																																						fileToUpload.length())))
 					.buildHttpUrlConnection();
 
-			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
+			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(upload.parent(Account.class)));
 
 			// Input
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
@@ -425,8 +428,8 @@ public class UploadWorker extends Task<Void>
 					case 200:
 						throw new UploadException("Received 200 response during resumable uploading");
 					case 201:
-						queue.setString("videoid", resumeableManager.parseVideoId(InputStreams.toString(request.getInputStream())));
-						queue.saveIt();
+						upload.setString("videoid", resumeableManager.parseVideoId(InputStreams.toString(request.getInputStream())));
+						upload.saveIt();
 						currentStatus = STATUS.POSTPROCESS;
 						break;
 					case 308:

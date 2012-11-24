@@ -9,21 +9,21 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 
 public class UploadProgress
 {
 	private double			diffBytes;
 	private long			diffTime;
 	private final double	fileSize;
-	public final Queue		queue;
+	public final Upload		queue;
 	private long			time;
 	private double			totalBytesUploaded;
 	public boolean			failed;
 	public boolean			done;
 	public String			status;
 
-	public UploadProgress(final Queue queue, final double fileSize)
+	public UploadProgress(final Upload queue, final double fileSize)
 	{
 		this.queue = queue;
 		this.fileSize = fileSize;
@@ -44,7 +44,7 @@ public class UploadProgress
 		return fileSize;
 	}
 
-	public Queue getQueue()
+	public Upload getQueue()
 	{
 		return queue;
 	}

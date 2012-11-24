@@ -27,7 +27,7 @@ import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
@@ -66,7 +66,7 @@ public class Uploader
 		});
 	}
 
-	public void abort(final Queue queue)
+	public void abort(final Upload queue)
 	{
 		EventBus.publish(Uploader.ABORT, queue);
 	}
@@ -109,7 +109,7 @@ public class Uploader
 
 		if (inProgressProperty.get() && hasFreeUploadSpace())
 		{
-			final Queue polled = Queue.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
+			final Upload polled = Upload.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
 			if (polled != null)
 			{
 				if (polled.parent(Account.class) == null)
@@ -140,7 +140,7 @@ public class Uploader
 		startTimeCheckerFlag = false;
 	}
 
-	private void uploadFinished(final Queue queue)
+	private void uploadFinished(final Upload queue)
 	{
 		if (!Base.hasConnection())
 		{
@@ -148,7 +148,7 @@ public class Uploader
 		}
 		runningUploads--;
 
-		final long leftUploads = Queue.count("archived = false AND failed = false");
+		final long leftUploads = Upload.count("archived = false AND failed = false");
 		logger.info("Upload finished: {}; {}", queue.getString("title"), queue.getString("videoid"));
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
@@ -195,7 +195,7 @@ public class Uploader
 				while (!isCancelled() && startTimeCheckerFlag)
 				{
 
-					if ((Queue.count("archived = false AND started < NOW() AND inprogress = false") != 0))
+					if ((Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0))
 					{
 						start();
 					}
@@ -228,7 +228,7 @@ public class Uploader
 	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
 	public void onUploadAdded(final String topic, final Model model)
 	{
-		if (model instanceof Queue)
+		if (model instanceof Upload)
 		{
 			sendUpload();
 		}

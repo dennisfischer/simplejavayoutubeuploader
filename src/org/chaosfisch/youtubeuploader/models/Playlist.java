@@ -12,9 +12,7 @@ package org.chaosfisch.youtubeuploader.models;
 import org.bushe.swing.event.EventBus;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.annotations.Table;
 
-@Table("PLAYLISTS")
 public class Playlist extends Model implements ModelEvents
 {
 

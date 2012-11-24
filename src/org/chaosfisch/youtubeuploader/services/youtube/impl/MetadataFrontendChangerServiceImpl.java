@@ -46,7 +46,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Queue;
+import org.chaosfisch.youtubeuploader.models.Upload;
 
 public class MetadataFrontendChangerServiceImpl
 {
@@ -171,9 +171,9 @@ public class MetadataFrontendChangerServiceImpl
 
 	final DefaultHttpClient	client	= new DefaultHttpClient();
 
-	private final Queue		queue;
+	private final Upload		queue;
 
-	public MetadataFrontendChangerServiceImpl(final Queue queue)
+	public MetadataFrontendChangerServiceImpl(final Upload queue)
 	{
 		this.queue = queue;
 		client.setRedirectStrategy(new DefaultRedirectStrategy() {

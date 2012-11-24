@@ -11,7 +11,7 @@
 
 <fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="972.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.UploadController">
   <children>
-    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <Accordion GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2147483647">
           <expandedPane>
@@ -19,9 +19,9 @@
               <content>
                 <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
-                    <GridPane fx:id="extendedSettingsGrid" hgap="3.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" vgap="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <GridPane fx:id="extendedSettingsGrid" gridLinesVisible="false" hgap="5.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0">
                       <children>
-                        <Label text="%label.preset" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="%label.templates" GridPane.columnIndex="0" GridPane.rowIndex="0">
                           <GridPane.margin>
                             <Insets fx:id="x1" />
                           </GridPane.margin>
@@ -36,9 +36,9 @@
                         <Label text="%label.license" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="10" />
                         <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="11" />
                         <Label text="%label.release" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="12" />
-                        <Button fx:id="savePreset" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#savePreset" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="0" />
-                        <Button fx:id="removePreset" mnemonicParsing="false" onAction="#removePreset" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="0" />
-                        <ChoiceBox fx:id="presetList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.margin="$x1" GridPane.rowIndex="0" />
+                        <Button fx:id="saveTemplate" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#saveTemplate" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="0" />
+                        <Button fx:id="removeTemplate" mnemonicParsing="false" onAction="#removeTemplate" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="0" />
+                        <ChoiceBox fx:id="templateList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.margin="$x1" GridPane.rowIndex="0" />
                         <TextField fx:id="uploadDefaultdir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="2" />
                         <TextField fx:id="uploadEnddir" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="3" />
                         <Separator GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
@@ -60,6 +60,9 @@
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                       </columnConstraints>
+                      <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                      </padding>
                       <rowConstraints>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
@@ -123,7 +126,7 @@
             </TitledPane>
           </panes>
         </Accordion>
-        <GridPane id="grid" minHeight="-Infinity" minWidth="-Infinity" snapToPixel="true" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <GridPane id="grid" minHeight="-Infinity" minWidth="-Infinity" snapToPixel="true" styleClass="grid" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <children>
             <Label text="%label.file" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Label text="%label.playlist" GridPane.columnIndex="0" GridPane.rowIndex="8" />
@@ -152,7 +155,7 @@
             <Button fx:id="addUpload" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addUpload" text="%button.addUpload" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
             <ChoiceBox fx:id="uploadFile" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="0" />
             <Button fx:id="openFiles" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#openFiles" text="%button.searchFile" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-            <TextField id="uploadTitle" fx:id="previewTitle" disable="true" editable="false" focusTraversable="false" style="-fx-background-color: #e7e7e7&#10;;&#10;" text="" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+            <TextField id="uploadTitle" fx:id="previewTitle" disable="false" editable="false" focusTraversable="false" style="-fx-background-color: #cccccc&#10;" text="" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
           </children>
           <columnConstraints>
             <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-1.0" />

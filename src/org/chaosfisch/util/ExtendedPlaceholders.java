@@ -23,7 +23,7 @@ public class ExtendedPlaceholders
 	/**
 	 * The file for the {file} placeholder
 	 */
-	private final String				file;
+	private String						file;
 
 	/**
 	 * Custom user defined placeholders
@@ -33,12 +33,12 @@ public class ExtendedPlaceholders
 	/**
 	 * The number which modifies {number} placeholder
 	 */
-	private final int					number;
+	private int							number;
 
 	/**
 	 * The playlist for the {playlist} and {number} placeholders
 	 */
-	private final Playlist				playlist;
+	private Playlist					playlist;
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
@@ -55,6 +55,10 @@ public class ExtendedPlaceholders
 		this.file = file;
 		this.playlist = playlist;
 		this.number = number;
+	}
+
+	public ExtendedPlaceholders()
+	{
 	}
 
 	/**
@@ -79,6 +83,7 @@ public class ExtendedPlaceholders
 	 */
 	public String replace(String input)
 	{
+		if (input == null) { return ""; }
 		if (playlist != null)
 		{
 			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getString("title"));
@@ -95,6 +100,7 @@ public class ExtendedPlaceholders
 				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getInteger("number") + 1 + number));
 			}
 		}
+
 		int index = file.lastIndexOf(".");
 		if (index == -1)
 		{
@@ -121,5 +127,56 @@ public class ExtendedPlaceholders
 	private String zeroFill(final int number, final int width)
 	{
 		return String.format(String.format("%%0%dd", width), number);
+	}
+
+	/**
+	 * @return the file
+	 */
+	public final String getFile()
+	{
+		return file;
+	}
+
+	/**
+	 * @param file
+	 *            the file to set
+	 */
+	public final void setFile(final String file)
+	{
+		this.file = file;
+	}
+
+	/**
+	 * @return the number
+	 */
+	public final int getNumber()
+	{
+		return number;
+	}
+
+	/**
+	 * @param number
+	 *            the number to set
+	 */
+	public final void setNumber(final int number)
+	{
+		this.number = number;
+	}
+
+	/**
+	 * @return the playlist
+	 */
+	public final Playlist getPlaylist()
+	{
+		return playlist;
+	}
+
+	/**
+	 * @param playlist
+	 *            the playlist to set
+	 */
+	public final void setPlaylist(final Playlist playlist)
+	{
+		this.playlist = playlist;
 	}
 }
