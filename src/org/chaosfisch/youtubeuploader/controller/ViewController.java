@@ -22,6 +22,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -80,7 +83,37 @@ public class ViewController implements Initializable
 
 		// initialize your logic here: all @FXML variables will have been
 		// injected
+	}
 
+	// Handler for AnchorPane[fx:id="content_pane"] onDragDropped
+	public void fileDragDropped(final DragEvent event)
+	{
+		/* data dropped */
+		final Dragboard db = event.getDragboard();
+
+		if (db.hasFiles())
+		{
+			uploadController.addUploadFiles(db.getFiles());
+			event.setDropCompleted(true);
+		} else
+		{
+			event.setDropCompleted(false);
+		}
+
+		event.consume();
+	}
+
+	// Handler for AnchorPane[fx:id="content_pane"] onDragOver
+	public void fileDragOver(final DragEvent event)
+	{
+		/* data is dragged over the target */
+		final Dragboard db = event.getDragboard();
+		if (db.hasFiles())
+		{
+			event.acceptTransferModes(TransferMode.COPY);
+		}
+
+		event.consume();
 	}
 
 	// Handler for MenuItem[fx:id="menuAddPlaylist"] onAction

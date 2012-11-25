@@ -26,10 +26,10 @@ import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
-import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.RequestHelper;
-import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.XStreamHelper;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.Request.Method;
+import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
@@ -63,13 +63,14 @@ public class PlaylistServiceImpl implements PlaylistService
 
 			final HttpUriRequest request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getString("pkey")),
 					Method.POST).entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
+					.buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestHelper.execute(request);
 
-			logger.debug("Video added to playlist! Videoid: {}, Playlist: {}, Code: {}", videoId, playlist.getString("title"), response
-					.getStatusLine().getStatusCode());
+			logger.debug(	"Video added to playlist! Videoid: {}, Playlist: {}, Code: {}", videoId, playlist.getString("title"),
+							response.getStatusLine().getStatusCode());
 		} catch (final IOException e)
 		{
 			logger.warn("Failed adding video to playlist.", e);
@@ -105,9 +106,10 @@ public class PlaylistServiceImpl implements PlaylistService
 		HttpResponse response = null;
 		try
 		{
-			final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED, Method.POST)
-					.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
+			final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED, Method.POST).entity(	new StringEntity(atomData,
+																														Charset.forName("UTF-8")))
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
+					.buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestHelper.execute(request);
@@ -169,11 +171,29 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.setString("url", entry.title);
 							playlist.setInteger("number", entry.playlistCountHint);
 							playlist.setString("summary", entry.playlistSummary);
+							String thumbnail = null;
+							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null) && (entry.mediaGroup.thumbnails.size() > 2))
+							{
+								thumbnail = entry.mediaGroup.thumbnails.get(2).url.substring(	0,
+																								entry.mediaGroup.thumbnails.get(2).url.lastIndexOf('/'))
+										.concat("/maxresdefault.jpg");
+							}
+
+							playlist.set("thumbnail", thumbnail);
 							playlist.save();
 						} else
 						{
-							Playlist.createIt("title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number", entry.playlistCountHint,
-									"summary", entry.playlistSummary, "account_id", account.getLongId());
+							String thumbnail = null;
+							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null) && (entry.mediaGroup.thumbnails.size() > 2))
+							{
+								thumbnail = entry.mediaGroup.thumbnails.get(2).url.substring(	0,
+																								entry.mediaGroup.thumbnails.get(2).url.lastIndexOf('/'))
+										.concat("/maxresdefault.jpg");
+							}
+
+							Playlist.createIt(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",
+												entry.playlistCountHint,
+												"summary", entry.playlistSummary, "thumbnail", thumbnail, "account_id", account.getLongId());
 						}
 					}
 
@@ -181,8 +201,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					final Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(System.currentTimeMillis());
 					cal.add(Calendar.MINUTE, -5);
-					for (final Model model : Playlist
-							.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()), account.getLongId()))
+					for (final Model model : Playlist.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()), account.getLongId()))
 					{
 						model.delete();
 					}

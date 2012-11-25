@@ -7,6 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jfx-dialogs.jar" sourcepath="lib/jfx-dialogs-src.jar"/>
+	<classpathentry kind="lib" path="lib/gridfx-0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="at.bestsolution.efxclipse.tooling.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>

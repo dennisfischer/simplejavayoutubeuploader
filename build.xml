@@ -18,6 +18,7 @@
 		<path location="${user.home}\.m2\repository\org\bushe\eventbus\1.4\eventbus-1.4.jar" />
 		<path location="${user.home}\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar" />
 		<path location="lib\jfx-dialogs.jar" />
+		<path location="lib\gridfx-0.1-SNAPSHOT.jar" />
 		<path location="${user.home}\.m2\repository\commons-codec\commons-codec\1.6\commons-codec-1.6.jar" />
 		<path location="${user.home}\.m2\repository\com\google\inject\guice\3.0\guice-3.0.jar" />
 		<path location="${user.home}\.m2\repository\org\javalite\javalite-common\1.4.5\javalite-common-1.4.5.jar" />

@@ -4,6 +4,7 @@
 <?import java.util.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
@@ -11,11 +12,40 @@
 
 <fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="972.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.UploadController">
   <children>
-    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <Accordion GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2147483647">
           <expandedPane>
-            <TitledPane id="x1" fx:id="x3" text="%accordion.advanced">
+            <TitledPane fx:id="x2" animated="true" collapsible="true" expanded="true" styleClass="first-titled-pane" text="%accordion.playlists">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <GridPane fx:id="playlistGrid" gridLinesVisible="false" prefHeight="406.0" prefWidth="527.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <children>
+                        <Button fx:id="refreshPlaylists" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#refreshPlaylists" style="&#10;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Slider fx:id="gridWidthSlider" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ScrollPane fx:id="playlistScrollpane" content="$null" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" />
+                      </children>
+                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
+                      </columnConstraints>
+                      <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                      </padding>
+                      <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                    </GridPane>
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
+          </expandedPane>
+          <panes>
+            <TitledPane id="" collapsible="true" text="%accordion.advanced">
               <content>
                 <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
@@ -83,9 +113,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-          </expandedPane>
-          <panes>
-            <fx:reference source="x3" />
+            <fx:reference source="x2" />
             <TitledPane text="%accordion.partner">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -105,7 +133,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane fx:id="x2" text="%accordion.placeholder">
+            <TitledPane id="" fx:id="x3" text="%accordion.placeholder">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -130,7 +158,6 @@
           <children>
             <Label text="%label.file" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Label text="%label.playlist" GridPane.columnIndex="0" GridPane.rowIndex="8" />
-            <CheckBox fx:id="playlistCheckbox" alignment="CENTER_RIGHT" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" prefWidth="14.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
             <Label text="%label.description" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP" />
             <Label text="%label.category" GridPane.columnIndex="0" GridPane.rowIndex="4" />
             <Label text="%label.title" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -146,22 +173,20 @@
               </content>
             </ScrollPane>
             <TextField fx:id="uploadTitle" promptText="Enter the title" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-            <Button fx:id="refreshPlaylists" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#refreshPlaylists" style="&#10;" GridPane.columnIndex="5" GridPane.rowIndex="8" />
             <Label text="%label.account" GridPane.columnIndex="0" GridPane.rowIndex="7" />
             <ChoiceBox fx:id="accountList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
-            <ChoiceBox fx:id="playlistList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="8" />
             <ChoiceBox fx:id="uploadCategory" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <Button fx:id="resetUpload" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetUpload" style="&#10;&#10;" text="%button.reset" GridPane.columnIndex="4" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
+            <Button fx:id="resetUpload" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetUpload" style="&#10;&#10;" text="%button.reset" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
             <Button fx:id="addUpload" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addUpload" text="%button.addUpload" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-            <ChoiceBox fx:id="uploadFile" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="0" />
-            <Button fx:id="openFiles" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#openFiles" text="%button.searchFile" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+            <ChoiceBox fx:id="uploadFile" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0" />
+            <Button fx:id="openFiles" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#openFiles" text="%button.searchFile" GridPane.columnIndex="4" GridPane.rowIndex="0" />
             <TextField id="uploadTitle" fx:id="previewTitle" disable="false" editable="false" focusTraversable="false" style="-fx-background-color: #cccccc&#10;" text="" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+            <Region fx:id="playlistDropzone" onDragDropped="#playlistDragDropped" onDragEntered="#playlistDragEntered" onDragExited="#playlistDragExited" onDragOver="#playlistDragOver" prefHeight="-1.0" prefWidth="-1.0" style="" styleClass="dropzone" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
           </children>
           <columnConstraints>
             <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-1.0" />
+            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" />
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-1.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
-            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-1.0" />
             <ColumnConstraints fillWidth="true" halignment="LEFT" hgrow="ALWAYS" maxWidth="-1.0" minWidth="-1.0" />
             <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="37.0" />
           </columnConstraints>
@@ -177,7 +202,7 @@
             <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>

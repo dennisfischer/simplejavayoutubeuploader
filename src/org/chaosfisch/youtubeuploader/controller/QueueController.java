@@ -50,7 +50,7 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
-import org.chaosfisch.util.TableViewUtil;
+import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
@@ -390,7 +390,7 @@ public class QueueController implements Initializable
 				{
 					final int index = queueTableview.getItems().indexOf(model);
 					queueTableview.getItems().set(index, model);
-					TableViewUtil.refresh(queueTableview, queueTableview.getItems());
+					RefresherUtil.refresh(queueTableview, queueTableview.getItems());
 				}
 			}
 		});
