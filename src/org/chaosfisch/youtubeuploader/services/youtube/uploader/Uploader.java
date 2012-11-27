@@ -17,7 +17,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 
 import javax.sql.DataSource;
 
@@ -25,6 +24,7 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.Computer;
+import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Upload;
@@ -51,6 +51,7 @@ public class Uploader
 	private final ExecutorService	executorService			= Executors.newFixedThreadPool(5);
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	@Inject private Injector		injector;
+	@Inject private DataSource		datasource;
 
 	public Uploader()
 	{
@@ -109,7 +110,7 @@ public class Uploader
 
 		if (inProgressProperty.get() && hasFreeUploadSpace())
 		{
-			final Upload polled = Upload.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, sequence ASC, failed ASC");
+			final Upload polled = Upload.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
 			if (polled != null)
 			{
 				if (polled.parent(Account.class) == null)
@@ -187,12 +188,16 @@ public class Uploader
 
 	public void runStarttimeChecker()
 	{
-		final Task<Void> task = new Task<Void>() {
+		ThreadUtil.doInBackground(new Runnable() {
 
 			@Override
-			protected Void call() throws Exception
+			public void run()
 			{
-				while (!isCancelled() && startTimeCheckerFlag)
+				if (!Base.hasConnection())
+				{
+					Base.open(datasource);
+				}
+				while (!Thread.interrupted() && startTimeCheckerFlag)
 				{
 
 					if ((Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0))
@@ -206,13 +211,8 @@ public class Uploader
 					} catch (final InterruptedException e)
 					{}
 				}
-				return null;
 			}
-
-		};
-		final Thread thread = new Thread(task);
-		thread.setDaemon(true);
-		thread.start();
+		});
 	}
 
 	@EventTopicSubscriber(topic = Uploader.PROGRESS)

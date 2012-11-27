@@ -338,7 +338,8 @@ public class UploadWorker extends Task<Void>
 
 	private void replacePlaceholders()
 	{
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), upload.parent(Playlist.class),
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), null,
+		// upload.parent(Playlist.class),
 				upload.getInteger("number"));
 		upload.setString("title", extendedPlaceholders.replace(upload.getString("title")));
 		upload.setString("description", extendedPlaceholders.replace(upload.getString("description")));
@@ -348,10 +349,10 @@ public class UploadWorker extends Task<Void>
 		for (final Model placeholder : Placeholder.findAll())
 		{
 			upload.setString(	"title",
-								upload.getString("title").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+								upload.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
 																		placeholder.getString("replacement")));
 			upload.setString(	"description",
-								upload.getString("description").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
+								upload.getString("description").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
 																			placeholder.getString("replacement")));
 			upload.setString(	"keywords",
 								upload.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
@@ -398,7 +399,7 @@ public class UploadWorker extends Task<Void>
 		try
 		{
 			// Building PUT Request for chunk data
-			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(ImmutableMap.of(	"Content-Type",
+			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(	ImmutableMap.of("Content-Type",
 																																		upload.getString("mimetype"),
 																																		"Content-Range",
 																																		String.format(	"bytes %d-%d/%d",

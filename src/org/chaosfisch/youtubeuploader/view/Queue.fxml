@@ -12,7 +12,7 @@
 
 <fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
   <children>
-    <GridPane id="grid" fx:id="queueActionsGridpane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="grid" fx:id="queueActionsGridpane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" minWidth="0.0" mnemonicParsing="false" onAction="#startQueue" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <GridPane.margin>

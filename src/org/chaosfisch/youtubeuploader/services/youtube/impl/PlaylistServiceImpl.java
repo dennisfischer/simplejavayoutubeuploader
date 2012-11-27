@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -33,6 +35,7 @@ import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +51,7 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Inject private AuthTokenHelper	authTokenHelper;
 	@Inject private RequestSigner	requestSigner;
 	private final Logger			logger								= LoggerFactory.getLogger(getClass());
+	@Inject private DataSource		datasource;
 
 	@Override
 	public void addLatestVideoToPlaylist(final Playlist playlist, final String videoId)
@@ -140,6 +144,10 @@ public class PlaylistServiceImpl implements PlaylistService
 	@Override
 	public void synchronizePlaylists(final List<Account> accounts)
 	{
+		if (!Base.hasConnection())
+		{
+			Base.open(datasource);
+		}
 		logger.info("Synchronizing playlists.");
 
 		for (final Account account : accounts)
@@ -171,6 +179,7 @@ public class PlaylistServiceImpl implements PlaylistService
 							playlist.setString("url", entry.title);
 							playlist.setInteger("number", entry.playlistCountHint);
 							playlist.setString("summary", entry.playlistSummary);
+							playlist.setInteger("account_id", account.getLongId());
 							String thumbnail = null;
 							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null) && (entry.mediaGroup.thumbnails.size() > 2))
 							{

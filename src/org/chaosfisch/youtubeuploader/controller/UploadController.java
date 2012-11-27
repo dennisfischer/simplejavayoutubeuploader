@@ -32,6 +32,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -46,11 +47,13 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
+
+import javax.sql.DataSource;
+
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
 
@@ -60,6 +63,7 @@ import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.util.TagParser;
+import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.models.Account;
@@ -70,6 +74,7 @@ import org.chaosfisch.youtubeuploader.models.Template;
 import org.chaosfisch.youtubeuploader.models.UploadBuilder;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
@@ -99,14 +104,14 @@ public class UploadController implements Initializable
 	@FXML// fx:id="openFiles"
 	private Button						openFiles;
 
-	@FXML// fx:id="playlistDropzone"
-	private Region						playlistDropzone;
+	@FXML// fx:id="playlistDropScrollpane"
+	private ScrollPane					playlistDropScrollpane;
 
 	@FXML// fx:id="playlistGrid"
 	private GridPane					playlistGrid;
 
-	@FXML// fx:id="playlistScrollpane"
-	private ScrollPane					playlistScrollpane;
+	@FXML// fx:id="playlistSourceScrollpane"
+	private ScrollPane					playlistSourceScrollpane;
 
 	@FXML// fx:id="previewTitle"
 	private TextField					previewTitle;
@@ -150,6 +155,9 @@ public class UploadController implements Initializable
 	@FXML// fx:id="uploadFile"
 	private ChoiceBox<File>				uploadFile;
 
+	@FXML// fx:id="uploadGrid"
+	private GridPane					uploadGrid;
+
 	@FXML// fx:id="uploadLicense"
 	private ChoiceBox<String>			uploadLicense;
 
@@ -183,94 +191,21 @@ public class UploadController implements Initializable
 	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
 
 	private final GridView<Model>		playlistSourcezone	= new GridView<>();
+	private final GridView<Model>		playlistDropzone	= new GridView<>();
 
 	@Inject private PlaylistService		playlistService;
 	@Inject private CategoryService		categoryService;
 	@Inject private FileChooser			fileChooser;
 	@Inject private DirectoryChooser	directoryChooser;
-
+	@Inject private DataSource			dataSource;
 	private final ObservableList<Model>	accountItems		= FXCollections.observableArrayList();
 	private final ObservableList<Model>	playlistItems		= FXCollections.observableArrayList();
 	private final ObservableList<Model>	templateItems		= FXCollections.observableArrayList();
-	private final ObservableList<Model>	playlistDropList	= FXCollections.observableArrayList();													;
-
-	private void _resetUpload(final Model template)
-	{
-		if (!(template instanceof Template)) { return; }
-		uploadCategory.getSelectionModel().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
-		uploadComment.getSelectionModel().select(template.getInteger("comment") != null ? template.getInteger("comment") : 0);
-		uploadCommentvote.setSelected(template.getBoolean("commentvote"));
-		uploadDefaultdir.setText(template.getString("defaultdir"));
-		uploadDescription.setText(template.getString("description"));
-		uploadEmbed.setSelected(template.getBoolean("embed"));
-		uploadEnddir.setText(template.getString("enddir"));
-		uploadLicense.getSelectionModel().select(template.getInteger("license") != null ? template.getInteger("license") : 0);
-		uploadMobile.setSelected(template.getBoolean("mobile"));
-		uploadRate.setSelected(template.getBoolean("rate"));
-		uploadTags.setText(template.getString("keywords"));
-		uploadTitle.setText(template.getString("title"));
-		uploadVideoresponse.getSelectionModel().select(template.getInteger("videoresponse") != null ? template.getInteger("videoresponse") : 1);
-		uploadVisibility.getSelectionModel().select(template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
-		number.setValue(template.getInteger("number") != null ? template.getInteger("number") : 0);
-		if (template.parent(Account.class) != null)
-		{
-			accountList.getSelectionModel().select(template.parent(Account.class));
-		}
-		playlistDropList.clear();
-		playlistDropList.addAll(template.getAll(Playlist.class));
-	}
+	private final ObservableList<Model>	playlistDropList	= FXCollections.observableArrayList();
 
 	public void addPlaceholder(final String placeholder, final String replacement)
 	{
 		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
-	}
-
-	// Handler for Button[fx:id="addUpload"] onAction
-	public void addUpload(final ActionEvent event)
-	{
-		final String validation = validate();
-		validationText.setText(validation);
-		if (!validation.equals(I18nHelper.message("validation.info.added")))
-		{
-			validationText.setId("validation_error");
-			return;
-		}
-		validationText.setId("validation_passed");
-
-		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
-				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
-				.setCommentvote(uploadCommentvote.isSelected())
-				.setDescription(uploadDescription.getText().trim())
-				.setEmbed(uploadEmbed.isSelected())
-				.setEnddir(uploadEnddir.getText().trim())
-				.setLicense(uploadLicense.getSelectionModel().getSelectedIndex())
-				.setMobile(uploadMobile.isSelected())
-				.setNumber(0)
-				.setRate(uploadRate.isSelected())
-				.setTags(uploadTags.getText().trim())
-				.setVideoresponse(uploadVideoresponse.getSelectionModel().getSelectedIndex())
-				.setVisibility(uploadVisibility.getSelectionModel().getSelectedIndex());
-
-		for (final Model playlist : playlistDropList)
-		{
-			uploadBuilder.addPlaylist((Playlist) playlist);
-		}
-
-		if (starttime.getValue().getTimeInMillis() > System.currentTimeMillis())
-		{
-			uploadBuilder.setStarted(new Date(starttime.getValue().getTimeInMillis()));
-		}
-
-		if (releasetime.getValue().getTimeInMillis() > System.currentTimeMillis())
-		{
-			final Calendar calendar = releasetime.getValue();
-			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
-			final int mod = unroundedMinutes % 30;
-			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
-			uploadBuilder.setRelease(new Date(calendar.getTimeInMillis()));
-		}
-
-		uploadBuilder.build();
 	}
 
 	@Override
@@ -286,7 +221,7 @@ public class UploadController implements Initializable
 		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistDropzone != null : "fx:id=\"playlistDropzone\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistGrid != null : "fx:id=\"playlistGrid\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistScrollpane != null : "fx:id=\"playlistScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistSourceScrollpane != null : "fx:id=\"playlistScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert previewTitle != null : "fx:id=\"previewTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert removeTemplate != null : "fx:id=\"removeTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -326,7 +261,9 @@ public class UploadController implements Initializable
 		extendedSettingsGrid.add(number, 1, 1, GridPane.REMAINING, 1);
 		extendedSettingsGrid.add(starttime, 1, 11, GridPane.REMAINING, 1);
 		extendedSettingsGrid.add(releasetime, 1, 12, GridPane.REMAINING, 1);
-		playlistScrollpane.setContent(playlistSourcezone);
+
+		playlistSourceScrollpane.setContent(playlistSourcezone);
+		playlistDropScrollpane.setContent(playlistDropzone);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -354,11 +291,86 @@ public class UploadController implements Initializable
 			}
 		});
 
+		final EventHandler<DragEvent> onDragOver = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(final DragEvent event)
+			{
+				if ((event.getGestureSource() != event.getTarget()) && event.getDragboard().hasString())
+				{
+					event.acceptTransferModes(TransferMode.ANY);
+				}
+				event.consume();
+			}
+		};
+
+		final EventHandler<DragEvent> onDragDropped = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(final DragEvent event)
+			{
+				final Dragboard db = event.getDragboard();
+				boolean success = false;
+				if (db.hasString())
+				{
+					if ((((Node) event.getTarget()).getParent() == playlistDropzone) && (event.getGestureSource() != playlistDropzone))
+					{
+						movePlaylistToDropzone(Integer.parseInt(db.getString()));
+						success = true;
+					} else if ((((Node) event.getTarget()).getParent() == playlistSourcezone) && (event.getGestureSource() != playlistSourcezone))
+					{
+						removePlaylistFromDropzone(Integer.parseInt(db.getString()));
+						success = true;
+					}
+
+				}
+				event.setDropCompleted(success);
+				event.consume();
+			}
+		};
+
+		final EventHandler<DragEvent> onDragEntered = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(final DragEvent event)
+			{
+				if ((((event.getGestureSource() != event.getTarget()) && (event.getTarget() == playlistDropzone)) || (event.getTarget() == playlistSourcezone))
+						&& event.getDragboard().hasString())
+				{
+
+					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
+					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dragentered");
+				}
+
+				event.consume();
+			}
+		};
+
+		final EventHandler<DragEvent> onDragExited = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(final DragEvent event)
+			{
+				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
+				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dropzone");
+				event.consume();
+			}
+		};
+
+		playlistDropzone.setOnDragDropped(onDragDropped);
+		playlistDropzone.setOnDragEntered(onDragEntered);
+		playlistDropzone.setOnDragExited(onDragExited);
+		playlistDropzone.setOnDragOver(onDragOver);
+
+		playlistSourcezone.setOnDragDropped(onDragDropped);
+		playlistSourcezone.setOnDragEntered(onDragEntered);
+		playlistSourcezone.setOnDragExited(onDragExited);
+		playlistSourcezone.setOnDragOver(onDragOver);
 	}
 
 	private void initCustomFactories()
 	{
-		playlistSourcezone.setCellFactory(new Callback<GridView<Model>, GridCell<Model>>() {
+		final Callback<GridView<Model>, GridCell<Model>> playlistSourceCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
 			public GridCell<Model> call(final GridView<Model> arg0)
@@ -392,8 +404,45 @@ public class UploadController implements Initializable
 
 				return cell;
 			}
-		});
+		};
 
+		final Callback<GridView<Model>, GridCell<Model>> playlistDropCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
+
+			@Override
+			public GridCell<Model> call(final GridView<Model> arg0)
+			{
+				final PlaylistGridCell cell = new PlaylistGridCell();
+
+				cell.setOnDragDetected(new EventHandler<Event>() {
+
+					@Override
+					public void handle(final Event event)
+					{
+						final Dragboard db = playlistDropzone.startDragAndDrop(TransferMode.ANY);
+						final ClipboardContent content = new ClipboardContent();
+						content.putString(playlistDropList.indexOf(cell.itemProperty().get()) + "");
+						db.setContent(content);
+						event.consume();
+					}
+				});
+
+				cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(final MouseEvent event)
+					{
+						if (event.getClickCount() == 2)
+						{
+							removePlaylistFromDropzone(playlistDropList.indexOf(cell.itemProperty().get()));
+						}
+					}
+				});
+
+				return cell;
+			}
+		};
+		playlistSourcezone.setCellFactory(playlistSourceCellFactory);
+		playlistDropzone.setCellFactory(playlistDropCellFactory);
 	}
 
 	private void initSelection()
@@ -402,9 +451,22 @@ public class UploadController implements Initializable
 		uploadComment.getSelectionModel().selectFirst();
 		uploadLicense.getSelectionModel().selectFirst();
 		uploadVideoresponse.getSelectionModel().selectFirst();
-		uploadCategory.getSelectionModel().selectFirst();
 		accountList.getSelectionModel().selectFirst();
-		templateList.getSelectionModel().selectFirst();
+		ThreadUtil.doInBackground(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				if (!Base.hasConnection())
+				{
+					Base.open(dataSource);
+				}
+				uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
+				uploadCategory.getSelectionModel().selectFirst();
+				templateList.getSelectionModel().selectFirst();
+			}
+		});
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -413,10 +475,9 @@ public class UploadController implements Initializable
 
 		accountItems.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
 		templateItems.addAll(Template.findAll().include(Account.class, Playlist.class));
-		uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
-
 		accountList.setItems(accountItems);
 		playlistSourcezone.setItems(playlistItems);
+		playlistDropzone.setItems(playlistDropList);
 		templateList.setItems(templateItems);
 		uploadFile.setItems(FXCollections.observableArrayList(new File("")));
 		uploadFile.getItems().clear();
@@ -467,7 +528,10 @@ public class UploadController implements Initializable
 		gridWidthSlider.maxProperty().set(2000);
 		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));
 		playlistSourcezone.cellHeightProperty().bind(gridWidthSlider.valueProperty().divide(16));
-
+		playlistDropzone.minWidthProperty().bind(playlistDropScrollpane.widthProperty().subtract(5));
+		playlistDropzone.prefHeightProperty().bind(playlistDropScrollpane.heightProperty());
+		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty().subtract(5));
+		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(5));
 	}
 
 	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
@@ -485,6 +549,7 @@ public class UploadController implements Initializable
 					{
 						accountList.getSelectionModel().selectFirst();
 					}
+					refreshPlaylists(null);
 				} else if (model instanceof Template)
 				{
 					templateItems.add(model);
@@ -515,6 +580,7 @@ public class UploadController implements Initializable
 					{
 						accountList.getSelectionModel().selectFirst();
 					}
+					refreshPlaylists(null);
 				} else if (model instanceof Template)
 				{
 					templateItems.remove(model);
@@ -554,9 +620,58 @@ public class UploadController implements Initializable
 						}
 					}
 					RefresherUtil.refresh(playlistSourcezone, playlistItems);
+					RefresherUtil.refresh(playlistDropzone, playlistDropList);
 				}
 			}
 		});
+	}
+
+	// Handler for Button[fx:id="addUpload"] onAction
+	public void addUpload(final ActionEvent event)
+	{
+		final String validation = validate();
+		validationText.setText(validation);
+		if (!validation.equals(I18nHelper.message("validation.info.added")))
+		{
+			validationText.setId("validation_error");
+			return;
+		}
+		validationText.setId("validation_passed");
+
+		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
+				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
+				.setCommentvote(uploadCommentvote.isSelected())
+				.setDescription(uploadDescription.getText().trim())
+				.setEmbed(uploadEmbed.isSelected())
+				.setEnddir(uploadEnddir.getText().trim())
+				.setLicense(uploadLicense.getSelectionModel().getSelectedIndex())
+				.setMobile(uploadMobile.isSelected())
+				.setNumber(0)
+				.setRate(uploadRate.isSelected())
+				.setTags(uploadTags.getText().trim())
+				.setVideoresponse(uploadVideoresponse.getSelectionModel().getSelectedIndex())
+				.setVisibility(uploadVisibility.getSelectionModel().getSelectedIndex());
+
+		for (final Model playlist : playlistDropList)
+		{
+			uploadBuilder.addPlaylist((Playlist) playlist);
+		}
+
+		if (starttime.getValue().getTimeInMillis() > System.currentTimeMillis())
+		{
+			uploadBuilder.setStarted(new Date(starttime.getValue().getTimeInMillis()));
+		}
+
+		if (releasetime.getValue().getTimeInMillis() > System.currentTimeMillis())
+		{
+			final Calendar calendar = releasetime.getValue();
+			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
+			final int mod = unroundedMinutes % 30;
+			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+			uploadBuilder.setRelease(new Date(calendar.getTimeInMillis()));
+		}
+
+		uploadBuilder.build();
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
@@ -611,7 +726,15 @@ public class UploadController implements Initializable
 	{
 		final Account[] accountArray = new Account[accountItems.size()];
 		accountItems.toArray(accountArray);
-		playlistService.synchronizePlaylists(Arrays.asList(accountArray));
+		ThreadUtil.doInBackground(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				playlistService.synchronizePlaylists(Arrays.asList(accountArray));
+			}
+		});
+
 	}
 
 	// Handler for Button[fx:id="removeTemplate"] onAction
@@ -659,13 +782,14 @@ public class UploadController implements Initializable
 		{
 			template.setParent(accountList.getValue());
 		}
+
 		for (final Playlist playlist : template.getAll(Playlist.class))
 		{
 			template.remove(playlist);
 		}
-		for (final Model playlist : playlistDropList)
+		for (final Object playlist : playlistDropList.toArray())
 		{
-			template.add(playlist);
+			template.add((Model) playlist);
 		}
 		template.saveIt();
 
@@ -704,51 +828,6 @@ public class UploadController implements Initializable
 		return I18nHelper.message("validation.info.added");
 	}
 
-	// Handler for Region[Region[id=null, styleClass=dropzone]] onDragDropped
-	public void playlistDragDropped(final DragEvent event)
-	{
-		final Dragboard db = event.getDragboard();
-		boolean success = false;
-		if (db.hasString())
-		{
-			movePlaylistToDropzone(Integer.parseInt(db.getString()));
-			success = true;
-		}
-		event.setDropCompleted(success);
-		event.consume();
-	}
-
-	// Handler for Region[Region[id=null, styleClass=dropzone]] onDragEntered
-	public void playlistDragEntered(final DragEvent event)
-	{
-		if ((event.getGestureSource() != playlistDropzone) && event.getDragboard().hasString())
-		{
-			playlistDropzone.getStyleClass().clear();
-			playlistDropzone.getStyleClass().add("dragentered");
-		}
-
-		event.consume();
-	}
-
-	// Handler for Region[Region[id=null, styleClass=dropzone]] onDragExited
-	public void playlistDragExited(final DragEvent event)
-	{
-		playlistDropzone.getStyleClass().clear();
-		playlistDropzone.getStyleClass().add("dropzone");
-		event.consume();
-
-	}
-
-	// Handler for Region[Region[id=null, styleClass=dropzone]] onDragOver
-	public void playlistDragOver(final DragEvent event)
-	{
-		if ((event.getGestureSource() != playlistDropzone) && event.getDragboard().hasString())
-		{
-			event.acceptTransferModes(TransferMode.ANY);
-		}
-		event.consume();
-	}
-
 	private void movePlaylistToDropzone(final int model)
 	{
 		if (model >= 0)
@@ -756,6 +835,7 @@ public class UploadController implements Initializable
 			playlistDropList.add(playlistItems.get(model));
 			playlistItems.remove(model);
 			RefresherUtil.refresh(playlistSourcezone, playlistItems);
+			RefresherUtil.refresh(playlistDropzone, playlistDropList);
 		}
 	}
 
@@ -765,6 +845,41 @@ public class UploadController implements Initializable
 		{
 			playlistItems.add(playlistDropList.get(model));
 			playlistDropList.remove(model);
+			RefresherUtil.refresh(playlistSourcezone, playlistItems);
+			RefresherUtil.refresh(playlistDropzone, playlistDropList);
+		}
+	}
+
+	private void _resetUpload(final Model template)
+	{
+		if (!(template instanceof Template)) { return; }
+		uploadCategory.getSelectionModel().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
+		uploadComment.getSelectionModel().select(template.getInteger("comment") != null ? template.getInteger("comment") : 0);
+		uploadCommentvote.setSelected(template.getBoolean("commentvote"));
+		uploadDefaultdir.setText(template.getString("defaultdir"));
+		uploadDescription.setText(template.getString("description"));
+		uploadEmbed.setSelected(template.getBoolean("embed"));
+		uploadEnddir.setText(template.getString("enddir"));
+		uploadLicense.getSelectionModel().select(template.getInteger("license") != null ? template.getInteger("license") : 0);
+		uploadMobile.setSelected(template.getBoolean("mobile"));
+		uploadRate.setSelected(template.getBoolean("rate"));
+		uploadTags.setText(template.getString("keywords"));
+		uploadTitle.setText(template.getString("title"));
+		uploadVideoresponse.getSelectionModel().select(template.getInteger("videoresponse") != null ? template.getInteger("videoresponse") : 1);
+		uploadVisibility.getSelectionModel().select(template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
+		number.setValue(template.getInteger("number") != null ? template.getInteger("number") : 0);
+		if (template.parent(Account.class) != null)
+		{
+			accountList.getSelectionModel().select(template.parent(Account.class));
+		}
+		for (final Object playlist : playlistDropList.toArray())
+		{
+			removePlaylistFromDropzone(playlistDropList.indexOf(playlist));
+		}
+		playlistDropList.clear();
+		for (final Model playlist : template.getAll(Playlist.class))
+		{
+			movePlaylistToDropzone(playlistItems.indexOf(playlist));
 		}
 	}
 }

@@ -81,5 +81,6 @@
 {
 	-fx-border-width: 1px;
 	-fx-border-style: solid;
-	-fx-background-color: lightgray;
+	-fx-border-color: black;
+	-fx-border-insets: 3px 3px 3px 3px;
 }

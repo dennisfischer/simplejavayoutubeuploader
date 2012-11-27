@@ -254,7 +254,7 @@ public class QueueController implements Initializable
 						} else
 						{
 							final Button btnRemove = new Button();
-							btnRemove.setId("removeQueue");
+							btnRemove.setId("removeUpload");
 							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
 
 								@Override
@@ -282,7 +282,7 @@ public class QueueController implements Initializable
 							btnRemove.setDisable(item.getBoolean("inprogress"));
 
 							final Button btnEdit = new Button();
-							btnEdit.setId("editQueue");
+							btnEdit.setId("editUpload");
 							btnEdit.setOnAction(new EventHandler<ActionEvent>() {
 
 								@Override
@@ -295,7 +295,7 @@ public class QueueController implements Initializable
 							btnEdit.setDisable(item.getBoolean("inprogress") || item.getBoolean("archived"));
 
 							final Button btnAbort = new Button("Abbrechen");
-							btnAbort.setId("abortQueue");
+							btnAbort.setId("abortUpload");
 							btnAbort.setOnAction(new EventHandler<ActionEvent>() {
 
 								@Override
@@ -404,14 +404,13 @@ public class QueueController implements Initializable
 			@Override
 			public void run()
 			{
-				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup("#queue-"
-						+ uploadProgress.getQueue().getLongId());
+				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene()
+						.lookup("#queue-" + uploadProgress.getQueue().getLongId());
 				if (progressIndicator == null) { return; }
 				progressIndicator.setProgress(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize());
 
 				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
-				label.setText(String.format("%d MB/%d MB %dkbps",
-											(int) (uploadProgress.getTotalBytesUploaded() / 1048576),
+				label.setText(String.format("%d MB/%d MB %dkbps", (int) (uploadProgress.getTotalBytesUploaded() / 1048576),
 											(int) (uploadProgress.getFileSize() / 1048576),
 											(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
 
@@ -438,7 +437,7 @@ public class QueueController implements Initializable
 	// Handler for Button[fx:id="startQueue"] onAction
 	public void startQueue(final ActionEvent event)
 	{
-		final Dialog dialog = Dialog.buildConfirmation(	I18nHelper.message("youtube.confirmdialog.title"),
+		final Dialog dialog = Dialog.buildConfirmation(I18nHelper.message("youtube.confirmdialog.title"),
 														I18nHelper.message("upload.confirmdialog.message"))
 				.addYesButton(new EventHandler<Event>() {
 

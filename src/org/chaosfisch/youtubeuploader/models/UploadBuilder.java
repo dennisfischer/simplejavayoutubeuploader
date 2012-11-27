@@ -54,51 +54,18 @@ public class UploadBuilder
 
 	public Upload build()
 	{
-		final Upload upload = Upload.create("file",
-											file.getAbsolutePath(),
-											"title",
-											title,
-											"category",
-											category,
-											"description",
-											description,
-											"keywords",
-											tags,
-											"mimetype",
-											mimetype,
-											"commentvote",
-											commentvote,
-											"mobile",
-											mobile,
-											"embed",
-											embed,
-											"rate",
-											rate,
-											"comment",
-											comment,
-											"videoresponse",
-											videoresponse,
-											"visibility",
-											visibility,
-											"license",
-											license,
-											"number",
-											number,
-											"started",
-											started,
-											"release",
-											release,
-											"account_id",
-											account.getLongId(),
-											"enddir",
-											enddir,
-											"inprogress",
-											false);
+		final Upload upload = Upload.create("file", file.getAbsolutePath(), "title", title, "category", category, "description", description,
+											"keywords", tags, "mimetype", mimetype, "commentvote", commentvote, "mobile", mobile, "embed", embed,
+											"rate", rate, "comment", comment, "videoresponse", videoresponse, "visibility", visibility, "license",
+											license, "number", number, "started", started, "release", release, "account_id", account.getLongId(),
+											"enddir", enddir, "inprogress", false);
+
+		upload.save();
 		for (final Playlist playlist : playlistList)
 		{
 			upload.add(playlist);
 		}
-		upload.save();
+		upload.saveIt();
 		return upload;
 	}
 
