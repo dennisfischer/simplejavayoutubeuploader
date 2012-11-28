@@ -1,6 +1,8 @@
-jfx.build.stagingdir = ${workspace}/simple-java-youtube-uploader-javafx/build
-jfx.build.apptitle = Simple Java Youtube Uploader
-jfx.build.applicationClass = org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader
-jfx.build.vendorname = Dennis Fischer aka CHAOSFISCH
-jfx.build.appversion = ALPHA
-jfx.deploy.nativePackage = true
+<?xml version="1.0" encoding="UTF-8"?>
+<anttasks:AntTask xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:anttasks="http://at.bestsolution.efxclipse.tooling.jdt/1.0" buildDirectory="${workspace}/simple-java-youtube-uploader.javafx/target/deploy" cssToBin="true">
+  <deploy height="" width="">
+    <application name="Simple Java Youtube Uploader 3.0" mainclass="org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader" version="Nightly" toolkit="fx"/>
+    <info vendor="Dennis Fischer aka CHAOSFISCH"/>
+  </deploy>
+  <signjar/>
+</anttasks:AntTask>

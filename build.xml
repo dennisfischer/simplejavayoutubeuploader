@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="simple-java-youtube-uploader-javafx" default="run" basedir=".">
+<project name="simple-java-youtube-uploader-javafx" default="run" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
 	<buildnumber file="build.num" />
 	<property resource="application_de.properties">
 		<classpath path="src/org/chaosfisch/youtubeuploader/resources/" />
 	</property>
+
+	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="C:\Program Files\Java\jdk1.7.0_09\lib\ant-javafx.jar" />
 
 	<property name="src" location="src" />
 	<property name="build" location="target/build" />
@@ -65,14 +67,6 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="instrument" description="generate the distribution">
-		<!-- Create the distribution directory -->
-		<mkdir dir="${dist}/lib" />
-
-		<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-		<jar jarfile="${dist}/SimpleJavaYoutubeUploader-${DSTAMP}.jar" basedir="${build}" />
-	</target>
-
 	<target name="instrument" depends="compile">
 		<java classname="org.javalite.instrumentation.Main">
 			<sysproperty key="outputDirectory" value="${build}" />
@@ -101,5 +95,40 @@
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8765" />
 		</java>
+	</target>
+
+	<target name="do-deploy" depends="instrument">
+
+		<copy todir="${dist}/lib" flatten="true">
+			<path refid="classpath">
+			</path>
+		</copy>
+
+		<fx:resources id="appRes">
+			<fx:fileset dir="${dist}" includes="Simple Java Youtube Uploader 3.0.jar" />
+			<fx:fileset dir="${dist}" includes="lib/*" />
+		</fx:resources>
+
+		<fx:application id="fxApplication" name="Simple Java Youtube Uploader 3.0" mainClass="org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader" />
+
+		<mkdir dir="${build}/META-INF" />
+
+		<fx:jar destfile="${dist}/Simple Java Youtube Uploader 3.0.jar">
+			<fileset dir="${build}" />
+			<fx:application refid="fxApplication" />
+			<fx:resources refid="appRes" />
+
+			<manifest>
+				<attribute name="Implementation-Vendor" value="Dennis Fischer aka CHAOSFISCH" />
+				<attribute name="Implementation-Title" value="Simple Java Youtube Uploader 3.0 Nightly" />
+				<attribute name="Implementation-Version" value="Nightly" />
+			</manifest>
+		</fx:jar>
+
+		<fx:deploy embedJNLP="false" extension="false" includeDT="false" offlineAllowed="true" outdir="${dist}" outfile="Simple Java Youtube Uploader 3.0" updatemode="background">
+			<fx:info title="Simple Java Youtube Uploader 3.0" vendor="Dennis Fischer aka CHAOSFISCH" />
+			<fx:application refId="fxApplication" />
+			<fx:resources refid="appRes" />
+		</fx:deploy>
 	</target>
 </project>
