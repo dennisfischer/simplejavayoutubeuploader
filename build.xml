@@ -126,20 +126,27 @@
 			</manifest>
 		</fx:jar>
 
+		<delete>
+			<fileset dir="${dist}/lib">
+				<include name="jfxrt.jar" />
+			</fileset>
+		</delete>
+		<delete dir="${dist}/lib/build" />
+
 		<repack-and-sign rootdir="${dist}" />
 
 		<apply executable="pack200" parallel="false" dest="${dist}">
 			<arg value="--modification-time=latest" />
 			<arg value="--deflate-hint=true" />
 			<arg value="--segment-limit=-1" />
-			<targetfile/>
-			<srcfile/>
+			<targetfile />
+			<srcfile />
 			<fileset dir="${dist}" includes="**/*.jar" />
 			<mapper type="glob" from="*" to="*.pack.gz" />
 		</apply>
-		
+
 		<delete>
-		    <fileset dir="${dist}" includes="**/*.jar" excludes="**/*.jar.pack.gz"/>
+			<fileset dir="${dist}" includes="**/*.jar" excludes="**/*.jar.pack.gz" />
 		</delete>
 	</target>
 

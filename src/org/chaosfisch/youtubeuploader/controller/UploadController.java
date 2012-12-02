@@ -465,7 +465,14 @@ public class UploadController implements Initializable
 				uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
 				if (uploadCategory.getItems().isEmpty())
 				{
-					Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
+					Platform.runLater(new Runnable() {
+
+						@Override
+						public void run()
+						{
+							Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
+						}
+					});
 					return;
 				}
 				Platform.runLater(new Runnable() {
@@ -651,12 +658,6 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		if (uploadCategory.getItems().isEmpty())
-		{
-			Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
-			return;
-		}
-
 		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
 				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
@@ -823,6 +824,10 @@ public class UploadController implements Initializable
 	// validate each of the three input fields
 	private String validate()
 	{
+		if (uploadCategory.getItems().isEmpty())
+		{
+			Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
+		}
 		if (uploadFile.getItems().isEmpty())
 		{
 			return I18nHelper.message("validation.filelist");
