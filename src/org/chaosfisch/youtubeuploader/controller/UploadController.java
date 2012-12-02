@@ -462,8 +462,15 @@ public class UploadController implements Initializable
 					Base.open(dataSource);
 				}
 				uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
-				uploadCategory.getSelectionModel().selectFirst();
-				templateList.getSelectionModel().selectFirst();
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run()
+					{
+						uploadCategory.getSelectionModel().selectFirst();
+						templateList.getSelectionModel().selectFirst();
+					}
+				});
 			}
 		});
 
