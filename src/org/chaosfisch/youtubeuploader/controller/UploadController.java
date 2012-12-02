@@ -734,7 +734,6 @@ public class UploadController implements Initializable
 				playlistService.synchronizePlaylists(Arrays.asList(accountArray));
 			}
 		});
-
 	}
 
 	// Handler for Button[fx:id="removeTemplate"] onAction

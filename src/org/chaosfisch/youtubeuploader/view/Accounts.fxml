@@ -27,7 +27,7 @@
             <Button fx:id="resetAccount" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetAccount" text="%button.reset" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="3" />
             <PasswordField fx:id="password" maxWidth="1.7976931348623157E308" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="2" />
             <TextField fx:id="account" maxWidth="1.7976931348623157E308" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="1" />
-            <ChoiceBox fx:id="accountType" maxWidth="1.7976931348623157E308" minWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
+            <ChoiceBox fx:id="accountType" disable="true" maxWidth="1.7976931348623157E308" minWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="Item 1" />

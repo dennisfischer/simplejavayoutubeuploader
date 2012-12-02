@@ -63,6 +63,9 @@
 	-fx-border-style: dashed;
 	-fx-border-color: black;
 	-fx-background-color: null;
+	-fx-background-image: url("images/playlist-dropzone.png");
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
 }
 
 #validation_error{
@@ -83,4 +86,9 @@
 	-fx-border-style: solid;
 	-fx-border-color: black;
 	-fx-border-insets: 3px 3px 3px 3px;
+}
+
+.input-invalid
+{
+	-fx-background-color: rgb(232,102,102);
 }

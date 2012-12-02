@@ -332,8 +332,14 @@ public class UploadWorker extends Task<Void>
 	{
 		playlistAction();
 		// browserAction();
-		// enddirAction();
+		enddirAction();
 		currentStatus = STATUS.DONE;
+	}
+
+	private void enddirAction()
+	{
+		// TODO ENDDIRACTION
+
 	}
 
 	private void replacePlaceholders()

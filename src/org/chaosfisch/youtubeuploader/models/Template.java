@@ -94,6 +94,6 @@ public class Template extends Model implements ModelEvents
 	@Override
 	public String toString()
 	{
-		return "[" + get("id") + "," + get("name") + "]";
+		return getString("name");
 	}
 }

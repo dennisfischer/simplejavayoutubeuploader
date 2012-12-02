@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.sql.SQLException;
 
 import javafx.application.Application;
@@ -19,6 +20,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -27,6 +29,7 @@ import javax.sql.DataSource;
 
 import name.antonsmirnov.javafx.dialog.Dialog;
 
+import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
@@ -72,6 +75,20 @@ public class SimpleJavaYoutubeUploader extends Application
 
 	public static void main(final String[] args)
 	{
+		System.setOut(new PrintStream(System.out) {
+			@Override
+			public void print(final String s)
+			{
+				logger.info(s);
+			}
+		});
+		System.setErr(new PrintStream(System.err) {
+			@Override
+			public void print(final String s)
+			{
+				logger.error(s);
+			}
+		});
 		launch(args);
 	}
 
@@ -88,6 +105,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
 		scene.getStylesheets().add(getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
 		primaryStage.setTitle(I18nHelper.message("application.title"));
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
 		primaryStage.setScene(scene);
 		primaryStage.setMinHeight(600);
 		primaryStage.setMinWidth(1000);
@@ -153,6 +171,7 @@ public class SimpleJavaYoutubeUploader extends Application
 	public void stop() throws Exception
 	{
 		super.stop();
+		LogfileCommitter.commit();
 		uploader.stopStarttimeChecker();
 		uploader.exit();
 	}

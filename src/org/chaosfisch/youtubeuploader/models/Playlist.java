@@ -20,7 +20,7 @@ public class Playlist extends Model implements ModelEvents
 	@Override
 	public String toString()
 	{
-		return "[" + get("id") + "," + get("pkey") + "," + get("title") + "]";
+		return getString("title");
 	}
 
 	/*

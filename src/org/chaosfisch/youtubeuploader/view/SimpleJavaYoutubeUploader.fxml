@@ -42,7 +42,7 @@
                 <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="%menu.help">
+            <Menu disable="true" mnemonicParsing="false" text="%menu.help">
               <items>
                 <MenuItem id="menuLogfile" mnemonicParsing="false" onAction="#sendLogfiles" text="%menu.logfile" fx:id="menuLogfile" />
               </items>
@@ -68,7 +68,7 @@
                     <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
-                <Tab closable="false" text="%tab.settings">
+                <Tab closable="false" disable="true" text="%tab.settings">
                   <content>
                     <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                   </content>

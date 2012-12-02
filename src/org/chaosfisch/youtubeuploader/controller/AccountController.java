@@ -25,9 +25,12 @@ import javafx.util.Callback;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.javalite.activejdbc.Model;
+
+import com.google.inject.Inject;
 
 public class AccountController implements Initializable
 {
@@ -58,13 +61,23 @@ public class AccountController implements Initializable
 	@FXML// fx:id="resetAccount"
 	private Button								resetAccount;
 
+	@Inject private AuthTokenHelper				authTokenHelper;
+
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event)
 	{
-		// TODO VALIDATION HERE
-
-		Account.createIt("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
-		resetAccount(event);
+		final Account acc = Account.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
+		if (authTokenHelper.verifyAccount(acc))
+		{
+			account.getStyleClass().remove("input-invalid");
+			password.getStyleClass().remove("input-invalid");
+			acc.save();
+			resetAccount(event);
+		} else
+		{
+			account.getStyleClass().add("input-invalid");
+			password.getStyleClass().add("input-invalid");
+		}
 	}
 
 	@Override

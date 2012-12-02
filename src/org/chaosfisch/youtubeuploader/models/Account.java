@@ -38,7 +38,7 @@ public class Account extends Model implements ModelEvents
 	@Override
 	public String toString()
 	{
-		if (!isFrozen()) { return "[" + getInteger("id") + "," + getString("name") + "]"; }
+		if (!isFrozen()) { return getString("name"); }
 		return super.toString();
 	}
 

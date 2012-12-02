@@ -61,7 +61,9 @@ public class GuiceBindings extends AbstractModule
 
 		try
 		{
-			bind(DataSource.class).toInstance(	DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:~SimpleJavaYoutubeUploader/youtubeuploader",
+			bind(DataSource.class).toInstance(	DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:"
+																													+ System.getProperty("user.home")
+																													+ "/SimpleJavaYoutubeUploader/youtubeuploader",
 																											"username", "")));
 		} catch (final SQLException e)
 		{

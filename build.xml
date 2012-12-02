@@ -10,39 +10,40 @@
 	<property name="src" location="src" />
 	<property name="build" location="target/build" />
 	<property name="dist" location="target/dist" />
+	<property name="maven" location="${user.home}\.m2\repository" />
 
 	<path id="classpath">
 		<path location="${build}" />
-		<path location="${user.home}\.m2\repository\c3p0\c3p0\0.9.1.2\c3p0-0.9.1.2.jar" />
-		<path location="${user.home}\.m2\repository\org\apache\httpcomponents\httpclient\4.2.1\httpclient-4.2.1.jar" />
-		<path location="${user.home}\.m2\repository\org\slf4j\slf4j-api\1.7.1\slf4j-api-1.7.1.jar" />
-		<path location="${user.home}\.m2\repository\xmlpull\xmlpull\1.1.3.1\xmlpull-1.1.3.1.jar" />
-		<path location="${user.home}\.m2\repository\org\bushe\eventbus\1.4\eventbus-1.4.jar" />
-		<path location="${user.home}\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar" />
+		<path location="${maven}\c3p0\c3p0\0.9.1.2\c3p0-0.9.1.2.jar" />
+		<path location="${maven}\org\apache\httpcomponents\httpclient\4.2.1\httpclient-4.2.1.jar" />
+		<path location="${maven}\org\slf4j\slf4j-api\1.7.1\slf4j-api-1.7.1.jar" />
+		<path location="${maven}\xmlpull\xmlpull\1.1.3.1\xmlpull-1.1.3.1.jar" />
+		<path location="${maven}\org\bushe\eventbus\1.4\eventbus-1.4.jar" />
+		<path location="${maven}\javax\activation\activation\1.1\activation-1.1.jar" />
+		<path location="${maven}\commons-codec\commons-codec\1.6\commons-codec-1.6.jar" />
+		<path location="${maven}\com\google\inject\guice\3.0\guice-3.0.jar" />
+		<path location="${maven}\org\javalite\javalite-common\1.4.5\javalite-common-1.4.5.jar" />
+		<path location="${maven}\ch\qos\logback\logback-core\1.0.7\logback-core-1.0.7.jar" />
+		<path location="${maven}\org\apache\commons\commons-email\1.2\commons-email-1.2.jar" />
+		<path location="${maven}\com\google\guava\guava\13.0.1\guava-13.0.1.jar" />
+		<path location="${maven}\org\apache\httpcomponents\httpcore\4.2.1\httpcore-4.2.1.jar" />
+		<path location="${maven}\com\h2database\h2\1.3.168\h2-1.3.168.jar" />
+		<path location="${maven}\javax\inject\javax.inject\1\javax.inject-1.jar" />
+		<path location="${maven}\xpp3\xpp3_min\1.1.4c\xpp3_min-1.1.4c.jar" />
+		<path location="${maven}\org\apache\httpcomponents\httpmime\4.2.1\httpmime-4.2.1.jar" />
+		<path location="${maven}\javax\mail\mail\1.4.5\mail-1.4.5.jar" />
+		<path location="${maven}\com\thoughtworks\xstream\xstream\1.4.3\xstream-1.4.3.jar" />
+		<path location="${maven}\commons-logging\commons-logging\1.1.1\commons-logging-1.1.1.jar" />
+		<path location="${maven}\ch\qos\logback\logback-classic\1.0.7\logback-classic-1.0.7.jar" />
+		<path location="${maven}\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
+		<path location="${maven}\aopalliance\aopalliance\1.0\aopalliance-1.0.jar" />
+		<path location="${maven}\org\javalite\activejdbc-instrumentation\1.4.5\activejdbc-instrumentation-1.4.5.jar" />
+		<path location="${maven}\org\javassist\javassist\3.16.1-GA\javassist-3.16.1-GA.jar" />
+		<path location="${maven}\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
+		<path location="${maven}\org\jfxtras\jfxtras-labs\2.2-r4\jfxtras-labs-2.2-r4.jar" />
 		<path location="lib\jfx-dialogs.jar" />
 		<path location="lib\gridfx-0.1-SNAPSHOT.jar" />
-		<path location="${user.home}\.m2\repository\commons-codec\commons-codec\1.6\commons-codec-1.6.jar" />
-		<path location="${user.home}\.m2\repository\com\google\inject\guice\3.0\guice-3.0.jar" />
-		<path location="${user.home}\.m2\repository\org\javalite\javalite-common\1.4.5\javalite-common-1.4.5.jar" />
-		<path location="${user.home}\.m2\repository\ch\qos\logback\logback-core\1.0.7\logback-core-1.0.7.jar" />
-		<path location="${user.home}\.m2\repository\org\apache\commons\commons-email\1.2\commons-email-1.2.jar" />
-		<path location="${user.home}\.m2\repository\com\google\guava\guava\13.0.1\guava-13.0.1.jar" />
-		<path location="${user.home}\.m2\repository\org\apache\httpcomponents\httpcore\4.2.1\httpcore-4.2.1.jar" />
-		<path location="${user.home}\.m2\repository\com\h2database\h2\1.3.168\h2-1.3.168.jar" />
-		<path location="${user.home}\.m2\repository\javax\inject\javax.inject\1\javax.inject-1.jar" />
-		<path location="${user.home}\.m2\repository\xpp3\xpp3_min\1.1.4c\xpp3_min-1.1.4c.jar" />
-		<path location="${user.home}\.m2\repository\org\apache\httpcomponents\httpmime\4.2.1\httpmime-4.2.1.jar" />
-		<path location="${user.home}\.m2\repository\javax\mail\mail\1.4.5\mail-1.4.5.jar" />
-		<path location="${user.home}\.m2\repository\com\thoughtworks\xstream\xstream\1.4.3\xstream-1.4.3.jar" />
-		<path location="${user.home}\.m2\repository\commons-logging\commons-logging\1.1.1\commons-logging-1.1.1.jar" />
-		<path location="${user.home}\.m2\repository\ch\qos\logback\logback-classic\1.0.7\logback-classic-1.0.7.jar" />
-		<path location="${user.home}\.m2\repository\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
-		<path location="${user.home}\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar" />
 		<path location="C:\Program Files\Java\jre7\lib\jfxrt.jar" />
-		<path location="${user.home}/.m2/repository/org/javalite/activejdbc-instrumentation/1.4.5/activejdbc-instrumentation-1.4.5.jar" />
-		<path location="${user.home}/.m2/repository/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA.jar" />
-		<path location="${user.home}/.m2/repository/org/javalite/activejdbc/1.4.5/activejdbc-1.4.5.jar" />
-		<path location="${user.home}/.m2/repository/org\jfxtras\jfxtras-labs\2.2-r4\jfxtras-labs-2.2-r4.jar" />
 	</path>
 
 	<target name="init">
@@ -105,7 +106,7 @@
 		</copy>
 
 		<fx:resources id="appRes">
-			<fx:fileset dir="${dist}" includes="Simple Java Youtube Uploader 3.0.jar" />
+			<fx:fileset dir="${dist}" includes="SimpleJavaYoutubeUploader3.0.jar" />
 			<fx:fileset dir="${dist}" includes="lib/*" />
 		</fx:resources>
 
@@ -113,7 +114,7 @@
 
 		<mkdir dir="${build}/META-INF" />
 
-		<fx:jar destfile="${dist}/Simple Java Youtube Uploader 3.0.jar">
+		<fx:jar destfile="${dist}/SimpleJavaYoutubeUploader3.0.jar">
 			<fileset dir="${build}" />
 			<fx:application refid="fxApplication" />
 			<fx:resources refid="appRes" />
@@ -125,10 +126,36 @@
 			</manifest>
 		</fx:jar>
 
-		<fx:deploy embedJNLP="false" extension="false" includeDT="false" offlineAllowed="true" outdir="${dist}" outfile="Simple Java Youtube Uploader 3.0" updatemode="background">
-			<fx:info title="Simple Java Youtube Uploader 3.0" vendor="Dennis Fischer aka CHAOSFISCH" />
-			<fx:application refId="fxApplication" />
-			<fx:resources refid="appRes" />
-		</fx:deploy>
+		<repack-and-sign rootdir="${dist}" />
+
+		<apply executable="pack200" parallel="false" dest="${dist}">
+			<arg value="--modification-time=latest" />
+			<arg value="--deflate-hint=true" />
+			<arg value="--segment-limit=-1" />
+			<targetfile/>
+			<srcfile/>
+			<fileset dir="${dist}" includes="**/*.jar" />
+			<mapper type="glob" from="*" to="*.pack.gz" />
+		</apply>
+		
+		<delete>
+		    <fileset dir="${dist}" includes="**/*.jar" excludes="**/*.jar.pack.gz"/>
+		</delete>
 	</target>
+
+	<macrodef name="repack-and-sign">
+		<attribute name="rootdir" />
+		<sequential>
+			<echo message="Repacking libs in @{rootdir}" />
+			<apply executable="pack200" parallel="false">
+				<arg value="--repack" />
+				<fileset dir="@{rootdir}" includes="**/*.jar" />
+			</apply>
+
+			<echo message="Signing libs in @{rootdir}" />
+			<signjar alias="javafx" keystore="keystore" storepass="w12oG257yq6g3zeyV7Zk" lazy="true">
+				<fileset dir="@{rootdir}" includes="**/*.jar" />
+			</signjar>
+		</sequential>
+	</macrodef>
 </project>

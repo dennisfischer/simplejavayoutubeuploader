@@ -39,7 +39,7 @@ public class PlaylistGridCell extends GridCell<Model>
 				{
 					// @TODO REPLACE WITH CUSTOM THUMBNAIL YOUTUBE MISSING LOGO!
 					imageView = new ImageView(new Image(
-							getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/install.png")));
+							getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
 				}
 
 				imageView.fitHeightProperty().bind(heightProperty());
