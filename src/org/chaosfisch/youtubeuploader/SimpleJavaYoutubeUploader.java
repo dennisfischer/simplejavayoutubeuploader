@@ -12,6 +12,8 @@ package org.chaosfisch.youtubeuploader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Locale;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -89,6 +91,13 @@ public class SimpleJavaYoutubeUploader extends Application
 				logger.error(s);
 			}
 		});
+		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
+		if (!Arrays.asList(availableLocales).contains(Locale.getDefault()))
+		{
+			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
+			Locale.setDefault(Locale.GERMAN);
+		}
+
 		launch(args);
 	}
 
