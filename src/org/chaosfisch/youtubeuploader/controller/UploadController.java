@@ -56,6 +56,7 @@ import javax.sql.DataSource;
 
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
+import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
@@ -462,6 +463,11 @@ public class UploadController implements Initializable
 					Base.open(dataSource);
 				}
 				uploadCategory.setItems(FXCollections.observableList(categoryService.load()));
+				if (uploadCategory.getItems().isEmpty())
+				{
+					Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
+					return;
+				}
 				uploadCategory.getSelectionModel().selectFirst();
 				templateList.getSelectionModel().selectFirst();
 			}
@@ -637,6 +643,12 @@ public class UploadController implements Initializable
 			return;
 		}
 		validationText.setId("validation_passed");
+
+		if (uploadCategory.getItems().isEmpty())
+		{
+			Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
+			return;
+		}
 
 		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
 				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
