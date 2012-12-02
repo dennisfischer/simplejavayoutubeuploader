@@ -468,8 +468,15 @@ public class UploadController implements Initializable
 					Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
 					return;
 				}
-				uploadCategory.getSelectionModel().selectFirst();
-				templateList.getSelectionModel().selectFirst();
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run()
+					{
+						uploadCategory.getSelectionModel().selectFirst();
+						templateList.getSelectionModel().selectFirst();
+					}
+				});
 			}
 		});
 
@@ -864,7 +871,10 @@ public class UploadController implements Initializable
 	private void _resetUpload(final Model template)
 	{
 		if (!(template instanceof Template)) { return; }
-		uploadCategory.getSelectionModel().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
+		if (!uploadCategory.getItems().isEmpty())
+		{
+			uploadCategory.getSelectionModel().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
+		}
 		uploadComment.getSelectionModel().select(template.getInteger("comment") != null ? template.getInteger("comment") : 0);
 		uploadCommentvote.setSelected(template.getBoolean("commentvote"));
 		uploadDefaultdir.setText(template.getString("defaultdir"));
