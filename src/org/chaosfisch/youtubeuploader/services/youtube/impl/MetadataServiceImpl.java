@@ -64,7 +64,7 @@ public class MetadataServiceImpl implements MetadataService
 
 		videoEntry.mediaGroup.license = (queue.getInteger("license") == 0) ? "youtube" : "cc";
 
-		if (queue.getInteger("visibility") == 2)
+		if ((queue.getInteger("visibility") == 2) || (queue.getInteger("visibility") == 3))
 		{
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
@@ -131,7 +131,7 @@ public class MetadataServiceImpl implements MetadataService
 			AuthenticationException
 	{
 		// Upload atomData and fetch uploadUrl
-		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST).headers(ImmutableMap.of(	"Content-Type",
+		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST).headers(	ImmutableMap.of("Content-Type",
 																														"application/atom+xml; charset=UTF-8;",
 																														"Slug",
 																														fileToUpload.getAbsolutePath()))

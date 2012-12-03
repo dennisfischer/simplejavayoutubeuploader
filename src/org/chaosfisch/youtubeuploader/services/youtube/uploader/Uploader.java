@@ -90,15 +90,23 @@ public class Uploader
 	public void start()
 	{
 		inProgressProperty.set(true);
-		for (int i = 0; (i < maxUploads.get()) && hasFreeUploadSpace(); i++)
-		{
-			sendUpload();
-			try
+		ThreadUtil.doInBackground(new Runnable() {
+
+			@Override
+			public void run()
 			{
-				Thread.sleep(10000);
-			} catch (final InterruptedException e)
-			{}
-		}
+				for (int i = 0; (i < maxUploads.get()) && hasFreeUploadSpace(); i++)
+				{
+					sendUpload();
+					try
+					{
+						Thread.sleep(10000);
+					} catch (final InterruptedException e)
+					{}
+				}
+
+			}
+		});
 	}
 
 	private void sendUpload()

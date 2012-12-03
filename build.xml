@@ -98,7 +98,7 @@
 		</java>
 	</target>
 
-	<target name="do-deploy" depends="instrument">
+	<target name="do-deploy" depends="clean, instrument">
 
 		<copy todir="${dist}/lib" flatten="true">
 			<path refid="classpath">
