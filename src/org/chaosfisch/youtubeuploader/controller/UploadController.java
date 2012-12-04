@@ -77,6 +77,7 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 import com.guigarage.fx.grid.GridCell;
@@ -657,6 +658,14 @@ public class UploadController implements Initializable
 			return;
 		}
 		validationText.setId("validation_passed");
+
+		final Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
+		logger.debug("Checking vars - Nullpointer");
+		logger.debug("File {}", uploadFile.getValue());
+		logger.debug("Title {}", uploadTitle.getText().trim());
+		logger.debug("Category {}", uploadCategory.getValue().term);
+		logger.debug("Account {}", accountList.getValue());
+		logger.debug("Comment {}", uploadComment.getSelectionModel().getSelectedIndex());
 
 		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
 				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
