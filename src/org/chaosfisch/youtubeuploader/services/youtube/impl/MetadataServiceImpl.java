@@ -16,6 +16,7 @@ import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
+import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestHelper;
@@ -86,7 +87,7 @@ public class MetadataServiceImpl implements MetadataService
 
 		videoEntry.mediaGroup.title = queue.getString("title");
 		videoEntry.mediaGroup.description = queue.getString("description");
-		videoEntry.mediaGroup.keywords = queue.getString("keywords");
+		videoEntry.mediaGroup.keywords = TagParser.parseAll(queue.getString("keywords"));
 
 		// convert metadata with xstream
 		final XStream xStream = new XStream(new XppDriver() {
