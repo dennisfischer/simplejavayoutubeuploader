@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.util.LogfileCommitter;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
@@ -110,8 +111,8 @@ public class SimpleJavaYoutubeUploader extends Application
 	{
 		initDatabase();
 
-		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
-				I18nHelper.getResourceBundle());
+		final FXMLLoader fxLoader = new FXMLLoader(	getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
+													I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		fxLoader.load();
 		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
@@ -162,6 +163,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, upload_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS TEMPLATES_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, template_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(ID VARCHAR(255) NOT NULL PRIMARY KEY, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
+		Upload.updateAll("inprogress = ?", false);
 		Base.commitTransaction();
 	}
 

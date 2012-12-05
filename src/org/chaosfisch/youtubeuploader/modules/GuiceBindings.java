@@ -23,10 +23,12 @@ import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.APIData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
+import org.chaosfisch.youtubeuploader.services.youtube.impl.EnddirServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.PlaylistServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeableManagerImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
@@ -46,6 +48,7 @@ public class GuiceBindings extends AbstractModule
 		bind(CategoryService.class).to(CategoryServiceImpl.class).in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
+		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
@@ -61,10 +64,11 @@ public class GuiceBindings extends AbstractModule
 
 		try
 		{
-			bind(DataSource.class).toInstance(	DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:"
+			bind(DataSource.class).toInstance(DataSources.pooledDataSource(DataSources.unpooledDataSource(	"jdbc:h2:"
 																													+ System.getProperty("user.home")
 																													+ "/SimpleJavaYoutubeUploader/youtubeuploader",
-																											"username", "")));
+																											"username",
+																											"")));
 		} catch (final SQLException e)
 		{
 			e.printStackTrace();

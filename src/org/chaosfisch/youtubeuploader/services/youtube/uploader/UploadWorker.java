@@ -44,6 +44,7 @@ import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
+import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
@@ -85,6 +86,7 @@ public class UploadWorker extends Task<Void>
 	@Inject private PlaylistService		playlistService;
 	@Inject private RequestSigner		requestSigner;
 	@Inject private MetadataService		metadataService;
+	@Inject private EnddirService		enddirService;
 	@Inject private Injector			injector;
 	@Inject private AuthTokenHelper		authTokenHelper;
 	@Inject private Throttle			throttle;
@@ -331,22 +333,21 @@ public class UploadWorker extends Task<Void>
 	private void postprocess()
 	{
 		playlistAction();
-		// browserAction();
 		enddirAction();
+		// browserAction();
 		currentStatus = STATUS.DONE;
 	}
 
 	private void enddirAction()
 	{
-		// TODO ENDDIRACTION
-
+		enddirService.moveFileByUpload(fileToUpload, upload);
 	}
 
 	private void replacePlaceholders()
 	{
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), null,
 		// upload.parent(Playlist.class),
-				upload.getInteger("number"));
+																					upload.getInteger("number"));
 		upload.setString("title", extendedPlaceholders.replace(upload.getString("title")));
 		upload.setString("description", extendedPlaceholders.replace(upload.getString("description")));
 		upload.setString("keywords", extendedPlaceholders.replace(upload.getString("keywords")));
@@ -355,10 +356,10 @@ public class UploadWorker extends Task<Void>
 		for (final Model placeholder : Placeholder.findAll())
 		{
 			upload.setString(	"title",
-								upload.getString("title").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+								upload.getString("title").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
 																		placeholder.getString("replacement")));
 			upload.setString(	"description",
-								upload.getString("description").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
+								upload.getString("description").replaceAll(	Pattern.quote(placeholder.getString("placeholder")),
 																			placeholder.getString("replacement")));
 			upload.setString(	"keywords",
 								upload.getString("keywords").replaceAll(Pattern.quote(placeholder.getString("placeholder")),
@@ -405,7 +406,7 @@ public class UploadWorker extends Task<Void>
 		try
 		{
 			// Building PUT Request for chunk data
-			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(	ImmutableMap.of("Content-Type",
+			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(ImmutableMap.of(	"Content-Type",
 																																		upload.getString("mimetype"),
 																																		"Content-Range",
 																																		String.format(	"bytes %d-%d/%d",
@@ -422,8 +423,7 @@ public class UploadWorker extends Task<Void>
 			request.setDoOutput(true);
 			request.setFixedLengthStreamingMode(chunk);
 			request.connect();
-			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(
-					new ThrottledOutputStream(request.getOutputStream(), throttle));
+			final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(new ThrottledOutputStream(request.getOutputStream(), throttle));
 			try
 			{
 				final long skipped = bufferedInputStream.skip(start);
