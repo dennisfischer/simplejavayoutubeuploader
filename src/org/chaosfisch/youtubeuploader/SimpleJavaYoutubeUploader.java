@@ -88,7 +88,10 @@ public class SimpleJavaYoutubeUploader extends Application
 			@Override
 			public void print(final String s)
 			{
-				logger.error(s);
+				if (!s.startsWith("WARNING: com.sun.javafx.css.StyleHelper calculateValue"))
+				{
+					logger.error(s);
+				}
 			}
 		});
 		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
