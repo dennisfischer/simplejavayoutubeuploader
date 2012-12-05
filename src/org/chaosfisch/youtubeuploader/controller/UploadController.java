@@ -667,8 +667,11 @@ public class UploadController implements Initializable
 		logger.debug("Account {}", accountList.getValue());
 		logger.debug("Comment {}", uploadComment.getSelectionModel().getSelectedIndex());
 
-		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
-				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
+		final UploadBuilder uploadBuilder = new UploadBuilder(	uploadFile.getValue(),
+																uploadTitle.getText().trim(),
+																uploadCategory.getValue().term,
+																(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel()
+				.getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
 				.setDescription(uploadDescription.getText().trim())
 				.setEmbed(uploadEmbed.isSelected())
@@ -915,6 +918,13 @@ public class UploadController implements Initializable
 		for (final Model playlist : template.getAll(Playlist.class))
 		{
 			movePlaylistToDropzone(playlistItems.indexOf(playlist));
+		}
+
+		final File defaultDir = new File(template.getString("defaultdir") != null ? template.getString("defaultdir") : "");
+		if (defaultDir.exists() && defaultDir.isDirectory())
+		{
+			fileChooser.setInitialDirectory(defaultDir);
+			directoryChooser.setInitialDirectory(defaultDir);
 		}
 	}
 }
