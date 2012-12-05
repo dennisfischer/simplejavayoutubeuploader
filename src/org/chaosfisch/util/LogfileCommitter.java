@@ -33,21 +33,18 @@ public class LogfileCommitter
 					{
 						sb.append(String.format("%02X%s", mac[i], (i < (mac.length - 1)) ? "-" : ""));
 					}
-					System.out.println(sb.toString());
-				} else
-				{
-					System.out.println("Address doesn't exist or is not " + "accessible.");
+					return sb.toString();
 				}
-			} else
-			{
-				System.out.println("Network Interface for the specified " + "address is not found.");
 			}
+
 		} catch (final UnknownHostException | SocketException e)
-		{
+		{}
+		return getAlternateUniqueId();
+	}
 
-			// @TODO
-		}
-
-		return "";
+	private static String getAlternateUniqueId()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
