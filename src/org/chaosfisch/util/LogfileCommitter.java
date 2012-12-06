@@ -1,50 +1,24 @@
 package org.chaosfisch.util;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.UUID;
+
+import org.chaosfisch.youtubeuploader.models.Setting;
 
 public class LogfileCommitter
 {
 	public static void commit()
 	{
-		getUniqueId();
+		System.out.println(getUniqueId());
 	}
 
 	private static String getUniqueId()
 	{
-		try
+		Setting uuidSetting = Setting.findById("hidden.uuid");
+		if (uuidSetting == null)
 		{
-			final InetAddress address = InetAddress.getLocalHost();
+			uuidSetting = Setting.createIt("id", "hidden.uuid", "value", UUID.randomUUID());
+		}
 
-			/*
-			 * Get NetworkInterface for the current host and then read the
-			 * hardware address.
-			 */
-			final NetworkInterface ni = NetworkInterface.getByInetAddress(address);
-			if (ni != null)
-			{
-				final byte[] mac = ni.getHardwareAddress();
-				if (mac != null)
-				{
-					final StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < mac.length; i++)
-					{
-						sb.append(String.format("%02X%s", mac[i], (i < (mac.length - 1)) ? "-" : ""));
-					}
-					return sb.toString();
-				}
-			}
-
-		} catch (final UnknownHostException | SocketException e)
-		{}
-		return getAlternateUniqueId();
-	}
-
-	private static String getAlternateUniqueId()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return uuidSetting.getString("value");
 	}
 }
