@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader;
 
 public interface APIData
 {
-	String	APPLICATION_NAME	= "dennis-fischer-youtube java uploader-2.0-alpha-1";
+	String	APPLICATION_NAME	= "dennis-fischer-youtube java uploader-3.0 nightly";
 	String	DEVELOPER_KEY		= "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
 	String	ENCRYPTION_SECRET	= "4Pf2|6^w[y*G5-NDdj8nd-#=4x;tQKDew4#5C__Ils_)ee>7H(";
 	String	FACEBOOK_APIKEY		= "307464182659598";
