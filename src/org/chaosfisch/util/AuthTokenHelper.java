@@ -10,44 +10,41 @@ import java.util.WeakHashMap;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.util.io.Request;
+import org.chaosfisch.util.io.Request.Method;
+import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 public class AuthTokenHelper
 {
 
-	Map<Long, String>				authtokens			= new WeakHashMap<Long, String>();
-	@Inject RequestSigner			requestSigner;
+	final Map<Long, String>		authtokens			= new WeakHashMap<Long, String>();
+	@Inject RequestSigner		requestSigner;
 
-	private static final String		CLIENT_LOGIN_URL	= "https://accounts.google.com/ClientLogin";
-	private final DefaultHttpClient	client				= new DefaultHttpClient();
+	private static final String	CLIENT_LOGIN_URL	= "https://accounts.google.com/ClientLogin";
 
 	public String getAuthToken(final Account account) throws AuthenticationException
 	{
-		try
-		{
-			if (!authtokens.containsKey(account.getLongId()))
-			{
 
-				final String clientLoginContent = _receiveToken(account);
-				authtokens.put(	account.getLongId(),
-								clientLoginContent.substring(clientLoginContent.indexOf("Auth=") + 5, clientLoginContent.length()).trim());
-			}
-			return authtokens.get(account.getLongId());
-		} catch (final IOException e)
+		if (!authtokens.containsKey(account.getLongId()))
 		{
-			throw new AuthenticationException("Unknown error occured", e);
+
+			final String clientLoginContent = _receiveToken(account);
+			authtokens.put(account.getLongId(), clientLoginContent.substring(clientLoginContent.indexOf("Auth=") + 5, clientLoginContent.length())
+					.trim());
 		}
+		return authtokens.get(account.getLongId());
 	}
 
-	private String _receiveToken(final Account account) throws AuthenticationException, IOException
+	private String _receiveToken(final Account account) throws AuthenticationException
 	{
 		// STEP 1 CLIENT LOGIN
 		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<BasicNameValuePair>();
@@ -58,22 +55,36 @@ public class AuthTokenHelper
 		clientLoginRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
 		clientLoginRequestParams.add(new BasicNameValuePair("source", "SimpleJavaYoutubeUploader"));
 
-		final HttpPost clientLoginRequest = new HttpPost(CLIENT_LOGIN_URL);
-		clientLoginRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
-		requestSigner.sign(clientLoginRequest);
-		clientLoginRequest.setEntity(new UrlEncodedFormEntity(clientLoginRequestParams, Charset.forName("UTF-8")));
+		final HttpUriRequest clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL, Method.POST).headers(	ImmutableMap.of("Content-Type",
+																																"application/x-www-form-urlencoded; charset=UTF-8;"))
+				.entity(new UrlEncodedFormEntity(clientLoginRequestParams, Charset.forName("utf-8")))
+				.buildHttpUriRequest();
 
-		final HttpResponse clientLoginResponse = client.execute(clientLoginRequest);
-		final HttpEntity clientLoginEntity = clientLoginResponse.getEntity();
-		if (clientLoginResponse.getStatusLine().getStatusCode() != 200)
+		requestSigner.sign(clientLoginRequest);
+
+		HttpResponse clientLoginResponse = null;
+		HttpEntity clientLoginEntity = null;
+		try
 		{
-			EntityUtils.consumeQuietly(clientLoginEntity);
-			throw new AuthenticationException(String.format("Authentication failed --> %s", clientLoginResponse.getStatusLine().toString()));
+			clientLoginResponse = RequestHelper.execute(clientLoginRequest);
+			clientLoginEntity = clientLoginResponse.getEntity();
+			if (clientLoginResponse.getStatusLine().getStatusCode() != 200) { throw new AuthenticationException(
+					String.format("Authentication failed --> %s", clientLoginResponse.getStatusLine().toString())); }
+
+			return EntityUtils.toString(clientLoginEntity, Charset.forName("UTF-8"));
+		} catch (final IOException e)
+		{
+			throw new AuthenticationException(String.format("Authentication failed --> %s",
+															clientLoginResponse != null ? clientLoginResponse.getStatusLine().toString()
+																	: "response is null"), e);
+		} finally
+		{
+			if (clientLoginEntity != null)
+			{
+				EntityUtils.consumeQuietly(clientLoginEntity);
+			}
 		}
 
-		final String clientLoginContent = EntityUtils.toString(clientLoginEntity, Charset.forName("UTF-8"));
-		EntityUtils.consumeQuietly(clientLoginEntity);
-		return clientLoginContent;
 	}
 
 	public String getAuthHeader(final Account account) throws AuthenticationException
@@ -92,7 +103,7 @@ public class AuthTokenHelper
 		try
 		{
 			_receiveToken(account);
-		} catch (IOException | AuthenticationException e)
+		} catch (final AuthenticationException e)
 		{
 			return false;
 		}

@@ -167,7 +167,7 @@ public class MetadataServiceImpl implements MetadataService
 			throw new MetadataException("Metadaten konnten nicht gesendet werden!");
 		} finally
 		{
-			if (response.getEntity() != null)
+			if ((response != null) && (response.getEntity() != null))
 			{
 				EntityUtils.consumeQuietly(response.getEntity());
 			}

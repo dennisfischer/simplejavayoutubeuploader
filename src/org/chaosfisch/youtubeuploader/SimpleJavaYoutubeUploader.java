@@ -111,8 +111,8 @@ public class SimpleJavaYoutubeUploader extends Application
 	{
 		initDatabase();
 
-		final FXMLLoader fxLoader = new FXMLLoader(	getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
-													I18nHelper.getResourceBundle());
+		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
+				I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		fxLoader.load();
 		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
@@ -162,7 +162,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,ARCHIVED BOOLEAN,CATEGORY VARCHAR(255),COMMENT SMALLINT,COMMENTVOTE BOOLEAN,DESCRIPTION VARCHAR(16777216),EMBED BOOLEAN,FAILED BOOLEAN,FILE VARCHAR(500),VISIBILITY SMALLINT,KEYWORDS VARCHAR(16777216),MIMETYPE VARCHAR(255),MOBILE BOOLEAN,RATE BOOLEAN,TITLE VARCHAR(255),UPLOADURL VARCHAR(255),VIDEORESPONSE SMALLINT,STARTED TIMESTAMP,INPROGRESS BOOLEAN,LOCKED BOOLEAN,VIDEOID VARCHAR(255),ACCOUNT_ID INTEGER, ENDDIR VARCHAR(255), LICENSE SMALLINT, RELEASE TIMESTAMP,NUMBER SMALLINT, PAUSEONFINISH BOOLEAN, created_at DATETIME, updated_at DATETIME);");
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, upload_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS TEMPLATES_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, template_id INTEGER);");
-		Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(ID VARCHAR(255) NOT NULL PRIMARY KEY, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
+		Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(id INTEGER NOT NULL auto_increment PRIMARY KEY, `KEY` VARCHAR(255) NOT NULL UNIQUE, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
 		Upload.updateAll("inprogress = ?", false);
 		Base.commitTransaction();
 	}
