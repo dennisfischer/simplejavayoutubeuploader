@@ -76,7 +76,6 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
-import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 import com.guigarage.fx.grid.GridCell;
@@ -653,28 +652,19 @@ public class UploadController implements Initializable
 		}
 		validationText.setId("validation_passed");
 
-		final Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
-		logger.debug("Checking vars - Nullpointer");
-		logger.debug("File {}", uploadFile.getValue());
-		logger.debug("Title {}", uploadTitle.getText().trim());
-		logger.debug("Category {}", uploadCategory.getValue().term);
-		logger.debug("Account {}", accountList.getValue());
-		logger.debug("Comment {}", uploadComment.getSelectionModel().getSelectedIndex());
-
 		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
 				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
-				.setDescription(uploadDescription.getText().trim())
+				.setDescription(uploadDescription.getText())
 				.setEmbed(uploadEmbed.isSelected())
-				.setEnddir(uploadEnddir.getText().trim())
+				.setEnddir(uploadEnddir.getText())
 				.setLicense(uploadLicense.getSelectionModel().getSelectedIndex())
 				.setMobile(uploadMobile.isSelected())
 				.setNumber(0)
 				.setRate(uploadRate.isSelected())
-				.setTags(uploadTags.getText().trim())
+				.setTags(uploadTags.getText())
 				.setVideoresponse(uploadVideoresponse.getSelectionModel().getSelectedIndex())
 				.setVisibility(uploadVisibility.getSelectionModel().getSelectedIndex());
-
 		for (final Model playlist : playlistDropList)
 		{
 			uploadBuilder.addPlaylist((Playlist) playlist);
