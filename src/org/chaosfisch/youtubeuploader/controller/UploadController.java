@@ -544,6 +544,9 @@ public class UploadController implements Initializable
 		playlistSourcezone.cellHeightProperty().bind(gridWidthSlider.valueProperty().divide(16));
 		playlistDropzone.minWidthProperty().bind(playlistDropScrollpane.widthProperty().subtract(5));
 		playlistDropzone.prefHeightProperty().bind(playlistDropScrollpane.heightProperty());
+		playlistDropzone.cellHeightProperty().set(68);
+		playlistDropzone.cellWidthProperty().set(120);
+
 		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty().subtract(5));
 		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(5));
 	}

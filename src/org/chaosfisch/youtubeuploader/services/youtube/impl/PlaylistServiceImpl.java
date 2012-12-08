@@ -183,9 +183,7 @@ public class PlaylistServiceImpl implements PlaylistService
 							String thumbnail = null;
 							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null) && (entry.mediaGroup.thumbnails.size() > 2))
 							{
-								thumbnail = entry.mediaGroup.thumbnails.get(2).url.substring(	0,
-																								entry.mediaGroup.thumbnails.get(2).url.lastIndexOf('/'))
-										.concat("/maxresdefault.jpg");
+								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
 
 							playlist.set("thumbnail", thumbnail);
@@ -195,9 +193,7 @@ public class PlaylistServiceImpl implements PlaylistService
 							String thumbnail = null;
 							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null) && (entry.mediaGroup.thumbnails.size() > 2))
 							{
-								thumbnail = entry.mediaGroup.thumbnails.get(2).url.substring(	0,
-																								entry.mediaGroup.thumbnails.get(2).url.lastIndexOf('/'))
-										.concat("/maxresdefault.jpg");
+								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
 
 							Playlist.createIt(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",

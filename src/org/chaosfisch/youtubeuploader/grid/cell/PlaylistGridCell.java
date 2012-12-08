@@ -3,6 +3,7 @@ package org.chaosfisch.youtubeuploader.grid.cell;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,9 +36,10 @@ public class PlaylistGridCell extends GridCell<Model>
 				if (playlist.getString("thumbnail") != null)
 				{
 					imageView = new ImageView(playlist.getString("thumbnail"));
+					imageView.setPreserveRatio(true);
+					imageView.setViewport(new Rectangle2D(0, 45, imageView.getImage().getWidth(), imageView.getImage().getHeight() - 90));
 				} else
 				{
-					// @TODO REPLACE WITH CUSTOM THUMBNAIL YOUTUBE MISSING LOGO!
 					imageView = new ImageView(new Image(
 							getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
 				}
