@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.util.LogfileCommitter;
+import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
@@ -70,14 +71,17 @@ public class SimpleJavaYoutubeUploader extends Application
 		}
 	}
 
+	private static String[]	args;
+
 	/**
 	 * The application DI injector
 	 */
-	final Injector		injector	= Guice.createInjector(new GuiceBindings());
-	final static Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	final Injector			injector	= Guice.createInjector(new GuiceBindings());
+	final static Logger		logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	public static void main(final String[] args)
 	{
+		SimpleJavaYoutubeUploader.args = args;
 		System.setOut(new PrintStream(System.out) {
 			@Override
 			public void print(final String s)
@@ -110,6 +114,7 @@ public class SimpleJavaYoutubeUploader extends Application
 	protected void initApplication(final Stage primaryStage) throws IOException
 	{
 		initDatabase();
+		updateDatabase();
 
 		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
 				I18nHelper.getResourceBundle());
@@ -142,6 +147,23 @@ public class SimpleJavaYoutubeUploader extends Application
 			}
 		});
 		primaryStage.show();
+	}
+
+	private void updateDatabase()
+	{
+		if (!Setting.getMetaModel().getColumnMetadata().containsKey("key"))
+		{
+			Base.openTransaction();
+			Base.exec("DROP TABLE SETTINGS");
+			Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(id INTEGER NOT NULL auto_increment PRIMARY KEY, `KEY` VARCHAR(255) NOT NULL UNIQUE, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
+			Base.commitTransaction();
+			final Dialog dialog = Dialog.buildConfirmation("Anwendung neustarten!",
+															"Die Anwendung muss neu gestartet werden. Die Datenbank wurde aktualisiert!")
+					.addYesButton(null)
+					.build();
+			dialog.showAndWait();
+			System.exit(0);
+		}
 	}
 
 	private void initDatabase()

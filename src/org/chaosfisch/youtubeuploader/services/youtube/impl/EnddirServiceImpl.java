@@ -49,11 +49,9 @@ public class EnddirServiceImpl implements EnddirService
 
 	private String _getFileName(final File fileToMove, final File enddir, final Upload upload)
 	{
-		final Setting enddirSetting = Setting.findById("coreplugin.general.enddirtitle");
-
-		final Boolean endDirRename = enddirSetting != null ? enddirSetting.getBoolean("value") : false;
+		final Setting enddirSetting = _getEnddirSetting();
 		final String fileName;
-		if ((endDirRename != null) && (endDirRename == true))
+		if (enddirSetting.getBoolean("value") == true)
 		{
 			fileName = enddir.getAbsolutePath() + "/" + upload.getString("title").replaceAll("[\\?\\*:\\\\<>\"/]", "")
 					+ upload.getString("file").substring(upload.getString("file").lastIndexOf("."));
@@ -64,4 +62,16 @@ public class EnddirServiceImpl implements EnddirService
 		}
 		return fileName;
 	}
+
+	private Setting _getEnddirSetting()
+	{
+		Setting enddirSetting = Setting.findFirst("key = ?", "general.enddirtitle");
+		if (enddirSetting == null)
+		{
+			enddirSetting = Setting.createIt("key", "general.enddirtitle", "value", false);
+		}
+		return enddirSetting;
+
+	}
+
 }
