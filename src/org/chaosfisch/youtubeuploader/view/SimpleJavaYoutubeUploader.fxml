@@ -68,9 +68,9 @@
                     <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
-                <Tab closable="false" disable="true" text="%tab.settings">
+                <Tab closable="false" disable="false" text="%tab.settings">
                   <content>
-                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                    <fx:include source="Settings.fxml" />
                   </content>
                 </Tab>
               </tabs>

@@ -49,7 +49,7 @@ public class EnddirServiceImpl implements EnddirService
 
 	private String _getFileName(final File fileToMove, final File enddir, final Upload upload)
 	{
-		final Setting enddirSetting = _getEnddirSetting();
+		final Setting enddirSetting = getEnddirSetting();
 		final String fileName;
 		if (enddirSetting.getBoolean("value") == true)
 		{
@@ -63,7 +63,7 @@ public class EnddirServiceImpl implements EnddirService
 		return fileName;
 	}
 
-	private Setting _getEnddirSetting()
+	public Setting getEnddirSetting()
 	{
 		Setting enddirSetting = Setting.findFirst("key = ?", "general.enddirtitle");
 		if (enddirSetting == null)

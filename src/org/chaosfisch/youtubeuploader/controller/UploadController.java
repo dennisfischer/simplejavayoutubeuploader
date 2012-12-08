@@ -69,7 +69,6 @@ import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
-import org.chaosfisch.youtubeuploader.models.Placeholder;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Template;
 import org.chaosfisch.youtubeuploader.models.UploadBuilder;
@@ -204,11 +203,6 @@ public class UploadController implements Initializable
 	private final ObservableList<Model>	playlistItems		= FXCollections.observableArrayList();
 	private final ObservableList<Model>	templateItems		= FXCollections.observableArrayList();
 	private final ObservableList<Model>	playlistDropList	= FXCollections.observableArrayList();
-
-	public void addPlaceholder(final String placeholder, final String replacement)
-	{
-		Placeholder.createIt("placeholder", placeholder, "replacement", replacement);
-	}
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -667,11 +661,8 @@ public class UploadController implements Initializable
 		logger.debug("Account {}", accountList.getValue());
 		logger.debug("Comment {}", uploadComment.getSelectionModel().getSelectedIndex());
 
-		final UploadBuilder uploadBuilder = new UploadBuilder(	uploadFile.getValue(),
-																uploadTitle.getText().trim(),
-																uploadCategory.getValue().term,
-																(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel()
-				.getSelectedIndex())
+		final UploadBuilder uploadBuilder = new UploadBuilder(uploadFile.getValue(), uploadTitle.getText().trim(), uploadCategory.getValue().term,
+				(Account) accountList.getValue()).setComment(uploadComment.getSelectionModel().getSelectedIndex())
 				.setCommentvote(uploadCommentvote.isSelected())
 				.setDescription(uploadDescription.getText().trim())
 				.setEmbed(uploadEmbed.isSelected())

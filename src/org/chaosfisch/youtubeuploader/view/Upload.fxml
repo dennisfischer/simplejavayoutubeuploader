@@ -32,7 +32,7 @@
                         <Label disable="false" text="%label.enddir" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="3" />
                         <Label text="%label.permissions" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="5" />
                         <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="7" />
-                        <Label text="%label.videorespone" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="8" />
+                        <Label contentDisplay="LEFT" text="%label.videorespone" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="8" />
                         <Label text="%label.comments" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="9" />
                         <Label text="%label.license" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="10" />
                         <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="11" />
@@ -115,25 +115,6 @@
               </content>
             </TitledPane>
             <TitledPane fx:id="x4" disable="true" text="%accordion.partner">
-              <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <children>
-                    <GridPane prefHeight="351.0" prefWidth="496.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      </columnConstraints>
-                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      </rowConstraints>
-                    </GridPane>
-                  </children>
-                </AnchorPane>
-              </content>
-            </TitledPane>
-            <TitledPane id="" fx:id="x3" disable="true" text="%accordion.placeholder">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>

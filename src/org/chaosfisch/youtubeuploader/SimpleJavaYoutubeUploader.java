@@ -71,17 +71,14 @@ public class SimpleJavaYoutubeUploader extends Application
 		}
 	}
 
-	private static String[]	args;
-
 	/**
 	 * The application DI injector
 	 */
-	final Injector			injector	= Guice.createInjector(new GuiceBindings());
-	final static Logger		logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	final Injector		injector	= Guice.createInjector(new GuiceBindings());
+	final static Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	public static void main(final String[] args)
 	{
-		SimpleJavaYoutubeUploader.args = args;
 		System.setOut(new PrintStream(System.out) {
 			@Override
 			public void print(final String s)
@@ -155,6 +152,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		{
 			Base.openTransaction();
 			Base.exec("DROP TABLE SETTINGS");
+			Base.exec("DROP TABLE PLACEHOLDERS");
 			Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(id INTEGER NOT NULL auto_increment PRIMARY KEY, `KEY` VARCHAR(255) NOT NULL UNIQUE, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
 			Base.commitTransaction();
 			final Dialog dialog = Dialog.buildConfirmation("Anwendung neustarten!",
@@ -179,7 +177,6 @@ public class SimpleJavaYoutubeUploader extends Application
 		Base.openTransaction();
 		Base.exec("CREATE TABLE IF NOT EXISTS ACCOUNTS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,NAME VARCHAR(255),PASSWORD VARCHAR(255), TYPE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
 		Base.exec("CREATE TABLE IF NOT EXISTS TEMPLATES(ID INTEGER NOT NULL auto_increment PRIMARY KEY,CATEGORY VARCHAR(255),COMMENT SMALLINT,COMMENTVOTE BOOLEAN, DEFAULTDIR VARCHAR(255),DESCRIPTION VARCHAR(16777216),EMBED BOOLEAN,KEYWORDS VARCHAR(16777216),MOBILE BOOLEAN,NAME VARCHAR(255),NUMBER SMALLINT,RATE BOOLEAN,VIDEORESPONSE SMALLINT,VISIBILITY SMALLINT,ACCOUNT_ID INTEGER,ENDDIR VARCHAR(255),LICENSE SMALLINT, created_at DATETIME, updated_at DATETIME, TITLE VARCHAR(255));");
-		Base.exec("CREATE TABLE IF NOT EXISTS PLACEHOLDERS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,PLACEHOLDER VARCHAR(255),REPLACEMENT VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
 		Base.exec("CREATE TABLE IF NOT EXISTS PLAYLISTS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,PKEY VARCHAR(255), PRIVATE BOOLEAN, TITLE VARCHAR(255),URL VARCHAR(255),THUMBNAIL VARCHAR(255), NUMBER INTEGER, SUMMARY VARCHAR(16777216), ACCOUNT_ID INTEGER, created_at DATETIME, updated_at DATETIME);");
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,ARCHIVED BOOLEAN,CATEGORY VARCHAR(255),COMMENT SMALLINT,COMMENTVOTE BOOLEAN,DESCRIPTION VARCHAR(16777216),EMBED BOOLEAN,FAILED BOOLEAN,FILE VARCHAR(500),VISIBILITY SMALLINT,KEYWORDS VARCHAR(16777216),MIMETYPE VARCHAR(255),MOBILE BOOLEAN,RATE BOOLEAN,TITLE VARCHAR(255),UPLOADURL VARCHAR(255),VIDEORESPONSE SMALLINT,STARTED TIMESTAMP,INPROGRESS BOOLEAN,LOCKED BOOLEAN,VIDEOID VARCHAR(255),ACCOUNT_ID INTEGER, ENDDIR VARCHAR(255), LICENSE SMALLINT, RELEASE TIMESTAMP,NUMBER SMALLINT, PAUSEONFINISH BOOLEAN, created_at DATETIME, updated_at DATETIME);");
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, upload_id INTEGER);");
