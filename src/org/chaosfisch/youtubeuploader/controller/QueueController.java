@@ -413,6 +413,7 @@ public class QueueController implements Initializable
 				label.setText(String.format("%d MB/%d MB %dkbps", (int) (uploadProgress.getTotalBytesUploaded() / 1048576),
 											(int) (uploadProgress.getFileSize() / 1048576),
 											(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
+				System.out.println((int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime()));
 
 			}
 		});

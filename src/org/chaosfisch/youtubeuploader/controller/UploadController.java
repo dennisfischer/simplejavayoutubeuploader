@@ -688,6 +688,9 @@ public class UploadController implements Initializable
 		}
 
 		uploadBuilder.build();
+
+		uploadFile.getItems().remove(uploadFile.getValue());
+		uploadFile.getSelectionModel().selectNext();
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
