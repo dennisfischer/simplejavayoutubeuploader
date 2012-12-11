@@ -16,6 +16,7 @@
 	</appender>
 	<appender name="FILE2" class="ch.qos.logback.core.FileAppender">
 		<file>${user.home}/SimpleJavaYoutubeUploader/applog.xml</file>
+		<append>false</append>
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="ch.qos.logback.classic.log4j.XMLLayout">
 				<locationInfo>true</locationInfo>

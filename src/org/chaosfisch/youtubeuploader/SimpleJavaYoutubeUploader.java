@@ -172,7 +172,7 @@ public class SimpleJavaYoutubeUploader extends Application
 			Base.connection().setAutoCommit(true);
 		} catch (final SQLException e)
 		{
-			e.printStackTrace();
+			logger.error("Database setAutoCommit failed!", e);
 		}
 		Base.openTransaction();
 		Base.exec("CREATE TABLE IF NOT EXISTS ACCOUNTS(ID INTEGER NOT NULL auto_increment PRIMARY KEY,NAME VARCHAR(255),PASSWORD VARCHAR(255), TYPE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
@@ -196,7 +196,7 @@ public class SimpleJavaYoutubeUploader extends Application
 			uploader.runStarttimeChecker();
 		} catch (final IOException e)
 		{
-			e.printStackTrace();
+			logger.error("Couldn't start the application", e);
 		}
 	}
 
