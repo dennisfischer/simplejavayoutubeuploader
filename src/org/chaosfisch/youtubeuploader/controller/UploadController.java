@@ -260,31 +260,6 @@ public class UploadController implements Initializable
 
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistDropzone);
-
-		uploadFile.converterProperty().set(new StringConverter<File>() {
-
-			@Override
-			public String toString(final File object)
-			{
-
-				if (object.getPath().length() > 50)
-				{
-					final String fileName = object.getPath();
-					return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
-							.concat(File.separator)
-							.concat("...")
-							.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
-				}
-
-				return object.getPath();
-			}
-
-			@Override
-			public File fromString(final String string)
-			{
-				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
-			}
-		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -464,6 +439,31 @@ public class UploadController implements Initializable
 		};
 		playlistSourcezone.setCellFactory(playlistSourceCellFactory);
 		playlistDropzone.setCellFactory(playlistDropCellFactory);
+
+		uploadFile.converterProperty().set(new StringConverter<File>() {
+
+			@Override
+			public String toString(final File object)
+			{
+
+				if (object.getPath().length() > 50)
+				{
+					final String fileName = object.getPath();
+					return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
+							.concat(File.separator)
+							.concat("...")
+							.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+				}
+
+				return object.getPath();
+			}
+
+			@Override
+			public File fromString(final String string)
+			{
+				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
+			}
+		});
 	}
 
 	private void initSelection()
