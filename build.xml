@@ -40,9 +40,8 @@
 		<path location="${maven}\org\javalite\activejdbc-instrumentation\1.4.5\activejdbc-instrumentation-1.4.5.jar" />
 		<path location="${maven}\org\javassist\javassist\3.16.1-GA\javassist-3.16.1-GA.jar" />
 		<path location="${maven}\org\javalite\activejdbc\1.4.5\activejdbc-1.4.5.jar" />
-		<path location="${maven}\org\jfxtras\jfxtras-labs\2.2-r4\jfxtras-labs-2.2-r4.jar" />
+		<path location="${maven}\org\jfxtras\jfxtras-labs\2.2-r5-SNAPSHOT\jfxtras-labs-2.2-r5-SNAPSHOT.jar" />
 		<path location="lib\jfx-dialogs.jar" />
-		<path location="lib\gridfx-0.1-SNAPSHOT.jar" />
 		<path location="C:\Program Files\Java\jre7\lib\jfxrt.jar" />
 		<path location="lib\WebstartProgress.jar"/>
 	</path>

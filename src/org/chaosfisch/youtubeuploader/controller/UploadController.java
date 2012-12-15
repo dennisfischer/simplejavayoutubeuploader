@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -48,9 +49,12 @@ import javax.sql.DataSource;
 
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.scene.control.grid.GridCell;
+import jfxtras.labs.scene.control.grid.GridView;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.google.atom.AtomCategory;
+import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
@@ -61,8 +65,6 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
-import com.guigarage.fx.grid.GridCell;
-import com.guigarage.fx.grid.GridView;
 
 public class UploadController implements Initializable
 {
@@ -318,6 +320,8 @@ public class UploadController implements Initializable
 
 	private void initCustomFactories()
 	{
+		final int[] call = new int[1];
+		call[0] = 0;
 		final Callback<GridView<Model>, GridCell<Model>> playlistSourceCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
@@ -416,6 +420,28 @@ public class UploadController implements Initializable
 				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
 			}
 		});
+
+		uploadViewModel.playlistSourceListProperty.get().addListener(new ListChangeListener<Model>() {
+
+			@Override
+			public void onChanged(final javafx.collections.ListChangeListener.Change<? extends Model> c)
+			{
+				c.next();
+				RefresherUtil.refresh(playlistSourcezone, c.getList());
+
+			}
+		});
+
+		uploadViewModel.playlistDropListProperty.get().addListener(new ListChangeListener<Model>() {
+
+			@Override
+			public void onChanged(final javafx.collections.ListChangeListener.Change<? extends Model> c)
+			{
+				c.next();
+				RefresherUtil.refresh(playlistDropzone, c.getList());
+
+			}
+		});
 	}
 
 	private void initSelection()
@@ -458,7 +484,6 @@ public class UploadController implements Initializable
 				});
 			}
 		});
-
 	}
 
 	private void initBindings()
@@ -477,7 +502,11 @@ public class UploadController implements Initializable
 		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty().subtract(5));
 		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(5));
 
-		// VIEW MODEL BINDINGS TODO
+		// VIEW MODEL BINDINGS
+
+		uploadViewModel.init(	uploadCategory.getSelectionModel(), uploadFile.getSelectionModel(), accountList.getSelectionModel(),
+								uploadComment.getSelectionModel(), uploadLicense.getSelectionModel(), uploadVideoresponse.getSelectionModel(),
+								uploadVisibility.getSelectionModel(), templateList.getSelectionModel());
 
 		fileChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
 		directoryChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);

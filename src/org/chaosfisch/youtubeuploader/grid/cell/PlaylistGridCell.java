@@ -9,27 +9,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import jfxtras.labs.scene.control.grid.GridCell;
 
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.javalite.activejdbc.Model;
 
-import com.guigarage.fx.grid.GridCell;
-
 public class PlaylistGridCell extends GridCell<Model>
 {
-
 	public PlaylistGridCell()
 	{
-		getStyleClass().add("image-grid-cell");
 		itemProperty().addListener(new ChangeListener<Model>() {
 
 			@Override
-			public void changed(final ObservableValue<? extends Model> arg0, final Model arg1, final Model arg2)
+			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue)
 			{
+				final Playlist playlist = (Playlist) newValue;
 				getChildren().clear();
-				final Tooltip tooltip = new Tooltip(arg0.getValue().getString("title"));
 
-				final Playlist playlist = (Playlist) arg0.getValue();
+				if (playlist == null)
+				{
+					setGraphic(null);
+					return;
+				}
+
+				getStyleClass().add("image-grid-cell");
+
+				final Tooltip tooltip = new Tooltip(playlist.getString("title"));
 
 				final Pane pane = new Pane();
 				ImageView imageView;
