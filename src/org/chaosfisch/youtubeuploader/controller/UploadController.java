@@ -51,10 +51,10 @@ import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
+import jfxtras.labs.scene.control.grid.GridViewBuilder;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.google.atom.AtomCategory;
-import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
@@ -175,8 +175,8 @@ public class UploadController implements Initializable
 																	.withShowTime(Boolean.TRUE);
 	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
 
-	private final GridView<Model>		playlistSourcezone	= new GridView<>();
-	private final GridView<Model>		playlistDropzone	= new GridView<>();
+	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
+	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
 
 	@Inject private CategoryService		categoryService;
 	@Inject private FileChooser			fileChooser;
@@ -320,12 +320,10 @@ public class UploadController implements Initializable
 
 	private void initCustomFactories()
 	{
-		final int[] call = new int[1];
-		call[0] = 0;
 		final Callback<GridView<Model>, GridCell<Model>> playlistSourceCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
-			public GridCell<Model> call(final GridView<Model> arg0)
+			public PlaylistGridCell call(final GridView<Model> arg0)
 			{
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
@@ -361,7 +359,7 @@ public class UploadController implements Initializable
 		final Callback<GridView<Model>, GridCell<Model>> playlistDropCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
-			public GridCell<Model> call(final GridView<Model> arg0)
+			public PlaylistGridCell call(final GridView<Model> arg0)
 			{
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
@@ -424,22 +422,21 @@ public class UploadController implements Initializable
 		uploadViewModel.playlistSourceListProperty.get().addListener(new ListChangeListener<Model>() {
 
 			@Override
-			public void onChanged(final javafx.collections.ListChangeListener.Change<? extends Model> c)
+			public void onChanged(final ListChangeListener.Change<? extends Model> c)
 			{
 				c.next();
-				RefresherUtil.refresh(playlistSourcezone, c.getList());
-
+				System.out.println("added: " + c.wasAdded());
+				System.out.println("removed: " + c.wasRemoved());
 			}
 		});
 
 		uploadViewModel.playlistDropListProperty.get().addListener(new ListChangeListener<Model>() {
 
 			@Override
-			public void onChanged(final javafx.collections.ListChangeListener.Change<? extends Model> c)
+			public void onChanged(final ListChangeListener.Change<? extends Model> c)
 			{
 				c.next();
-				RefresherUtil.refresh(playlistDropzone, c.getList());
-
+				System.out.println("added: " + c.wasAdded());
 			}
 		});
 	}

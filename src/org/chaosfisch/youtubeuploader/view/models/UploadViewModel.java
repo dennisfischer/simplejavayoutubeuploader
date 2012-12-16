@@ -322,7 +322,7 @@ public class UploadViewModel
 		}
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
 	public void onAdded(final String topic, final Model model)
 	{
 		Platform.runLater(new Runnable() {
@@ -332,21 +332,42 @@ public class UploadViewModel
 			{
 				if ((model instanceof Account) && model.get("type").equals(Account.Type.YOUTUBE.name()))
 				{
-					accountProperty.add(model);
-					if ((selectedAccountProperty.get().getSelectedItem() == null) && (accountProperty.size() > 0))
+					if (accountProperty.contains(model))
 					{
-						selectedAccountProperty.get().select(accountProperty.get(0));
+						accountProperty.set(accountProperty.indexOf(model), model);
+					} else
+					{
+						accountProperty.add(model);
+						if ((selectedAccountProperty.get().getSelectedItem() == null) && (accountProperty.size() > 0))
+						{
+							selectedAccountProperty.get().select(accountProperty.get(0));
+						}
 					}
 				} else if (model instanceof Template)
 				{
-					templateProperty.add(model);
-					if ((selectedTemplateProperty.get().getSelectedItem() == null) && (templateProperty.size() > 0))
+					if (templateProperty.contains(model))
 					{
-						selectedTemplateProperty.get().select(templateProperty.get(0));
+						templateProperty.set(templateProperty.indexOf(model), model);
+					} else
+					{
+						templateProperty.add(model);
+						if ((selectedTemplateProperty.get().getSelectedItem() == null) && (templateProperty.size() > 0))
+						{
+							selectedTemplateProperty.get().select(templateProperty.get(0));
+						}
 					}
 				} else if ((model instanceof Playlist) && model.parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem()))
 				{
-					playlistSourceListProperty.add(model);
+					if (playlistSourceListProperty.contains(model))
+					{
+						playlistSourceListProperty.set(playlistSourceListProperty.indexOf(model), model);
+					} else if (playlistDropListProperty.contains(model))
+					{
+						playlistDropListProperty.set(playlistDropListProperty.indexOf(model), model);
+					} else
+					{
+						playlistSourceListProperty.add(model);
+					}
 				}
 			}
 		});
@@ -377,36 +398,6 @@ public class UploadViewModel
 				{
 					playlistSourceListProperty.remove(model);
 					playlistDropListProperty.remove(model);
-				}
-			}
-		});
-
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_UPDATED)
-	public void onUpdated(final String topic, final Model model)
-	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if (model instanceof Playlist)
-				{
-					int index = playlistSourceListProperty.indexOf(model);
-					if (index != -1)
-					{
-						System.out.println("called");
-						playlistSourceListProperty.set(index, model);
-					} else
-					{
-						index = playlistDropListProperty.indexOf(model);
-						if (index != -1)
-						{
-							playlistDropListProperty.remove(model);
-							playlistDropListProperty.add(model);
-						}
-					}
 				}
 			}
 		});

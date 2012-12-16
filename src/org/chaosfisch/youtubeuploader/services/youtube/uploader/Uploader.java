@@ -233,11 +233,12 @@ public class Uploader
 		}
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
 	public void onUploadAdded(final String topic, final Model model)
 	{
 		if (model instanceof Upload)
 		{
+			// TODO NOT RIGHT
 			sendUpload();
 		}
 	}

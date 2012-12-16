@@ -196,9 +196,10 @@ public class PlaylistServiceImpl implements PlaylistService
 								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
 
-							Playlist.createIt(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",
-												entry.playlistCountHint,
-												"summary", entry.playlistSummary, "thumbnail", thumbnail, "account_id", account.getLongId());
+							final Playlist pList = Playlist.create(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",
+																	entry.playlistCountHint, "summary", entry.playlistSummary, "thumbnail", thumbnail);
+							pList.setParent(account);
+							pList.save();
 						}
 					}
 

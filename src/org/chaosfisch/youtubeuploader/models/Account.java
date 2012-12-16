@@ -72,7 +72,7 @@ public class Account extends Model implements ModelEvents
 	protected void beforeSave()
 	{
 		super.beforeSave();
-		EventBus.publish(MODEL_PRE_UPDATED, this);
+		EventBus.publish(MODEL_PRE_SAVED, this);
 	}
 
 	/*
@@ -85,32 +85,7 @@ public class Account extends Model implements ModelEvents
 	{
 		super.afterSave();
 		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_UPDATED, this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.javalite.activejdbc.CallbackSupport#beforeCreate()
-	 */
-	@Override
-	protected void beforeCreate()
-	{
-		super.beforeCreate();
-		EventBus.publish(MODEL_PRE_ADDED, this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.javalite.activejdbc.CallbackSupport#afterCreate()
-	 */
-	@Override
-	protected void afterCreate()
-	{
-		super.afterCreate();
-		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_ADDED, this);
+		EventBus.publish(MODEL_POST_SAVED, this);
 	}
 
 	/*

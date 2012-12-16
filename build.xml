@@ -5,7 +5,7 @@
 		<classpath path="src/org/chaosfisch/youtubeuploader/resources/" />
 	</property>
 
-	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="C:\Program Files\Java\jdk1.7.0_09\lib\ant-javafx.jar" />
+	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="C:\Program Files\Java\jdk1.7.0_10\lib\ant-javafx.jar" />
 
 	<property name="src" location="src" />
 	<property name="build" location="target/build" />

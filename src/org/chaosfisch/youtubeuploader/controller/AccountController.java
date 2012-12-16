@@ -180,8 +180,8 @@ public class AccountController implements Initializable
 		AnnotationProcessor.process(this);
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
-	public void onAdded(final String topic, final Model model)
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
+	public void onSaved(final String topic, final Model model)
 	{
 		Platform.runLater(new Runnable() {
 
@@ -190,7 +190,13 @@ public class AccountController implements Initializable
 			{
 				if (model instanceof Account)
 				{
-					accountTable.getItems().add(model);
+					if (!accountTable.getItems().contains(model))
+					{
+						accountTable.getItems().add(model);
+					} else
+					{
+						accountTable.getItems().set(accountTable.getItems().indexOf(model), model);
+					}
 				}
 			}
 		});

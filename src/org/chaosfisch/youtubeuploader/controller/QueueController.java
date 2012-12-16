@@ -362,7 +362,7 @@ public class QueueController implements Initializable
 		AnnotationProcessor.process(this);
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_ADDED)
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
 	public void onAdded(final String topic, final Model model)
 	{
 		Platform.runLater(new Runnable() {
@@ -372,25 +372,14 @@ public class QueueController implements Initializable
 			{
 				if (model instanceof Upload)
 				{
-					queueTableview.getItems().add(model);
-				}
-			}
-		});
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_UPDATED)
-	public void onUpdated(final String topic, final Model model)
-	{
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				if (model instanceof Upload)
-				{
-					final int index = queueTableview.getItems().indexOf(model);
-					queueTableview.getItems().set(index, model);
-					RefresherUtil.refresh(queueTableview, queueTableview.getItems());
+					if (!queueTableview.getItems().contains(model))
+					{
+						queueTableview.getItems().add(model);
+					} else
+					{
+						queueTableview.getItems().set(queueTableview.getItems().indexOf(model), model);
+						RefresherUtil.refresh(queueTableview, queueTableview.getItems());
+					}
 				}
 			}
 		});
