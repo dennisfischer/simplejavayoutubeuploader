@@ -10,7 +10,7 @@
 	-fx-graphic:url("images/add.png");
 }
 
-#openFiles, #openDefaultdir, #openEnddir{
+.searchFile{
 	-fx-graphic: url("images/folder_explore.png");
 }
 

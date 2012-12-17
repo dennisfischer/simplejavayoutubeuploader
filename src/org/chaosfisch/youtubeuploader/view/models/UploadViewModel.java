@@ -1,7 +1,6 @@
 package org.chaosfisch.youtubeuploader.view.models;
 
 import java.io.File;
-import java.sql.Date;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -71,10 +70,11 @@ public class UploadViewModel
 	public final SimpleBooleanProperty								rateProperty				= new SimpleBooleanProperty();
 	public final SimpleStringProperty								tagsProperty				= new SimpleStringProperty();
 	public final SimpleStringProperty								titleProperty				= new SimpleStringProperty();
-	public final SimpleObjectProperty<Date>							starttimeProperty			= new SimpleObjectProperty<>();
-	public final SimpleObjectProperty<Date>							releasetimeProperty			= new SimpleObjectProperty<>();
+	public final SimpleObjectProperty<Calendar>						starttimeProperty			= new SimpleObjectProperty<>(Calendar.getInstance());
+	public final SimpleObjectProperty<Calendar>						releasetimeProperty			= new SimpleObjectProperty<>(Calendar.getInstance());
 	public final SimpleIntegerProperty								numberProperty				= new SimpleIntegerProperty();
 	public final SimpleObjectProperty<File>							initialDirectoryProperty	= new SimpleObjectProperty<>();
+	public final SimpleStringProperty								thumbnailProperty			= new SimpleStringProperty();
 
 	public SimpleObjectProperty<SingleSelectionModel<AtomCategory>>	selectedCategoryProperty;
 	public SimpleObjectProperty<SingleSelectionModel<File>>			selectedFileProperty;
@@ -216,6 +216,10 @@ public class UploadViewModel
 		{
 			initialDirectoryProperty.set(defaultDir);
 		}
+
+		releasetimeProperty.set(Calendar.getInstance());
+		starttimeProperty.set(Calendar.getInstance());
+		thumbnailProperty.set("");
 	}
 
 	public Upload toUpload()
@@ -240,22 +244,23 @@ public class UploadViewModel
 			uploadBuilder.addPlaylist((Playlist) playlist);
 		}
 
-		if (starttimeProperty.get().getTime() > System.currentTimeMillis())
+		if (starttimeProperty.get().getTimeInMillis() > System.currentTimeMillis())
 		{
-			uploadBuilder.setStarted(starttimeProperty.get());
+			uploadBuilder.setStarted(starttimeProperty.get().getTime());
 		}
 
-		if (releasetimeProperty.get().getTime() > System.currentTimeMillis())
+		if (releasetimeProperty.get().getTimeInMillis() > System.currentTimeMillis())
 		{
 			final Calendar calendar = new GregorianCalendar();
-			calendar.setTime(releasetimeProperty.get());
+			calendar.setTime(releasetimeProperty.get().getTime());
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 			final int mod = unroundedMinutes % 30;
 			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
 			uploadBuilder.setRelease(calendar.getTime());
 		}
 
-		fileProperty.remove(selectedFileProperty.get());
+		fileProperty.remove(selectedFileProperty.get().getSelectedItem());
+		selectedFileProperty.get().selectNext();
 		return uploadBuilder.build();
 	}
 

@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -155,6 +154,9 @@ public class UploadController implements Initializable
 	@FXML// fx:id="uploadTags"
 	private TextArea					uploadTags;
 
+	@FXML// fx:id="uploadThumbnail"
+	private TextField					uploadThumbnail;
+
 	@FXML// fx:id="uploadTitle"
 	private TextField					uploadTitle;
 
@@ -216,6 +218,7 @@ public class UploadController implements Initializable
 		assert uploadMobile != null : "fx:id=\"uploadMobile\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadThumbnail != null : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -418,27 +421,6 @@ public class UploadController implements Initializable
 				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
 			}
 		});
-
-		uploadViewModel.playlistSourceListProperty.get().addListener(new ListChangeListener<Model>() {
-
-			@Override
-			public void onChanged(final ListChangeListener.Change<? extends Model> c)
-			{
-				c.next();
-				System.out.println("added: " + c.wasAdded());
-				System.out.println("removed: " + c.wasRemoved());
-			}
-		});
-
-		uploadViewModel.playlistDropListProperty.get().addListener(new ListChangeListener<Model>() {
-
-			@Override
-			public void onChanged(final ListChangeListener.Change<? extends Model> c)
-			{
-				c.next();
-				System.out.println("added: " + c.wasAdded());
-			}
-		});
 	}
 
 	private void initSelection()
@@ -511,6 +493,7 @@ public class UploadController implements Initializable
 		accountList.itemsProperty().bindBidirectional(uploadViewModel.accountProperty);
 		playlistDropzone.itemsProperty().bindBidirectional(uploadViewModel.playlistDropListProperty);
 		playlistSourcezone.itemsProperty().bindBidirectional(uploadViewModel.playlistSourceListProperty);
+		previewTitle.textProperty().bindBidirectional(uploadViewModel.previewTitleProperty);
 		uploadCategory.itemsProperty().bindBidirectional(uploadViewModel.categoryProperty);
 		uploadComment.itemsProperty().bindBidirectional(uploadViewModel.commentProperty);
 		uploadCommentvote.selectedProperty().bindBidirectional(uploadViewModel.commentVoteProperty);
@@ -526,6 +509,8 @@ public class UploadController implements Initializable
 		uploadTitle.textProperty().bindBidirectional(uploadViewModel.titleProperty);
 		uploadVideoresponse.itemsProperty().bindBidirectional(uploadViewModel.videoresponseProperty);
 		uploadVisibility.itemsProperty().bindBidirectional(uploadViewModel.visibilityProperty);
+		starttime.valueProperty().bindBidirectional(uploadViewModel.starttimeProperty);
+		releasetime.valueProperty().bindBidirectional(uploadViewModel.releasetimeProperty);
 	}
 
 	// Handler for Button[fx:id="addUpload"] onAction
@@ -539,7 +524,7 @@ public class UploadController implements Initializable
 			return;
 		}
 		validationText.setId("validation_passed");
-		uploadFile.getSelectionModel().selectNext();
+		uploadViewModel.toUpload();
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
