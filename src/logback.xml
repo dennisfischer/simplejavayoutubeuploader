@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
 		<encoder>
-			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+	<appender name="HTML" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="ch.qos.logback.classic.html.HTMLLayout">
-				<pattern>%relative%thread%mdc%level%logger%msg</pattern>
+				<pattern>%d{HH:mm:ss.SSS}%thread%level%logger{36}%msg</pattern>
 			</layout>
 		</encoder>
 		<file>${user.home}/SimpleJavaYoutubeUploader/applog.html</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${user.home}/SimpleJavaYoutubeUploader/applog.html.%i</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>1024KB</MaxFileSize>
+		</triggeringPolicy>
 	</appender>
-	<appender name="FILE2" class="ch.qos.logback.core.FileAppender">
+	<appender name="XML" class="ch.qos.logback.core.FileAppender">
 		<file>${user.home}/SimpleJavaYoutubeUploader/applog.xml</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
 		<append>false</append>
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="ch.qos.logback.classic.log4j.XMLLayout">
@@ -23,9 +36,10 @@
 			</layout>
 		</encoder>
 	</appender>
-	<root level="debug">
-		<appender-ref ref="FILE" />
-		<appender-ref ref="FILE2" />
+	<logger name="org.javalite.activejdbc" level="INFO" />
+	<root level="DEBUG">
+		<appender-ref ref="HTML" />
+		<appender-ref ref="XML" />
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

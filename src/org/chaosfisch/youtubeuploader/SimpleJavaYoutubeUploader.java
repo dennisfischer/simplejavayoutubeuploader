@@ -32,7 +32,6 @@ import javax.sql.DataSource;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.util.LogfileCommitter;
-import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
@@ -80,6 +79,7 @@ public class SimpleJavaYoutubeUploader extends Application
 
 	public static void main(final String[] args)
 	{
+		logger.info("Application started!");
 		System.setOut(new PrintStream(System.out) {
 			@Override
 			public void print(final String s)
@@ -184,7 +184,6 @@ public class SimpleJavaYoutubeUploader extends Application
 		Base.exec("CREATE TABLE IF NOT EXISTS TEMPLATES_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, template_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(id INTEGER NOT NULL auto_increment PRIMARY KEY, `KEY` VARCHAR(255) NOT NULL UNIQUE, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
 		Upload.updateAll("inprogress = ?", false);
-		Playlist.deleteAll();
 		Base.commitTransaction();
 	}
 

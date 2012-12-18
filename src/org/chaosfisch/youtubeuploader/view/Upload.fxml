@@ -53,9 +53,9 @@
                         <Button fx:id="openEnddir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openEnddir" styleClass="searchFile" text="%button.enddir" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="3" />
                         <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="5" />
                         <CheckBox fx:id="uploadMobile" mnemonicParsing="false" text="%checkbox.mobile" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="6" />
-                        <Label text="%label.thumbnail" GridPane.columnIndex="0" GridPane.rowIndex="13" />
-                        <TextField fx:id="uploadThumbnail" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="13" />
-                        <Button fx:id="openThumbnail" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="searchFile" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="13" />
+                        <Label disable="true" text="%label.thumbnail" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                        <TextField fx:id="uploadThumbnail" disable="true" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="13" />
+                        <Button fx:id="openThumbnail" contentDisplay="GRAPHIC_ONLY" disable="true" mnemonicParsing="false" styleClass="searchFile" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="13" />
                       </children>
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />

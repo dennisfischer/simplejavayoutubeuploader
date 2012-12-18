@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader.modules;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javafx.stage.FileChooser;
 
@@ -66,6 +67,10 @@ public class GuiceBindings extends AbstractModule
 
 		try
 		{
+			final Properties p = new Properties(System.getProperties());
+			p.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
+			p.put("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "SEVERE");
+			System.setProperties(p);
 			bind(DataSource.class).toInstance(	DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:"
 																													+ System.getProperty("user.home")
 																													+ "/SimpleJavaYoutubeUploader/youtubeuploader",
