@@ -35,6 +35,7 @@ public class LogfileCommitter
 		if (xml == null) { return; }
 
 		final String uuid = getUniqueId();
+		logger.info("UUID:" + uuid);
 
 		final List<BasicNameValuePair> logfileParams = new ArrayList<BasicNameValuePair>();
 		logfileParams.add(new BasicNameValuePair("uuid", uuid));

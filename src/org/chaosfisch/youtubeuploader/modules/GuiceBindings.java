@@ -33,6 +33,7 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
@@ -56,6 +57,7 @@ public class GuiceBindings extends AbstractModule
 		bind(AuthTokenHelper.class).in(Singleton.class);
 		bind(Throttle.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
+		bind(UploadViewModel.class).in(Singleton.class);
 
 		requestStaticInjection(RequestHelper.class);
 
@@ -64,11 +66,10 @@ public class GuiceBindings extends AbstractModule
 
 		try
 		{
-			bind(DataSource.class).toInstance(DataSources.pooledDataSource(DataSources.unpooledDataSource(	"jdbc:h2:"
+			bind(DataSource.class).toInstance(	DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:"
 																													+ System.getProperty("user.home")
 																													+ "/SimpleJavaYoutubeUploader/youtubeuploader",
-																											"username",
-																											"")));
+																											"username", "")));
 		} catch (final SQLException e)
 		{
 			e.printStackTrace();

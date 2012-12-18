@@ -269,6 +269,58 @@ public class UploadViewModel
 		return upload;
 	}
 
+	public void fromUpload(final Upload upload)
+	{
+		final File file = new File(upload.getString("file"));
+		idProperty.set(upload.getInteger("id"));
+		fileProperty.add(file);
+		selectedFileProperty.get().select(file);
+		selectedAccountProperty.get().select(upload.parent(Account.class));
+		selectedCommentProperty.get().select(upload.getInteger("comment"));
+		selectedLicenseProperty.get().select(upload.getString("license"));
+		selectedVideoResponseProperty.get().select(upload.getInteger("videoresponse"));
+		selectedVisibilityProperty.get().select(upload.getInteger("visibility"));
+		commentVoteProperty.set(upload.getBoolean("commentvote"));
+		descriptionProperty.set(upload.getString("description"));
+		embedProperty.set(upload.getBoolean("embed"));
+		enddirProperty.set(upload.getString("enddir"));
+		mobileProperty.set(upload.getBoolean("mobile"));
+		numberProperty.set(upload.getInteger("number"));
+		rateProperty.set(upload.getBoolean("rate"));
+		tagsProperty.set(upload.getString("keywords"));
+		titleProperty.set(upload.getString("title"));
+		Calendar calendar = Calendar.getInstance();
+		if (upload.getDate("started") != null)
+		{
+			calendar.setTime(upload.getDate("started"));
+		}
+		starttimeProperty.set(calendar);
+		calendar = Calendar.getInstance();
+		if (upload.getDate("release") != null)
+		{
+			calendar.setTime(upload.getDate("release"));
+		}
+		releasetimeProperty.set(calendar);
+
+		for (final AtomCategory category : categoryProperty)
+		{
+			if (category.term.equals(upload.getString("category")))
+			{
+				selectedCategoryProperty.get().select(category);
+			}
+		}
+
+		for (final Model playlist : playlistDropListProperty.get())
+		{
+			removePlaylistFromDropzone(playlistDropListProperty.indexOf(playlist));
+		}
+		playlistDropListProperty.clear();
+		for (final Model playlist : upload.getAll(Playlist.class))
+		{
+			movePlaylistToDropzone(playlistSourceListProperty.indexOf(playlist));
+		}
+	}
+
 	public void saveTemplate()
 	{
 		final Template template = (Template) selectedTemplateProperty.get().getSelectedItem();

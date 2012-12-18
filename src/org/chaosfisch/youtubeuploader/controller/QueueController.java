@@ -58,6 +58,7 @@ import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadProgress;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
@@ -113,6 +114,7 @@ public class QueueController implements Initializable
 
 	@Inject Uploader					uploader;
 	@Inject Throttle					throttle;
+	@Inject UploadViewModel				uploadViewModel;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -289,6 +291,7 @@ public class QueueController implements Initializable
 								public void handle(final ActionEvent event)
 								{
 									if ((item == null) || item.getBoolean("inprogress")) { return; }
+									uploadViewModel.fromUpload(item);
 								}
 
 							});
