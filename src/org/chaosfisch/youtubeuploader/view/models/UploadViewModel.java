@@ -75,6 +75,7 @@ public class UploadViewModel
 	public final SimpleIntegerProperty								numberProperty				= new SimpleIntegerProperty();
 	public final SimpleObjectProperty<File>							initialDirectoryProperty	= new SimpleObjectProperty<>();
 	public final SimpleStringProperty								thumbnailProperty			= new SimpleStringProperty();
+	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty();
 
 	public SimpleObjectProperty<SingleSelectionModel<AtomCategory>>	selectedCategoryProperty;
 	public SimpleObjectProperty<SingleSelectionModel<File>>			selectedFileProperty;
@@ -259,9 +260,13 @@ public class UploadViewModel
 			uploadBuilder.setRelease(calendar.getTime());
 		}
 
-		fileProperty.remove(selectedFileProperty.get().getSelectedItem());
-		selectedFileProperty.get().selectNext();
-		return uploadBuilder.build();
+		final Upload upload = uploadBuilder.build();
+		if (upload.isValid())
+		{
+			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
+			selectedFileProperty.get().selectNext();
+		}
+		return upload;
 	}
 
 	public void saveTemplate()

@@ -35,6 +35,7 @@ public class UploadBuilder
 	private Date					release;
 	private String					enddir;
 	private final List<Playlist>	playlistList	= new ArrayList<Playlist>();
+	private Integer					id;
 
 	public UploadBuilder(final File file, final String title, final String category, final Account account)
 	{
@@ -42,7 +43,10 @@ public class UploadBuilder
 		String tmpType = null;
 		try
 		{
-			tmpType = Files.probeContentType(Paths.get(file.getAbsolutePath()));
+			if ((file != null) && file.isFile())
+			{
+				tmpType = Files.probeContentType(Paths.get(file.getAbsolutePath()));
+			}
 
 		} catch (final IOException ignored)
 		{}
@@ -54,18 +58,31 @@ public class UploadBuilder
 
 	public Upload build()
 	{
-		final Upload upload = Upload.create("file", file.getAbsolutePath(), "title", title, "category", category, "description", description,
-											"keywords", tags, "mimetype", mimetype, "commentvote", commentvote, "mobile", mobile, "embed", embed,
-											"rate", rate, "comment", comment, "videoresponse", videoresponse, "visibility", visibility, "license",
-											license, "number", number, "started", started, "release", release, "account_id", account.getLongId(),
-											"enddir", enddir, "inprogress", false);
+		final Upload upload = Upload.create("title", title, "description", description == null ? "" : description, "keywords", tags, "mimetype",
+											mimetype, "commentvote", commentvote, "mobile", mobile, "embed", embed, "rate", rate, "comment", comment,
+											"videoresponse", videoresponse, "visibility", visibility, "license", license, "number", number,
+											"started", started, "release", release, "enddir", enddir, "inprogress", false);
 
-		upload.save();
+		if (id != null)
+		{
+			upload.setLong("id", id);
+		}
+		if (file != null)
+		{
+			upload.setString("file", file.getAbsolutePath());
+		}
+		if (category != null)
+		{
+			upload.setString("category", category);
+		}
+		if (account != null)
+		{
+			upload.setParent(account);
+		}
 		for (final Playlist playlist : playlistList)
 		{
 			upload.add(playlist);
 		}
-		upload.saveIt();
 		return upload;
 	}
 
@@ -229,5 +246,11 @@ public class UploadBuilder
 		playlistList.addAll(playlists);
 		return this;
 
+	}
+
+	public UploadBuilder setId(final int id)
+	{
+		this.id = id;
+		return this;
 	}
 }

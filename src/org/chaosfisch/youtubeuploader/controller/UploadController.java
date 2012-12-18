@@ -54,10 +54,10 @@ import jfxtras.labs.scene.control.grid.GridViewBuilder;
 import name.antonsmirnov.javafx.dialog.Dialog;
 
 import org.chaosfisch.google.atom.AtomCategory;
-import org.chaosfisch.util.TagParser;
 import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Base;
@@ -516,15 +516,25 @@ public class UploadController implements Initializable
 	// Handler for Button[fx:id="addUpload"] onAction
 	public void addUpload(final ActionEvent event)
 	{
-		final String validation = validate();
-		validationText.setText(validation);
-		if (!validation.equals(I18nHelper.message("validation.info.added")))
+		final Upload upload = uploadViewModel.toUpload();
+
+		if (upload.isValid())
+		{
+			validationText.setId("validation_passed");
+			validationText.setText(I18nHelper.message("validation.info.added"));
+			upload.save();
+		} else
 		{
 			validationText.setId("validation_error");
-			return;
+			final StringBuilder stringBuilder = new StringBuilder("");
+			for (final String error : upload.errors().values())
+			{
+				stringBuilder.append(error);
+				stringBuilder.append("\n");
+			}
+			validationText.setText(stringBuilder.toString());
 		}
-		validationText.setId("validation_passed");
-		uploadViewModel.toUpload();
+
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
@@ -596,35 +606,5 @@ public class UploadController implements Initializable
 	public void saveTemplate(final ActionEvent event)
 	{
 		uploadViewModel.saveTemplate();
-	}
-
-	// validate each of the three input fields
-	private String validate()
-	{
-		if (uploadCategory.getItems().isEmpty())
-		{
-			Dialog.showError(I18nHelper.message("categoryload.failed.title"), I18nHelper.message("categoryload.failed.message"));
-		}
-		if (uploadFile.getItems().isEmpty())
-		{
-			return I18nHelper.message("validation.filelist");
-		} else if ((uploadTitle.getText() == null) || (uploadTitle.getText().getBytes().length < 5)
-				|| (uploadTitle.getText().getBytes().length > 100))
-		{
-			return I18nHelper.message("validation.title");
-		} else if (uploadCategory.getValue() == null)
-		{
-			return I18nHelper.message("validation.category");
-		} else if ((uploadDescription.getText() != null) && (uploadDescription.getText().getBytes().length > 5000))
-		{
-			return I18nHelper.message("validation.description");
-		} else if ((uploadDescription.getText() != null) && (uploadDescription.getText().contains(">") || uploadDescription.getText().contains("<")))
-		{
-			return I18nHelper.message("validation.description.characters");
-		} else if ((uploadTags.getText() != null) && ((uploadTags.getText().getBytes().length > 500) || !TagParser.isValid(uploadTags.getText())))
-		{
-			return I18nHelper.message("validation.tags");
-		} else if (accountList.getValue() == null) { return I18nHelper.message("validation.account"); }
-		return I18nHelper.message("validation.info.added");
 	}
 }
