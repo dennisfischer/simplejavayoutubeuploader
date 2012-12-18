@@ -75,7 +75,7 @@ public class UploadViewModel
 	public final SimpleIntegerProperty								numberProperty				= new SimpleIntegerProperty();
 	public final SimpleObjectProperty<File>							initialDirectoryProperty	= new SimpleObjectProperty<>();
 	public final SimpleStringProperty								thumbnailProperty			= new SimpleStringProperty();
-	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty();
+	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty(-1);
 
 	public SimpleObjectProperty<SingleSelectionModel<AtomCategory>>	selectedCategoryProperty;
 	public SimpleObjectProperty<SingleSelectionModel<File>>			selectedFileProperty;
@@ -221,6 +221,7 @@ public class UploadViewModel
 		releasetimeProperty.set(Calendar.getInstance());
 		starttimeProperty.set(Calendar.getInstance());
 		thumbnailProperty.set("");
+		idProperty.setValue(-1);
 	}
 
 	public Upload toUpload()
@@ -239,6 +240,10 @@ public class UploadViewModel
 				.setTags(tagsProperty.get())
 				.setVideoresponse(selectedVideoResponseProperty.get().getSelectedIndex())
 				.setVisibility(selectedVisibilityProperty.get().getSelectedIndex());
+		if (idProperty.get() != -1)
+		{
+			uploadBuilder.setId(idProperty.get());
+		}
 
 		for (final Model playlist : playlistDropListProperty.get())
 		{

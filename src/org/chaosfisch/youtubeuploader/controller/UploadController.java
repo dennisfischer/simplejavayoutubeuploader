@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -421,6 +423,24 @@ public class UploadController implements Initializable
 				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
 			}
 		});
+
+		uploadViewModel.idProperty.addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable arg0)
+			{
+				if (uploadViewModel.idProperty.get() == -1)
+				{
+					addUpload.setText(I18nHelper.message("button.addUpload"));
+					addUpload.setId("addUpload");
+				} else
+				{
+					addUpload.setText(I18nHelper.message("button.saveUpload"));
+					addUpload.setId("saveUpload");
+				}
+
+			}
+		});
 	}
 
 	private void initSelection()
@@ -523,6 +543,7 @@ public class UploadController implements Initializable
 			validationText.setId("validation_passed");
 			validationText.setText(I18nHelper.message("validation.info.added"));
 			upload.save();
+			uploadViewModel.idProperty.setValue(-1);
 		} else
 		{
 			validationText.setId("validation_error");
