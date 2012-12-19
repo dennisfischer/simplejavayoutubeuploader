@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="simple-java-youtube-uploader-javafx" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+<project name="simple-java-youtube-uploader-javafx">
+	
+
+    <path id="instrument_classpath">
+    	<path location="${build}" />
+        <path location="${user.home}/.m2/repository/org/javalite/activejdbc-instrumentation/1.4.5/activejdbc-instrumentation-1.4.5.jar"/>
+        <path location="${user.home}/.m2/repository/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA.jar"/>
+        <path location="${user.home}/.m2/repository/org/javalite/activejdbc/1.4.5/activejdbc-1.4.5.jar"/>
+    </path>
+
 	
 	<target name="instrument">
 		<java classname="org.javalite.instrumentation.Main">
 			<sysproperty key="outputDirectory" value="${build}" />
-			<classpath refid="classpath" />
+			<classpath refid="instrument_classpath"  />
 		</java>
 	</target>
 
