@@ -24,7 +24,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 
 import javax.sql.DataSource;
 
@@ -32,9 +31,10 @@ import jfxtras.labs.dialogs.DialogFX;
 import jfxtras.labs.dialogs.DialogFX.Type;
 
 import org.chaosfisch.util.LogfileCommitter;
+import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
+import org.chaosfisch.youtubeuploader.guice.GuiceControllerFactory;
 import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.models.Upload;
-import org.chaosfisch.youtubeuploader.modules.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
@@ -42,34 +42,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.sun.javafx.PlatformUtil;
 
 public class SimpleJavaYoutubeUploader extends Application
 {
-
-	/**
-	 * A JavaFX controller factory for constructing controllers via Guice DI. To
-	 * install this in the {@link FXMLLoader}, pass it as a parameter to
-	 * {@link FXMLLoader#setControllerFactory(Callback)}.
-	 * <p>
-	 * Once set, make sure you do <b>not</b> use the static methods on
-	 * {@link FXMLLoader} when creating your JavaFX node.
-	 */
-	class GuiceControllerFactory implements Callback<Class<?>, Object>
-	{
-
-		private final Injector	injector;
-
-		public GuiceControllerFactory(final Injector anInjector)
-		{
-			injector = anInjector;
-		}
-
-		@Override
-		public Object call(final Class<?> aClass)
-		{
-			return injector.getInstance(aClass);
-		}
-	}
 
 	/**
 	 * The application DI injector
@@ -80,6 +56,35 @@ public class SimpleJavaYoutubeUploader extends Application
 	public static void main(final String[] args)
 	{
 		logger.info("Application started!");
+		initLogger();
+		initLocale();
+		initSavedir();
+		launch(args);
+	}
+
+	private static void initSavedir()
+	{
+		String userHome = System.getProperty("user.home");
+		if (PlatformUtil.isMac())
+		{
+			userHome += "/Library/Application Support/";
+		}
+		System.setProperty("user.home", userHome);
+
+	}
+
+	private static void initLocale()
+	{
+		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
+		if (!Arrays.asList(availableLocales).contains(Locale.getDefault()))
+		{
+			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
+			Locale.setDefault(Locale.GERMAN);
+		}
+	}
+
+	private static void initLogger()
+	{
 		System.setOut(new PrintStream(System.out) {
 			@Override
 			public void print(final String s)
@@ -97,14 +102,6 @@ public class SimpleJavaYoutubeUploader extends Application
 				}
 			}
 		});
-		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
-		if (!Arrays.asList(availableLocales).contains(Locale.getDefault()))
-		{
-			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
-			Locale.setDefault(Locale.GERMAN);
-		}
-
-		launch(args);
 	}
 
 	final private Uploader	uploader	= injector.getInstance(Uploader.class);
@@ -125,7 +122,7 @@ public class SimpleJavaYoutubeUploader extends Application
 		primaryStage.setScene(scene);
 		primaryStage.setMinHeight(600);
 		primaryStage.setMinWidth(1000);
-		primaryStage.setOnHiding(new EventHandler<WindowEvent>() {
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
 			@Override
 			public void handle(final WindowEvent event)
@@ -135,8 +132,7 @@ public class SimpleJavaYoutubeUploader extends Application
 				dialog.setMessage("Do you really want to exit the application?");
 				if (dialog.showDialog() == 1)
 				{
-
-					primaryStage.show();
+					event.consume();
 				}
 			}
 		});

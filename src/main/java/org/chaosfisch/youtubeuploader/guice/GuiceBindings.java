@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.modules;
+package org.chaosfisch.youtubeuploader.guice;
 
 import java.sql.SQLException;
 import java.util.Properties;

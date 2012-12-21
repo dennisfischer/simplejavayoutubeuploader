@@ -26,20 +26,20 @@ public class LogfileCommitter
 {
 	private static final String	COMMIT_URL	= "http://youtubeuploader.square7.ch/nightly/receiver.php";
 	private static final Logger	logger		= LoggerFactory.getLogger(LogfileCommitter.class);
-	private static final File	xmlFile		= new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.xml");
+	private static final File	htmlFile	= new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.html");
 
 	public static void commit()
 	{
-		if (!xmlFile.exists()) { return; }
-		final String xml = getLogfile();
-		if (xml == null) { return; }
+		if (!htmlFile.exists()) { return; }
+		final String html = getLogfile();
+		if (html == null) { return; }
 
 		final String uuid = getUniqueId();
 		logger.info("UUID:" + uuid);
 
 		final List<BasicNameValuePair> logfileParams = new ArrayList<BasicNameValuePair>();
 		logfileParams.add(new BasicNameValuePair("uuid", uuid));
-		logfileParams.add(new BasicNameValuePair("data", xml));
+		logfileParams.add(new BasicNameValuePair("data", html));
 
 		final HttpUriRequest request = new Request.Builder(COMMIT_URL, Method.POST).headers(ImmutableMap.of("Content-Type",
 																											"application/x-www-form-urlencoded; charset=UTF-8;"))
@@ -65,19 +65,17 @@ public class LogfileCommitter
 
 	private static String getLogfile()
 	{
-		if (xmlFile.exists())
+		if (htmlFile.exists())
 		{
 			try
 			{
-				return Files.toString(xmlFile, Charset.forName("utf-8"));
+				return Files.toString(htmlFile, Charset.forName("utf-8"));
 			} catch (final IOException e)
 			{
 				return null;
 			}
-		} else
-		{
-			return null;
 		}
+		return null;
 	}
 
 	private static String getUniqueId()
