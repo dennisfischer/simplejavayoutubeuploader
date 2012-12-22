@@ -21,7 +21,7 @@ import org.chaosfisch.google.auth.RequestSigner;
 import org.chaosfisch.util.AuthTokenHelper;
 import org.chaosfisch.util.io.RequestHelper;
 import org.chaosfisch.util.io.Throttle;
-import org.chaosfisch.youtubeuploader.APIData;
+import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.EnddirServiceImpl;
@@ -63,7 +63,7 @@ public class GuiceBindings extends AbstractModule
 		requestStaticInjection(RequestHelper.class);
 
 		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
-		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(APIData.DEVELOPER_KEY);
+		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(ApplicationData.DEVELOPER_KEY);
 
 		try
 		{

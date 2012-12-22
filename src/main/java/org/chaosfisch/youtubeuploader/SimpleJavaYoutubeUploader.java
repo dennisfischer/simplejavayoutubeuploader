@@ -57,9 +57,15 @@ public class SimpleJavaYoutubeUploader extends Application
 	{
 		logger.info("Application started!");
 		initLogger();
+		initUpdater();
 		initLocale();
 		initSavedir();
 		launch(args);
+	}
+
+	private static void initUpdater()
+	{
+		new ApplicationUpdater();
 	}
 
 	private static void initSavedir()
