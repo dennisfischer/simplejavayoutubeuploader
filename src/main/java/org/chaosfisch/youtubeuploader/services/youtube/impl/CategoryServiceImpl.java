@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -20,7 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.chaosfisch.google.atom.AppCategories;
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService
 	{
 		try
 		{
-			final HttpResponse httpResponse = RequestHelper.execute(new Request.Builder(CATEGORY_URL, Method.GET).buildHttpUriRequest());
+			final HttpResponse httpResponse = RequestUtil.execute(new Request.Builder(CATEGORY_URL, Method.GET).buildHttpUriRequest());
 			if (httpResponse.getStatusLine().getStatusCode() == 200)
 			{
 				final AppCategories appCategories = XStreamHelper.parseFeed(EntityUtils.toString(httpResponse.getEntity()), AppCategories.class);

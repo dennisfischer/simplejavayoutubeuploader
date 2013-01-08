@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Dennis Fischer.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0+
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ * 
+ * Contributors: Dennis Fischer
+ ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.youtube.impl;
 
 import java.io.File;
@@ -5,6 +14,7 @@ import java.io.File;
 import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
+import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,10 +75,10 @@ public class EnddirServiceImpl implements EnddirService
 
 	public Setting getEnddirSetting()
 	{
-		Setting enddirSetting = Setting.findFirst("key = ?", "general.enddirtitle");
+		Setting enddirSetting = Model.findFirst("key = ?", "general.enddirtitle");
 		if (enddirSetting == null)
 		{
-			enddirSetting = Setting.createIt("key", "general.enddirtitle", "value", false);
+			enddirSetting = Model.createIt("key", "general.enddirtitle", "value", false);
 		}
 		return enddirSetting;
 

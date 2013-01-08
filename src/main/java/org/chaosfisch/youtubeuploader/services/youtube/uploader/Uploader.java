@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -118,7 +118,7 @@ public class Uploader
 
 		if (inProgressProperty.get() && hasFreeUploadSpace())
 		{
-			final Upload polled = Upload.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
+			final Upload polled = Model.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
 			if (polled != null)
 			{
 				if (polled.parent(Account.class) == null)
@@ -157,7 +157,7 @@ public class Uploader
 		}
 		runningUploads--;
 
-		final long leftUploads = Upload.count("archived = false AND failed = false");
+		final long leftUploads = Model.count("archived = false AND failed = false");
 		logger.info("Upload finished: {}; {}", queue.getString("title"), queue.getString("videoid"));
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
@@ -208,7 +208,7 @@ public class Uploader
 				while (!Thread.interrupted() && startTimeCheckerFlag)
 				{
 
-					if ((Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0))
+					if ((Model.count("archived = false AND started < NOW() AND inprogress = false") != 0))
 					{
 						start();
 					}
@@ -228,7 +228,7 @@ public class Uploader
 	{
 		if ((uploadProgress.done == true) || (uploadProgress.failed == true))
 		{
-			logger.info(uploadProgress.status);
+			logger.info("Status: {}", uploadProgress.status);
 			uploadFinished(uploadProgress.getQueue());
 		}
 	}

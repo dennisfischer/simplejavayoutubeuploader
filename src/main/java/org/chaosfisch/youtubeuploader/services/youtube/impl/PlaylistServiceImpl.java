@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -27,11 +27,11 @@ import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
-import org.chaosfisch.util.AuthTokenHelper;
+import org.chaosfisch.util.GoogleAuthUtil;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
-import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
@@ -48,7 +48,7 @@ public class PlaylistServiceImpl implements PlaylistService
 	private static final String		YOUTUBE_PLAYLIST_FEED_50_RESULTS	= "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
 	private static final String		YOUTUBE_PLAYLIST_VIDEO_ADD_FEED		= "http://gdata.youtube.com/feeds/api/playlists/%s";
 	private static final String		YOUTUBE_PLAYLIST_ADD_FEED			= "http://gdata.youtube.com/feeds/api/users/default/playlists";
-	@Inject private AuthTokenHelper	authTokenHelper;
+	@Inject private GoogleAuthUtil	authTokenHelper;
 	@Inject private RequestSigner	requestSigner;
 	private final Logger			logger								= LoggerFactory.getLogger(getClass());
 	@Inject private DataSource		datasource;
@@ -71,7 +71,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					.buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
-			response = RequestHelper.execute(request);
+			response = RequestUtil.execute(request);
 
 			logger.debug(	"Video added to playlist! Videoid: {}, Playlist: {}, Code: {}", videoId, playlist.getString("title"),
 							response.getStatusLine().getStatusCode());
@@ -116,7 +116,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					.buildHttpUriRequest();
 
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
-			response = RequestHelper.execute(request);
+			response = RequestUtil.execute(request);
 			final int statuscode = response.getStatusLine().getStatusCode();
 
 			if ((statuscode == 200) || (statuscode == 201))
@@ -157,7 +157,7 @@ public class PlaylistServiceImpl implements PlaylistService
 			{
 				final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS, Method.GET).buildHttpUriRequest();
 				requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
-				response = RequestHelper.execute(request);
+				response = RequestUtil.execute(request);
 				if (response.getStatusLine().getStatusCode() == 200)
 				{
 					logger.debug("Playlist synchronize okay.");
@@ -172,7 +172,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					}
 					for (final VideoEntry entry : feed.videoEntries)
 					{
-						final Playlist playlist = Playlist.findFirst("pkey = ?", entry.playlistId);
+						final Playlist playlist = Model.findFirst("pkey = ?", entry.playlistId);
 						if (playlist != null)
 						{
 							playlist.setString("title", entry.title);
@@ -196,7 +196,7 @@ public class PlaylistServiceImpl implements PlaylistService
 								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
 
-							final Playlist pList = Playlist.create(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",
+							final Playlist pList = Model.create(	"title", entry.title, "pkey", entry.playlistId, "url", entry.title, "number",
 																	entry.playlistCountHint, "summary", entry.playlistSummary, "thumbnail", thumbnail);
 							pList.setParent(account);
 							pList.save();
@@ -207,7 +207,7 @@ public class PlaylistServiceImpl implements PlaylistService
 					final Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(System.currentTimeMillis());
 					cal.add(Calendar.MINUTE, -5);
-					for (final Model model : Playlist.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()), account.getLongId()))
+					for (final Model model : Model.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()), account.getLongId()))
 					{
 						model.delete();
 					}

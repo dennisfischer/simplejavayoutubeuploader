@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -48,8 +48,8 @@ import javafx.util.StringConverter;
 
 import javax.sql.DataSource;
 
-import jfxtras.labs.dialogs.DialogFX;
-import jfxtras.labs.dialogs.DialogFX.Type;
+import jfxtras.labs.dialogs.MonologFX;
+import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.grid.GridCell;
@@ -68,131 +68,178 @@ import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
 
-public class UploadController implements Initializable
-{
-	@FXML// fx:id="accountList"
-	private ChoiceBox<Model>			accountList;
+public class UploadController implements Initializable {
+	@FXML
+	// fx:id="accountList"
+	private ChoiceBox<Model> accountList;
 
-	@FXML// fx:id="addUpload"
-	private Button						addUpload;
+	@FXML
+	// fx:id="addUpload"
+	private Button addUpload;
 
-	@FXML// fx:id="extendedSettingsGrid"
-	private GridPane					extendedSettingsGrid;
+	@FXML
+	// fx:id="extendedSettingsGrid"
+	private GridPane extendedSettingsGrid;
 
-	@FXML// fx:id="gridWidthSlider"
-	private Slider						gridWidthSlider;
+	@FXML
+	// fx:id="gridWidthSlider"
+	private Slider gridWidthSlider;
 
-	@FXML// fx:id="openDefaultdir"
-	private Button						openDefaultdir;
+	@FXML
+	// fx:id="openDefaultdir"
+	private Button openDefaultdir;
 
-	@FXML// fx:id="openEnddir"
-	private Button						openEnddir;
+	@FXML
+	// fx:id="openEnddir"
+	private Button openEnddir;
 
-	@FXML// fx:id="openFiles"
-	private Button						openFiles;
+	@FXML
+	// fx:id="openFiles"
+	private Button openFiles;
 
-	@FXML// fx:id="playlistDropScrollpane"
-	private ScrollPane					playlistDropScrollpane;
+	@FXML
+	// fx:id="openThumbnail"
+	private Button openThumbnail;
 
-	@FXML// fx:id="playlistGrid"
-	private GridPane					playlistGrid;
+	@FXML
+	// fx:id="playlistDropScrollpane"
+	private ScrollPane playlistDropScrollpane;
 
-	@FXML// fx:id="playlistSourceScrollpane"
-	private ScrollPane					playlistSourceScrollpane;
+	@FXML
+	// fx:id="playlistGrid"
+	private GridPane playlistGrid;
 
-	@FXML// fx:id="previewTitle"
-	private TextField					previewTitle;
+	@FXML
+	// fx:id="playlistSourceScrollpane"
+	private ScrollPane playlistSourceScrollpane;
 
-	@FXML// fx:id="refreshPlaylists"
-	private Button						refreshPlaylists;
+	@FXML
+	// fx:id="previewTitle"
+	private TextField previewTitle;
 
-	@FXML// fx:id="removeTemplate"
-	private Button						removeTemplate;
+	@FXML
+	// fx:id="refreshPlaylists"
+	private Button refreshPlaylists;
 
-	@FXML// fx:id="resetUpload"
-	private Button						resetUpload;
+	@FXML
+	// fx:id="removeTemplate"
+	private Button removeTemplate;
 
-	@FXML// fx:id="saveTemplate"
-	private Button						saveTemplate;
+	@FXML
+	// fx:id="resetUpload"
+	private Button resetUpload;
 
-	@FXML// fx:id="templateList"
-	private ChoiceBox<Model>			templateList;
+	@FXML
+	// fx:id="saveTemplate"
+	private Button saveTemplate;
 
-	@FXML// fx:id="uploadCategory"
-	private ChoiceBox<AtomCategory>		uploadCategory;
+	@FXML
+	// fx:id="templateList"
+	private ChoiceBox<Model> templateList;
 
-	@FXML// fx:id="uploadComment"
-	private ChoiceBox<String>			uploadComment;
+	@FXML
+	// fx:id="uploadCategory"
+	private ChoiceBox<AtomCategory> uploadCategory;
 
-	@FXML// fx:id="uploadCommentvote"
-	private CheckBox					uploadCommentvote;
+	@FXML
+	// fx:id="uploadComment"
+	private ChoiceBox<String> uploadComment;
 
-	@FXML// fx:id="uploadDefaultdir"
-	private TextField					uploadDefaultdir;
+	@FXML
+	// fx:id="uploadCommentvote"
+	private CheckBox uploadCommentvote;
 
-	@FXML// fx:id="uploadDescription"
-	private TextArea					uploadDescription;
+	@FXML
+	// fx:id="uploadDefaultdir"
+	private TextField uploadDefaultdir;
 
-	@FXML// fx:id="uploadEmbed"
-	private CheckBox					uploadEmbed;
+	@FXML
+	// fx:id="uploadDescription"
+	private TextArea uploadDescription;
 
-	@FXML// fx:id="uploadEnddir"
-	private TextField					uploadEnddir;
+	@FXML
+	// fx:id="uploadEmbed"
+	private CheckBox uploadEmbed;
 
-	@FXML// fx:id="uploadFile"
-	private ChoiceBox<File>				uploadFile;
+	@FXML
+	// fx:id="uploadEnddir"
+	private TextField uploadEnddir;
 
-	@FXML// fx:id="uploadGrid"
-	private GridPane					uploadGrid;
+	@FXML
+	// fx:id="uploadFile"
+	private ChoiceBox<File> uploadFile;
 
-	@FXML// fx:id="uploadLicense"
-	private ChoiceBox<String>			uploadLicense;
+	@FXML
+	// fx:id="uploadGrid"
+	private GridPane uploadGrid;
 
-	@FXML// fx:id="uploadMobile"
-	private CheckBox					uploadMobile;
+	@FXML
+	// fx:id="uploadLicense"
+	private ChoiceBox<String> uploadLicense;
 
-	@FXML// fx:id="uploadRate"
-	private CheckBox					uploadRate;
+	@FXML
+	// fx:id="uploadMobile"
+	private CheckBox uploadMobile;
 
-	@FXML// fx:id="uploadTags"
-	private TextArea					uploadTags;
+	@FXML
+	// fx:id="uploadRate"
+	private CheckBox uploadRate;
 
-	@FXML// fx:id="uploadThumbnail"
-	private TextField					uploadThumbnail;
+	@FXML
+	// fx:id="uploadTags"
+	private TextArea uploadTags;
 
-	@FXML// fx:id="uploadTitle"
-	private TextField					uploadTitle;
+	@FXML
+	// fx:id="uploadThumbnail"
+	private TextField uploadThumbnail;
 
-	@FXML// fx:id="uploadVideoresponse"
-	private ChoiceBox<String>			uploadVideoresponse;
+	@FXML
+	// fx:id="uploadTitle"
+	private TextField uploadTitle;
 
-	@FXML// fx:id="uploadVisibility"
-	private ChoiceBox<String>			uploadVisibility;
+	@FXML
+	// fx:id="uploadVideoresponse"
+	private ChoiceBox<String> uploadVideoresponse;
 
-	@FXML// fx:id="validationText"
-	private Label						validationText;
+	@FXML
+	// fx:id="uploadVisibility"
+	private ChoiceBox<String> uploadVisibility;
 
-	private final CalendarTextField		starttime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
-																	.withShowTime(Boolean.TRUE);
-	private final CalendarTextField		releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy hh:mm"))
-																	.withShowTime(Boolean.TRUE);
-	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
+	@FXML
+	// fx:id="validationText"
+	private Label validationText;
 
-	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
-	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
+	private final CalendarTextField starttime = new CalendarTextField()
+			.withValue(Calendar.getInstance())
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+			.withShowTime(Boolean.TRUE);
+	private final CalendarTextField releasetime = new CalendarTextField()
+			.withValue(Calendar.getInstance())
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+			.withShowTime(Boolean.TRUE);
+	private final ListSpinner<Integer> number = new ListSpinner<Integer>(-1000,
+			1000).withValue(0).withAlignment(Pos.CENTER_RIGHT);
 
-	@Inject private CategoryService		categoryService;
-	@Inject private FileChooser			fileChooser;
-	@Inject private DirectoryChooser	directoryChooser;
-	@Inject private DataSource			dataSource;
-	@Inject private UploadViewModel		uploadViewModel;
+	private final GridView<Model> playlistSourcezone = GridViewBuilder.create(
+			Model.class).build();
+	private final GridView<Model> playlistDropzone = GridViewBuilder.create(
+			Model.class).build();
+
+	@Inject
+	private CategoryService categoryService;
+	@Inject
+	private FileChooser fileChooser;
+	@Inject
+	private DirectoryChooser directoryChooser;
+	@Inject
+	private DataSource dataSource;
+	@Inject
+	private UploadViewModel uploadViewModel;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
-	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources)
-	{
+	public void initialize(final URL fxmlFileLocation,
+			final ResourceBundle resources) {
 		assert accountList != null : "fx:id=\"accountList\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -200,9 +247,10 @@ public class UploadController implements Initializable
 		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistDropzone != null : "fx:id=\"playlistDropzone\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert openThumbnail != null : "fx:id=\"openThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistDropScrollpane != null : "fx:id=\"playlistDropScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistGrid != null : "fx:id=\"playlistGrid\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistSourceScrollpane != null : "fx:id=\"playlistScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert playlistSourceScrollpane != null : "fx:id=\"playlistSourceScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert previewTitle != null : "fx:id=\"previewTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert removeTemplate != null : "fx:id=\"removeTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -217,6 +265,7 @@ public class UploadController implements Initializable
 		assert uploadEmbed != null : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadEnddir != null : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadFile != null : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadGrid != null : "fx:id=\"uploadGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadLicense != null : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadMobile != null : "fx:id=\"uploadMobile\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -235,8 +284,7 @@ public class UploadController implements Initializable
 		initSelection();
 	}
 
-	private void initControls()
-	{
+	private void initControls() {
 		extendedSettingsGrid.add(number, 1, 1, GridPane.REMAINING, 1);
 		extendedSettingsGrid.add(starttime, 1, 11, GridPane.REMAINING, 1);
 		extendedSettingsGrid.add(releasetime, 1, 12, GridPane.REMAINING, 1);
@@ -245,15 +293,13 @@ public class UploadController implements Initializable
 		playlistDropScrollpane.setContent(playlistDropzone);
 	}
 
-	private void initDragEventHandlers()
-	{
+	private void initDragEventHandlers() {
 		final EventHandler<DragEvent> onDragOver = new EventHandler<DragEvent>() {
 
 			@Override
-			public void handle(final DragEvent event)
-			{
-				if ((event.getGestureSource() != event.getTarget()) && event.getDragboard().hasString())
-				{
+			public void handle(final DragEvent event) {
+				if ((event.getGestureSource() != event.getTarget())
+						&& event.getDragboard().hasString()) {
 					event.acceptTransferModes(TransferMode.ANY);
 				}
 				event.consume();
@@ -263,19 +309,19 @@ public class UploadController implements Initializable
 		final EventHandler<DragEvent> onDragDropped = new EventHandler<DragEvent>() {
 
 			@Override
-			public void handle(final DragEvent event)
-			{
+			public void handle(final DragEvent event) {
 				final Dragboard db = event.getDragboard();
 				boolean success = false;
-				if (db.hasString())
-				{
-					if ((((Node) event.getTarget()).getParent() == playlistDropzone) && (event.getGestureSource() != playlistDropzone))
-					{
-						uploadViewModel.movePlaylistToDropzone(Integer.parseInt(db.getString()));
+				if (db.hasString()) {
+					if ((((Node) event.getTarget()).getParent() == playlistDropzone)
+							&& (event.getGestureSource() != playlistDropzone)) {
+						uploadViewModel.movePlaylistToDropzone(Integer
+								.parseInt(db.getString()));
 						success = true;
-					} else if ((((Node) event.getTarget()).getParent() == playlistSourcezone) && (event.getGestureSource() != playlistSourcezone))
-					{
-						uploadViewModel.removePlaylistFromDropzone(Integer.parseInt(db.getString()));
+					} else if ((((Node) event.getTarget()).getParent() == playlistSourcezone)
+							&& (event.getGestureSource() != playlistSourcezone)) {
+						uploadViewModel.removePlaylistFromDropzone(Integer
+								.parseInt(db.getString()));
 						success = true;
 					}
 
@@ -288,14 +334,16 @@ public class UploadController implements Initializable
 		final EventHandler<DragEvent> onDragEntered = new EventHandler<DragEvent>() {
 
 			@Override
-			public void handle(final DragEvent event)
-			{
-				if ((((event.getGestureSource() != event.getTarget()) && (event.getTarget() == playlistDropzone)) || (event.getTarget() == playlistSourcezone))
-						&& event.getDragboard().hasString())
-				{
+			public void handle(final DragEvent event) {
+				if ((((event.getGestureSource() != event.getTarget()) && (event
+						.getTarget() == playlistDropzone)) || (event
+						.getTarget() == playlistSourcezone))
+						&& event.getDragboard().hasString()) {
 
-					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
-					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dragentered");
+					((Node) event.getTarget()).getParent().getParent()
+							.getParent().getStyleClass().clear();
+					((Node) event.getTarget()).getParent().getParent()
+							.getParent().getStyleClass().add("dragentered");
 				}
 
 				event.consume();
@@ -305,10 +353,11 @@ public class UploadController implements Initializable
 		final EventHandler<DragEvent> onDragExited = new EventHandler<DragEvent>() {
 
 			@Override
-			public void handle(final DragEvent event)
-			{
-				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
-				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dropzone");
+			public void handle(final DragEvent event) {
+				((Node) event.getTarget()).getParent().getParent().getParent()
+						.getStyleClass().clear();
+				((Node) event.getTarget()).getParent().getParent().getParent()
+						.getStyleClass().add("dropzone");
 				event.consume();
 			}
 		};
@@ -324,23 +373,22 @@ public class UploadController implements Initializable
 		playlistSourcezone.setOnDragOver(onDragOver);
 	}
 
-	private void initCustomFactories()
-	{
+	private void initCustomFactories() {
 		final Callback<GridView<Model>, GridCell<Model>> playlistSourceCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
-			public PlaylistGridCell call(final GridView<Model> arg0)
-			{
+			public PlaylistGridCell call(final GridView<Model> arg0) {
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
 				cell.setOnDragDetected(new EventHandler<Event>() {
 
 					@Override
-					public void handle(final Event event)
-					{
-						final Dragboard db = playlistSourcezone.startDragAndDrop(TransferMode.ANY);
+					public void handle(final Event event) {
+						final Dragboard db = playlistSourcezone
+								.startDragAndDrop(TransferMode.ANY);
 						final ClipboardContent content = new ClipboardContent();
-						content.putString(uploadViewModel.playlistSourceListProperty.indexOf(cell.itemProperty().get()) + "");
+						content.putString(uploadViewModel.playlistSourceListProperty
+								.indexOf(cell.itemProperty().get()) + "");
 						db.setContent(content);
 						event.consume();
 					}
@@ -349,11 +397,11 @@ public class UploadController implements Initializable
 				cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 					@Override
-					public void handle(final MouseEvent event)
-					{
-						if (event.getClickCount() == 2)
-						{
-							uploadViewModel.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty.indexOf(cell.itemProperty().get()));
+					public void handle(final MouseEvent event) {
+						if (event.getClickCount() == 2) {
+							uploadViewModel
+									.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty
+											.indexOf(cell.itemProperty().get()));
 						}
 					}
 				});
@@ -365,18 +413,18 @@ public class UploadController implements Initializable
 		final Callback<GridView<Model>, GridCell<Model>> playlistDropCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
 
 			@Override
-			public PlaylistGridCell call(final GridView<Model> arg0)
-			{
+			public PlaylistGridCell call(final GridView<Model> arg0) {
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
 				cell.setOnDragDetected(new EventHandler<Event>() {
 
 					@Override
-					public void handle(final Event event)
-					{
-						final Dragboard db = playlistDropzone.startDragAndDrop(TransferMode.ANY);
+					public void handle(final Event event) {
+						final Dragboard db = playlistDropzone
+								.startDragAndDrop(TransferMode.ANY);
 						final ClipboardContent content = new ClipboardContent();
-						content.putString(uploadViewModel.playlistDropListProperty.indexOf(cell.itemProperty().get()) + "");
+						content.putString(uploadViewModel.playlistDropListProperty
+								.indexOf(cell.itemProperty().get()) + "");
 						db.setContent(content);
 						event.consume();
 					}
@@ -385,11 +433,11 @@ public class UploadController implements Initializable
 				cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 					@Override
-					public void handle(final MouseEvent event)
-					{
-						if (event.getClickCount() == 2)
-						{
-							uploadViewModel.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty.indexOf(cell.itemProperty().get()));
+					public void handle(final MouseEvent event) {
+						if (event.getClickCount() == 2) {
+							uploadViewModel
+									.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty
+											.indexOf(cell.itemProperty().get()));
 						}
 					}
 				});
@@ -403,39 +451,40 @@ public class UploadController implements Initializable
 		uploadFile.converterProperty().set(new StringConverter<File>() {
 
 			@Override
-			public String toString(final File object)
-			{
+			public String toString(final File object) {
 
-				if (object.getPath().length() > 50)
-				{
+				if (object.getPath().length() > 50) {
 					final String fileName = object.getPath();
-					return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
+					return fileName
+							.substring(
+									0,
+									fileName.indexOf(
+											File.separatorChar,
+											fileName.indexOf(File.separatorChar)))
 							.concat(File.separator)
 							.concat("...")
-							.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+							.concat(fileName.substring(fileName.lastIndexOf(
+									File.separatorChar, fileName.length())));
 				}
 
 				return object.getPath();
 			}
 
 			@Override
-			public File fromString(final String string)
-			{
-				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
+			public File fromString(final String string) {
+				throw new RuntimeException(
+						"This method is not implemented: uploadFile is readonly!");
 			}
 		});
 
 		uploadViewModel.idProperty.addListener(new InvalidationListener() {
 
 			@Override
-			public void invalidated(final Observable arg0)
-			{
-				if (uploadViewModel.idProperty.get() == -1)
-				{
+			public void invalidated(final Observable arg0) {
+				if (uploadViewModel.idProperty.get() == -1) {
 					addUpload.setText(I18nHelper.message("button.addUpload"));
 					addUpload.setId("addUpload");
-				} else
-				{
+				} else {
 					addUpload.setText(I18nHelper.message("button.saveUpload"));
 					addUpload.setId("saveUpload");
 				}
@@ -444,8 +493,7 @@ public class UploadController implements Initializable
 		});
 	}
 
-	private void initSelection()
-	{
+	private void initSelection() {
 		uploadVisibility.getSelectionModel().selectFirst();
 		uploadComment.getSelectionModel().selectFirst();
 		uploadLicense.getSelectionModel().selectFirst();
@@ -454,23 +502,27 @@ public class UploadController implements Initializable
 		ThreadUtil.doInBackground(new Runnable() {
 
 			@Override
-			public void run()
-			{
-				if (!Base.hasConnection())
-				{
+			public void run() {
+				if (!Base.hasConnection()) {
 					Base.open(dataSource);
 				}
-				uploadViewModel.categoryProperty.set(FXCollections.observableList(categoryService.load()));
-				if (uploadViewModel.categoryProperty.isEmpty())
-				{
+				uploadViewModel.categoryProperty.set(FXCollections
+						.observableList(categoryService.load()));
+				if (uploadViewModel.categoryProperty.isEmpty()) {
 					Platform.runLater(new Runnable() {
 
 						@Override
-						public void run()
-						{
-							final DialogFX dialog = new DialogFX(Type.ERROR);
-							dialog.setTitleText(I18nHelper.message("categoryload.failed.title"));
-							dialog.setMessage(I18nHelper.message("categoryload.failed.message"));
+						public void run() {
+							final MonologFX dialog = new MonologFX(
+									MonologFX.Type.ERROR);
+							dialog.setTitleText(I18nHelper
+									.message("categoryload.failed.title"));
+							dialog.setMessage(I18nHelper
+									.message("categoryload.failed.message"));
+							MonologFXButton okButton = new MonologFXButton();
+							okButton.setType(MonologFXButton.Type.OK);
+							okButton.setLabel("OK");
+							dialog.addButton(okButton);
 							dialog.showDialog();
 						}
 					});
@@ -479,8 +531,7 @@ public class UploadController implements Initializable
 				Platform.runLater(new Runnable() {
 
 					@Override
-					public void run()
-					{
+					public void run() {
 						uploadCategory.getSelectionModel().selectFirst();
 						templateList.getSelectionModel().selectFirst();
 					}
@@ -489,71 +540,105 @@ public class UploadController implements Initializable
 		});
 	}
 
-	private void initBindings()
-	{
+	private void initBindings() {
 
-		releasetime.disableProperty().bind(uploadVisibility.getSelectionModel().selectedIndexProperty().lessThan(2));
+		releasetime.disableProperty().bind(
+				uploadVisibility.getSelectionModel().selectedIndexProperty()
+						.lessThan(2));
 		gridWidthSlider.minProperty().set(1280);
 		gridWidthSlider.maxProperty().set(2000);
-		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));
-		playlistSourcezone.cellHeightProperty().bind(gridWidthSlider.valueProperty().divide(16));
-		playlistDropzone.minWidthProperty().bind(playlistDropScrollpane.widthProperty().subtract(5));
-		playlistDropzone.prefHeightProperty().bind(playlistDropScrollpane.heightProperty());
+		playlistSourcezone.cellWidthProperty().bind(
+				gridWidthSlider.valueProperty().divide(9));
+		playlistSourcezone.cellHeightProperty().bind(
+				gridWidthSlider.valueProperty().divide(16));
+		playlistDropzone.minWidthProperty().bind(
+				playlistDropScrollpane.widthProperty().subtract(5));
+		playlistDropzone.prefHeightProperty().bind(
+				playlistDropScrollpane.heightProperty());
 		playlistDropzone.cellHeightProperty().set(68);
 		playlistDropzone.cellWidthProperty().set(120);
 
-		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty().subtract(5));
-		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(5));
+		playlistSourcezone.minHeightProperty().bind(
+				playlistSourceScrollpane.heightProperty().subtract(5));
+		playlistSourcezone.prefWidthProperty().bind(
+				playlistSourceScrollpane.widthProperty().subtract(5));
 
 		// VIEW MODEL BINDINGS
 
-		uploadViewModel.init(	uploadCategory.getSelectionModel(), uploadFile.getSelectionModel(), accountList.getSelectionModel(),
-								uploadComment.getSelectionModel(), uploadLicense.getSelectionModel(), uploadVideoresponse.getSelectionModel(),
-								uploadVisibility.getSelectionModel(), templateList.getSelectionModel());
+		uploadViewModel.init(uploadCategory.getSelectionModel(),
+				uploadFile.getSelectionModel(),
+				accountList.getSelectionModel(),
+				uploadComment.getSelectionModel(),
+				uploadLicense.getSelectionModel(),
+				uploadVideoresponse.getSelectionModel(),
+				uploadVisibility.getSelectionModel(),
+				templateList.getSelectionModel());
 
-		fileChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
-		directoryChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
-		templateList.itemsProperty().bindBidirectional(uploadViewModel.templateProperty);
-		accountList.itemsProperty().bindBidirectional(uploadViewModel.accountProperty);
-		playlistDropzone.itemsProperty().bindBidirectional(uploadViewModel.playlistDropListProperty);
-		playlistSourcezone.itemsProperty().bindBidirectional(uploadViewModel.playlistSourceListProperty);
-		previewTitle.textProperty().bindBidirectional(uploadViewModel.previewTitleProperty);
-		uploadCategory.itemsProperty().bindBidirectional(uploadViewModel.categoryProperty);
-		uploadComment.itemsProperty().bindBidirectional(uploadViewModel.commentProperty);
-		uploadCommentvote.selectedProperty().bindBidirectional(uploadViewModel.commentVoteProperty);
-		uploadDefaultdir.textProperty().bindBidirectional(uploadViewModel.defaultdirProperty);
-		uploadDescription.textProperty().bindBidirectional(uploadViewModel.descriptionProperty);
-		uploadEmbed.selectedProperty().bindBidirectional(uploadViewModel.embedProperty);
-		uploadEnddir.textProperty().bindBidirectional(uploadViewModel.enddirProperty);
-		uploadFile.itemsProperty().bindBidirectional(uploadViewModel.fileProperty);
-		uploadLicense.itemsProperty().bindBidirectional(uploadViewModel.licenseProperty);
-		uploadMobile.selectedProperty().bindBidirectional(uploadViewModel.mobileProperty);
-		uploadRate.selectedProperty().bindBidirectional(uploadViewModel.rateProperty);
-		uploadTags.textProperty().bindBidirectional(uploadViewModel.tagsProperty);
-		uploadTitle.textProperty().bindBidirectional(uploadViewModel.titleProperty);
-		uploadVideoresponse.itemsProperty().bindBidirectional(uploadViewModel.videoresponseProperty);
-		uploadVisibility.itemsProperty().bindBidirectional(uploadViewModel.visibilityProperty);
-		starttime.valueProperty().bindBidirectional(uploadViewModel.starttimeProperty);
-		releasetime.valueProperty().bindBidirectional(uploadViewModel.releasetimeProperty);
+		fileChooser.initialDirectoryProperty().bindBidirectional(
+				uploadViewModel.initialDirectoryProperty);
+		directoryChooser.initialDirectoryProperty().bindBidirectional(
+				uploadViewModel.initialDirectoryProperty);
+		templateList.itemsProperty().bindBidirectional(
+				uploadViewModel.templateProperty);
+		accountList.itemsProperty().bindBidirectional(
+				uploadViewModel.accountProperty);
+		playlistDropzone.itemsProperty().bindBidirectional(
+				uploadViewModel.playlistDropListProperty);
+		playlistSourcezone.itemsProperty().bindBidirectional(
+				uploadViewModel.playlistSourceListProperty);
+		previewTitle.textProperty().bindBidirectional(
+				uploadViewModel.previewTitleProperty);
+		uploadCategory.itemsProperty().bindBidirectional(
+				uploadViewModel.categoryProperty);
+		uploadComment.itemsProperty().bindBidirectional(
+				uploadViewModel.commentProperty);
+		uploadCommentvote.selectedProperty().bindBidirectional(
+				uploadViewModel.commentVoteProperty);
+		uploadDefaultdir.textProperty().bindBidirectional(
+				uploadViewModel.defaultdirProperty);
+		uploadDescription.textProperty().bindBidirectional(
+				uploadViewModel.descriptionProperty);
+		uploadEmbed.selectedProperty().bindBidirectional(
+				uploadViewModel.embedProperty);
+		uploadEnddir.textProperty().bindBidirectional(
+				uploadViewModel.enddirProperty);
+		uploadFile.itemsProperty().bindBidirectional(
+				uploadViewModel.fileProperty);
+		uploadLicense.itemsProperty().bindBidirectional(
+				uploadViewModel.licenseProperty);
+		uploadMobile.selectedProperty().bindBidirectional(
+				uploadViewModel.mobileProperty);
+		uploadRate.selectedProperty().bindBidirectional(
+				uploadViewModel.rateProperty);
+		uploadTags.textProperty().bindBidirectional(
+				uploadViewModel.tagsProperty);
+		uploadTitle.textProperty().bindBidirectional(
+				uploadViewModel.titleProperty);
+		uploadThumbnail.textProperty().bindBidirectional(uploadViewModel.thumbnailProperty);
+		uploadVideoresponse.itemsProperty().bindBidirectional(
+				uploadViewModel.videoresponseProperty);
+		uploadVisibility.itemsProperty().bindBidirectional(
+				uploadViewModel.visibilityProperty);
+		starttime.valueProperty().bindBidirectional(
+				uploadViewModel.starttimeProperty);
+		releasetime.valueProperty().bindBidirectional(
+				uploadViewModel.releasetimeProperty);
 	}
 
 	// Handler for Button[fx:id="addUpload"] onAction
-	public void addUpload(final ActionEvent event)
-	{
+	@FXML
+	public void addUpload(final ActionEvent event) {
 		final Upload upload = uploadViewModel.toUpload();
 
-		if (upload.isValid())
-		{
+		if (upload.isValid()) {
 			validationText.setId("validation_passed");
 			validationText.setText(I18nHelper.message("validation.info.added"));
 			upload.save();
 			uploadViewModel.idProperty.setValue(-1);
-		} else
-		{
+		} else {
 			validationText.setId("validation_error");
 			final StringBuilder stringBuilder = new StringBuilder("");
-			for (final String error : upload.errors().values())
-			{
+			for (final String error : upload.errors().values()) {
 				stringBuilder.append(error);
 				stringBuilder.append("\n");
 			}
@@ -563,73 +648,77 @@ public class UploadController implements Initializable
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
-	public void openDefaultdir(final ActionEvent event)
-	{
+	@FXML
+	public void openDefaultdir(final ActionEvent event) {
 		final File directory = directoryChooser.showDialog(null);
-		if (directory != null)
-		{
+		if (directory != null) {
 			uploadDefaultdir.setText(directory.getAbsolutePath());
 		}
 	}
 
 	// Handler for Button[fx:id="openEnddir"] onAction
-	public void openEnddir(final ActionEvent event)
-	{
+	@FXML
+	public void openEnddir(final ActionEvent event) {
 		final File directory = directoryChooser.showDialog(null);
-		if (directory != null)
-		{
+		if (directory != null) {
 			uploadEnddir.setText(directory.getAbsolutePath());
 		}
 	}
 
 	// Handler for Button[fx:id="openFiles"] onAction
-	public void openFiles(final ActionEvent event)
-	{
+	@FXML
+	public void openFiles(final ActionEvent event) {
 		final List<File> files = fileChooser.showOpenMultipleDialog(null);
-		if (files != null)
-		{
+		if (files != null) {
 			addUploadFiles(files);
 		}
 	}
 
-	public void addUploadFiles(final List<File> files)
-	{
+	// Handler for Button[fx:id="openThumbnail"] onAction
+	@FXML
+	void openThumbnail(ActionEvent event) {
+		final File file = fileChooser.showOpenDialog(null);
+		if (file != null) {
+			uploadThumbnail.setText(file.getAbsolutePath());
+		}
+	}
+
+	public void addUploadFiles(final List<File> files) {
 		uploadFile.getItems().clear();
 		uploadFile.getItems().addAll(files);
 		uploadFile.getSelectionModel().selectFirst();
-		if ((uploadTitle.getText() == null) || uploadTitle.getText().isEmpty())
-		{
+		if ((uploadTitle.getText() == null) || uploadTitle.getText().isEmpty()) {
 			final String file = files.get(0).getAbsolutePath();
 			int index = file.lastIndexOf(".");
-			if (index == -1)
-			{
+			if (index == -1) {
 				index = file.length();
 			}
-			uploadTitle.setText(file.substring(file.lastIndexOf(File.separator) + 1, index));
+			uploadTitle.setText(file.substring(
+					file.lastIndexOf(File.separator) + 1, index));
 		}
 	}
 
 	// Handler for Button[fx:id="refreshPlaylists"] onAction
-	public void refreshPlaylists(final ActionEvent event)
-	{
+	@FXML
+	public void refreshPlaylists(final ActionEvent event) {
 		uploadViewModel.refreshPlaylists();
 	}
 
 	// Handler for Button[fx:id="removeTemplate"] onAction
-	public void removeTemplate(final ActionEvent event)
-	{
+	@FXML
+	public void removeTemplate(final ActionEvent event) {
 		uploadViewModel.removeTemplate();
 	}
 
 	// Handler for Button[fx:id="resetUpload"] onAction
-	public void resetUpload(final ActionEvent event)
-	{
+	@FXML
+	public void resetUpload(final ActionEvent event) {
 		uploadViewModel.resetTemplate();
 	}
 
 	// Handler for Button[id="saveTemplate"] onAction
-	public void saveTemplate(final ActionEvent event)
-	{
+	@FXML
+	public void saveTemplate(final ActionEvent event) {
 		uploadViewModel.saveTemplate();
 	}
 }

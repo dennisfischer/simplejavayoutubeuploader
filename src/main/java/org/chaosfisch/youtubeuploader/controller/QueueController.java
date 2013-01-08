@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.awt.Desktop;
@@ -41,8 +40,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
-import jfxtras.labs.dialogs.DialogFX;
-import jfxtras.labs.dialogs.DialogFX.Type;
+import jfxtras.labs.dialogs.MonologFX;
+import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
@@ -263,10 +262,18 @@ public class QueueController implements Initializable
 								public void handle(final ActionEvent event)
 								{
 									if ((item == null) || item.getBoolean("inprogress")) { return; }
-									final DialogFX dialog = new DialogFX(Type.QUESTION);
+									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
 									dialog.setTitleText("Upload entfernen");
-									dialog.setMessage("Wirklich diesen Upload löschen?");
-									if ((item != null) && (dialog.showDialog() == 0))
+									dialog.setMessage("Wirklich diesen Upload l�schen?");
+									MonologFXButton yesButton = new MonologFXButton();
+									yesButton.setType(MonologFXButton.Type.YES);
+									yesButton.setLabel("Yes");
+									MonologFXButton noButton = new MonologFXButton();
+									noButton.setType(MonologFXButton.Type.NO);
+									noButton.setLabel("No");
+									dialog.addButton(yesButton);
+									dialog.addButton(noButton);
+									if ((item != null) && (dialog.showDialog() == MonologFXButton.Type.YES))
 									{
 										item.delete();
 									}
@@ -296,10 +303,10 @@ public class QueueController implements Initializable
 								public void handle(final ActionEvent arg0)
 								{
 									if ((item == null) || !item.getBoolean("inprogress")) { return; }
-									final DialogFX dialog = new DialogFX(Type.QUESTION);
+									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
 									dialog.setTitleText("Upload abbrechen");
 									dialog.setMessage("Wirklich diesen Upload abbrechen?");
-									if (dialog.showDialog() == 0)
+									if (dialog.showDialog() == MonologFXButton.Type.OK)
 									{
 										EventBus.publish(Uploader.ABORT, item);
 									}
@@ -332,7 +339,7 @@ public class QueueController implements Initializable
 
 		});
 
-		queueTableview.setItems(FXCollections.observableArrayList(Upload.findAll()));
+		queueTableview.setItems(FXCollections.observableArrayList(Model.findAll()));
 
 		actionOnFinish.setItems(FXCollections.observableArrayList(new String[] { I18nHelper.message("queuefinishedlist.donothing"),
 				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
@@ -416,10 +423,18 @@ public class QueueController implements Initializable
 	// Handler for Button[fx:id="startQueue"] onAction
 	public void startQueue(final ActionEvent event)
 	{
-		final DialogFX dialog = new DialogFX(Type.ACCEPT);
+		final MonologFX dialog = new MonologFX(MonologFX.Type.ACCEPT);
 		dialog.setTitleText(I18nHelper.message("youtube.confirmdialog.title"));
 		dialog.setMessage(I18nHelper.message("upload.confirmdialog.message"));
-		if (dialog.showDialog() == 0)
+		MonologFXButton yesButton = new MonologFXButton();
+		yesButton.setType(MonologFXButton.Type.YES);
+		yesButton.setLabel("Yes");
+		MonologFXButton noButton = new MonologFXButton();
+		noButton.setType(MonologFXButton.Type.NO);
+		noButton.setLabel("No");
+		dialog.addButton(yesButton);
+		dialog.addButton(noButton);
+		if (dialog.showDialog() == MonologFXButton.Type.YES)
 		{
 			uploader.start();
 		}

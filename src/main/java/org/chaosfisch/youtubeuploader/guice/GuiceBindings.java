@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.RequestSigner;
-import org.chaosfisch.util.AuthTokenHelper;
-import org.chaosfisch.util.io.RequestHelper;
+import org.chaosfisch.util.GoogleAuthUtil;
+import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
@@ -55,12 +55,12 @@ public class GuiceBindings extends AbstractModule
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);
-		bind(AuthTokenHelper.class).in(Singleton.class);
+		bind(GoogleAuthUtil.class).in(Singleton.class);
 		bind(Throttle.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
 		bind(UploadViewModel.class).in(Singleton.class);
 
-		requestStaticInjection(RequestHelper.class);
+		requestStaticInjection(RequestUtil.class);
 
 		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
 		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(ApplicationData.DEVELOPER_KEY);

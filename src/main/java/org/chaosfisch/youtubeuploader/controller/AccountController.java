@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Dennis Fischer.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0+
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ * 
+ * Contributors: Dennis Fischer
+ ******************************************************************************/
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.net.URL;
@@ -25,7 +34,7 @@ import javafx.util.Callback;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
-import org.chaosfisch.util.AuthTokenHelper;
+import org.chaosfisch.util.GoogleAuthUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.javalite.activejdbc.Model;
@@ -61,12 +70,12 @@ public class AccountController implements Initializable
 	@FXML// fx:id="resetAccount"
 	private Button								resetAccount;
 
-	@Inject private AuthTokenHelper				authTokenHelper;
+	@Inject private GoogleAuthUtil				authTokenHelper;
 
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event)
 	{
-		final Account acc = Account.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
+		final Account acc = Model.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
 		if (authTokenHelper.verifyAccount(acc))
 		{
 			account.getStyleClass().remove("input-invalid");
@@ -172,7 +181,7 @@ public class AccountController implements Initializable
 		accountType.setItems(FXCollections.observableArrayList(Account.Type.values()));
 		accountType.getSelectionModel().selectFirst();
 
-		final ObservableList<Model> list = FXCollections.observableArrayList(Account.findAll());
+		final ObservableList<Model> list = FXCollections.observableArrayList(Model.findAll());
 		accountTable.setItems(list);
 
 		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

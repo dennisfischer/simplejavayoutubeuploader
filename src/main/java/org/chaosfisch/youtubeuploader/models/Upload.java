@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2012 Dennis Fischer.
+ * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
+ * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
  * 
@@ -12,6 +12,7 @@ package org.chaosfisch.youtubeuploader.models;
 import org.bushe.swing.event.EventBus;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.validation.ByteLengthValidator;
+import org.chaosfisch.youtubeuploader.models.validation.FileSizeValidator;
 import org.chaosfisch.youtubeuploader.models.validation.TagValidator;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
@@ -29,6 +30,7 @@ public class Upload extends Model implements ModelEvents
 		validateRegexpOf("description", "^[^<>]*$").message(I18nHelper.message("validation.description.characters"));
 		validateWith(new TagValidator()).message(I18nHelper.message("validation.tags"));
 		validatePresenceOf("account_id").message(I18nHelper.message("validation.account"));
+		validateWith(new FileSizeValidator("thumbnail", 2097152)).message(I18nHelper.message("validation.thumbnail"));
 	}
 
 	/*
