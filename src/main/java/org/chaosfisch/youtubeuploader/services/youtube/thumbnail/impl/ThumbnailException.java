@@ -14,13 +14,13 @@ public class ThumbnailException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1282431796606031761L;
+	private static final long	serialVersionUID	= -1282431796606031761L;
 	
-	public ThumbnailException(String msg) {
+	public ThumbnailException(final String msg) {
 		super(msg);
 	}
 	
-	public ThumbnailException(String msg, Exception e) {
+	public ThumbnailException(final String msg, final Exception e) {
 		super(msg, e);
 	}
 	

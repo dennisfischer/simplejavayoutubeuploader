@@ -27,118 +27,101 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.params.HttpParams;
 
-public class Request
-{
-	public enum Method
-	{
+public class Request {
+	public enum Method {
 		GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT
 	}
-
+	
 	private HttpUriRequest		httpRequest;
 	private HttpURLConnection	urlConnection;
-
-	public static class Builder
-	{
+	
+	public static class Builder {
 		private final String		url;
 		private HttpParams			params;
 		private final Method		method;
 		private Map<String, String>	headers;
 		private HttpEntity			entity;
-
-		public Builder(final String url, final Method method)
-		{
+		
+		public Builder(final String url, final Method method) {
 			this.url = url;
 			this.method = method;
 		}
-
-		public Builder params(final HttpParams params)
-		{
+		
+		public Builder params(final HttpParams params) {
 			this.params = params;
 			return this;
 		}
-
-		public Builder headers(final Map<String, String> headers)
-		{
+		
+		public Builder headers(final Map<String, String> headers) {
 			this.headers = headers;
 			return this;
 		}
-
-		public Builder entity(final HttpEntity entity)
-		{
+		
+		public Builder entity(final HttpEntity entity) {
 			this.entity = entity;
 			return this;
 		}
-
-		public HttpUriRequest buildHttpUriRequest()
-		{
+		
+		public HttpUriRequest buildHttpUriRequest() {
 			return new Request(this).getHttpUriRequest();
 		}
-
-		public HttpURLConnection buildHttpUrlConnection() throws IOException
-		{
+		
+		public HttpURLConnection buildHttpUrlConnection() throws IOException {
 			return new Request(this, false).getUrlConnection();
 		}
 	}
-
-	private Request(final Builder builder)
-	{
-		switch (builder.method)
-		{
+	
+	private Request(final Builder builder) {
+		switch (builder.method) {
 			case DELETE:
 				httpRequest = new HttpDelete(builder.url);
-				break;
+			break;
 			case HEAD:
 				httpRequest = new HttpHead(builder.url);
-				break;
+			break;
 			case OPTIONS:
 				httpRequest = new HttpOptions(builder.url);
-				break;
+			break;
 			case POST:
 				httpRequest = new HttpPost(builder.url);
 				((HttpEntityEnclosingRequestBase) httpRequest).setEntity(builder.entity);
-				break;
+			break;
 			case PUT:
 				httpRequest = new HttpPut(builder.url);
 				((HttpEntityEnclosingRequestBase) httpRequest).setEntity(builder.entity);
-				break;
+			break;
 			case TRACE:
 				httpRequest = new HttpTrace(builder.url);
-				break;
+			break;
 			default:
 			case GET:
 				httpRequest = new HttpGet(builder.url);
-				break;
+			break;
 		}
-
-		if (builder.headers != null)
-		{
-			for (final Entry<String, String> entry : builder.headers.entrySet())
-			{
+		
+		if (builder.headers != null) {
+			for (final Entry<String, String> entry : builder.headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
 			}
 		}
 		httpRequest.setParams(builder.params != null ? builder.params : httpRequest.getParams());
 	}
-
-	public Request(final Builder builder, final boolean b) throws IOException
-	{
+	
+	public Request(final Builder builder, final boolean b) throws IOException {
 		final URL url = new URL(builder.url);
 		urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod(builder.method.name());
-
-		for (final Entry<String, String> entry : builder.headers.entrySet())
-		{
+		
+		for (final Entry<String, String> entry : builder.headers.entrySet()) {
 			urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
 		}
 	}
-
-	private HttpUriRequest getHttpUriRequest()
-	{
+	
+	private HttpUriRequest getHttpUriRequest() {
 		return httpRequest;
 	}
-
-	private HttpURLConnection getUrlConnection()
-	{
+	
+	private HttpURLConnection getUrlConnection() {
 		return urlConnection;
 	}
 }

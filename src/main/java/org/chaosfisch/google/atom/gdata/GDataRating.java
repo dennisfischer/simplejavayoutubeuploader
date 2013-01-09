@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:rating")
-public class GDataRating
-{
+public class GDataRating {
 	public @XStreamAsAttribute Double	average;
 	public @XStreamAsAttribute Integer	max;
 	public @XStreamAsAttribute Integer	min;

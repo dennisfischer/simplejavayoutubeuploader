@@ -27,18 +27,14 @@ import com.google.gson.Gson;
 
 public class ThumbnailServiceImpl {
 	
-	public Integer upload(final String content, String thumbnail, String videoid)
-			throws ThumbnailException {
+	public Integer upload(final String content, final String thumbnail, final String videoid) throws ThumbnailException {
 		
 		final File thumbnailFile = new File(thumbnail);
 		if (!thumbnailFile.exists()) {
-			throw new ThumbnailException(
-					"Datei nicht vorhanden f�r Thumbnail "
-							+ thumbnailFile.getName());
+			throw new ThumbnailException("Datei nicht vorhanden f�r Thumbnail " + thumbnailFile.getName());
 		}
 		
-		final HttpPost thumbnailPost = new HttpPost(
-				"http://www.youtube.com/my_thumbnail_post");
+		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");
 		
 		try {
 			thumbnailPost.setEntity(buildEntity(content, videoid, thumbnailFile));
@@ -50,17 +46,16 @@ public class ThumbnailServiceImpl {
 		
 	}
 	
-	private MultipartEntity buildEntity(final String content, String videoid, final File thumbnailFile) throws UnsupportedEncodingException {
+	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile)
+			throws UnsupportedEncodingException {
 		final MultipartEntity reqEntity = new MultipartEntity();
 		
-		reqEntity.addPart("video_id",
-				new StringBody(videoid, Charset.forName("UTF-8")));
+		reqEntity.addPart("video_id", new StringBody(videoid, Charset.forName("UTF-8")));
 		reqEntity.addPart("is_ajax", new StringBody("1", Charset.forName("UTF-8")));
 		
 		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search)
-				+ search.length(), content.indexOf("\"",
-				content.indexOf(search) + search.length()));
+		final String sessiontoken = content.substring(content.indexOf(search) + search.length(),
+				content.indexOf("\"", content.indexOf(search) + search.length()));
 		reqEntity.addPart("session_token", new StringBody(sessiontoken, Charset.forName("UTF-8")));
 		
 		reqEntity.addPart("imagefile", new FileBody(thumbnailFile));
@@ -68,9 +63,9 @@ public class ThumbnailServiceImpl {
 	}
 	
 	private Integer parseResponse(final HttpResponse response) throws IOException {
-		Gson gson = new Gson();
-		Thumbnail obj = gson.fromJson(EntityUtils.toString(response.getEntity(),
-				Charset.forName("UTF-8")), Thumbnail.class);
+		final Gson gson = new Gson();
+		final Thumbnail obj = gson.fromJson(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")),
+				Thumbnail.class);
 		
 		return obj.version;
 	}

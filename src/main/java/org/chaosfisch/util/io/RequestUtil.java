@@ -26,16 +26,14 @@ import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestUtil
-{
+public class RequestUtil {
 	
-	static DefaultHttpClient httpClient;
+	static DefaultHttpClient	httpClient;
 	static {
 		httpClient = new DefaultHttpClient();
 		httpClient.setRedirectStrategy(new DefaultRedirectStrategy() {
-			@Override
-			public boolean isRedirected(final HttpRequest request,
-					final HttpResponse response, final HttpContext context) {
+			@Override public boolean isRedirected(final HttpRequest request, final HttpResponse response,
+					final HttpContext context) {
 				boolean isRedirect = false;
 				try {
 					isRedirect = super.isRedirected(request, response, context);
@@ -43,8 +41,7 @@ public class RequestUtil
 					e.printStackTrace();
 				}
 				if (!isRedirect) {
-					final int responseCode = response.getStatusLine()
-							.getStatusCode();
+					final int responseCode = response.getStatusLine().getStatusCode();
 					if ((responseCode == 301) || (responseCode == 302)) {
 						return true;
 					}
@@ -52,13 +49,10 @@ public class RequestUtil
 				return isRedirect;
 			}
 			
-			@Override
-			public URI getLocationURI(final HttpRequest request,
-					final HttpResponse response, final HttpContext context)
-					throws ProtocolException {
+			@Override public URI getLocationURI(final HttpRequest request, final HttpResponse response,
+					final HttpContext context) throws ProtocolException {
 				
-				final URI lastRedirectedUri = super.getLocationURI(request, response,
-						context);
+				final URI lastRedirectedUri = super.getLocationURI(request, response, context);
 				final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
 				try {
 					logger.info("Redirecting to: {}", lastRedirectedUri.toURL().toExternalForm());
@@ -70,14 +64,12 @@ public class RequestUtil
 		});
 	}
 	
-	public static HttpResponse execute(final HttpUriRequest request) throws ClientProtocolException, IOException
-	{
+	public static HttpResponse execute(final HttpUriRequest request) throws ClientProtocolException, IOException {
 		return httpClient.execute(request);
 	}
 	
 	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
+	 * Read input from input stream and write it to output stream until there is no more input from input stream.
 	 * 
 	 * @param is
 	 *            input stream the input stream to read from.
@@ -86,19 +78,16 @@ public class RequestUtil
 	 * @param buf
 	 *            the byte array to use as a buffer
 	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException
-	{
+	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf)) >= 0))
-		{
+		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf)) >= 0)) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
 	}
 	
 	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
+	 * Read input from input stream and write it to output stream until there is no more input from input stream.
 	 * 
 	 * @param is
 	 *            input stream the input stream to read from.
@@ -111,19 +100,17 @@ public class RequestUtil
 	 * @param len
 	 *            the length of bytes to read
 	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException
-	{
+	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len)
+			throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf, off, len)) >= 0))
-		{
+		while (!Thread.currentThread().isInterrupted() && ((numRead = is.read(buf, off, len)) >= 0)) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
 	}
 	
 	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
+	 * Read input from input stream and write it to output stream until there is no more input from input stream.
 	 * 
 	 * @param is
 	 *            input stream the input stream to read from.
@@ -132,11 +119,10 @@ public class RequestUtil
 	 * @param buf
 	 *            the byte array to use as a buffer
 	 */
-	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException
-	{
+	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off,
+			final int len) throws IOException {
 		final int numRead;
-		if ((numRead = is.read(buf, off, len)) >= 0)
-		{
+		if ((numRead = is.read(buf, off, len)) >= 0) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();

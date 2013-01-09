@@ -9,18 +9,15 @@
  ******************************************************************************/
 package org.chaosfisch.google.auth;
 
-public class AuthenticationException extends Throwable
-{
-
+public class AuthenticationException extends Throwable {
+	
 	private static final long	serialVersionUID	= 7039731669555352482L;
-
-	public AuthenticationException(final String message)
-	{
+	
+	public AuthenticationException(final String message) {
 		super(message);
 	}
-
-	public AuthenticationException(final String message, final Throwable t)
-	{
+	
+	public AuthenticationException(final String message, final Throwable t) {
 		super(message, t);
 	}
 }

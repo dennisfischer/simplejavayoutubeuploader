@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:feedLink")
-public class Feedlink
-{
+public class Feedlink {
 	public @XStreamAlias("gd:countHint") @XStreamAsAttribute Integer	countHint;
 	public @XStreamAlias("yt:hasEntries") @XStreamAsAttribute Boolean	hasEntries;
 	public @XStreamAsAttribute String									href;

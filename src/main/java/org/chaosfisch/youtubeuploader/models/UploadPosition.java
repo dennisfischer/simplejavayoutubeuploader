@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.models;
 
-public enum UploadPosition
-{
+public enum UploadPosition {
 	UPLOAD_BOTTOM, UPLOAD_DOWN, UPLOAD_TOP, UPLOAD_UP
 }

@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 public class Client {
 	
-	private Connection connection;
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private Connection		connection;
+	private final Logger	logger	= LoggerFactory.getLogger(getClass());
 	
 	public Client(final String ip, final int port, final Protocol protocol) {
 		
@@ -30,14 +30,13 @@ public class Client {
 		}
 	}
 	
-	public void close()
-	{
-		if (connection != null)
+	public void close() {
+		if (connection != null) {
 			connection.close();
+		}
 	}
 	
-	public void sendMsg(final String event, final Object body)
-	{
+	public void sendMsg(final String event, final Object body) {
 		connection.sendMsg(event, body);
 	}
 }

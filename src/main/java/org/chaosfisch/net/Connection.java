@@ -18,14 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Connection {
-	private ObjectOutputStream output = null;
-	private ObjectInputStream input = null;
-	private final Socket socket;
-	private final Protocol protocol;
-	private boolean closed = false;
-	private final static Logger logger = LoggerFactory
-			.getLogger(Connection.class);
-
+	private ObjectOutputStream	output	= null;
+	private ObjectInputStream	input	= null;
+	private final Socket		socket;
+	private final Protocol		protocol;
+	private boolean				closed	= false;
+	private final static Logger	logger	= LoggerFactory.getLogger(Connection.class);
+	
 	Connection(final Socket socket, final Protocol protocol) {
 		this.socket = socket;
 		this.protocol = protocol;
@@ -37,9 +36,9 @@ public class Connection {
 			logger.warn("Could not get Streams", e);
 		}
 	}
-
+	
 	public Msg getMsg() {
-		if (!closed)
+		if (!closed) {
 			try {
 				final Msg inputMsg = (Msg) input.readObject();
 				return inputMsg;
@@ -48,39 +47,40 @@ public class Connection {
 			} catch (final IOException e) {
 				close();
 			}
+		}
 		return null;
 	}
-
+	
 	public boolean isClosed() {
 		return closed;
 	}
-
+	
 	public void sendMsg(final String event, final Object body) {
-		if (!closed)
+		if (!closed) {
 			try {
 				output.writeObject(new Msg(event, body));
 				output.flush();
 			} catch (final IOException e) {
 				logger.warn("Message IOException", e);
 			}
+		}
 	}
-
+	
 	private void receiveMessages() {
 		final Thread readThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
+			@Override public void run() {
 				readMessages();
 			}
 		});
 		readThread.start();
 	}
-
+	
 	private void readMessages() {
 		while (!socket.isClosed()) {
 			protocol.processMsg(getMsg());
 		}
 	}
-
+	
 	public void close() {
 		closed = true;
 		if (socket.isClosed()) {

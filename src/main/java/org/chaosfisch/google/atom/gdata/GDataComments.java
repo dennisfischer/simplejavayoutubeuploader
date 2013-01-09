@@ -17,7 +17,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("gd:comments")
-public class GDataComments
-{
+public class GDataComments {
 	public @XStreamAlias("gd:feedLink") @XStreamImplicit List<Feedlink>	links;
 }

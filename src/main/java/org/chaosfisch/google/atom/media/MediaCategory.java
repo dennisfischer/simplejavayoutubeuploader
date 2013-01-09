@@ -17,7 +17,6 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:category")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "category" })
-public class MediaCategory extends Category
-{
+public class MediaCategory extends Category {
 	public String	category;
 }

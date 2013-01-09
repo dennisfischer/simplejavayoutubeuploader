@@ -19,8 +19,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("feed")
-public class Feed
-{
+public class Feed {
 	public YoutubeAuthor											author;
 	public String													category;
 	public String													generator;

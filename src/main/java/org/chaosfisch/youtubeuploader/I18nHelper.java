@@ -14,24 +14,23 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class I18nHelper
-{
+public class I18nHelper {
 	/**
 	 * The default language properties file resource bundle
 	 */
-	static final ResourceBundle	resourceBundle	= ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application");
+	static final ResourceBundle	resourceBundle	= ResourceBundle
+														.getBundle("org.chaosfisch.youtubeuploader.resources.application");
 	static List<String>			usedKeys		= new ArrayList<>();
-
+	
 	/**
 	 * Returns the class resourceBundle
 	 * 
 	 * @return the resourceBundle
 	 */
-	public static ResourceBundle getResourceBundle()
-	{
+	public static ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
-
+	
 	/**
 	 * Translates key to user language
 	 * 
@@ -39,26 +38,20 @@ public class I18nHelper
 	 *            the language key
 	 * @return translated key
 	 */
-	public static String message(final String key)
-	{
-		if (!usedKeys.contains(key))
-		{
+	public static String message(final String key) {
+		if (!usedKeys.contains(key)) {
 			usedKeys.add(key);
 		}
 		return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : "====" + key + "====";
 	}
-
-	public static void showUnused()
-	{
+	
+	public static void showUnused() {
 		final Enumeration<String> keys = resourceBundle.getKeys();
-		while (keys.hasMoreElements())
-		{
+		while (keys.hasMoreElements()) {
 			final String key = keys.nextElement();
-			if (usedKeys.contains(key))
-			{
+			if (usedKeys.contains(key)) {
 				continue;
-			} else
-			{
+			} else {
 				System.out.println(key);
 			}
 		}

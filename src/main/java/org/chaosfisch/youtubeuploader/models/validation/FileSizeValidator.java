@@ -15,21 +15,20 @@ import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.ValidatorAdapter;
 
 public class FileSizeValidator extends ValidatorAdapter<Model> {
-
-	private final String stringToValidate;
-	private final int size;
-
-	public FileSizeValidator(String stringToValidate, int size) {
+	
+	private final String	stringToValidate;
+	private final int		size;
+	
+	public FileSizeValidator(final String stringToValidate, final int size) {
 		this.stringToValidate = stringToValidate;
 		this.size = size;
 	}
-
-	@Override
-	public void validate(Model m) {
-		File file = new File(m.getString(stringToValidate));
+	
+	@Override public void validate(final Model m) {
+		final File file = new File(m.getString(stringToValidate));
 		if (file.exists() && file.length() > size) {
 			m.addValidator(this, "file_size_error");
 		}
 	}
-
+	
 }

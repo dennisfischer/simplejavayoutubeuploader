@@ -33,9 +33,10 @@ import jfxtras.labs.dialogs.MonologFXButton;
 import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
 import org.chaosfisch.youtubeuploader.guice.GuiceControllerFactory;
+import org.chaosfisch.youtubeuploader.models.Setting;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +49,8 @@ public class SimpleJavaYoutubeUploader extends Application {
 	/**
 	 * The application DI injector
 	 */
-	final Injector injector = Guice.createInjector(new GuiceBindings());
-	final static Logger logger = LoggerFactory
-			.getLogger(SimpleJavaYoutubeUploader.class);
+	final Injector		injector	= Guice.createInjector(new GuiceBindings());
+	final static Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 	
 	public static void main(final String[] args) {
 		logger.info("Application started!");
@@ -75,7 +75,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 	}
 	
 	private static void initLocale() {
-		final Locale[] availableLocales = {Locale.GERMAN, Locale.ENGLISH};
+		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
 		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
 			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
 			Locale.setDefault(Locale.GERMAN);
@@ -84,14 +84,12 @@ public class SimpleJavaYoutubeUploader extends Application {
 	
 	private static void initLogger() {
 		System.setOut(new PrintStream(System.out) {
-			@Override
-			public void print(final String s) {
+			@Override public void print(final String s) {
 				logger.info(s);
 			}
 		});
 		System.setErr(new PrintStream(System.err) {
-			@Override
-			public void print(final String s) {
+			@Override public void print(final String s) {
 				if (!s.startsWith("WARNING: com.sun.javafx.css.StyleHelper calculateValue")) {
 					logger.error(s);
 				}
@@ -99,38 +97,28 @@ public class SimpleJavaYoutubeUploader extends Application {
 		});
 	}
 	
-	final private Uploader uploader = injector.getInstance(Uploader.class);
+	final private Uploader	uploader	= injector.getInstance(Uploader.class);
 	
 	protected void initApplication(final Stage primaryStage) throws IOException {
 		initDatabase();
 		updateDatabase();
 		
-		final FXMLLoader fxLoader = new FXMLLoader(
-				getClass()
-						.getResource(
-								"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
-				I18nHelper.getResourceBundle());
+		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource(
+				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		fxLoader.load();
 		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
 		scene.getStylesheets().add(
-				getClass().getResource(
-						"/org/chaosfisch/youtubeuploader/resources/style.css")
-						.toExternalForm());
+				getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
 		primaryStage.setTitle(I18nHelper.message("application.title"));
-		primaryStage
-				.getIcons()
-				.add(new Image(
-						getClass()
-								.getResourceAsStream(
-										"/org/chaosfisch/youtubeuploader/resources/images/film.png")));
+		primaryStage.getIcons().add(
+				new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
 		primaryStage.setScene(scene);
 		primaryStage.setMinHeight(600);
 		primaryStage.setMinWidth(1000);
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
-			@Override
-			public void handle(final WindowEvent event) {
+			@Override public void handle(final WindowEvent event) {
 				final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
 				final MonologFXButton yesButton = new MonologFXButton();
 				yesButton.setType(MonologFXButton.Type.YES);
@@ -151,7 +139,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 	}
 	
 	private void updateDatabase() {
-		if (!Model.getMetaModel().getColumnMetadata().containsKey("key")) {
+		if (!Setting.getMetaModel().getColumnMetadata().containsKey("key")) {
 			Base.openTransaction();
 			Base.exec("DROP TABLE SETTINGS");
 			Base.exec("DROP TABLE PLACEHOLDERS");
@@ -184,12 +172,11 @@ public class SimpleJavaYoutubeUploader extends Application {
 		Base.exec("CREATE TABLE IF NOT EXISTS UPLOADS_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, upload_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS TEMPLATES_PLAYLISTS(id INTEGER NOT NULL auto_increment PRIMARY KEY, playlist_id INTEGER, template_id INTEGER);");
 		Base.exec("CREATE TABLE IF NOT EXISTS SETTINGS(id INTEGER NOT NULL auto_increment PRIMARY KEY, `KEY` VARCHAR(255) NOT NULL UNIQUE, VALUE VARCHAR(255), created_at DATETIME, updated_at DATETIME);");
-		Model.updateAll("inprogress = ?", false);
+		Upload.updateAll("inprogress = ?", false);
 		Base.commitTransaction();
 	}
 	
-	@Override
-	public void start(final Stage primaryStage) {
+	@Override public void start(final Stage primaryStage) {
 		try {
 			Platform.setImplicitExit(true);
 			initApplication(primaryStage);
@@ -199,8 +186,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 		}
 	}
 	
-	@Override
-	public void stop() throws Exception {
+	@Override public void stop() throws Exception {
 		super.stop();
 		LogfileCommitter.commit();
 		uploader.stopStarttimeChecker();

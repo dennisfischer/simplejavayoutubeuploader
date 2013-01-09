@@ -16,8 +16,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:restriction")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "restriction" })
-public class MediaRestriction
-{
+public class MediaRestriction {
 	public @XStreamAlias("relationship") @XStreamAsAttribute String	relationship;
 	public String													restriction;
 	public @XStreamAlias("type") @XStreamAsAttribute String			type;

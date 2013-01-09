@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:statistics")
-public class YoutubeStatistics
-{
+public class YoutubeStatistics {
 	public @XStreamAsAttribute Integer	favoriteCount;
 	public @XStreamAsAttribute String	lastWebAccess;
 	public @XStreamAsAttribute Integer	subscriberCount;

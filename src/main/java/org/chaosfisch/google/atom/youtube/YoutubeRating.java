@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:rating")
-public class YoutubeRating
-{
+public class YoutubeRating {
 	public @XStreamAsAttribute Integer	numDislikes;
 	public @XStreamAsAttribute Integer	numLikes;
 	public @XStreamAsAttribute String	value;

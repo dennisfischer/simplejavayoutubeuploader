@@ -9,8 +9,7 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader;
 
-public interface ApplicationData
-{
+public interface ApplicationData {
 	String	APPLICATION_NAME	= "dennis-fischer-youtube java uploader-3.0 nightly";
 	String	DEVELOPER_KEY		= "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
 	String	VERSION				= "3.0 SNAPSHOT";

@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:content")
-public class MediaContent
-{
+public class MediaContent {
 	public @XStreamAsAttribute Integer								duration;
 	public @XStreamAsAttribute @XStreamAlias("yt:format") String	format;
 	public @XStreamAsAttribute Boolean								isDefault;

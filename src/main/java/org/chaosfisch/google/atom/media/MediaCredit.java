@@ -16,8 +16,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:credit")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "credit" })
-public class MediaCredit
-{
+public class MediaCredit {
 	public String													credit;
 	public @XStreamAsAttribute String								role;
 	public @XStreamAsAttribute String								scheme;

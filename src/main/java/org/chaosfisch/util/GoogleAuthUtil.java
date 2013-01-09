@@ -35,36 +35,33 @@ import org.chaosfisch.youtubeuploader.models.Account;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
-public class GoogleAuthUtil
-{
+public class GoogleAuthUtil {
 	
-	final Map<Long, String> authtokens = new WeakHashMap<Long, String>();
-	@Inject
-	RequestSigner requestSigner;
+	final Map<Long, String>		authtokens				= new WeakHashMap<Long, String>();
+	@Inject RequestSigner		requestSigner;
 	
-	private static final String CLIENT_LOGIN_URL = "https://accounts.google.com/ClientLogin";
-	private static final String ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
+	private static final String	CLIENT_LOGIN_URL		= "https://accounts.google.com/ClientLogin";
+	private static final String	ISSUE_AUTH_TOKEN_URL	= "https://www.google.com/accounts/IssueAuthToken";
 	
-	public String getAuthToken(final Account account) throws AuthenticationException
-	{
+	public String getAuthToken(final Account account) throws AuthenticationException {
 		
-		if (!authtokens.containsKey(account.getLongId()))
-		{
+		if (!authtokens.containsKey(account.getLongId())) {
 			
 			final String clientLoginContent = _receiveToken(account);
-			authtokens.put(account.getLongId(), clientLoginContent.substring(clientLoginContent.indexOf("Auth=") + 5, clientLoginContent.length())
-					.trim());
+			authtokens.put(account.getLongId(),
+					clientLoginContent.substring(clientLoginContent.indexOf("Auth=") + 5, clientLoginContent.length())
+							.trim());
 		}
 		return authtokens.get(account.getLongId());
 	}
 	
-	private String _receiveToken(final Account account) throws AuthenticationException
-	{
+	private String _receiveToken(final Account account) throws AuthenticationException {
 		return _receiveToken(account, "youtube", "SimpleJavaYoutubeUploader");
 		
 	}
 	
-	private String _receiveToken(final Account account, final String service, final String source) throws AuthenticationException {
+	private String _receiveToken(final Account account, final String service, final String source)
+			throws AuthenticationException {
 		// STEP 1 CLIENT LOGIN
 		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<BasicNameValuePair>();
 		clientLoginRequestParams.add(new BasicNameValuePair("Email", account.getString("name")));
@@ -74,8 +71,8 @@ public class GoogleAuthUtil
 		clientLoginRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
 		clientLoginRequestParams.add(new BasicNameValuePair("source", source));
 		
-		final HttpUriRequest clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL, Method.POST).headers(ImmutableMap.of("Content-Type",
-				"application/x-www-form-urlencoded; charset=UTF-8;"))
+		final HttpUriRequest clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL, Method.POST)
+				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.entity(new UrlEncodedFormEntity(clientLoginRequestParams, Charset.forName("utf-8")))
 				.buildHttpUriRequest();
 		
@@ -83,81 +80,69 @@ public class GoogleAuthUtil
 		
 		HttpResponse clientLoginResponse = null;
 		HttpEntity clientLoginEntity = null;
-		try
-		{
+		try {
 			clientLoginResponse = RequestUtil.execute(clientLoginRequest);
 			clientLoginEntity = clientLoginResponse.getEntity();
 			if (clientLoginResponse.getStatusLine().getStatusCode() != 200) {
-				throw new AuthenticationException(
-						String.format("Authentication failed --> %s", clientLoginResponse.getStatusLine().toString()));
+				throw new AuthenticationException(String.format("Authentication failed --> %s", clientLoginResponse
+						.getStatusLine().toString()));
 			}
 			
 			return EntityUtils.toString(clientLoginEntity, Charset.forName("UTF-8"));
-		} catch (final IOException e)
-		{
+		} catch (final IOException e) {
 			throw new AuthenticationException(String.format("Authentication failed --> %s",
-					clientLoginResponse != null ? clientLoginResponse.getStatusLine().toString()
-							: "response is null"), e);
-		} finally
-		{
-			if (clientLoginEntity != null)
-			{
+					clientLoginResponse != null ? clientLoginResponse.getStatusLine().toString() : "response is null"),
+					e);
+		} finally {
+			if (clientLoginEntity != null) {
 				EntityUtils.consumeQuietly(clientLoginEntity);
 			}
 		}
 	}
 	
-	public String getAuthHeader(final Account account) throws AuthenticationException
-	{
-		if (authtokens.containsKey(account.getLongId()))
-		{
+	public String getAuthHeader(final Account account) throws AuthenticationException {
+		if (authtokens.containsKey(account.getLongId())) {
 			return String.format("GoogleLogin auth=%s", authtokens.get(account.getLongId()));
-		} else
-		{
+		} else {
 			return String.format("GoogleLogin auth=%s", getAuthToken(account));
 		}
 	}
 	
-	public boolean verifyAccount(final Account account)
-	{
-		try
-		{
+	public boolean verifyAccount(final Account account) {
+		try {
 			_receiveToken(account);
-		} catch (final AuthenticationException e)
-		{
+		} catch (final AuthenticationException e) {
 			return false;
 		}
 		return true;
 	}
 	
-	public String getLoginContent(final Account account, final String redirectUrl) throws AuthenticationException, IOException
-	{
+	public String getLoginContent(final Account account, final String redirectUrl) throws AuthenticationException,
+			IOException {
 		return tokenAuthContent(redirectUrl, issueAuthToken(_receiveToken(account, "gaia", "googletalk")));
 		
 	}
 	
-	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws UnsupportedEncodingException, ClientProtocolException, IOException {
+	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent)
+			throws UnsupportedEncodingException, ClientProtocolException, IOException {
 		String content = null;
 		HttpEntity tokenAuthEntity = null;
 		// STEP 3 TOKEN AUTH
-		try
-		{
-			final String tokenAuthUrl = String
-					.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk",
-							URLEncoder.encode(issueAuthTokenContent, "UTF-8"),
-							URLEncoder.encode(redirectUrl, "UTF-8"));
+		try {
+			final String tokenAuthUrl = String.format(
+					"https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk",
+					URLEncoder.encode(issueAuthTokenContent, "UTF-8"), URLEncoder.encode(redirectUrl, "UTF-8"));
 			
 			final HttpUriRequest tokenAuthRequest = new Request.Builder(tokenAuthUrl, Method.GET)
-					
-					.buildHttpUriRequest();
+			
+			.buildHttpUriRequest();
 			final HttpResponse tokenAuthResponse = RequestUtil.execute(tokenAuthRequest);
 			tokenAuthEntity = tokenAuthResponse.getEntity();
-			content = EntityUtils.toString(tokenAuthEntity,
-					Charset.forName("UTF-8"));
-		} finally
-		{
-			if (tokenAuthEntity != null)
+			content = EntityUtils.toString(tokenAuthEntity, Charset.forName("UTF-8"));
+		} finally {
+			if (tokenAuthEntity != null) {
 				EntityUtils.consumeQuietly(tokenAuthEntity);
+			}
 		}
 		return content;
 	}
@@ -166,13 +151,10 @@ public class GoogleAuthUtil
 		// STEP 2 ISSUE AUTH TOKEN
 		String issueAuthTokenContent = null;
 		HttpEntity issueAuthTokenEntity = null;
-		try
-		{
-			final String sid = clientLoginContent.substring(
-					clientLoginContent.indexOf("SID=") + 4,
+		try {
+			final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4,
 					clientLoginContent.indexOf("LSID="));
-			final String lsid = clientLoginContent.substring(
-					clientLoginContent.indexOf("LSID=") + 5,
+			final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5,
 					clientLoginContent.indexOf("Auth="));
 			
 			final List<BasicNameValuePair> issueAuthTokenParams = new ArrayList<BasicNameValuePair>();
@@ -182,20 +164,18 @@ public class GoogleAuthUtil
 			issueAuthTokenParams.add(new BasicNameValuePair("Session", "true"));
 			issueAuthTokenParams.add(new BasicNameValuePair("source", "googletalk"));
 			
-			final HttpUriRequest issueAuthTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL, Method.POST).headers(ImmutableMap.of("Content-Type",
-					"application/x-www-form-urlencoded; charset=UTF-8;"))
-					.entity(new UrlEncodedFormEntity(
-							issueAuthTokenParams, Charset.forName("utf-8")))
+			final HttpUriRequest issueAuthTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL, Method.POST)
+					.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
+					.entity(new UrlEncodedFormEntity(issueAuthTokenParams, Charset.forName("utf-8")))
 					.buildHttpUriRequest();
 			
 			final HttpResponse issueAuthTokenResponse = RequestUtil.execute(issueAuthTokenRequest);
 			issueAuthTokenEntity = issueAuthTokenResponse.getEntity();
-			issueAuthTokenContent = EntityUtils.toString(
-					issueAuthTokenEntity, Charset.forName("UTF-8"));
-		} finally
-		{
-			if (issueAuthTokenEntity != null)
+			issueAuthTokenContent = EntityUtils.toString(issueAuthTokenEntity, Charset.forName("UTF-8"));
+		} finally {
+			if (issueAuthTokenEntity != null) {
 				EntityUtils.consumeQuietly(issueAuthTokenEntity);
+			}
 		}
 		return issueAuthTokenContent;
 	}

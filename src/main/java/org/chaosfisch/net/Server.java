@@ -19,23 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Server implements Runnable {
-	private ServerSocket serverSocket;
-	private Socket client;
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final Protocol protocol;
-	private final int port;
-	private final ArrayList<Connection> connections = new ArrayList<>();
-
+	private ServerSocket				serverSocket;
+	private Socket						client;
+	private final Logger				logger		= LoggerFactory.getLogger(getClass());
+	private final Protocol				protocol;
+	private final int					port;
+	private final ArrayList<Connection>	connections	= new ArrayList<>();
+	
 	public Server(final int port, final Protocol protocol) {
 		this.protocol = protocol;
 		this.port = port;
-
+		
 		final Thread t = new Thread(this);
 		t.start();
 	}
-
-	@Override
-	public void run() {
+	
+	@Override public void run() {
 		try {
 			serverSocket = new ServerSocket(port);
 			handleClients();
@@ -43,7 +42,7 @@ public class Server implements Runnable {
 			logger.warn("Could not start server", e);
 		}
 	}
-
+	
 	private void handleClients() {
 		while (!serverSocket.isClosed()) {
 			try {
@@ -52,35 +51,38 @@ public class Server implements Runnable {
 				connections.add(new Connection(client, protocol));
 				logger.info("Connected clients: " + connections.size());
 			} catch (final IOException e) {
-				if (!serverSocket.isClosed())
+				if (!serverSocket.isClosed()) {
 					logger.warn("Could not accept connection", e);
+				}
 			}
 		}
 	}
-
+	
 	private void cleanupClients() {
 		final Iterator<Connection> connectionIterator = connections.iterator();
 		while (connectionIterator.hasNext()) {
 			final Connection connection = connectionIterator.next();
-			if (connection.isClosed())
+			if (connection.isClosed()) {
 				connectionIterator.remove();
+			}
 		}
-
+		
 	}
-
+	
 	public void close() {
 		for (final Connection connection : connections) {
 			connection.close();
 		}
-		if (serverSocket != null && !serverSocket.isClosed())
+		if (serverSocket != null && !serverSocket.isClosed()) {
 			try {
 				serverSocket.close();
-			} catch (final IOException e) {
-			}
+			} catch (final IOException e) {}
+		}
 	}
-
+	
 	public void sendMsg(final String event, final Object body) {
-		for (final Connection connection : connections)
+		for (final Connection connection : connections) {
 			connection.sendMsg(event, body);
+		}
 	}
 }

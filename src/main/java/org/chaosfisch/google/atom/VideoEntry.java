@@ -29,8 +29,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("entry")
-public class VideoEntry
-{
+public class VideoEntry {
 	public @XStreamAlias("yt:accessControl") @XStreamImplicit List<YoutubeAccessControl>	accessControl	= new ArrayList<YoutubeAccessControl>();
 	public @XStreamAlias("app:control") AppControl											appControl;
 	public @XStreamAlias("app:edited") String												appEdited;

@@ -11,8 +11,7 @@ package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
 import org.chaosfisch.youtubeuploader.models.Upload;
 
-public class UploadProgress
-{
+public class UploadProgress {
 	private double			diffBytes;
 	private long			diffTime;
 	private final double	fileSize;
@@ -22,51 +21,42 @@ public class UploadProgress
 	public boolean			failed;
 	public boolean			done;
 	public String			status;
-
-	public UploadProgress(final Upload queue, final double fileSize)
-	{
+	
+	public UploadProgress(final Upload queue, final double fileSize) {
 		this.queue = queue;
 		this.fileSize = fileSize;
 	}
-
-	public double getDiffBytes()
-	{
+	
+	public double getDiffBytes() {
 		return diffBytes;
 	}
-
-	public long getDiffTime()
-	{
+	
+	public long getDiffTime() {
 		return diffTime;
 	}
-
-	public double getFileSize()
-	{
+	
+	public double getFileSize() {
 		return fileSize;
 	}
-
-	public Upload getQueue()
-	{
+	
+	public Upload getQueue() {
 		return queue;
 	}
-
-	public double getTotalBytesUploaded()
-	{
+	
+	public double getTotalBytesUploaded() {
 		return totalBytesUploaded;
 	}
-
-	public long getTime()
-	{
+	
+	public long getTime() {
 		return time;
 	}
-
-	public void setBytes(final double addBytes)
-	{
+	
+	public void setBytes(final double addBytes) {
 		diffBytes = addBytes - totalBytesUploaded;
 		totalBytesUploaded += diffBytes;
 	}
-
-	public void setTime(final long diffTime)
-	{
+	
+	public void setTime(final long diffTime) {
 		this.diffTime = diffTime;
 		time += diffTime;
 	}

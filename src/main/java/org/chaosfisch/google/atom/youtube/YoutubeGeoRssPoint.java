@@ -12,7 +12,6 @@ package org.chaosfisch.google.atom.youtube;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("gml:Point")
-public class YoutubeGeoRssPoint
-{
+public class YoutubeGeoRssPoint {
 	public @XStreamAlias("gml:pos") String	pos;
 }

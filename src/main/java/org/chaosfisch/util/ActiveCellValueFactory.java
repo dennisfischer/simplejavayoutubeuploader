@@ -17,50 +17,43 @@ import javafx.util.Callback;
 
 import org.javalite.activejdbc.Model;
 
-public class ActiveCellValueFactory<T extends Model, V> implements Callback<TableColumn.CellDataFeatures<T, V>, ObservableValue<V>>
-{
+public class ActiveCellValueFactory<T extends Model, V> implements
+		Callback<TableColumn.CellDataFeatures<T, V>, ObservableValue<V>> {
 	private final String					cellName;
 	private final Class<? extends Model>	parent;
-
-	public ActiveCellValueFactory(final String cellName)
-	{
+	
+	public ActiveCellValueFactory(final String cellName) {
 		this.cellName = cellName;
 		parent = null;
 	}
-
-	public ActiveCellValueFactory(final String cellName, final Class<? extends Model> parent)
-	{
+	
+	public ActiveCellValueFactory(final String cellName, final Class<? extends Model> parent) {
 		this.cellName = cellName;
 		this.parent = parent;
 	}
-
-	@Override
-	public ObservableValue<V> call(final CellDataFeatures<T, V> arg0)
-	{
-		if (arg0.getValue() != null)
-		{
-			if ((parent != null))
-			{
-				if ((arg0.getValue().parent(parent) != null))
-				{
+	
+	@Override public ObservableValue<V> call(final CellDataFeatures<T, V> arg0) {
+		if (arg0.getValue() != null) {
+			if ((parent != null)) {
+				if ((arg0.getValue().parent(parent) != null)) {
 					return getReturnValue(arg0.getValue().parent(parent));
-				} else
-				{
+				} else {
 					return null;
 				}
 			}
 			return getReturnValue(arg0.getValue());
-		} else
-		{
+		} else {
 			return null;
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	private ObservableValue<V> getReturnValue(final Model model)
-	{
-		if (cellName == "this") { return new ReadOnlyObjectWrapper<V>((V) model); }
-		if (cellName == "id") { return new ReadOnlyObjectWrapper<V>((V) model.getLongId()); }
+	
+	@SuppressWarnings("unchecked") private ObservableValue<V> getReturnValue(final Model model) {
+		if (cellName == "this") {
+			return new ReadOnlyObjectWrapper<V>((V) model);
+		}
+		if (cellName == "id") {
+			return new ReadOnlyObjectWrapper<V>((V) model.getLongId());
+		}
 		return new ReadOnlyObjectWrapper<V>((V) model.get(cellName));
 	}
 }

@@ -17,8 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("media:group")
-public class MediaGroup
-{
+public class MediaGroup {
 	public @XStreamAlias("yt:aspectRatio") String									aspectRatio;
 	public @XStreamAlias("media:category") @XStreamImplicit List<MediaCategory>		category;
 	public @XStreamAlias("media:content") @XStreamImplicit List<MediaContent>		content;

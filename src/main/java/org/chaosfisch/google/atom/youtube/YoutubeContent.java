@@ -16,8 +16,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("content")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "content" })
-public class YoutubeContent
-{
+public class YoutubeContent {
 	public String						content;
 	public @XStreamAsAttribute String	src;
 	public @XStreamAsAttribute String	type;

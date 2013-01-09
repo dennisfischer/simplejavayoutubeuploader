@@ -10,8 +10,8 @@
 package org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl;
 
 public class Thumbnail {
-	public String error;
-	public boolean success;
-	public String preview_url;
-	public int version;
+	public String	error;
+	public boolean	success;
+	public String	preview_url;
+	public int		version;
 }

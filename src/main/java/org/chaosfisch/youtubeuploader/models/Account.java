@@ -15,99 +15,79 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
-public class Account extends Model implements ModelEvents
-{
-	public enum Type
-	{
+public class Account extends Model implements ModelEvents {
+	public enum Type {
 		YOUTUBE("enum.youtube"), FACEBOOK("enum.facebook"), TWITTER("enum.twitter"), GOOGLEPLUS("enum.googleplus");
-
+		
 		private final String	name;
-
-		Type(final String name)
-		{
+		
+		Type(final String name) {
 			this.name = name;
 		}
-
-		@Override
-		public String toString()
-		{
+		
+		@Override public String toString() {
 			return I18nHelper.message(name);
 		}
 	}
-
-	@Override
-	public String toString()
-	{
-		if (!isFrozen()) { return getString("name"); }
+	
+	@Override public String toString() {
+		if (!isFrozen()) {
+			return getString("name");
+		}
 		return super.toString();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	@Override
-	public boolean equals(final Object object)
-	{
-
-		if ((object == null) || !(object instanceof Account))
-		{
+	@Override public boolean equals(final Object object) {
+		
+		if ((object == null) || !(object instanceof Account)) {
 			return false;
-		} else if (((Account) object).getUnfrozen().equals(getUnfrozen())) { return true; }
+		} else if (((Account) object).getUnfrozen().equals(getUnfrozen())) {
+			return true;
+		}
 		return false;
 	}
-
-	public Long getUnfrozen()
-	{
+	
+	public Long getUnfrozen() {
 		return Convert.toLong(getAttributes().get("id"));
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()
 	 */
-	@Override
-	protected void beforeSave()
-	{
+	@Override protected void beforeSave() {
 		super.beforeSave();
 		EventBus.publish(MODEL_PRE_SAVED, this);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see org.javalite.activejdbc.CallbackSupport#afterSave()
 	 */
-	@Override
-	protected void afterSave()
-	{
+	@Override protected void afterSave() {
 		super.afterSave();
 		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_SAVED, this);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see org.javalite.activejdbc.CallbackSupport#beforeDelete()
 	 */
-	@Override
-	protected void beforeDelete()
-	{
+	@Override protected void beforeDelete() {
 		super.beforeDelete();
 		EventBus.publish(MODEL_PRE_REMOVED, this);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see org.javalite.activejdbc.CallbackSupport#afterDelete()
 	 */
-	@Override
-	protected void afterDelete()
-	{
+	@Override protected void afterDelete() {
 		super.afterDelete();
 		Base.commitTransaction();
 		EventBus.publish(MODEL_POST_REMOVED, this);

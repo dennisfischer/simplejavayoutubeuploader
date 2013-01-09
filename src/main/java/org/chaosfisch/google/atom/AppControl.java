@@ -14,8 +14,7 @@ import org.chaosfisch.google.atom.youtube.YoutubeState;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("app:control")
-public class AppControl
-{
+public class AppControl {
 	public @XStreamAlias("app:draft") String		draft;
 	public @XStreamAlias("yt:state") YoutubeState	state;
 }

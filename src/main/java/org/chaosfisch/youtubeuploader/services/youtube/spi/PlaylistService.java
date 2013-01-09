@@ -14,13 +14,12 @@ import java.util.List;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 
-public interface PlaylistService
-{
+public interface PlaylistService {
 	String	PLAYLISTS_SYNCHRONIZED	= "playlistsSynchronized";
-
+	
 	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
-
+	
 	void addYoutubePlaylist(Playlist playlist);
-
+	
 	void synchronizePlaylists(List<Account> accounts);
 }

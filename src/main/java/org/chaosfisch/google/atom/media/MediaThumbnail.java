@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:thumbnail")
-public class MediaThumbnail
-{
+public class MediaThumbnail {
 	public @XStreamAlias("height") @XStreamAsAttribute String	height;
 	public @XStreamAlias("yt:name") @XStreamAsAttribute String	name;
 	public @XStreamAlias("time") @XStreamAsAttribute String		time;
