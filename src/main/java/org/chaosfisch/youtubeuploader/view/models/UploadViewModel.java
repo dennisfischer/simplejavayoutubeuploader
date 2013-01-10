@@ -214,6 +214,7 @@ public class UploadViewModel {
 		selectedVisibilityProperty.get().select(
 				template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
 		numberProperty.set(template.getInteger("number") != null ? template.getInteger("number") : 0);
+		thumbnailProperty.set(template.getString("thumbnail") != null ? template.getString("thumbnail") : "");
 		
 		if (template.parent(Account.class) != null) {
 			selectedAccountProperty.get().select(template.parent(Account.class));
@@ -299,6 +300,7 @@ public class UploadViewModel {
 		rateProperty.set(upload.getBoolean("rate"));
 		tagsProperty.set(upload.getString("keywords"));
 		titleProperty.set(upload.getString("title"));
+		thumbnailProperty.set(upload.getString("thumbnail"));
 		Calendar calendar = Calendar.getInstance();
 		if (upload.getDate("started") != null) {
 			calendar.setTime(upload.getDate("started"));

@@ -40,6 +40,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
@@ -104,16 +105,34 @@ public class QueueController implements Initializable {
 																.withAlignment(Pos.CENTER_RIGHT)
 																.withPostfix(" Upload(s)").withPrefix("max. ")
 																.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 50).withValue(0)
+	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 10).withValue(0)
 																.withAlignment(Pos.CENTER_RIGHT)
 																.withArrowPosition(ArrowPosition.LEADING)
-																.withPostfix(" kb/s");
+																.withPostfix(" kb/s").withEditable(true)
+																.withStringConverter(new StringConverter<Integer>() {
+																	
+																	@Override public String toString(final Integer arg0) {
+																		return arg0.toString();
+																	}
+																	
+																	@Override public Integer fromString(
+																			final String string) {
+																		try {
+																			final Integer number = Integer
+																					.parseInt(string);
+																			return number;
+																		} catch (final NumberFormatException e) {
+																			return uploadSpeed.getValue();
+																		}
+																	}
+																});
 	
 	@Inject Uploader					uploader;
 	@Inject Throttle					throttle;
 	@Inject UploadViewModel				uploadViewModel;
 	
-	@Override// This method is called by the FXMLLoader when initialization is complete
+	@Override// This method is called by the FXMLLoader when initialization is
+	// complete
 	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources) {
 		assert actionOnFinish != null : "fx:id=\"actionOnFinish\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert columnAccount != null : "fx:id=\"columnAccount\" was not injected: check your FXML file 'Queue.fxml'.";

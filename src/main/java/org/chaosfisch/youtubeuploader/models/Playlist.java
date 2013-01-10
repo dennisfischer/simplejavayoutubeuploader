@@ -17,7 +17,7 @@ import org.javalite.common.Convert;
 public class Playlist extends Model implements ModelEvents {
 	
 	@Override public String toString() {
-		return getString("title");
+		return (String) getUnfrozen("title");
 	}
 	
 	/*
@@ -32,7 +32,7 @@ public class Playlist extends Model implements ModelEvents {
 			return false;
 		} else if (((Playlist) object).getUnfrozen().equals(getUnfrozen())) {
 			return true;
-		} else if (((Model) object).get("pkey").equals(this.get("pkey"))) {
+		} else if (((Playlist) object).getUnfrozen("pkey").equals(this.getUnfrozen("pkey"))) {
 			return true;
 		}
 		return false;
@@ -40,6 +40,10 @@ public class Playlist extends Model implements ModelEvents {
 	
 	public Long getUnfrozen() {
 		return Convert.toLong(getAttributes().get("id"));
+	}
+	
+	public Object getUnfrozen(final String key) {
+		return getAttributes().get(key);
 	}
 	
 	/*
