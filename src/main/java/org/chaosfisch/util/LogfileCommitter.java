@@ -34,9 +34,8 @@ import com.google.common.io.Files;
 public class LogfileCommitter {
 	private static final String	COMMIT_URL	= "http://youtubeuploader.square7.ch/nightly/receiver.php";
 	private static final Logger	logger		= LoggerFactory.getLogger(LogfileCommitter.class);
-	private static final File	htmlFile	= new File(System.getProperty("user.home")
-													+ "/SimpleJavaYoutubeUploader/applog.html");
-	
+	private static final File	htmlFile	= new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.html");
+
 	public static void commit() {
 		if (!htmlFile.exists()) {
 			return;
@@ -45,14 +44,14 @@ public class LogfileCommitter {
 		if (html == null) {
 			return;
 		}
-		
+
 		final String uuid = getUniqueId();
 		logger.info("UUID:" + uuid);
-		
+
 		final List<BasicNameValuePair> logfileParams = new ArrayList<BasicNameValuePair>();
 		logfileParams.add(new BasicNameValuePair("uuid", uuid));
 		logfileParams.add(new BasicNameValuePair("data", html));
-		
+
 		final HttpUriRequest request = new Request.Builder(COMMIT_URL, Method.POST)
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.entity(new UrlEncodedFormEntity(logfileParams, Charset.forName("utf-8"))).buildHttpUriRequest();
@@ -60,17 +59,16 @@ public class LogfileCommitter {
 		HttpResponse response = null;
 		try {
 			response = RequestUtil.execute(request);
-			
+
 		} catch (final IOException e) {
-			logger.warn("Loginformationen konnten nicht übermittelt werden. {}",
-					response != null ? response.getStatusLine() : "");
+			logger.warn("Loginformationen konnten nicht übermittelt werden. {}", response != null ? response.getStatusLine() : "");
 		} finally {
-			if ((response != null) && (response.getEntity() != null)) {
+			if (response != null && response.getEntity() != null) {
 				EntityUtils.consumeQuietly(response.getEntity());
 			}
 		}
 	}
-	
+
 	private static String getLogfile() {
 		if (htmlFile.exists()) {
 			try {
@@ -81,13 +79,13 @@ public class LogfileCommitter {
 		}
 		return null;
 	}
-	
+
 	private static String getUniqueId() {
 		Setting uuidSetting = Setting.findFirst("key = ?", "hidden.uuid");
 		if (uuidSetting == null) {
 			uuidSetting = Setting.createIt("key", "hidden.uuid", "value", UUID.randomUUID());
 		}
-		
+
 		return uuidSetting.getString("value");
 	}
 }

@@ -39,68 +39,69 @@ import com.google.inject.Injector;
 public class Uploader {
 	public static final String		ABORT					= "uploadAbort";
 	public static final String		PROGRESS				= "uploadProgress";
-	
+
 	public SimpleIntegerProperty	actionOnFinish			= new SimpleIntegerProperty(0);
 	public SimpleBooleanProperty	inProgressProperty		= new SimpleBooleanProperty(false);
 	public SimpleIntegerProperty	maxUploads				= new SimpleIntegerProperty(1);
-	
+
 	private volatile short			runningUploads			= 0;
 	private boolean					startTimeCheckerFlag	= true;
-	
+
 	private final ExecutorService	executorService			= Executors.newFixedThreadPool(5);
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	@Inject private Injector		injector;
 	@Inject private DataSource		datasource;
-	
+
 	public Uploader() {
 		AnnotationProcessor.process(this);
-		
+
 		maxUploads.addListener(new ChangeListener<Number>() {
-			
-			@Override public void changed(final ObservableValue<? extends Number> observable, final Number oldValue,
-					final Number newValue) {
+
+			@Override
+			public void changed(final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) {
 				sendUpload();
 			}
 		});
 	}
-	
+
 	public void abort(final Upload queue) {
 		EventBus.publish(Uploader.ABORT, queue);
 	}
-	
+
 	private boolean hasFreeUploadSpace() {
 		return runningUploads < maxUploads.get();
 	}
-	
+
 	public boolean isRunning() {
-		return inProgressProperty.get() && (runningUploads != 0);
+		return inProgressProperty.get() && runningUploads != 0;
 	}
-	
+
 	public void exit() {
 		executorService.shutdownNow();
 	}
-	
+
 	public void start() {
 		inProgressProperty.set(true);
 		ThreadUtil.doInBackground(new Runnable() {
-			
-			@Override public void run() {
-				for (int i = 0; (i < maxUploads.get()) && hasFreeUploadSpace(); i++) {
+
+			@Override
+			public void run() {
+				for (int i = 0; i < maxUploads.get() && hasFreeUploadSpace(); i++) {
 					sendUpload();
 					try {
 						Thread.sleep(10000);
 					} catch (final InterruptedException e) {}
 				}
-				
+
 			}
 		});
 	}
-	
+
 	private void sendUpload() {
 		if (!Base.hasConnection()) {
 			Base.open(injector.getInstance(DataSource.class));
 		}
-		
+
 		if (inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = Upload
 					.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
@@ -117,36 +118,36 @@ public class Uploader {
 					runningUploads++;
 				}
 			}
-			
+
 		}
 	}
-	
+
 	public void stop() {
 		inProgressProperty.set(false);
 	}
-	
+
 	public void stopStarttimeChecker() {
 		startTimeCheckerFlag = false;
 	}
-	
+
 	private void uploadFinished(final Upload queue) {
 		if (!Base.hasConnection()) {
 			Base.open(injector.getInstance(DataSource.class));
 		}
 		runningUploads--;
-		
+
 		final long leftUploads = Upload.count("archived = false AND failed = false");
 		logger.info("Upload finished: {}; {}", queue.getString("title"), queue.getString("videoid"));
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
-		
+
 		if (queue.getBoolean("PAUSEONFINISH") == true) {
 			inProgressProperty.set(false);
 		} else {
 			sendUpload();
 		}
-		
-		if ((!inProgressProperty.get()) || ((leftUploads == 0) && (runningUploads <= 0))) {
+
+		if (!inProgressProperty.get() || leftUploads == 0 && runningUploads <= 0) {
 			inProgressProperty.set(false);
 			logger.info("All uploads finished");
 			switch (actionOnFinish.get()) {
@@ -167,20 +168,21 @@ public class Uploader {
 			}
 		}
 	}
-	
+
 	public void runStarttimeChecker() {
 		ThreadUtil.doInBackground(new Runnable() {
-			
-			@Override public void run() {
+
+			@Override
+			public void run() {
 				if (!Base.hasConnection()) {
 					Base.open(datasource);
 				}
 				while (!Thread.interrupted() && startTimeCheckerFlag) {
-					
-					if ((Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0)) {
+
+					if (Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0) {
 						start();
 					}
-					
+
 					try {
 						Thread.sleep(60000);
 					} catch (final InterruptedException e) {}
@@ -188,17 +190,17 @@ public class Uploader {
 			}
 		});
 	}
-	
-	@EventTopicSubscriber(topic = Uploader.PROGRESS) public void onUploadJobDoneAndFailed(final String topic,
-			final UploadProgress uploadProgress) {
-		if ((uploadProgress.done == true) || (uploadProgress.failed == true)) {
+
+	@EventTopicSubscriber(topic = Uploader.PROGRESS)
+	public void onUploadJobDoneAndFailed(final String topic, final UploadProgress uploadProgress) {
+		if (uploadProgress.done == true || uploadProgress.failed == true) {
 			logger.info("Status: {}", uploadProgress.status);
 			uploadFinished(uploadProgress.getQueue());
 		}
 	}
-	
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED) public void onUploadAdded(final String topic,
-			final Model model) {
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
+	public void onUploadAdded(final String topic, final Model model) {
 		if (model instanceof Upload) {
 			// TODO NOT RIGHT
 			sendUpload();

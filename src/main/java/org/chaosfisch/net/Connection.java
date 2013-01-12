@@ -24,7 +24,7 @@ public class Connection {
 	private final Protocol		protocol;
 	private boolean				closed	= false;
 	private final static Logger	logger	= LoggerFactory.getLogger(Connection.class);
-	
+
 	Connection(final Socket socket, final Protocol protocol) {
 		this.socket = socket;
 		this.protocol = protocol;
@@ -36,7 +36,7 @@ public class Connection {
 			logger.warn("Could not get Streams", e);
 		}
 	}
-	
+
 	public Msg getMsg() {
 		if (!closed) {
 			try {
@@ -50,11 +50,11 @@ public class Connection {
 		}
 		return null;
 	}
-	
+
 	public boolean isClosed() {
 		return closed;
 	}
-	
+
 	public void sendMsg(final String event, final Object body) {
 		if (!closed) {
 			try {
@@ -65,22 +65,23 @@ public class Connection {
 			}
 		}
 	}
-	
+
 	private void receiveMessages() {
 		final Thread readThread = new Thread(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run() {
 				readMessages();
 			}
 		});
 		readThread.start();
 	}
-	
+
 	private void readMessages() {
 		while (!socket.isClosed()) {
 			protocol.processMsg(getMsg());
 		}
 	}
-	
+
 	public void close() {
 		closed = true;
 		if (socket.isClosed()) {

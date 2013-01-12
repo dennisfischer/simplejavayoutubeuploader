@@ -19,23 +19,27 @@ import com.google.inject.name.Named;
 public class GDataRequestSigner implements RequestSigner {
 	@Inject @Named("GDATA_VERSION") String	DEFAULT_GDATA_VERSION;
 	@Inject @Named("DEVELOPER_KEY") String	DEFAULT_DEVELOPER_KEY;
-	
-	@Override public void sign(final HttpRequest request) {
+
+	@Override
+	public void sign(final HttpRequest request) {
 		request.addHeader("GData-Version", DEFAULT_GDATA_VERSION);
 		request.addHeader("X-GData-Key", String.format("key=%s", DEFAULT_DEVELOPER_KEY));
 	}
-	
-	@Override public void signWithAuthorization(final HttpRequest request, final String authHeader) {
+
+	@Override
+	public void signWithAuthorization(final HttpRequest request, final String authHeader) {
 		request.addHeader("Authorization", authHeader);
 		sign(request);
 	}
-	
-	@Override public void signWithAuthorization(final HttpURLConnection request, final String authHeader) {
+
+	@Override
+	public void signWithAuthorization(final HttpURLConnection request, final String authHeader) {
 		request.setRequestProperty("Authorization", authHeader);
 		sign(request);
 	}
-	
-	@Override public void sign(final HttpURLConnection request) {
+
+	@Override
+	public void sign(final HttpURLConnection request) {
 		request.setRequestProperty("GData-Version", DEFAULT_GDATA_VERSION);
 		request.setRequestProperty("X-GData-Key", String.format("key=%s", DEFAULT_DEVELOPER_KEY));
 	}

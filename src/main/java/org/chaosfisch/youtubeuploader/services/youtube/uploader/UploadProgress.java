@@ -21,41 +21,41 @@ public class UploadProgress {
 	public boolean			failed;
 	public boolean			done;
 	public String			status;
-	
+
 	public UploadProgress(final Upload queue, final double fileSize) {
 		this.queue = queue;
 		this.fileSize = fileSize;
 	}
-	
+
 	public double getDiffBytes() {
 		return diffBytes;
 	}
-	
+
 	public long getDiffTime() {
 		return diffTime;
 	}
-	
+
 	public double getFileSize() {
 		return fileSize;
 	}
-	
+
 	public Upload getQueue() {
 		return queue;
 	}
-	
+
 	public double getTotalBytesUploaded() {
 		return totalBytesUploaded;
 	}
-	
+
 	public long getTime() {
 		return time;
 	}
-	
+
 	public void setBytes(final double addBytes) {
 		diffBytes = addBytes - totalBytesUploaded;
 		totalBytesUploaded += diffBytes;
 	}
-	
+
 	public void setTime(final long diffTime) {
 		this.diffTime = diffTime;
 		time += diffTime;

@@ -25,16 +25,17 @@ public class Server implements Runnable {
 	private final Protocol				protocol;
 	private final int					port;
 	private final ArrayList<Connection>	connections	= new ArrayList<>();
-	
+
 	public Server(final int port, final Protocol protocol) {
 		this.protocol = protocol;
 		this.port = port;
-		
+
 		final Thread t = new Thread(this);
 		t.start();
 	}
-	
-	@Override public void run() {
+
+	@Override
+	public void run() {
 		try {
 			serverSocket = new ServerSocket(port);
 			handleClients();
@@ -42,7 +43,7 @@ public class Server implements Runnable {
 			logger.warn("Could not start server", e);
 		}
 	}
-	
+
 	private void handleClients() {
 		while (!serverSocket.isClosed()) {
 			try {
@@ -57,7 +58,7 @@ public class Server implements Runnable {
 			}
 		}
 	}
-	
+
 	private void cleanupClients() {
 		final Iterator<Connection> connectionIterator = connections.iterator();
 		while (connectionIterator.hasNext()) {
@@ -66,9 +67,9 @@ public class Server implements Runnable {
 				connectionIterator.remove();
 			}
 		}
-		
+
 	}
-	
+
 	public void close() {
 		for (final Connection connection : connections) {
 			connection.close();
@@ -79,7 +80,7 @@ public class Server implements Runnable {
 			} catch (final IOException e) {}
 		}
 	}
-	
+
 	public void sendMsg(final String event, final Object body) {
 		for (final Connection connection : connections) {
 			connection.sendMsg(event, body);

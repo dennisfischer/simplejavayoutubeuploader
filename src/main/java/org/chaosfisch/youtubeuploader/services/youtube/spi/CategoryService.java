@@ -18,9 +18,8 @@ public interface CategoryService {
 	/**
 	 * The default category url
 	 */
-	String	CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl="
-									+ Locale.getDefault().getLanguage();
-	
+	String	CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl=" + Locale.getDefault().getLanguage();
+
 	/**
 	 * Loads all available categorys from youtube
 	 * 

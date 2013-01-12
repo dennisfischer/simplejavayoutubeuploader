@@ -18,9 +18,8 @@ import org.chaosfisch.youtubeuploader.services.youtube.uploader.MetadataExceptio
 
 public interface MetadataService {
 	String atomBuilder(Upload upload);
-	
-	String submitMetadata(String atomData, File fileToUpload, Account account) throws MetadataException,
-			AuthenticationException;
-	
+
+	String submitMetadata(String atomData, File fileToUpload, Account account) throws MetadataException, AuthenticationException;
+
 	void activateBrowserfeatures(Upload upload);
 }

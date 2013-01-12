@@ -18,10 +18,9 @@ public class I18nHelper {
 	/**
 	 * The default language properties file resource bundle
 	 */
-	static final ResourceBundle	resourceBundle	= ResourceBundle
-														.getBundle("org.chaosfisch.youtubeuploader.resources.application");
+	static final ResourceBundle	resourceBundle	= ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application");
 	static List<String>			usedKeys		= new ArrayList<>();
-	
+
 	/**
 	 * Returns the class resourceBundle
 	 * 
@@ -30,7 +29,7 @@ public class I18nHelper {
 	public static ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
-	
+
 	/**
 	 * Translates key to user language
 	 * 
@@ -44,7 +43,7 @@ public class I18nHelper {
 		}
 		return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : "====" + key + "====";
 	}
-	
+
 	public static void showUnused() {
 		final Enumeration<String> keys = resourceBundle.getKeys();
 		while (keys.hasMoreElements()) {

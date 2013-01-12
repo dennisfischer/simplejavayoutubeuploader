@@ -42,8 +42,9 @@ import com.google.inject.name.Names;
 import com.mchange.v2.c3p0.DataSources;
 
 public class GuiceBindings extends AbstractModule {
-	
-	@Override protected void configure() {
+
+	@Override
+	protected void configure() {
 		bind(CategoryService.class).to(CategoryServiceImpl.class).in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
@@ -56,22 +57,20 @@ public class GuiceBindings extends AbstractModule {
 		bind(Throttle.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
 		bind(UploadViewModel.class).in(Singleton.class);
-		
+
 		requestStaticInjection(RequestUtil.class);
-		
+
 		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
 		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(ApplicationData.DEVELOPER_KEY);
-		
+
 		try {
 			final Properties p = new Properties(System.getProperties());
 			p.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 			p.put("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "SEVERE");
 			System.setProperties(p);
-			bind(DataSource.class)
-					.toInstance(
-							DataSources.pooledDataSource(DataSources.unpooledDataSource(
-									"jdbc:h2:" + System.getProperty("user.home")
-											+ "/SimpleJavaYoutubeUploader/youtubeuploader", "username", "")));
+			bind(DataSource.class).toInstance(
+					DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:" + System.getProperty("user.home")
+							+ "/SimpleJavaYoutubeUploader/youtubeuploader", "username", "")));
 		} catch (final SQLException e) {
 			e.printStackTrace();
 			System.exit(1);

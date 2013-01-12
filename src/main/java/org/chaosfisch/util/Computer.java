@@ -14,7 +14,7 @@ import java.io.IOException;
 import com.sun.javafx.PlatformUtil;
 
 public class Computer {
-	
+
 	/**
 	 * Sends this system to hibernation mode
 	 */
@@ -27,13 +27,13 @@ public class Computer {
 		} else if (PlatformUtil.isMac()) {
 			command = "osascript -e 'tell application \"Finder\" to sleep'";
 		}
-		
+
 		try {
 			Runtime.getRuntime().exec(command);
 		} catch (final IOException ignored) {}
 		System.exit(0);
 	}
-	
+
 	/**
 	 * Sends this system to shutdown mode
 	 */
@@ -46,7 +46,7 @@ public class Computer {
 		} else if (PlatformUtil.isMac()) {
 			command = "osascript -e 'tell application\"Finder\" to shut down'";
 		}
-		
+
 		try {
 			Runtime.getRuntime().exec(command);
 		} catch (final IOException ignored) {}

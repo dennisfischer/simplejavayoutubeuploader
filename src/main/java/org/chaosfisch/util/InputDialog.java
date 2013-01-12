@@ -23,42 +23,42 @@ import javafx.stage.Stage;
 
 public class InputDialog extends Stage {
 	Button	submit	= new Button("Okay");
-	
+
 	public InputDialog(final String title, final Object[] data) {
 		super();
 		initOwner(null);
-		
+
 		setTitle(title);
-		
-		if ((data.length % 2) != 0) {
+
+		if (data.length % 2 != 0) {
 			throw new IllegalArgumentException("Object data must be even!");
 		}
-		
+
 		final Group root = new Group();
 		final Scene scene = new Scene(root);
 		setScene(scene);
-		
+
 		final GridPane gridpane = new GridPane();
 		gridpane.setPadding(new Insets(5));
 		gridpane.setHgap(5);
 		gridpane.setVgap(5);
-		
+
 		for (int i = 0; i < data.length; i++) {
-			if ((i % 2) == 0) {
+			if (i % 2 == 0) {
 				final Label label = new Label((String) data[i]);
-				gridpane.add(label, 0, (i) / 2);
+				gridpane.add(label, 0, i / 2);
 			} else {
 				gridpane.add((Node) data[i], 1, (i - 1) / 2);
 			}
 		}
-		
-		gridpane.add(submit, 1, (data.length / 2) + 1);
+
+		gridpane.add(submit, 1, data.length / 2 + 1);
 		GridPane.setHalignment(submit, HPos.RIGHT);
 		root.getChildren().add(gridpane);
 		sizeToScene();
 		show();
 	}
-	
+
 	public void setCallback(final EventHandler<ActionEvent> callback) {
 		submit.setOnAction(callback);
 	}

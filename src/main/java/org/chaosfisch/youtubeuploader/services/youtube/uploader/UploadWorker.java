@@ -55,28 +55,28 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class UploadWorker extends Task<Void> {
-	
+
 	/**
 	 * Status enum for handling control flow
 	 */
 	protected enum STATUS {
 		ABORTED, DONE, FAILED, FAILED_FILE, FAILED_META, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
-	
+
 	private static final int				DEFAULT_BUFFER_SIZE	= 65536;
 	private STATUS							currentStatus		= STATUS.INITIALIZE;
-	
+
 	private long							start;
 	private double							totalBytesUploaded;
 	private double							bytesToUpload;
 	private double							fileSize;
-	
+
 	/**
 	 * File that is uploaded
 	 */
 	private File							fileToUpload;
 	private Upload							upload;
-	
+
 	private final Logger					logger				= LoggerFactory.getLogger(getClass() + " -> "
 																		+ Thread.currentThread().getName());
 	@Inject private PlaylistService			playlistService;
@@ -88,24 +88,26 @@ public class UploadWorker extends Task<Void> {
 	@Inject private Throttle				throttle;
 	@Inject private ResumeableManager		resumeableManager;
 	@Inject private ExtendedPlaceholders	extendedPlacerholders;
-	
+
 	private UploadProgress					uploadProgress;
-	
+
 	public UploadWorker() {
 		AnnotationProcessor.process(this);
 	}
-	
-	@Override protected Void call() throws Exception {
+
+	@Override
+	protected Void call() throws Exception {
 		// Einstiegspunkt in diesen Thread.
 		/*
-		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch fehlschlagen und muss wiederholbar sein.
+		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
+		 * fehlschlagen und muss wiederholbar sein.
 		 */
 		Base.open(injector.getInstance(DataSource.class));
-		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE)
-				|| currentStatus.equals(STATUS.FAILED) || currentStatus.equals(STATUS.FAILED_FILE) || currentStatus
-					.equals(STATUS.FAILED_META)) && resumeableManager.canContinue() && !isCancelled()) {
+		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)
+				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
+				&& resumeableManager.canContinue() && !isCancelled()) {
 			try {
-				
+
 				switch (currentStatus) {
 					case INITIALIZE:
 						initialize();
@@ -147,7 +149,7 @@ public class UploadWorker extends Task<Void> {
 		}
 		return null;
 	}
-	
+
 	private void resumeinfo() throws UploadException, AuthenticationException {
 		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
 		if (resumeInfo == null) {
@@ -170,15 +172,16 @@ public class UploadWorker extends Task<Void> {
 			currentStatus = STATUS.UPLOAD;
 		}
 	}
-	
-	@Override protected void done() {
+
+	@Override
+	protected void done() {
 		super.done();
 		try {
 			get();
 		} catch (final Throwable t) {
 			logger.debug("ERROR", t);
 		}
-		
+
 		upload.setBoolean("inprogress", false);
 		switch (currentStatus) {
 			case DONE:
@@ -206,71 +209,69 @@ public class UploadWorker extends Task<Void> {
 		Base.close();
 		cancel();
 	}
-	
-	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte,
-			final long endByte) throws IOException {
-		
+
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte)
+			throws IOException {
+
 		// Write Chunk
 		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
 		long totalRead = 0;
-		
-		while (!isCancelled() && (currentStatus == STATUS.UPLOAD) && (totalRead != ((endByte - startByte) + 1))) {
+
+		while (!isCancelled() && currentStatus == STATUS.UPLOAD && totalRead != endByte - startByte + 1) {
 			// Upload bytes in buffer
-			final int bytesRead = RequestUtil.flowChunk(inputStream, outputStream, buffer, 0,
-					UploadWorker.DEFAULT_BUFFER_SIZE);
+			final int bytesRead = RequestUtil.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
 			totalRead += bytesRead;
 			totalBytesUploaded += bytesRead;
-			
+
 			// PropertyChangeEvent
 			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
-			if ((diffTime > 1000) || (totalRead == ((endByte - startByte) + 1))) {
+			if (diffTime > 1000 || totalRead == endByte - startByte + 1) {
 				uploadProgress.setBytes(totalBytesUploaded);
 				uploadProgress.setTime(diffTime);
 				EventBus.publish(Uploader.PROGRESS, uploadProgress);
 			}
 		}
 	}
-	
+
 	private long generateEndBytes(final long start, final double bytesToUpload) {
 		final long end;
-		if ((bytesToUpload - throttle.chunkSize.get()) > 0) {
-			end = (start + throttle.chunkSize.get()) - 1;
+		if (bytesToUpload - throttle.chunkSize.get() > 0) {
+			end = start + throttle.chunkSize.get() - 1;
 		} else {
-			end = (start + (int) bytesToUpload) - 1;
+			end = start + (int) bytesToUpload - 1;
 		}
 		return end;
 	}
-	
+
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
 		upload.setDate("started", Calendar.getInstance().getTime());
 		upload.saveIt();
-		
+
 		// Get File and Check if existing
 		fileToUpload = new File(upload.getString("file"));
-		
+
 		if (!fileToUpload.exists()) {
 			throw new FileNotFoundException("Datei existiert nicht.");
 		}
-		
+
 		currentStatus = STATUS.METADATA;
 	}
-	
+
 	private void metadata() throws MetadataException, AuthenticationException {
-		
-		if ((upload.getString("uploadurl") != null) && !upload.getString("uploadurl").isEmpty()) {
+
+		if (upload.getString("uploadurl") != null && !upload.getString("uploadurl").isEmpty()) {
 			logger.info("Uploadurl existing: {}", upload.getString("uploadurl"));
 			currentStatus = STATUS.RESUMEINFO;
 			return;
 		}
-		
+
 		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
-		upload.setString("uploadurl",
-				metadataService.submitMetadata(atomData, fileToUpload, upload.parent(Account.class)));
+		upload.setString("uploadurl", metadataService.submitMetadata(atomData, fileToUpload, upload.parent(Account.class)));
 		upload.saveIt();
-		
+
 		// Log operation
 		logger.info("Uploadurl received: {}", upload.getString("uploadurl"));
 		// INIT Vars
@@ -279,15 +280,16 @@ public class UploadWorker extends Task<Void> {
 		start = 0;
 		bytesToUpload = fileSize;
 		currentStatus = STATUS.UPLOAD;
-		
+
 	}
-	
-	@EventTopicSubscriber(topic = Uploader.ABORT) public void onAbortUpload(final String topic, final Upload abort) {
+
+	@EventTopicSubscriber(topic = Uploader.ABORT)
+	public void onAbortUpload(final String topic, final Upload abort) {
 		if (abort.equals(upload)) {
 			currentStatus = STATUS.ABORTED;
 		}
 	}
-	
+
 	private void playlistAction() {
 		// Add video to playlist
 		if (upload.getAll(Playlist.class) != null) {
@@ -296,30 +298,31 @@ public class UploadWorker extends Task<Void> {
 			}
 		}
 	}
-	
+
 	private void postprocess() {
 		playlistAction();
 		enddirAction();
 		browserAction();
 		currentStatus = STATUS.DONE;
 	}
-	
+
 	private void browserAction() {
 		// if ((!upload.getBoolean("monetize")) && (!upload.getBoolean("claim"))
 		// && (upload.get("release") == null)
 		// && !upload.getBoolean("thumbnail")) {
 		// return;
 		// }
-		
+
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
-		
+
 		// extendedPlacerholders.register("{title}", upload.getString("title"));
 		// extendedPlacerholders.register("{description}",
 		// upload.getString("description"));
 		//
 		// upload.setString("webTitle",
 		// extendedPlacerholders.replace(upload.getString("webTitle")));
-		// upload.setString("webDescription", extendedPlacerholders.replace(upload
+		// upload.setString("webDescription",
+		// extendedPlacerholders.replace(upload
 		// .getString("webDescription")));
 		// upload.setString("webID",
 		// extendedPlacerholders.replace(upload.getString("webID")));
@@ -361,11 +364,11 @@ public class UploadWorker extends Task<Void> {
 		// extendedPlacerholders.replace(upload.getString("movieNotes")));
 		metadataService.activateBrowserfeatures(upload);
 	}
-	
+
 	private void enddirAction() {
 		enddirService.moveFileByUpload(fileToUpload, upload);
 	}
-	
+
 	private void replacePlaceholders() {
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), null,
 		// upload.parent(Playlist.class),
@@ -373,15 +376,15 @@ public class UploadWorker extends Task<Void> {
 		upload.setString("title", extendedPlaceholders.replace(upload.getString("title")));
 		upload.setString("description", extendedPlaceholders.replace(upload.getString("description")));
 		upload.setString("keywords", extendedPlaceholders.replace(upload.getString("keywords")));
-		
+
 		upload.setString("keywords", TagParser.parseAll(upload.getString("keywords")));
 		upload.setString("keywords", upload.getString("keywords").replaceAll("\"", ""));
 	}
-	
+
 	public void run(final Upload queue) {
 		upload = queue;
 	}
-	
+
 	private void setFailedStatus(final String status) {
 		upload.setBoolean("failed", true);
 		upload.set("started", null);
@@ -389,34 +392,33 @@ public class UploadWorker extends Task<Void> {
 		uploadProgress.failed = true;
 		uploadProgress.status = status;
 	}
-	
+
 	private void upload() throws UploadException, AuthenticationException {
 		// GET END SIZE
 		final long end = generateEndBytes(start, bytesToUpload);
-		
+
 		// Log operation
 		logger.debug(String.format("start=%s end=%s filesize=%s", start, end, (int) bytesToUpload));
-		
+
 		// Log operation
 		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
-		
+
 		if (uploadProgress == null) {
 			uploadProgress = new UploadProgress(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
-		
+
 		// Calculating the chunk size
-		final int chunk = (int) ((end - start) + 1);
-		
+		final int chunk = (int) (end - start + 1);
+
 		try {
 			// Building PUT Request for chunk data
 			final HttpURLConnection request = new Request.Builder(upload.getString("uploadurl"), Method.POST).headers(
 					ImmutableMap.of("Content-Type", upload.getString("mimetype"), "Content-Range",
-							String.format("bytes %d-%d/%d", start, end, fileToUpload.length())))
-					.buildHttpUrlConnection();
-			
+							String.format("bytes %d-%d/%d", start, end, fileToUpload.length()))).buildHttpUrlConnection();
+
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(upload.parent(Account.class)));
-			
+
 			// Input
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
 			// Output
@@ -431,13 +433,12 @@ public class UploadWorker extends Task<Void> {
 					throw new UploadException("Fehler beim Lesen der Datei!");
 				}
 				flowChunk(bufferedInputStream, throttledOutputStream, start, end);
-				
+
 				switch (request.getResponseCode()) {
 					case 200:
 						throw new UploadException("Received 200 response during resumable uploading");
 					case 201:
-						upload.setString("videoid",
-								resumeableManager.parseVideoId(InputStreams.toString(request.getInputStream())));
+						upload.setString("videoid", resumeableManager.parseVideoId(InputStreams.toString(request.getInputStream())));
 						upload.saveIt();
 						currentStatus = STATUS.POSTPROCESS;
 					break;
@@ -446,8 +447,7 @@ public class UploadWorker extends Task<Void> {
 						logger.debug("responseMessage={}", request.getResponseMessage());
 					break;
 					default:
-						throw new UploadException(String.format("Unexpected return code while uploading: %s",
-								request.getResponseMessage()));
+						throw new UploadException(String.format("Unexpected return code while uploading: %s", request.getResponseMessage()));
 				}
 				bytesToUpload -= throttle.chunkSize.get();
 				start = end + 1;

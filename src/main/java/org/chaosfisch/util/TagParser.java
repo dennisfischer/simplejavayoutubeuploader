@@ -14,17 +14,17 @@ public class TagParser {
 	 * the separator between "block" tags
 	 */
 	private static final char	BLOCK_DELIMITER	= '"';
-	
+
 	/**
 	 * flag if block is open
 	 */
 	private static boolean		blockOpen;
-	
+
 	/**
 	 * the separator between tags
 	 */
 	private static final char	DELIMITER		= ' ';
-	
+
 	/**
 	 * Checks validity of the given string
 	 * 
@@ -34,18 +34,18 @@ public class TagParser {
 	 */
 	public static boolean isValid(final String input) {
 		final String parsed = TagParser.parseAll(input);
-		if ((parsed.getBytes().length > 500) || parsed.contains("<") || parsed.contains(">")) {
+		if (parsed.getBytes().length > 500 || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
-			if ((tag.length() > 30) || (tag.length() < 2) || (tag.getBytes().length > 30)) {
+			if (tag.length() > 30 || tag.length() < 2 || tag.getBytes().length > 30) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns a parsed input string, invalid tags are removed
 	 * 
@@ -54,9 +54,9 @@ public class TagParser {
 	 * @return the parsed string
 	 */
 	public static String parseAll(String input) {
-		
+
 		input = input.trim();
-		
+
 		String parsedOutput = "";
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
@@ -69,7 +69,7 @@ public class TagParser {
 				case TagParser.DELIMITER:
 					if (TagParser.blockOpen) {
 						parsedOutput += input.charAt(i);
-					} else if ((parsedOutput.lastIndexOf(",") != parsedOutput.length()) && ((i + 1) != input.length())) {
+					} else if (parsedOutput.lastIndexOf(",") != parsedOutput.length() && i + 1 != input.length()) {
 						parsedOutput += ",";
 					}
 				break;
@@ -80,7 +80,7 @@ public class TagParser {
 		}
 		return TagParser.removeInvalid(parsedOutput.trim());
 	}
-	
+
 	/**
 	 * Removes invalid tags from input
 	 * 

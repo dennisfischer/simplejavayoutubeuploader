@@ -20,19 +20,19 @@ public class Protocol {
 	private final HashMap<String, String>	events	= new HashMap<String, String>();
 	private final Object					protocolHandler;
 	private final Logger					logger	= LoggerFactory.getLogger(getClass());
-	
+
 	public Protocol(final Object protocolHandler) {
 		this.protocolHandler = protocolHandler;
 	}
-	
+
 	public void addMsgHandler(final String header, final String function) {
 		events.put(header, function);
 	}
-	
+
 	public void addMsgHandler(final String header) {
 		events.put(header, header);
 	}
-	
+
 	public void processMsg(final Msg msg) {
 		if (msg == null) {
 			return;
@@ -42,10 +42,9 @@ public class Protocol {
 		try {
 			final Method m = protocolHandler.getClass().getMethod(handler, new Class[] { Msg.class });
 			m.invoke(protocolHandler, new Object[] { msg });
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			logger.warn("Method wrongly invoked", e);
 		}
 	}
-	
+
 }

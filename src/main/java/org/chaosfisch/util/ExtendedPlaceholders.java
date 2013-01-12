@@ -23,22 +23,22 @@ public class ExtendedPlaceholders {
 	 * The file for the {file} placeholder
 	 */
 	private String						file;
-	
+
 	/**
 	 * Custom user defined placeholders
 	 */
 	private final Map<String, String>	map	= new WeakHashMap<String, String>(10);
-	
+
 	/**
 	 * The number which modifies {number} placeholder
 	 */
 	private int							number;
-	
+
 	/**
 	 * The playlist for the {playlist} and {number} placeholders
 	 */
 	private Playlist					playlist;
-	
+
 	/**
 	 * Creates a new instance of Extendedplaceholders
 	 * 
@@ -54,10 +54,9 @@ public class ExtendedPlaceholders {
 		this.playlist = playlist;
 		this.number = number;
 	}
-	
-	public ExtendedPlaceholders() {
-	}
-	
+
+	public ExtendedPlaceholders() {}
+
 	/**
 	 * Registers a new custom placeholder
 	 * 
@@ -69,7 +68,7 @@ public class ExtendedPlaceholders {
 	public void register(final String placeholder, final String replacement) {
 		map.put(placeholder, replacement);
 	}
-	
+
 	/**
 	 * Replaces all placeholders
 	 * 
@@ -83,13 +82,12 @@ public class ExtendedPlaceholders {
 		}
 		if (playlist != null) {
 			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getString("title"));
-			
+
 			final Pattern p = Pattern.compile(I18nHelper.message("autotitle.numberPattern"));
 			final Matcher m = p.matcher(input);
-			
+
 			if (m.find()) {
-				input = m
-						.replaceAll(zeroFill(playlist.getInteger("number") + 1 + number, Integer.parseInt(m.group(1))));
+				input = m.replaceAll(zeroFill(playlist.getInteger("number") + 1 + number, Integer.parseInt(m.group(1))));
 				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"),
 						String.valueOf(playlist.getInteger("number") + 1 + number));
 			} else {
@@ -97,20 +95,19 @@ public class ExtendedPlaceholders {
 						String.valueOf(playlist.getInteger("number") + 1 + number));
 			}
 		}
-		
+
 		int index = file.lastIndexOf(".");
 		if (index == -1) {
 			index = file.length();
 		}
-		input = input.replaceAll(I18nHelper.message("autotitle.file"),
-				file.substring(file.lastIndexOf(File.separator) + 1, index));
-		
+		input = input.replaceAll(I18nHelper.message("autotitle.file"), file.substring(file.lastIndexOf(File.separator) + 1, index));
+
 		for (final Map.Entry<String, String> vars : map.entrySet()) {
 			input = input.replaceAll(Pattern.quote(vars.getKey()), vars.getValue());
 		}
 		return input;
 	}
-	
+
 	/**
 	 * Fills the number with X zeros
 	 * 
@@ -123,14 +120,14 @@ public class ExtendedPlaceholders {
 	private String zeroFill(final int number, final int width) {
 		return String.format(String.format("%%0%dd", width), number);
 	}
-	
+
 	/**
 	 * @return the file
 	 */
 	public final String getFile() {
 		return file;
 	}
-	
+
 	/**
 	 * @param file
 	 *            the file to set
@@ -138,14 +135,14 @@ public class ExtendedPlaceholders {
 	public final void setFile(final String file) {
 		this.file = file;
 	}
-	
+
 	/**
 	 * @return the number
 	 */
 	public final int getNumber() {
 		return number;
 	}
-	
+
 	/**
 	 * @param number
 	 *            the number to set
@@ -153,14 +150,14 @@ public class ExtendedPlaceholders {
 	public final void setNumber(final int number) {
 		this.number = number;
 	}
-	
+
 	/**
 	 * @return the playlist
 	 */
 	public final Playlist getPlaylist() {
 		return playlist;
 	}
-	
+
 	/**
 	 * @param playlist
 	 *            the playlist to set

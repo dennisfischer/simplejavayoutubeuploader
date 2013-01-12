@@ -18,20 +18,20 @@ public class Msg implements Serializable {
 	private static final long	serialVersionUID	= -2022475929850602317L;
 	private final String		event;
 	private Object				content;
-	
+
 	Msg(final String event) {
 		this.event = event;
 	}
-	
+
 	Msg(final String event, final Object content) {
 		this.event = event;
 		this.content = content;
 	}
-	
+
 	public Object getContent() {
 		return content;
 	}
-	
+
 	public String getEvent() {
 		return event;
 	}

@@ -12,21 +12,24 @@ import com.sun.nio.zipfs.ZipUtils;
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'izpack'
+apply plugin: 'java'
+apply plugin: 'application'
 
 buildscript {
-	dependencies { classpath files("/lib/gradle-izpack-plugin-0.2.1.jar") }
+	dependencies { 
+		classpath files("/lib/gradle-izpack-plugin-0.2.1.jar") 
+	}
+	
+	buildDir = 'target'
+	version = '3.0-SNAPSHOT'
+	
+
 }
 
-allprojects {
-	apply plugin: 'java'
-	apply plugin: 'application'
-
+allprojects
+{
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
-
-	buildDir = 'target'
-
-	version = '3.0-SNAPSHOT'
 	mainClassName = 'org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader'
 }
 
@@ -47,7 +50,7 @@ dependencies {
 	compile ('org.javalite:activejdbc:1.4.5'){
 		exclude group: 'junit', module: 'junit'
 	}
-	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2.-r5-SNAPSHORT.jar")
+	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2.-r5-SNAPSHOT.jar")
 
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 	instrument 'org.javalite:activejdbc:1.4.5', 'org.javalite:activejdbc-instrumentation:1.4.5'
@@ -70,16 +73,26 @@ run {
 	classpath += configurations.providedCompile
 }
 
+jar {
+	archiveName = "SimpleJavaYoutubeUploader.jar"
+}
+
 
 izpack {
 	new File("$buildDir/assemble/izpack").mkdirs()
 	baseDir = file("$buildDir/assemble/izpack")
-	installFile = file("/src/main/izpack/install.xml")
+	installFile = file("/src/main/deploy/install.xml")
 	outputFile = file("$buildDir/distributions/simplejavayoutubeuploader-${version}-installer.jar")
 	compression = 'deflate'
 	compressionLevel = 9
 	appProperties = ['app.group': 'SimpleJavaYoutubeUploader', 'app.name': 'Simple Java Youtube Uploader', 'app.title': 'Simple Java Youtube Uploader',
 		'app.version': version, 'app.subpath': "Simple Java Youtube Uploader-$version"]
+}
+
+task launch4j(type: Exec) {
+	new File("$buildDir/launch4j").mkdirs()
+	workingDir file("$buildDir/launch4j")
+ 	commandLine 'C:/Program Files (x86)/Launch4j/launch4jc.exe', file('/src/main/deploy/launch4j.xml')
 }
 
 task instrumentAction() {
@@ -121,6 +134,7 @@ task copyTask(type: Copy) {
 
 task distribute(type: Zip){
 	from(jar)
+	from("$buildDir/launch4j")
 	into("lib") {
 		from(project.configurations.runtime)
 	}
@@ -131,4 +145,5 @@ instrumentAction.dependsOn classes
 run.dependsOn instrumentAction
 jar.dependsOn instrumentAction
 distribute.dependsOn javaFXPackager
+distribute.dependsOn launch4j
 javaFXPackager.dependsOn copyTask

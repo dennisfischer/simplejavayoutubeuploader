@@ -10,15 +10,15 @@
 package org.chaosfisch.youtubeuploader.services.youtube.impl;
 
 public class ResumeInfo {
-	
+
 	public final Long	nextByteToUpload;
 	public final String	videoId;
-	
+
 	ResumeInfo(final long nextByteToUpload) {
 		this.nextByteToUpload = nextByteToUpload;
 		videoId = null;
 	}
-	
+
 	ResumeInfo(final String videoId) {
 		this.videoId = videoId;
 		nextByteToUpload = null;

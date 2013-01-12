@@ -20,5 +20,5 @@ public class MediaRating {
 	public @XStreamAsAttribute String	country;
 	public String						rating;
 	public @XStreamAsAttribute String	scheme;
-	
+
 }

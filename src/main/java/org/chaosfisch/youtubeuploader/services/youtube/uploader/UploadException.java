@@ -11,11 +11,11 @@ package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
 public class UploadException extends Exception {
 	private static final long	serialVersionUID	= 1097833255891875198L;
-	
+
 	public UploadException(final String message) {
 		super(message);
 	}
-	
+
 	public UploadException(final String message, final Throwable cause) {
 		super(message, cause);
 	}

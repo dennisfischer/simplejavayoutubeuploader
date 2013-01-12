@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -47,7 +48,7 @@ import org.javalite.activejdbc.Model;
 import com.google.inject.Inject;
 
 public class UploadViewModel {
-	
+
 	public final SimpleListProperty<Model>							accountProperty				= new SimpleListProperty<>(
 																										FXCollections
 																												.<Model> observableArrayList());
@@ -95,9 +96,8 @@ public class UploadViewModel {
 	public final SimpleIntegerProperty								numberProperty				= new SimpleIntegerProperty();
 	public final SimpleObjectProperty<File>							initialDirectoryProperty	= new SimpleObjectProperty<>();
 	public final SimpleStringProperty								thumbnailProperty			= new SimpleStringProperty();
-	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty(
-																										-1);
-	
+	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty(-1);
+
 	public SimpleObjectProperty<SingleSelectionModel<AtomCategory>>	selectedCategoryProperty;
 	public SimpleObjectProperty<SingleSelectionModel<File>>			selectedFileProperty;
 	public SimpleObjectProperty<SingleSelectionModel<Model>>		selectedAccountProperty;
@@ -106,21 +106,18 @@ public class UploadViewModel {
 	public SimpleObjectProperty<SingleSelectionModel<String>>		selectedVideoResponseProperty;
 	public SimpleObjectProperty<SingleSelectionModel<String>>		selectedVisibilityProperty;
 	public SimpleObjectProperty<SingleSelectionModel<Model>>		selectedTemplateProperty;
-	
+
 	@Inject private PlaylistService									playlistService;
-	
+
 	public UploadViewModel() {
 		AnnotationProcessor.process(this);
 	}
-	
-	@SuppressWarnings("unchecked") public void init(final SingleSelectionModel<AtomCategory> categorySelectionModel,
-			final SingleSelectionModel<File> fileSelectionModel,
-			final SingleSelectionModel<Model> accountSelectionModel,
-			final SingleSelectionModel<String> commentSelectionModel,
-			final SingleSelectionModel<String> licenseSelectionModel,
-			final SingleSelectionModel<String> videoresponseSelectionModel,
-			final SingleSelectionModel<String> visibilitySelectionModel,
-			final SingleSelectionModel<Model> templateSelectionModel) {
+
+	@SuppressWarnings("unchecked")
+	public void init(final SingleSelectionModel<AtomCategory> categorySelectionModel, final SingleSelectionModel<File> fileSelectionModel,
+			final SingleSelectionModel<Model> accountSelectionModel, final SingleSelectionModel<String> commentSelectionModel,
+			final SingleSelectionModel<String> licenseSelectionModel, final SingleSelectionModel<String> videoresponseSelectionModel,
+			final SingleSelectionModel<String> visibilitySelectionModel, final SingleSelectionModel<Model> templateSelectionModel) {
 		selectedCategoryProperty = new SimpleObjectProperty<>(categorySelectionModel);
 		selectedFileProperty = new SimpleObjectProperty<>(fileSelectionModel);
 		selectedAccountProperty = new SimpleObjectProperty<>(accountSelectionModel);
@@ -129,23 +126,23 @@ public class UploadViewModel {
 		selectedVideoResponseProperty = new SimpleObjectProperty<>(videoresponseSelectionModel);
 		selectedVisibilityProperty = new SimpleObjectProperty<>(visibilitySelectionModel);
 		selectedTemplateProperty = new SimpleObjectProperty<>(templateSelectionModel);
-		
-		visibilityProperty.addAll(I18nHelper.message("visibilitylist.public"),
-				I18nHelper.message("visibilitylist.unlisted"), I18nHelper.message("visibilitylist.private"),
-				I18nHelper.message("visibilitylist.scheduled"));
-		
+
+		visibilityProperty.addAll(I18nHelper.message("visibilitylist.public"), I18nHelper.message("visibilitylist.unlisted"),
+				I18nHelper.message("visibilitylist.private"), I18nHelper.message("visibilitylist.scheduled"));
+
 		commentProperty.addAll(I18nHelper.message("commentlist.allowed"), I18nHelper.message("commentlist.moderated"),
 				I18nHelper.message("commentlist.denied"), I18nHelper.message("commentlist.friendsonly"));
 		licenseProperty.addAll(I18nHelper.message("licenselist.youtube"), I18nHelper.message("licenselist.cc"));
-		videoresponseProperty.addAll(I18nHelper.message("videoresponselist.allowed"),
-				I18nHelper.message("videoresponselist.moderated"), I18nHelper.message("videoresponselist.denied"));
-		
+		videoresponseProperty.addAll(I18nHelper.message("videoresponselist.allowed"), I18nHelper.message("videoresponselist.moderated"),
+				I18nHelper.message("videoresponselist.denied"));
+
 		accountProperty.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
 		templateProperty.addAll(Template.findAll().include(Account.class, Playlist.class));
-		
+
 		final InvalidationListener previewTitleChangeListener = new InvalidationListener() {
-			
-			@Override public void invalidated(final Observable observable) {
+
+			@Override
+			public void invalidated(final Observable observable) {
 				final String value = titleProperty.get();
 				titleProperty.set("");
 				titleProperty.set(value);
@@ -154,137 +151,141 @@ public class UploadViewModel {
 		numberProperty.addListener(previewTitleChangeListener);
 		selectedFileProperty.addListener(previewTitleChangeListener);
 		previewTitleProperty.bindBidirectional(titleProperty, new DefaultStringConverter() {
-			
+
 			final ExtendedPlaceholders	extendedPlaceholders	= new ExtendedPlaceholders();
-			
-			@Override public String toString(final String value) {
-				extendedPlaceholders
-						.setFile(selectedFileProperty.get().getSelectedItem() != null ? selectedFileProperty.get()
-								.getSelectedItem().getAbsolutePath() : "{file-missing}");
+
+			@Override
+			public String toString(final String value) {
+				extendedPlaceholders.setFile(selectedFileProperty.get().getSelectedItem() != null ? selectedFileProperty.get()
+						.getSelectedItem().getAbsolutePath() : "{file-missing}");
 				extendedPlaceholders.setNumber(numberProperty.get());
-				
+
 				return extendedPlaceholders.replace(value);
 			}
 		});
-		
-		selectedTemplateProperty.addListener(new InvalidationListener() {
-			
-			@Override public void invalidated(final Observable arg0) {
+
+		selectedTemplateProperty.get().selectedItemProperty().addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable arg0) {
 				resetTemplate();
 			}
 		});
-		
+
 		selectedAccountProperty.get().selectedItemProperty().addListener(new ChangeListener<Model>() {
-			
-			@Override public void changed(final ObservableValue<? extends Model> observable, final Model oldValue,
-					final Model newValue) {
-				if ((newValue != null) && (newValue.getAll(Playlist.class) != null)) {
+
+			@Override
+			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue) {
+				if (newValue != null && newValue.getAll(Playlist.class) != null) {
 					playlistSourceListProperty.clear();
 					playlistSourceListProperty.addAll(newValue.getAll(Playlist.class));
 				}
 			}
 		});
 	}
-	
+
 	public void resetTemplate() {
 		_reset((Template) (selectedTemplateProperty.get().getSelectedItem() == null ? ViewController.standardTemplate
 				: selectedTemplateProperty.get().getSelectedItem()));
 	}
-	
+
 	private void _reset(final Template template) {
 		if (!categoryProperty.isEmpty()) {
-			selectedCategoryProperty.get().select(
-					template.getInteger("category") != null ? template.getInteger("category") : 0);
+			selectedCategoryProperty.get().select(template.getInteger("category") != null ? template.getInteger("category") : 0);
 		}
-		selectedCommentProperty.get().select(
-				template.getInteger("comment") != null ? template.getInteger("comment") : 0);
+		selectedCommentProperty.get().select(template.getInteger("comment") != null ? template.getInteger("comment") : 0);
 		commentVoteProperty.set(template.getBoolean("commentvote"));
 		defaultdirProperty.set(template.getString("defaultdir"));
 		descriptionProperty.set(template.getString("description"));
 		embedProperty.set(template.getBoolean("embed"));
 		enddirProperty.set(template.getString("enddir"));
-		selectedLicenseProperty.get().select(
-				template.getInteger("license") != null ? template.getInteger("license") : 0);
+		selectedLicenseProperty.get().select(template.getInteger("license") != null ? template.getInteger("license") : 0);
 		mobileProperty.set(template.getBoolean("mobile"));
 		rateProperty.set(template.getBoolean("rate"));
 		tagsProperty.set(template.getString("keywords"));
 		titleProperty.set(template.getString("title"));
-		selectedVideoResponseProperty.get().select(
-				template.getInteger("videoresponse") != null ? template.getInteger("videoresponse") : 1);
-		selectedVisibilityProperty.get().select(
-				template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
+		selectedVideoResponseProperty.get().select(template.getInteger("videoresponse") != null ? template.getInteger("videoresponse") : 1);
+		selectedVisibilityProperty.get().select(template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
 		numberProperty.set(template.getInteger("number") != null ? template.getInteger("number") : 0);
 		thumbnailProperty.set(template.getString("thumbnail") != null ? template.getString("thumbnail") : "");
-		
+
 		if (template.parent(Account.class) != null) {
 			selectedAccountProperty.get().select(template.parent(Account.class));
 		}
-		for (final Model playlist : playlistDropListProperty.get()) {
-			removePlaylistFromDropzone(playlistDropListProperty.indexOf(playlist));
+
+		final Iterator<Model> playlistDropListIterator = playlistDropListProperty.get().iterator();
+		while (playlistDropListIterator.hasNext()) {
+			final Model playlist = playlistDropListIterator.next();
+			playlistSourceListProperty.add(playlist);
+			playlistDropListIterator.remove();
 		}
-		playlistDropListProperty.clear();
-		for (final Model playlist : template.getAll(Playlist.class)) {
-			movePlaylistToDropzone(playlistSourceListProperty.indexOf(playlist));
+
+		final Iterator<Playlist> playlistSourceListIterator = template.getAll(Playlist.class).iterator();
+		while (playlistSourceListIterator.hasNext()) {
+			final Playlist playlist = playlistSourceListIterator.next();
+			playlistDropListProperty.add(playlist);
+			playlistSourceListProperty.remove(playlist);
 		}
-		
-		final File defaultDir = new File(template.getString("defaultdir") != null ? template.getString("defaultdir")
-				: "");
+
+		final File defaultDir = new File(template.getString("defaultdir") != null ? template.getString("defaultdir") : "");
 		if (defaultDir.exists() && defaultDir.isDirectory()) {
 			initialDirectoryProperty.set(defaultDir);
 		}
-		
+
 		releasetimeProperty.set(Calendar.getInstance());
 		starttimeProperty.set(Calendar.getInstance());
 		thumbnailProperty.set("");
 		idProperty.setValue(-1);
 	}
-	
+
 	public Upload toUpload() {
-		final UploadBuilder uploadBuilder = new UploadBuilder(selectedFileProperty.get().getSelectedItem(),
-				titleProperty.get(), selectedCategoryProperty.get().getSelectedItem().term,
-				(Account) selectedAccountProperty.get().getSelectedItem())
+		final UploadBuilder uploadBuilder = new UploadBuilder(selectedFileProperty.get().getSelectedItem(), titleProperty.get(),
+				selectedCategoryProperty.get().getSelectedItem().term, (Account) selectedAccountProperty.get().getSelectedItem())
 				.setComment(selectedCommentProperty.get().getSelectedIndex()).setCommentvote(commentVoteProperty.get())
-				.setDescription(descriptionProperty.get() == null ? "" : descriptionProperty.get())
-				.setEmbed(embedProperty.get()).setEnddir(enddirProperty.get())
-				.setLicense(selectedLicenseProperty.get().getSelectedIndex()).setMobile(mobileProperty.get())
-				.setNumber(numberProperty.get()).setRate(rateProperty.get())
+				.setDescription(descriptionProperty.get() == null ? "" : descriptionProperty.get()).setEmbed(embedProperty.get())
+				.setEnddir(enddirProperty.get()).setLicense(selectedLicenseProperty.get().getSelectedIndex())
+				.setMobile(mobileProperty.get()).setNumber(numberProperty.get()).setRate(rateProperty.get())
 				.setTags(tagsProperty.get() == null ? "" : tagsProperty.get())
 				.setVideoresponse(selectedVideoResponseProperty.get().getSelectedIndex())
-				.setVisibility(selectedVisibilityProperty.get().getSelectedIndex())
-				.setThumbnail(thumbnailProperty.get());
+				.setVisibility(selectedVisibilityProperty.get().getSelectedIndex()).setThumbnail(thumbnailProperty.get());
 		if (idProperty.get() != -1) {
 			uploadBuilder.setId(idProperty.get());
 		}
-		
+
 		for (final Model playlist : playlistDropListProperty.get()) {
 			uploadBuilder.addPlaylist((Playlist) playlist);
 		}
-		
+
 		if (starttimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
 			uploadBuilder.setStarted(starttimeProperty.get().getTime());
 		}
-		
+
 		if (releasetimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
 			final Calendar calendar = new GregorianCalendar();
 			calendar.setTime(releasetimeProperty.get().getTime());
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 			final int mod = unroundedMinutes % 30;
-			calendar.add(Calendar.MINUTE, (mod < 16) ? -mod : (30 - mod));
+			calendar.add(Calendar.MINUTE, mod < 16 ? -mod : 30 - mod);
 			uploadBuilder.setRelease(calendar.getTime());
 		}
-		
+
 		final Upload upload = uploadBuilder.build();
 		if (upload.isValid()) {
 			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
 			selectedFileProperty.get().selectNext();
+			upload.save();
+			idProperty.setValue(-1);
+			uploadBuilder.finalize(upload);
 		}
 		return upload;
 	}
-	
+
 	public void fromUpload(final Upload upload) {
 		final File file = new File(upload.getString("file"));
 		idProperty.set(upload.getInteger("id"));
-		fileProperty.add(file);
+		if (!fileProperty.contains(file)) {
+			fileProperty.add(file);
+		}
 		selectedFileProperty.get().select(file);
 		selectedAccountProperty.get().select(upload.parent(Account.class));
 		selectedCommentProperty.get().select(upload.getInteger("comment"));
@@ -311,47 +312,53 @@ public class UploadViewModel {
 			calendar.setTime(upload.getDate("release"));
 		}
 		releasetimeProperty.set(calendar);
-		
+
 		for (final AtomCategory category : categoryProperty) {
 			if (category.term.equals(upload.getString("category"))) {
 				selectedCategoryProperty.get().select(category);
 			}
 		}
-		
-		for (final Model playlist : playlistDropListProperty.get()) {
-			removePlaylistFromDropzone(playlistDropListProperty.indexOf(playlist));
+
+		final Iterator<Model> playlistDropListIterator = playlistDropListProperty.get().iterator();
+		while (playlistDropListIterator.hasNext()) {
+			final Model playlist = playlistDropListIterator.next();
+			playlistSourceListProperty.add(playlist);
+			playlistDropListIterator.remove();
 		}
-		playlistDropListProperty.clear();
-		for (final Model playlist : upload.getAll(Playlist.class)) {
-			movePlaylistToDropzone(playlistSourceListProperty.indexOf(playlist));
+
+		final Iterator<Playlist> playlistSourceListIterator = upload.getAll(Playlist.class).iterator();
+		while (playlistSourceListIterator.hasNext()) {
+			final Playlist playlist = playlistSourceListIterator.next();
+			playlistDropListProperty.add(playlist);
+			playlistSourceListProperty.remove(playlist);
 		}
 	}
-	
+
 	public void saveTemplate() {
 		final Template template = (Template) selectedTemplateProperty.get().getSelectedItem();
-		
+
 		if (template == null) {
 			return;
 		}
 		template.setInteger("category", selectedCategoryProperty.get().getSelectedIndex());
-		template.setInteger("comment", selectedCommentProperty.get());
+		template.setInteger("comment", selectedCommentProperty.get().getSelectedIndex());
 		template.setBoolean("commentvote", commentVoteProperty.get());
-		template.setString("defaultdir", defaultdirProperty.get());
-		template.setString("description", descriptionProperty.get());
+		template.setString("defaultdir", defaultdirProperty.get() == null ? "" : defaultdirProperty.get());
+		template.setString("description", descriptionProperty.get() == null ? "" : descriptionProperty.get());
 		template.setBoolean("embed", embedProperty.get());
-		template.setString("enddir", enddirProperty.get());
-		template.setInteger("license", selectedLicenseProperty.get());
+		template.setString("enddir", enddirProperty.get() == null ? "" : enddirProperty.get());
+		template.setInteger("license", selectedLicenseProperty.get().getSelectedIndex());
 		template.setBoolean("mobile", mobileProperty.get());
 		template.setBoolean("rate", rateProperty.get());
-		template.setString("keywords", tagsProperty.get());
-		template.setString("title", titleProperty.get());
-		template.setInteger("videoresponse", selectedVideoResponseProperty.get());
-		template.setInteger("visibility", selectedVisibilityProperty.get());
+		template.setString("keywords", tagsProperty.get() == null ? "" : tagsProperty.get());
+		template.setString("title", titleProperty.get() == null ? "" : titleProperty.get());
+		template.setInteger("videoresponse", selectedVideoResponseProperty.get().getSelectedIndex());
+		template.setInteger("visibility", selectedVisibilityProperty.get().getSelectedIndex());
 		template.setInteger("number", numberProperty.get());
 		if (selectedAccountProperty.get() != null) {
 			template.setParent(selectedAccountProperty.get().getSelectedItem());
 		}
-		
+
 		for (final Playlist playlist : template.getAll(Playlist.class)) {
 			template.remove(playlist);
 		}
@@ -359,54 +366,55 @@ public class UploadViewModel {
 			template.add(playlist);
 		}
 		template.saveIt();
-		
+
 	}
-	
+
 	public void movePlaylistToDropzone(final int model) {
 		if (model >= 0) {
 			playlistDropListProperty.add(playlistSourceListProperty.get(model));
 			playlistSourceListProperty.remove(model);
 		}
 	}
-	
+
 	public void removePlaylistFromDropzone(final int model) {
 		if (model >= 0) {
 			playlistSourceListProperty.add(playlistDropListProperty.get(model));
 			playlistDropListProperty.remove(model);
 		}
 	}
-	
+
 	public void removeTemplate() {
 		if (selectedTemplateProperty.get() != null) {
 			selectedTemplateProperty.get().getSelectedItem().delete();
 		}
 	}
-	
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED) public void onAdded(final String topic,
-			final Model model) {
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
+	public void onAdded(final String topic, final Model model) {
 		Platform.runLater(new Runnable() {
-			
-			@Override public void run() {
-				if ((model instanceof Account) && model.get("type").equals(Account.Type.YOUTUBE.name())) {
+
+			@Override
+			public void run() {
+				if (model instanceof Account && model.get("type").equals(Account.Type.YOUTUBE.name())) {
 					if (accountProperty.contains(model)) {
 						accountProperty.set(accountProperty.indexOf(model), model);
 					} else {
 						accountProperty.add(model);
-						if ((selectedAccountProperty.get().getSelectedItem() == null) && (accountProperty.size() > 0)) {
+						if (selectedAccountProperty.get().getSelectedItem() == null && accountProperty.size() > 0) {
 							selectedAccountProperty.get().select(accountProperty.get(0));
 						}
 					}
 				} else if (model instanceof Template) {
 					if (templateProperty.contains(model)) {
 						templateProperty.set(templateProperty.indexOf(model), model);
+						selectedTemplateProperty.get().select(model);
 					} else {
 						templateProperty.add(model);
-						if ((selectedTemplateProperty.get().getSelectedItem() == null) && (templateProperty.size() > 0)) {
+						if (selectedTemplateProperty.get().getSelectedItem() == null && templateProperty.size() > 0) {
 							selectedTemplateProperty.get().select(templateProperty.get(0));
 						}
 					}
-				} else if ((model instanceof Playlist)
-						&& model.parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
+				} else if (model instanceof Playlist && model.parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
 					if (playlistSourceListProperty.contains(model)) {
 						playlistSourceListProperty.set(playlistSourceListProperty.indexOf(model), model);
 					} else if (playlistDropListProperty.contains(model)) {
@@ -418,19 +426,20 @@ public class UploadViewModel {
 			}
 		});
 	}
-	
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED) public void onRemoved(final String topic,
-			final Model model) {
+
+	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED)
+	public void onRemoved(final String topic, final Model model) {
 		Platform.runLater(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run() {
 				if (model instanceof Account) {
 					accountProperty.remove(model);
-					if ((selectedAccountProperty.get().getSelectedItem() == null) && (accountProperty.size() > 0)) {
+					if (selectedAccountProperty.get().getSelectedItem() == null && accountProperty.size() > 0) {
 						selectedAccountProperty.get().select(accountProperty.get(0));
 					}
 				} else if (model instanceof Template) {
 					templateProperty.remove(model);
-					if ((selectedTemplateProperty.get().getSelectedItem() == null) && (templateProperty.size() > 0)) {
+					if (selectedTemplateProperty.get().getSelectedItem() == null && templateProperty.size() > 0) {
 						selectedTemplateProperty.get().select(templateProperty.get(0));
 					}
 				} else if (model instanceof Playlist) {
@@ -439,15 +448,16 @@ public class UploadViewModel {
 				}
 			}
 		});
-		
+
 	}
-	
+
 	public void refreshPlaylists() {
 		final Account[] accountArray = new Account[accountProperty.size()];
 		accountProperty.toArray(accountArray);
 		ThreadUtil.doInBackground(new Runnable() {
-			
-			@Override public void run() {
+
+			@Override
+			public void run() {
 				playlistService.synchronizePlaylists(Arrays.asList(accountArray));
 			}
 		});

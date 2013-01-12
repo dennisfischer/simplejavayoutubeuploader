@@ -26,16 +26,16 @@ import org.chaosfisch.util.io.RequestUtil;
 import com.google.gson.Gson;
 
 public class ThumbnailServiceImpl {
-	
+
 	public Integer upload(final String content, final String thumbnail, final String videoid) throws ThumbnailException {
-		
+
 		final File thumbnailFile = new File(thumbnail);
 		if (!thumbnailFile.exists()) {
 			throw new ThumbnailException("Datei nicht vorhanden f�r Thumbnail " + thumbnailFile.getName());
 		}
-		
+
 		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");
-		
+
 		try {
 			thumbnailPost.setEntity(buildEntity(content, videoid, thumbnailFile));
 			final HttpResponse response = RequestUtil.execute(thumbnailPost);
@@ -43,30 +43,29 @@ public class ThumbnailServiceImpl {
 		} catch (ParseException | IOException | NumberFormatException e) {
 			throw new ThumbnailException("Thumbnail couldn't be uploaded.", e);
 		}
-		
+
 	}
-	
+
 	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile)
 			throws UnsupportedEncodingException {
 		final MultipartEntity reqEntity = new MultipartEntity();
-		
+
 		reqEntity.addPart("video_id", new StringBody(videoid, Charset.forName("UTF-8")));
 		reqEntity.addPart("is_ajax", new StringBody("1", Charset.forName("UTF-8")));
-		
+
 		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
 		final String sessiontoken = content.substring(content.indexOf(search) + search.length(),
 				content.indexOf("\"", content.indexOf(search) + search.length()));
 		reqEntity.addPart("session_token", new StringBody(sessiontoken, Charset.forName("UTF-8")));
-		
+
 		reqEntity.addPart("imagefile", new FileBody(thumbnailFile));
 		return reqEntity;
 	}
-	
+
 	private Integer parseResponse(final HttpResponse response) throws IOException {
 		final Gson gson = new Gson();
-		final Thumbnail obj = gson.fromJson(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")),
-				Thumbnail.class);
-		
+		final Thumbnail obj = gson.fromJson(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")), Thumbnail.class);
+
 		return obj.version;
 	}
 }

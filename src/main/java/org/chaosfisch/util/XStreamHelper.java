@@ -9,17 +9,48 @@
  ******************************************************************************/
 package org.chaosfisch.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class XStreamHelper {
 	final static XStream	xStream	= new XStream(new DomDriver("UTF-8"));
-	
+
 	public static String parseObjectToFeed(final Object o) {
 		xStream.processAnnotations(o.getClass());
 		return xStream.toXML(o);
 	}
-	
+
+	public static void parseObjectToFile(final Object o, final File file) throws FileNotFoundException {
+		FileOutputStream fio = null;
+		try {
+			fio = new FileOutputStream(file);
+			xStream.processAnnotations(o.getClass());
+			xStream.toXML(o, fio);
+		} finally {
+			if (fio != null) {
+				try {
+					fio.close();
+				} catch (final IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static <T> T parseFileToObject(final File xml, final Class<T> clazz) {
+		xStream.processAnnotations(clazz);
+		final Object o = xStream.fromXML(xml);
+		if (clazz.isInstance(o)) {
+			return clazz.cast(o);
+		}
+		throw new IllegalArgumentException("atomData of invalid clazz object!");
+	}
+
 	public static <T> T parseFeed(final String atomData, final Class<T> clazz) {
 		xStream.processAnnotations(clazz);
 		final Object o = xStream.fromXML(atomData);

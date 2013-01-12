@@ -46,13 +46,13 @@ import com.google.inject.Injector;
 import com.sun.javafx.PlatformUtil;
 
 public class SimpleJavaYoutubeUploader extends Application {
-	
+
 	/**
 	 * The application DI injector
 	 */
 	final Injector		injector	= Guice.createInjector(new GuiceBindings());
 	final static Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
-	
+
 	public static void main(final String[] args) {
 		logger.info("Application started!");
 		initLogger();
@@ -61,20 +61,20 @@ public class SimpleJavaYoutubeUploader extends Application {
 		initSavedir();
 		launch(args);
 	}
-	
+
 	private static void initUpdater() {
 		new ApplicationUpdater();
 	}
-	
+
 	private static void initSavedir() {
 		String userHome = System.getProperty("user.home");
 		if (PlatformUtil.isMac()) {
 			userHome += "/Library/Application Support/";
 		}
 		System.setProperty("user.home", userHome);
-		
+
 	}
-	
+
 	private static void initLocale() {
 		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
 		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
@@ -82,44 +82,45 @@ public class SimpleJavaYoutubeUploader extends Application {
 			Locale.setDefault(Locale.GERMAN);
 		}
 	}
-	
+
 	private static void initLogger() {
 		System.setOut(new PrintStream(System.out) {
-			@Override public void print(final String s) {
+			@Override
+			public void print(final String s) {
 				logger.info(s);
 			}
 		});
 		System.setErr(new PrintStream(System.err) {
-			@Override public void print(final String s) {
+			@Override
+			public void print(final String s) {
 				if (!s.startsWith("WARNING: com.sun.javafx.css.StyleHelper calculateValue")) {
 					logger.error(s);
 				}
 			}
 		});
 	}
-	
+
 	final private Uploader	uploader	= injector.getInstance(Uploader.class);
-	
+
 	protected void initApplication(final Stage primaryStage) throws IOException {
 		initDatabase();
 		updateDatabase();
-		
+
 		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource(
 				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		fxLoader.load();
 		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
-		scene.getStylesheets().add(
-				getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
 		primaryStage.setTitle(I18nHelper.message("application.title"));
-		primaryStage.getIcons().add(
-				new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
 		primaryStage.setScene(scene);
 		primaryStage.setMinHeight(600);
 		primaryStage.setMinWidth(1000);
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
-			@Override public void handle(final WindowEvent event) {
+
+			@Override
+			public void handle(final WindowEvent event) {
 				final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
 				final MonologFXButton yesButton = new MonologFXButton();
 				yesButton.setType(MonologFXButton.Type.YES);
@@ -138,7 +139,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 		});
 		primaryStage.show();
 	}
-	
+
 	private void updateDatabase() {
 		boolean updated = false;
 		if (!Setting.getMetaModel().getColumnMetadata().containsKey("key")) {
@@ -151,23 +152,22 @@ public class SimpleJavaYoutubeUploader extends Application {
 		}
 		if (!Template.getMetaModel().getColumnMetadata().containsKey("thumbnail")) {
 			Base.openTransaction();
-			Base.exec("ALTER TABLE PUBLIC.TEMPLATES ADD thumbnail VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD thumbnail VARCHAR(255)");
 			Base.commitTransaction();
 			updated = true;
 		}
 		if (!Upload.getMetaModel().getColumnMetadata().containsKey("thumbnail")) {
 			Base.openTransaction();
-			Base.exec("ALTER TABLE PUBLIC.UPLOADS ADD thumbnail VARCHAR(255)");
+			Base.exec("ALTER TABLE UPLOADS ADD thumbnail VARCHAR(255)");
 			Base.commitTransaction();
 			updated = true;
 		}
-		
+
 		if (updated) {
 			databaseUpdatedDialog();
-			
 		}
 	}
-	
+
 	private void databaseUpdatedDialog() {
 		final MonologFX dialog = new MonologFX(MonologFX.Type.INFO);
 		dialog.setTitleText("Anwendung neustarten!");
@@ -179,7 +179,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 		dialog.showDialog();
 		System.exit(0);
 	}
-	
+
 	private void initDatabase() {
 		Base.open(injector.getInstance(DataSource.class));
 		try {
@@ -198,8 +198,9 @@ public class SimpleJavaYoutubeUploader extends Application {
 		Upload.updateAll("inprogress = ?", false);
 		Base.commitTransaction();
 	}
-	
-	@Override public void start(final Stage primaryStage) {
+
+	@Override
+	public void start(final Stage primaryStage) {
 		try {
 			Platform.setImplicitExit(true);
 			initApplication(primaryStage);
@@ -208,8 +209,9 @@ public class SimpleJavaYoutubeUploader extends Application {
 			logger.error("Couldn't start the application", e);
 		}
 	}
-	
-	@Override public void stop() throws Exception {
+
+	@Override
+	public void stop() throws Exception {
 		super.stop();
 		LogfileCommitter.commit();
 		uploader.stopStarttimeChecker();

@@ -10,18 +10,18 @@
 package org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl;
 
 public class ThumbnailException extends Exception {
-	
+
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -1282431796606031761L;
-	
+
 	public ThumbnailException(final String msg) {
 		super(msg);
 	}
-	
+
 	public ThumbnailException(final String msg, final Exception e) {
 		super(msg, e);
 	}
-	
+
 }

@@ -51,28 +51,26 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Inject private RequestSigner	requestSigner;
 	private final Logger			logger								= LoggerFactory.getLogger(getClass());
 	@Inject private DataSource		datasource;
-	
-	@Override public void addLatestVideoToPlaylist(final Playlist playlist, final String videoId) {
+
+	@Override
+	public void addLatestVideoToPlaylist(final Playlist playlist, final String videoId) {
 		final VideoEntry submitFeed = new VideoEntry();
 		submitFeed.id = videoId;
 		submitFeed.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s",
-				XStreamHelper.parseObjectToFeed(submitFeed));
-		
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
+
 		HttpResponse response = null;
 		try {
-			
-			final HttpUriRequest request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED,
-					playlist.getString("pkey")), Method.POST)
-					.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-					.buildHttpUriRequest();
-			
+
+			final HttpUriRequest request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getString("pkey")),
+					Method.POST).entity(new StringEntity(atomData, Charset.forName("UTF-8")))
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
+
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestUtil.execute(request);
-			
-			logger.debug("Video added to playlist! Videoid: {}, Playlist: {}, Code: {}", videoId,
-					playlist.getString("title"), response.getStatusLine().getStatusCode());
+
+			logger.debug("Video added to playlist! Videoid: {}, Playlist: {}, Code: {}", videoId, playlist.getString("title"), response
+					.getStatusLine().getStatusCode());
 		} catch (final IOException e) {
 			logger.warn("Failed adding video to playlist.", e);
 		} catch (final AuthenticationException e) {
@@ -83,10 +81,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 			}
 		}
 	}
-	
-	@Override public void addYoutubePlaylist(final Playlist playlist) {
+
+	@Override
+	public void addYoutubePlaylist(final Playlist playlist) {
 		logger.debug("Adding playlist {} to youtube.", playlist.getString("title"));
-		
+
 		final VideoEntry entry = new VideoEntry();
 		entry.title = playlist.getString("title");
 		entry.playlistSummary = playlist.getString("summary");
@@ -94,23 +93,21 @@ public class PlaylistServiceImpl implements PlaylistService {
 			entry.ytPrivate = new Object();
 		}
 		entry.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s",
-				XStreamHelper.parseObjectToFeed(entry));
-		
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(entry));
+
 		logger.debug("Playlist atomdata: {}", atomData);
-		
+
 		HttpResponse response = null;
 		try {
 			final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED, Method.POST)
 					.entity(new StringEntity(atomData, Charset.forName("UTF-8")))
-					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-					.buildHttpUriRequest();
-			
+					.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;")).buildHttpUriRequest();
+
 			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(playlist.parent(Account.class)));
 			response = RequestUtil.execute(request);
 			final int statuscode = response.getStatusLine().getStatusCode();
-			
-			if ((statuscode == 200) || (statuscode == 201)) {
+
+			if (statuscode == 200 || statuscode == 201) {
 				logger.info("Added playlist to youtube");
 			} else {
 				logger.info("Something went wrong: ", response.getStatusLine());
@@ -125,18 +122,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 			}
 		}
 	}
-	
-	@Override public void synchronizePlaylists(final List<Account> accounts) {
+
+	@Override
+	public void synchronizePlaylists(final List<Account> accounts) {
 		if (!Base.hasConnection()) {
 			Base.open(datasource);
 		}
 		logger.info("Synchronizing playlists.");
-		
+
 		for (final Account account : accounts) {
 			HttpResponse response = null;
 			try {
-				final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS, Method.GET)
-						.buildHttpUriRequest();
+				final HttpUriRequest request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS, Method.GET).buildHttpUriRequest();
 				requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
 				response = RequestUtil.execute(request);
 				if (response.getStatusLine().getStatusCode() == 200) {
@@ -144,7 +141,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 					final String content = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
 					System.out.println(content);
 					final Feed feed = XStreamHelper.parseFeed(content, Feed.class);
-					
+
 					if (feed.videoEntries == null) {
 						logger.info("No playlists found.");
 						continue;
@@ -158,34 +155,31 @@ public class PlaylistServiceImpl implements PlaylistService {
 							playlist.setString("summary", entry.playlistSummary);
 							playlist.setInteger("account_id", account.getLongId());
 							String thumbnail = null;
-							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null)
-									&& (entry.mediaGroup.thumbnails.size() > 2)) {
+							if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
 								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
-							
+
 							playlist.set("thumbnail", thumbnail);
 							playlist.save();
 						} else {
 							String thumbnail = null;
-							if ((entry.mediaGroup != null) && (entry.mediaGroup.thumbnails != null)
-									&& (entry.mediaGroup.thumbnails.size() > 2)) {
+							if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
 								thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 							}
-							
-							final Playlist pList = Playlist.create("title", entry.title, "pkey", entry.playlistId,
-									"url", entry.title, "number", entry.playlistCountHint, "summary",
-									entry.playlistSummary, "thumbnail", thumbnail);
+
+							final Playlist pList = Playlist.create("title", entry.title, "pkey", entry.playlistId, "url", entry.title,
+									"number", entry.playlistCountHint, "summary", entry.playlistSummary, "thumbnail", thumbnail);
 							pList.setParent(account);
 							pList.save();
 						}
 					}
-					
+
 					final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					final Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(System.currentTimeMillis());
 					cal.add(Calendar.MINUTE, -5);
-					for (final Model model : Playlist.find("updated_at < ? AND account_id = ?",
-							dateFormat.format(cal.getTime()), account.getLongId())) {
+					for (final Model model : Playlist.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()),
+							account.getLongId())) {
 						model.delete();
 					}
 				} else {
@@ -193,7 +187,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 				}
 			} catch (final IOException e) {
 				logger.warn("Playlist synchronize failed. Statusline --> {}", response.getStatusLine().toString());
-				
+
 			} catch (final AuthenticationException e) {
 				logger.warn("Authentication error", e);
 			} finally {

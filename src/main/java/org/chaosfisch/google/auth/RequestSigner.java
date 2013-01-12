@@ -15,10 +15,10 @@ import org.apache.http.HttpRequest;
 
 public interface RequestSigner {
 	void sign(HttpRequest request);
-	
+
 	void sign(HttpURLConnection request);
-	
+
 	void signWithAuthorization(HttpRequest request, String authHeader);
-	
+
 	void signWithAuthorization(HttpURLConnection request, String authHeader);
 }

@@ -10,13 +10,13 @@
 package org.chaosfisch.youtubeuploader.services.youtube.uploader;
 
 public class MetadataException extends Exception {
-	
+
 	private static final long	serialVersionUID	= 1453709249687249732L;
-	
+
 	public MetadataException(final String message) {
 		super(message);
 	}
-	
+
 	public MetadataException(final String message, final Throwable cause) {
 		super(message, cause);
 	}

@@ -16,10 +16,10 @@ import org.chaosfisch.youtubeuploader.models.Playlist;
 
 public interface PlaylistService {
 	String	PLAYLISTS_SYNCHRONIZED	= "playlistsSynchronized";
-	
+
 	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
-	
+
 	void addYoutubePlaylist(Playlist playlist);
-	
+
 	void synchronizePlaylists(List<Account> accounts);
 }

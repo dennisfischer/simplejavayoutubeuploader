@@ -27,7 +27,7 @@ public class ThrottledOutputStream extends FilterOutputStream {
 	private long			bytes;
 	private final long		start;
 	private final Throttle	throttle;
-	
+
 	// / Constructor.
 	public ThrottledOutputStream(final OutputStream out, final Throttle throttle) {
 		super(out);
@@ -35,37 +35,39 @@ public class ThrottledOutputStream extends FilterOutputStream {
 		bytes = 0;
 		start = System.currentTimeMillis();
 	}
-	
+
 	private final byte[]	oneByte	= new byte[1];
-	
+
 	// / Writes a byte. This method will block until the byte is actually
 	// written.
 	// @param b the byte to be written
 	// @exception IOException if an I/O error has occurred
-	@Override public void write(final int b) throws IOException {
+	@Override
+	public void write(final int b) throws IOException {
 		oneByte[0] = (byte) b;
 		write(oneByte, 0, 1);
 	}
-	
+
 	// / Writes a subarray of bytes.
 	// @param b the data to be written
 	// @param off the start offset in the data
 	// @param len the number of bytes that are written
 	// @exception IOException if an I/O error has occurred
-	@Override public void write(final byte[] b, final int off, final int len) throws IOException {
+	@Override
+	public void write(final byte[] b, final int off, final int len) throws IOException {
 		// Check the throttle.
 		bytes += len;
 		final long elapsed = Math.max(System.currentTimeMillis() - start, 1);
-		
-		final long bps = (bytes * 1000L) / elapsed;
-		if ((throttle.maxBps.get() != 0) && (bps > throttle.maxBps.multiply(1000).get())) {
+
+		final long bps = bytes * 1000L / elapsed;
+		if (throttle.maxBps.get() != 0 && bps > throttle.maxBps.multiply(1000).get()) {
 			// Oops, sending too fast.
-			final long wakeElapsed = (bytes * 1000L) / throttle.maxBps.multiply(1000).get();
+			final long wakeElapsed = bytes * 1000L / throttle.maxBps.multiply(1000).get();
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
 			} catch (final InterruptedException ignored) {}
 		}
-		
+
 		// Write the bytes.
 		out.write(b, off, len);
 	}

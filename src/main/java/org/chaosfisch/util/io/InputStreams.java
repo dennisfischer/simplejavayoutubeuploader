@@ -25,10 +25,10 @@ public class InputStreams {
 	public static String toString(final InputStream inputstream) {
 		String line = "";
 		final StringBuilder total = new StringBuilder();
-		
+
 		// Wrap a BufferedReader around the InputStream
 		final BufferedReader rd = new BufferedReader(new InputStreamReader(inputstream));
-		
+
 		// Read response until the end
 		try {
 			while ((line = rd.readLine()) != null) {
@@ -37,9 +37,9 @@ public class InputStreams {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Return full string
 		return total.toString();
 	}
-	
+
 }

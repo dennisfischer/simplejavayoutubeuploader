@@ -31,46 +31,46 @@ public class Request {
 	public enum Method {
 		GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT
 	}
-	
+
 	private HttpUriRequest		httpRequest;
 	private HttpURLConnection	urlConnection;
-	
+
 	public static class Builder {
 		private final String		url;
 		private HttpParams			params;
 		private final Method		method;
 		private Map<String, String>	headers;
 		private HttpEntity			entity;
-		
+
 		public Builder(final String url, final Method method) {
 			this.url = url;
 			this.method = method;
 		}
-		
+
 		public Builder params(final HttpParams params) {
 			this.params = params;
 			return this;
 		}
-		
+
 		public Builder headers(final Map<String, String> headers) {
 			this.headers = headers;
 			return this;
 		}
-		
+
 		public Builder entity(final HttpEntity entity) {
 			this.entity = entity;
 			return this;
 		}
-		
+
 		public HttpUriRequest buildHttpUriRequest() {
 			return new Request(this).getHttpUriRequest();
 		}
-		
+
 		public HttpURLConnection buildHttpUrlConnection() throws IOException {
 			return new Request(this, false).getUrlConnection();
 		}
 	}
-	
+
 	private Request(final Builder builder) {
 		switch (builder.method) {
 			case DELETE:
@@ -98,7 +98,7 @@ public class Request {
 				httpRequest = new HttpGet(builder.url);
 			break;
 		}
-		
+
 		if (builder.headers != null) {
 			for (final Entry<String, String> entry : builder.headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
@@ -106,21 +106,21 @@ public class Request {
 		}
 		httpRequest.setParams(builder.params != null ? builder.params : httpRequest.getParams());
 	}
-	
+
 	public Request(final Builder builder, final boolean b) throws IOException {
 		final URL url = new URL(builder.url);
 		urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod(builder.method.name());
-		
+
 		for (final Entry<String, String> entry : builder.headers.entrySet()) {
 			urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
 		}
 	}
-	
+
 	private HttpUriRequest getHttpUriRequest() {
 		return httpRequest;
 	}
-	
+
 	private HttpURLConnection getUrlConnection() {
 		return urlConnection;
 	}

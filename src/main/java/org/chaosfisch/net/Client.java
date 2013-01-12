@@ -16,12 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Client {
-	
+
 	private Connection		connection;
 	private final Logger	logger	= LoggerFactory.getLogger(getClass());
-	
+
 	public Client(final String ip, final int port, final Protocol protocol) {
-		
+
 		try {
 			final Socket socket = new Socket(ip, port);
 			connection = new Connection(socket, protocol);
@@ -29,13 +29,13 @@ public class Client {
 			logger.warn("Connection couldn't be created", e);
 		}
 	}
-	
+
 	public void close() {
 		if (connection != null) {
 			connection.close();
 		}
 	}
-	
+
 	public void sendMsg(final String event, final Object body) {
 		connection.sendMsg(event, body);
 	}

@@ -13,9 +13,10 @@ public class PermissionStringConverter {
 	public static final String	ALLOWED		= "allowed";
 	public static final String	DENIED		= "denied";
 	public static final String	MODERATED	= "moderated";
-	
+
 	/**
-	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed False:Denied
+	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed
+	 * False:Denied
 	 * 
 	 * @param value
 	 *            the param that should be converted
@@ -24,9 +25,10 @@ public class PermissionStringConverter {
 	public static String convertBoolean(final boolean value) {
 		return value ? ALLOWED : DENIED;
 	}
-	
+
 	/**
-	 * Converts a integer to a proper gdata.youtube xml element 1:Allowed 2:Moderated 3:Denied
+	 * Converts a integer to a proper gdata.youtube xml element 1:Allowed
+	 * 2:Moderated 3:Denied
 	 * 
 	 * @param value
 	 *            the param that should be converted

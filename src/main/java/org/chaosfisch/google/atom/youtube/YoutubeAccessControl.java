@@ -21,15 +21,15 @@ public class YoutubeAccessControl {
 	public @XStreamAsAttribute String	action;
 	public @XStreamAsAttribute String	permission;
 	public @XStreamAsAttribute String	type;
-	
+
 	public YoutubeAccessControl() {
-		
+
 	}
-	
+
 	public YoutubeAccessControl(final String action, final String permission) {
 		this(action, permission, null, null);
 	}
-	
+
 	public YoutubeAccessControl(final String action, final String permission, final String type, final String access) {
 		this.action = action;
 		this.permission = permission;

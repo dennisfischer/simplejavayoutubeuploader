@@ -31,34 +31,34 @@ import com.google.common.collect.Ordering;
 
 public class CategoryServiceImpl implements CategoryService {
 	private List<AtomCategory>	categories	= new ArrayList<AtomCategory>(20);
-	
+
 	Logger						logger		= LoggerFactory.getLogger(CategoryServiceImpl.class);
-	
-	@Override public List<AtomCategory> load() {
+
+	@Override
+	public List<AtomCategory> load() {
 		try {
-			final HttpResponse httpResponse = RequestUtil.execute(new Request.Builder(CATEGORY_URL, Method.GET)
-					.buildHttpUriRequest());
+			final HttpResponse httpResponse = RequestUtil.execute(new Request.Builder(CATEGORY_URL, Method.GET).buildHttpUriRequest());
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
-				final AppCategories appCategories = XStreamHelper.parseFeed(
-						EntityUtils.toString(httpResponse.getEntity()), AppCategories.class);
-				
+				final AppCategories appCategories = XStreamHelper.parseFeed(EntityUtils.toString(httpResponse.getEntity()),
+						AppCategories.class);
+
 				final Iterator<AtomCategory> iterator = appCategories.categories.iterator();
 				while (iterator.hasNext()) {
 					final AtomCategory atomCategory = iterator.next();
-					
-					if ((atomCategory.ytDeprecated != null) || (atomCategory.ytAssignable == null)) {
+
+					if (atomCategory.ytDeprecated != null || atomCategory.ytAssignable == null) {
 						iterator.remove();
 						continue;
 					}
 				}
-				
+
 				categories = appCategories.categories;
-				
+
 				Collections.sort(categories, Ordering.usingToString());
 			} else {
 				logger.warn("Couldn't fetch categories: {}", httpResponse.getStatusLine());
 			}
-			
+
 		} catch (final IOException e) {
 			logger.warn("I/O Error", e);
 		}
