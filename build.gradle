@@ -21,9 +21,7 @@ buildscript {
 	}
 	
 	buildDir = 'target'
-	version = '3.0.0.1'
-	
-
+	version = '3.0.0.0'
 }
 
 allprojects
@@ -133,6 +131,7 @@ task copyTask(type: Copy) {
 }
 
 task distribute(type: Zip){
+    baseName 'simple-java-youtube-uploader'
 	from(jar)
 	from("$buildDir/launch4j")
 	into("lib") {
