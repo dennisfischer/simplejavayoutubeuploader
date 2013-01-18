@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2013 Dennis Fischer.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0+
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/gpl.html
+  
+  Contributors: Dennis Fischer
+-->
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" target="System.err">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="HTML" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="ch.qos.logback.classic.html.HTMLLayout">
+				<pattern>%d{HH:mm:ss.SSS}%thread%level%logger{36}%msg</pattern>
+			</layout>
+		</encoder>
+		<file>${user.home}/SimpleJavaYoutubeUploader/applog.html</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${user.home}/SimpleJavaYoutubeUploader/applog.html.%i</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>1024KB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	<logger name="org.javalite.activejdbc" level="INFO" />
+	<root level="DEBUG">
+		<appender-ref ref="HTML" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
