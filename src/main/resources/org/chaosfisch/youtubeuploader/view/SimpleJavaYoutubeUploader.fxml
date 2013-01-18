@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   Copyright (c) 2013 Dennis Fischer.
   All rights reserved. This program and the accompanying materials
@@ -39,11 +40,6 @@
               <items>
                 <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate" text="%menu.addTemplate" fx:id="menuAddTemplate" />
                 <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
-              </items>
-            </Menu>
-            <Menu disable="true" mnemonicParsing="false" text="%menu.help">
-              <items>
-                <MenuItem id="menuLogfile" mnemonicParsing="false" onAction="#sendLogfiles" text="%menu.logfile" fx:id="menuLogfile" />
               </items>
             </Menu>
           </menus>

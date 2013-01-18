@@ -71,10 +71,9 @@ public class SimpleJavaYoutubeUploader extends Application {
 	}
 
 	private void initLocale() {
-		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
+		final Locale[] availableLocales = { Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH };
 		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
-			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
-			Locale.setDefault(Locale.GERMAN);
+			Locale.setDefault(Locale.ENGLISH);
 		}
 	}
 
