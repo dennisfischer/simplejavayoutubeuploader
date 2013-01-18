@@ -191,7 +191,7 @@ public class MetadataServiceImpl implements MetadataService {
 	private void changeMetadata(final String content) throws IOException, UnsupportedEncodingException, ClientProtocolException {
 		Integer thumbnailId = null;
 		try {
-			if (upload.getString("thumbnail") != null) {
+			if (upload.getString("thumbnail") != null && !upload.getString("thumbnail").isEmpty()) {
 				final ThumbnailServiceImpl thumbnailService = new ThumbnailServiceImpl();
 				thumbnailId = thumbnailService.upload(content, upload.getString("thumbnail"), upload.getString("videoid"));
 			}

@@ -307,11 +307,10 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void browserAction() {
-		// if ((!upload.getBoolean("monetize")) && (!upload.getBoolean("claim"))
-		// && (upload.get("release") == null)
-		// && !upload.getBoolean("thumbnail")) {
-		// return;
-		// }
+		if (upload.get("release") == null && (upload.getString("thumbnail") == null || upload.getString("thumbnail").isEmpty())) {
+			return;
+		}
+		// !upload.getBoolean("monetize") && !upload.getBoolean("claim") &&
 
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
