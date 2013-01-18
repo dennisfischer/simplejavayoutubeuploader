@@ -50,23 +50,18 @@ public class SimpleJavaYoutubeUploader extends Application {
 	/**
 	 * The application DI injector
 	 */
-	final Injector		injector	= Guice.createInjector(new GuiceBindings());
-	final static Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	final Injector	injector	= Guice.createInjector(new GuiceBindings());
+	final Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	public static void main(final String[] args) {
-		logger.info("Application started!");
-		initLogger();
-		initUpdater();
-		initLocale();
-		initSavedir();
 		launch(args);
 	}
 
-	private static void initUpdater() {
+	private void initUpdater() {
 		new ApplicationUpdater();
 	}
 
-	private static void initSavedir() {
+	private void initSavedir() {
 		String userHome = System.getProperty("user.home");
 		if (PlatformUtil.isMac()) {
 			userHome += "/Library/Application Support/";
@@ -75,7 +70,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 
 	}
 
-	private static void initLocale() {
+	private void initLocale() {
 		final Locale[] availableLocales = { Locale.GERMAN, Locale.ENGLISH };
 		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
 			// TODO CHANGE THIS TO ENGLISH AS SOON AS TRANSLATED!
@@ -83,7 +78,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 		}
 	}
 
-	private static void initLogger() {
+	private void initLogger() {
 		System.setOut(new PrintStream(System.out) {
 			@Override
 			public void print(final String s) {
@@ -93,9 +88,7 @@ public class SimpleJavaYoutubeUploader extends Application {
 		System.setErr(new PrintStream(System.err) {
 			@Override
 			public void print(final String s) {
-				if (!s.startsWith("WARNING: com.sun.javafx.css.StyleHelper calculateValue")) {
-					logger.error(s);
-				}
+				logger.error(s);
 			}
 		});
 	}
@@ -103,6 +96,10 @@ public class SimpleJavaYoutubeUploader extends Application {
 	final private Uploader	uploader	= injector.getInstance(Uploader.class);
 
 	protected void initApplication(final Stage primaryStage) throws IOException {
+		initLogger();
+		initLocale();
+		initSavedir();
+		initUpdater();
 		initDatabase();
 		updateDatabase();
 

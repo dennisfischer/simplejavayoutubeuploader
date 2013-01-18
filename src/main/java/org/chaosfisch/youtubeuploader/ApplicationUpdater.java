@@ -20,7 +20,7 @@ public class ApplicationUpdater implements UpdatedApplication {
 
 	public ApplicationUpdater() {
 		try {
-			new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR, ApplicationData.release,
+			new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR, ApplicationData.RELEASE,
 					ApplicationData.VERSION, this).actionDisplay();
 		} catch (final UpdaterException | URISyntaxException ex) {
 			ex.printStackTrace();
@@ -28,7 +28,13 @@ public class ApplicationUpdater implements UpdatedApplication {
 	}
 
 	private String getApplicationDirectory() throws URISyntaxException {
-		return new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
+
+		final File file = new File(ApplicationUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+		if (file.isDirectory()) {
+			return file.getAbsolutePath();
+		} else {
+			return file.getParentFile().getAbsolutePath();
+		}
 	}
 
 	@Override
@@ -38,7 +44,7 @@ public class ApplicationUpdater implements UpdatedApplication {
 
 	@Override
 	public void receiveMessage(final String message) {
-		System.err.println(message);
+		System.out.println(message);
 	}
 
 }
