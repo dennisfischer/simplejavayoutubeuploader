@@ -97,7 +97,7 @@ public class Uploader {
 		});
 	}
 
-	private void sendUpload() {
+	private synchronized void sendUpload() {
 		if (!Base.hasConnection()) {
 			Base.open(injector.getInstance(DataSource.class));
 		}
@@ -118,7 +118,6 @@ public class Uploader {
 					runningUploads++;
 				}
 			}
-
 		}
 	}
 
@@ -202,7 +201,6 @@ public class Uploader {
 	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
 	public void onUploadAdded(final String topic, final Model model) {
 		if (model instanceof Upload) {
-			// TODO NOT RIGHT
 			sendUpload();
 		}
 	}

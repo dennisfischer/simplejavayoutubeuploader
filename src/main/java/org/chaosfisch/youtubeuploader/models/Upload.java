@@ -50,6 +50,11 @@ public class Upload extends Model implements ModelEvents {
 		return Convert.toLong(getAttributes().get("id"));
 	}
 
+	@Override
+	public Object get(final String key) {
+		return getAttributes().get(key);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.javalite.activejdbc.CallbackSupport#beforeSave()

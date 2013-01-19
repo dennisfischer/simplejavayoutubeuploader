@@ -16,12 +16,15 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 buildscript {
+	repositories {
+		mavenCentral()
+	}
 	dependencies { 
-		classpath files("/lib/gradle-izpack-plugin-0.2.1.jar") 
+        classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.1'
 	}
 	
 	buildDir = 'target'
-	version = '3.0.0.0'
+	version = '3.0.0.1'
 }
 
 allprojects

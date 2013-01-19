@@ -20,8 +20,9 @@ public class ApplicationUpdater implements UpdatedApplication {
 
 	public ApplicationUpdater() {
 		try {
-			new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR, ApplicationData.RELEASE,
-					ApplicationData.VERSION, this).actionDisplay();
+			final Updater updater = new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR,
+					ApplicationData.RELEASE, ApplicationData.VERSION, this);
+			updater.actionDisplay();
 		} catch (final UpdaterException | URISyntaxException ex) {
 			ex.printStackTrace();
 		}
