@@ -22,7 +22,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-import org.bushe.swing.event.EventBus;
 import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.AuthenticationException;
@@ -49,8 +48,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private static final String		YOUTUBE_PLAYLIST_ADD_FEED			= "http://gdata.youtube.com/feeds/api/users/default/playlists";
 	@Inject private GoogleAuthUtil	authTokenHelper;
 	@Inject private RequestSigner	requestSigner;
-	private final Logger			logger								= LoggerFactory.getLogger(getClass());
 	@Inject private DataSource		datasource;
+	private final Logger			logger								= LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void addLatestVideoToPlaylist(final Playlist playlist, final String videoId) {
@@ -196,7 +195,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 				}
 			}
 		}
-		EventBus.publish(PLAYLISTS_SYNCHRONIZED, null);
 		logger.info("Playlists synchronized");
 	}
 }

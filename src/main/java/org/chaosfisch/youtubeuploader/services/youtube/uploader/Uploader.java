@@ -20,19 +20,20 @@ import javafx.beans.value.ObservableValue;
 
 import javax.sql.DataSource;
 
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.Computer;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -51,10 +52,10 @@ public class Uploader {
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
 	@Inject private Injector		injector;
 	@Inject private DataSource		datasource;
+	@Inject private EventBus		eventBus;
 
 	public Uploader() {
-		AnnotationProcessor.process(this);
-
+		EventBusUtil.getInstance().register(this);
 		maxUploads.addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -64,8 +65,8 @@ public class Uploader {
 		});
 	}
 
-	public void abort(final Upload queue) {
-		EventBus.publish(Uploader.ABORT, queue);
+	public void abort(final Upload upload) {
+		eventBus.post(new UploadAbortEvent(upload));
 	}
 
 	private boolean hasFreeUploadSpace() {
@@ -190,17 +191,17 @@ public class Uploader {
 		});
 	}
 
-	@EventTopicSubscriber(topic = Uploader.PROGRESS)
-	public void onUploadJobDoneAndFailed(final String topic, final UploadProgress uploadProgress) {
-		if (uploadProgress.done == true || uploadProgress.failed == true) {
-			logger.info("Status: {}", uploadProgress.status);
-			uploadFinished(uploadProgress.getQueue());
+	@Subscribe
+	public void onUploadJobDoneAndFailed(final UploadProgressEvent uploadProgressEvent) {
+		if (uploadProgressEvent.done == true || uploadProgressEvent.failed == true) {
+			logger.info("Status: {}", uploadProgressEvent.status);
+			uploadFinished(uploadProgressEvent.getQueue());
 		}
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
-	public void onUploadAdded(final String topic, final Model model) {
-		if (model instanceof Upload) {
+	@Subscribe
+	public void onUploadSaved(final ModelPostSavedEvent modelPostSavedEvent) {
+		if (modelPostSavedEvent.getModel() instanceof Upload && !modelPostSavedEvent.getModel().getBoolean("inprogress")) {
 			sendUpload();
 		}
 	}

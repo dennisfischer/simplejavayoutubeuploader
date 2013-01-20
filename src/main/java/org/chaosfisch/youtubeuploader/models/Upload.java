@@ -9,8 +9,12 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.models;
 
-import org.bushe.swing.event.EventBus;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPreRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPreSavedEvent;
 import org.chaosfisch.youtubeuploader.models.validation.ByteLengthValidator;
 import org.chaosfisch.youtubeuploader.models.validation.FileSizeValidator;
 import org.chaosfisch.youtubeuploader.models.validation.TagValidator;
@@ -62,7 +66,7 @@ public class Upload extends Model implements ModelEvents {
 	@Override
 	protected void beforeSave() {
 		super.beforeSave();
-		EventBus.publish(MODEL_PRE_SAVED, this);
+		EventBusUtil.getInstance().post(new ModelPreSavedEvent(this));
 	}
 
 	/*
@@ -73,7 +77,7 @@ public class Upload extends Model implements ModelEvents {
 	protected void afterSave() {
 		super.afterSave();
 		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_SAVED, this);
+		EventBusUtil.getInstance().post(new ModelPostSavedEvent(this));
 	}
 
 	/*
@@ -83,7 +87,7 @@ public class Upload extends Model implements ModelEvents {
 	@Override
 	protected void beforeDelete() {
 		super.beforeDelete();
-		EventBus.publish(MODEL_PRE_REMOVED, this);
+		EventBusUtil.getInstance().post(new ModelPreRemovedEvent(this));
 	}
 
 	/*
@@ -94,6 +98,6 @@ public class Upload extends Model implements ModelEvents {
 	protected void afterDelete() {
 		super.afterDelete();
 		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_REMOVED, this);
+		EventBusUtil.getInstance().post(new ModelPostRemovedEvent(this));
 	}
 }

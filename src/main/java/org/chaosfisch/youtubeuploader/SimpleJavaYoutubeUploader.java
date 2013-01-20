@@ -50,8 +50,8 @@ public class SimpleJavaYoutubeUploader extends Application {
 	/**
 	 * The application DI injector
 	 */
-	final Injector	injector	= Guice.createInjector(new GuiceBindings());
-	final Logger	logger		= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	Injector		injector;
+	final Logger	logger	= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	public static void main(final String[] args) {
 		launch(args);
@@ -92,15 +92,19 @@ public class SimpleJavaYoutubeUploader extends Application {
 		});
 	}
 
-	final private Uploader	uploader	= injector.getInstance(Uploader.class);
+	private Uploader	uploader;
 
 	protected void initApplication(final Stage primaryStage) throws IOException {
+		injector = Guice.createInjector(new GuiceBindings());
+
 		initLogger();
 		initLocale();
 		initSavedir();
 		initUpdater();
 		initDatabase();
 		updateDatabase();
+
+		uploader = injector.getInstance(Uploader.class);
 
 		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource(
 				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
@@ -126,8 +130,8 @@ public class SimpleJavaYoutubeUploader extends Application {
 				noButton.setLabel("No");
 				dialog.addButton(yesButton);
 				dialog.addButton(noButton);
-				dialog.setTitleText("Exit application");
-				dialog.setMessage("Do you really want to exit the application?");
+				dialog.setTitleText(I18nHelper.message("dialog.exitapplication.title"));
+				dialog.setMessage(I18nHelper.message("dialog.exitapplication.message"));
 				if (dialog.showDialog() == MonologFXButton.Type.NO) {
 					event.consume();
 				}
@@ -166,8 +170,8 @@ public class SimpleJavaYoutubeUploader extends Application {
 
 	private void databaseUpdatedDialog() {
 		final MonologFX dialog = new MonologFX(MonologFX.Type.INFO);
-		dialog.setTitleText("Anwendung neustarten!");
-		dialog.setMessage("Die Anwendung muss neu gestartet werden. Die Datenbank wurde aktualisiert!");
+		dialog.setTitleText(I18nHelper.message("dialog.databaseupdated.title"));
+		dialog.setMessage(I18nHelper.message("dialog.databaseupdated.message"));
 		final MonologFXButton okButton = new MonologFXButton();
 		okButton.setType(MonologFXButton.Type.OK);
 		okButton.setLabel("Ok");

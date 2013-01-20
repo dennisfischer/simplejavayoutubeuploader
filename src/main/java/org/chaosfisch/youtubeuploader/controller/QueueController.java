@@ -46,21 +46,23 @@ import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadProgress;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Model;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 public class QueueController implements Initializable {
@@ -125,9 +127,10 @@ public class QueueController implements Initializable {
 																	}
 																});
 
-	@Inject Uploader					uploader;
-	@Inject Throttle					throttle;
-	@Inject UploadViewModel				uploadViewModel;
+	@Inject private Uploader			uploader;
+	@Inject private Throttle			throttle;
+	@Inject private UploadViewModel		uploadViewModel;
+	@Inject private EventBus			eventBus;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -223,7 +226,8 @@ public class QueueController implements Initializable {
 								});
 								progressIndicator.setProgress(100);
 							} else if (queue.getBoolean("failed")) {
-								label.setText("Fehlgeschlagen");
+
+								label.setText(I18nHelper.message("queuetable.status.failed"));
 								progressIndicator.setProgress(0);
 							}
 							hbox.getChildren().addAll(progressIndicator, label);
@@ -259,8 +263,8 @@ public class QueueController implements Initializable {
 										return;
 									}
 									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-									dialog.setTitleText("Upload entfernen");
-									dialog.setMessage("Wirklich diesen Upload l�schen?");
+									dialog.setTitleText(I18nHelper.message("dialog.removeupload.title"));
+									dialog.setMessage(I18nHelper.message("dialog.removeupload.message"));
 									final MonologFXButton yesButton = new MonologFXButton();
 									yesButton.setType(MonologFXButton.Type.YES);
 									yesButton.setLabel("Yes");
@@ -291,7 +295,7 @@ public class QueueController implements Initializable {
 							});
 							btnEdit.setDisable(item.getBoolean("inprogress") || item.getBoolean("archived"));
 
-							final Button btnAbort = new Button("Abbrechen");
+							final Button btnAbort = new Button(I18nHelper.message("button.abort"));
 							btnAbort.setId("abortUpload");
 							btnAbort.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -301,10 +305,10 @@ public class QueueController implements Initializable {
 										return;
 									}
 									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-									dialog.setTitleText("Upload abbrechen");
-									dialog.setMessage("Wirklich diesen Upload abbrechen?");
+									dialog.setTitleText(I18nHelper.message("dialog.abortupload.title"));
+									dialog.setMessage(I18nHelper.message("dialog.abortupload.message"));
 									if (dialog.showDialog() == MonologFXButton.Type.OK) {
-										EventBus.publish(Uploader.ABORT, item);
+										eventBus.post(new UploadAbortEvent(item));
 									}
 								}
 							});
@@ -350,20 +354,21 @@ public class QueueController implements Initializable {
 
 		queueTableview.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
-		AnnotationProcessor.process(this);
+		EventBusUtil.getInstance().register(this);
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
-	public void onAdded(final String topic, final Model model) {
+	@Subscribe
+	public void onModelSaved(final ModelPostSavedEvent modelSavedEvent) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
-				if (model instanceof Upload) {
-					if (!queueTableview.getItems().contains(model)) {
-						queueTableview.getItems().add(model);
+				if (modelSavedEvent.getModel() instanceof Upload) {
+					if (!queueTableview.getItems().contains(modelSavedEvent.getModel())) {
+						queueTableview.getItems().add(modelSavedEvent.getModel());
 					} else {
-						queueTableview.getItems().set(queueTableview.getItems().indexOf(model), model);
+						queueTableview.getItems().set(queueTableview.getItems().indexOf(modelSavedEvent.getModel()),
+								modelSavedEvent.getModel());
 						RefresherUtil.refresh(queueTableview, queueTableview.getItems());
 					}
 				}
@@ -371,8 +376,21 @@ public class QueueController implements Initializable {
 		});
 	}
 
-	@EventTopicSubscriber(topic = Uploader.PROGRESS)
-	public void onProgress(final String topic, final UploadProgress uploadProgress) {
+	@Subscribe
+	public void onModelRemoved(final ModelPostRemovedEvent modelRemovedEvent) {
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				if (modelRemovedEvent.getModel() instanceof Upload) {
+					queueTableview.getItems().remove(modelRemovedEvent.getModel());
+				}
+			}
+		});
+	}
+
+	@Subscribe
+	public void onProgress(final UploadProgressEvent uploadProgress) {
 		Platform.runLater(new Runnable() {
 
 			@Override
@@ -388,21 +406,7 @@ public class QueueController implements Initializable {
 				label.setText(String.format("%d MB/%d MB %dkbps", (int) (uploadProgress.getTotalBytesUploaded() / 1048576),
 						(int) (uploadProgress.getFileSize() / 1048576),
 						(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
-				System.out.println((int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime()));
-
-			}
-		});
-	}
-
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_PRE_REMOVED)
-	public void onRemoved(final String topic, final Model model) {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				if (model instanceof Upload) {
-					queueTableview.getItems().remove(model);
-				}
+				columnProgress.setMinWidth(label.getText().length());
 			}
 		});
 	}
@@ -410,8 +414,8 @@ public class QueueController implements Initializable {
 	// Handler for Button[fx:id="startQueue"] onAction
 	public void startQueue(final ActionEvent event) {
 		final MonologFX dialog = new MonologFX(MonologFX.Type.ACCEPT);
-		dialog.setTitleText(I18nHelper.message("youtube.confirmdialog.title"));
-		dialog.setMessage(I18nHelper.message("upload.confirmdialog.message"));
+		dialog.setTitleText(I18nHelper.message("dialog.youtubetos.title"));
+		dialog.setMessage(I18nHelper.message("dialog.youtubetos.message"));
 		final MonologFXButton yesButton = new MonologFXButton();
 		yesButton.setType(MonologFXButton.Type.YES);
 		yesButton.setLabel("Yes");

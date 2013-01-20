@@ -24,11 +24,9 @@ import javafx.concurrent.Task;
 
 import javax.sql.DataSource;
 
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.google.auth.AuthenticationException;
 import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.GoogleAuthUtil;
 import org.chaosfisch.util.TagParser;
@@ -46,11 +44,15 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
+import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -88,11 +90,12 @@ public class UploadWorker extends Task<Void> {
 	@Inject private Throttle				throttle;
 	@Inject private ResumeableManager		resumeableManager;
 	@Inject private ExtendedPlaceholders	extendedPlacerholders;
+	@Inject private EventBus				eventBus;
 
-	private UploadProgress					uploadProgress;
+	private UploadProgressEvent				uploadProgress;
 
 	public UploadWorker() {
-		AnnotationProcessor.process(this);
+		EventBusUtil.getInstance().register(this);
 	}
 
 	@Override
@@ -183,6 +186,7 @@ public class UploadWorker extends Task<Void> {
 		}
 
 		upload.setBoolean("inprogress", false);
+		// TODO TRANSLATE FAILED STATUS
 		switch (currentStatus) {
 			case DONE:
 				upload.setBoolean("archived", true);
@@ -205,7 +209,7 @@ public class UploadWorker extends Task<Void> {
 				setFailedStatus("Unknown-Error");
 			break;
 		}
-		EventBus.publish(Uploader.PROGRESS, uploadProgress);
+		eventBus.post(uploadProgress);
 		Base.close();
 		cancel();
 	}
@@ -229,7 +233,7 @@ public class UploadWorker extends Task<Void> {
 			if (diffTime > 1000 || totalRead == endByte - startByte + 1) {
 				uploadProgress.setBytes(totalBytesUploaded);
 				uploadProgress.setTime(diffTime);
-				EventBus.publish(Uploader.PROGRESS, uploadProgress);
+				eventBus.post(uploadProgress);
 			}
 		}
 	}
@@ -283,9 +287,9 @@ public class UploadWorker extends Task<Void> {
 
 	}
 
-	@EventTopicSubscriber(topic = Uploader.ABORT)
-	public void onAbortUpload(final String topic, final Upload abort) {
-		if (abort.equals(upload)) {
+	@Subscribe
+	public void onAbortUpload(final UploadAbortEvent uploadAbortEvent) {
+		if (uploadAbortEvent.getUpload().equals(upload)) {
 			currentStatus = STATUS.ABORTED;
 		}
 	}
@@ -403,7 +407,7 @@ public class UploadWorker extends Task<Void> {
 		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
 
 		if (uploadProgress == null) {
-			uploadProgress = new UploadProgress(upload, fileSize);
+			uploadProgress = new UploadProgressEvent(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 

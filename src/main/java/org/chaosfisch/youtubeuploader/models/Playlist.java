@@ -9,7 +9,11 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.models;
 
-import org.bushe.swing.event.EventBus;
+import org.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPreRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPreSavedEvent;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
@@ -55,7 +59,7 @@ public class Playlist extends Model implements ModelEvents {
 	@Override
 	protected void beforeSave() {
 		super.beforeSave();
-		EventBus.publish(MODEL_PRE_SAVED, this);
+		EventBusUtil.getInstance().post(new ModelPreSavedEvent(this));
 	}
 
 	/*
@@ -66,7 +70,7 @@ public class Playlist extends Model implements ModelEvents {
 	protected void afterSave() {
 		super.afterSave();
 		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_SAVED, this);
+		EventBusUtil.getInstance().post(new ModelPostSavedEvent(this));
 	}
 
 	/*
@@ -76,7 +80,7 @@ public class Playlist extends Model implements ModelEvents {
 	@Override
 	protected void beforeDelete() {
 		super.beforeDelete();
-		EventBus.publish(MODEL_PRE_REMOVED, this);
+		EventBusUtil.getInstance().post(new ModelPreRemovedEvent(this));
 	}
 
 	/*
@@ -87,6 +91,6 @@ public class Playlist extends Model implements ModelEvents {
 	protected void afterDelete() {
 		super.afterDelete();
 		Base.commitTransaction();
-		EventBus.publish(MODEL_POST_REMOVED, this);
+		EventBusUtil.getInstance().post(new ModelPostRemovedEvent(this));
 	}
 }

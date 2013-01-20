@@ -29,22 +29,23 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.util.converter.DefaultStringConverter;
 
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.google.atom.AtomCategory;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.ViewController;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.ModelEvents;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 import org.chaosfisch.youtubeuploader.models.Template;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.models.UploadBuilder;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Model;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 public class UploadViewModel {
@@ -110,7 +111,7 @@ public class UploadViewModel {
 	@Inject private PlaylistService									playlistService;
 
 	public UploadViewModel() {
-		AnnotationProcessor.process(this);
+		EventBusUtil.getInstance().register(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -389,62 +390,66 @@ public class UploadViewModel {
 		}
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
-	public void onAdded(final String topic, final Model model) {
+	@Subscribe
+	public void onModelAdded(final ModelPostSavedEvent modelPostSavedEvent) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
-				if (model instanceof Account && model.get("type").equals(Account.Type.YOUTUBE.name())) {
-					if (accountProperty.contains(model)) {
-						accountProperty.set(accountProperty.indexOf(model), model);
+				if (modelPostSavedEvent.getModel() instanceof Account
+						&& modelPostSavedEvent.getModel().get("type").equals(Account.Type.YOUTUBE.name())) {
+					if (accountProperty.contains(modelPostSavedEvent.getModel())) {
+						accountProperty.set(accountProperty.indexOf(modelPostSavedEvent.getModel()), modelPostSavedEvent.getModel());
 					} else {
-						accountProperty.add(model);
+						accountProperty.add(modelPostSavedEvent.getModel());
 						if (selectedAccountProperty.get().getSelectedItem() == null && accountProperty.size() > 0) {
 							selectedAccountProperty.get().select(accountProperty.get(0));
 						}
 					}
-				} else if (model instanceof Template) {
-					if (templateProperty.contains(model)) {
-						templateProperty.set(templateProperty.indexOf(model), model);
-						selectedTemplateProperty.get().select(model);
+				} else if (modelPostSavedEvent.getModel() instanceof Template) {
+					if (templateProperty.contains(modelPostSavedEvent.getModel())) {
+						templateProperty.set(templateProperty.indexOf(modelPostSavedEvent.getModel()), modelPostSavedEvent.getModel());
+						selectedTemplateProperty.get().select(modelPostSavedEvent.getModel());
 					} else {
-						templateProperty.add(model);
+						templateProperty.add(modelPostSavedEvent.getModel());
 						if (selectedTemplateProperty.get().getSelectedItem() == null && templateProperty.size() > 0) {
 							selectedTemplateProperty.get().select(templateProperty.get(0));
 						}
 					}
-				} else if (model instanceof Playlist && model.parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
-					if (playlistSourceListProperty.contains(model)) {
-						playlistSourceListProperty.set(playlistSourceListProperty.indexOf(model), model);
-					} else if (playlistDropListProperty.contains(model)) {
-						playlistDropListProperty.set(playlistDropListProperty.indexOf(model), model);
+				} else if (modelPostSavedEvent.getModel() instanceof Playlist
+						&& modelPostSavedEvent.getModel().parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
+					if (playlistSourceListProperty.contains(modelPostSavedEvent.getModel())) {
+						playlistSourceListProperty.set(playlistSourceListProperty.indexOf(modelPostSavedEvent.getModel()),
+								modelPostSavedEvent.getModel());
+					} else if (playlistDropListProperty.contains(modelPostSavedEvent.getModel())) {
+						playlistDropListProperty.set(playlistDropListProperty.indexOf(modelPostSavedEvent.getModel()),
+								modelPostSavedEvent.getModel());
 					} else {
-						playlistSourceListProperty.add(model);
+						playlistSourceListProperty.add(modelPostSavedEvent.getModel());
 					}
 				}
 			}
 		});
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_REMOVED)
-	public void onRemoved(final String topic, final Model model) {
+	@Subscribe
+	public void onModelRemoved(final ModelPostRemovedEvent modelPostRemovedEvent) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (model instanceof Account) {
-					accountProperty.remove(model);
+				if (modelPostRemovedEvent.getModel() instanceof Account) {
+					accountProperty.remove(modelPostRemovedEvent.getModel());
 					if (selectedAccountProperty.get().getSelectedItem() == null && accountProperty.size() > 0) {
 						selectedAccountProperty.get().select(accountProperty.get(0));
 					}
-				} else if (model instanceof Template) {
-					templateProperty.remove(model);
+				} else if (modelPostRemovedEvent.getModel() instanceof Template) {
+					templateProperty.remove(modelPostRemovedEvent.getModel());
 					if (selectedTemplateProperty.get().getSelectedItem() == null && templateProperty.size() > 0) {
 						selectedTemplateProperty.get().select(templateProperty.get(0));
 					}
-				} else if (model instanceof Playlist) {
-					playlistSourceListProperty.remove(model);
-					playlistDropListProperty.remove(model);
+				} else if (modelPostRemovedEvent.getModel() instanceof Playlist) {
+					playlistSourceListProperty.remove(modelPostRemovedEvent.getModel());
+					playlistDropListProperty.remove(modelPostRemovedEvent.getModel());
 				}
 			}
 		});

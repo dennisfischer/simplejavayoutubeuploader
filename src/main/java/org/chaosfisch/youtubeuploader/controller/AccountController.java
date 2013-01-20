@@ -31,14 +31,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
-import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventTopicSubscriber;
 import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.GoogleAuthUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.ModelEvents;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.javalite.activejdbc.Model;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 public class AccountController implements Initializable {
@@ -172,34 +173,35 @@ public class AccountController implements Initializable {
 
 		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-		AnnotationProcessor.process(this);
+		EventBusUtil.getInstance().register(this);
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_POST_SAVED)
-	public void onSaved(final String topic, final Model model) {
+	@Subscribe
+	public void onModelSaved(final ModelPostSavedEvent modelSavedEvent) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
-				if (model instanceof Account) {
-					if (!accountTable.getItems().contains(model)) {
-						accountTable.getItems().add(model);
+				if (modelSavedEvent.getModel() instanceof Account) {
+					if (!accountTable.getItems().contains(modelSavedEvent.getModel())) {
+						accountTable.getItems().add(modelSavedEvent.getModel());
 					} else {
-						accountTable.getItems().set(accountTable.getItems().indexOf(model), model);
+						accountTable.getItems()
+								.set(accountTable.getItems().indexOf(modelSavedEvent.getModel()), modelSavedEvent.getModel());
 					}
 				}
 			}
 		});
 	}
 
-	@EventTopicSubscriber(topic = ModelEvents.MODEL_PRE_REMOVED)
-	public void onRemoved(final String topic, final Model model) {
+	@Subscribe
+	public void onModelRemoved(final ModelPostRemovedEvent modelRemovedEvent) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
-				if (model instanceof Account) {
-					accountTable.getItems().remove(model);
+				if (modelRemovedEvent.getModel() instanceof Account) {
+					accountTable.getItems().remove(modelRemovedEvent.getModel());
 				}
 			}
 		});

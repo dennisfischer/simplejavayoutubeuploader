@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.GoogleAuthUtil;
-import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
@@ -36,6 +36,7 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -57,8 +58,9 @@ public class GuiceBindings extends AbstractModule {
 		bind(Throttle.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
 		bind(UploadViewModel.class).in(Singleton.class);
+		bind(EventBus.class).in(Singleton.class);
 
-		requestStaticInjection(RequestUtil.class);
+		requestStaticInjection(EventBusUtil.class);
 
 		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
 		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(ApplicationData.DEVELOPER_KEY);

@@ -31,7 +31,8 @@ public class ThumbnailServiceImpl {
 
 		final File thumbnailFile = new File(thumbnail);
 		if (!thumbnailFile.exists()) {
-			throw new ThumbnailException("Datei nicht vorhanden fï¿½r Thumbnail " + thumbnailFile.getName());
+			// TODO CHECK IF TRANSLATION REQUIRED
+			throw new ThumbnailException("Datei nicht vorhanden für Thumbnail " + thumbnailFile.getName());
 		}
 
 		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");

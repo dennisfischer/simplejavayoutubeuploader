@@ -7,11 +7,11 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.uploader;
+package org.chaosfisch.youtubeuploader.services.youtube.uploader.events;
 
 import org.chaosfisch.youtubeuploader.models.Upload;
 
-public class UploadProgress {
+public class UploadProgressEvent {
 	private double			diffBytes;
 	private long			diffTime;
 	private final double	fileSize;
@@ -22,7 +22,7 @@ public class UploadProgress {
 	public boolean			done;
 	public String			status;
 
-	public UploadProgress(final Upload queue, final double fileSize) {
+	public UploadProgressEvent(final Upload queue, final double fileSize) {
 		this.queue = queue;
 		this.fileSize = fileSize;
 	}
