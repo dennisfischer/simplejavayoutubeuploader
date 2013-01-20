@@ -69,9 +69,9 @@ public class UploadWorker extends Task<Void> {
 	private STATUS							currentStatus		= STATUS.INITIALIZE;
 
 	private long							start;
-	private double							totalBytesUploaded;
-	private double							bytesToUpload;
-	private double							fileSize;
+	private long							totalBytesUploaded;
+	private long							bytesToUpload;
+	private long							fileSize;
 
 	/**
 	 * File that is uploaded

@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
@@ -161,6 +162,10 @@ public class QueueController implements Initializable {
 		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("name", Account.class));
 		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
 		columnActions.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
+		columnActions.setMinWidth(260);
+		columnActions.setPrefWidth(260);
+		columnProgress.setMinWidth(230);
+		columnProgress.setPrefWidth(230);
 		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Upload, Object>("started"));
 		columnStarttime.setCellFactory(new Callback<TableColumn<Upload, Object>, TableCell<Upload, Object>>() {
 
@@ -307,7 +312,16 @@ public class QueueController implements Initializable {
 									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
 									dialog.setTitleText(I18nHelper.message("dialog.abortupload.title"));
 									dialog.setMessage(I18nHelper.message("dialog.abortupload.message"));
-									if (dialog.showDialog() == MonologFXButton.Type.OK) {
+									final MonologFXButton yesButton = new MonologFXButton();
+									yesButton.setType(MonologFXButton.Type.YES);
+									yesButton.setLabel("Yes");
+									final MonologFXButton noButton = new MonologFXButton();
+									noButton.setType(MonologFXButton.Type.NO);
+									noButton.setLabel("No");
+									dialog.addButton(yesButton);
+									dialog.addButton(noButton);
+
+									if (dialog.showDialog() == MonologFXButton.Type.YES) {
 										eventBus.post(new UploadAbortEvent(item));
 									}
 								}
@@ -400,15 +414,22 @@ public class QueueController implements Initializable {
 				if (progressIndicator == null) {
 					return;
 				}
-				progressIndicator.setProgress(uploadProgress.getTotalBytesUploaded() / uploadProgress.getFileSize());
+				progressIndicator.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
 
 				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
-				label.setText(String.format("%d MB/%d MB %dkbps", (int) (uploadProgress.getTotalBytesUploaded() / 1048576),
-						(int) (uploadProgress.getFileSize() / 1048576),
-						(int) (uploadProgress.getDiffBytes() / uploadProgress.getDiffTime())));
-				columnProgress.setMinWidth(label.getText().length());
+				label.setText(String.format(
+						"Finished at: %s,\n %s/%s %s/s",
+						calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), uploadProgress.getDiffBytes()
+								/ uploadProgress.getDiffTime() * 1000),
+						humanReadableByteCount(uploadProgress.getTotalBytesUploaded(), true),
+						humanReadableByteCount(uploadProgress.getFileSize(), true),
+						humanReadableByteCount(uploadProgress.getDiffBytes() / uploadProgress.getDiffTime() * 1000, true)));
 			}
 		});
+	}
+
+	private String calculateEta(final long remainingBytes, final long speed) {
+		return DateFormat.getInstance().format(new Date(System.currentTimeMillis() + 1000 * remainingBytes / speed));
 	}
 
 	// Handler for Button[fx:id="startQueue"] onAction
@@ -432,5 +453,15 @@ public class QueueController implements Initializable {
 	// Handler for Button[fx:id="stopQueue"] onAction
 	public void stopQueue(final ActionEvent event) {
 		uploader.stop();
+	}
+
+	public static String humanReadableByteCount(final long bytes, final boolean si) {
+		final int unit = si ? 1000 : 1024;
+		if (bytes < unit) {
+			return bytes + " B";
+		}
+		final int exp = (int) (Math.log(bytes) / Math.log(unit));
+		final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }

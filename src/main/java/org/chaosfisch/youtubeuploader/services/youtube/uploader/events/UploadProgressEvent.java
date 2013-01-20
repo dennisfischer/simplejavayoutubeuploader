@@ -12,22 +12,22 @@ package org.chaosfisch.youtubeuploader.services.youtube.uploader.events;
 import org.chaosfisch.youtubeuploader.models.Upload;
 
 public class UploadProgressEvent {
-	private double			diffBytes;
-	private long			diffTime;
-	private final double	fileSize;
-	public final Upload		queue;
-	private long			time;
-	private double			totalBytesUploaded;
-	public boolean			failed;
-	public boolean			done;
-	public String			status;
+	private long		diffBytes;
+	private long		diffTime;
+	private final long	fileSize;
+	public final Upload	queue;
+	private long		time;
+	private long		totalBytesUploaded;
+	public boolean		failed;
+	public boolean		done;
+	public String		status;
 
-	public UploadProgressEvent(final Upload queue, final double fileSize) {
+	public UploadProgressEvent(final Upload queue, final long fileSize) {
 		this.queue = queue;
 		this.fileSize = fileSize;
 	}
 
-	public double getDiffBytes() {
+	public long getDiffBytes() {
 		return diffBytes;
 	}
 
@@ -35,7 +35,7 @@ public class UploadProgressEvent {
 		return diffTime;
 	}
 
-	public double getFileSize() {
+	public long getFileSize() {
 		return fileSize;
 	}
 
@@ -43,7 +43,7 @@ public class UploadProgressEvent {
 		return queue;
 	}
 
-	public double getTotalBytesUploaded() {
+	public long getTotalBytesUploaded() {
 		return totalBytesUploaded;
 	}
 
@@ -51,7 +51,7 @@ public class UploadProgressEvent {
 		return time;
 	}
 
-	public void setBytes(final double addBytes) {
+	public void setBytes(final long addBytes) {
 		diffBytes = addBytes - totalBytesUploaded;
 		totalBytesUploaded += diffBytes;
 	}
