@@ -46,6 +46,9 @@ public class UploadBuilder {
 	private String					thumbnail;
 	private final List<Playlist>	playlistList	= new ArrayList<Playlist>();
 	private Integer					id;
+	private boolean					facebook;
+	private boolean					twitter;
+	private String					message;
 
 	public UploadBuilder(final File file, final String title, final String category, final Account account) {
 		this.file = file;
@@ -77,6 +80,13 @@ public class UploadBuilder {
 		if (category != null) {
 			upload.setString("category", category);
 		}
+
+		if (message != null) {
+			upload.setString("message", message);
+			upload.setBoolean("twitter", twitter);
+			upload.setBoolean("facebook", facebook);
+		}
+
 		if (account != null) {
 			upload.setParent(account);
 		}
@@ -249,4 +259,20 @@ public class UploadBuilder {
 		}
 		upload.saveIt();
 	}
+
+	public UploadBuilder setFacebook(final boolean facebook) {
+		this.facebook = facebook;
+		return this;
+	}
+
+	public UploadBuilder setTwitter(final boolean twitter) {
+		this.twitter = twitter;
+		return this;
+	}
+
+	public UploadBuilder setMessage(final String message) {
+		this.message = message;
+		return this;
+	}
+
 }

@@ -227,6 +227,12 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("publish_time", dateFormat.format(calendar.getTime())));
 				postMetaDataParams.add(new BasicNameValuePair("publish_timezone", "UTC"));
 				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
+
+				if (upload.getString("message") != null && !upload.getString("message").isEmpty()) {
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_custom_message", upload.getString("message")));
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_facebook", boolConverter(upload.getBoolean("facebook"))));
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_twitter", boolConverter(upload.getBoolean("twitter"))));
+				}
 			}
 		}
 
@@ -333,7 +339,8 @@ public class MetadataServiceImpl implements MetadataService {
 		final String modified = new StringBuilder(
 				"still_id,still_id_custom_thumb_version,publish_time,privacy,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,")
 				.append("asset_type,web_title,web_description,web_custom_id,web_notes,tv_tms_id,tv_isan,tv_eidr,show_title,episode_title,season_nb,episode_nb,tv_custom_id,tv_notes,movie_title,")
-				.append("movie_description,movie_tms_id,movie_tms_id,movie_isan,movie_eidr,movie_custom_id,movie_custom_id").toString();
+				.append("movie_description,movie_tms_id,movie_tms_id,movie_isan,movie_eidr,movie_custom_id,movie_custom_id,creator_share_facebook,creator_share_twitter,creator_share_custom_message")
+				.toString();
 		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified));
 
 		postMetaDataParams.add(new BasicNameValuePair("title", extractor(content, "name=\"title\" value=\"", "\"")));

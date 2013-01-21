@@ -57,12 +57,10 @@ import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Model;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
@@ -131,7 +129,6 @@ public class QueueController implements Initializable {
 	@Inject private Uploader			uploader;
 	@Inject private Throttle			throttle;
 	@Inject private UploadViewModel		uploadViewModel;
-	@Inject private EventBus			eventBus;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -322,7 +319,7 @@ public class QueueController implements Initializable {
 									dialog.addButton(noButton);
 
 									if (dialog.showDialog() == MonologFXButton.Type.YES) {
-										eventBus.post(new UploadAbortEvent(item));
+										uploader.abort(item);
 									}
 								}
 							});

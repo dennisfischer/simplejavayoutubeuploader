@@ -141,6 +141,9 @@ public class UploadController implements Initializable {
 	@FXML// fx:id="uploadEnddir"
 	private TextField					uploadEnddir;
 
+	@FXML// fx:id="uploadFacebook"
+	private CheckBox					uploadFacebook;
+
 	@FXML// fx:id="uploadFile"
 	private ChoiceBox<File>				uploadFile;
 
@@ -149,6 +152,9 @@ public class UploadController implements Initializable {
 
 	@FXML// fx:id="uploadLicense"
 	private ChoiceBox<String>			uploadLicense;
+
+	@FXML// fx:id="uploadMessage"
+	private TextArea					uploadMessage;
 
 	@FXML// fx:id="uploadMobile"
 	private CheckBox					uploadMobile;
@@ -164,6 +170,9 @@ public class UploadController implements Initializable {
 
 	@FXML// fx:id="uploadTitle"
 	private TextField					uploadTitle;
+
+	@FXML// fx:id="uploadTwitter"
+	private CheckBox					uploadTwitter;
 
 	@FXML// fx:id="uploadVideoresponse"
 	private ChoiceBox<String>			uploadVideoresponse;
@@ -219,14 +228,17 @@ public class UploadController implements Initializable {
 		assert uploadDescription != null : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadEmbed != null : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadEnddir != null : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadFacebook != null : "fx:id=\"uploadFacebook\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadFile != null : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadGrid != null : "fx:id=\"uploadGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadLicense != null : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadMessage != null : "fx:id=\"uploadMessage\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadMobile != null : "fx:id=\"uploadMobile\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadThumbnail != null : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert uploadTwitter != null : "fx:id=\"uploadTwitter\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert validationText != null : "fx:id=\"validationText\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -241,8 +253,8 @@ public class UploadController implements Initializable {
 
 	private void initControls() {
 		extendedSettingsGrid.add(number, 1, 1, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(starttime, 1, 11, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(releasetime, 1, 12, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(starttime, 1, 12, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(releasetime, 1, 13, GridPane.REMAINING, 1);
 
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistDropzone);
@@ -470,6 +482,10 @@ public class UploadController implements Initializable {
 	private void initBindings() {
 
 		releasetime.disableProperty().bind(uploadVisibility.getSelectionModel().selectedIndexProperty().lessThan(2));
+		uploadMessage.disableProperty().bind(releasetime.disableProperty());
+		uploadFacebook.disableProperty().bind(releasetime.disableProperty());
+		uploadTwitter.disableProperty().bind(releasetime.disableProperty());
+
 		gridWidthSlider.minProperty().set(1280);
 		gridWidthSlider.maxProperty().set(2000);
 		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));
@@ -513,6 +529,9 @@ public class UploadController implements Initializable {
 		uploadVisibility.itemsProperty().bindBidirectional(uploadViewModel.visibilityProperty);
 		starttime.valueProperty().bindBidirectional(uploadViewModel.starttimeProperty);
 		releasetime.valueProperty().bindBidirectional(uploadViewModel.releasetimeProperty);
+		uploadFacebook.selectedProperty().bindBidirectional(uploadViewModel.facebookProperty);
+		uploadTwitter.selectedProperty().bindBidirectional(uploadViewModel.twitterProperty);
+		uploadMessage.textProperty().bindBidirectional(uploadViewModel.messageProperty);
 	}
 
 	// Handler for Button[fx:id="addUpload"] onAction

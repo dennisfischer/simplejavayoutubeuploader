@@ -90,6 +90,10 @@ public class UploadViewModel {
 	public final SimpleBooleanProperty								rateProperty				= new SimpleBooleanProperty();
 	public final SimpleStringProperty								tagsProperty				= new SimpleStringProperty();
 	public final SimpleStringProperty								titleProperty				= new SimpleStringProperty();
+	public final SimpleBooleanProperty								facebookProperty			= new SimpleBooleanProperty();
+	public final SimpleBooleanProperty								twitterProperty				= new SimpleBooleanProperty();
+	public final SimpleStringProperty								messageProperty				= new SimpleStringProperty();
+
 	public final SimpleObjectProperty<Calendar>						starttimeProperty			= new SimpleObjectProperty<>(
 																										Calendar.getInstance());
 	public final SimpleObjectProperty<Calendar>						releasetimeProperty			= new SimpleObjectProperty<>(
@@ -209,6 +213,9 @@ public class UploadViewModel {
 		selectedVisibilityProperty.get().select(template.getInteger("visibility") != null ? template.getInteger("visibility") : 0);
 		numberProperty.set(template.getInteger("number") != null ? template.getInteger("number") : 0);
 		thumbnailProperty.set(template.getString("thumbnail") != null ? template.getString("thumbnail") : "");
+		facebookProperty.set(template.getBoolean("facebook"));
+		twitterProperty.set(template.getBoolean("twitter"));
+		messageProperty.set(template.getString("message") != null ? template.getString("message") : "");
 
 		if (template.parent(Account.class) != null) {
 			selectedAccountProperty.get().select(template.parent(Account.class));
@@ -268,6 +275,10 @@ public class UploadViewModel {
 			final int mod = unroundedMinutes % 30;
 			calendar.add(Calendar.MINUTE, mod < 16 ? -mod : 30 - mod);
 			uploadBuilder.setRelease(calendar.getTime());
+
+			if ((facebookProperty.get() || twitterProperty.get()) && messageProperty.get() != null && !messageProperty.get().isEmpty()) {
+				uploadBuilder.setFacebook(facebookProperty.get()).setTwitter(twitterProperty.get()).setMessage(messageProperty.get());
+			}
 		}
 
 		final Upload upload = uploadBuilder.build();
@@ -294,15 +305,18 @@ public class UploadViewModel {
 		selectedVideoResponseProperty.get().select(upload.getInteger("videoresponse"));
 		selectedVisibilityProperty.get().select(upload.getInteger("visibility"));
 		commentVoteProperty.set(upload.getBoolean("commentvote"));
-		descriptionProperty.set(upload.getString("description"));
+		descriptionProperty.set(upload.getString("description") != null ? upload.getString("description") : "");
 		embedProperty.set(upload.getBoolean("embed"));
-		enddirProperty.set(upload.getString("enddir"));
+		enddirProperty.set(upload.getString("enddir") != null ? upload.getString("enddir") : "");
 		mobileProperty.set(upload.getBoolean("mobile"));
 		numberProperty.set(upload.getInteger("number"));
 		rateProperty.set(upload.getBoolean("rate"));
-		tagsProperty.set(upload.getString("keywords"));
-		titleProperty.set(upload.getString("title"));
-		thumbnailProperty.set(upload.getString("thumbnail"));
+		tagsProperty.set(upload.getString("keywords") != null ? upload.getString("keywords") : "");
+		titleProperty.set(upload.getString("title") != null ? upload.getString("title") : "");
+		thumbnailProperty.set(upload.getString("thumbnail") != null ? upload.getString("thumbnail") : "");
+		twitterProperty.set(upload.getBoolean("twitter"));
+		facebookProperty.set(upload.getBoolean("facebook"));
+		messageProperty.set(upload.getString("message") != null ? upload.getString("message") : "");
 		Calendar calendar = Calendar.getInstance();
 		if (upload.getDate("started") != null) {
 			calendar.setTime(upload.getDate("started"));
