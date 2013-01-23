@@ -50,7 +50,7 @@
               <tabs>
                 <Tab closable="false" text="%tab.upload">
                   <content>
-                    <fx:include source="Upload.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Upload.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" text="%tab.queue">
