@@ -61,7 +61,7 @@ public class LogfileCommitter {
 			response = RequestUtil.execute(request);
 
 		} catch (final IOException e) {
-			logger.warn("Loginformationen konnten nicht Ã¼bermittelt werden. {}", response != null ? response.getStatusLine() : "");
+			logger.warn("Loginformationen konnten nicht übermittelt werden. {}", response != null ? response.getStatusLine() : "", e);
 		} finally {
 			if (response != null && response.getEntity() != null) {
 				EntityUtils.consumeQuietly(response.getEntity());
@@ -74,6 +74,7 @@ public class LogfileCommitter {
 			try {
 				return Files.toString(htmlFile, Charset.forName("utf-8"));
 			} catch (final IOException e) {
+				logger.error(e.getMessage(), e);
 				return null;
 			}
 		}

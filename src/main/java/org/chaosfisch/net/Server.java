@@ -11,7 +11,6 @@ package org.chaosfisch.net;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 public class Server implements Runnable {
 	private ServerSocket				serverSocket;
-	private Socket						client;
 	private final Logger				logger		= LoggerFactory.getLogger(getClass());
 	private final Protocol				protocol;
 	private final int					port;
@@ -30,7 +28,7 @@ public class Server implements Runnable {
 		this.protocol = protocol;
 		this.port = port;
 
-		final Thread t = new Thread(this);
+		final Thread t = new Thread(this, "Server");
 		t.start();
 	}
 
@@ -47,9 +45,8 @@ public class Server implements Runnable {
 	private void handleClients() {
 		while (!serverSocket.isClosed()) {
 			try {
-				client = serverSocket.accept();
 				cleanupClients();
-				connections.add(new Connection(client, protocol));
+				connections.add(new Connection(serverSocket.accept(), protocol));
 				logger.info("Connected clients: " + connections.size());
 			} catch (final IOException e) {
 				if (!serverSocket.isClosed()) {
@@ -77,7 +74,9 @@ public class Server implements Runnable {
 		if (serverSocket != null && !serverSocket.isClosed()) {
 			try {
 				serverSocket.close();
-			} catch (final IOException e) {}
+			} catch (final IOException e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 	}
 

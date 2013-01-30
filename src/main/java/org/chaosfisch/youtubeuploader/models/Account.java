@@ -19,6 +19,9 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+
 public class Account extends Model implements ModelEvents {
 	public enum Type {
 		YOUTUBE("enum.youtube"), FACEBOOK("enum.facebook"), TWITTER("enum.twitter"), GOOGLEPLUS("enum.googleplus");
@@ -37,10 +40,12 @@ public class Account extends Model implements ModelEvents {
 
 	@Override
 	public String toString() {
-		if (!isFrozen()) {
-			return getString("name");
-		}
-		return super.toString();
+		return Convert.toString(get("name"));
+	}
+
+	@Override
+	public Object get(final String key) {
+		return getAttributes().get(key);
 	}
 
 	/*
@@ -50,16 +55,24 @@ public class Account extends Model implements ModelEvents {
 	@Override
 	public boolean equals(final Object object) {
 
-		if (object == null || !(object instanceof Account)) {
-			return false;
-		} else if (((Account) object).getUnfrozen().equals(getUnfrozen())) {
+		if (this == object) {
 			return true;
 		}
-		return false;
+		if (object == null || !(object instanceof Account)) {
+			return false;
+		}
+		return ((Account) object).getUnfrozen().equals(getUnfrozen());
+	}
+
+	@Override
+	public int hashCode() {
+		final HashFunction hf = Hashing.md5();
+		return hf.newHasher().putLong(getLongId()).putString((String) get("name")).putString((String) get("password"))
+				.putString((String) get("type")).hash().asInt();
 	}
 
 	public Long getUnfrozen() {
-		return Convert.toLong(getAttributes().get("id"));
+		return Convert.toLong(get("id"));
 	}
 
 	/*

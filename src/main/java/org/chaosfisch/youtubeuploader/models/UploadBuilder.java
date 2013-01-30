@@ -19,6 +19,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UploadBuilder {
 	private final File				file;
 	private final String			title;
@@ -50,6 +53,8 @@ public class UploadBuilder {
 	private boolean					twitter;
 	private String					message;
 
+	private static final Logger		logger			= LoggerFactory.getLogger(UploadBuilder.class);
+
 	public UploadBuilder(final File file, final String title, final String category, final Account account) {
 		this.file = file;
 		String tmpType = null;
@@ -58,7 +63,9 @@ public class UploadBuilder {
 				tmpType = Files.probeContentType(Paths.get(file.getAbsolutePath()));
 			}
 
-		} catch (final IOException ignored) {}
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
 		mimetype = tmpType != null ? tmpType : "application/octet-stream";
 		this.title = title;
 		this.category = category;

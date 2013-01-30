@@ -45,6 +45,7 @@ public class Connection {
 			} catch (final ClassNotFoundException e) {
 				logger.error("Invalid data object transported", e);
 			} catch (final IOException e) {
+				logger.error(e.getMessage(), e);
 				close();
 			}
 		}
@@ -72,7 +73,7 @@ public class Connection {
 			public void run() {
 				readMessages();
 			}
-		});
+		}, "Connection-Readthread");
 		readThread.start();
 	}
 

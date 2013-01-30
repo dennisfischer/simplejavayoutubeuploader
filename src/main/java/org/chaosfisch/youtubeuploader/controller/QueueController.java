@@ -60,6 +60,8 @@ import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -129,6 +131,8 @@ public class QueueController implements Initializable {
 	@Inject private Uploader			uploader;
 	@Inject private Throttle			throttle;
 	@Inject private UploadViewModel		uploadViewModel;
+
+	private final Logger				logger			= LoggerFactory.getLogger(getClass());
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -204,8 +208,7 @@ public class QueueController implements Initializable {
 						} else {
 							final HBox hbox = new HBox(10);
 
-							final ProgressIndicator progressIndicator = new ProgressIndicator(queue.getBoolean("archived") == true ? 100
-									: 0);
+							final ProgressIndicator progressIndicator = new ProgressIndicator(queue.getBoolean("archived") ? 100 : 0);
 							progressIndicator.setId("queue-" + queue.getLongId());
 
 							final Label label = new Label("");
@@ -221,7 +224,9 @@ public class QueueController implements Initializable {
 												&& Desktop.isDesktopSupported()) {
 											try {
 												Desktop.getDesktop().browse(new URI("http://youtu.be/" + queue.getString("videoid")));
-											} catch (final URISyntaxException | IOException ignored) {}
+											} catch (final URISyntaxException | IOException e) {
+												logger.error(e.getMessage(), e);
+											}
 										}
 
 									}

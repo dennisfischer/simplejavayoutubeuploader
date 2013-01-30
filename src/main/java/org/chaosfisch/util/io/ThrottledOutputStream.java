@@ -23,10 +23,14 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ThrottledOutputStream extends FilterOutputStream {
-	private long			bytes;
-	private final long		start;
-	private final Throttle	throttle;
+	private long				bytes;
+	private final long			start;
+	private final Throttle		throttle;
+	private final static Logger	logger	= LoggerFactory.getLogger(ThrottledOutputStream.class);
 
 	// / Constructor.
 	public ThrottledOutputStream(final OutputStream out, final Throttle throttle) {
@@ -65,7 +69,9 @@ public class ThrottledOutputStream extends FilterOutputStream {
 			final long wakeElapsed = bytes * 1000L / throttle.maxBps.multiply(1000).get();
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
-			} catch (final InterruptedException ignored) {}
+			} catch (final InterruptedException e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 
 		// Write the bytes.

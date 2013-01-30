@@ -137,7 +137,9 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
 			Thread.sleep(sleepSeconds * 1000L);
 			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
-		} catch (final InterruptedException ignored) {}
+		} catch (final InterruptedException e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 }

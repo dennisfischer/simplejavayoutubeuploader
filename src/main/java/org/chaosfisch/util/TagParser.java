@@ -105,7 +105,7 @@ public class TagParser {
 				if (tmpTags[j] == null) {
 					break;
 				}
-				stringBuilder.append(",");
+				stringBuilder.append(',');
 				stringBuilder.append(tmpTags[j]);
 			}
 		}

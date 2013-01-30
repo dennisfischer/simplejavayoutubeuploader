@@ -47,12 +47,11 @@ public class ActiveCellValueFactory<T extends Model, V> implements Callback<Tabl
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private ObservableValue<V> getReturnValue(final Model model) {
-		if (cellName == "this") {
+		if (cellName.equals("this")) {
 			return new ReadOnlyObjectWrapper<V>((V) model);
 		}
-		if (cellName == "id") {
+		if (cellName.equals("id")) {
 			return new ReadOnlyObjectWrapper<V>((V) model.getLongId());
 		}
 		return new ReadOnlyObjectWrapper<V>((V) model.get(cellName));

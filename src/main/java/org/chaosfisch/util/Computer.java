@@ -11,9 +11,14 @@ package org.chaosfisch.util;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.javafx.PlatformUtil;
 
 public class Computer {
+
+	private final static Logger	logger	= LoggerFactory.getLogger(Computer.class);
 
 	/**
 	 * Sends this system to hibernation mode
@@ -30,7 +35,9 @@ public class Computer {
 
 		try {
 			Runtime.getRuntime().exec(command);
-		} catch (final IOException ignored) {}
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
 		System.exit(0);
 	}
 
@@ -49,7 +56,9 @@ public class Computer {
 
 		try {
 			Runtime.getRuntime().exec(command);
-		} catch (final IOException ignored) {}
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
 		System.exit(0);
 	}
 }

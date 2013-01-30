@@ -31,6 +31,8 @@ import org.chaosfisch.util.io.Request;
 import org.chaosfisch.util.io.Request.Method;
 import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -40,6 +42,7 @@ public class GoogleAuthUtil {
 	final Map<Long, String>		authtokens				= new WeakHashMap<Long, String>();
 	@Inject RequestSigner		requestSigner;
 
+	private final static Logger	logger					= LoggerFactory.getLogger(GoogleAuthUtil.class);
 	private static final String	CLIENT_LOGIN_URL		= "https://accounts.google.com/ClientLogin";
 	private static final String	ISSUE_AUTH_TOKEN_URL	= "https://www.google.com/accounts/IssueAuthToken";
 
@@ -108,6 +111,7 @@ public class GoogleAuthUtil {
 		try {
 			_receiveToken(account);
 		} catch (final AuthenticationException e) {
+			logger.info(e.getMessage(), e);
 			return false;
 		}
 		return true;

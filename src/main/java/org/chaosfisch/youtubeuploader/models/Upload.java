@@ -22,6 +22,9 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+
 public class Upload extends Model implements ModelEvents {
 	static {
 		validatePresenceOf("file").message(I18nHelper.message("validation.filelist"));
@@ -42,12 +45,20 @@ public class Upload extends Model implements ModelEvents {
 	@Override
 	public boolean equals(final Object object) {
 
-		if (object == null || !(object instanceof Upload)) {
-			return false;
-		} else if (((Upload) object).getUnfrozen().equals(getUnfrozen())) {
+		if (this == object) {
 			return true;
 		}
-		return false;
+		if (object == null || !(object instanceof Upload)) {
+			return false;
+		}
+		return ((Upload) object).getUnfrozen().equals(getUnfrozen());
+	}
+
+	@Override
+	public int hashCode() {
+		final HashFunction hf = Hashing.md5();
+		return hf.newHasher().putLong(getLongId()).putString((String) get("videoid")).putString((String) get("file"))
+				.putString((String) get("title")).hash().asInt();
 	}
 
 	public Long getUnfrozen() {

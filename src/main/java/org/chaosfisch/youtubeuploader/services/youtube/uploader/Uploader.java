@@ -91,7 +91,9 @@ public class Uploader {
 					sendUpload();
 					try {
 						Thread.sleep(10000);
-					} catch (final InterruptedException e) {}
+					} catch (final InterruptedException e) {
+						logger.error(e.getMessage(), e);
+					}
 				}
 
 			}
@@ -141,7 +143,7 @@ public class Uploader {
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
 
-		if (queue.getBoolean("PAUSEONFINISH") == true) {
+		if (queue.getBoolean("PAUSEONFINISH")) {
 			inProgressProperty.set(false);
 		} else {
 			sendUpload();
@@ -185,7 +187,9 @@ public class Uploader {
 
 					try {
 						Thread.sleep(60000);
-					} catch (final InterruptedException e) {}
+					} catch (final InterruptedException e) {
+						logger.error(e.getMessage(), e);
+					}
 				}
 			}
 		});
@@ -193,7 +197,7 @@ public class Uploader {
 
 	@Subscribe
 	public void onUploadJobDoneAndFailed(final UploadProgressEvent uploadProgressEvent) {
-		if (uploadProgressEvent.done == true || uploadProgressEvent.failed == true) {
+		if (uploadProgressEvent.done || uploadProgressEvent.failed) {
 			logger.info("Status: {}", uploadProgressEvent.status);
 			uploadFinished(uploadProgressEvent.getQueue());
 		}

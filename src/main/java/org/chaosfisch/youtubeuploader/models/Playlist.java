@@ -18,11 +18,14 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+
 public class Playlist extends Model implements ModelEvents {
 
 	@Override
 	public String toString() {
-		return (String) getUnfrozen("title");
+		return Convert.toString(get("title"));
 	}
 
 	/*
@@ -32,23 +35,32 @@ public class Playlist extends Model implements ModelEvents {
 	@Override
 	public boolean equals(final Object object) {
 
-		if (object == null) {
-			return false;
-		} else if (!(object instanceof Playlist)) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || !(object instanceof Playlist)) {
 			return false;
 		} else if (((Playlist) object).getUnfrozen().equals(getUnfrozen())) {
 			return true;
-		} else if (((Playlist) object).getUnfrozen("pkey").equals(this.getUnfrozen("pkey"))) {
-			return true;
 		}
-		return false;
+		return ((Playlist) object).get("pkey").equals(this.get("pkey"));
+	}
+
+	@Override
+	public int hashCode() {
+		final HashFunction hf = Hashing.md5();
+		return hf.newHasher().putLong(getLongId()).putString(Convert.toString(get("PKEY"))).putBoolean(Convert.toBoolean(get("PRIVATE")))
+				.putString(Convert.toString(get("TITLE"))).putString(Convert.toString(get("URL")))
+				.putString(Convert.toString(get("THUMBNAIL"))).putInt(Convert.toInteger(get("NUMBER")))
+				.putString(Convert.toString(get("SUMMARY"))).putInt(Convert.toInteger("ACCOUNT_ID")).hash().asInt();
 	}
 
 	public Long getUnfrozen() {
-		return Convert.toLong(getAttributes().get("id"));
+		return Convert.toLong(get("id"));
 	}
 
-	public Object getUnfrozen(final String key) {
+	@Override
+	public Object get(final String key) {
 		return getAttributes().get(key);
 	}
 

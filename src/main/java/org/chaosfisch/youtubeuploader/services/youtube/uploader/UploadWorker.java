@@ -458,8 +458,8 @@ public class UploadWorker extends Task<Void> {
 				try {
 					bufferedInputStream.close();
 					throttledOutputStream.close();
-				} catch (final IOException ignored) {
-					// throw new RuntimeException("This shouldn't happen", e);
+				} catch (final IOException e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 		} catch (final FileNotFoundException ex) {

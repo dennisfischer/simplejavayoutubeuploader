@@ -185,7 +185,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 					logger.warn("Playlist synchronize failed. Statusline --> {}", response.getStatusLine().toString());
 				}
 			} catch (final IOException e) {
-				logger.warn("Playlist synchronize failed. Statusline --> {}", response.getStatusLine().toString());
+				logger.warn("Playlist synchronize failed. Statusline --> {}", response != null ? response.getStatusLine().toString()
+						: "Missing", e);
 
 			} catch (final AuthenticationException e) {
 				logger.warn("Authentication error", e);

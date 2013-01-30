@@ -547,7 +547,7 @@ public class UploadController implements Initializable {
 			final StringBuilder stringBuilder = new StringBuilder("");
 			for (final String error : upload.errors().values()) {
 				stringBuilder.append(error);
-				stringBuilder.append("\n");
+				stringBuilder.append('\n');
 			}
 			validationText.setText(stringBuilder.toString());
 		}

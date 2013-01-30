@@ -79,16 +79,62 @@
           <expandedPane>
             <TitledPane fx:id="x4" disable="false" text="%accordion.partner">
               <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane id="Content" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
-                    <GridPane prefHeight="438.0" prefWidth="432.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <GridPane prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <children>
+                        <ToggleButton mnemonicParsing="false" selected="false" text="Partner" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                        <AnchorPane fx:id="monetizationPane" prefHeight="-1.0" prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                          <children>
+                            <GridPane prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <children>
+                                <CheckBox mnemonicParsing="false" text="Mein Video monetarisieren" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <CheckBox allowIndeterminate="false" indeterminate="false" mnemonicParsing="false" text="Overlay-In-Video-Anzeigen" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                  <GridPane.margin>
+                                    <Insets left="20.0" fx:id="x3" />
+                                  </GridPane.margin>
+                                </CheckBox>
+                                <CheckBox mnemonicParsing="false" text="TrueView In-Stream-Anzeigen" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
+                                <CheckBox mnemonicParsing="false" text="Dieses Video enthält ein bezahltes Produkt-Placement" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="3" />
+                                <Label text="Content-Syndication:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <RadioButton mnemonicParsing="false" text="Überall" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                                  <toggleGroup>
+                                    <ToggleGroup fx:id="contentSyndication" />
+                                  </toggleGroup>
+                                  <GridPane.margin>
+                                    <Insets left="20.0" fx:id="x6" />
+                                  </GridPane.margin>
+                                </RadioButton>
+                                <RadioButton mnemonicParsing="false" text="Monetarisierte Platformen" toggleGroup="$contentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                                  <GridPane.margin>
+                                    <Insets left="20.0" fx:id="x6" />
+                                  </GridPane.margin>
+                                </RadioButton>
+                              </children>
+                              <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                            </GridPane>
+                          </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="partnerPane" prefHeight="-1.0" prefWidth="-1.0" visible="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                      </children>
                       <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       </columnConstraints>
                       <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" valignment="CENTER" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                     </GridPane>
