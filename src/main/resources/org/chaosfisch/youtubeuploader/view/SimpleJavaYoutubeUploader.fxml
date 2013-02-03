@@ -24,7 +24,7 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.ViewController">
+<AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.ViewController">
   <children>
     <GridPane fx:id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -50,29 +50,29 @@
               <tabs>
                 <Tab closable="false" text="%tab.upload">
                   <content>
-                    <fx:include source="Upload.fxml" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Upload.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" text="%tab.queue">
                   <content>
-                    <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Queue.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" text="%tab.account">
                   <content>
-                    <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </Tab>
                 <Tab closable="false" disable="false" text="%tab.settings">
                   <content>
-                    <fx:include source="Settings.fxml" />
+                    <fx:include source="Settings.fxml" maxHeight="-1.0" maxWidth="-1.0" />
                   </content>
                 </Tab>
               </tabs>
             </TabPane>
           </children>
         </AnchorPane>
-        <AnchorPane id="Content" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+        <AnchorPane id="Content" maxHeight="-1.0" maxWidth="-1.0" minHeight="24.0" minWidth="-1.0" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

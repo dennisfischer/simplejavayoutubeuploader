@@ -11,18 +11,10 @@ import com.sun.nio.zipfs.ZipUtils;
 
 def javaFxHome = "${System.properties['java.home']}";
 
-apply plugin: 'izpack'
 apply plugin: 'java'
 apply plugin: 'application'
 
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies { 
-        classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.1'
-	}
-	
 	buildDir = 'target'
 	version = '3.0.0.2'
 }
@@ -39,9 +31,15 @@ configurations {
 	//therefore a seperate configuration is required
 	providedCompile
 	instrument
-	izpack
 }
 
+
+tasks.withType(Compile) {
+  options.fork = true
+  options.forkOptions.with {
+    memoryMaximumSize = "2048m" // try different values
+  }
+}
 
 
 dependencies {
@@ -55,7 +53,6 @@ dependencies {
 
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 	instrument 'org.javalite:activejdbc:1.4.5', 'org.javalite:activejdbc-instrumentation:1.4.5'
-	izpack 'org.codehaus.izpack:izpack-standalone-compiler:4.3.5'
 }
 
 repositories {
@@ -76,18 +73,6 @@ run {
 
 jar {
 	archiveName = "SimpleJavaYoutubeUploader.jar"
-}
-
-
-izpack {
-	new File("$buildDir/assemble/izpack").mkdirs()
-	baseDir = file("$buildDir/assemble/izpack")
-	installFile = file("/src/main/deploy/install.xml")
-	outputFile = file("$buildDir/distributions/simplejavayoutubeuploader-${version}-installer.jar")
-	compression = 'deflate'
-	compressionLevel = 9
-	appProperties = ['app.group': 'SimpleJavaYoutubeUploader', 'app.name': 'Simple Java Youtube Uploader', 'app.title': 'Simple Java Youtube Uploader',
-		'app.version': version, 'app.subpath': "Simple Java Youtube Uploader-$version"]
 }
 
 task launch4j(type: Exec) {

@@ -50,58 +50,59 @@ import com.google.inject.Inject;
 
 public class UploadViewModel {
 
-	public final SimpleListProperty<Model>							accountProperty				= new SimpleListProperty<>(
-																										FXCollections
-																												.<Model> observableArrayList());
-	public final SimpleListProperty<Model>							templateProperty			= new SimpleListProperty<>(
-																										FXCollections
-																												.<Model> observableArrayList());
-	public final SimpleListProperty<Model>							playlistDropListProperty	= new SimpleListProperty<>(
-																										FXCollections
-																												.<Model> observableArrayList());
-	public final SimpleListProperty<Model>							playlistSourceListProperty	= new SimpleListProperty<>(
-																										FXCollections
-																												.<Model> observableArrayList());
-	public final SimpleListProperty<AtomCategory>					categoryProperty			= new SimpleListProperty<>(
-																										FXCollections
-																												.<AtomCategory> observableArrayList());
-	public final SimpleListProperty<String>							commentProperty				= new SimpleListProperty<>(
-																										FXCollections
-																												.<String> observableArrayList());
-	public final SimpleListProperty<File>							fileProperty				= new SimpleListProperty<>(
-																										FXCollections
-																												.<File> observableArrayList());
-	public final SimpleListProperty<String>							licenseProperty				= new SimpleListProperty<>(
-																										FXCollections
-																												.<String> observableArrayList());
-	public final SimpleListProperty<String>							videoresponseProperty		= new SimpleListProperty<>(
-																										FXCollections
-																												.<String> observableArrayList());
-	public final SimpleListProperty<String>							visibilityProperty			= new SimpleListProperty<>(
-																										FXCollections
-																												.<String> observableArrayList());
-	public final SimpleStringProperty								previewTitleProperty		= new SimpleStringProperty();
-	public final SimpleBooleanProperty								commentVoteProperty			= new SimpleBooleanProperty();
-	public final SimpleStringProperty								defaultdirProperty			= new SimpleStringProperty();
-	public final SimpleStringProperty								descriptionProperty			= new SimpleStringProperty();
-	public final SimpleBooleanProperty								embedProperty				= new SimpleBooleanProperty();
-	public final SimpleStringProperty								enddirProperty				= new SimpleStringProperty();
-	public final SimpleBooleanProperty								mobileProperty				= new SimpleBooleanProperty();
-	public final SimpleBooleanProperty								rateProperty				= new SimpleBooleanProperty();
-	public final SimpleStringProperty								tagsProperty				= new SimpleStringProperty();
-	public final SimpleStringProperty								titleProperty				= new SimpleStringProperty();
-	public final SimpleBooleanProperty								facebookProperty			= new SimpleBooleanProperty();
-	public final SimpleBooleanProperty								twitterProperty				= new SimpleBooleanProperty();
-	public final SimpleStringProperty								messageProperty				= new SimpleStringProperty();
+	// {{ UploadOptions
+	public final SimpleListProperty<Model>							accountProperty					= new SimpleListProperty<>(
+																											FXCollections
+																													.<Model> observableArrayList());
+	public final SimpleListProperty<Model>							templateProperty				= new SimpleListProperty<>(
+																											FXCollections
+																													.<Model> observableArrayList());
+	public final SimpleListProperty<Model>							playlistDropListProperty		= new SimpleListProperty<>(
+																											FXCollections
+																													.<Model> observableArrayList());
+	public final SimpleListProperty<Model>							playlistSourceListProperty		= new SimpleListProperty<>(
+																											FXCollections
+																													.<Model> observableArrayList());
+	public final SimpleListProperty<AtomCategory>					categoryProperty				= new SimpleListProperty<>(
+																											FXCollections
+																													.<AtomCategory> observableArrayList());
+	public final SimpleListProperty<String>							commentProperty					= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+	public final SimpleListProperty<File>							fileProperty					= new SimpleListProperty<>(
+																											FXCollections
+																													.<File> observableArrayList());
+	public final SimpleListProperty<String>							licenseProperty					= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+	public final SimpleListProperty<String>							videoresponseProperty			= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+	public final SimpleListProperty<String>							visibilityProperty				= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+	public final SimpleStringProperty								previewTitleProperty			= new SimpleStringProperty();
+	public final SimpleBooleanProperty								commentVoteProperty				= new SimpleBooleanProperty();
+	public final SimpleStringProperty								defaultdirProperty				= new SimpleStringProperty();
+	public final SimpleStringProperty								descriptionProperty				= new SimpleStringProperty();
+	public final SimpleBooleanProperty								embedProperty					= new SimpleBooleanProperty();
+	public final SimpleStringProperty								enddirProperty					= new SimpleStringProperty();
+	public final SimpleBooleanProperty								mobileProperty					= new SimpleBooleanProperty();
+	public final SimpleBooleanProperty								rateProperty					= new SimpleBooleanProperty();
+	public final SimpleStringProperty								tagsProperty					= new SimpleStringProperty();
+	public final SimpleStringProperty								titleProperty					= new SimpleStringProperty();
+	public final SimpleBooleanProperty								facebookProperty				= new SimpleBooleanProperty();
+	public final SimpleBooleanProperty								twitterProperty					= new SimpleBooleanProperty();
+	public final SimpleStringProperty								messageProperty					= new SimpleStringProperty();
 
-	public final SimpleObjectProperty<Calendar>						starttimeProperty			= new SimpleObjectProperty<>(
-																										Calendar.getInstance());
-	public final SimpleObjectProperty<Calendar>						releasetimeProperty			= new SimpleObjectProperty<>(
-																										Calendar.getInstance());
-	public final SimpleIntegerProperty								numberProperty				= new SimpleIntegerProperty();
-	public final SimpleObjectProperty<File>							initialDirectoryProperty	= new SimpleObjectProperty<>();
-	public final SimpleStringProperty								thumbnailProperty			= new SimpleStringProperty();
-	public final SimpleIntegerProperty								idProperty					= new SimpleIntegerProperty(-1);
+	public final SimpleObjectProperty<Calendar>						starttimeProperty				= new SimpleObjectProperty<>(
+																											Calendar.getInstance());
+	public final SimpleObjectProperty<Calendar>						releasetimeProperty				= new SimpleObjectProperty<>(
+																											Calendar.getInstance());
+	public final SimpleIntegerProperty								numberProperty					= new SimpleIntegerProperty();
+	public final SimpleObjectProperty<File>							initialDirectoryProperty		= new SimpleObjectProperty<>();
+	public final SimpleStringProperty								thumbnailProperty				= new SimpleStringProperty();
+	public final SimpleIntegerProperty								idProperty						= new SimpleIntegerProperty(-1);
 
 	public SimpleObjectProperty<SingleSelectionModel<AtomCategory>>	selectedCategoryProperty;
 	public SimpleObjectProperty<SingleSelectionModel<File>>			selectedFileProperty;
@@ -111,6 +112,33 @@ public class UploadViewModel {
 	public SimpleObjectProperty<SingleSelectionModel<String>>		selectedVideoResponseProperty;
 	public SimpleObjectProperty<SingleSelectionModel<String>>		selectedVisibilityProperty;
 	public SimpleObjectProperty<SingleSelectionModel<Model>>		selectedTemplateProperty;
+	// }} UploadOptions
+	// {{ MonetizeOptions
+	public SimpleBooleanProperty									claimProperty					= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									overlayProperty					= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									trueViewProperty				= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									inStreamProperty				= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									inStreamDefaultsProperty		= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									productPlacementProperty		= new SimpleBooleanProperty();
+
+	public SimpleListProperty<String>								claimTypeProperty				= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+	public SimpleListProperty<String>								claimOptionsProperty			= new SimpleListProperty<>(
+																											FXCollections
+																													.<String> observableArrayList());
+
+	public SimpleStringProperty										tmsidProperty					= new SimpleStringProperty();
+	public SimpleStringProperty										isanProperty					= new SimpleStringProperty();
+	public SimpleStringProperty										eidrProperty					= new SimpleStringProperty();
+	public SimpleStringProperty										customidProperty				= new SimpleStringProperty();
+	public SimpleStringProperty										numberSeasonProperty			= new SimpleStringProperty();
+	public SimpleStringProperty										numberEpisodeProperty			= new SimpleStringProperty();
+	public SimpleStringProperty										monetizeTitleEpisodeProperty	= new SimpleStringProperty();
+	public SimpleStringProperty										monetizeTitleProperty			= new SimpleStringProperty();
+	public SimpleStringProperty										monetizeNotesProperty			= new SimpleStringProperty();
+	public SimpleStringProperty										monetizeDescriptionProperty		= new SimpleStringProperty();
+	// }} MonetizeOptions
 
 	@Inject private PlaylistService									playlistService;
 
@@ -140,6 +168,11 @@ public class UploadViewModel {
 		licenseProperty.addAll(I18nHelper.message("licenselist.youtube"), I18nHelper.message("licenselist.cc"));
 		videoresponseProperty.addAll(I18nHelper.message("videoresponselist.allowed"), I18nHelper.message("videoresponselist.moderated"),
 				I18nHelper.message("videoresponselist.denied"));
+
+		claimTypeProperty.addAll(I18nHelper.message("claimtype.visual"), I18nHelper.message("claimtype.audiovisual"),
+				I18nHelper.message("claimtype.audio"));
+		claimOptionsProperty.addAll(I18nHelper.message("claimoptions.monetize"), I18nHelper.message("claimoptions.track"),
+				I18nHelper.message("claimoptions.block"));
 
 		accountProperty.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
 		templateProperty.addAll(Template.findAll().include(Account.class, Playlist.class));

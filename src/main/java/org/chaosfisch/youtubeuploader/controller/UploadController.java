@@ -31,10 +31,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -69,17 +73,119 @@ import org.javalite.activejdbc.Model;
 import com.google.inject.Inject;
 
 public class UploadController implements Initializable {
+
+	// {{ ViewElements
+
+	@FXML// ResourceBundle that was given to the FXMLLoader
+	private ResourceBundle				resources;
+
+	@FXML// URL location of the FXML file that was given to the FXMLLoader
+	private URL							location;
+
 	@FXML// fx:id="accountList"
 	private ChoiceBox<Model>			accountList;
 
 	@FXML// fx:id="addUpload"
 	private Button						addUpload;
 
+	@FXML// fx:id="assetMovie"
+	private RadioButton					assetMovie;
+
+	@FXML// fx:id="assetTV"
+	private RadioButton					assetTV;
+
+	@FXML// fx:id="assetType"
+	private ToggleGroup					assetType;
+
+	@FXML// fx:id="assetWeb"
+	private RadioButton					assetWeb;
+
+	@FXML// fx:id="contentSyndication"
+	private ToggleGroup					contentSyndication;
+
 	@FXML// fx:id="extendedSettingsGrid"
 	private GridPane					extendedSettingsGrid;
 
 	@FXML// fx:id="gridWidthSlider"
 	private Slider						gridWidthSlider;
+
+	@FXML// fx:id="labelContentInformation"
+	private Label						labelContentInformation;
+
+	@FXML// fx:id="labelEIDR"
+	private Label						labelEIDR;
+
+	@FXML// fx:id="labelISAN"
+	private Label						labelISAN;
+
+	@FXML// fx:id="labelNumberEpisode"
+	private Label						labelNumberEpisode;
+
+	@FXML// fx:id="labelNumberSeason"
+	private Label						labelNumberSeason;
+
+	@FXML// fx:id="labelTMSID"
+	private Label						labelTMSID;
+
+	@FXML// fx:id="labelTitleEpisode"
+	private Label						labelTitleEpisode;
+
+	@FXML// fx:id="monetizeClaim"
+	private CheckBox					monetizeClaim;
+
+	@FXML// fx:id="monetizeClaimOption"
+	private ChoiceBox<String>			monetizeClaimOption;
+
+	@FXML// fx:id="monetizeClaimType"
+	private ChoiceBox<String>			monetizeClaimType;
+
+	@FXML// fx:id="monetizeCustomID"
+	private TextField					monetizeCustomID;
+
+	@FXML// fx:id="monetizeDescription"
+	private TextField					monetizeDescription;
+
+	@FXML// fx:id="monetizeEIDR"
+	private TextField					monetizeEIDR;
+
+	@FXML// fx:id="monetizeISAN"
+	private TextField					monetizeISAN;
+
+	@FXML// fx:id="monetizeInStream"
+	private CheckBox					monetizeInStream;
+
+	@FXML// fx:id="monetizeInStreamDefaults"
+	private CheckBox					monetizeInStreamDefaults;
+
+	@FXML// fx:id="monetizeNotes"
+	private TextField					monetizeNotes;
+
+	@FXML// fx:id="monetizeNumberEpisode"
+	private TextField					monetizeNumberEpisode;
+
+	@FXML// fx:id="monetizeNumberSeason"
+	private TextField					monetizeNumberSeason;
+
+	@FXML// fx:id="monetizeOverlay"
+	private CheckBox					monetizeOverlay;
+
+	@FXML// fx:id="monetizePartner"
+	private ToggleButton				monetizePartner;
+
+	@FXML// fx:id="monetizeProductPlacement"
+	private CheckBox					monetizeProductPlacement;
+
+	@FXML// fx:id="monetizeTMSID"
+	private TextField					monetizeTMSID;
+
+	@FXML// fx:id="monetizeTitle"
+	private TextField					monetizeTitle;
+
+	@FXML// fx:id="monetizeTitleEpisode"
+	private TextField					monetizeTitleEpisode;
+
+	@FXML// fx:id="monetizeTrueView"
+	private CheckBox					monetizeTrueView;
 
 	@FXML// fx:id="openDefaultdir"
 	private Button						openDefaultdir;
@@ -92,6 +198,9 @@ public class UploadController implements Initializable {
 
 	@FXML// fx:id="openThumbnail"
 	private Button						openThumbnail;
+
+	@FXML// fx:id="partnerPane"
+	private TitledPane					partnerPane;
 
 	@FXML// fx:id="playlistDropScrollpane"
 	private ScrollPane					playlistDropScrollpane;
@@ -195,6 +304,8 @@ public class UploadController implements Initializable {
 	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
 	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
 
+	// }} ViewElements
+
 	@Inject private CategoryService		categoryService;
 	@Inject private FileChooser			fileChooser;
 	@Inject private DirectoryChooser	directoryChooser;
@@ -204,14 +315,47 @@ public class UploadController implements Initializable {
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
 	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources) {
+		// {{ ViewElementsExistanceCheck
 		assert accountList != null : "fx:id=\"accountList\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert assetMovie != null : "fx:id=\"assetMovie\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert assetTV != null : "fx:id=\"assetTV\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert assetType != null : "fx:id=\"assetType\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert assetWeb != null : "fx:id=\"assetWeb\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert contentSyndication != null : "fx:id=\"contentSyndication\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert gridWidthSlider != null : "fx:id=\"gridWidthSlider\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelContentInformation != null : "fx:id=\"labelContentInformation\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelEIDR != null : "fx:id=\"labelEIDR\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelISAN != null : "fx:id=\"labelISAN\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelNumberEpisode != null : "fx:id=\"labelNumberEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelNumberSeason != null : "fx:id=\"labelNumberSeason\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelTMSID != null : "fx:id=\"labelTMSID\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert labelTitleEpisode != null : "fx:id=\"labelTitleEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeClaim != null : "fx:id=\"monetizeClaim\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeClaimOption != null : "fx:id=\"monetizeClaimOption\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeClaimType != null : "fx:id=\"monetizeClaimType\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeCustomID != null : "fx:id=\"monetizeCustomID\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeDescription != null : "fx:id=\"monetizeDescription\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeEIDR != null : "fx:id=\"monetizeEIDR\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeISAN != null : "fx:id=\"monetizeISAN\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeInStream != null : "fx:id=\"monetizeInStream\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeInStreamDefaults != null : "fx:id=\"monetizeInStreamDefaults\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeNotes != null : "fx:id=\"monetizeNotes\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeNumberEpisode != null : "fx:id=\"monetizeNumberEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeNumberSeason != null : "fx:id=\"monetizeNumberSeason\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeOverlay != null : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizePartner != null : "fx:id=\"monetizePartner\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeProductPlacement != null : "fx:id=\"monetizeProductPlacement\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeTMSID != null : "fx:id=\"monetizeTMSID\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeTitle != null : "fx:id=\"monetizeTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeTitleEpisode != null : "fx:id=\"monetizeTitleEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert monetizeTrueView != null : "fx:id=\"monetizeTrueView\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openThumbnail != null : "fx:id=\"openThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert partnerPane != null : "fx:id=\"partnerPane\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistDropScrollpane != null : "fx:id=\"playlistDropScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistGrid != null : "fx:id=\"playlistGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert playlistSourceScrollpane != null : "fx:id=\"playlistSourceScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -242,8 +386,7 @@ public class UploadController implements Initializable {
 		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert validationText != null : "fx:id=\"validationText\" was not injected: check your FXML file 'Upload.fxml'.";
-		// initialize your logic here: all @FXML variables will have been
-		// injected
+		// }} ViewElementsExistanceCheck
 		initControls();
 		initBindings();
 		initCustomFactories();
@@ -442,6 +585,8 @@ public class UploadController implements Initializable {
 		uploadLicense.getSelectionModel().selectFirst();
 		uploadVideoresponse.getSelectionModel().selectFirst();
 		accountList.getSelectionModel().selectFirst();
+		monetizeClaimOption.getSelectionModel().selectFirst();
+		monetizeClaimType.getSelectionModel().selectFirst();
 		ThreadUtil.doInBackground(new Runnable() {
 
 			@Override
@@ -532,6 +677,167 @@ public class UploadController implements Initializable {
 		uploadFacebook.selectedProperty().bindBidirectional(uploadViewModel.facebookProperty);
 		uploadTwitter.selectedProperty().bindBidirectional(uploadViewModel.twitterProperty);
 		uploadMessage.textProperty().bindBidirectional(uploadViewModel.messageProperty);
+
+		// VIEW MODEL MONETIZE BINDINGS
+		uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable observable) {
+				if (uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().get() == 1) {
+					monetizeClaim.selectedProperty().set(false);
+					monetizeOverlay.selectedProperty().set(false);
+					monetizeTrueView.selectedProperty().set(false);
+					monetizeInStream.selectedProperty().set(false);
+					monetizeInStreamDefaults.selectedProperty().set(false);
+					monetizeProductPlacement.selectedProperty().set(false);
+					partnerPane.disableProperty().set(true);
+				} else {
+					partnerPane.disableProperty().set(false);
+				}
+			}
+		});
+
+		monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable observable) {
+				if (monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().get() == 0) {
+					monetizeOverlay.selectedProperty().set(true);
+					monetizeTrueView.selectedProperty().set(true);
+					monetizeInStream.selectedProperty().set(true);
+					monetizeInStreamDefaults.selectedProperty().set(true);
+					monetizeProductPlacement.selectedProperty().set(true);
+					monetizeOverlay.visibleProperty().set(true);
+					monetizeTrueView.visibleProperty().set(true);
+					monetizeInStream.visibleProperty().set(true);
+					monetizeInStreamDefaults.visibleProperty().set(true);
+					monetizeProductPlacement.visibleProperty().set(true);
+					labelContentInformation.visibleProperty().set(true);
+				} else {
+					monetizeOverlay.visibleProperty().set(false);
+					monetizeTrueView.visibleProperty().set(false);
+					monetizeInStream.visibleProperty().set(false);
+					monetizeInStreamDefaults.visibleProperty().set(false);
+					monetizeProductPlacement.visibleProperty().set(false);
+					labelContentInformation.visibleProperty().set(false);
+				}
+			}
+		});
+
+		assetType.selectedToggleProperty().addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable observable) {
+				if (assetType.getSelectedToggle().equals(assetWeb)) {
+					monetizeEIDR.visibleProperty().set(false);
+					monetizeISAN.visibleProperty().set(false);
+					monetizeNumberEpisode.visibleProperty().set(false);
+					monetizeNumberSeason.visibleProperty().set(false);
+					monetizeTitleEpisode.visibleProperty().set(false);
+					monetizeTMSID.visibleProperty().set(false);
+					labelEIDR.visibleProperty().set(false);
+					labelISAN.visibleProperty().set(false);
+					labelNumberEpisode.visibleProperty().set(false);
+					labelNumberSeason.visibleProperty().set(false);
+					labelTitleEpisode.visibleProperty().set(false);
+					labelTMSID.visibleProperty().set(false);
+					monetizeDescription.disableProperty().set(false);
+				} else if (assetType.getSelectedToggle().equals(assetTV)) {
+					monetizeEIDR.visibleProperty().set(true);
+					monetizeISAN.visibleProperty().set(true);
+					monetizeNumberEpisode.visibleProperty().set(true);
+					monetizeNumberSeason.visibleProperty().set(true);
+					monetizeTitleEpisode.visibleProperty().set(true);
+					monetizeTMSID.visibleProperty().set(true);
+					labelEIDR.visibleProperty().set(true);
+					labelISAN.visibleProperty().set(true);
+					labelNumberEpisode.visibleProperty().set(true);
+					labelNumberSeason.visibleProperty().set(true);
+					labelTitleEpisode.visibleProperty().set(true);
+					labelTMSID.visibleProperty().set(true);
+					monetizeDescription.disableProperty().set(true);
+				} else if (assetType.getSelectedToggle().equals(assetMovie)) {
+					monetizeDescription.disableProperty().set(false);
+					monetizeEIDR.visibleProperty().set(true);
+					monetizeISAN.visibleProperty().set(true);
+					monetizeNumberEpisode.visibleProperty().set(false);
+					monetizeNumberSeason.visibleProperty().set(false);
+					monetizeTitleEpisode.visibleProperty().set(false);
+					monetizeTMSID.visibleProperty().set(true);
+					labelEIDR.visibleProperty().set(true);
+					labelISAN.visibleProperty().set(true);
+					labelTMSID.visibleProperty().set(true);
+					labelNumberEpisode.visibleProperty().set(false);
+					labelNumberSeason.visibleProperty().set(false);
+					labelTitleEpisode.visibleProperty().set(false);
+				}
+			}
+		});
+
+		monetizeClaim.selectedProperty().bindBidirectional(uploadViewModel.claimProperty);
+		monetizeClaimType.itemsProperty().bindBidirectional(uploadViewModel.claimTypeProperty);
+		monetizeClaimOption.itemsProperty().bindBidirectional(uploadViewModel.claimOptionsProperty);
+		monetizeCustomID.textProperty().bindBidirectional(uploadViewModel.customidProperty);
+		monetizeDescription.textProperty().bindBidirectional(uploadViewModel.monetizeDescriptionProperty);
+		monetizeEIDR.textProperty().bindBidirectional(uploadViewModel.eidrProperty);
+		monetizeInStream.selectedProperty().bindBidirectional(uploadViewModel.inStreamProperty);
+		monetizeInStreamDefaults.selectedProperty().bindBidirectional(uploadViewModel.inStreamDefaultsProperty);
+		monetizeISAN.textProperty().bindBidirectional(uploadViewModel.isanProperty);
+		monetizeNotes.textProperty().bindBidirectional(uploadViewModel.monetizeNotesProperty);
+		monetizeNumberEpisode.textProperty().bindBidirectional(uploadViewModel.numberEpisodeProperty);
+		monetizeNumberSeason.textProperty().bindBidirectional(uploadViewModel.numberSeasonProperty);
+		monetizeOverlay.selectedProperty().bindBidirectional(uploadViewModel.overlayProperty);
+		monetizeProductPlacement.selectedProperty().bindBidirectional(uploadViewModel.productPlacementProperty);
+		monetizeTitle.textProperty().bindBidirectional(uploadViewModel.monetizeTitleProperty);
+		monetizeTitleEpisode.textProperty().bindBidirectional(uploadViewModel.monetizeTitleEpisodeProperty);
+		monetizeTMSID.textProperty().bindBidirectional(uploadViewModel.tmsidProperty);
+		monetizeTrueView.selectedProperty().bindBidirectional(uploadViewModel.trueViewProperty);
+	}
+
+	// Handler for ToggleButton[fx:id="monetizePartner"] onAction
+	@FXML
+	void togglePartner(final ActionEvent event) {
+		if (monetizePartner.isSelected()) {
+			monetizeClaim.visibleProperty().set(true);
+			monetizeClaimType.visibleProperty().set(true);
+			monetizeClaimOption.visibleProperty().set(true);
+			monetizeEIDR.visibleProperty().set(true);
+			monetizeISAN.visibleProperty().set(true);
+			monetizeNumberEpisode.visibleProperty().set(true);
+			monetizeNumberSeason.visibleProperty().set(true);
+			monetizeTitleEpisode.visibleProperty().set(true);
+			monetizeTMSID.visibleProperty().set(true);
+			assetMovie.visibleProperty().set(true);
+			assetTV.visibleProperty().set(true);
+			assetWeb.visibleProperty().set(true);
+			labelContentInformation.visibleProperty().set(true);
+			labelEIDR.visibleProperty().set(true);
+			labelISAN.visibleProperty().set(true);
+			labelNumberEpisode.visibleProperty().set(true);
+			labelNumberSeason.visibleProperty().set(true);
+			labelTitleEpisode.visibleProperty().set(true);
+			labelTMSID.visibleProperty().set(true);
+		} else {
+			monetizeClaim.visibleProperty().set(false);
+			monetizeClaimType.visibleProperty().set(false);
+			monetizeClaimOption.visibleProperty().set(false);
+			monetizeEIDR.visibleProperty().set(false);
+			monetizeISAN.visibleProperty().set(false);
+			monetizeNumberEpisode.visibleProperty().set(false);
+			monetizeNumberSeason.visibleProperty().set(false);
+			monetizeTitleEpisode.visibleProperty().set(false);
+			monetizeTMSID.visibleProperty().set(false);
+			assetMovie.visibleProperty().set(false);
+			assetTV.visibleProperty().set(false);
+			assetWeb.visibleProperty().set(false);
+			labelContentInformation.visibleProperty().set(false);
+			labelEIDR.visibleProperty().set(false);
+			labelISAN.visibleProperty().set(false);
+			labelNumberEpisode.visibleProperty().set(false);
+			labelNumberSeason.visibleProperty().set(false);
+			labelTitleEpisode.visibleProperty().set(false);
+			labelTMSID.visibleProperty().set(false);
+		}
 	}
 
 	// Handler for Button[fx:id="addUpload"] onAction
@@ -551,7 +857,6 @@ public class UploadController implements Initializable {
 			}
 			validationText.setText(stringBuilder.toString());
 		}
-
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction

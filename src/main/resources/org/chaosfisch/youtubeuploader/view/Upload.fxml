@@ -11,6 +11,7 @@
 -->
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -19,11 +20,11 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.UploadController">
+<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.UploadController">
   <children>
-    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <GridPane fx:id="uploadGrid" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" snapToPixel="true" styleClass="grid" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <GridPane fx:id="uploadGrid" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" snapToPixel="true" styleClass="grid" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <children>
             <Label text="%label.file" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Label text="%label.playlist" GridPane.columnIndex="0" GridPane.rowIndex="8" />
@@ -63,79 +64,146 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
           </padding>
           <rowConstraints>
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
             <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
             <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints fillHeight="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
-        <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" visible="true" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="0" GridPane.vgrow="SOMETIMES">
+        <Accordion maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="0">
           <expandedPane>
-            <TitledPane fx:id="x4" disable="false" text="%accordion.partner">
+            <TitledPane fx:id="partnerPane" disable="false" text="%accordion.partner">
               <content>
                 <AnchorPane id="Content" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
-                    <GridPane prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <GridPane id="" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <children>
-                        <ToggleButton mnemonicParsing="false" selected="false" text="Partner" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
-                        <AnchorPane fx:id="monetizationPane" prefHeight="-1.0" prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <AnchorPane id="" disable="false" prefHeight="-1.0" prefWidth="-1.0" visible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
                           <children>
-                            <GridPane prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <GridPane maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                <CheckBox mnemonicParsing="false" text="Mein Video monetarisieren" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                <CheckBox allowIndeterminate="false" indeterminate="false" mnemonicParsing="false" text="Overlay-In-Video-Anzeigen" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <CheckBox fx:id="monetizeClaim" mnemonicParsing="false" prefWidth="-1.0" text="Anspruch erheben" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+                                <ChoiceBox fx:id="monetizeClaimType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                                  <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                      <String fx:value="Item 1" />
+                                      <String fx:value="Item 2" />
+                                      <String fx:value="Item 3" />
+                                    </FXCollections>
+                                  </items>
+                                </ChoiceBox>
+                                <ChoiceBox fx:id="monetizeClaimOption" maxWidth="1.7976931348623157E308" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1">
+                                  <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                      <String fx:value="Item 1" />
+                                      <String fx:value="Item 2" />
+                                      <String fx:value="Item 3" />
+                                    </FXCollections>
+                                  </items>
+                                </ChoiceBox>
+                                <Label fx:id="labelContentInformation" text="Inhaltsinformationen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="7" />
+                                <RadioButton fx:id="assetWeb" mnemonicParsing="false" selected="true" text="Web" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                                  <toggleGroup>
+                                    <ToggleGroup fx:id="assetType" />
+                                  </toggleGroup>
                                   <GridPane.margin>
                                     <Insets left="20.0" fx:id="x3" />
                                   </GridPane.margin>
+                                </RadioButton>
+                                <RadioButton fx:id="assetTV" disable="false" mnemonicParsing="false" text="TV-Folge" toggleGroup="$assetType" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
+                                </RadioButton>
+                                <RadioButton fx:id="assetMovie" disable="false" mnemonicParsing="false" text="Film" toggleGroup="$assetType" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="8" />
+                                <Label fx:id="labelTMSID" text="TMS ID:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                <TextField fx:id="monetizeTMSID" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                <Label fx:id="labelISAN" text="ISAN:" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <TextField fx:id="monetizeISAN" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                <Label fx:id="labelEIDR" text="EIDR:" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                                <Label text="Custom-ID:" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                                <TextField fx:id="monetizeEIDR" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                                <TextField fx:id="monetizeCustomID" prefWidth="-1.0" promptText="auto-generated" GridPane.columnIndex="3" GridPane.rowIndex="10" />
+                                <Label fx:id="labelNumberSeason" text="Nummer Staffel:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                <TextField fx:id="monetizeNumberSeason" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="12" />
+                                <Label text="Titel:" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                                <Label text="Hinweise:" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="13" />
+                                <TextField fx:id="monetizeNotes" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                <Label text="Beschreibung:" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+                                <TextField fx:id="monetizeDescription" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="15" />
+                                <CheckBox fx:id="monetizeOverlay" allowIndeterminate="false" indeterminate="false" mnemonicParsing="false" text="Overlay-In-Video-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="2">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
                                 </CheckBox>
-                                <CheckBox mnemonicParsing="false" text="TrueView In-Stream-Anzeigen" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
-                                <CheckBox mnemonicParsing="false" text="Dieses Video enthält ein bezahltes Produkt-Placement" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="3" />
-                                <Label text="Content-Syndication:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                                <RadioButton mnemonicParsing="false" text="Überall" GridPane.columnIndex="0" GridPane.rowIndex="5">
-                                  <toggleGroup>
-                                    <ToggleGroup fx:id="contentSyndication" />
-                                  </toggleGroup>
-                                  <GridPane.margin>
-                                    <Insets left="20.0" fx:id="x6" />
-                                  </GridPane.margin>
-                                </RadioButton>
-                                <RadioButton mnemonicParsing="false" text="Monetarisierte Platformen" toggleGroup="$contentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="6">
-                                  <GridPane.margin>
-                                    <Insets left="20.0" fx:id="x6" />
-                                  </GridPane.margin>
-                                </RadioButton>
+                                <CheckBox fx:id="monetizeTrueView" mnemonicParsing="false" text="TrueView In-Stream-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="3" />
+                                <CheckBox fx:id="monetizeProductPlacement" mnemonicParsing="false" text="Dieses Video enthält ein bezahltes Produkt-Placement" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="6" />
+                                <CheckBox fx:id="monetizeInStream" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="4" />
+                                <CheckBox fx:id="monetizeInStreamDefaults" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen von bis zu 30 Sekunden." GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="5" />
+                                <TextField fx:id="monetizeTitle" prefWidth="-1.0" promptText="auto-generated" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                <Label fx:id="labelNumberEpisode" prefWidth="99.0" text="Nummer Folge:" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                <TextField fx:id="monetizeNumberEpisode" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="12" />
+                                <Label fx:id="labelTitleEpisode" prefWidth="-1.0" text="Titel Folge:" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+                                <TextField fx:id="monetizeTitleEpisode" maxHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                               </children>
                               <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
                               </columnConstraints>
                               <rowConstraints>
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                             </GridPane>
                           </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="partnerPane" prefHeight="-1.0" prefWidth="-1.0" visible="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label text="Content-Syndication:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <RadioButton mnemonicParsing="false" selected="true" text="Überall" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                          <toggleGroup>
+                            <ToggleGroup fx:id="contentSyndication" />
+                          </toggleGroup>
+                          <GridPane.margin>
+                            <Insets left="20.0" fx:id="x6" />
+                          </GridPane.margin>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="Monetarisierte Platformen" toggleGroup="$contentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                            <Insets left="20.0" fx:id="x6" />
+                          </GridPane.margin>
+                        </RadioButton>
+                        <ToggleButton fx:id="monetizePartner" mnemonicParsing="false" onAction="#togglePartner" selected="false" text="Partner" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                       </children>
                       <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
+                        <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
                       </columnConstraints>
                       <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" valignment="CENTER" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                       </rowConstraints>
                     </GridPane>
                   </children>
@@ -155,32 +223,132 @@
                             <Insets fx:id="x1" />
                           </GridPane.margin>
                         </Label>
-                        <Label text="%label.number" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="1" />
-                        <Label disable="false" text="%label.defaultdir" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="2" />
-                        <Label disable="false" text="%label.enddir" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="3" />
-                        <Label text="%label.permissions" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="5" />
-                        <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="7" />
-                        <Label contentDisplay="LEFT" text="%label.videorespone" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="8" />
-                        <Label text="%label.comments" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="9" />
-                        <Label text="%label.license" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="10" />
-                        <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="12" />
-                        <Label text="%label.release" GridPane.columnIndex="0" GridPane.margin="$x1" GridPane.rowIndex="13" />
-                        <Button fx:id="saveTemplate" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#saveTemplate" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="0" />
-                        <Button fx:id="removeTemplate" mnemonicParsing="false" onAction="#removeTemplate" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="0" />
-                        <ChoiceBox fx:id="templateList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.margin="$x1" GridPane.rowIndex="0" />
-                        <TextField fx:id="uploadDefaultdir" disable="false" editable="true" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="2" />
-                        <TextField fx:id="uploadEnddir" disable="false" editable="true" focusTraversable="true" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="3" />
+                        <Label text="%label.number" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label disable="false" text="%label.defaultdir" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label disable="false" text="%label.enddir" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.permissions" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label contentDisplay="LEFT" text="%label.videorespone" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.comments" GridPane.columnIndex="0" GridPane.rowIndex="9">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.license" GridPane.columnIndex="0" GridPane.rowIndex="10">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.rowIndex="12">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Label text="%label.release" GridPane.columnIndex="0" GridPane.rowIndex="13">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Label>
+                        <Button fx:id="saveTemplate" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#saveTemplate" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Button>
+                        <Button fx:id="removeTemplate" mnemonicParsing="false" onAction="#removeTemplate" GridPane.columnIndex="4" GridPane.rowIndex="0">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Button>
+                        <ChoiceBox fx:id="templateList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </ChoiceBox>
+                        <TextField fx:id="uploadDefaultdir" disable="false" editable="true" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </TextField>
+                        <TextField fx:id="uploadEnddir" disable="false" editable="true" focusTraversable="true" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </TextField>
                         <Separator GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-                        <CheckBox fx:id="uploadRate" mnemonicParsing="false" text="%checkbox.rate" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="5" />
-                        <CheckBox fx:id="uploadCommentvote" mnemonicParsing="false" text="%checkbox.commentvote" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="6" />
-                        <ChoiceBox fx:id="uploadVisibility" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="7" />
-                        <ChoiceBox fx:id="uploadVideoresponse" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="8" />
-                        <ChoiceBox fx:id="uploadComment" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="9" />
-                        <ChoiceBox fx:id="uploadLicense" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="10" />
-                        <Button fx:id="openDefaultdir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openDefaultdir" styleClass="searchFile" text="%button.defaultdir" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="2" />
-                        <Button fx:id="openEnddir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openEnddir" styleClass="searchFile" text="%button.enddir" GridPane.columnIndex="4" GridPane.margin="$x1" GridPane.rowIndex="3" />
-                        <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="5" />
-                        <CheckBox fx:id="uploadMobile" mnemonicParsing="false" text="%checkbox.mobile" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="6" />
+                        <CheckBox fx:id="uploadRate" mnemonicParsing="false" text="%checkbox.rate" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="uploadCommentvote" mnemonicParsing="false" text="%checkbox.commentvote" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </CheckBox>
+                        <ChoiceBox fx:id="uploadVisibility" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </ChoiceBox>
+                        <ChoiceBox fx:id="uploadVideoresponse" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </ChoiceBox>
+                        <ChoiceBox fx:id="uploadComment" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </ChoiceBox>
+                        <ChoiceBox fx:id="uploadLicense" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </ChoiceBox>
+                        <Button fx:id="openDefaultdir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openDefaultdir" styleClass="searchFile" text="%button.defaultdir" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Button>
+                        <Button fx:id="openEnddir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openEnddir" styleClass="searchFile" text="%button.enddir" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </Button>
+                        <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="uploadMobile" mnemonicParsing="false" text="%checkbox.mobile" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                          <GridPane.margin>
+                            <Insets fx:id="x1" />
+                          </GridPane.margin>
+                        </CheckBox>
                         <Label disable="false" text="%label.thumbnail" GridPane.columnIndex="0" GridPane.rowIndex="11" />
                         <TextField fx:id="uploadThumbnail" disable="false" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11" />
                         <Button fx:id="openThumbnail" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false" onAction="#openThumbnail" styleClass="searchFile" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="11" />
@@ -196,7 +364,7 @@
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-Infinity" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                       </columnConstraints>
@@ -204,24 +372,24 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                       </padding>
                       <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                     </GridPane>
                   </children>
@@ -240,22 +408,22 @@
                       </children>
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
                       </columnConstraints>
                       <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                       </padding>
                       <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                     </GridPane>
                   </children>
                 </AnchorPane>
               </content>
             </TitledPane>
-            <fx:reference source="x4" />
+            <fx:reference source="partnerPane" />
           </panes>
         </Accordion>
       </children>
@@ -264,7 +432,7 @@
         <ColumnConstraints hgrow="ALWAYS" maxWidth="-1.0" minWidth="-1.0" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints fillHeight="true" maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+        <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>
