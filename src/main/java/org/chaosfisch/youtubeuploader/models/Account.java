@@ -16,6 +16,7 @@ import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPreRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPreSavedEvent;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.FrozenException;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
@@ -45,7 +46,12 @@ public class Account extends Model implements ModelEvents {
 
 	@Override
 	public Object get(final String key) {
-		return getAttributes().get(key);
+		try {
+			return super.get(key);
+		} catch (final FrozenException e) { // $codepro.audit.disable
+											// logExceptions
+			return getAttributes().get(key.toLowerCase());
+		}
 	}
 
 	/*

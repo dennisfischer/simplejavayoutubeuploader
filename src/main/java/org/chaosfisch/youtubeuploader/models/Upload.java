@@ -19,6 +19,7 @@ import org.chaosfisch.youtubeuploader.models.validation.ByteLengthValidator;
 import org.chaosfisch.youtubeuploader.models.validation.FileSizeValidator;
 import org.chaosfisch.youtubeuploader.models.validation.TagValidator;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.FrozenException;
 import org.javalite.activejdbc.Model;
 import org.javalite.common.Convert;
 
@@ -67,7 +68,12 @@ public class Upload extends Model implements ModelEvents {
 
 	@Override
 	public Object get(final String key) {
-		return getAttributes().get(key);
+		try {
+			return super.get(key);
+		} catch (final FrozenException e) { // $codepro.audit.disable
+											// logExceptions
+			return getAttributes().get(key.toLowerCase());
+		}
 	}
 
 	/*

@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
@@ -70,6 +71,8 @@ public class MetadataServiceImpl implements MetadataService {
 	@Inject private GoogleAuthUtil	googleAuthUtil;
 	@Inject private RequestSigner	requestSigner;
 	@Inject private GoogleAuthUtil	authTokenHelper;
+
+	private final String[]			deadEnds			= { "https://accounts.google.com/b/0/SmsAuthInterstitial" };
 
 	private Upload					upload;
 
@@ -204,10 +207,6 @@ public class MetadataServiceImpl implements MetadataService {
 
 		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<BasicNameValuePair>();
 
-		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "name=\"session_token\" value=\"", "\"")));
-		postMetaDataParams
-				.add(new BasicNameValuePair("action_edit_video", extractor(content, "name=\"action_edit_video\" value=\"", "\"")));
-
 		if (thumbnailId != null) {
 			postMetaDataParams.add(new BasicNameValuePair("still_id", "0"));
 			postMetaDataParams.add(new BasicNameValuePair("still_id_custom_thumb_version", thumbnailId.toString()));
@@ -236,116 +235,66 @@ public class MetadataServiceImpl implements MetadataService {
 			}
 		}
 
-		// if (upload.getBoolean("monetize")) {
-		// postMetaDataParams.add(new BasicNameValuePair(
-		// "enable_monetization", boolConverter(upload
-		// .getBoolean("monetize"))));
-		// postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads",
-		// boolConverter(upload.getBoolean("monetizeOverlay"))));
-		// postMetaDataParams.add(new BasicNameValuePair("trueview_instream",
-		// boolConverter(upload.getBoolean("monetizeTrueview"))));
-		// postMetaDataParams.add(new BasicNameValuePair("paid_product",
-		// boolConverter(upload.getBoolean("monetizeProduct"))));
-		// postMetaDataParams.add(new BasicNameValuePair("monetization_style",
-		// "ads"));
-		// }
-		//
-		// if (upload.getBoolean("claim")) {
-		// postMetaDataParams.add(new BasicNameValuePair(
-		// "enable_monetization", boolConverter(upload
-		// .getBoolean("claim"))));
-		// postMetaDataParams.add(new BasicNameValuePair("monetization_style",
-		// "ads"));
-		// postMetaDataParams.add(new BasicNameValuePair("claim_type", (upload
-		// .getInteger("claimtype") == 0) ? "B" : (upload
-		// .getInteger("claimtype") == 1) ? "V" : "A"));
-		//
-		// final Pattern pattern = Pattern
-		// .compile("value=\"([^\"]+?)\" class=\"usage_policy-menu-item\"");
-		// final Matcher matcher = pattern.matcher(content);
-		// if (matcher.find(upload.getInteger("claimpolicy"))) {
-		// postMetaDataParams.add(new BasicNameValuePair("usage_policy",
-		// matcher.group(1)));
-		// }
-		// postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads",
-		// boolConverter(upload.getBoolean("partnerOverlay"))));
-		// postMetaDataParams.add(new BasicNameValuePair("trueview_instream",
-		// boolConverter(upload.getBoolean("partnerTrueview"))));
-		// postMetaDataParams.add(new BasicNameValuePair("instream",
-		// boolConverter(upload.getBoolean("partnerInstream"))));
-		// postMetaDataParams.add(new BasicNameValuePair("paid_product",
-		// boolConverter(upload.getBoolean("partnerProduct"))));
-		//
-		// postMetaDataParams.add(new BasicNameValuePair("asset_type", upload
-		// .getString("asset").toLowerCase(Locale.getDefault())));
-		// postMetaDataParams.add(new BasicNameValuePair("web_title", upload
-		// .getString("webTitle")));
-		// postMetaDataParams.add(new BasicNameValuePair("web_description",
-		// upload.getString("webDescription")));
-		// if (upload.getString("webID").isEmpty()) {
-		// postMetaDataParams.add(new BasicNameValuePair("web_custom_id",
-		// upload.getString("videoId")));
-		// } else {
-		// postMetaDataParams.add(new BasicNameValuePair("web_custom_id",
-		// upload.getString("webID")));
-		// }
-		// postMetaDataParams.add(new BasicNameValuePair("web_notes", upload
-		// .getString("webNotes")));
-		//
-		// postMetaDataParams.add(new BasicNameValuePair("tv_tms_id", upload
-		// .getString("tvTMSID")));
-		// postMetaDataParams.add(new BasicNameValuePair("tv_isan", upload
-		// .getString("tvISAN")));
-		// postMetaDataParams.add(new BasicNameValuePair("tv_eidr", upload
-		// .getString("tvEIDR")));
-		// postMetaDataParams.add(new BasicNameValuePair("show_title", upload
-		// .getString("showTitle")));
-		// postMetaDataParams.add(new BasicNameValuePair("episode_title",
-		// upload.getString("episodeTitle")));
-		// postMetaDataParams.add(new BasicNameValuePair("season_nb", upload
-		// .getString("seasonNb")));
-		// postMetaDataParams.add(new BasicNameValuePair("episode_nb", upload
-		// .getString("episodeNb")));
-		// if (upload.getString("tvID").isEmpty()) {
-		// postMetaDataParams.add(new BasicNameValuePair("tv_custom_id",
-		// upload.getString("videoId")));
-		// } else {
-		// postMetaDataParams.add(new BasicNameValuePair("tv_custom_id",
-		// upload.getString("tvID")));
-		// }
-		// postMetaDataParams.add(new BasicNameValuePair("tv_notes", upload
-		// .getString("tvNotes")));
-		//
-		// postMetaDataParams.add(new BasicNameValuePair("movie_title", upload
-		// .getString("movieTitle")));
-		// postMetaDataParams.add(new BasicNameValuePair("movie_description",
-		// upload.getString("movieDescription")));
-		// postMetaDataParams.add(new BasicNameValuePair("movie_tms_id", upload
-		// .getString("movieTMSID")));
-		// postMetaDataParams.add(new BasicNameValuePair("movie_isan", upload
-		// .getString("movieISAN")));
-		// postMetaDataParams.add(new BasicNameValuePair("movie_eidr", upload
-		// .getString("movieEIDR")));
-		// if (upload.getString("movieID").isEmpty()) {
-		// postMetaDataParams.add(new BasicNameValuePair(
-		// "movie_custom_id", upload.getString("videoId")));
-		// } else {
-		// postMetaDataParams.add(new BasicNameValuePair(
-		// "movie_custom_id", upload.getString("movieID")));
-		// }
-		// postMetaDataParams.add(new BasicNameValuePair("movie_notes", upload
-		// .getString("movieNotes")));
-		// }
-		final String modified = new StringBuilder(
-				"still_id,still_id_custom_thumb_version,publish_time,privacy,enable_monetization,enable_overlay_ads,trueview_instream,instream,paid_product,claim_type,usage_policy,")
-				.append("asset_type,web_title,web_description,web_custom_id,web_notes,tv_tms_id,tv_isan,tv_eidr,show_title,episode_title,season_nb,episode_nb,tv_custom_id,tv_notes,movie_title,")
-				.append("movie_description,movie_tms_id,movie_tms_id,movie_isan,movie_eidr,movie_custom_id,movie_custom_id,creator_share_facebook,creator_share_twitter,creator_share_custom_message")
-				.toString();
-		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified));
+		if (upload.getBoolean("claim")) {
+			postMetaDataParams.add(new BasicNameValuePair("enable_monetization", boolConverter(true)));
+			postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads", boolConverter(upload.getBoolean("overlay"))));
+			postMetaDataParams.add(new BasicNameValuePair("trueview_instream", boolConverter(upload.getBoolean("trueview"))));
+			postMetaDataParams.add(new BasicNameValuePair("instream", boolConverter(upload.getBoolean("instream"))));
+			postMetaDataParams.add(new BasicNameValuePair("paid_product", boolConverter(upload.getBoolean("product"))));
+			postMetaDataParams.add(new BasicNameValuePair("monetization_style", "ads"));
+			postMetaDataParams.add(new BasicNameValuePair("allow_syndication", boolConverter(upload.getInteger("syndication") == 0)));
 
+			// PARTNER
+			// PARTNER
+			if (false) {
+				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getInteger("claimtype") == 0 ? "B" : upload
+						.getInteger("claimtype") == 1 ? "V" : "A"));
+
+				final Pattern pattern = Pattern.compile("value=\"([^\"]+?)\" class=\"usage_policy-menu-item\"");
+				final Matcher matcher = pattern.matcher(content);
+				if (matcher.find(upload.getInteger("claimpolicy"))) {
+					postMetaDataParams.add(new BasicNameValuePair("usage_policy", matcher.group(1)));
+				}
+				final String prefx = true ? "web_" : true ? "tv_" : "movie_";
+
+				postMetaDataParams.add(new BasicNameValuePair("asset_type", upload.getString("asset").toLowerCase(Locale.getDefault())));
+				if (upload.getString("customid").isEmpty()) {
+					postMetaDataParams.add(new BasicNameValuePair(prefx + "custom_id", upload.getString("videoid")));
+				} else {
+					postMetaDataParams.add(new BasicNameValuePair(prefx + "custom_id", upload.getString("customid")));
+				}
+
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "notes", upload.getString("notes")));
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "tms_id", upload.getString("tmsid")));
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "isan", upload.getString("isan")));
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "eidr", upload.getString("eidr")));
+
+				// WEB + MOVIE ONLY
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "title", upload.getString("monetizetitle")));
+				postMetaDataParams.add(new BasicNameValuePair(prefx + "description", upload.getString("monetizedescription")));
+
+				// TV ONLY
+				postMetaDataParams.add(new BasicNameValuePair("show_title", upload.getString("monetizetitle")));
+				postMetaDataParams.add(new BasicNameValuePair("episode_title", upload.getString("episodetitle")));
+				postMetaDataParams.add(new BasicNameValuePair("season_nb", upload.getString("seasonnb")));
+				postMetaDataParams.add(new BasicNameValuePair("episode_nb", upload.getString("episodenb")));
+			}
+		}
+
+		final StringBuilder modified = new StringBuilder();
+		for (final BasicNameValuePair param : postMetaDataParams) {
+			modified.append(param.getName());
+			modified.append(',');
+		}
+
+		modified.deleteCharAt(modified.length() - 1);
+		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified.toString()));
 		postMetaDataParams.add(new BasicNameValuePair("title", extractor(content, "name=\"title\" value=\"", "\"")));
-
+		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "name=\"session_token\" value=\"", "\"")));
+		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
 		postMetaData.setEntity(new UrlEncodedFormEntity(postMetaDataParams, "UTF-8"));
+
+		// System.out.println(postMetaDataParams.toString());
 
 		final HttpResponse response = RequestUtil.execute(postMetaData);
 		EntityUtils.consumeQuietly(response.getEntity());

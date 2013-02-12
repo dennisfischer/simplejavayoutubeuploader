@@ -336,11 +336,11 @@ public class QueueController implements Initializable {
 
 								@Override
 								public void handle(final ActionEvent arg0) {
-									item.setBoolean("pauseOnFinish", btnPauseOnFinish.selectedProperty().get());
+									item.setBoolean("pauseonfinish", btnPauseOnFinish.selectedProperty().get());
 									item.saveIt();
 								}
 							});
-							btnPauseOnFinish.selectedProperty().set(item.getBoolean("pauseOnFinish"));
+							btnPauseOnFinish.selectedProperty().set(item.getBoolean("pauseonfinish"));
 
 							final HBox hbox = new HBox(3d);
 							hbox.getChildren().addAll(btnRemove, btnEdit, btnAbort, btnPauseOnFinish);

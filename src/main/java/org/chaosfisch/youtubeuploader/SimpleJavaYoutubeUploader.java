@@ -95,12 +95,11 @@ public class SimpleJavaYoutubeUploader extends Application {
 	private Uploader	uploader;
 
 	protected void initApplication(final Stage primaryStage) throws IOException {
-		injector = Guice.createInjector(new GuiceBindings());
-
 		initLogger();
 		initLocale();
 		initSavedir();
 		initUpdater();
+		injector = Guice.createInjector(new GuiceBindings());
 		initDatabase();
 		updateDatabase();
 
@@ -110,13 +109,15 @@ public class SimpleJavaYoutubeUploader extends Application {
 				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		fxLoader.load();
-		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 600);
+		final Scene scene = new Scene((Parent) fxLoader.getRoot(), 1000, 640);
 		scene.getStylesheets().add(getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
 		primaryStage.setTitle(I18nHelper.message("application.title"));
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
 		primaryStage.setScene(scene);
-		primaryStage.setMinHeight(600);
+		primaryStage.setMinHeight(640);
 		primaryStage.setMinWidth(1000);
+		primaryStage.setHeight(640);
+		primaryStage.setWidth(1000);
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
 			@Override
@@ -177,6 +178,18 @@ public class SimpleJavaYoutubeUploader extends Application {
 			Base.exec("ALTER TABLE TEMPLATES ADD facebook BOOLEAN");
 			Base.exec("ALTER TABLE TEMPLATES ADD twitter BOOLEAN");
 			Base.exec("ALTER TABLE TEMPLATES ADD message VARCHAR(5000)");
+			Base.commitTransaction();
+			updated = true;
+		}
+
+		if (!Upload.getMetaModel().getColumnMetadata().containsKey("claim")) {
+			Base.openTransaction();
+			Base.exec("ALTER TABLE UPLOADS ADD CLAIM BOOLEAN");
+			Base.exec("ALTER TABLE UPLOADS ADD OVERLAY BOOLEAN");
+			Base.exec("ALTER TABLE UPLOADS ADD TRUEVIEW BOOLEAN");
+			Base.exec("ALTER TABLE UPLOADS ADD INSTREAM BOOLEAN");
+			Base.exec("ALTER TABLE UPLOADS ADD PRODUCT BOOLEAN");
+			Base.exec("ALTER TABLE UPLOADS ADD SYNDICATION INTEGER");
 			Base.commitTransaction();
 			updated = true;
 		}

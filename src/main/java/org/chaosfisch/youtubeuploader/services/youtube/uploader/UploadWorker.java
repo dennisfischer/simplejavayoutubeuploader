@@ -311,7 +311,8 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void browserAction() {
-		if (upload.get("release") == null && (upload.getString("thumbnail") == null || upload.getString("thumbnail").isEmpty())) {
+		if (upload.get("release") == null && (upload.getString("thumbnail") == null || upload.getString("thumbnail").isEmpty())
+				&& !upload.getBoolean("claim")) {
 			return;
 		}
 		// !upload.getBoolean("monetize") && !upload.getBoolean("claim") &&

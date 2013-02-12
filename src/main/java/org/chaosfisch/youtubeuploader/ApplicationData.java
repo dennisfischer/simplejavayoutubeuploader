@@ -12,8 +12,8 @@ package org.chaosfisch.youtubeuploader;
 public interface ApplicationData {
 	String	APPLICATION_NAME	= "dennis-fischer-youtube java uploader-3.0 beta";
 	String	DEVELOPER_KEY		= "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
-	String	VERSION				= "3.0.0.2";
-	int		RELEASE				= 2;
+	String	VERSION				= "3.0.0.3";
+	int		RELEASE				= 3;
 	String	BASEURL				= "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
 	String	DATA_DIR			= System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
 }

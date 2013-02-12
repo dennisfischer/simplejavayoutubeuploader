@@ -86,10 +86,10 @@
                       <children>
                         <AnchorPane id="" disable="false" prefHeight="-1.0" prefWidth="-1.0" visible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
                           <children>
-                            <GridPane maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <GridPane gridLinesVisible="false" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                <CheckBox fx:id="monetizeClaim" mnemonicParsing="false" prefWidth="-1.0" text="Anspruch erheben" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-                                <ChoiceBox fx:id="monetizeClaimType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                                <CheckBox fx:id="monetizeClaim" disable="false" mnemonicParsing="false" prefWidth="-1.0" text="Anspruch erheben" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+                                <ChoiceBox fx:id="monetizeClaimType" disable="false" maxWidth="1.7976931348623157E308" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0">
                                   <items>
                                     <FXCollections fx:factory="observableArrayList">
                                       <String fx:value="Item 1" />
@@ -98,7 +98,7 @@
                                     </FXCollections>
                                   </items>
                                 </ChoiceBox>
-                                <ChoiceBox fx:id="monetizeClaimOption" maxWidth="1.7976931348623157E308" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1">
+                                <ChoiceBox fx:id="monetizeClaimOption" disable="false" maxWidth="1.7976931348623157E308" prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1">
                                   <items>
                                     <FXCollections fx:factory="observableArrayList">
                                       <String fx:value="Item 1" />
@@ -107,8 +107,8 @@
                                     </FXCollections>
                                   </items>
                                 </ChoiceBox>
-                                <Label fx:id="labelContentInformation" text="Inhaltsinformationen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="7" />
-                                <RadioButton fx:id="assetWeb" mnemonicParsing="false" selected="true" text="Web" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                                <Label fx:id="labelContentInformation" disable="false" text="Inhaltsinformationen" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="7" />
+                                <RadioButton fx:id="assetWeb" disable="false" mnemonicParsing="false" selected="true" text="Web" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="8">
                                   <toggleGroup>
                                     <ToggleGroup fx:id="assetType" />
                                   </toggleGroup>
@@ -116,51 +116,67 @@
                                     <Insets left="20.0" fx:id="x3" />
                                   </GridPane.margin>
                                 </RadioButton>
-                                <RadioButton fx:id="assetTV" disable="false" mnemonicParsing="false" text="TV-Folge" toggleGroup="$assetType" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                <RadioButton fx:id="assetTV" disable="false" mnemonicParsing="false" text="TV-Folge" toggleGroup="$assetType" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8">
                                   <GridPane.margin>
                                     <Insets fx:id="x1" />
                                   </GridPane.margin>
                                 </RadioButton>
-                                <RadioButton fx:id="assetMovie" disable="false" mnemonicParsing="false" text="Film" toggleGroup="$assetType" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="8" />
-                                <Label fx:id="labelTMSID" text="TMS ID:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
-                                <TextField fx:id="monetizeTMSID" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.rowIndex="10" />
-                                <Label fx:id="labelISAN" text="ISAN:" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                <TextField fx:id="monetizeISAN" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                                <Label fx:id="labelEIDR" text="EIDR:" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-                                <Label text="Custom-ID:" GridPane.columnIndex="3" GridPane.rowIndex="9" />
-                                <TextField fx:id="monetizeEIDR" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                                <TextField fx:id="monetizeCustomID" prefWidth="-1.0" promptText="auto-generated" GridPane.columnIndex="3" GridPane.rowIndex="10" />
-                                <Label fx:id="labelNumberSeason" text="Nummer Staffel:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
-                                <TextField fx:id="monetizeNumberSeason" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="12" />
-                                <Label text="Titel:" GridPane.columnIndex="0" GridPane.rowIndex="13" />
-                                <Label text="Hinweise:" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                                <TextField fx:id="monetizeNotes" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-                                <Label text="Beschreibung:" GridPane.columnIndex="0" GridPane.rowIndex="15" />
-                                <TextField fx:id="monetizeDescription" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="15" />
+                                <RadioButton fx:id="assetMovie" disable="false" mnemonicParsing="false" text="Film" toggleGroup="$assetType" visible="false" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="8" />
+                                <Label fx:id="labelTMSID" disable="false" text="TMS ID:" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                                <TextField fx:id="monetizeTMSID" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+                                <Label fx:id="labelISAN" disable="false" text="ISAN:" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                <TextField fx:id="monetizeISAN" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                <Label fx:id="labelEIDR" disable="false" text="EIDR:" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="14" />
+                                <Label fx:id="labelCustomId" disable="false" text="Custom-ID:" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="14" />
+                                <TextField fx:id="monetizeEIDR" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="15" />
+                                <TextField fx:id="monetizeCustomID" disable="false" prefWidth="-1.0" promptText="auto-generated" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="15" />
+                                <Label fx:id="labelNumberSeason" disable="false" text="Nummer Staffel:" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                                <TextField fx:id="monetizeNumberSeason" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="13" />
+                                <Label fx:id="labelMonetizeTitle" disable="false" text="Titel:" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                <Label id="labelNotes" fx:id="labelNote" disable="false" text="Hinweise:" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+                                <TextField fx:id="monetizeNotes" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+                                <Label fx:id="labelDescription" disable="false" text="Beschreibung:" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                <TextField fx:id="monetizeDescription" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11" />
                                 <CheckBox fx:id="monetizeOverlay" allowIndeterminate="false" indeterminate="false" mnemonicParsing="false" text="Overlay-In-Video-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="2">
                                   <GridPane.margin>
                                     <Insets fx:id="x1" />
                                   </GridPane.margin>
                                 </CheckBox>
-                                <CheckBox fx:id="monetizeTrueView" mnemonicParsing="false" text="TrueView In-Stream-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="3" />
-                                <CheckBox fx:id="monetizeProductPlacement" mnemonicParsing="false" text="Dieses Video enthält ein bezahltes Produkt-Placement" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="6" />
-                                <CheckBox fx:id="monetizeInStream" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="4" />
-                                <CheckBox fx:id="monetizeInStreamDefaults" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen von bis zu 30 Sekunden." GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.margin="$x1" GridPane.rowIndex="5" />
-                                <TextField fx:id="monetizeTitle" prefWidth="-1.0" promptText="auto-generated" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-                                <Label fx:id="labelNumberEpisode" prefWidth="99.0" text="Nummer Folge:" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                                <TextField fx:id="monetizeNumberEpisode" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="12" />
-                                <Label fx:id="labelTitleEpisode" prefWidth="-1.0" text="Titel Folge:" GridPane.columnIndex="2" GridPane.rowIndex="11" />
-                                <TextField fx:id="monetizeTitleEpisode" maxHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="12" />
+                                <CheckBox fx:id="monetizeTrueView" mnemonicParsing="false" text="TrueView In-Stream-Anzeigen" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
+                                </CheckBox>
+                                <CheckBox fx:id="monetizeProductPlacement" mnemonicParsing="false" text="Dieses Video enthält ein bezahltes Produkt-Placement" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="4">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
+                                </CheckBox>
+                                <CheckBox fx:id="monetizeInStream" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="5">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
+                                </CheckBox>
+                                <CheckBox fx:id="monetizeInStreamDefaults" disable="false" mnemonicParsing="false" text="Standardmäßige InStream-Anzeigen von bis zu 30 Sekunden." visible="false" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="6">
+                                  <GridPane.margin>
+                                    <Insets fx:id="x1" />
+                                  </GridPane.margin>
+                                </CheckBox>
+                                <TextField fx:id="monetizeTitle" disable="false" prefWidth="-1.0" promptText="auto-generated" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+                                <Label fx:id="labelNumberEpisode" disable="false" prefWidth="99.0" text="Nummer Folge:" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                <TextField fx:id="monetizeNumberEpisode" disable="false" prefWidth="-1.0" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="13" />
+                                <Label fx:id="labelTitleEpisode" disable="false" prefWidth="-1.0" text="Titel Folge:" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="12" />
+                                <TextField fx:id="monetizeTitleEpisode" disable="false" maxHeight="-1.0" prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="13" />
                               </children>
                               <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" percentWidth="-1.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
                               </columnConstraints>
                               <rowConstraints>
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
+                                <RowConstraints fillHeight="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
@@ -193,7 +209,7 @@
                             <Insets left="20.0" fx:id="x6" />
                           </GridPane.margin>
                         </RadioButton>
-                        <ToggleButton fx:id="monetizePartner" mnemonicParsing="false" onAction="#togglePartner" selected="false" text="Partner" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                        <ToggleButton fx:id="monetizePartner" disable="false" mnemonicParsing="false" onAction="#togglePartner" selected="false" text="Partner" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                       </children>
                       <columnConstraints>
                         <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
@@ -283,7 +299,7 @@
                             <Insets fx:id="x1" />
                           </GridPane.margin>
                         </Button>
-                        <ChoiceBox fx:id="templateList" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                        <ChoiceBox fx:id="templateList" disable="false" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
                           <GridPane.margin>
                             <Insets fx:id="x1" />
                           </GridPane.margin>

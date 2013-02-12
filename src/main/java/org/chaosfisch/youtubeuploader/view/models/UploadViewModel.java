@@ -18,6 +18,7 @@ import java.util.Iterator;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -27,6 +28,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Toggle;
 import javafx.util.converter.DefaultStringConverter;
 
 import org.chaosfisch.google.atom.AtomCategory;
@@ -114,12 +116,12 @@ public class UploadViewModel {
 	public SimpleObjectProperty<SingleSelectionModel<Model>>		selectedTemplateProperty;
 	// }} UploadOptions
 	// {{ MonetizeOptions
-	public SimpleBooleanProperty									claimProperty					= new SimpleBooleanProperty();
-	public SimpleBooleanProperty									overlayProperty					= new SimpleBooleanProperty();
-	public SimpleBooleanProperty									trueViewProperty				= new SimpleBooleanProperty();
-	public SimpleBooleanProperty									inStreamProperty				= new SimpleBooleanProperty();
-	public SimpleBooleanProperty									inStreamDefaultsProperty		= new SimpleBooleanProperty();
-	public SimpleBooleanProperty									productPlacementProperty		= new SimpleBooleanProperty();
+	public SimpleBooleanProperty									claimProperty					= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									overlayProperty					= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									trueViewProperty				= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									inStreamProperty				= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									inStreamDefaultsProperty		= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									productPlacementProperty		= new SimpleBooleanProperty(false);
 
 	public SimpleListProperty<String>								claimTypeProperty				= new SimpleListProperty<>(
 																											FXCollections
@@ -138,6 +140,11 @@ public class UploadViewModel {
 	public SimpleStringProperty										monetizeTitleProperty			= new SimpleStringProperty();
 	public SimpleStringProperty										monetizeNotesProperty			= new SimpleStringProperty();
 	public SimpleStringProperty										monetizeDescriptionProperty		= new SimpleStringProperty();
+
+	private SimpleObjectProperty<SingleSelectionModel<String>>		selectedClaimTypeProperty;
+	private SimpleObjectProperty<SingleSelectionModel<String>>		selectedClaimOptionProperty;
+	private SimpleObjectProperty<ReadOnlyObjectProperty<Toggle>>	selectedAssetTypeProperty;
+	private SimpleObjectProperty<ReadOnlyObjectProperty<Toggle>>	selectedContentSyndicationProperty;
 	// }} MonetizeOptions
 
 	@Inject private PlaylistService									playlistService;
@@ -150,7 +157,9 @@ public class UploadViewModel {
 	public void init(final SingleSelectionModel<AtomCategory> categorySelectionModel, final SingleSelectionModel<File> fileSelectionModel,
 			final SingleSelectionModel<Model> accountSelectionModel, final SingleSelectionModel<String> commentSelectionModel,
 			final SingleSelectionModel<String> licenseSelectionModel, final SingleSelectionModel<String> videoresponseSelectionModel,
-			final SingleSelectionModel<String> visibilitySelectionModel, final SingleSelectionModel<Model> templateSelectionModel) {
+			final SingleSelectionModel<String> visibilitySelectionModel, final SingleSelectionModel<Model> templateSelectionModel,
+			final SingleSelectionModel<String> claimTypeSelectionModel, final SingleSelectionModel<String> claimOptionSelectionModel,
+			final ReadOnlyObjectProperty<Toggle> selectedAssetTypeModel, final ReadOnlyObjectProperty<Toggle> contentSyndicationModel) {
 		selectedCategoryProperty = new SimpleObjectProperty<>(categorySelectionModel);
 		selectedFileProperty = new SimpleObjectProperty<>(fileSelectionModel);
 		selectedAccountProperty = new SimpleObjectProperty<>(accountSelectionModel);
@@ -159,6 +168,10 @@ public class UploadViewModel {
 		selectedVideoResponseProperty = new SimpleObjectProperty<>(videoresponseSelectionModel);
 		selectedVisibilityProperty = new SimpleObjectProperty<>(visibilitySelectionModel);
 		selectedTemplateProperty = new SimpleObjectProperty<>(templateSelectionModel);
+		selectedClaimTypeProperty = new SimpleObjectProperty<>(claimTypeSelectionModel);
+		selectedClaimOptionProperty = new SimpleObjectProperty<>(claimOptionSelectionModel);
+		selectedAssetTypeProperty = new SimpleObjectProperty<>(selectedAssetTypeModel);
+		selectedContentSyndicationProperty = new SimpleObjectProperty<>(contentSyndicationModel);
 
 		visibilityProperty.addAll(I18nHelper.message("visibilitylist.public"), I18nHelper.message("visibilitylist.unlisted"),
 				I18nHelper.message("visibilitylist.private"), I18nHelper.message("visibilitylist.scheduled"));
@@ -314,6 +327,34 @@ public class UploadViewModel {
 			}
 		}
 
+		// System.out.println("------------------------------------");
+		// System.out.println("Claim: " + claimProperty.get());
+		// System.out.println("Claim-Option: " +
+		// selectedClaimOptionProperty.get().getSelectedIndex());
+		// System.out.println("Claim-Type:" +
+		// selectedClaimTypeProperty.get().getSelectedIndex());
+		// System.out.println("Content-Syndication:"
+		// +
+		// selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
+		// .indexOf(selectedContentSyndicationProperty.get().get()));
+		// System.out.println("Asset-Type:"
+		// +
+		// selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
+		// System.out.println("------------------------------------");
+		// System.out.println("TMSID:" + tmsidProperty.get());
+		// System.out.println("ISAN:" + isanProperty.get());
+		// System.out.println("EIDR:" + eidrProperty.get());
+		// System.out.println("ID:" + customidProperty.get());
+		// System.out.println("No Episode:" + numberEpisodeProperty.get());
+		// System.out.println("No Season:" + numberSeasonProperty.get());
+		// System.out.println("Title Episode:" +
+		// monetizeTitleEpisodeProperty.get());
+		// System.out.println("Title:" + monetizeTitleProperty.get());
+		// System.out.println("Notes:" + monetizeNotesProperty.get());
+		// System.out.println("Description:" +
+		// monetizeDescriptionProperty.get());
+		// System.out.println("------------------------------------");
+
 		final Upload upload = uploadBuilder.build();
 		if (upload.isValid()) {
 			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
@@ -321,7 +362,22 @@ public class UploadViewModel {
 			upload.save();
 			idProperty.setValue(-1);
 			uploadBuilder.finalize(upload);
+
+			// EXPERIMENTAL
+			upload.setBoolean("claim", overlayProperty.getValue() || trueViewProperty.getValue() || inStreamProperty.getValue()
+					|| productPlacementProperty.getValue());
+			upload.setBoolean("overlay", overlayProperty.getValue());
+			upload.setBoolean("trueview", trueViewProperty.getValue());
+			upload.setBoolean("instream", inStreamProperty.getValue());
+			upload.setBoolean("product", productPlacementProperty.getValue());
+			upload.setBoolean(
+					"syndication",
+					selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
+							.indexOf(selectedContentSyndicationProperty.get().get()));
+			upload.saveIt();
+			// EXPERIMENTAL
 		}
+
 		return upload;
 	}
 

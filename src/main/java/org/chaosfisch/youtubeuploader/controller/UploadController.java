@@ -76,241 +76,102 @@ public class UploadController implements Initializable {
 
 	// {{ ViewElements
 
-	@FXML// ResourceBundle that was given to the FXMLLoader
-	private ResourceBundle				resources;
-
-	@FXML// URL location of the FXML file that was given to the FXMLLoader
-	private URL							location;
-
-	@FXML// fx:id="accountList"
-	private ChoiceBox<Model>			accountList;
-
-	@FXML// fx:id="addUpload"
-	private Button						addUpload;
-
-	@FXML// fx:id="assetMovie"
-	private RadioButton					assetMovie;
-
-	@FXML// fx:id="assetTV"
-	private RadioButton					assetTV;
-
-	@FXML// fx:id="assetType"
-	private ToggleGroup					assetType;
-
-	@FXML// fx:id="assetWeb"
-	private RadioButton					assetWeb;
-
-	@FXML// fx:id="contentSyndication"
-	private ToggleGroup					contentSyndication;
-
-	@FXML// fx:id="extendedSettingsGrid"
-	private GridPane					extendedSettingsGrid;
-
-	@FXML// fx:id="gridWidthSlider"
-	private Slider						gridWidthSlider;
-
-	@FXML// fx:id="labelContentInformation"
-	private Label						labelContentInformation;
-
-	@FXML// fx:id="labelEIDR"
-	private Label						labelEIDR;
-
-	@FXML// fx:id="labelISAN"
-	private Label						labelISAN;
-
-	@FXML// fx:id="labelNumberEpisode"
-	private Label						labelNumberEpisode;
-
-	@FXML// fx:id="labelNumberSeason"
-	private Label						labelNumberSeason;
-
-	@FXML// fx:id="labelTMSID"
-	private Label						labelTMSID;
-
-	@FXML// fx:id="labelTitleEpisode"
-	private Label						labelTitleEpisode;
-
-	@FXML// fx:id="monetizeClaim"
-	private CheckBox					monetizeClaim;
-
-	@FXML// fx:id="monetizeClaimOption"
-	private ChoiceBox<String>			monetizeClaimOption;
-
-	@FXML// fx:id="monetizeClaimType"
-	private ChoiceBox<String>			monetizeClaimType;
-
-	@FXML// fx:id="monetizeCustomID"
-	private TextField					monetizeCustomID;
-
-	@FXML// fx:id="monetizeDescription"
-	private TextField					monetizeDescription;
-
-	@FXML// fx:id="monetizeEIDR"
-	private TextField					monetizeEIDR;
-
-	@FXML// fx:id="monetizeISAN"
-	private TextField					monetizeISAN;
-
-	@FXML// fx:id="monetizeInStream"
-	private CheckBox					monetizeInStream;
-
-	@FXML// fx:id="monetizeInStreamDefaults"
-	private CheckBox					monetizeInStreamDefaults;
-
-	@FXML// fx:id="monetizeNotes"
-	private TextField					monetizeNotes;
-
-	@FXML// fx:id="monetizeNumberEpisode"
-	private TextField					monetizeNumberEpisode;
-
-	@FXML// fx:id="monetizeNumberSeason"
-	private TextField					monetizeNumberSeason;
-
-	@FXML// fx:id="monetizeOverlay"
-	private CheckBox					monetizeOverlay;
-
-	@FXML// fx:id="monetizePartner"
-	private ToggleButton				monetizePartner;
-
-	@FXML// fx:id="monetizeProductPlacement"
-	private CheckBox					monetizeProductPlacement;
-
-	@FXML// fx:id="monetizeTMSID"
-	private TextField					monetizeTMSID;
-
-	@FXML// fx:id="monetizeTitle"
-	private TextField					monetizeTitle;
-
-	@FXML// fx:id="monetizeTitleEpisode"
-	private TextField					monetizeTitleEpisode;
-
-	@FXML// fx:id="monetizeTrueView"
-	private CheckBox					monetizeTrueView;
-
-	@FXML// fx:id="openDefaultdir"
-	private Button						openDefaultdir;
-
-	@FXML// fx:id="openEnddir"
-	private Button						openEnddir;
-
-	@FXML// fx:id="openFiles"
-	private Button						openFiles;
-
-	@FXML// fx:id="openThumbnail"
-	private Button						openThumbnail;
-
-	@FXML// fx:id="partnerPane"
-	private TitledPane					partnerPane;
-
-	@FXML// fx:id="playlistDropScrollpane"
-	private ScrollPane					playlistDropScrollpane;
-
-	@FXML// fx:id="playlistGrid"
-	private GridPane					playlistGrid;
-
-	@FXML// fx:id="playlistSourceScrollpane"
-	private ScrollPane					playlistSourceScrollpane;
-
-	@FXML// fx:id="previewTitle"
-	private TextField					previewTitle;
-
-	@FXML// fx:id="refreshPlaylists"
-	private Button						refreshPlaylists;
-
-	@FXML// fx:id="removeTemplate"
-	private Button						removeTemplate;
-
-	@FXML// fx:id="resetUpload"
-	private Button						resetUpload;
-
-	@FXML// fx:id="saveTemplate"
-	private Button						saveTemplate;
-
-	@FXML// fx:id="templateList"
-	private ChoiceBox<Model>			templateList;
-
-	@FXML// fx:id="uploadCategory"
-	private ChoiceBox<AtomCategory>		uploadCategory;
-
-	@FXML// fx:id="uploadComment"
-	private ChoiceBox<String>			uploadComment;
-
-	@FXML// fx:id="uploadCommentvote"
-	private CheckBox					uploadCommentvote;
-
-	@FXML// fx:id="uploadDefaultdir"
-	private TextField					uploadDefaultdir;
-
-	@FXML// fx:id="uploadDescription"
-	private TextArea					uploadDescription;
-
-	@FXML// fx:id="uploadEmbed"
-	private CheckBox					uploadEmbed;
-
-	@FXML// fx:id="uploadEnddir"
-	private TextField					uploadEnddir;
-
-	@FXML// fx:id="uploadFacebook"
-	private CheckBox					uploadFacebook;
-
-	@FXML// fx:id="uploadFile"
-	private ChoiceBox<File>				uploadFile;
-
-	@FXML// fx:id="uploadGrid"
-	private GridPane					uploadGrid;
-
-	@FXML// fx:id="uploadLicense"
-	private ChoiceBox<String>			uploadLicense;
-
-	@FXML// fx:id="uploadMessage"
-	private TextArea					uploadMessage;
-
-	@FXML// fx:id="uploadMobile"
-	private CheckBox					uploadMobile;
-
-	@FXML// fx:id="uploadRate"
-	private CheckBox					uploadRate;
-
-	@FXML// fx:id="uploadTags"
-	private TextArea					uploadTags;
-
-	@FXML// fx:id="uploadThumbnail"
-	private TextField					uploadThumbnail;
-
-	@FXML// fx:id="uploadTitle"
-	private TextField					uploadTitle;
-
-	@FXML// fx:id="uploadTwitter"
-	private CheckBox					uploadTwitter;
-
-	@FXML// fx:id="uploadVideoresponse"
-	private ChoiceBox<String>			uploadVideoresponse;
-
-	@FXML// fx:id="uploadVisibility"
-	private ChoiceBox<String>			uploadVisibility;
-
-	@FXML// fx:id="validationText"
-	private Label						validationText;
-
-	private final CalendarTextField		starttime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																	.withShowTime(Boolean.TRUE);
-	private final CalendarTextField		releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																	.withShowTime(Boolean.TRUE);
-	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(
-																	Pos.CENTER_RIGHT);
-
-	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
-	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
+	@FXML private ResourceBundle			resources;
+	@FXML private URL						location;
+	@FXML private ChoiceBox<Model>			accountList;
+	@FXML private Button					addUpload;
+	@FXML private RadioButton				assetMovie;
+	@FXML private RadioButton				assetTV;
+	@FXML private ToggleGroup				assetType;
+	@FXML private RadioButton				assetWeb;
+	@FXML private ToggleGroup				contentSyndication;
+	@FXML private GridPane					extendedSettingsGrid;
+	@FXML private Slider					gridWidthSlider;
+	@FXML private Label						labelContentInformation;
+	@FXML private Label						labelCustomId;
+	@FXML private Label						labelDescription;
+	@FXML private Label						labelEIDR;
+	@FXML private Label						labelISAN;
+	@FXML private Label						labelMonetizeTitle;
+	@FXML private Label						labelNote;
+	@FXML private Label						labelNumberEpisode;
+	@FXML private Label						labelNumberSeason;
+	@FXML private Label						labelTMSID;
+	@FXML private Label						labelTitleEpisode;
+	@FXML private CheckBox					monetizeClaim;
+	@FXML private ChoiceBox<String>			monetizeClaimOption;
+	@FXML private ChoiceBox<String>			monetizeClaimType;
+	@FXML private TextField					monetizeCustomID;
+	@FXML private TextField					monetizeDescription;
+	@FXML private TextField					monetizeEIDR;
+	@FXML private TextField					monetizeISAN;
+	@FXML private CheckBox					monetizeInStream;
+	@FXML private CheckBox					monetizeInStreamDefaults;
+	@FXML private TextField					monetizeNotes;
+	@FXML private TextField					monetizeNumberEpisode;
+	@FXML private TextField					monetizeNumberSeason;
+	@FXML private CheckBox					monetizeOverlay;
+	@FXML private ToggleButton				monetizePartner;
+	@FXML private CheckBox					monetizeProductPlacement;
+	@FXML private TextField					monetizeTMSID;
+	@FXML private TextField					monetizeTitle;
+	@FXML private TextField					monetizeTitleEpisode;
+	@FXML private CheckBox					monetizeTrueView;
+	@FXML private Button					openDefaultdir;
+	@FXML private Button					openEnddir;
+	@FXML private Button					openFiles;
+	@FXML private Button					openThumbnail;
+	@FXML private TitledPane				partnerPane;
+	@FXML private ScrollPane				playlistDropScrollpane;
+	@FXML private GridPane					playlistGrid;
+	@FXML private ScrollPane				playlistSourceScrollpane;
+	@FXML private TextField					previewTitle;
+	@FXML private Button					refreshPlaylists;
+	@FXML private Button					removeTemplate;
+	@FXML private Button					resetUpload;
+	@FXML private Button					saveTemplate;
+	@FXML private ChoiceBox<Model>			templateList;
+	@FXML private ChoiceBox<AtomCategory>	uploadCategory;
+	@FXML private ChoiceBox<String>			uploadComment;
+	@FXML private CheckBox					uploadCommentvote;
+	@FXML private TextField					uploadDefaultdir;
+	@FXML private TextArea					uploadDescription;
+	@FXML private CheckBox					uploadEmbed;
+	@FXML private TextField					uploadEnddir;
+	@FXML private CheckBox					uploadFacebook;
+	@FXML private ChoiceBox<File>			uploadFile;
+	@FXML private GridPane					uploadGrid;
+	@FXML private ChoiceBox<String>			uploadLicense;
+	@FXML private TextArea					uploadMessage;
+	@FXML private CheckBox					uploadMobile;
+	@FXML private CheckBox					uploadRate;
+	@FXML private TextArea					uploadTags;
+	@FXML private TextField					uploadThumbnail;
+	@FXML private TextField					uploadTitle;
+	@FXML private CheckBox					uploadTwitter;
+	@FXML private ChoiceBox<String>			uploadVideoresponse;
+	@FXML private ChoiceBox<String>			uploadVisibility;
+	@FXML private Label						validationText;
+
+	private final CalendarTextField			starttime			= new CalendarTextField().withValue(Calendar.getInstance())
+																		.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																		.withShowTime(Boolean.TRUE);
+	private final CalendarTextField			releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
+																		.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																		.withShowTime(Boolean.TRUE);
+	private final ListSpinner<Integer>		number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(
+																		Pos.CENTER_RIGHT);
+
+	private final GridView<Model>			playlistSourcezone	= GridViewBuilder.create(Model.class).build();
+	private final GridView<Model>			playlistDropzone	= GridViewBuilder.create(Model.class).build();
 
 	// }} ViewElements
 
-	@Inject private CategoryService		categoryService;
-	@Inject private FileChooser			fileChooser;
-	@Inject private DirectoryChooser	directoryChooser;
-	@Inject private DataSource			dataSource;
-	@Inject private UploadViewModel		uploadViewModel;
+	@Inject private CategoryService			categoryService;
+	@Inject private FileChooser				fileChooser;
+	@Inject private DirectoryChooser		directoryChooser;
+	@Inject private DataSource				dataSource;
+	@Inject private UploadViewModel			uploadViewModel;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -647,7 +508,8 @@ public class UploadController implements Initializable {
 
 		uploadViewModel.init(uploadCategory.getSelectionModel(), uploadFile.getSelectionModel(), accountList.getSelectionModel(),
 				uploadComment.getSelectionModel(), uploadLicense.getSelectionModel(), uploadVideoresponse.getSelectionModel(),
-				uploadVisibility.getSelectionModel(), templateList.getSelectionModel());
+				uploadVisibility.getSelectionModel(), templateList.getSelectionModel(), monetizeClaimType.getSelectionModel(),
+				monetizeClaimOption.getSelectionModel(), assetType.selectedToggleProperty(), contentSyndication.selectedToggleProperty());
 
 		fileChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
 		directoryChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
@@ -701,25 +563,26 @@ public class UploadController implements Initializable {
 
 			@Override
 			public void invalidated(final Observable observable) {
+				if (!monetizePartner.isSelected()) {
+					return;
+				}
 				if (monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().get() == 0) {
-					monetizeOverlay.selectedProperty().set(true);
-					monetizeTrueView.selectedProperty().set(true);
-					monetizeInStream.selectedProperty().set(true);
-					monetizeInStreamDefaults.selectedProperty().set(true);
-					monetizeProductPlacement.selectedProperty().set(true);
 					monetizeOverlay.visibleProperty().set(true);
 					monetizeTrueView.visibleProperty().set(true);
 					monetizeInStream.visibleProperty().set(true);
 					monetizeInStreamDefaults.visibleProperty().set(true);
 					monetizeProductPlacement.visibleProperty().set(true);
-					labelContentInformation.visibleProperty().set(true);
 				} else {
+					monetizeOverlay.selectedProperty().set(false);
+					monetizeTrueView.selectedProperty().set(false);
+					monetizeInStream.selectedProperty().set(false);
+					monetizeInStreamDefaults.selectedProperty().set(false);
+					monetizeProductPlacement.selectedProperty().set(false);
 					monetizeOverlay.visibleProperty().set(false);
 					monetizeTrueView.visibleProperty().set(false);
 					monetizeInStream.visibleProperty().set(false);
 					monetizeInStreamDefaults.visibleProperty().set(false);
 					monetizeProductPlacement.visibleProperty().set(false);
-					labelContentInformation.visibleProperty().set(false);
 				}
 			}
 		});
@@ -728,6 +591,9 @@ public class UploadController implements Initializable {
 
 			@Override
 			public void invalidated(final Observable observable) {
+				if (assetType.getSelectedToggle() == null) {
+					return;
+				}
 				if (assetType.getSelectedToggle().equals(assetWeb)) {
 					monetizeEIDR.visibleProperty().set(false);
 					monetizeISAN.visibleProperty().set(false);
@@ -807,6 +673,12 @@ public class UploadController implements Initializable {
 			monetizeNumberSeason.visibleProperty().set(true);
 			monetizeTitleEpisode.visibleProperty().set(true);
 			monetizeTMSID.visibleProperty().set(true);
+			monetizeCustomID.visibleProperty().set(true);
+			monetizeNotes.visibleProperty().set(true);
+			monetizeDescription.visibleProperty().set(true);
+			monetizeTitle.visibleProperty().set(true);
+			monetizeInStreamDefaults.visibleProperty().set(true);
+			monetizeInStream.visibleProperty().set(true);
 			assetMovie.visibleProperty().set(true);
 			assetTV.visibleProperty().set(true);
 			assetWeb.visibleProperty().set(true);
@@ -817,6 +689,11 @@ public class UploadController implements Initializable {
 			labelNumberSeason.visibleProperty().set(true);
 			labelTitleEpisode.visibleProperty().set(true);
 			labelTMSID.visibleProperty().set(true);
+			labelCustomId.visibleProperty().set(true);
+			labelMonetizeTitle.visibleProperty().set(true);
+			labelNote.visibleProperty().set(true);
+			labelDescription.visibleProperty().set(true);
+			assetType.selectToggle(assetType.getSelectedToggle());
 		} else {
 			monetizeClaim.visibleProperty().set(false);
 			monetizeClaimType.visibleProperty().set(false);
@@ -827,6 +704,12 @@ public class UploadController implements Initializable {
 			monetizeNumberSeason.visibleProperty().set(false);
 			monetizeTitleEpisode.visibleProperty().set(false);
 			monetizeTMSID.visibleProperty().set(false);
+			monetizeCustomID.visibleProperty().set(false);
+			monetizeNotes.visibleProperty().set(false);
+			monetizeDescription.visibleProperty().set(false);
+			monetizeTitle.visibleProperty().set(false);
+			monetizeInStreamDefaults.visibleProperty().set(false);
+			monetizeInStream.visibleProperty().set(false);
 			assetMovie.visibleProperty().set(false);
 			assetTV.visibleProperty().set(false);
 			assetWeb.visibleProperty().set(false);
@@ -837,6 +720,11 @@ public class UploadController implements Initializable {
 			labelNumberSeason.visibleProperty().set(false);
 			labelTitleEpisode.visibleProperty().set(false);
 			labelTMSID.visibleProperty().set(false);
+			labelCustomId.visibleProperty().set(false);
+			labelMonetizeTitle.visibleProperty().set(false);
+			labelNote.visibleProperty().set(false);
+			labelDescription.visibleProperty().set(false);
+
 		}
 	}
 
