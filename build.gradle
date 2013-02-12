@@ -49,7 +49,7 @@ dependencies {
 	compile ('org.javalite:activejdbc:1.4.5'){
 		exclude group: 'junit', module: 'junit'
 	}
-	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2.-r5-SNAPSHOT.jar")
+	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-r5-SNAPSHOT.jar")
 
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 	instrument 'org.javalite:activejdbc:1.4.5', 'org.javalite:activejdbc-instrumentation:1.4.5'

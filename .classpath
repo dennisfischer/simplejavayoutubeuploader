@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="lib" path="lib/jfxtras-labs-2.2.-r5-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="at.bestsolution.efxclipse.tooling.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
+	<classpathentry kind="lib" path="lib/jfxtras-labs-2.2-r5-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
