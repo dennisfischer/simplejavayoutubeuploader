@@ -237,48 +237,63 @@ public class MetadataServiceImpl implements MetadataService {
 
 		if (upload.getBoolean("claim")) {
 			postMetaDataParams.add(new BasicNameValuePair("enable_monetization", boolConverter(true)));
-			postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads", boolConverter(upload.getBoolean("overlay"))));
-			postMetaDataParams.add(new BasicNameValuePair("trueview_instream", boolConverter(upload.getBoolean("trueview"))));
-			postMetaDataParams.add(new BasicNameValuePair("instream", boolConverter(upload.getBoolean("instream"))));
-			postMetaDataParams.add(new BasicNameValuePair("paid_product", boolConverter(upload.getBoolean("product"))));
 			postMetaDataParams.add(new BasicNameValuePair("monetization_style", "ads"));
-			postMetaDataParams.add(new BasicNameValuePair("allow_syndication", boolConverter(upload.getInteger("syndication") == 0)));
-
-			// PARTNER
-			// PARTNER
-			if (false) {
-				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getInteger("claimtype") == 0 ? "B" : upload
-						.getInteger("claimtype") == 1 ? "V" : "A"));
-
-				final Pattern pattern = Pattern.compile("value=\"([^\"]+?)\" class=\"usage_policy-menu-item\"");
-				final Matcher matcher = pattern.matcher(content);
-				if (matcher.find(upload.getInteger("claimpolicy"))) {
-					postMetaDataParams.add(new BasicNameValuePair("usage_policy", matcher.group(1)));
-				}
-				final String prefx = true ? "web_" : true ? "tv_" : "movie_";
-
-				postMetaDataParams.add(new BasicNameValuePair("asset_type", upload.getString("asset").toLowerCase(Locale.getDefault())));
-				if (upload.getString("customid").isEmpty()) {
-					postMetaDataParams.add(new BasicNameValuePair(prefx + "custom_id", upload.getString("videoid")));
-				} else {
-					postMetaDataParams.add(new BasicNameValuePair(prefx + "custom_id", upload.getString("customid")));
-				}
-
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "notes", upload.getString("notes")));
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "tms_id", upload.getString("tmsid")));
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "isan", upload.getString("isan")));
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "eidr", upload.getString("eidr")));
-
-				// WEB + MOVIE ONLY
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "title", upload.getString("monetizetitle")));
-				postMetaDataParams.add(new BasicNameValuePair(prefx + "description", upload.getString("monetizedescription")));
-
-				// TV ONLY
-				postMetaDataParams.add(new BasicNameValuePair("show_title", upload.getString("monetizetitle")));
-				postMetaDataParams.add(new BasicNameValuePair("episode_title", upload.getString("episodetitle")));
-				postMetaDataParams.add(new BasicNameValuePair("season_nb", upload.getString("seasonnb")));
-				postMetaDataParams.add(new BasicNameValuePair("episode_nb", upload.getString("episodenb")));
+			if (!upload.getBoolean("monetizePartner") || upload.getInteger("monetizeClaimPolicy") == 0) {
+				postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads", boolConverter(upload.getBoolean("overlay"))));
+				postMetaDataParams.add(new BasicNameValuePair("trueview_instream", boolConverter(upload.getBoolean("trueview"))));
+				postMetaDataParams.add(new BasicNameValuePair("instream", boolConverter(upload.getBoolean("instream"))));
+				postMetaDataParams.add(new BasicNameValuePair("long_ads_checkbox", boolConverter(upload.getBoolean("instream"))));
+				postMetaDataParams.add(new BasicNameValuePair("paid_product", boolConverter(upload.getBoolean("product"))));
+				postMetaDataParams.add(new BasicNameValuePair("allow_syndication", boolConverter(upload.getInteger("syndication") == 0)));
 			}
+			// {{ PARTNER
+			if (upload.getBoolean("monetizePartner")) {
+				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getInteger("monetizeClaimType") == 0 ? "B" : upload
+						.getInteger("monetizeClaimType") == 1 ? "V" : "A"));
+
+				final String toFind = upload.getInteger("monetizeClaimPolicy") == 0 ? "Monetize in all countries" : upload
+						.getInteger("monetizeClaimPolicy") == 1 ? "Track in all countries" : "Block in all countries";
+
+				final Pattern pattern = Pattern
+						.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
+				final Matcher matcher = pattern.matcher(content);
+
+				String usagePolicy = null;
+				int position = 0;
+				while (matcher.find(position)) {
+					position = matcher.end();
+					if (matcher.group(5).trim().equals(toFind)) {
+						usagePolicy = matcher.group(1);
+					}
+				}
+				postMetaDataParams.add(new BasicNameValuePair("usage_policy", usagePolicy));
+
+				final String prefix = upload.getInteger("monetizeAsset") == 0 ? "web_" : upload.getInteger("monetizeAsset") == 1 ? "tv_"
+						: "movie_";
+
+				postMetaDataParams.add(new BasicNameValuePair("asset_type", prefix.substring(0, prefix.length() - 1)));
+				postMetaDataParams.add(new BasicNameValuePair(prefix + "custom_id", upload.getString("monetizeID").isEmpty() ? upload
+						.getString("videoid") : upload.getString("monetizeID")));
+
+				postMetaDataParams.add(new BasicNameValuePair(prefix + "notes", upload.getString("monetizeNotes")));
+				postMetaDataParams.add(new BasicNameValuePair(prefix + "tms_id", upload.getString("monetizeTMSID")));
+				postMetaDataParams.add(new BasicNameValuePair(prefix + "isan", upload.getString("monetizeISAN")));
+				postMetaDataParams.add(new BasicNameValuePair(prefix + "eidr", upload.getString("monetizeEIDR")));
+
+				if (upload.getInteger("monetizeAsset") != 1) {
+					// WEB + MOVIE ONLY
+					postMetaDataParams.add(new BasicNameValuePair(prefix + "title", !upload.getString("monetizeTitle").isEmpty() ? upload
+							.getString("monetizeTitle") : upload.getString("title")));
+					postMetaDataParams.add(new BasicNameValuePair(prefix + "description", upload.getString("monetizeDescription")));
+				} else {
+					// TV ONLY
+					postMetaDataParams.add(new BasicNameValuePair("show_title", upload.getString("monetizeTitle")));
+					postMetaDataParams.add(new BasicNameValuePair("episode_title", upload.getString("monetizeTitleEpisode")));
+					postMetaDataParams.add(new BasicNameValuePair("season_nb", upload.getString("monetizeSeasonNB")));
+					postMetaDataParams.add(new BasicNameValuePair("episode_nb", upload.getString("monetizeEpisodeNB")));
+				}
+			}
+			// }} PARTNER
 		}
 
 		final StringBuilder modified = new StringBuilder();
@@ -293,8 +308,6 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "name=\"session_token\" value=\"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
 		postMetaData.setEntity(new UrlEncodedFormEntity(postMetaDataParams, "UTF-8"));
-
-		// System.out.println(postMetaDataParams.toString());
 
 		final HttpResponse response = RequestUtil.execute(postMetaData);
 		EntityUtils.consumeQuietly(response.getEntity());
@@ -313,6 +326,7 @@ public class MetadataServiceImpl implements MetadataService {
 			final HttpResponse redirectResponse = RequestUtil.execute(redirectGet);
 			redirectResponseEntity = redirectResponse.getEntity();
 			content = EntityUtils.toString(redirectResponseEntity, Charset.forName("UTF-8"));
+
 		} finally {
 			if (redirectResponseEntity != null) {
 				EntityUtils.consumeQuietly(redirectResponseEntity);

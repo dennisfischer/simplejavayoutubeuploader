@@ -209,14 +209,14 @@
                             <Insets left="20.0" fx:id="x6" />
                           </GridPane.margin>
                         </RadioButton>
-                        <ToggleButton fx:id="monetizePartner" disable="false" mnemonicParsing="false" onAction="#togglePartner" selected="false" text="Partner" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                        <ToggleButton fx:id="monetizePartner" disable="false" mnemonicParsing="false" onAction="#togglePartner" selected="false" text="Partner" visible="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                       </children>
                       <columnConstraints>
                         <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
                         <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" percentWidth="-1.0" prefWidth="-1.0" />
                       </columnConstraints>
                       <rowConstraints>
-                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />

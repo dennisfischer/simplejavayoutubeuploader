@@ -180,8 +180,7 @@ public class Uploader {
 					Base.open(datasource);
 				}
 				while (!Thread.interrupted() && startTimeCheckerFlag) {
-
-					if (Upload.count("archived = false AND started < NOW() AND inprogress = false") != 0) {
+					if (Upload.count("(archived is NULL OR archived = false) AND started < NOW()  AND inprogress = false") != 0) {
 						start();
 					}
 

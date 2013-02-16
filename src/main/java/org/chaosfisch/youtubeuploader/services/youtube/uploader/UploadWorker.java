@@ -315,57 +315,24 @@ public class UploadWorker extends Task<Void> {
 				&& !upload.getBoolean("claim")) {
 			return;
 		}
-		// !upload.getBoolean("monetize") && !upload.getBoolean("claim") &&
-
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
-		// extendedPlacerholders.register("{title}", upload.getString("title"));
-		// extendedPlacerholders.register("{description}",
-		// upload.getString("description"));
-		//
-		// upload.setString("webTitle",
-		// extendedPlacerholders.replace(upload.getString("webTitle")));
-		// upload.setString("webDescription",
-		// extendedPlacerholders.replace(upload
-		// .getString("webDescription")));
-		// upload.setString("webID",
-		// extendedPlacerholders.replace(upload.getString("webID")));
-		// upload.setString("webNotes",
-		// extendedPlacerholders.replace(upload.getString("webNotes")));
-		//
-		// upload.setString("tvTMSID",
-		// extendedPlacerholders.replace(upload.getString("tvTMSID")));
-		// upload.setString("tvISAN",
-		// extendedPlacerholders.replace(upload.getString("tvISAN")));
-		// upload.setString("tvEIDR",
-		// extendedPlacerholders.replace(upload.getString("tvEIDR")));
-		// upload.setString("showTitle",
-		// extendedPlacerholders.replace(upload.getString("showTitle")));
-		// upload.setString("episodeTitle",
-		// extendedPlacerholders.replace(upload.getString("episodeTitle")));
-		// upload.setString("seasonNb",
-		// extendedPlacerholders.replace(upload.getString("seasonNb")));
-		// upload.setString("episodeNb",
-		// extendedPlacerholders.replace(upload.getString("episodeNb")));
-		// upload.setString("tvID",
-		// extendedPlacerholders.replace(upload.getString("tvID")));
-		// upload.setString("tvNotes",
-		// extendedPlacerholders.replace(upload.getString("tvNotes")));
-		//
-		// upload.setString("movieTitle",
-		// extendedPlacerholders.replace(upload.getString("movieTitle")));
-		// upload.setString("movieDescription", extendedPlacerholders
-		// .replace(upload.getString("movieDescription")));
-		// upload.setString("movieTMSID",
-		// extendedPlacerholders.replace(upload.getString("movieTMSID")));
-		// upload.setString("movieISAN",
-		// extendedPlacerholders.replace(upload.getString("movieISAN")));
-		// upload.setString("movieEIDR",
-		// extendedPlacerholders.replace(upload.getString("movieEIDR")));
-		// upload.setString("movieID",
-		// extendedPlacerholders.replace(upload.getString("movieID")));
-		// upload.setString("movieNotes",
-		// extendedPlacerholders.replace(upload.getString("movieNotes")));
+		extendedPlacerholders.setFile(upload.getString("file"));
+		extendedPlacerholders.register("{title}", upload.getString("title"));
+		extendedPlacerholders.register("{description}", upload.getString("description"));
+
+		upload.setString("monetizeTitle", extendedPlacerholders.replace(upload.getString("monetizeTitle")));
+		upload.setString("monetizeDescription", extendedPlacerholders.replace(upload.getString("monetizeDescription")));
+		upload.setString("monetizeID", extendedPlacerholders.replace(upload.getString("monetizeID")));
+		upload.setString("monetizeNotes", extendedPlacerholders.replace(upload.getString("monetizeNotes")));
+
+		upload.setString("monetizeTMSID", extendedPlacerholders.replace(upload.getString("monetizeTMSID")));
+		upload.setString("monetizeISAN", extendedPlacerholders.replace(upload.getString("monetizeISAN")));
+		upload.setString("monetizeEIDR", extendedPlacerholders.replace(upload.getString("monetizeEIDR")));
+		upload.setString("monetizeTitleEpisode", extendedPlacerholders.replace(upload.getString("monetizeTitleEpisode")));
+		upload.setString("monetizeSeasonNB", extendedPlacerholders.replace(upload.getString("monetizeSeasonNB")));
+		upload.setString("monetizeEpisodeNB", extendedPlacerholders.replace(upload.getString("monetizeEpisodeNB")));
+
 		metadataService.activateBrowserfeatures(upload);
 	}
 

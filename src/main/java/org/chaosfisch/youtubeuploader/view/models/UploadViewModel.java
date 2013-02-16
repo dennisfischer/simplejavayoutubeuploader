@@ -182,7 +182,7 @@ public class UploadViewModel {
 		videoresponseProperty.addAll(I18nHelper.message("videoresponselist.allowed"), I18nHelper.message("videoresponselist.moderated"),
 				I18nHelper.message("videoresponselist.denied"));
 
-		claimTypeProperty.addAll(I18nHelper.message("claimtype.visual"), I18nHelper.message("claimtype.audiovisual"),
+		claimTypeProperty.addAll(I18nHelper.message("claimtype.audiovisual"), I18nHelper.message("claimtype.visual"),
 				I18nHelper.message("claimtype.audio"));
 		claimOptionsProperty.addAll(I18nHelper.message("claimoptions.monetize"), I18nHelper.message("claimoptions.track"),
 				I18nHelper.message("claimoptions.block"));
@@ -310,11 +310,11 @@ public class UploadViewModel {
 			uploadBuilder.addPlaylist((Playlist) playlist);
 		}
 
-		if (starttimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
+		if (starttimeProperty.get() != null && starttimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
 			uploadBuilder.setStarted(starttimeProperty.get().getTime());
 		}
 
-		if (releasetimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
+		if (releasetimeProperty.get() != null && releasetimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
 			final Calendar calendar = new GregorianCalendar();
 			calendar.setTime(releasetimeProperty.get().getTime());
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
@@ -327,34 +327,6 @@ public class UploadViewModel {
 			}
 		}
 
-		// System.out.println("------------------------------------");
-		// System.out.println("Claim: " + claimProperty.get());
-		// System.out.println("Claim-Option: " +
-		// selectedClaimOptionProperty.get().getSelectedIndex());
-		// System.out.println("Claim-Type:" +
-		// selectedClaimTypeProperty.get().getSelectedIndex());
-		// System.out.println("Content-Syndication:"
-		// +
-		// selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
-		// .indexOf(selectedContentSyndicationProperty.get().get()));
-		// System.out.println("Asset-Type:"
-		// +
-		// selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
-		// System.out.println("------------------------------------");
-		// System.out.println("TMSID:" + tmsidProperty.get());
-		// System.out.println("ISAN:" + isanProperty.get());
-		// System.out.println("EIDR:" + eidrProperty.get());
-		// System.out.println("ID:" + customidProperty.get());
-		// System.out.println("No Episode:" + numberEpisodeProperty.get());
-		// System.out.println("No Season:" + numberSeasonProperty.get());
-		// System.out.println("Title Episode:" +
-		// monetizeTitleEpisodeProperty.get());
-		// System.out.println("Title:" + monetizeTitleProperty.get());
-		// System.out.println("Notes:" + monetizeNotesProperty.get());
-		// System.out.println("Description:" +
-		// monetizeDescriptionProperty.get());
-		// System.out.println("------------------------------------");
-
 		final Upload upload = uploadBuilder.build();
 		if (upload.isValid()) {
 			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
@@ -363,19 +335,33 @@ public class UploadViewModel {
 			idProperty.setValue(-1);
 			uploadBuilder.finalize(upload);
 
-			// EXPERIMENTAL
 			upload.setBoolean("claim", overlayProperty.getValue() || trueViewProperty.getValue() || inStreamProperty.getValue()
-					|| productPlacementProperty.getValue());
+					|| productPlacementProperty.getValue() || claimProperty.get());
 			upload.setBoolean("overlay", overlayProperty.getValue());
 			upload.setBoolean("trueview", trueViewProperty.getValue());
 			upload.setBoolean("instream", inStreamProperty.getValue());
+			upload.setBoolean("instreamDefaults", inStreamDefaultsProperty.getValue());
 			upload.setBoolean("product", productPlacementProperty.getValue());
 			upload.setBoolean(
 					"syndication",
 					selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
 							.indexOf(selectedContentSyndicationProperty.get().get()));
+			upload.setBoolean("monetizePartner", claimProperty.get());
+			upload.setInteger("monetizeClaimType", selectedClaimTypeProperty.get().selectedIndexProperty().get());
+			upload.setInteger("monetizeClaimPolicy", selectedClaimOptionProperty.get().selectedIndexProperty().get());
+			upload.setInteger("monetizeAsset",
+					selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
+			upload.setString("monetizeTMSID", tmsidProperty.get() != null ? tmsidProperty.get() : "");
+			upload.setString("monetizeISAN", isanProperty.get() != null ? isanProperty.get() : "");
+			upload.setString("monetizeEIDR", eidrProperty.get() != null ? eidrProperty.get() : "");
+			upload.setString("monetizeNotes", monetizeNotesProperty.get() != null ? monetizeNotesProperty.get() : "");
+			upload.setString("monetizeID", customidProperty.get() != null ? customidProperty.get() : "");
+			upload.setString("monetizeTitle", monetizeTitleProperty.get() != null ? monetizeTitleProperty.get() : "");
+			upload.setString("monetizeDescription", monetizeDescriptionProperty.get() != null ? monetizeDescriptionProperty.get() : "");
+			upload.setString("monetizeTitleEpisode", monetizeTitleEpisodeProperty.get() != null ? monetizeTitleEpisodeProperty.get() : "");
+			upload.setString("monetizeSeasonNB", numberSeasonProperty.get() != null ? numberSeasonProperty.get() : "");
+			upload.setString("monetizeEpisodeNB", numberEpisodeProperty.get() != null ? numberEpisodeProperty.get() : "");
 			upload.saveIt();
-			// EXPERIMENTAL
 		}
 
 		return upload;
