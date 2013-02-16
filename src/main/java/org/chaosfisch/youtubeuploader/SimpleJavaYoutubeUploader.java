@@ -209,6 +209,33 @@ public class SimpleJavaYoutubeUploader extends Application {
 			updated = true;
 		}
 
+		if (!Template.getMetaModel().getColumnMetadata().containsKey("instreamdefaults")) {
+			Base.openTransaction();
+			Base.exec("ALTER TABLE TEMPLATES ADD instreamDefaults BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD CLAIM BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD OVERLAY BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD TRUEVIEW BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD INSTREAM BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD PRODUCT BOOLEAN");
+			Base.exec("ALTER TABLE TEMPLATES ADD SYNDICATION INTEGER");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeTitle VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeDescription VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeID VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeNotes VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeTMSID VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeISAN VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeEIDR VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeTitleEpisode VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeSeasonNB VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeEpisodeNB VARCHAR(255)");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeClaimType INTEGER");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeClaimPolicy INTEGER");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizeAsset INTEGER");
+			Base.exec("ALTER TABLE TEMPLATES ADD monetizePartner BOOLEAN");
+			Base.commitTransaction();
+			updated = true;
+		}
+
 		if (updated) {
 			databaseUpdatedDialog();
 		}

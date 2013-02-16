@@ -658,6 +658,15 @@ public class UploadController implements Initializable {
 		monetizeTitleEpisode.textProperty().bindBidirectional(uploadViewModel.monetizeTitleEpisodeProperty);
 		monetizeTMSID.textProperty().bindBidirectional(uploadViewModel.tmsidProperty);
 		monetizeTrueView.selectedProperty().bindBidirectional(uploadViewModel.trueViewProperty);
+		monetizePartner.selectedProperty().bindBidirectional(uploadViewModel.partnerProperty);
+
+		monetizePartner.selectedProperty().addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(final Observable arg0) {
+				togglePartner(null);
+			}
+		});
 	}
 
 	// Handler for ToggleButton[fx:id="monetizePartner"] onAction

@@ -122,6 +122,7 @@ public class UploadViewModel {
 	public SimpleBooleanProperty									inStreamProperty				= new SimpleBooleanProperty(false);
 	public SimpleBooleanProperty									inStreamDefaultsProperty		= new SimpleBooleanProperty(false);
 	public SimpleBooleanProperty									productPlacementProperty		= new SimpleBooleanProperty(false);
+	public SimpleBooleanProperty									partnerProperty					= new SimpleBooleanProperty(false);
 
 	public SimpleListProperty<String>								claimTypeProperty				= new SimpleListProperty<>(
 																											FXCollections
@@ -290,6 +291,45 @@ public class UploadViewModel {
 		starttimeProperty.set(Calendar.getInstance());
 		thumbnailProperty.set("");
 		idProperty.setValue(-1);
+
+		claimProperty.set(template.getBoolean("monetizePartner") != null ? template.getBoolean("monetizePartner") : false);
+		overlayProperty.set(template.getBoolean("overlay") != null ? template.getBoolean("overlay") : false);
+		trueViewProperty.set(template.getBoolean("trueview") != null ? template.getBoolean("trueview") : false);
+		inStreamProperty.set(template.getBoolean("instream") != null ? template.getBoolean("instream") : false);
+		inStreamDefaultsProperty.set(template.getBoolean("instreamDefaults") != null ? template.getBoolean("instreamDefaults") : false);
+		productPlacementProperty.set(template.getBoolean("product") != null ? template.getBoolean("product") : false);
+		partnerProperty.set(template.getBoolean("monetizePartner") != null ? template.getBoolean("monetizePartner") : false);
+
+		selectedClaimTypeProperty.get().select(
+				template.getInteger("monetizeClaimType") != null ? template.getInteger("monetizeClaimType") : 0);
+		selectedClaimOptionProperty.get().select(
+				template.getInteger("monetizeClaimPolicy") != null ? template.getInteger("monetizeClaimPolicy") : 0);
+		selectedAssetTypeProperty
+				.get()
+				.get()
+				.getToggleGroup()
+				.selectToggle(
+						selectedAssetTypeProperty.get().get().getToggleGroup().getToggles()
+								.get(template.getInteger("monetizeAsset") != null ? template.getInteger("monetizeAsset") : 0));
+		selectedContentSyndicationProperty
+				.get()
+				.get()
+				.getToggleGroup()
+				.selectToggle(
+						selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
+								.get(template.getBoolean("syndication") != null ? template.getBoolean("syndication") ? 0 : 1 : 0));
+
+		monetizeDescriptionProperty.set(template.getString("monetizeDescription") != null ? template.getString("monetizeDescription") : "");
+		monetizeTitleEpisodeProperty.set(template.getString("monetizeTitleEpisode") != null ? template.getString("monetizeTitleEpisode")
+				: "");
+		numberSeasonProperty.set(template.getString("monetizeSeasonNB") != null ? template.getString("monetizeSeasonNB") : "");
+		numberEpisodeProperty.set(template.getString("monetizeEpisodeNB") != null ? template.getString("monetizeEpisodeNB") : "");
+		monetizeTitleProperty.set(template.getString("monetizeTitle") != null ? template.getString("monetizeTitle") : "");
+		tmsidProperty.set(template.getString("monetizeTMSID") != null ? template.getString("monetizeTMSID") : "");
+		isanProperty.set(template.getString("monetizeISAN") != null ? template.getString("monetizeISAN") : "");
+		eidrProperty.set(template.getString("monetizeEIDR") != null ? template.getString("monetizeEIDR") : "");
+		monetizeNotesProperty.set(template.getString("monetizeNotes") != null ? template.getString("monetizeNotes") : "");
+		customidProperty.set(template.getString("monetizeID") != null ? template.getString("monetizeID") : "");
 	}
 
 	public Upload toUpload() {
@@ -422,6 +462,43 @@ public class UploadViewModel {
 			playlistDropListProperty.add(playlist);
 			playlistSourceListProperty.remove(playlist);
 		}
+
+		claimProperty.set(upload.getBoolean("monetizePartner") != null ? upload.getBoolean("monetizePartner") : false);
+		overlayProperty.set(upload.getBoolean("overlay") != null ? upload.getBoolean("overlay") : false);
+		trueViewProperty.set(upload.getBoolean("trueview") != null ? upload.getBoolean("trueview") : false);
+		inStreamProperty.set(upload.getBoolean("instream") != null ? upload.getBoolean("instream") : false);
+		inStreamDefaultsProperty.set(upload.getBoolean("instreamDefaults") != null ? upload.getBoolean("instreamDefaults") : false);
+		productPlacementProperty.set(upload.getBoolean("product") != null ? upload.getBoolean("product") : false);
+		partnerProperty.set(upload.getBoolean("monetizePartner") != null ? upload.getBoolean("monetizePartner") : false);
+
+		selectedClaimTypeProperty.get().select(upload.getInteger("monetizeClaimType") != null ? upload.getInteger("monetizeClaimType") : 0);
+		selectedClaimOptionProperty.get().select(
+				upload.getInteger("monetizeClaimPolicy") != null ? upload.getInteger("monetizeClaimPolicy") : 0);
+		selectedAssetTypeProperty
+				.get()
+				.get()
+				.getToggleGroup()
+				.selectToggle(
+						selectedAssetTypeProperty.get().get().getToggleGroup().getToggles()
+								.get(upload.getInteger("monetizeAsset") != null ? upload.getInteger("monetizeAsset") : 0));
+		selectedContentSyndicationProperty
+				.get()
+				.get()
+				.getToggleGroup()
+				.selectToggle(
+						selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
+								.get(upload.getBoolean("syndication") != null ? upload.getBoolean("syndication") ? 0 : 1 : 0));
+
+		monetizeDescriptionProperty.set(upload.getString("monetizeDescription") != null ? upload.getString("monetizeDescription") : "");
+		monetizeTitleEpisodeProperty.set(upload.getString("monetizeTitleEpisode") != null ? upload.getString("monetizeTitleEpisode") : "");
+		numberSeasonProperty.set(upload.getString("monetizeSeasonNB") != null ? upload.getString("monetizeSeasonNB") : "");
+		numberEpisodeProperty.set(upload.getString("monetizeEpisodeNB") != null ? upload.getString("monetizeEpisodeNB") : "");
+		monetizeTitleProperty.set(upload.getString("monetizeTitle") != null ? upload.getString("monetizeTitle") : "");
+		tmsidProperty.set(upload.getString("monetizeTMSID") != null ? upload.getString("monetizeTMSID") : "");
+		isanProperty.set(upload.getString("monetizeISAN") != null ? upload.getString("monetizeISAN") : "");
+		eidrProperty.set(upload.getString("monetizeEIDR") != null ? upload.getString("monetizeEIDR") : "");
+		monetizeNotesProperty.set(upload.getString("monetizeNotes") != null ? upload.getString("monetizeNotes") : "");
+		customidProperty.set(upload.getString("monetizeID") != null ? upload.getString("monetizeID") : "");
 	}
 
 	public void saveTemplate() {
@@ -455,6 +532,34 @@ public class UploadViewModel {
 		for (final Model playlist : playlistDropListProperty.get()) {
 			template.add(playlist);
 		}
+
+		template.setBoolean("claim", overlayProperty.getValue() || trueViewProperty.getValue() || inStreamProperty.getValue()
+				|| productPlacementProperty.getValue() || claimProperty.get());
+		template.setBoolean("overlay", overlayProperty.getValue());
+		template.setBoolean("trueview", trueViewProperty.getValue());
+		template.setBoolean("instream", inStreamProperty.getValue());
+		template.setBoolean("instreamDefaults", inStreamDefaultsProperty.getValue());
+		template.setBoolean("product", productPlacementProperty.getValue());
+		template.setBoolean(
+				"syndication",
+				selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
+						.indexOf(selectedContentSyndicationProperty.get().get()));
+		template.setBoolean("monetizePartner", claimProperty.get());
+		template.setInteger("monetizeClaimType", selectedClaimTypeProperty.get().selectedIndexProperty().get());
+		template.setInteger("monetizeClaimPolicy", selectedClaimOptionProperty.get().selectedIndexProperty().get());
+		template.setInteger("monetizeAsset",
+				selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
+		template.setString("monetizeTMSID", tmsidProperty.get() != null ? tmsidProperty.get() : "");
+		template.setString("monetizeISAN", isanProperty.get() != null ? isanProperty.get() : "");
+		template.setString("monetizeEIDR", eidrProperty.get() != null ? eidrProperty.get() : "");
+		template.setString("monetizeNotes", monetizeNotesProperty.get() != null ? monetizeNotesProperty.get() : "");
+		template.setString("monetizeID", customidProperty.get() != null ? customidProperty.get() : "");
+		template.setString("monetizeTitle", monetizeTitleProperty.get() != null ? monetizeTitleProperty.get() : "");
+		template.setString("monetizeDescription", monetizeDescriptionProperty.get() != null ? monetizeDescriptionProperty.get() : "");
+		template.setString("monetizeTitleEpisode", monetizeTitleEpisodeProperty.get() != null ? monetizeTitleEpisodeProperty.get() : "");
+		template.setString("monetizeSeasonNB", numberSeasonProperty.get() != null ? numberSeasonProperty.get() : "");
+		template.setString("monetizeEpisodeNB", numberEpisodeProperty.get() != null ? numberEpisodeProperty.get() : "");
+
 		template.saveIt();
 
 	}
