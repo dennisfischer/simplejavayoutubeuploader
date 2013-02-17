@@ -15,6 +15,7 @@ import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPreRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPreSavedEvent;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.FrozenException;
 import org.javalite.activejdbc.Model;
 
 public class Template extends Model implements ModelEvents {
@@ -64,5 +65,15 @@ public class Template extends Model implements ModelEvents {
 	@Override
 	public String toString() {
 		return getString("name");
+	}
+
+	@Override
+	public Object get(final String key) {
+		try {
+			return super.get(key);
+		} catch (final FrozenException e) { // $codepro.audit.disable
+											// logExceptions
+			return "Deleted";
+		}
 	}
 }

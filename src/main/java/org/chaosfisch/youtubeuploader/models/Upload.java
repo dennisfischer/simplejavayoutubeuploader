@@ -72,7 +72,7 @@ public class Upload extends Model implements ModelEvents {
 			return super.get(key);
 		} catch (final FrozenException e) { // $codepro.audit.disable
 											// logExceptions
-			return getAttributes().get(key.toLowerCase());
+			return "Deleted";
 		}
 	}
 

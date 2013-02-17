@@ -579,7 +579,7 @@ public class UploadViewModel {
 	}
 
 	public void removeTemplate() {
-		if (selectedTemplateProperty.get() != null) {
+		if (selectedTemplateProperty.get().getSelectedItem() != null) {
 			selectedTemplateProperty.get().getSelectedItem().delete();
 		}
 	}

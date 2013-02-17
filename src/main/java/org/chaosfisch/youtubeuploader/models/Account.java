@@ -50,7 +50,7 @@ public class Account extends Model implements ModelEvents {
 			return super.get(key);
 		} catch (final FrozenException e) { // $codepro.audit.disable
 											// logExceptions
-			return getAttributes().get(key.toLowerCase());
+			return "Deleted";
 		}
 	}
 
@@ -78,7 +78,7 @@ public class Account extends Model implements ModelEvents {
 	}
 
 	public Long getUnfrozen() {
-		return Convert.toLong(get("id"));
+		return Convert.toLong(getAttributes().get("id"));
 	}
 
 	/*
