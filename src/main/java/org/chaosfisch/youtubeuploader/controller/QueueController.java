@@ -422,10 +422,10 @@ public class QueueController implements Initializable {
 				label.setText(String.format(
 						"Finished at: %s,\n %s/%s %s/s",
 						calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), uploadProgress.getDiffBytes()
-								/ uploadProgress.getDiffTime() * 1000),
+								/ (uploadProgress.getDiffTime() + 1) * 1000),
 						humanReadableByteCount(uploadProgress.getTotalBytesUploaded(), true),
 						humanReadableByteCount(uploadProgress.getFileSize(), true),
-						humanReadableByteCount(uploadProgress.getDiffBytes() / uploadProgress.getDiffTime() * 1000, true)));
+						humanReadableByteCount(uploadProgress.getDiffBytes() / (uploadProgress.getDiffTime() + 1) * 1000, true)));
 			}
 		});
 	}
