@@ -43,6 +43,11 @@ import com.google.inject.name.Names;
 import com.mchange.v2.c3p0.DataSources;
 
 public class GuiceBindings extends AbstractModule {
+	private final String	dbName;
+
+	public GuiceBindings(final String dbName) {
+		this.dbName = dbName;
+	}
 
 	@Override
 	protected void configure() {
@@ -72,7 +77,7 @@ public class GuiceBindings extends AbstractModule {
 			System.setProperties(p);
 			bind(DataSource.class).toInstance(
 					DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:" + System.getProperty("user.home")
-							+ "/SimpleJavaYoutubeUploader/youtubeuploader", "username", "")));
+							+ "/SimpleJavaYoutubeUploader/" + dbName, "username", "")));
 		} catch (final SQLException e) {
 			e.printStackTrace();
 			System.exit(1);

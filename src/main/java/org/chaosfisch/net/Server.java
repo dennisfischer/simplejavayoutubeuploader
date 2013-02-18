@@ -17,7 +17,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Server implements Runnable {
+public class Server extends Thread {
 	private ServerSocket				serverSocket;
 	private final Logger				logger		= LoggerFactory.getLogger(getClass());
 	private final Protocol				protocol;
@@ -25,11 +25,9 @@ public class Server implements Runnable {
 	private final ArrayList<Connection>	connections	= new ArrayList<>();
 
 	public Server(final int port, final Protocol protocol) {
+		super("Server");
 		this.protocol = protocol;
 		this.port = port;
-
-		final Thread t = new Thread(this, "Server");
-		t.start();
 	}
 
 	@Override
