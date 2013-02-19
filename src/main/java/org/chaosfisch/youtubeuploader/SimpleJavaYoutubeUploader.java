@@ -40,7 +40,7 @@ public class SimpleJavaYoutubeUploader {
 	public static void main(String[] args) {
 		args = new String[] { "-test" };
 		if (args.length > 0) {
-			server = true;
+			// server = true;
 		}
 		initLogger();
 		initLocale();

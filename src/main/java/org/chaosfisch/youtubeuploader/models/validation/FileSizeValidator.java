@@ -26,10 +26,13 @@ public class FileSizeValidator extends ValidatorAdapter<Model> {
 
 	@Override
 	public void validate(final Model m) {
+		if (m.getString(stringToValidate) == null) {
+			return;
+		}
+
 		final File file = new File(m.getString(stringToValidate));
 		if (file.exists() && file.length() > size) {
 			m.addValidator(this, "file_size_error");
 		}
 	}
-
 }

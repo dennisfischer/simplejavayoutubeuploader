@@ -19,8 +19,13 @@ import jfxtras.labs.dialogs.MonologFXButton;
 
 import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.guice.GuiceControllerFactory;
+import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.models.Playlist;
+import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.LazyList;
+import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +61,14 @@ public class GuiUploader extends Application {
 
 	private void initApplication(final Stage primaryStage) {
 		Base.open(injector.getInstance(DataSource.class));
+
+		final LazyList<Model> uploads = Account.findBySQL("SELECT * FROM ACCOUNTS, UPLOADS WHERE uploads.id = ?", 152).include(
+				Upload.class, Playlist.class);
+		if (uploads.size() > 0) {
+			System.out.println(uploads.toJson(true));
+			System.out.println(uploads.get(0).toJson(true));
+		}
+
 		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource(
 				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
