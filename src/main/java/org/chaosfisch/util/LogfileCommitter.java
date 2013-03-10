@@ -11,32 +11,31 @@ package org.chaosfisch.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.prefs.Preferences;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.Request.Method;
-import org.chaosfisch.util.io.RequestUtil;
-import org.chaosfisch.youtubeuploader.models.Setting;
+import org.chaosfisch.exceptions.SystemException;
+import org.chaosfisch.io.http.Request;
+import org.chaosfisch.io.http.Response;
+import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 public class LogfileCommitter {
-	private static final String	COMMIT_URL	= "http://youtubeuploader.square7.ch/nightly/receiver.php";
-	private static final Logger	logger		= LoggerFactory.getLogger(LogfileCommitter.class);
-	private static final File	htmlFile	= new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.html");
+	public static final String	SETTING_UUID	= "hidden.uuid";
+	private static final String	COMMIT_URL		= "http://youtubeuploader.square7.ch/nightly/receiver.php";
+	private static final Logger	logger			= LoggerFactory.getLogger(LogfileCommitter.class);
+	private static final File	htmlFile		= new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.html");
 
-	public static void commit() {
+	public static void commit() throws SystemException {
 		if (!htmlFile.exists()) {
 			return;
 		}
@@ -52,27 +51,21 @@ public class LogfileCommitter {
 		logfileParams.add(new BasicNameValuePair("uuid", uuid));
 		logfileParams.add(new BasicNameValuePair("data", html));
 
-		final HttpUriRequest request = new Request.Builder(COMMIT_URL, Method.POST)
-				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-				.entity(new UrlEncodedFormEntity(logfileParams, Charset.forName("utf-8"))).buildHttpUriRequest();
+		final Request request = new Request.Builder(COMMIT_URL)
+			.post(new UrlEncodedFormEntity(logfileParams, Charsets.UTF_8))
+			.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
+			.build();
 		// Write the atomData to my webpage
-		HttpResponse response = null;
-		try {
-			response = RequestUtil.execute(request);
 
-		} catch (final IOException e) {
-			logger.warn("Loginformationen konnten nicht übermittelt werden. {}", response != null ? response.getStatusLine() : "", e);
-		} finally {
-			if (response != null && response.getEntity() != null) {
-				EntityUtils.consumeQuietly(response.getEntity());
-			}
+		try (final Response response = request.execute();) {} catch (final IOException e) {
+			throw SystemException.wrap(e, LogfileCode.IO_ERROR);
 		}
 	}
 
 	private static String getLogfile() {
 		if (htmlFile.exists()) {
 			try {
-				return Files.toString(htmlFile, Charset.forName("utf-8"));
+				return Files.toString(htmlFile, Charsets.UTF_8);
 			} catch (final IOException e) {
 				logger.error(e.getMessage(), e);
 				return null;
@@ -82,11 +75,12 @@ public class LogfileCommitter {
 	}
 
 	private static String getUniqueId() {
-		Setting uuidSetting = Setting.findFirst("key = ?", "hidden.uuid");
-		if (uuidSetting == null) {
-			uuidSetting = Setting.createIt("key", "hidden.uuid", "value", UUID.randomUUID());
+		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+		String uuid = prefs.get(SETTING_UUID, null);
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+			prefs.put(SETTING_UUID, uuid);
 		}
-
-		return uuidSetting.getString("value");
+		return uuid;
 	}
 }

@@ -21,23 +21,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 
-import org.chaosfisch.youtubeuploader.models.Setting;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.EnddirServiceImpl;
 
 import com.google.inject.Inject;
 
 public class SettingsController implements Initializable {
 
-	@FXML// fx:id="enddirCheckbox"
+	@FXML
+	// fx:id="enddirCheckbox"
 	private CheckBox			enddirCheckbox; // Value injected by FXMLLoader
 
-	@Inject EnddirServiceImpl	enddirService;
+	@Inject
+	private EnddirServiceImpl	enddirService;
 
 	// Handler for CheckBox[fx:id="enddirCheckbox"] onAction
 	public void toggleEnddirTitle(final ActionEvent event) {
-		final Setting setting = enddirService.getEnddirSetting();
-		setting.setBoolean("value", !setting.getBoolean("value"));
-		setting.saveIt();
+		enddirService.setEnddirSetting(enddirService.getEnddirSetting());
 	}
 
 	@Override
@@ -47,6 +46,6 @@ public class SettingsController implements Initializable {
 
 		// initialize your logic here: all @FXML variables will have been
 		// injected
-		enddirCheckbox.setSelected(enddirService.getEnddirSetting().getBoolean("value"));
+		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
 	}
 }

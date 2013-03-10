@@ -11,9 +11,7 @@ package org.chaosfisch.youtubeuploader.services.youtube.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,30 +26,29 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
-import org.chaosfisch.google.auth.AuthenticationException;
-import org.chaosfisch.google.auth.RequestSigner;
-import org.chaosfisch.util.GoogleAuthUtil;
-import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.Request.Method;
-import org.chaosfisch.util.io.RequestUtil;
+import org.chaosfisch.google.auth.GoogleAuthUtil;
+import org.chaosfisch.io.http.Request;
+import org.chaosfisch.io.http.RequestSigner;
+import org.chaosfisch.io.http.RequestUtil;
+import org.chaosfisch.io.http.Response;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
-import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailException;
-import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailServiceImpl;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.MetadataException;
+import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailCode;
+import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.spi.ThumbnailService;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.PermissionStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
@@ -61,20 +58,23 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
 public class MetadataServiceImpl implements MetadataService {
-	/**
-	 * Initial upload url metadata
-	 */
-	private static final String		METADATA_UPLOAD_URL	= "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
-	private static final String		REDIRECT_URL		= "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	private final Logger			logger				= LoggerFactory.getLogger(getClass());
 
-	@Inject private GoogleAuthUtil	googleAuthUtil;
-	@Inject private RequestSigner	requestSigner;
-	@Inject private GoogleAuthUtil	authTokenHelper;
+	private static final String	METADATA_UPLOAD_URL	= "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String	REDIRECT_URL		= "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+	private final Logger		logger				= LoggerFactory.getLogger(getClass());
 
-	private final String[]			deadEnds			= { "https://accounts.google.com/b/0/SmsAuthInterstitial" };
+	@Inject
+	private GoogleAuthUtil		googleAuthUtil;
+	@Inject
+	private RequestSigner		requestSigner;
+	@Inject
+	private GoogleAuthUtil		authTokenHelper;
+	@Inject
+	private ThumbnailService	thumbnailService;
 
-	private Upload					upload;
+	private final String[]		deadEnds			= { "https://accounts.google.com/b/0/SmsAuthInterstitial" };
+
+	private Upload				upload;
 
 	@Override
 	public String atomBuilder(final Upload queue) {
@@ -97,18 +97,18 @@ public class MetadataServiceImpl implements MetadataService {
 		}
 
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(queue.getBoolean("embed"))));
+			.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(queue.getBoolean("embed"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(queue.getBoolean("rate"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(queue
-				.getBoolean("mobile"))));
+			.getBoolean("mobile"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(queue
-				.getBoolean("commentvote"))));
+			.getBoolean("commentvote"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(queue
-				.getInteger("videoresponse"))));
+			.getInteger("videoresponse"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(queue
-				.getInteger("comment"))));
+			.getInteger("comment"))));
 		videoEntry.accessControl.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(queue
-				.getInteger("visibility") == 0)));
+			.getInteger("visibility") == 0)));
 
 		if (queue.getInteger("comment") == 3) {
 			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends"));
@@ -152,58 +152,86 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	@Override
-	public String submitMetadata(final String atomData, final File fileToUpload, final Account account) throws MetadataException,
-			AuthenticationException {
+	public String submitMetadata(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
-		final HttpUriRequest request = new Request.Builder(METADATA_UPLOAD_URL, Method.POST)
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
-				.entity(new StringEntity(atomData, Charset.forName("UTF-8"))).buildHttpUriRequest();
-		// Sign the request
-		requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(account));
+		final Request request = new Request.Builder(METADATA_UPLOAD_URL)
+			.post(new StringEntity(atomData, Charsets.UTF_8))
+			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+			.build();
 		// Write the atomData to GOOGLE
-		HttpResponse response = null;
-		try {
-			response = RequestUtil.execute(request);
+		try (final Response response = request.execute();) {
 			// Check the response code for any problematic codes.
-			if (response.getStatusLine().getStatusCode() == 400) {
-				logger.warn("Invalid metadata information: {}; {}", response.getStatusLine(), EntityUtils.toString(response.getEntity()));
-				throw new MetadataException(String.format("Die gegebenen Videoinformationen sind ungültig! %s", response.getStatusLine()));
+			if (response.getStatusCode() == 400) {
+				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
 			}
 			// Check if uploadurl is available
-			if (response.getFirstHeader("Location") != null) {
-				return response.getFirstHeader("Location").getValue();
-
+			if (response.getRaw().getFirstHeader("Location") != null) {
+				return response.getRaw().getFirstHeader("Location").getValue();
 			} else {
-				logger.warn("Metadaten konnten nicht gesendet werden! {}", response.getStatusLine());
-				throw new MetadataException("Metadaten konnten nicht gesendet werden!");
+				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getRaw().getStatusLine());
 			}
 		} catch (final IOException e) {
-			logger.warn("Metadaten konnten nicht gesendet werden! {}", response != null ? response.getStatusLine() : "");
-			throw new MetadataException("Metadaten konnten nicht gesendet werden!");
+			throw SystemException.wrap(e, MetadataCode.REQUEST_IO_ERROR);
+		}
+	}
+
+	@Override
+	public void activateBrowserfeatures(final Upload upload) {
+		this.upload = upload;
+		try {
+			final String googleContent = googleAuthUtil.getLoginContent(
+				upload.parent(Account.class),
+				String.format(REDIRECT_URL, upload.getString("videoid")));
+			final String content = redirectToYoutube(googleContent);
+
+			changeMetadata(content);
+		} catch (final IOException | SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private String extractor(final String input, final String search, final String end) {
+		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length()));
+	}
+
+	private String redirectToYoutube(String content) throws IOException, ClientProtocolException {
+		HttpEntity redirectResponseEntity = null;
+		try {
+			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(
+				Pattern.quote("\\x26"),
+				"&").replaceAll(Pattern.quote("\\x3d"), "="));
+
+			final HttpResponse redirectResponse = RequestUtil.execute(redirectGet);
+			redirectResponseEntity = redirectResponse.getEntity();
+			content = EntityUtils.toString(redirectResponseEntity, Charsets.UTF_8);
+
 		} finally {
-			if (response != null && response.getEntity() != null) {
-				EntityUtils.consumeQuietly(response.getEntity());
+			if (redirectResponseEntity != null) {
+				EntityUtils.consumeQuietly(redirectResponseEntity);
 			}
 		}
+		return content;
 	}
 
 	private String boolConverter(final boolean flag) {
 		return flag ? "yes" : "no";
 	}
 
-	private void changeMetadata(final String content) throws IOException, UnsupportedEncodingException, ClientProtocolException {
+	private void changeMetadata(final String content) throws IOException, ClientProtocolException {
 		Integer thumbnailId = null;
 		try {
 			if (upload.getString("thumbnail") != null && !upload.getString("thumbnail").isEmpty()) {
-				final ThumbnailServiceImpl thumbnailService = new ThumbnailServiceImpl();
 				thumbnailId = thumbnailService.upload(content, upload.getString("thumbnail"), upload.getString("videoid"));
 			}
-		} catch (final ThumbnailException ex) {
-			logger.warn("Thumbnail not set", ex);
+		} catch (final SystemException ex) {
+			if (ex.getErrorCode() instanceof ThumbnailCode) {
+				logger.warn("Thumbnail not set", ex);
+			} else {
+				logger.warn("Unknown exception", ex);
+			}
 		}
-
-		final HttpPost postMetaData = new HttpPost(String.format("https://www.youtube.com/metadata_ajax?video_id=%s",
-				upload.getString("videoid")));
 
 		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<BasicNameValuePair>();
 
@@ -249,13 +277,13 @@ public class MetadataServiceImpl implements MetadataService {
 			// {{ PARTNER
 			if (upload.getBoolean("monetizePartner")) {
 				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getInteger("monetizeClaimType") == 0 ? "B" : upload
-						.getInteger("monetizeClaimType") == 1 ? "V" : "A"));
+					.getInteger("monetizeClaimType") == 1 ? "V" : "A"));
 
 				final String toFind = upload.getInteger("monetizeClaimPolicy") == 0 ? "Monetize in all countries" : upload
-						.getInteger("monetizeClaimPolicy") == 1 ? "Track in all countries" : "Block in all countries";
+					.getInteger("monetizeClaimPolicy") == 1 ? "Track in all countries" : "Block in all countries";
 
 				final Pattern pattern = Pattern
-						.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
+					.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);
 
 				String usagePolicy = null;
@@ -273,7 +301,7 @@ public class MetadataServiceImpl implements MetadataService {
 
 				postMetaDataParams.add(new BasicNameValuePair("asset_type", prefix.substring(0, prefix.length() - 1)));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "custom_id", upload.getString("monetizeID").isEmpty() ? upload
-						.getString("videoid") : upload.getString("monetizeID")));
+					.getString("videoid") : upload.getString("monetizeID")));
 
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "notes", upload.getString("monetizeNotes")));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "tms_id", upload.getString("monetizeTMSID")));
@@ -283,7 +311,7 @@ public class MetadataServiceImpl implements MetadataService {
 				if (upload.getInteger("monetizeAsset") != 1) {
 					// WEB + MOVIE ONLY
 					postMetaDataParams.add(new BasicNameValuePair(prefix + "title", !upload.getString("monetizeTitle").isEmpty() ? upload
-							.getString("monetizeTitle") : upload.getString("title")));
+						.getString("monetizeTitle") : upload.getString("title")));
 					postMetaDataParams.add(new BasicNameValuePair(prefix + "description", upload.getString("monetizeDescription")));
 				} else {
 					// TV ONLY
@@ -307,44 +335,10 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("title", extractor(content, "name=\"title\" value=\"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "name=\"session_token\" value=\"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
-		postMetaData.setEntity(new UrlEncodedFormEntity(postMetaDataParams, "UTF-8"));
 
-		final HttpResponse response = RequestUtil.execute(postMetaData);
-		EntityUtils.consumeQuietly(response.getEntity());
-	}
-
-	private String extractor(final String input, final String search, final String end) {
-		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length()));
-	}
-
-	private String redirectToYoutube(String content) throws IOException, ClientProtocolException {
-		HttpEntity redirectResponseEntity = null;
-		try {
-			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(
-					Pattern.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "="));
-
-			final HttpResponse redirectResponse = RequestUtil.execute(redirectGet);
-			redirectResponseEntity = redirectResponse.getEntity();
-			content = EntityUtils.toString(redirectResponseEntity, Charset.forName("UTF-8"));
-
-		} finally {
-			if (redirectResponseEntity != null) {
-				EntityUtils.consumeQuietly(redirectResponseEntity);
-			}
-		}
-		return content;
-	}
-
-	@Override
-	public void activateBrowserfeatures(final Upload upload) {
-		this.upload = upload;
-		try {
-			final String googleContent = googleAuthUtil.getLoginContent(upload.parent(Account.class),
-					String.format(REDIRECT_URL, upload.getString("videoid")));
-			final String content = redirectToYoutube(googleContent);
-			changeMetadata(content);
-		} catch (IOException | AuthenticationException e) {
-			logger.warn("Metadata not changed", e);
-		}
+		final Request request = new Request.Builder(String.format(
+			"https://www.youtube.com/metadata_ajax?video_id=%s",
+			upload.getString("videoid"))).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
+		try (final Response response = request.execute();) {}
 	}
 }

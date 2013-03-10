@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.google.auth;
+package org.chaosfisch.io.http;
 
 import java.net.HttpURLConnection;
 

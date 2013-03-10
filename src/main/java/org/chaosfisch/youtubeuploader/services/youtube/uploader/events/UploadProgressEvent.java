@@ -15,7 +15,7 @@ public class UploadProgressEvent {
 	private long		diffBytes;
 	private long		diffTime;
 	private final long	fileSize;
-	public final Upload	queue;
+	public final Upload	upload;
 	private long		time;
 	private long		totalBytesUploaded;
 	public boolean		failed;
@@ -23,7 +23,7 @@ public class UploadProgressEvent {
 	public String		status;
 
 	public UploadProgressEvent(final Upload queue, final long fileSize) {
-		this.queue = queue;
+		this.upload = queue;
 		this.fileSize = fileSize;
 	}
 
@@ -39,8 +39,8 @@ public class UploadProgressEvent {
 		return fileSize;
 	}
 
-	public Upload getQueue() {
-		return queue;
+	public Upload getUpload() {
+		return upload;
 	}
 
 	public long getTotalBytesUploaded() {

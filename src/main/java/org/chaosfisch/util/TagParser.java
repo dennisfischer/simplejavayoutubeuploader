@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.chaosfisch.util;
 
+import com.google.common.base.Charsets;
+
 public class TagParser {
 	/**
 	 * the separator between "block" tags
@@ -34,12 +36,12 @@ public class TagParser {
 	 */
 	public static boolean isValid(final String input) {
 		final String parsed = TagParser.parseAll(input);
-		if (parsed.getBytes().length > 500 || parsed.contains("<") || parsed.contains(">")) {
+		if (parsed.getBytes(Charsets.UTF_8).length > 500 || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
 		final String[] tags = parsed.split(",");
 		for (final String tag : tags) {
-			if (tag.length() > 30 || tag.length() < 2 || tag.getBytes().length > 30) {
+			if (tag.length() > 30 || tag.length() < 2 || tag.getBytes(Charsets.UTF_8).length > 30) {
 				return false;
 			}
 		}
@@ -57,28 +59,28 @@ public class TagParser {
 
 		input = input.trim();
 
-		String parsedOutput = "";
+		final StringBuilder parsedOutput = new StringBuilder();
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
 				case TagParser.BLOCK_DELIMITER:
 					TagParser.blockOpen = !TagParser.blockOpen;
-					parsedOutput += "\"";
+					parsedOutput.append('"');
 					if (TagParser.blockOpen) {
 						break;
 					}
 				case TagParser.DELIMITER:
 					if (TagParser.blockOpen) {
-						parsedOutput += input.charAt(i);
+						parsedOutput.append(input.charAt(i));
 					} else if (parsedOutput.lastIndexOf(",") != parsedOutput.length() && i + 1 != input.length()) {
-						parsedOutput += ",";
+						parsedOutput.append(',');
 					}
 				break;
 				default:
-					parsedOutput += input.charAt(i);
+					parsedOutput.append(input.charAt(i));
 				break;
 			}
 		}
-		return TagParser.removeInvalid(parsedOutput.trim());
+		return TagParser.removeInvalid(parsedOutput.toString().trim());
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class TagParser {
 		final String[] tmpTags = new String[250];
 		int i = 0;
 		for (final String tag : tags) {
-			if (!(tag.length() > 30) && !(tag.length() < 2) && !(tag.getBytes().length > 30)) {
+			if (!(tag.length() > 30) && !(tag.length() < 2) && !(tag.getBytes(Charsets.UTF_8).length > 30)) {
 				tmpTags[i] = tag;
 				i++;
 			}

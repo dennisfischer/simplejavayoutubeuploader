@@ -10,16 +10,16 @@
 package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
 import java.util.List;
+import java.util.Map;
 
+import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Playlist;
 
 public interface PlaylistService {
-	String	PLAYLISTS_SYNCHRONIZED	= "playlistsSynchronized";
+	String addLatestVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;
 
-	void addLatestVideoToPlaylist(Playlist playlist, String videoId);
+	String addYoutubePlaylist(Playlist playlist) throws SystemException;
 
-	void addYoutubePlaylist(Playlist playlist);
-
-	void synchronizePlaylists(List<Account> accounts);
+	Map<Account, List<Playlist>> synchronizePlaylists(List<Account> accounts) throws SystemException;
 }

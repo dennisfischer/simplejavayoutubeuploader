@@ -31,9 +31,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
-import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.google.auth.GoogleAuthUtil;
+import org.chaosfisch.util.ActiveJdbcCellValueFactory;
 import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.util.GoogleAuthUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
@@ -44,38 +44,48 @@ import com.google.inject.Inject;
 
 public class AccountController implements Initializable {
 
-	@FXML// fx:id="account"
-	private TextField							account;
+	@FXML
+	// fx:id="account"
+	private TextField						account;
 
-	@FXML// fx:id="accountTable"
-	private TableView<Model>					accountTable;
+	@FXML
+	// fx:id="accountTable"
+	private TableView<Model>				accountTable;
 
-	@FXML// fx:id="accountType"
-	private ChoiceBox<Account.Type>				accountType;
+	@FXML
+	// fx:id="accountType"
+	private ChoiceBox<Account.Type>			accountType;
 
-	@FXML// fx:id="columnAccount"
-	private TableColumn<Account, String>		columnAccount;
+	@FXML
+	// fx:id="columnAccount"
+	private TableColumn<Account, String>	columnAccount;
 
-	@FXML// fx:id="columnAccounttype"
-	private TableColumn<Account, String>		columnAccounttype;
+	@FXML
+	// fx:id="columnAccounttype"
+	private TableColumn<Account, String>	columnAccounttype;
 
-	@FXML private TableColumn<Account, Account>	columnActions;
+	@FXML
+	private TableColumn<Account, Account>	columnActions;
 
-	@FXML// fx:id="addAccount"
-	private Button								addAccount;
+	@FXML
+	// fx:id="addAccount"
+	private Button							addAccount;
 
-	@FXML// fx:id="password"
-	private PasswordField						password;
+	@FXML
+	// fx:id="password"
+	private PasswordField					password;
 
-	@FXML// fx:id="resetAccount"
-	private Button								resetAccount;
+	@FXML
+	// fx:id="resetAccount"
+	private Button							resetAccount;
 
-	@Inject private GoogleAuthUtil				authTokenHelper;
+	@Inject
+	private GoogleAuthUtil					authTokenHelper;
 
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event) {
 		final Account acc = Account
-				.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
+			.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
 		if (authTokenHelper.verifyAccount(acc)) {
 			account.getStyleClass().remove("input-invalid");
 			password.getStyleClass().remove("input-invalid");
@@ -102,7 +112,7 @@ public class AccountController implements Initializable {
 
 		// initialize your logic here: all @FXML variables will have been
 
-		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Account, String>("name"));
+		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<String>("name"));
 		columnAccounttype.setCellValueFactory(new ActiveCellValueFactory<Account, String>("type"));
 		columnActions.setCellValueFactory(new ActiveCellValueFactory<Account, Account>("this"));
 
@@ -186,8 +196,9 @@ public class AccountController implements Initializable {
 					if (!accountTable.getItems().contains(modelSavedEvent.getModel())) {
 						accountTable.getItems().add(modelSavedEvent.getModel());
 					} else {
-						accountTable.getItems()
-								.set(accountTable.getItems().indexOf(modelSavedEvent.getModel()), modelSavedEvent.getModel());
+						accountTable
+							.getItems()
+							.set(accountTable.getItems().indexOf(modelSavedEvent.getModel()), modelSavedEvent.getModel());
 					}
 				}
 			}

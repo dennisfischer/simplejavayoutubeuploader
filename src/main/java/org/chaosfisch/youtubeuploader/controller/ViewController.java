@@ -29,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
@@ -41,32 +42,58 @@ import com.google.inject.Inject;
 
 public class ViewController implements Initializable {
 
-	@FXML// fx:id="content_pane"
-	private AnchorPane					content_pane;
+	@FXML
+	// fx:id="content_pane"
+	private AnchorPane				content_pane;
 
-	@FXML// fx:id="grid_pane"
-	private GridPane					grid_pane;
+	@FXML
+	// fx:id="grid_pane"
+	private GridPane				grid_pane;
 
-	@FXML// fx:id="menuAddPlaylist"
-	private MenuItem					menuAddPlaylist;
+	@FXML
+	// fx:id="menuAddPlaylist"
+	private MenuItem				menuAddPlaylist;
 
-	@FXML// fx:id="menuAddTemplate"
-	private MenuItem					menuAddTemplate;
+	@FXML
+	// fx:id="menuAddTemplate"
+	private MenuItem				menuAddTemplate;
 
-	@FXML// fx:id="menuClose"
-	private MenuItem					menuClose;
+	@FXML
+	// fx:id="menuClose"
+	private MenuItem				menuClose;
 
-	@FXML// fx:id="menuLogfile"
-	private MenuItem					menuLogfile;
-	@FXML// fx:id="menuOpenFile"
-	private MenuItem					menuOpenFile;
+	@FXML
+	// fx:id="menuLogfile"
+	private MenuItem				menuLogfile;
+	@FXML
+	// fx:id="menuOpenFile"
+	private MenuItem				menuOpenFile;
 
-	@Inject private PlaylistService		playlistService;
-	@Inject private UploadController	uploadController;
+	@Inject
+	private PlaylistService			playlistService;
+	@Inject
+	private UploadController		uploadController;
+	// @Inject private RemoteClient remoteClient;
 
-	public static final Template		standardTemplate	= Template.create("embed", true, "mobile", true, "commentvote", true, "rate",
-																	true, "comment", 0, "category", 0, "visibility", 0, "videoresponse", 1,
-																	"license", 0);
+	public static final Template	standardTemplate	= Template.create(
+															"embed",
+															true,
+															"mobile",
+															true,
+															"commentvote",
+															true,
+															"rate",
+															true,
+															"comment",
+															0,
+															"category",
+															0,
+															"visibility",
+															0,
+															"videoresponse",
+															1,
+															"license",
+															0);
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -129,8 +156,20 @@ public class ViewController implements Initializable {
 			@Override
 			public void handle(final ActionEvent event) {
 				if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
-					playlistService.addYoutubePlaylist((Playlist) Playlist.create("title", title.getText(), "summary", summary.getText(),
-							"private", playlistPrivate.isSelected(), "account_id", accounts.getValue().getLongId()));
+					try {
+						playlistService.addYoutubePlaylist((Playlist) Playlist.create(
+							"title",
+							title.getText(),
+							"summary",
+							summary.getText(),
+							"private",
+							playlistPrivate.isSelected(),
+							"account_id",
+							accounts.getValue().getLongId()));
+					} catch (final SystemException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					myDialog.close();
 				}
 			}
@@ -161,6 +200,35 @@ public class ViewController implements Initializable {
 		});
 	}
 
+	// Handler for MenuItem[fx:id="menuConnectServer"] onAction
+	public void menuConnectServer(final ActionEvent event) {
+		final TextField host = new TextField();
+		final TextField port = new TextField();
+		final Object[] message = { I18nHelper.message("remoteclientDialog.labelHost"), host,
+				I18nHelper.message("remotclientDialog.labelPort"), port };
+
+		final InputDialog myDialog = new InputDialog(I18nHelper.message("remoteclientDialog.button"), message);
+		myDialog.setCallback(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(final ActionEvent event) {
+				if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
+					// try {
+					// if (!remoteClient.connect(host.getText(),
+					// port.getText())) {
+					// // SHOW CONNECTION FAILED DIALOG
+					// }
+					// } catch (final InvalidPortException e) {
+					// // TODO SHOW PORT INVALID DIALOG
+					// }
+
+					myDialog.close();
+				}
+			}
+		});
+
+	}
+
 	// Handler for MenuItem[fx:id="menuClose"] onAction
 	public void menuClose(final ActionEvent event) {
 		((Stage) content_pane.getScene().getWindow()).hide();
@@ -170,10 +238,4 @@ public class ViewController implements Initializable {
 	public void menuOpen(final ActionEvent event) {
 		uploadController.openFiles(event);
 	}
-
-	// Handler for MenuItem[fx:id="menuLogfile"] onAction
-	public void sendLogfiles(final ActionEvent event) {
-		// handle the event here
-	}
-
 }

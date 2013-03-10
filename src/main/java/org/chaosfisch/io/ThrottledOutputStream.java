@@ -17,7 +17,7 @@
  * Floor, Boston, MA 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chaosfisch.util.io;
+package org.chaosfisch.io;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

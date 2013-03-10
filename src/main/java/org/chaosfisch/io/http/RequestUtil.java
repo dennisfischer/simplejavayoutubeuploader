@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.util.io;
+package org.chaosfisch.io.http;
 
 import java.io.IOException;
 import java.io.InputStream;

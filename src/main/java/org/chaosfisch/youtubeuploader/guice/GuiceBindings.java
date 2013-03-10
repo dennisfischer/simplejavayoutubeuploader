@@ -10,17 +10,17 @@
 package org.chaosfisch.youtubeuploader.guice;
 
 import java.sql.SQLException;
-import java.util.Properties;
+import java.util.concurrent.Executors;
 
 import javafx.stage.FileChooser;
 
 import javax.sql.DataSource;
 
 import org.chaosfisch.google.auth.GDataRequestSigner;
-import org.chaosfisch.google.auth.RequestSigner;
+import org.chaosfisch.google.auth.GoogleAuthUtil;
+import org.chaosfisch.io.Throttle;
+import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.util.GoogleAuthUtil;
-import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
@@ -33,10 +33,14 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailServiceImpl;
+import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.spi.ThumbnailService;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -55,6 +59,7 @@ public class GuiceBindings extends AbstractModule {
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
 		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
 		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
+		bind(ThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
 		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
@@ -65,19 +70,15 @@ public class GuiceBindings extends AbstractModule {
 		bind(UploadViewModel.class).in(Singleton.class);
 		bind(EventBus.class).in(Singleton.class);
 
+		bind(ListeningExecutorService.class).annotatedWith(Names.named(ApplicationData.SERVICE_EXECUTOR)).toInstance(
+			MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
+
 		requestStaticInjection(EventBusUtil.class);
 
-		bind(String.class).annotatedWith(Names.named("GDATA_VERSION")).toInstance("2");
-		bind(String.class).annotatedWith(Names.named("DEVELOPER_KEY")).toInstance(ApplicationData.DEVELOPER_KEY);
-
 		try {
-			final Properties p = new Properties(System.getProperties());
-			p.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
-			p.put("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "SEVERE");
-			System.setProperties(p);
 			bind(DataSource.class).toInstance(
-					DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:" + System.getProperty("user.home")
-							+ "/SimpleJavaYoutubeUploader/" + dbName, "username", "")));
+				DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:" + System.getProperty("user.home")
+						+ "/SimpleJavaYoutubeUploader/" + dbName, "username", "")));
 		} catch (final SQLException e) {
 			e.printStackTrace();
 			System.exit(1);

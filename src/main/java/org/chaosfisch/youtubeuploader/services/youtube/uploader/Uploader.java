@@ -22,7 +22,6 @@ import javax.sql.DataSource;
 
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
@@ -50,9 +49,12 @@ public class Uploader {
 
 	private final ExecutorService	executorService			= Executors.newFixedThreadPool(5);
 	private final Logger			logger					= LoggerFactory.getLogger(getClass());
-	@Inject private Injector		injector;
-	@Inject private DataSource		datasource;
-	@Inject private EventBus		eventBus;
+	@Inject
+	private Injector				injector;
+	@Inject
+	private DataSource				datasource;
+	@Inject
+	private EventBus				eventBus;
 
 	public Uploader() {
 		EventBusUtil.getInstance().register(this);
@@ -81,6 +83,10 @@ public class Uploader {
 		executorService.shutdownNow();
 	}
 
+	public int getRunningUploads() {
+		return runningUploads;
+	}
+
 	public void start() {
 		inProgressProperty.set(true);
 		ThreadUtil.doInBackground(new Runnable() {
@@ -107,7 +113,7 @@ public class Uploader {
 
 		if (inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = Upload
-					.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
+				.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
 			if (polled != null) {
 				if (polled.parent(Account.class) == null) {
 					polled.setBoolean("locked", true);
@@ -198,7 +204,7 @@ public class Uploader {
 	public void onUploadJobDoneAndFailed(final UploadProgressEvent uploadProgressEvent) {
 		if (uploadProgressEvent.done || uploadProgressEvent.failed) {
 			logger.info("Status: {}", uploadProgressEvent.status);
-			uploadFinished(uploadProgressEvent.getQueue());
+			uploadFinished(uploadProgressEvent.getUpload());
 		}
 	}
 

@@ -12,18 +12,14 @@ package org.chaosfisch.google.auth;
 import java.net.HttpURLConnection;
 
 import org.apache.http.HttpRequest;
-
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import org.chaosfisch.io.http.RequestSigner;
+import org.chaosfisch.youtubeuploader.ApplicationData;
 
 public class GDataRequestSigner implements RequestSigner {
-	@Inject @Named("GDATA_VERSION") String	DEFAULT_GDATA_VERSION;
-	@Inject @Named("DEVELOPER_KEY") String	DEFAULT_DEVELOPER_KEY;
-
 	@Override
 	public void sign(final HttpRequest request) {
-		request.addHeader("GData-Version", DEFAULT_GDATA_VERSION);
-		request.addHeader("X-GData-Key", String.format("key=%s", DEFAULT_DEVELOPER_KEY));
+		request.addHeader("GData-Version", ApplicationData.GDATA_VERSION);
+		request.addHeader("X-GData-Key", String.format("key=%s", ApplicationData.DEVELOPER_KEY));
 	}
 
 	@Override
@@ -40,7 +36,7 @@ public class GDataRequestSigner implements RequestSigner {
 
 	@Override
 	public void sign(final HttpURLConnection request) {
-		request.setRequestProperty("GData-Version", DEFAULT_GDATA_VERSION);
-		request.setRequestProperty("X-GData-Key", String.format("key=%s", DEFAULT_DEVELOPER_KEY));
+		request.setRequestProperty("GData-Version", ApplicationData.GDATA_VERSION);
+		request.setRequestProperty("X-GData-Key", String.format("key=%s", ApplicationData.DEVELOPER_KEY));
 	}
 }

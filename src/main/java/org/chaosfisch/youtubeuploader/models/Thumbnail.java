@@ -7,21 +7,11 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl;
+package org.chaosfisch.youtubeuploader.models;
 
-public class ThumbnailException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= -1282431796606031761L;
-
-	public ThumbnailException(final String msg) {
-		super(msg);
-	}
-
-	public ThumbnailException(final String msg, final Exception e) {
-		super(msg, e);
-	}
-
+public class Thumbnail {
+	public String	error;
+	public boolean	success;
+	public String	preview_url;
+	public int		version;
 }

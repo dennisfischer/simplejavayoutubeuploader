@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.models;
 
+import java.io.StringWriter;
+
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
@@ -74,6 +76,16 @@ public class Upload extends Model implements ModelEvents {
 											// logExceptions
 			return "Deleted";
 		}
+	}
+
+	@Override
+	public void beforeClosingBrace(final boolean pretty, final String indent, final StringWriter writer) {
+		super.beforeClosingBrace(pretty, indent, writer);
+		writer.append(',');
+		writer.append('\n');
+		writer.append(indent);
+		writer.append("\"account\" :");
+		writer.append(this.parent(Account.class) == null ? "\"null\"" : this.parent(Account.class).toJson(pretty));
 	}
 
 	/*

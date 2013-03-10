@@ -7,17 +7,17 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.google.auth;
+package org.chaosfisch.io;
 
-public class AuthenticationException extends Throwable {
+import javafx.beans.property.SimpleIntegerProperty;
 
-	private static final long	serialVersionUID	= 7039731669555352482L;
+public class Throttle {
+	public final SimpleIntegerProperty	maxBps		= new SimpleIntegerProperty(0);
+	public final SimpleIntegerProperty	chunkSize	= new SimpleIntegerProperty(10485760);
 
-	public AuthenticationException(final String message) {
-		super(message);
+	public Throttle(final int chunkSize) {
+		this.chunkSize.set(chunkSize);
 	}
 
-	public AuthenticationException(final String message, final Throwable t) {
-		super(message, t);
-	}
+	public Throttle() {}
 }

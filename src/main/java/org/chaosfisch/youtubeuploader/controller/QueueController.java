@@ -47,10 +47,9 @@ import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
-import org.chaosfisch.util.ActiveCellValueFactory;
+import org.chaosfisch.io.Throttle;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.RefresherUtil;
-import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Upload;
@@ -60,79 +59,96 @@ import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.javalite.activejdbc.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 public class QueueController implements Initializable {
 
-	@FXML// fx:id="actionOnFinish"
+	@FXML
+	// fx:id="actionOnFinish"
 	private ChoiceBox<String>			actionOnFinish;
 
-	@FXML// fx:id="columnAccount"
+	@FXML
+	// fx:id="columnAccount"
 	private TableColumn<Upload, String>	columnAccount;
 
-	@FXML// fx:id="columnActions"
+	@FXML
+	// fx:id="columnActions"
 	private TableColumn<Upload, Upload>	columnActions;
 
-	@FXML// fx:id="columnCategory"
+	@FXML
+	// fx:id="columnCategory"
 	private TableColumn<Upload, String>	columnCategory;
 
-	@FXML// fx:id="columnId"
+	@FXML
+	// fx:id="columnId"
 	private TableColumn<Upload, Number>	columnId;
 
-	@FXML// fx:id="columnProgress"
+	@FXML
+	// fx:id="columnProgress"
 	private TableColumn<Upload, Upload>	columnProgress;
 
-	@FXML// fx:id="columnTitle"
+	@FXML
+	// fx:id="columnTitle"
 	private TableColumn<Upload, String>	columnTitle;
 
-	@FXML// fx:id="columnStarttime"
+	@FXML
+	// fx:id="columnStarttime"
 	private TableColumn<Upload, Object>	columnStarttime;
 
-	@FXML// fx:id="queueActionsGridpane"
+	@FXML
+	// fx:id="queueActionsGridpane"
 	private GridPane					queueActionsGridpane;
 
-	@FXML// fx:id="queueTableview"
+	@FXML
+	// fx:id="queueTableview"
 	private TableView<Model>			queueTableview;
 
-	@FXML// fx:id="startQueue"
+	@FXML
+	// fx:id="startQueue"
 	private Button						startQueue;
 
-	@FXML// fx:id="stopQueue"
+	@FXML
+	// fx:id="stopQueue"
 	private Button						stopQueue;
 
-	private final ListSpinner<Integer>	numberOfUploads	= new ListSpinner<Integer>(1, 5).withValue(1).withAlignment(Pos.CENTER_RIGHT)
-																.withPostfix(" Upload(s)").withPrefix("max. ")
-																.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 10).withValue(0)
-																.withAlignment(Pos.CENTER_RIGHT).withArrowPosition(ArrowPosition.LEADING)
-																.withPostfix(" kb/s").withEditable(true)
-																.withStringConverter(new StringConverter<Integer>() {
+	private final ListSpinner<Integer>	numberOfUploads	= new ListSpinner<Integer>(1, 5)
+															.withValue(1)
+															.withAlignment(Pos.CENTER_RIGHT)
+															.withPostfix(" Upload(s)")
+															.withPrefix("max. ")
+															.withArrowPosition(ArrowPosition.LEADING);
+	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 10)
+															.withValue(0)
+															.withAlignment(Pos.CENTER_RIGHT)
+															.withArrowPosition(ArrowPosition.LEADING)
+															.withPostfix(" kb/s")
+															.withEditable(true)
+															.withStringConverter(new StringConverter<Integer>() {
 
-																	@Override
-																	public String toString(final Integer arg0) {
-																		return arg0.toString();
+																@Override
+																public String toString(final Integer arg0) {
+																	return arg0.toString();
+																}
+
+																@Override
+																public Integer fromString(final String string) {
+																	try {
+																		final Integer number = Integer.parseInt(string);
+																		return number;
+																	} catch (final NumberFormatException e) {
+																		return uploadSpeed.getValue();
 																	}
+																}
+															});
 
-																	@Override
-																	public Integer fromString(final String string) {
-																		try {
-																			final Integer number = Integer.parseInt(string);
-																			return number;
-																		} catch (final NumberFormatException e) {
-																			return uploadSpeed.getValue();
-																		}
-																	}
-																});
-
-	@Inject private Uploader			uploader;
-	@Inject private Throttle			throttle;
-	@Inject private UploadViewModel		uploadViewModel;
-
-	private final Logger				logger			= LoggerFactory.getLogger(getClass());
+	@Inject
+	private Uploader					uploader;
+	@Inject
+	private Throttle					throttle;
+	@Inject
+	private UploadViewModel				uploadViewModel;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -225,7 +241,7 @@ public class QueueController implements Initializable {
 											try {
 												Desktop.getDesktop().browse(new URI("http://youtu.be/" + queue.getString("videoid")));
 											} catch (final URISyntaxException | IOException e) {
-												logger.error(e.getMessage(), e);
+												// TODO
 											}
 										}
 
@@ -383,8 +399,9 @@ public class QueueController implements Initializable {
 					if (!queueTableview.getItems().contains(modelSavedEvent.getModel())) {
 						queueTableview.getItems().add(modelSavedEvent.getModel());
 					} else {
-						queueTableview.getItems().set(queueTableview.getItems().indexOf(modelSavedEvent.getModel()),
-								modelSavedEvent.getModel());
+						queueTableview.getItems().set(
+							queueTableview.getItems().indexOf(modelSavedEvent.getModel()),
+							modelSavedEvent.getModel());
 						RefresherUtil.refresh(queueTableview, queueTableview.getItems());
 					}
 				}
@@ -412,20 +429,20 @@ public class QueueController implements Initializable {
 			@Override
 			public void run() {
 				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup(
-						"#queue-" + uploadProgress.getQueue().getLongId());
+					"#queue-" + uploadProgress.getUpload().getLongId());
 				if (progressIndicator == null) {
 					return;
 				}
 				progressIndicator.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
 
-				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getQueue().getLongId());
+				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getUpload().getLongId());
 				label.setText(String.format(
-						"Finished at: %s,\n %s/%s %s/s",
-						calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), uploadProgress.getDiffBytes()
-								/ (uploadProgress.getDiffTime() + 1) * 1000),
-						humanReadableByteCount(uploadProgress.getTotalBytesUploaded(), true),
-						humanReadableByteCount(uploadProgress.getFileSize(), true),
-						humanReadableByteCount(uploadProgress.getDiffBytes() / (uploadProgress.getDiffTime() + 1) * 1000, true)));
+					"Finished at: %s,%n %s/%s %s/s",
+					calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), uploadProgress.getDiffBytes()
+							/ (uploadProgress.getDiffTime() + 1) * 1000),
+					humanReadableByteCount(uploadProgress.getTotalBytesUploaded(), true),
+					humanReadableByteCount(uploadProgress.getFileSize(), true),
+					humanReadableByteCount(uploadProgress.getDiffBytes() / (uploadProgress.getDiffTime() + 1) * 1000, true)));
 			}
 		});
 	}

@@ -12,6 +12,8 @@ package org.chaosfisch.youtubeuploader.models.validation;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.ValidatorAdapter;
 
+import com.google.common.base.Charsets;
+
 public class ByteLengthValidator extends ValidatorAdapter<Model> {
 	private final String	stringToValidate;
 	private final int		min;
@@ -26,7 +28,8 @@ public class ByteLengthValidator extends ValidatorAdapter<Model> {
 	@Override
 	public void validate(final Model m) {
 		if (m.getString(stringToValidate) != null
-				&& (m.getString(stringToValidate).getBytes().length < min || m.getString(stringToValidate).getBytes().length > max)) {
+				&& (m.getString(stringToValidate).getBytes(Charsets.UTF_8).length < min || m.getString(stringToValidate).getBytes(
+					Charsets.UTF_8).length > max)) {
 			m.addValidator(this, "byte_length_error");
 		}
 	}

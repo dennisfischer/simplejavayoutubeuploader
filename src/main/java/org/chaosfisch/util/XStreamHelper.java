@@ -14,11 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.google.common.base.Charsets;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class XStreamHelper {
-	final static XStream	xStream	= new XStream(new DomDriver("UTF-8"));
+	final static XStream	xStream	= new XStream(new DomDriver(Charsets.UTF_8.name()));
 
 	public static String parseObjectToFeed(final Object o) {
 		xStream.processAnnotations(o.getClass());

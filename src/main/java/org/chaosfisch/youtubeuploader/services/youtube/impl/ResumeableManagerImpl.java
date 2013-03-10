@@ -12,21 +12,17 @@ package org.chaosfisch.youtubeuploader.services.youtube.impl;
 import java.io.IOException;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
+import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.auth.AuthenticationException;
-import org.chaosfisch.google.auth.RequestSigner;
-import org.chaosfisch.util.GoogleAuthUtil;
+import org.chaosfisch.google.auth.GoogleAuthUtil;
+import org.chaosfisch.io.http.Request;
+import org.chaosfisch.io.http.RequestSigner;
+import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.util.io.Request;
-import org.chaosfisch.util.io.Request.Method;
-import org.chaosfisch.util.io.RequestUtil;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.UploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +30,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 public class ResumeableManagerImpl implements ResumeableManager {
-	private static final double		BACKOFF		= 3.13;
-	private int						numberOfRetries;
-	private static final int		MAX_RETRIES	= 5;
-	private final Logger			logger		= LoggerFactory.getLogger(getClass());
+	private static final double	BACKOFF		= 3.13;
+	private int					numberOfRetries;
+	private static final int	MAX_RETRIES	= 5;
+	private final Logger		logger		= LoggerFactory.getLogger(getClass());
 
-	@Inject private GoogleAuthUtil	authTokenHelper;
-	@Inject private RequestSigner	requestSigner;
+	@Inject
+	private GoogleAuthUtil		authTokenHelper;
+	@Inject
+	private RequestSigner		requestSigner;
 
 	@Override
-	public ResumeInfo fetchResumeInfo(final Upload queue) throws UploadException, AuthenticationException {
+	public ResumeInfo fetchResumeInfo(final Upload queue) throws SystemException {
 		ResumeInfo resumeInfo;
 		do {
 			if (!canResume()) {
@@ -54,48 +52,46 @@ public class ResumeableManagerImpl implements ResumeableManager {
 		return resumeInfo;
 	}
 
-	private ResumeInfo resumeFileUpload(final Upload queue) throws UploadException, AuthenticationException {
-		HttpResponse response = null;
-		try {
-			final HttpUriRequest request = new Request.Builder(queue.getString("uploadurl"), Method.PUT).headers(
-					ImmutableMap.of("Content-Range", "bytes */*")).buildHttpUriRequest();
-			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(queue.parent(Account.class)));
-			response = RequestUtil.execute(request);
+	private ResumeInfo resumeFileUpload(final Upload queue) throws SystemException {
+		final Request request = new Request.Builder(queue.getString("uploadurl"))
+			.put(null)
+			.headers(ImmutableMap.of("Content-Range", "bytes */*"))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(queue.parent(Account.class)))
+			.build();
 
-			if (response.getStatusLine().getStatusCode() == 308) {
-				final long nextByteToUpload;
+		try (final Response response = request.execute();) {
 
-				final Header range = response.getFirstHeader("Range");
-				if (range == null) {
-					logger.info("PUT to {} did not return Range-header.", queue.getString("uploadurl"));
-					nextByteToUpload = 0;
-				} else {
-					logger.info("Range header is: {}", range.getValue());
-					final String[] parts = range.getValue().split("-");
-					if (parts.length > 1) {
-						nextByteToUpload = Long.parseLong(parts[1]) + 1;
-					} else {
-						nextByteToUpload = 0;
-					}
-				}
-				final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-				if (response.getFirstHeader("Location") != null) {
-					final Header location = response.getFirstHeader("Location");
-					queue.setString("uploadurl", location.getValue());
-					queue.saveIt();
-				}
-				return resumeInfo;
-			} else if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) {
+			if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
 				return new ResumeInfo(parseVideoId(EntityUtils.toString(response.getEntity())));
+			} else if (response.getStatusCode() != 308) {
+				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+			}
+
+			final long nextByteToUpload;
+
+			final Header range = response.getRaw().getFirstHeader("Range");
+			if (range == null) {
+				logger.info("PUT to {} did not return Range-header.", queue.getString("uploadurl"));
+				nextByteToUpload = 0;
 			} else {
-				throw new UploadException(String.format("Unexpected return code while uploading: %s", response.getStatusLine()));
+				logger.info("Range header is: {}", range.getValue());
+				final String[] parts = range.getValue().split("-");
+				if (parts.length > 1) {
+					nextByteToUpload = Long.parseLong(parts[1]) + 1;
+				} else {
+					nextByteToUpload = 0;
+				}
 			}
+			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
+			if (response.getRaw().getFirstHeader("Location") != null) {
+				final Header location = response.getRaw().getFirstHeader("Location");
+				queue.setString("uploadurl", location.getValue());
+				queue.saveIt();
+			}
+			return resumeInfo;
+
 		} catch (final IOException e) {
-			throw new UploadException("Content-Range-Header-Request konnte nicht erzeugt werden! (0x00003)", e);
-		} finally {
-			if (response != null) {
-				EntityUtils.consumeQuietly(response.getEntity());
-			}
+			throw SystemException.wrap(e, ResumeCode.IO_ERROR);
 		}
 	}
 
@@ -137,8 +133,9 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
 			Thread.sleep(sleepSeconds * 1000L);
 			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
-		} catch (final InterruptedException e) {
-			logger.error(e.getMessage(), e);
+		} catch (final InterruptedException e) { // $codepro.audit.disable
+													// logExceptions
+			Thread.currentThread().interrupt();
 		}
 	}
 

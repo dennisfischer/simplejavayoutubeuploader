@@ -61,117 +61,198 @@ import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.GridViewBuilder;
 
 import org.chaosfisch.google.atom.AtomCategory;
-import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
-import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.Model;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 public class UploadController implements Initializable {
 
 	// {{ ViewElements
 
-	@FXML private ResourceBundle			resources;
-	@FXML private URL						location;
-	@FXML private ChoiceBox<Model>			accountList;
-	@FXML private Button					addUpload;
-	@FXML private RadioButton				assetMovie;
-	@FXML private RadioButton				assetTV;
-	@FXML private ToggleGroup				assetType;
-	@FXML private RadioButton				assetWeb;
-	@FXML private ToggleGroup				contentSyndication;
-	@FXML private GridPane					extendedSettingsGrid;
-	@FXML private Slider					gridWidthSlider;
-	@FXML private Label						labelContentInformation;
-	@FXML private Label						labelCustomId;
-	@FXML private Label						labelDescription;
-	@FXML private Label						labelEIDR;
-	@FXML private Label						labelISAN;
-	@FXML private Label						labelMonetizeTitle;
-	@FXML private Label						labelNote;
-	@FXML private Label						labelNumberEpisode;
-	@FXML private Label						labelNumberSeason;
-	@FXML private Label						labelTMSID;
-	@FXML private Label						labelTitleEpisode;
-	@FXML private CheckBox					monetizeClaim;
-	@FXML private ChoiceBox<String>			monetizeClaimOption;
-	@FXML private ChoiceBox<String>			monetizeClaimType;
-	@FXML private TextField					monetizeCustomID;
-	@FXML private TextField					monetizeDescription;
-	@FXML private TextField					monetizeEIDR;
-	@FXML private TextField					monetizeISAN;
-	@FXML private CheckBox					monetizeInStream;
-	@FXML private CheckBox					monetizeInStreamDefaults;
-	@FXML private TextField					monetizeNotes;
-	@FXML private TextField					monetizeNumberEpisode;
-	@FXML private TextField					monetizeNumberSeason;
-	@FXML private CheckBox					monetizeOverlay;
-	@FXML private ToggleButton				monetizePartner;
-	@FXML private CheckBox					monetizeProductPlacement;
-	@FXML private TextField					monetizeTMSID;
-	@FXML private TextField					monetizeTitle;
-	@FXML private TextField					monetizeTitleEpisode;
-	@FXML private CheckBox					monetizeTrueView;
-	@FXML private Button					openDefaultdir;
-	@FXML private Button					openEnddir;
-	@FXML private Button					openFiles;
-	@FXML private Button					openThumbnail;
-	@FXML private TitledPane				partnerPane;
-	@FXML private ScrollPane				playlistDropScrollpane;
-	@FXML private GridPane					playlistGrid;
-	@FXML private ScrollPane				playlistSourceScrollpane;
-	@FXML private TextField					previewTitle;
-	@FXML private Button					refreshPlaylists;
-	@FXML private Button					removeTemplate;
-	@FXML private Button					resetUpload;
-	@FXML private Button					saveTemplate;
-	@FXML private ChoiceBox<Model>			templateList;
-	@FXML private ChoiceBox<AtomCategory>	uploadCategory;
-	@FXML private ChoiceBox<String>			uploadComment;
-	@FXML private CheckBox					uploadCommentvote;
-	@FXML private TextField					uploadDefaultdir;
-	@FXML private TextArea					uploadDescription;
-	@FXML private CheckBox					uploadEmbed;
-	@FXML private TextField					uploadEnddir;
-	@FXML private CheckBox					uploadFacebook;
-	@FXML private ChoiceBox<File>			uploadFile;
-	@FXML private GridPane					uploadGrid;
-	@FXML private ChoiceBox<String>			uploadLicense;
-	@FXML private TextArea					uploadMessage;
-	@FXML private CheckBox					uploadMobile;
-	@FXML private CheckBox					uploadRate;
-	@FXML private TextArea					uploadTags;
-	@FXML private TextField					uploadThumbnail;
-	@FXML private TextField					uploadTitle;
-	@FXML private CheckBox					uploadTwitter;
-	@FXML private ChoiceBox<String>			uploadVideoresponse;
-	@FXML private ChoiceBox<String>			uploadVisibility;
-	@FXML private Label						validationText;
+	@FXML
+	private ResourceBundle				resources;
+	@FXML
+	private URL							location;
+	@FXML
+	private ChoiceBox<Model>			accountList;
+	@FXML
+	private Button						addUpload;
+	@FXML
+	private RadioButton					assetMovie;
+	@FXML
+	private RadioButton					assetTV;
+	@FXML
+	private ToggleGroup					assetType;
+	@FXML
+	private RadioButton					assetWeb;
+	@FXML
+	private ToggleGroup					contentSyndication;
+	@FXML
+	private GridPane					extendedSettingsGrid;
+	@FXML
+	private Slider						gridWidthSlider;
+	@FXML
+	private Label						labelContentInformation;
+	@FXML
+	private Label						labelCustomId;
+	@FXML
+	private Label						labelDescription;
+	@FXML
+	private Label						labelEIDR;
+	@FXML
+	private Label						labelISAN;
+	@FXML
+	private Label						labelMonetizeTitle;
+	@FXML
+	private Label						labelNote;
+	@FXML
+	private Label						labelNumberEpisode;
+	@FXML
+	private Label						labelNumberSeason;
+	@FXML
+	private Label						labelTMSID;
+	@FXML
+	private Label						labelTitleEpisode;
+	@FXML
+	private CheckBox					monetizeClaim;
+	@FXML
+	private ChoiceBox<String>			monetizeClaimOption;
+	@FXML
+	private ChoiceBox<String>			monetizeClaimType;
+	@FXML
+	private TextField					monetizeCustomID;
+	@FXML
+	private TextField					monetizeDescription;
+	@FXML
+	private TextField					monetizeEIDR;
+	@FXML
+	private TextField					monetizeISAN;
+	@FXML
+	private CheckBox					monetizeInStream;
+	@FXML
+	private CheckBox					monetizeInStreamDefaults;
+	@FXML
+	private TextField					monetizeNotes;
+	@FXML
+	private TextField					monetizeNumberEpisode;
+	@FXML
+	private TextField					monetizeNumberSeason;
+	@FXML
+	private CheckBox					monetizeOverlay;
+	@FXML
+	private ToggleButton				monetizePartner;
+	@FXML
+	private CheckBox					monetizeProductPlacement;
+	@FXML
+	private TextField					monetizeTMSID;
+	@FXML
+	private TextField					monetizeTitle;
+	@FXML
+	private TextField					monetizeTitleEpisode;
+	@FXML
+	private CheckBox					monetizeTrueView;
+	@FXML
+	private Button						openDefaultdir;
+	@FXML
+	private Button						openEnddir;
+	@FXML
+	private Button						openFiles;
+	@FXML
+	private Button						openThumbnail;
+	@FXML
+	private TitledPane					partnerPane;
+	@FXML
+	private ScrollPane					playlistDropScrollpane;
+	@FXML
+	private GridPane					playlistGrid;
+	@FXML
+	private ScrollPane					playlistSourceScrollpane;
+	@FXML
+	private TextField					previewTitle;
+	@FXML
+	private Button						refreshPlaylists;
+	@FXML
+	private Button						removeTemplate;
+	@FXML
+	private Button						resetUpload;
+	@FXML
+	private Button						saveTemplate;
+	@FXML
+	private ChoiceBox<Model>			templateList;
+	@FXML
+	private ChoiceBox<AtomCategory>		uploadCategory;
+	@FXML
+	private ChoiceBox<String>			uploadComment;
+	@FXML
+	private CheckBox					uploadCommentvote;
+	@FXML
+	private TextField					uploadDefaultdir;
+	@FXML
+	private TextArea					uploadDescription;
+	@FXML
+	private CheckBox					uploadEmbed;
+	@FXML
+	private TextField					uploadEnddir;
+	@FXML
+	private CheckBox					uploadFacebook;
+	@FXML
+	private ChoiceBox<File>				uploadFile;
+	@FXML
+	private GridPane					uploadGrid;
+	@FXML
+	private ChoiceBox<String>			uploadLicense;
+	@FXML
+	private TextArea					uploadMessage;
+	@FXML
+	private CheckBox					uploadMobile;
+	@FXML
+	private CheckBox					uploadRate;
+	@FXML
+	private TextArea					uploadTags;
+	@FXML
+	private TextField					uploadThumbnail;
+	@FXML
+	private TextField					uploadTitle;
+	@FXML
+	private CheckBox					uploadTwitter;
+	@FXML
+	private ChoiceBox<String>			uploadVideoresponse;
+	@FXML
+	private ChoiceBox<String>			uploadVisibility;
+	@FXML
+	private Label						validationText;
 
-	private final CalendarTextField			starttime			= new CalendarTextField().withValue(Calendar.getInstance())
-																		.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																		.withShowTime(Boolean.TRUE);
-	private final CalendarTextField			releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
-																		.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																		.withShowTime(Boolean.TRUE);
-	private final ListSpinner<Integer>		number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(
-																		Pos.CENTER_RIGHT);
+	private final CalendarTextField		starttime			= new CalendarTextField().withValue(Calendar.getInstance())
+																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																	.withShowTime(Boolean.TRUE);
+	private final CalendarTextField		releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
+																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																	.withShowTime(Boolean.TRUE);
+	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(
+																	Pos.CENTER_RIGHT);
 
-	private final GridView<Model>			playlistSourcezone	= GridViewBuilder.create(Model.class).build();
-	private final GridView<Model>			playlistDropzone	= GridViewBuilder.create(Model.class).build();
+	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
+	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
 
 	// }} ViewElements
 
-	@Inject private CategoryService			categoryService;
-	@Inject private FileChooser				fileChooser;
-	@Inject private DirectoryChooser		directoryChooser;
-	@Inject private DataSource				dataSource;
-	@Inject private UploadViewModel			uploadViewModel;
+	@Inject
+	private CategoryService				categoryService;
+	@Inject
+	private FileChooser					fileChooser;
+	@Inject
+	private DirectoryChooser			directoryChooser;
+	@Inject
+	private DataSource					dataSource;
+	@Inject
+	private UploadViewModel				uploadViewModel;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -448,37 +529,35 @@ public class UploadController implements Initializable {
 		accountList.getSelectionModel().selectFirst();
 		monetizeClaimOption.getSelectionModel().selectFirst();
 		monetizeClaimType.getSelectionModel().selectFirst();
-		ThreadUtil.doInBackground(new Runnable() {
+		Futures.addCallback(categoryService.load(), new FutureCallback<List<AtomCategory>>() {
 
 			@Override
-			public void run() {
-				if (!Base.hasConnection()) {
-					Base.open(dataSource);
-				}
-				uploadViewModel.categoryProperty.set(FXCollections.observableList(categoryService.load()));
-				if (uploadViewModel.categoryProperty.isEmpty()) {
-					Platform.runLater(new Runnable() {
-
-						@Override
-						public void run() {
-							final MonologFX dialog = new MonologFX(MonologFX.Type.ERROR);
-							dialog.setTitleText(I18nHelper.message("categoryload.failed.title"));
-							dialog.setMessage(I18nHelper.message("categoryload.failed.message"));
-							final MonologFXButton okButton = new MonologFXButton();
-							okButton.setType(MonologFXButton.Type.OK);
-							okButton.setLabel("OK");
-							dialog.addButton(okButton);
-							dialog.showDialog();
-						}
-					});
-					return;
-				}
+			public void onSuccess(final List<AtomCategory> result) {
 				Platform.runLater(new Runnable() {
 
 					@Override
 					public void run() {
+						uploadViewModel.categoryProperty.set(FXCollections.observableList(result));
 						uploadCategory.getSelectionModel().selectFirst();
 						templateList.getSelectionModel().selectFirst();
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(final Throwable t) {
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						final MonologFX dialog = new MonologFX(MonologFX.Type.ERROR);
+						dialog.setTitleText(I18nHelper.message("categoryload.failed.title"));
+						dialog.setMessage(I18nHelper.message("categoryload.failed.message"));
+						final MonologFXButton okButton = new MonologFXButton();
+						okButton.setType(MonologFXButton.Type.OK);
+						okButton.setLabel("OK");
+						dialog.addButton(okButton);
+						dialog.showDialog();
 					}
 				});
 			}

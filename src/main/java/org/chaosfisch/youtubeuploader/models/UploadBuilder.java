@@ -73,10 +73,71 @@ public class UploadBuilder {
 	}
 
 	public Upload build() {
-		final Upload upload = Upload.create("title", title, "description", description == null ? "" : description, "keywords", tags,
-				"mimetype", mimetype, "commentvote", commentvote, "mobile", mobile, "embed", embed, "rate", rate, "comment", comment,
-				"videoresponse", videoresponse, "visibility", visibility, "license", license, "number", number, "started", started,
-				"release", release, "enddir", enddir, "inprogress", false, "thumbnail", thumbnail);
+		final Upload upload = Upload.create(
+			"title",
+			title,
+			"description",
+			description == null ? "" : description,
+			"keywords",
+			tags,
+			"mimetype",
+			mimetype,
+			"commentvote",
+			commentvote,
+			"mobile",
+			mobile,
+			"embed",
+			embed,
+			"rate",
+			rate,
+			"comment",
+			comment,
+			"videoresponse",
+			videoresponse,
+			"visibility",
+			visibility,
+			"license",
+			license,
+			"number",
+			number,
+			"started",
+			started,
+			"release",
+			release,
+			"enddir",
+			enddir,
+			"inprogress",
+			false,
+			"thumbnail",
+			thumbnail,
+			"archived",
+			false,
+			"locked",
+			false,
+			"inprogress",
+			false,
+			"failed",
+			false,
+			"pauseonfinish",
+			false,
+			"facebook",
+			false,
+			"twitter",
+			false,
+			"instreamdefaults",
+			false,
+			"claim",
+			false,
+			"overlay",
+			false,
+			"trueview",
+			false,
+			"instream",
+			false,
+			"product",
+			false,
+			"monetizepartner",
+			false);
 
 		if (id != null) {
 			upload.setLong("id", id);
@@ -186,7 +247,7 @@ public class UploadBuilder {
 	 *            the release to set
 	 */
 	public UploadBuilder setRelease(final Date release) {
-		this.release = release;
+		this.release = new Date(release.getTime());
 		return this;
 	}
 
@@ -195,7 +256,7 @@ public class UploadBuilder {
 	 *            the started to set
 	 */
 	public UploadBuilder setStarted(final Date started) {
-		this.started = started;
+		this.started = new Date(started.getTime());
 		return this;
 	}
 

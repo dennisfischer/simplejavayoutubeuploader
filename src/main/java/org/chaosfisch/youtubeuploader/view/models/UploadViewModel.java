@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -34,7 +36,6 @@ import javafx.util.converter.DefaultStringConverter;
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.util.ThreadUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.ViewController;
 import org.chaosfisch.youtubeuploader.models.Account;
@@ -48,41 +49,43 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.javalite.activejdbc.Model;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 public class UploadViewModel {
 
 	// {{ UploadOptions
 	public final SimpleListProperty<Model>							accountProperty					= new SimpleListProperty<>(
-																											FXCollections
-																													.<Model> observableArrayList());
+																										FXCollections
+																											.<Model> observableArrayList());
 	public final SimpleListProperty<Model>							templateProperty				= new SimpleListProperty<>(
-																											FXCollections
-																													.<Model> observableArrayList());
+																										FXCollections
+																											.<Model> observableArrayList());
 	public final SimpleListProperty<Model>							playlistDropListProperty		= new SimpleListProperty<>(
-																											FXCollections
-																													.<Model> observableArrayList());
+																										FXCollections
+																											.<Model> observableArrayList());
 	public final SimpleListProperty<Model>							playlistSourceListProperty		= new SimpleListProperty<>(
-																											FXCollections
-																													.<Model> observableArrayList());
+																										FXCollections
+																											.<Model> observableArrayList());
 	public final SimpleListProperty<AtomCategory>					categoryProperty				= new SimpleListProperty<>(
-																											FXCollections
-																													.<AtomCategory> observableArrayList());
+																										FXCollections
+																											.<AtomCategory> observableArrayList());
 	public final SimpleListProperty<String>							commentProperty					= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 	public final SimpleListProperty<File>							fileProperty					= new SimpleListProperty<>(
-																											FXCollections
-																													.<File> observableArrayList());
+																										FXCollections
+																											.<File> observableArrayList());
 	public final SimpleListProperty<String>							licenseProperty					= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 	public final SimpleListProperty<String>							videoresponseProperty			= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 	public final SimpleListProperty<String>							visibilityProperty				= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 	public final SimpleStringProperty								previewTitleProperty			= new SimpleStringProperty();
 	public final SimpleBooleanProperty								commentVoteProperty				= new SimpleBooleanProperty();
 	public final SimpleStringProperty								defaultdirProperty				= new SimpleStringProperty();
@@ -98,9 +101,9 @@ public class UploadViewModel {
 	public final SimpleStringProperty								messageProperty					= new SimpleStringProperty();
 
 	public final SimpleObjectProperty<Calendar>						starttimeProperty				= new SimpleObjectProperty<>(
-																											Calendar.getInstance());
+																										Calendar.getInstance());
 	public final SimpleObjectProperty<Calendar>						releasetimeProperty				= new SimpleObjectProperty<>(
-																											Calendar.getInstance());
+																										Calendar.getInstance());
 	public final SimpleIntegerProperty								numberProperty					= new SimpleIntegerProperty();
 	public final SimpleObjectProperty<File>							initialDirectoryProperty		= new SimpleObjectProperty<>();
 	public final SimpleStringProperty								thumbnailProperty				= new SimpleStringProperty();
@@ -125,11 +128,11 @@ public class UploadViewModel {
 	public SimpleBooleanProperty									partnerProperty					= new SimpleBooleanProperty(false);
 
 	public SimpleListProperty<String>								claimTypeProperty				= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 	public SimpleListProperty<String>								claimOptionsProperty			= new SimpleListProperty<>(
-																											FXCollections
-																													.<String> observableArrayList());
+																										FXCollections
+																											.<String> observableArrayList());
 
 	public SimpleStringProperty										tmsidProperty					= new SimpleStringProperty();
 	public SimpleStringProperty										isanProperty					= new SimpleStringProperty();
@@ -148,7 +151,8 @@ public class UploadViewModel {
 	private SimpleObjectProperty<ReadOnlyObjectProperty<Toggle>>	selectedContentSyndicationProperty;
 	// }} MonetizeOptions
 
-	@Inject private PlaylistService									playlistService;
+	@Inject
+	private PlaylistService											playlistService;
 
 	public UploadViewModel() {
 		EventBusUtil.getInstance().register(this);
@@ -174,19 +178,31 @@ public class UploadViewModel {
 		selectedAssetTypeProperty = new SimpleObjectProperty<>(selectedAssetTypeModel);
 		selectedContentSyndicationProperty = new SimpleObjectProperty<>(contentSyndicationModel);
 
-		visibilityProperty.addAll(I18nHelper.message("visibilitylist.public"), I18nHelper.message("visibilitylist.unlisted"),
-				I18nHelper.message("visibilitylist.private"), I18nHelper.message("visibilitylist.scheduled"));
+		visibilityProperty.addAll(
+			I18nHelper.message("visibilitylist.public"),
+			I18nHelper.message("visibilitylist.unlisted"),
+			I18nHelper.message("visibilitylist.private"),
+			I18nHelper.message("visibilitylist.scheduled"));
 
-		commentProperty.addAll(I18nHelper.message("commentlist.allowed"), I18nHelper.message("commentlist.moderated"),
-				I18nHelper.message("commentlist.denied"), I18nHelper.message("commentlist.friendsonly"));
+		commentProperty.addAll(
+			I18nHelper.message("commentlist.allowed"),
+			I18nHelper.message("commentlist.moderated"),
+			I18nHelper.message("commentlist.denied"),
+			I18nHelper.message("commentlist.friendsonly"));
 		licenseProperty.addAll(I18nHelper.message("licenselist.youtube"), I18nHelper.message("licenselist.cc"));
-		videoresponseProperty.addAll(I18nHelper.message("videoresponselist.allowed"), I18nHelper.message("videoresponselist.moderated"),
-				I18nHelper.message("videoresponselist.denied"));
+		videoresponseProperty.addAll(
+			I18nHelper.message("videoresponselist.allowed"),
+			I18nHelper.message("videoresponselist.moderated"),
+			I18nHelper.message("videoresponselist.denied"));
 
-		claimTypeProperty.addAll(I18nHelper.message("claimtype.audiovisual"), I18nHelper.message("claimtype.visual"),
-				I18nHelper.message("claimtype.audio"));
-		claimOptionsProperty.addAll(I18nHelper.message("claimoptions.monetize"), I18nHelper.message("claimoptions.track"),
-				I18nHelper.message("claimoptions.block"));
+		claimTypeProperty.addAll(
+			I18nHelper.message("claimtype.audiovisual"),
+			I18nHelper.message("claimtype.visual"),
+			I18nHelper.message("claimtype.audio"));
+		claimOptionsProperty.addAll(
+			I18nHelper.message("claimoptions.monetize"),
+			I18nHelper.message("claimoptions.track"),
+			I18nHelper.message("claimoptions.block"));
 
 		accountProperty.addAll(Account.where("type = ?", Account.Type.YOUTUBE.name()).include(Playlist.class));
 		templateProperty.addAll(Template.findAll().include(Account.class, Playlist.class));
@@ -208,8 +224,10 @@ public class UploadViewModel {
 
 			@Override
 			public String toString(final String value) {
-				extendedPlaceholders.setFile(selectedFileProperty.get().getSelectedItem() != null ? selectedFileProperty.get()
-						.getSelectedItem().getAbsolutePath() : "{file-missing}");
+				extendedPlaceholders.setFile(selectedFileProperty.get().getSelectedItem() != null ? selectedFileProperty
+					.get()
+					.getSelectedItem()
+					.getAbsolutePath() : "{file-missing}");
 				extendedPlaceholders.setNumber(numberProperty.get());
 
 				return extendedPlaceholders.replace(value);
@@ -301,23 +319,31 @@ public class UploadViewModel {
 		partnerProperty.set(template.getBoolean("monetizePartner") != null ? template.getBoolean("monetizePartner") : false);
 
 		selectedClaimTypeProperty.get().select(
-				template.getInteger("monetizeClaimType") != null ? template.getInteger("monetizeClaimType") : 0);
+			template.getInteger("monetizeClaimType") != null ? template.getInteger("monetizeClaimType") : 0);
 		selectedClaimOptionProperty.get().select(
-				template.getInteger("monetizeClaimPolicy") != null ? template.getInteger("monetizeClaimPolicy") : 0);
+			template.getInteger("monetizeClaimPolicy") != null ? template.getInteger("monetizeClaimPolicy") : 0);
 		selectedAssetTypeProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.selectToggle(
-						selectedAssetTypeProperty.get().get().getToggleGroup().getToggles()
-								.get(template.getInteger("monetizeAsset") != null ? template.getInteger("monetizeAsset") : 0));
+			.get()
+			.get()
+			.getToggleGroup()
+			.selectToggle(
+				selectedAssetTypeProperty
+					.get()
+					.get()
+					.getToggleGroup()
+					.getToggles()
+					.get(template.getInteger("monetizeAsset") != null ? template.getInteger("monetizeAsset") : 0));
 		selectedContentSyndicationProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.selectToggle(
-						selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
-								.get(template.getBoolean("syndication") != null ? template.getBoolean("syndication") ? 0 : 1 : 0));
+			.get()
+			.get()
+			.getToggleGroup()
+			.selectToggle(
+				selectedContentSyndicationProperty
+					.get()
+					.get()
+					.getToggleGroup()
+					.getToggles()
+					.get(template.getBoolean("syndication") != null ? template.getBoolean("syndication") ? 0 : 1 : 0));
 
 		monetizeDescriptionProperty.set(template.getString("monetizeDescription") != null ? template.getString("monetizeDescription") : "");
 		monetizeTitleEpisodeProperty.set(template.getString("monetizeTitleEpisode") != null ? template.getString("monetizeTitleEpisode")
@@ -333,15 +359,24 @@ public class UploadViewModel {
 	}
 
 	public Upload toUpload() {
-		final UploadBuilder uploadBuilder = new UploadBuilder(selectedFileProperty.get().getSelectedItem(), titleProperty.get(),
-				selectedCategoryProperty.get().getSelectedItem().term, (Account) selectedAccountProperty.get().getSelectedItem())
-				.setComment(selectedCommentProperty.get().getSelectedIndex()).setCommentvote(commentVoteProperty.get())
-				.setDescription(descriptionProperty.get() == null ? "" : descriptionProperty.get()).setEmbed(embedProperty.get())
-				.setEnddir(enddirProperty.get()).setLicense(selectedLicenseProperty.get().getSelectedIndex())
-				.setMobile(mobileProperty.get()).setNumber(numberProperty.get()).setRate(rateProperty.get())
-				.setTags(tagsProperty.get() == null ? "" : tagsProperty.get())
-				.setVideoresponse(selectedVideoResponseProperty.get().getSelectedIndex())
-				.setVisibility(selectedVisibilityProperty.get().getSelectedIndex()).setThumbnail(thumbnailProperty.get());
+		final UploadBuilder uploadBuilder = new UploadBuilder(
+			selectedFileProperty.get().getSelectedItem(),
+			titleProperty.get(),
+			selectedCategoryProperty.get().getSelectedItem().term,
+			(Account) selectedAccountProperty.get().getSelectedItem())
+			.setComment(selectedCommentProperty.get().getSelectedIndex())
+			.setCommentvote(commentVoteProperty.get())
+			.setDescription(descriptionProperty.get() == null ? "" : descriptionProperty.get())
+			.setEmbed(embedProperty.get())
+			.setEnddir(enddirProperty.get())
+			.setLicense(selectedLicenseProperty.get().getSelectedIndex())
+			.setMobile(mobileProperty.get())
+			.setNumber(numberProperty.get())
+			.setRate(rateProperty.get())
+			.setTags(tagsProperty.get() == null ? "" : tagsProperty.get())
+			.setVideoresponse(selectedVideoResponseProperty.get().getSelectedIndex())
+			.setVisibility(selectedVisibilityProperty.get().getSelectedIndex())
+			.setThumbnail(thumbnailProperty.get());
 		if (idProperty.get() != -1) {
 			uploadBuilder.setId(idProperty.get());
 		}
@@ -383,14 +418,19 @@ public class UploadViewModel {
 			upload.setBoolean("instreamDefaults", inStreamDefaultsProperty.getValue());
 			upload.setBoolean("product", productPlacementProperty.getValue());
 			upload.setBoolean(
-					"syndication",
-					selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
-							.indexOf(selectedContentSyndicationProperty.get().get()));
+				"syndication",
+				selectedContentSyndicationProperty
+					.get()
+					.get()
+					.getToggleGroup()
+					.getToggles()
+					.indexOf(selectedContentSyndicationProperty.get().get()));
 			upload.setBoolean("monetizePartner", claimProperty.get());
 			upload.setInteger("monetizeClaimType", selectedClaimTypeProperty.get().selectedIndexProperty().get());
 			upload.setInteger("monetizeClaimPolicy", selectedClaimOptionProperty.get().selectedIndexProperty().get());
-			upload.setInteger("monetizeAsset",
-					selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
+			upload.setInteger(
+				"monetizeAsset",
+				selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
 			upload.setString("monetizeTMSID", tmsidProperty.get() != null ? tmsidProperty.get() : "");
 			upload.setString("monetizeISAN", isanProperty.get() != null ? isanProperty.get() : "");
 			upload.setString("monetizeEIDR", eidrProperty.get() != null ? eidrProperty.get() : "");
@@ -473,21 +513,29 @@ public class UploadViewModel {
 
 		selectedClaimTypeProperty.get().select(upload.getInteger("monetizeClaimType") != null ? upload.getInteger("monetizeClaimType") : 0);
 		selectedClaimOptionProperty.get().select(
-				upload.getInteger("monetizeClaimPolicy") != null ? upload.getInteger("monetizeClaimPolicy") : 0);
+			upload.getInteger("monetizeClaimPolicy") != null ? upload.getInteger("monetizeClaimPolicy") : 0);
 		selectedAssetTypeProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.selectToggle(
-						selectedAssetTypeProperty.get().get().getToggleGroup().getToggles()
-								.get(upload.getInteger("monetizeAsset") != null ? upload.getInteger("monetizeAsset") : 0));
+			.get()
+			.get()
+			.getToggleGroup()
+			.selectToggle(
+				selectedAssetTypeProperty
+					.get()
+					.get()
+					.getToggleGroup()
+					.getToggles()
+					.get(upload.getInteger("monetizeAsset") != null ? upload.getInteger("monetizeAsset") : 0));
 		selectedContentSyndicationProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.selectToggle(
-						selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
-								.get(upload.getBoolean("syndication") != null ? upload.getBoolean("syndication") ? 0 : 1 : 0));
+			.get()
+			.get()
+			.getToggleGroup()
+			.selectToggle(
+				selectedContentSyndicationProperty
+					.get()
+					.get()
+					.getToggleGroup()
+					.getToggles()
+					.get(upload.getBoolean("syndication") != null ? upload.getBoolean("syndication") ? 0 : 1 : 0));
 
 		monetizeDescriptionProperty.set(upload.getString("monetizeDescription") != null ? upload.getString("monetizeDescription") : "");
 		monetizeTitleEpisodeProperty.set(upload.getString("monetizeTitleEpisode") != null ? upload.getString("monetizeTitleEpisode") : "");
@@ -541,14 +589,19 @@ public class UploadViewModel {
 		template.setBoolean("instreamDefaults", inStreamDefaultsProperty.getValue());
 		template.setBoolean("product", productPlacementProperty.getValue());
 		template.setBoolean(
-				"syndication",
-				selectedContentSyndicationProperty.get().get().getToggleGroup().getToggles()
-						.indexOf(selectedContentSyndicationProperty.get().get()));
+			"syndication",
+			selectedContentSyndicationProperty
+				.get()
+				.get()
+				.getToggleGroup()
+				.getToggles()
+				.indexOf(selectedContentSyndicationProperty.get().get()));
 		template.setBoolean("monetizePartner", claimProperty.get());
 		template.setInteger("monetizeClaimType", selectedClaimTypeProperty.get().selectedIndexProperty().get());
 		template.setInteger("monetizeClaimPolicy", selectedClaimOptionProperty.get().selectedIndexProperty().get());
-		template.setInteger("monetizeAsset",
-				selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
+		template.setInteger(
+			"monetizeAsset",
+			selectedAssetTypeProperty.get().get().getToggleGroup().getToggles().indexOf(selectedAssetTypeProperty.get().get()));
 		template.setString("monetizeTMSID", tmsidProperty.get() != null ? tmsidProperty.get() : "");
 		template.setString("monetizeISAN", isanProperty.get() != null ? isanProperty.get() : "");
 		template.setString("monetizeEIDR", eidrProperty.get() != null ? eidrProperty.get() : "");
@@ -613,11 +666,13 @@ public class UploadViewModel {
 				} else if (modelPostSavedEvent.getModel() instanceof Playlist
 						&& modelPostSavedEvent.getModel().parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
 					if (playlistSourceListProperty.contains(modelPostSavedEvent.getModel())) {
-						playlistSourceListProperty.set(playlistSourceListProperty.indexOf(modelPostSavedEvent.getModel()),
-								modelPostSavedEvent.getModel());
+						playlistSourceListProperty.set(
+							playlistSourceListProperty.indexOf(modelPostSavedEvent.getModel()),
+							modelPostSavedEvent.getModel());
 					} else if (playlistDropListProperty.contains(modelPostSavedEvent.getModel())) {
-						playlistDropListProperty.set(playlistDropListProperty.indexOf(modelPostSavedEvent.getModel()),
-								modelPostSavedEvent.getModel());
+						playlistDropListProperty.set(
+							playlistDropListProperty.indexOf(modelPostSavedEvent.getModel()),
+							modelPostSavedEvent.getModel());
 					} else {
 						playlistSourceListProperty.add(modelPostSavedEvent.getModel());
 					}
@@ -653,12 +708,18 @@ public class UploadViewModel {
 	public void refreshPlaylists() {
 		final Account[] accountArray = new Account[accountProperty.size()];
 		accountProperty.toArray(accountArray);
-		ThreadUtil.doInBackground(new Runnable() {
 
-			@Override
-			public void run() {
-				playlistService.synchronizePlaylists(Arrays.asList(accountArray));
-			}
-		});
+		Futures.addCallback(
+			playlistService.synchronizePlaylists(Arrays.asList(accountArray)),
+			new FutureCallback<Map<Account, List<Playlist>>>() {
+				@Override
+				public void onFailure(final Throwable t) {}
+
+				@Override
+				public void onSuccess(final Map<Account, List<Playlist>> result) {
+					// TODO Auto-generated method stub
+
+				}
+			});
 	}
 }
