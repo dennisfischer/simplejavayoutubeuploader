@@ -16,6 +16,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -36,6 +37,7 @@ import javafx.util.converter.DefaultStringConverter;
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
+import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.controller.ViewController;
 import org.chaosfisch.youtubeuploader.models.Account;
@@ -51,7 +53,10 @@ import org.javalite.activejdbc.Model;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class UploadViewModel {
 
@@ -153,6 +158,10 @@ public class UploadViewModel {
 
 	@Inject
 	private PlaylistService											playlistService;
+
+	@Inject
+	@Named(value = ApplicationData.SERVICE_EXECUTOR)
+	private ListeningExecutorService								pool;
 
 	public UploadViewModel() {
 		EventBusUtil.getInstance().register(this);
@@ -709,17 +718,23 @@ public class UploadViewModel {
 		final Account[] accountArray = new Account[accountProperty.size()];
 		accountProperty.toArray(accountArray);
 
-		Futures.addCallback(
-			playlistService.synchronizePlaylists(Arrays.asList(accountArray)),
-			new FutureCallback<Map<Account, List<Playlist>>>() {
-				@Override
-				public void onFailure(final Throwable t) {}
+		final ListenableFuture<Map<Account, List<Playlist>>> future = pool.submit(new Callable<Map<Account, List<Playlist>>>() {
+			@Override
+			public Map<Account, List<Playlist>> call() throws Exception {
+				return playlistService.synchronizePlaylists(Arrays.asList(accountArray));
+			}
+		});
 
-				@Override
-				public void onSuccess(final Map<Account, List<Playlist>> result) {
-					// TODO Auto-generated method stub
+		Futures.addCallback(future, new FutureCallback<Map<Account, List<Playlist>>>() {
+			@Override
+			public void onFailure(final Throwable t) {
+				// TODO Auto-generated method stub
+			}
 
-				}
-			});
+			@Override
+			public void onSuccess(final Map<Account, List<Playlist>> result) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 }

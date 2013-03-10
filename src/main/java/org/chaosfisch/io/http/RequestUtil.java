@@ -22,6 +22,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 public class RequestUtil {
 
 	static DefaultHttpClient	httpClient;
+	public static HttpContext	context	= new BasicHttpContext();
 	static {
 		httpClient = new DefaultHttpClient();
 		httpClient.setRedirectStrategy(new DefaultRedirectStrategy() {
@@ -66,7 +68,7 @@ public class RequestUtil {
 	}
 
 	public static HttpResponse execute(final HttpUriRequest request) throws ClientProtocolException, IOException {
-		return httpClient.execute(request);
+		return httpClient.execute(request, context);
 	}
 
 	/**

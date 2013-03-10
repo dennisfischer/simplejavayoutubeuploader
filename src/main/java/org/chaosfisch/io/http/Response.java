@@ -3,8 +3,11 @@ package org.chaosfisch.io.http;
 import java.io.IOException;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 
@@ -43,7 +46,11 @@ public class Response implements AutoCloseable {
 		} catch (ParseException | IOException e) {
 			throw SystemException.wrap(e, HttpCode.IO_ERROR);
 		}
-
 	}
 
+	public String getCurrentUrl() {
+		final HttpUriRequest currentReq = (HttpUriRequest) RequestUtil.context.getAttribute(ExecutionContext.HTTP_REQUEST);
+		final HttpHost currentHost = (HttpHost) RequestUtil.context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		return currentReq.getURI().isAbsolute() ? currentReq.getURI().toString() : currentHost.toURI() + currentReq.getURI();
+	}
 }

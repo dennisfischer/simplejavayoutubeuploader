@@ -48,6 +48,7 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
 import org.chaosfisch.io.Throttle;
+import org.chaosfisch.util.ActiveJdbcCellValueFactory;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
@@ -173,17 +174,17 @@ public class QueueController implements Initializable {
 		queueActionsGridpane.add(numberOfUploads, 7, 1);
 		queueActionsGridpane.add(uploadSpeed, 8, 1);
 
-		columnId.setCellValueFactory(new ActiveCellValueFactory<Upload, Number>("id"));
-		columnTitle.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("title"));
-		columnCategory.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("category"));
-		columnAccount.setCellValueFactory(new ActiveCellValueFactory<Upload, String>("name", Account.class));
-		columnProgress.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
-		columnActions.setCellValueFactory(new ActiveCellValueFactory<Upload, Upload>("this"));
+		columnId.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Number>("id"));
+		columnTitle.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("title"));
+		columnCategory.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("category"));
+		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("name", Account.class));
+		columnProgress.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
+		columnActions.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
 		columnActions.setMinWidth(260);
 		columnActions.setPrefWidth(260);
 		columnProgress.setMinWidth(230);
 		columnProgress.setPrefWidth(230);
-		columnStarttime.setCellValueFactory(new ActiveCellValueFactory<Upload, Object>("started"));
+		columnStarttime.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Object>("started"));
 		columnStarttime.setCellFactory(new Callback<TableColumn<Upload, Object>, TableCell<Upload, Object>>() {
 
 			@Override

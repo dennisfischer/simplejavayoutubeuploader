@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -21,15 +22,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.media.MediaCategory;
@@ -37,7 +33,6 @@ import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
-import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.youtubeuploader.models.Account;
 import org.chaosfisch.youtubeuploader.models.Upload;
@@ -183,9 +178,8 @@ public class MetadataServiceImpl implements MetadataService {
 			final String googleContent = googleAuthUtil.getLoginContent(
 				upload.parent(Account.class),
 				String.format(REDIRECT_URL, upload.getString("videoid")));
-			final String content = redirectToYoutube(googleContent);
 
-			changeMetadata(content);
+			changeMetadata(redirectToYoutube(googleContent));
 		} catch (final IOException | SystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,23 +190,16 @@ public class MetadataServiceImpl implements MetadataService {
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length()));
 	}
 
-	private String redirectToYoutube(String content) throws IOException, ClientProtocolException {
-		HttpEntity redirectResponseEntity = null;
-		try {
-			final HttpUriRequest redirectGet = new HttpGet(extractor(content, "location.replace(\"", "\"").replaceAll(
-				Pattern.quote("\\x26"),
-				"&").replaceAll(Pattern.quote("\\x3d"), "="));
-
-			final HttpResponse redirectResponse = RequestUtil.execute(redirectGet);
-			redirectResponseEntity = redirectResponse.getEntity();
-			content = EntityUtils.toString(redirectResponseEntity, Charsets.UTF_8);
-
-		} finally {
-			if (redirectResponseEntity != null) {
-				EntityUtils.consumeQuietly(redirectResponseEntity);
+	private String redirectToYoutube(final String content) throws IOException, ClientProtocolException, SystemException {
+		final Request request = new Request.Builder(extractor(content, "location.replace(\"", "\"")
+			.replaceAll(Pattern.quote("\\x26"), "&")
+			.replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
+		try (final Response response = request.execute();) {
+			if (Arrays.asList(deadEnds).contains(response.getCurrentUrl())) {
+				throw new SystemException(MetadataCode.DEAD_END);
 			}
+			return response.getContent();
 		}
-		return content;
 	}
 
 	private String boolConverter(final boolean flag) {

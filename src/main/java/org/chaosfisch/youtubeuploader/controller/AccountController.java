@@ -112,9 +112,9 @@ public class AccountController implements Initializable {
 
 		// initialize your logic here: all @FXML variables will have been
 
-		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<String>("name"));
-		columnAccounttype.setCellValueFactory(new ActiveCellValueFactory<Account, String>("type"));
-		columnActions.setCellValueFactory(new ActiveCellValueFactory<Account, Account>("this"));
+		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, String>("name"));
+		columnAccounttype.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, String>("type"));
+		columnActions.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, Account>("this"));
 
 		columnAccounttype.setCellFactory(new Callback<TableColumn<Account, String>, TableCell<Account, String>>() {
 
