@@ -20,16 +20,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.grid.GridCell;
 
-import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.javalite.activejdbc.Model;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
-public class PlaylistGridCell extends GridCell<Model> {
+public class PlaylistGridCell extends GridCell<Playlist> {
 	public PlaylistGridCell() {
-		itemProperty().addListener(new ChangeListener<Model>() {
+		itemProperty().addListener(new ChangeListener<Playlist>() {
 
 			@Override
-			public void changed(final ObservableValue<? extends Model> observable, final Model oldValue, final Model newValue) {
-				final Playlist playlist = (Playlist) newValue;
+			public void changed(final ObservableValue<? extends Playlist> observable, final Playlist oldValue, final Playlist playlist) {
 				getChildren().clear();
 
 				if (playlist == null) {
@@ -39,19 +37,19 @@ public class PlaylistGridCell extends GridCell<Model> {
 
 				getStyleClass().add("image-grid-cell");
 
-				final Tooltip tooltip = new Tooltip(playlist.getString("title"));
+				final Tooltip tooltip = new Tooltip(playlist.getTitle());
 
 				final Pane pane = new Pane();
 				ImageView imageView;
-				if (playlist.getString("thumbnail") != null) {
-					imageView = new ImageView(playlist.getString("thumbnail"));
+				if (playlist.getThumbnail() != null) {
+					imageView = new ImageView(playlist.getThumbnail());
 					imageView.setPreserveRatio(true);
 					final double width = imageView.getImage().getWidth() > 0 ? imageView.getImage().getWidth() : 0;
 					final double height = imageView.getImage().getHeight() > 90 ? imageView.getImage().getHeight() : 180;
 					imageView.setViewport(new Rectangle2D(0, 45, width, height - 90));
 				} else {
 					imageView = new ImageView(new Image(getClass().getResourceAsStream(
-							"/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
+						"/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
 				}
 
 				imageView.fitHeightProperty().bind(heightProperty());

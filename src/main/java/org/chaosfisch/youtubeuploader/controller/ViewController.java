@@ -32,11 +32,12 @@ import javafx.stage.Stage;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.I18nHelper;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.chaosfisch.youtubeuploader.models.Template;
+import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.chaosfisch.youtubeuploader.models.AccountsType;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
-import org.javalite.activejdbc.Model;
 
 import com.google.inject.Inject;
 
@@ -73,6 +74,9 @@ public class ViewController implements Initializable {
 	private PlaylistService			playlistService;
 	@Inject
 	private UploadController		uploadController;
+	@Inject
+	private AccountDao				accountDao;
+
 	// @Inject private RemoteClient remoteClient;
 
 	public static final Template	standardTemplate	= Template.create(
@@ -142,8 +146,8 @@ public class ViewController implements Initializable {
 		final TextField title = new TextField();
 		final CheckBox playlistPrivate = new CheckBox();
 		final TextArea summary = new TextArea();
-		final ChoiceBox<Model> accounts = new ChoiceBox<Model>();
-		accounts.setItems(FXCollections.observableList(Account.find("type = ?", Account.Type.YOUTUBE.name())));
+		final ChoiceBox<Account> accounts = new ChoiceBox<Account>();
+		accounts.setItems(FXCollections.observableList(accountDao.fetchByType(AccountsType.YOUTUBE.name())));
 		accounts.getSelectionModel().selectFirst();
 
 		final Object[] message = { I18nHelper.message("playlistDialog.playlistLabel"), title,
@@ -157,7 +161,7 @@ public class ViewController implements Initializable {
 			public void handle(final ActionEvent event) {
 				if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
 					try {
-						playlistService.addYoutubePlaylist((Playlist) Playlist.create(
+						playlistService.addYoutubePlaylist(Playlist.create(
 							"title",
 							title.getText(),
 							"summary",

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 public interface PlaylistService {
 	String addLatestVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;

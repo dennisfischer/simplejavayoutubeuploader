@@ -10,7 +10,7 @@
 package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
 
 public interface ResumeableManager {
@@ -18,7 +18,7 @@ public interface ResumeableManager {
 
 	boolean canContinue();
 
-	ResumeInfo fetchResumeInfo(Upload queue) throws SystemException;
+	ResumeInfo fetchResumeInfo(Upload upload) throws SystemException;
 
 	void setRetries(int i);
 

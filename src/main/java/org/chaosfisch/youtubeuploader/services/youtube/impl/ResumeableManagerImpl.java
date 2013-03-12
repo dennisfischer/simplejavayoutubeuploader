@@ -20,8 +20,8 @@ import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,22 +41,22 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private RequestSigner		requestSigner;
 
 	@Override
-	public ResumeInfo fetchResumeInfo(final Upload queue) throws SystemException {
+	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
 		ResumeInfo resumeInfo;
 		do {
 			if (!canResume()) {
 				return null;
 			}
-			resumeInfo = resumeFileUpload(queue);
+			resumeInfo = resumeFileUpload(upload);
 		} while (resumeInfo == null);
 		return resumeInfo;
 	}
 
-	private ResumeInfo resumeFileUpload(final Upload queue) throws SystemException {
-		final Request request = new Request.Builder(queue.getString("uploadurl"))
+	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
+		final Request request = new Request.Builder(upload.getUploadurl())
 			.put(null)
 			.headers(ImmutableMap.of("Content-Range", "bytes */*"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(queue.parent(Account.class)))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(upload.parent(Account.class)))
 			.build();
 
 		try (final Response response = request.execute();) {
@@ -71,7 +71,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 			final Header range = response.getRaw().getFirstHeader("Range");
 			if (range == null) {
-				logger.info("PUT to {} did not return Range-header.", queue.getString("uploadurl"));
+				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
 			} else {
 				logger.info("Range header is: {}", range.getValue());
@@ -85,8 +85,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
 			if (response.getRaw().getFirstHeader("Location") != null) {
 				final Header location = response.getRaw().getFirstHeader("Location");
-				queue.setString("uploadurl", location.getValue());
-				queue.saveIt();
+				upload.setUploadurl(location.getValue());
+				upload.saveIt();
 			}
 			return resumeInfo;
 

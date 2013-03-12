@@ -32,12 +32,11 @@ import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
 import org.chaosfisch.google.auth.GoogleAuthUtil;
-import org.chaosfisch.util.ActiveJdbcCellValueFactory;
 import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.models.AccountsType;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
-import org.javalite.activejdbc.Model;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -50,11 +49,11 @@ public class AccountController implements Initializable {
 
 	@FXML
 	// fx:id="accountTable"
-	private TableView<Model>				accountTable;
+	private TableView<Account>				accountTable;
 
 	@FXML
 	// fx:id="accountType"
-	private ChoiceBox<Account.Type>			accountType;
+	private ChoiceBox<AccountsType>			accountType;
 
 	@FXML
 	// fx:id="columnAccount"
@@ -100,15 +99,15 @@ public class AccountController implements Initializable {
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
 	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources) {
-		assert account != null : "fx:id=\"account\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert accountTable != null : "fx:id=\"accountTable\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert accountType != null : "fx:id=\"accountType\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert addAccount != null : "fx:id=\"addAccount\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert columnAccount != null : "fx:id=\"columnAccount\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert columnAccounttype != null : "fx:id=\"columnAccounttype\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert columnActions != null : "fx:id=\"columnActions\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert password != null : "fx:id=\"password\" was not injected: check your FXML file 'Accounts.fxml'.";
-		assert resetAccount != null : "fx:id=\"resetAccount\" was not injected: check your FXML file 'Accounts.fxml'.";
+		assert account != null : "fx:id=\"account\" was not injected: check your FXML file 'Account.fxml'.";
+		assert accountTable != null : "fx:id=\"accountTable\" was not injected: check your FXML file 'Account.fxml'.";
+		assert accountType != null : "fx:id=\"accountType\" was not injected: check your FXML file 'Account.fxml'.";
+		assert addAccount != null : "fx:id=\"addAccount\" was not injected: check your FXML file 'Account.fxml'.";
+		assert columnAccount != null : "fx:id=\"columnAccount\" was not injected: check your FXML file 'Account.fxml'.";
+		assert columnAccounttype != null : "fx:id=\"columnAccounttype\" was not injected: check your FXML file 'Account.fxml'.";
+		assert columnActions != null : "fx:id=\"columnActions\" was not injected: check your FXML file 'Account.fxml'.";
+		assert password != null : "fx:id=\"password\" was not injected: check your FXML file 'Account.fxml'.";
+		assert resetAccount != null : "fx:id=\"resetAccount\" was not injected: check your FXML file 'Account.fxml'.";
 
 		// initialize your logic here: all @FXML variables will have been
 
@@ -175,10 +174,10 @@ public class AccountController implements Initializable {
 
 		});
 
-		accountType.setItems(FXCollections.observableArrayList(Account.Type.values()));
+		accountType.setItems(FXCollections.observableArrayList(AccountsType.values()));
 		accountType.getSelectionModel().selectFirst();
 
-		final ObservableList<Model> list = FXCollections.observableArrayList(Account.findAll());
+		final ObservableList<Account> list = FXCollections.observableArrayList(Account.findAll());
 		accountTable.setItems(list);
 
 		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

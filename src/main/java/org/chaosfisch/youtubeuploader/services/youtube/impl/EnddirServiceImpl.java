@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class EnddirServiceImpl implements EnddirService {
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
-		final File enddir = new File(upload.getString("enddir") != null ? upload.getString("enddir") : "");
+		final File enddir = new File(upload.getEnddir());
 		if (!enddir.isDirectory()) {
 			logger.warn("Enddir not existing!");
 		}
@@ -58,8 +58,8 @@ public class EnddirServiceImpl implements EnddirService {
 	protected String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
 		final String fileName;
 		if (getEnddirSetting()) {
-			fileName = enddir.getAbsolutePath() + "/" + upload.getString("title").replaceAll("[\\?\\*:\\\\<>\"/]", "")
-					+ upload.getString("file").substring(upload.getString("file").lastIndexOf("."));
+			fileName = enddir.getAbsolutePath() + "/" + upload.getTitle().replaceAll("[\\?\\*:\\\\<>\"/]", "")
+					+ upload.getFile().substring(upload.getFile().lastIndexOf("."));
 		} else {
 			fileName = enddir.getAbsolutePath() + "/" + fileToMove.getName();
 

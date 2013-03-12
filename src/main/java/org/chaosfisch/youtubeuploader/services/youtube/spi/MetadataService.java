@@ -12,8 +12,8 @@ package org.chaosfisch.youtubeuploader.services.youtube.spi;
 import java.io.File;
 
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
 public interface MetadataService {
 	String atomBuilder(Upload upload);

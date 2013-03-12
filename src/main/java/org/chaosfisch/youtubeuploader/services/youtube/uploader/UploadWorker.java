@@ -20,13 +20,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javafx.concurrent.Task;
-
-import javax.sql.DataSource;
 
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.auth.AuthCode;
@@ -38,9 +37,9 @@ import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.TagParser;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Playlist;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataCode;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
@@ -49,7 +48,6 @@ import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
-import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +118,6 @@ public class UploadWorker extends Task<Void> {
 		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
 		 * fehlschlagen und muss wiederholbar sein.
 		 */
-		Base.open(injector.getInstance(DataSource.class));
 		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED)
 				|| currentStatus.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META))
 				&& resumeableManager.canContinue() && !isCancelled()) {
@@ -176,11 +173,11 @@ public class UploadWorker extends Task<Void> {
 		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
 		if (resumeInfo == null) {
 			currentStatus = STATUS.FAILED;
-			throw new SystemException(UploadCode.MAX_RETRIES_REACHED).set("url", upload.getString("uploadurl")).set(
+			throw new SystemException(UploadCode.MAX_RETRIES_REACHED).set("url", upload.getUploadurl()).set(
 				"time",
 				Calendar.getInstance().getTime().toString());
 		}
-		logger.info("Resuming stalled upload to: {}", upload.getString("uploadurl"));
+		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
 		if (resumeInfo.videoId != null) { // upload actually completed despite
 											// the exception
 			final String videoId = resumeInfo.videoId;
@@ -206,10 +203,10 @@ public class UploadWorker extends Task<Void> {
 			logger.debug("ERROR", t);
 		}
 
-		upload.setBoolean("inprogress", false);
+		upload.setInprogress(false);
 		switch (currentStatus) {
 			case DONE:
-				upload.setBoolean("archived", true);
+				upload.setArchived(true);
 				upload.saveIt();
 				uploadProgress.done = true;
 			break;
@@ -230,7 +227,6 @@ public class UploadWorker extends Task<Void> {
 			break;
 		}
 		eventBus.post(uploadProgress);
-		Base.close();
 		cancel();
 	}
 
@@ -270,11 +266,11 @@ public class UploadWorker extends Task<Void> {
 
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
-		upload.setDate("started", Calendar.getInstance().getTime());
+		upload.setStarted(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		upload.saveIt();
 
 		// Get File and Check if existing
-		fileToUpload = new File(upload.getString("file"));
+		fileToUpload = new File(upload.getFile());
 
 		if (!fileToUpload.exists()) {
 			throw new FileNotFoundException("Datei existiert nicht.");
@@ -285,8 +281,8 @@ public class UploadWorker extends Task<Void> {
 
 	private void metadata() throws SystemException {
 
-		if (upload.getString("uploadurl") != null && !upload.getString("uploadurl").isEmpty()) {
-			logger.info("Uploadurl existing: {}", upload.getString("uploadurl"));
+		if (upload.getUploadurl() != null && !upload.getUploadurl().isEmpty()) {
+			logger.info("Uploadurl existing: {}", upload.getUploadurl());
 			currentStatus = STATUS.RESUMEINFO;
 			return;
 		}
@@ -297,7 +293,7 @@ public class UploadWorker extends Task<Void> {
 		upload.saveIt();
 
 		// Log operation
-		logger.info("Uploadurl received: {}", upload.getString("uploadurl"));
+		logger.info("Uploadurl received: {}", upload.getUploadurl());
 		// INIT Vars
 		fileSize = fileToUpload.length();
 		totalBytesUploaded = 0;
@@ -319,7 +315,7 @@ public class UploadWorker extends Task<Void> {
 		if (upload.getAll(Playlist.class) != null) {
 			for (final Playlist playlist : upload.getAll(Playlist.class)) {
 				try {
-					playlistService.addLatestVideoToPlaylist(playlist, upload.getString("videoId"));
+					playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
 				} catch (final SystemException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -336,27 +332,26 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void browserAction() {
-		if (upload.get("release") == null && (upload.getString("thumbnail") == null || upload.getString("thumbnail").isEmpty())
-				&& !upload.getBoolean("claim")) {
+		if (upload.getRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail().isEmpty()) && !upload.getClaim()) {
 			return;
 		}
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
-		extendedPlacerholders.setFile(upload.getString("file"));
-		extendedPlacerholders.register("{title}", upload.getString("title"));
-		extendedPlacerholders.register("{description}", upload.getString("description"));
+		extendedPlacerholders.setFile(upload.getFile());
+		extendedPlacerholders.register("{title}", upload.getTitle());
+		extendedPlacerholders.register("{description}", upload.getDescription());
 
-		upload.setString("monetizeTitle", extendedPlacerholders.replace(upload.getString("monetizeTitle")));
-		upload.setString("monetizeDescription", extendedPlacerholders.replace(upload.getString("monetizeDescription")));
-		upload.setString("monetizeID", extendedPlacerholders.replace(upload.getString("monetizeID")));
-		upload.setString("monetizeNotes", extendedPlacerholders.replace(upload.getString("monetizeNotes")));
+		upload.setMonetizetitle(extendedPlacerholders.replace(upload.getMonetizetitle()));
+		upload.setMonetizedescription(extendedPlacerholders.replace(upload.getMonetizedescription()));
+		upload.setMonetizeid(extendedPlacerholders.replace(upload.getMonetizeid()));
+		upload.setMonetizenotes(extendedPlacerholders.replace(upload.getMonetizenotes()));
 
-		upload.setString("monetizeTMSID", extendedPlacerholders.replace(upload.getString("monetizeTMSID")));
-		upload.setString("monetizeISAN", extendedPlacerholders.replace(upload.getString("monetizeISAN")));
-		upload.setString("monetizeEIDR", extendedPlacerholders.replace(upload.getString("monetizeEIDR")));
-		upload.setString("monetizeTitleEpisode", extendedPlacerholders.replace(upload.getString("monetizeTitleEpisode")));
-		upload.setString("monetizeSeasonNB", extendedPlacerholders.replace(upload.getString("monetizeSeasonNB")));
-		upload.setString("monetizeEpisodeNB", extendedPlacerholders.replace(upload.getString("monetizeEpisodeNB")));
+		upload.setMonetizetmsid(extendedPlacerholders.replace(upload.getMonetizetmsid()));
+		upload.setMonetizeisan(extendedPlacerholders.replace(upload.getMonetizeisan()));
+		upload.setMonetizeeidr(extendedPlacerholders.replace(upload.getMonetizeeidr()));
+		upload.setMonetizetitleepisode(extendedPlacerholders.replace(upload.getMonetizetitleepisode()));
+		upload.setMonetizeseasonnb(extendedPlacerholders.replace(upload.getMonetizeseasonnb()));
+		upload.setMonetizeepisodenb(extendedPlacerholders.replace(upload.getMonetizeepisodenb()));
 
 		metadataService.activateBrowserfeatures(upload);
 	}
@@ -366,24 +361,23 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void replacePlaceholders() {
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getString("file"), null,
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), null,
 		// upload.parent(Playlist.class),
-			upload.getInteger("number"));
-		upload.setString("title", extendedPlaceholders.replace(upload.getString("title")));
-		upload.setString("description", extendedPlaceholders.replace(upload.getString("description")));
-		upload.setString("keywords", extendedPlaceholders.replace(upload.getString("keywords")));
-
-		upload.setString("keywords", TagParser.parseAll(upload.getString("keywords")));
-		upload.setString("keywords", upload.getString("keywords").replaceAll("\"", ""));
+			upload.getNumber());
+		upload.setTitle(extendedPlaceholders.replace(upload.getTitle()));
+		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
+		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));
+		upload.setKeywords(TagParser.parseAll(upload.getKeywords()));
+		upload.setKeywords(upload.getKeywords().replaceAll("\"", ""));
 	}
 
-	public void run(final Upload queue) {
-		upload = queue;
+	public void run(final Upload upload) {
+		this.upload = upload;
 	}
 
 	private void setFailedStatus(final String status) {
-		upload.setBoolean("failed", true);
-		upload.set("started", null);
+		upload.setFailed(true);
+		upload.setStarted(null);
 		upload.saveIt();
 		uploadProgress.failed = true;
 		uploadProgress.status = status;
@@ -409,13 +403,13 @@ public class UploadWorker extends Task<Void> {
 
 		try {
 			// Building PUT Request for chunk data
-			final URL url = URI.create(upload.getString("uploadurl")).toURL();
+			final URL url = URI.create(upload.getUploadurl()).toURL();
 			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 			request.setRequestMethod("POST");
 
 			final Map<String, String> headers = ImmutableMap.of(
 				"Content-Type",
-				upload.getString("mimetype"),
+				upload.getMimetype(),
 				"Content-Range",
 				String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
 
@@ -452,9 +446,9 @@ public class UploadWorker extends Task<Void> {
 								return request.getInputStream();
 							}
 						};
-						upload.setString(
-							"videoid",
-							resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
+						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(
+							supplier,
+							Charsets.UTF_8))));
 						upload.saveIt();
 						currentStatus = STATUS.POSTPROCESS;
 					break;

@@ -14,11 +14,10 @@ import org.chaosfisch.net.Msg;
 import org.chaosfisch.net.Server;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
-import org.javalite.activejdbc.Base;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -65,7 +64,6 @@ public class ConsoleController {
 			}
 		}
 		try {
-			Base.openTransaction();
 			final Account account = new Account();
 			account.fromMap((Map<String, Object>) map.get("account"));
 			if (Account.count("id = ?", account.getId()) == 0) {
@@ -77,23 +75,19 @@ public class ConsoleController {
 			final Upload upload = new Upload();
 			upload.fromMap(map);
 
-			if (!Files.exists(Paths.get(upload.getString("file")))) {
-				throw new FileNotFoundException(upload.getString("file"));
+			if (!Files.exists(Paths.get(upload.getFile()))) {
+				throw new FileNotFoundException(upload.getFile());
 			}
 
-			upload.setTimestamp(
-				"starttime",
-				upload.getTimestamp("starttime") == null ? new Timestamp(System.currentTimeMillis()) : upload.getTimestamp("starttime"));
-			upload.setParent(account);
+			upload.setStarted(upload.getStarted() == null ? new Timestamp(System.currentTimeMillis()) : upload.getStarted());
+			upload.setAccountId(account.getId());
 			if (Upload.count("id = ?", upload.getId()) == 0) {
 				upload.insert();
 			} else {
 				upload.save();
 			}
-			Base.commitTransaction();
 			server.sendMsg("upload_added", msg.getContent());
 		} catch (final Exception ex) {
-			Base.rollbackTransaction();
 			server.sendMsg("upload_added_failed", msg.getContent());
 		}
 	}

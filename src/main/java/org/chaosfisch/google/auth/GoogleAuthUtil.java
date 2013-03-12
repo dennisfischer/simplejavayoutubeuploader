@@ -14,9 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -27,7 +26,7 @@ import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
-import org.chaosfisch.youtubeuploader.models.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,24 +36,24 @@ import com.google.inject.Inject;
 
 public class GoogleAuthUtil {
 
-	final Map<Long, String>		authtokens				= new WeakHashMap<Long, String>();
-	@Inject
-	RequestSigner				requestSigner;
+	final HashMap<Integer, String>	authtokens				= new HashMap<Integer, String>();
+	private final static Logger		logger					= LoggerFactory.getLogger(GoogleAuthUtil.class);
+	private static final String		CLIENT_LOGIN_URL		= "https://accounts.google.com/ClientLogin";
+	private static final String		ISSUE_AUTH_TOKEN_URL	= "https://www.google.com/accounts/IssueAuthToken";
 
-	private final static Logger	logger					= LoggerFactory.getLogger(GoogleAuthUtil.class);
-	private static final String	CLIENT_LOGIN_URL		= "https://accounts.google.com/ClientLogin";
-	private static final String	ISSUE_AUTH_TOKEN_URL	= "https://www.google.com/accounts/IssueAuthToken";
+	@Inject
+	RequestSigner					requestSigner;
 
 	public String getAuthToken(final Account account) throws SystemException {
 
-		if (!authtokens.containsKey(account.getLongId())) {
+		if (!authtokens.containsKey(account.getId())) {
 
 			final String clientLoginContent = _receiveToken(account);
 			authtokens.put(
-				account.getLongId(),
+				account.getId(),
 				clientLoginContent.substring(clientLoginContent.indexOf("Auth=") + 5, clientLoginContent.length()).trim());
 		}
-		return authtokens.get(account.getLongId());
+		return authtokens.get(account.getId());
 	}
 
 	private String _receiveToken(final Account account) throws SystemException {
@@ -65,8 +64,8 @@ public class GoogleAuthUtil {
 	private String _receiveToken(final Account account, final String service, final String source) throws SystemException {
 		// STEP 1 CLIENT LOGIN
 		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<BasicNameValuePair>();
-		clientLoginRequestParams.add(new BasicNameValuePair("Email", account.getString("name")));
-		clientLoginRequestParams.add(new BasicNameValuePair("Passwd", account.getString("password")));
+		clientLoginRequestParams.add(new BasicNameValuePair("Email", account.getName()));
+		clientLoginRequestParams.add(new BasicNameValuePair("Passwd", account.getPassword()));
 		clientLoginRequestParams.add(new BasicNameValuePair("service", service));
 		clientLoginRequestParams.add(new BasicNameValuePair("PesistentCookie", "0"));
 		clientLoginRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
@@ -91,8 +90,8 @@ public class GoogleAuthUtil {
 	}
 
 	public String getAuthHeader(final Account account) throws SystemException {
-		if (authtokens.containsKey(account.getLongId())) {
-			return String.format("GoogleLogin auth=%s", authtokens.get(account.getLongId()));
+		if (authtokens.containsKey(account.getId())) {
+			return String.format("GoogleLogin auth=%s", authtokens.get(account.getId()));
 		} else {
 			return String.format("GoogleLogin auth=%s", getAuthToken(account));
 		}

@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.chaosfisch.youtubeuploader.I18nHelper;
-import org.chaosfisch.youtubeuploader.models.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 public class ExtendedPlaceholders {
 	/**
@@ -81,18 +81,16 @@ public class ExtendedPlaceholders {
 			return "";
 		}
 		if (playlist != null) {
-			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getString("title"));
+			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getTitle());
 
 			final Pattern p = Pattern.compile(I18nHelper.message("autotitle.numberPattern"));
 			final Matcher m = p.matcher(input);
 
 			if (m.find()) {
-				input = m.replaceAll(zeroFill(playlist.getInteger("number") + 1 + number, Integer.parseInt(m.group(1))));
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"),
-						String.valueOf(playlist.getInteger("number") + 1 + number));
+				input = m.replaceAll(zeroFill(playlist.getNumber() + 1 + number, Integer.parseInt(m.group(1))));
+				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
 			} else {
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"),
-						String.valueOf(playlist.getInteger("number") + 1 + number));
+				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
 			}
 		}
 

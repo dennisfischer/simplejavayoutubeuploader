@@ -19,6 +19,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

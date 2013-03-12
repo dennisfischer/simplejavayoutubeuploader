@@ -19,17 +19,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-import javax.sql.DataSource;
-
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
-import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +52,6 @@ public class Uploader {
 	private final Logger				logger					= LoggerFactory.getLogger(getClass());
 	@Inject
 	private Injector					injector;
-	@Inject
-	private DataSource					datasource;
 	@Inject
 	private EventBus					eventBus;
 	@Inject
@@ -114,19 +109,15 @@ public class Uploader {
 	}
 
 	private synchronized void sendUpload() {
-		if (!Base.hasConnection()) {
-			Base.open(injector.getInstance(DataSource.class));
-		}
-
 		if (inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = Upload
 				.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
 			if (polled != null) {
 				if (polled.parent(Account.class) == null) {
-					polled.setBoolean("locked", true);
+					polled.setLocked(true);
 					polled.saveIt();
 				} else {
-					polled.setBoolean("inprogress", true);
+					polled.setInprogress(true);
 					polled.saveIt();
 					final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 					uploadWorker.run(polled);
@@ -146,17 +137,14 @@ public class Uploader {
 	}
 
 	private void uploadFinished(final Upload queue) {
-		if (!Base.hasConnection()) {
-			Base.open(injector.getInstance(DataSource.class));
-		}
 		runningUploads--;
 
 		final long leftUploads = Upload.count("archived = false AND failed = false");
-		logger.info("Upload finished: {}; {}", queue.getString("title"), queue.getString("videoid"));
+		logger.info("Upload finished: {}; {}", queue.getTitle(), queue.getVideoid());
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
 
-		if (queue.getBoolean("PAUSEONFINISH")) {
+		if (queue.getPauseonfinish()) {
 			inProgressProperty.set(false);
 		} else {
 			sendUpload();
@@ -189,9 +177,6 @@ public class Uploader {
 
 			@Override
 			public Boolean call() {
-				if (!Base.hasConnection()) {
-					Base.open(datasource);
-				}
 				while (!Thread.interrupted() && startTimeCheckerFlag) {
 					if (Upload.count("(archived is NULL OR archived = false) AND started < NOW()  AND inprogress = false") != 0) {
 						start();

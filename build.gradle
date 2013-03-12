@@ -30,29 +30,26 @@ configurations {
 	//we do not want to have jfxrt.jar in the classpath when creating the jar,
 	//therefore a seperate configuration is required
 	providedCompile
-	instrument
 }
 
 
 tasks.withType(Compile) {
   options.fork = true
   options.forkOptions.with {
-    memoryMaximumSize = "2048m" // try different values
+    memoryMaximumSize = "4096m" // try different values
   }
 }
 
 
 dependencies {
 	compile 'com.h2database:h2:1.3.170', 'org.apache.httpcomponents:httpclient:4.2.2', 'com.google.inject:guice:3.0',
-			'ch.qos.logback:logback-classic:1.0.9', 'c3p0:c3p0:0.9.0.2', 'org.apache.httpcomponents:httpmime:4.2.2', 
-			'com.google.guava:guava:14+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2'
-	compile ('org.javalite:activejdbc:1.4.6'){
-		exclude group: 'junit', module: 'junit'
-	}
+			'ch.qos.logback:logback-classic:1.0.9', 'org.apache.httpcomponents:httpmime:4.2.2', 
+			'com.google.guava:guava:14+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
+			'org.jooq:jooq:3+','org.jooq:jooq-meta:3+', 'org.jooq:jooq-codegen:3+'
+
 	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-r5-SNAPSHOT.jar")
 
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
-	instrument 'org.javalite:activejdbc:1.4.6', 'org.javalite:activejdbc-instrumentation:1.4.6'
 }
 
 repositories {
@@ -80,16 +77,6 @@ task launch4j(type: Exec) {
 	new File("$buildDir/launch4j").mkdirs()
 	workingDir file("$buildDir/launch4j")
  	commandLine 'C:/Program Files (x86)/Launch4j/launch4jc.exe', file('/src/main/deploy/launch4j.xml')
-}
-
-task instrumentAction() {
-	doLast { instrument.execute(); }
-}
-
-task instrument (type: JavaExec) {
-	classpath configurations.instrument.plus(sourceSets.main.output)
-	main = "org.javalite.instrumentation.Main"
-	jvmArgs "-DoutputDirectory="+sourceSets.main.output.classesDir
 }
 
 task javaFXPackager(type:Exec) {
@@ -129,9 +116,6 @@ task distribute(type: Zip){
 }
 
 
-instrumentAction.dependsOn classes
-run.dependsOn instrumentAction
-jar.dependsOn instrumentAction
 distribute.dependsOn javaFXPackager
 distribute.dependsOn launch4j
 javaFXPackager.dependsOn copyTask

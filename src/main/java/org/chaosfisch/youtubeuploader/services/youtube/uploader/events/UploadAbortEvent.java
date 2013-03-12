@@ -1,6 +1,6 @@
 package org.chaosfisch.youtubeuploader.services.youtube.uploader.events;
 
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
 public class UploadAbortEvent {
 

@@ -62,11 +62,13 @@ import jfxtras.labs.scene.control.grid.GridViewBuilder;
 
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.youtubeuploader.I18nHelper;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
-import org.chaosfisch.youtubeuploader.models.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
-import org.javalite.activejdbc.Model;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -81,7 +83,7 @@ public class UploadController implements Initializable {
 	@FXML
 	private URL							location;
 	@FXML
-	private ChoiceBox<Model>			accountList;
+	private ChoiceBox<Account>			accountList;
 	@FXML
 	private Button						addUpload;
 	@FXML
@@ -185,7 +187,7 @@ public class UploadController implements Initializable {
 	@FXML
 	private Button						saveTemplate;
 	@FXML
-	private ChoiceBox<Model>			templateList;
+	private ChoiceBox<Template>			templateList;
 	@FXML
 	private ChoiceBox<AtomCategory>		uploadCategory;
 	@FXML
@@ -229,17 +231,19 @@ public class UploadController implements Initializable {
 	@FXML
 	private Label						validationText;
 
-	private final CalendarTextField		starttime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																	.withShowTime(Boolean.TRUE);
-	private final CalendarTextField		releasetime			= new CalendarTextField().withValue(Calendar.getInstance())
-																	.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																	.withShowTime(Boolean.TRUE);
+	private final CalendarTextField		starttime			= new CalendarTextField()
+																.withValue(Calendar.getInstance())
+																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																.withShowTime(Boolean.TRUE);
+	private final CalendarTextField		releasetime			= new CalendarTextField()
+																.withValue(Calendar.getInstance())
+																.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+																.withShowTime(Boolean.TRUE);
 	private final ListSpinner<Integer>	number				= new ListSpinner<Integer>(-1000, 1000).withValue(0).withAlignment(
-																	Pos.CENTER_RIGHT);
+																Pos.CENTER_RIGHT);
 
-	private final GridView<Model>		playlistSourcezone	= GridViewBuilder.create(Model.class).build();
-	private final GridView<Model>		playlistDropzone	= GridViewBuilder.create(Model.class).build();
+	private final GridView<Playlist>	playlistSourcezone	= GridViewBuilder.create(Playlist.class).build();
+	private final GridView<Playlist>	playlistDropzone	= GridViewBuilder.create(Playlist.class).build();
 
 	// }} ViewElements
 
@@ -416,10 +420,10 @@ public class UploadController implements Initializable {
 	}
 
 	private void initCustomFactories() {
-		final Callback<GridView<Model>, GridCell<Model>> playlistSourceCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
+		final Callback<GridView<Playlist>, GridCell<Playlist>> playlistSourceCellFactory = new Callback<GridView<Playlist>, GridCell<Playlist>>() {
 
 			@Override
-			public PlaylistGridCell call(final GridView<Model> arg0) {
+			public PlaylistGridCell call(final GridView<Playlist> arg0) {
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
 				cell.setOnDragDetected(new EventHandler<Event>() {
@@ -439,8 +443,9 @@ public class UploadController implements Initializable {
 					@Override
 					public void handle(final MouseEvent event) {
 						if (event.getClickCount() == 2) {
-							uploadViewModel.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty.indexOf(cell.itemProperty()
-									.get()));
+							uploadViewModel.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty.indexOf(cell
+								.itemProperty()
+								.get()));
 						}
 					}
 				});
@@ -449,10 +454,10 @@ public class UploadController implements Initializable {
 			}
 		};
 
-		final Callback<GridView<Model>, GridCell<Model>> playlistDropCellFactory = new Callback<GridView<Model>, GridCell<Model>>() {
+		final Callback<GridView<Playlist>, GridCell<Playlist>> playlistDropCellFactory = new Callback<GridView<Playlist>, GridCell<Playlist>>() {
 
 			@Override
-			public PlaylistGridCell call(final GridView<Model> arg0) {
+			public PlaylistGridCell call(final GridView<Playlist> arg0) {
 				final PlaylistGridCell cell = new PlaylistGridCell();
 
 				cell.setOnDragDetected(new EventHandler<Event>() {
@@ -472,8 +477,9 @@ public class UploadController implements Initializable {
 					@Override
 					public void handle(final MouseEvent event) {
 						if (event.getClickCount() == 2) {
-							uploadViewModel.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty.indexOf(cell.itemProperty()
-									.get()));
+							uploadViewModel.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty.indexOf(cell
+								.itemProperty()
+								.get()));
 						}
 					}
 				});
@@ -491,9 +497,11 @@ public class UploadController implements Initializable {
 
 				if (object.getPath().length() > 50) {
 					final String fileName = object.getPath();
-					return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
-							.concat(File.separator).concat("...")
-							.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+					return fileName
+						.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
+						.concat(File.separator)
+						.concat("...")
+						.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
 				}
 
 				return object.getPath();
@@ -585,10 +593,19 @@ public class UploadController implements Initializable {
 
 		// VIEW MODEL BINDINGS
 
-		uploadViewModel.init(uploadCategory.getSelectionModel(), uploadFile.getSelectionModel(), accountList.getSelectionModel(),
-				uploadComment.getSelectionModel(), uploadLicense.getSelectionModel(), uploadVideoresponse.getSelectionModel(),
-				uploadVisibility.getSelectionModel(), templateList.getSelectionModel(), monetizeClaimType.getSelectionModel(),
-				monetizeClaimOption.getSelectionModel(), assetType.selectedToggleProperty(), contentSyndication.selectedToggleProperty());
+		uploadViewModel.init(
+			uploadCategory.getSelectionModel(),
+			uploadFile.getSelectionModel(),
+			accountList.getSelectionModel(),
+			uploadComment.getSelectionModel(),
+			uploadLicense.getSelectionModel(),
+			uploadVideoresponse.getSelectionModel(),
+			uploadVisibility.getSelectionModel(),
+			templateList.getSelectionModel(),
+			monetizeClaimType.getSelectionModel(),
+			monetizeClaimOption.getSelectionModel(),
+			assetType.selectedToggleProperty(),
+			contentSyndication.selectedToggleProperty());
 
 		fileChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);
 		directoryChooser.initialDirectoryProperty().bindBidirectional(uploadViewModel.initialDirectoryProperty);

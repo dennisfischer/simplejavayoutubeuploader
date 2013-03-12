@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.services.youtube.uploader.events;
 
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
 public class UploadProgressEvent {
 	private long		diffBytes;
@@ -22,8 +22,8 @@ public class UploadProgressEvent {
 	public boolean		done;
 	public String		status;
 
-	public UploadProgressEvent(final Upload queue, final long fileSize) {
-		this.upload = queue;
+	public UploadProgressEvent(final Upload upload, final long fileSize) {
+		this.upload = upload;
 		this.fileSize = fileSize;
 	}
 

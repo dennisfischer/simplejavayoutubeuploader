@@ -48,18 +48,17 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
 import org.chaosfisch.io.Throttle;
-import org.chaosfisch.util.ActiveJdbcCellValueFactory;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
-import org.javalite.activejdbc.Model;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -104,7 +103,7 @@ public class QueueController implements Initializable {
 
 	@FXML
 	// fx:id="queueTableview"
-	private TableView<Model>			queueTableview;
+	private TableView<Upload>			queueTableview;
 
 	@FXML
 	// fx:id="startQueue"
@@ -150,6 +149,8 @@ public class QueueController implements Initializable {
 	private Throttle					throttle;
 	@Inject
 	private UploadViewModel				uploadViewModel;
+	@Inject
+	private UploadDao					uploadDao;
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -174,16 +175,17 @@ public class QueueController implements Initializable {
 		queueActionsGridpane.add(numberOfUploads, 7, 1);
 		queueActionsGridpane.add(uploadSpeed, 8, 1);
 
+		columnActions.setMinWidth(260);
+		columnActions.setPrefWidth(260);
+		columnProgress.setMinWidth(230);
+		columnProgress.setPrefWidth(230);
+
 		columnId.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Number>("id"));
 		columnTitle.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("title"));
 		columnCategory.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("category"));
 		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("name", Account.class));
 		columnProgress.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
 		columnActions.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
-		columnActions.setMinWidth(260);
-		columnActions.setPrefWidth(260);
-		columnProgress.setMinWidth(230);
-		columnProgress.setPrefWidth(230);
 		columnStarttime.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Object>("started"));
 		columnStarttime.setCellFactory(new Callback<TableColumn<Upload, Object>, TableCell<Upload, Object>>() {
 
@@ -217,21 +219,21 @@ public class QueueController implements Initializable {
 				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
 
 					@Override
-					public void updateItem(final Upload queue, final boolean empty) {
-						super.updateItem(queue, empty);
+					public void updateItem(final Upload upload, final boolean empty) {
+						super.updateItem(upload, empty);
 						if (empty) {
 							setGraphic(null);
 							setContentDisplay(null);
 						} else {
 							final HBox hbox = new HBox(10);
 
-							final ProgressIndicator progressIndicator = new ProgressIndicator(queue.getBoolean("archived") ? 100 : 0);
-							progressIndicator.setId("queue-" + queue.getLongId());
+							final ProgressIndicator progressIndicator = new ProgressIndicator(upload.getArchived() ? 100 : 0);
+							progressIndicator.setId("queue-" + upload.getId());
 
 							final Label label = new Label("");
-							label.setId("queue-text-" + queue.getLongId());
-							if (queue.getBoolean("archived")) {
-								label.setText("http://youtu.be/" + queue.getString("videoid"));
+							label.setId("queue-text-" + upload.getId());
+							if (upload.getArchived()) {
+								label.setText("http://youtu.be/" + upload.getVideoid());
 								label.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 									@Override
@@ -240,7 +242,7 @@ public class QueueController implements Initializable {
 										if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2
 												&& Desktop.isDesktopSupported()) {
 											try {
-												Desktop.getDesktop().browse(new URI("http://youtu.be/" + queue.getString("videoid")));
+												Desktop.getDesktop().browse(new URI("http://youtu.be/" + upload.getVideoid()));
 											} catch (final URISyntaxException | IOException e) {
 												// TODO
 											}
@@ -249,7 +251,7 @@ public class QueueController implements Initializable {
 									}
 								});
 								progressIndicator.setProgress(100);
-							} else if (queue.getBoolean("failed")) {
+							} else if (upload.getFailed()) {
 
 								label.setText(I18nHelper.message("queuetable.status.failed"));
 								progressIndicator.setProgress(0);
@@ -271,8 +273,8 @@ public class QueueController implements Initializable {
 				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
 
 					@Override
-					public void updateItem(final Upload item, final boolean empty) {
-						super.updateItem(item, empty);
+					public void updateItem(final Upload upload, final boolean empty) {
+						super.updateItem(upload, empty);
 						if (empty) {
 							setGraphic(null);
 							setContentDisplay(null);
@@ -283,7 +285,7 @@ public class QueueController implements Initializable {
 
 								@Override
 								public void handle(final ActionEvent event) {
-									if (item == null || item.getBoolean("inprogress")) {
+									if (upload == null || upload.getInprogress()) {
 										return;
 									}
 									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
@@ -297,12 +299,12 @@ public class QueueController implements Initializable {
 									noButton.setLabel("No");
 									dialog.addButton(yesButton);
 									dialog.addButton(noButton);
-									if (item != null && dialog.showDialog() == MonologFXButton.Type.YES) {
-										item.delete();
+									if (upload != null && dialog.showDialog() == MonologFXButton.Type.YES) {
+										uploadDao.delete(upload);
 									}
 								}
 							});
-							btnRemove.setDisable(item.getBoolean("inprogress"));
+							btnRemove.setDisable(upload.getInprogress());
 
 							final Button btnEdit = new Button();
 							btnEdit.setId("editUpload");
@@ -310,14 +312,14 @@ public class QueueController implements Initializable {
 
 								@Override
 								public void handle(final ActionEvent event) {
-									if (item == null || item.getBoolean("inprogress")) {
+									if (upload == null || upload.getInprogress()) {
 										return;
 									}
-									uploadViewModel.fromUpload(item);
+									uploadViewModel.fromUpload(upload);
 								}
 
 							});
-							btnEdit.setDisable(item.getBoolean("inprogress") || item.getBoolean("archived"));
+							btnEdit.setDisable(upload.getInprogress() || upload.getArchived());
 
 							final Button btnAbort = new Button(I18nHelper.message("button.abort"));
 							btnAbort.setId("abortUpload");
@@ -325,7 +327,7 @@ public class QueueController implements Initializable {
 
 								@Override
 								public void handle(final ActionEvent arg0) {
-									if (item == null || !item.getBoolean("inprogress")) {
+									if (upload == null || !upload.getInprogress()) {
 										return;
 									}
 									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
@@ -341,11 +343,11 @@ public class QueueController implements Initializable {
 									dialog.addButton(noButton);
 
 									if (dialog.showDialog() == MonologFXButton.Type.YES) {
-										uploader.abort(item);
+										uploader.abort(upload);
 									}
 								}
 							});
-							btnAbort.setDisable(!item.getBoolean("inprogress") || item.getBoolean("archived"));
+							btnAbort.setDisable(!upload.getInprogress() || upload.getArchived());
 
 							final ToggleButton btnPauseOnFinish = new ToggleButton();
 							btnPauseOnFinish.setId("pauseOnFinishQueue");
@@ -353,11 +355,11 @@ public class QueueController implements Initializable {
 
 								@Override
 								public void handle(final ActionEvent arg0) {
-									item.setBoolean("pauseonfinish", btnPauseOnFinish.selectedProperty().get());
-									item.saveIt();
+									upload.setPauseonfinish(btnPauseOnFinish.selectedProperty().get());
+									uploadDao.update(upload);
 								}
 							});
-							btnPauseOnFinish.selectedProperty().set(item.getBoolean("pauseonfinish"));
+							btnPauseOnFinish.selectedProperty().set(upload.getPauseonfinish());
 
 							final HBox hbox = new HBox(3d);
 							hbox.getChildren().addAll(btnRemove, btnEdit, btnAbort, btnPauseOnFinish);
@@ -371,7 +373,7 @@ public class QueueController implements Initializable {
 
 		});
 
-		queueTableview.setItems(FXCollections.observableArrayList(Upload.findAll()));
+		queueTableview.setItems(FXCollections.observableArrayList(uploadDao.findAll()));
 
 		actionOnFinish.setItems(FXCollections.observableArrayList(new String[] { I18nHelper.message("queuefinishedlist.donothing"),
 				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
@@ -430,13 +432,13 @@ public class QueueController implements Initializable {
 			@Override
 			public void run() {
 				final ProgressIndicator progressIndicator = (ProgressIndicator) queueTableview.getScene().lookup(
-					"#queue-" + uploadProgress.getUpload().getLongId());
+					"#queue-" + uploadProgress.getUpload().getId());
 				if (progressIndicator == null) {
 					return;
 				}
 				progressIndicator.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
 
-				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getUpload().getLongId());
+				final Label label = (Label) queueTableview.getScene().lookup("#queue-text-" + uploadProgress.getUpload().getId());
 				label.setText(String.format(
 					"Finished at: %s,%n %s/%s %s/s",
 					calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), uploadProgress.getDiffBytes()

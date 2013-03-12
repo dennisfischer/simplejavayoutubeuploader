@@ -9,12 +9,10 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.guice;
 
-import java.sql.SQLException;
+import java.sql.DriverManager;
 import java.util.concurrent.Executors;
 
 import javafx.stage.FileChooser;
-
-import javax.sql.DataSource;
 
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.GoogleAuthUtil;
@@ -37,6 +35,8 @@ import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailS
 import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.spi.ThumbnailService;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
+import org.jooq.SQLDialect;
+import org.jooq.impl.Executor;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -44,7 +44,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import com.mchange.v2.c3p0.DataSources;
 
 public class GuiceBindings extends AbstractModule {
 	private final String	dbName;
@@ -76,10 +75,11 @@ public class GuiceBindings extends AbstractModule {
 		requestStaticInjection(EventBusUtil.class);
 
 		try {
-			bind(DataSource.class).toInstance(
-				DataSources.pooledDataSource(DataSources.unpooledDataSource("jdbc:h2:" + System.getProperty("user.home")
-						+ "/SimpleJavaYoutubeUploader/" + dbName, "username", "")));
-		} catch (final SQLException e) {
+			// ;INIT=RUNSCRIPT FROM '~/create.sql'\\;RUNSCRIPT FROM
+			// '~/populate.sql'"
+			final String url = "jdbc:h2:" + System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/" + dbName;
+			bind(Executor.class).toInstance(new Executor(DriverManager.getConnection(url, "username", ""), SQLDialect.H2));
+		} catch (final Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}

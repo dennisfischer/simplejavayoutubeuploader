@@ -10,15 +10,10 @@
 package org.chaosfisch.youtubeuploader.services.youtube.impl;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import org.apache.http.entity.StringEntity;
 import org.chaosfisch.exceptions.SystemException;
@@ -30,11 +25,11 @@ import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.models.Account;
-import org.chaosfisch.youtubeuploader.models.Playlist;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
+import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
-import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +48,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Inject
 	private RequestSigner				requestSigner;
 	@Inject
-	private DataSource					datasource;
+	private PlaylistDao					playlistDao;
+	@Inject
+	private AccountDao					accountDao;
+
 	private final Logger				logger								= LoggerFactory.getLogger(PlaylistServiceImpl.class);
 	@Inject
 	@Named(value = ApplicationData.SERVICE_EXECUTOR)
@@ -66,10 +64,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		submitFeed.mediaGroup = null;
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
-		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getString("pkey")))
+		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
 			.post(new StringEntity(atomData, Charsets.UTF_8))
 			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(playlist.parent(Account.class)))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
 
 		try (final Response response = request.execute();) {
@@ -82,12 +80,12 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public String addYoutubePlaylist(final Playlist playlist) throws SystemException {
-		logger.debug("Adding playlist {} to youtube.", playlist.getString("title"));
+		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
 
 		final VideoEntry entry = new VideoEntry();
-		entry.title = playlist.getString("title");
-		entry.playlistSummary = playlist.getString("summary");
-		if (playlist.getBoolean("private")) {
+		entry.title = playlist.getTitle();
+		entry.playlistSummary = playlist.getSummary();
+		if (playlist.getPrivate()) {
 			entry.ytPrivate = new Object();
 		}
 		entry.mediaGroup = null;
@@ -98,7 +96,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED)
 			.post(new StringEntity(atomData, Charsets.UTF_8))
 			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(playlist.parent(Account.class)))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
 		try (final Response response = request.execute();) {
 			if (response.getStatusCode() != 200 && response.getStatusCode() != 201) {
@@ -113,9 +111,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Map<Account, List<Playlist>> synchronizePlaylists(final List<Account> accounts) throws SystemException {
-		if (!Base.hasConnection()) {
-			Base.open(datasource);
-		}
 		logger.info("Synchronizing playlists.");
 
 		final Map<Account, List<Playlist>> data = new HashMap<>();
@@ -150,62 +145,52 @@ public class PlaylistServiceImpl implements PlaylistService {
 			return list;
 		}
 		for (final VideoEntry entry : feed.videoEntries) {
-			final Playlist playlist = Playlist.findFirst("pkey = ?", entry.playlistId);
-			if (playlist != null) {
-				_updateExistingPlaylist(account, entry, playlist);
+			final List<Playlist> playlists = playlistDao.fetchByPkey(entry.playlistId);
+			if (playlists.size() == 1) {
+				list.add(_updateExistingPlaylist(account, entry, playlists.get(0)));
 			} else {
-				_createNewPlaylist(account, entry);
+				list.add(_createNewPlaylist(account, entry));
 			}
-			list.add(playlist);
 		}
 		return list;
 	}
 
-	protected void _createNewPlaylist(final Account account, final VideoEntry entry) {
+	protected Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
 		String thumbnail = null;
 		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
 			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 		}
 
-		final Playlist pList = Playlist.create(
-			"title",
-			entry.title,
-			"pkey",
-			entry.playlistId,
-			"url",
-			entry.title,
-			"number",
-			entry.playlistCountHint,
-			"summary",
-			entry.playlistSummary,
-			"thumbnail",
-			thumbnail);
-		pList.setParent(account);
-		pList.save();
+		final Playlist playlist = new Playlist();
+		playlist.setTitle(entry.title);
+		playlist.setPkey(entry.playlistId);
+		playlist.setUrl(entry.title);
+		playlist.setNumber(entry.playlistCountHint);
+		playlist.setSummary(entry.playlistSummary);
+		playlist.setThumbnail(thumbnail);
+		playlist.setAccountId(account.getId());
+
+		playlistDao.insert(playlist);
+		return playlist;
 	}
 
-	protected void _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
-		playlist.setString("title", entry.title);
-		playlist.setString("url", entry.title);
-		playlist.setInteger("number", entry.playlistCountHint);
-		playlist.setString("summary", entry.playlistSummary);
-		playlist.setInteger("account_id", account.getLongId());
+	protected Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
+		playlist.setTitle(entry.title);
+		playlist.setUrl(entry.title);
+		playlist.setNumber(entry.playlistCountHint);
+		playlist.setSummary(entry.playlistSummary);
+		playlist.setAccountId(account.getId());
 		String thumbnail = null;
 		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
 			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 		}
+		playlist.setThumbnail(thumbnail);
 
-		playlist.set("thumbnail", thumbnail);
-		playlist.save();
+		playlistDao.update(playlist);
+		return playlist;
 	}
 
 	protected void _cleanPlaylists(final Account account) {
-		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		final Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(System.currentTimeMillis());
-		cal.add(Calendar.MINUTE, -5);
-		for (final Model model : Playlist.find("updated_at < ? AND account_id = ?", dateFormat.format(cal.getTime()), account.getLongId())) {
-			model.delete();
-		}
+		playlistDao.cleanByAccount(account);
 	}
 }

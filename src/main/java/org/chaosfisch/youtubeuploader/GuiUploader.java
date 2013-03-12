@@ -11,16 +11,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import javax.sql.DataSource;
-
 import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 
 import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.guice.GuiceControllerFactory;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
-import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,25 +30,6 @@ public class GuiUploader extends Application {
 	 * The application DI injector
 	 */
 	private static Injector	injector;
-	private static boolean	updated	= false;
-
-	private void databaseUpdatedDialog() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				final MonologFX dialog = new MonologFX(MonologFX.Type.INFO);
-				dialog.setTitleText(I18nHelper.message("dialog.databaseupdated.title"));
-				dialog.setMessage(I18nHelper.message("dialog.databaseupdated.message"));
-				final MonologFXButton okButton = new MonologFXButton();
-				okButton.setType(MonologFXButton.Type.OK);
-				okButton.setLabel("Ok");
-				dialog.addButton(okButton);
-				dialog.showDialog();
-				System.exit(0);
-			}
-		});
-	}
 
 	@Override
 	public void start(final Stage primaryStage) {
@@ -62,13 +39,9 @@ public class GuiUploader extends Application {
 	}
 
 	private void initApplication(final Stage primaryStage) {
-		if (updated) {
-			databaseUpdatedDialog();
-		}
-		Base.open(injector.getInstance(DataSource.class));
 
 		final FXMLLoader fxLoader = new FXMLLoader(getClass().getResource(
-				"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
+			"/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), I18nHelper.getResourceBundle());
 		fxLoader.setControllerFactory(new GuiceControllerFactory(injector));
 		try {
 			fxLoader.load();
@@ -76,7 +49,7 @@ public class GuiUploader extends Application {
 			scene.getStylesheets().add(getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css").toExternalForm());
 			primaryStage.setTitle(I18nHelper.message("application.title"));
 			primaryStage.getIcons().add(
-					new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
+				new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")));
 			primaryStage.setScene(scene);
 			primaryStage.setMinHeight(640);
 			primaryStage.setMinWidth(1000);
@@ -119,9 +92,6 @@ public class GuiUploader extends Application {
 		GuiUploader.injector = injector;
 
 		SimpleJavaYoutubeUploader.initDatabase();
-		if (SimpleJavaYoutubeUploader.updateDatabase()) {
-			GuiUploader.updated = true;
-		}
 
 		uploader = injector.getInstance(Uploader.class);
 		launch(args);

@@ -18,9 +18,6 @@ public class ConsoleUploader {
 
 	public static void initialize(final String[] args, final Injector injector) {
 		SimpleJavaYoutubeUploader.initDatabase();
-		if (SimpleJavaYoutubeUploader.updateDatabase()) {
-			databaseUpdatedDialog();
-		}
 
 		uploader = injector.getInstance(Uploader.class);
 		uploader.runStarttimeChecker();
@@ -53,10 +50,5 @@ public class ConsoleUploader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private static void databaseUpdatedDialog() {
-		System.out.println("The database has been updated - please restart this application.");
-		System.exit(0);
 	}
 }

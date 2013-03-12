@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.services.youtube.spi;
 
 import java.io.File;
 
-import org.chaosfisch.youtubeuploader.models.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
 public interface EnddirService {
 	void moveFileByUpload(File fileToMove, Upload upload);
