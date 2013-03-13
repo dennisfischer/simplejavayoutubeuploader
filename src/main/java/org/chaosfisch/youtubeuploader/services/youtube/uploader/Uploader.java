@@ -22,7 +22,7 @@ import javafx.beans.value.ObservableValue;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
@@ -54,6 +54,8 @@ public class Uploader {
 	private Injector					injector;
 	@Inject
 	private EventBus					eventBus;
+	@Inject
+	private UploadDao					uploadDao;
 	@Inject
 	@Named(value = ApplicationData.SERVICE_EXECUTOR)
 	private ListeningExecutorService	pool;
@@ -110,15 +112,14 @@ public class Uploader {
 
 	private synchronized void sendUpload() {
 		if (inProgressProperty.get() && hasFreeUploadSpace()) {
-			final Upload polled = Upload
-				.findFirst("(archived = false OR archived IS NULL) AND (inprogress = false OR inprogress IS NULL) AND (failed = false OR failed IS NULL) AND (locked = false OR locked IS NULL) AND (started < NOW() OR started IS NULL) ORDER BY started DESC, failed ASC");
+			final Upload polled = uploadDao.fetchNextUpload();
 			if (polled != null) {
-				if (polled.parent(Account.class) == null) {
+				if (uploadDao.fetchOneAccountByUpload(polled) == null) {
 					polled.setLocked(true);
-					polled.saveIt();
+					uploadDao.update(polled);
 				} else {
 					polled.setInprogress(true);
-					polled.saveIt();
+					uploadDao.update(polled);
 					final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 					uploadWorker.run(polled);
 					executorService.submit(uploadWorker);
@@ -139,7 +140,7 @@ public class Uploader {
 	private void uploadFinished(final Upload queue) {
 		runningUploads--;
 
-		final long leftUploads = Upload.count("archived = false AND failed = false");
+		final long leftUploads = uploadDao.countLeftUploads();
 		logger.info("Upload finished: {}; {}", queue.getTitle(), queue.getVideoid());
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
@@ -178,7 +179,7 @@ public class Uploader {
 			@Override
 			public Boolean call() {
 				while (!Thread.interrupted() && startTimeCheckerFlag) {
-					if (Upload.count("(archived is NULL OR archived = false) AND started < NOW()  AND inprogress = false") != 0) {
+					if (uploadDao.countAvailableStartingUploads() > 0) {
 						start();
 					}
 					try {
@@ -202,7 +203,7 @@ public class Uploader {
 
 	@Subscribe
 	public void onUploadSaved(final ModelPostSavedEvent modelPostSavedEvent) {
-		if (modelPostSavedEvent.getModel() instanceof Upload && !modelPostSavedEvent.getModel().getBoolean("inprogress")) {
+		if (modelPostSavedEvent.getModel() instanceof Upload && !((Upload) modelPostSavedEvent.getModel()).getInprogress()) {
 			sendUpload();
 		}
 	}

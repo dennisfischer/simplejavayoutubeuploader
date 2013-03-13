@@ -1,10 +1,8 @@
 package org.chaosfisch.youtubeuploader.models.events;
 
-import org.javalite.activejdbc.Model;
-
 public class ModelPreSavedEvent extends ModelEvent {
 
-	public ModelPreSavedEvent(final Model model) {
+	public ModelPreSavedEvent(final Object model) {
 		super(model);
 	}
 }

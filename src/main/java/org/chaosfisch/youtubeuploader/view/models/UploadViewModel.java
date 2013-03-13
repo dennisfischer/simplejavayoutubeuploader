@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader.view.models;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -44,13 +45,15 @@ import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplatePlaylistDao;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.dao.UploadPlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.TemplatePlaylist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.UploadPlaylist;
 import org.chaosfisch.youtubeuploader.models.AccountsType;
-import org.chaosfisch.youtubeuploader.models.UploadBuilder;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
@@ -172,7 +175,11 @@ public class UploadViewModel {
 	@Inject
 	private PlaylistDao												playlistDao;
 	@Inject
+	private UploadDao												uploadDao;
+	@Inject
 	private TemplatePlaylistDao										templatePlaylistDao;
+	@Inject
+	private UploadPlaylistDao										uploadPlaylistDao;
 	@Inject
 	private Executor												exec;
 
@@ -377,34 +384,30 @@ public class UploadViewModel {
 	}
 
 	public Upload toUpload() {
-		final UploadBuilder uploadBuilder = new UploadBuilder(
-			selectedFileProperty.get().getSelectedItem(),
-			titleProperty.get(),
-			selectedCategoryProperty.get().getSelectedItem().term,
-			selectedAccountProperty.get().getSelectedItem())
-			.setComment(selectedCommentProperty.get().getSelectedIndex())
-			.setCommentvote(commentVoteProperty.get())
-			.setDescription(descriptionProperty.get())
-			.setEmbed(embedProperty.get())
-			.setEnddir(enddirProperty.get())
-			.setLicense(selectedLicenseProperty.get().getSelectedIndex())
-			.setMobile(mobileProperty.get())
-			.setNumber(numberProperty.get())
-			.setRate(rateProperty.get())
-			.setTags(tagsProperty.get())
-			.setVideoresponse(selectedVideoResponseProperty.get().getSelectedIndex())
-			.setVisibility(selectedVisibilityProperty.get().getSelectedIndex())
-			.setThumbnail(thumbnailProperty.get());
+		Upload upload = new Upload();
+		upload.setFile(selectedFileProperty.get().getSelectedItem().getAbsolutePath());
+		upload.setTitle(titleProperty.get());
+		upload.setCategory(selectedCategoryProperty.get().getSelectedItem().term);
+		upload.setAccountId(selectedAccountProperty.get().getSelectedItem().getId());
+		upload.setComment((short) selectedCommentProperty.get().getSelectedIndex());
+		upload.setCommentvote(commentVoteProperty.get());
+		upload.setDescription(descriptionProperty.get());
+		upload.setEmbed(embedProperty.get());
+		upload.setEnddir(enddirProperty.get());
+		upload.setLicense((short) selectedLicenseProperty.get().getSelectedIndex());
+		upload.setMobile(mobileProperty.get());
+		upload.setNumber((short) numberProperty.get());
+		upload.setRate(rateProperty.get());
+		upload.setKeywords(tagsProperty.get());
+		upload.setVideoresponse((short) selectedVideoResponseProperty.get().getSelectedIndex());
+		upload.setVisibility((short) selectedVisibilityProperty.get().getSelectedIndex());
+		upload.setThumbnail(thumbnailProperty.get());
 		if (idProperty.get() != -1) {
-			uploadBuilder.setId(idProperty.get());
-		}
-
-		for (final Playlist playlist : playlistDropListProperty.get()) {
-			uploadBuilder.addPlaylist(playlist);
+			upload.setId(idProperty.get());
 		}
 
 		if (starttimeProperty.get() != null && starttimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
-			uploadBuilder.setStarted(starttimeProperty.get().getTime());
+			upload.setStarted(new Timestamp(starttimeProperty.get().getTimeInMillis()));
 		}
 
 		if (releasetimeProperty.get() != null && releasetimeProperty.get().getTimeInMillis() > System.currentTimeMillis()) {
@@ -413,52 +416,61 @@ public class UploadViewModel {
 			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 			final int mod = unroundedMinutes % 30;
 			calendar.add(Calendar.MINUTE, mod < 16 ? -mod : 30 - mod);
-			uploadBuilder.setRelease(calendar.getTime());
+			upload.setRelease(new Timestamp(calendar.getTimeInMillis()));
 
 			if ((facebookProperty.get() || twitterProperty.get()) && messageProperty.get() != null && !messageProperty.get().isEmpty()) {
-				uploadBuilder.setFacebook(facebookProperty.get()).setTwitter(twitterProperty.get()).setMessage(messageProperty.get());
+				upload.setFacebook(facebookProperty.get());
+				upload.setTwitter(twitterProperty.get());
+				upload.setMessage(messageProperty.get());
 			}
 		}
 
-		final Upload upload = uploadBuilder.build();
+		upload.setClaim(overlayProperty.get() || trueViewProperty.get() || inStreamProperty.get() || productPlacementProperty.get()
+				|| claimProperty.get());
+		upload.setOverlay(overlayProperty.get());
+		upload.setTrueview(trueViewProperty.get());
+		upload.setInstream(inStreamProperty.get());
+		upload.setInstreamdefaults(inStreamDefaultsProperty.get());
+		upload.setProduct(productPlacementProperty.get());
+		upload.setSyndication(selectedContentSyndicationProperty
+			.get()
+			.get()
+			.getToggleGroup()
+			.getToggles()
+			.indexOf(selectedContentSyndicationProperty.get().get()));
+		upload.setMonetizepartner(claimProperty.get());
+		upload.setMonetizeclaimtype(selectedClaimTypeProperty.get().selectedIndexProperty().get());
+		upload.setMonetizeclaimpolicy(selectedClaimOptionProperty.get().selectedIndexProperty().get());
+		upload.setMonetizeasset(selectedAssetTypeProperty
+			.get()
+			.get()
+			.getToggleGroup()
+			.getToggles()
+			.indexOf(selectedAssetTypeProperty.get().get()));
+		upload.setMonetizetmsid(tmsidProperty.get());
+		upload.setMonetizeisan(isanProperty.get());
+		upload.setMonetizeeidr(eidrProperty.get());
+		upload.setMonetizenotes(monetizeNotesProperty.get());
+		upload.setMonetizeid(customidProperty.get());
+		upload.setMonetizetitle(monetizeTitleProperty.get());
+		upload.setMonetizedescription(monetizeDescriptionProperty.get());
+		upload.setMonetizetitleepisode(monetizeTitleEpisodeProperty.get());
+		upload.setMonetizeseasonnb(numberSeasonProperty.get());
+		upload.setMonetizeepisodenb(numberEpisodeProperty.get());
+
 		if (upload.isValid()) {
 			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
 			selectedFileProperty.get().selectNext();
 			idProperty.setValue(-1);
-			uploadBuilder.finalize(upload);
 
-			upload.setClaim(overlayProperty.get() || trueViewProperty.get() || inStreamProperty.get() || productPlacementProperty.get()
-					|| claimProperty.get());
-			upload.setOverlay(overlayProperty.get());
-			upload.setTrueview(trueViewProperty.get());
-			upload.setInstream(inStreamProperty.get());
-			upload.setInstreamdefaults(inStreamDefaultsProperty.get());
-			upload.setProduct(productPlacementProperty.get());
-			upload.setSyndication(selectedContentSyndicationProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.getToggles()
-				.indexOf(selectedContentSyndicationProperty.get().get()));
-			upload.setMonetizepartner(claimProperty.get());
-			upload.setMonetizeclaimtype(selectedClaimTypeProperty.get().selectedIndexProperty().get());
-			upload.setMonetizeclaimpolicy(selectedClaimOptionProperty.get().selectedIndexProperty().get());
-			upload.setMonetizeasset(selectedAssetTypeProperty
-				.get()
-				.get()
-				.getToggleGroup()
-				.getToggles()
-				.indexOf(selectedAssetTypeProperty.get().get()));
-			upload.setMonetizetmsid(tmsidProperty.get());
-			upload.setMonetizeisan(isanProperty.get());
-			upload.setMonetizeeidr(eidrProperty.get());
-			upload.setMonetizenotes(monetizeNotesProperty.get());
-			upload.setMonetizeid(customidProperty.get());
-			upload.setMonetizetitle(monetizeTitleProperty.get());
-			upload.setMonetizedescription(monetizeDescriptionProperty.get());
-			upload.setMonetizetitleepisode(monetizeTitleEpisodeProperty.get());
-			upload.setMonetizeseasonnb(numberSeasonProperty.get());
-			upload.setMonetizeepisodenb(numberEpisodeProperty.get());
+			upload = uploadDao.insertReturning(upload);
+
+			for (final Playlist playlist : playlistDropListProperty.get()) {
+				final UploadPlaylist relation = new UploadPlaylist();
+				relation.setPlaylistId(playlist.getId());
+				relation.setUploadId(upload.getId());
+				uploadPlaylistDao.insert(relation);
+			}
 		}
 
 		return upload;
@@ -650,37 +662,42 @@ public class UploadViewModel {
 			@Override
 			public void run() {
 				if (modelPostSavedEvent.getModel() instanceof Account
-						&& modelPostSavedEvent.getModel().get("type").equals(AccountsType.YOUTUBE.name())) {
+						&& ((Account) modelPostSavedEvent.getModel()).getType().equals(AccountsType.YOUTUBE.name())) {
 					if (accountProperty.contains(modelPostSavedEvent.getModel())) {
-						accountProperty.set(accountProperty.indexOf(modelPostSavedEvent.getModel()), modelPostSavedEvent.getModel());
+						accountProperty.set(
+							accountProperty.indexOf(modelPostSavedEvent.getModel()),
+							(Account) modelPostSavedEvent.getModel());
 					} else {
-						accountProperty.add(modelPostSavedEvent.getModel());
+						accountProperty.add((Account) modelPostSavedEvent.getModel());
 						if (selectedAccountProperty.get().getSelectedItem() == null && accountProperty.size() > 0) {
 							selectedAccountProperty.get().select(accountProperty.get(0));
 						}
 					}
 				} else if (modelPostSavedEvent.getModel() instanceof Template) {
 					if (templateProperty.contains(modelPostSavedEvent.getModel())) {
-						templateProperty.set(templateProperty.indexOf(modelPostSavedEvent.getModel()), modelPostSavedEvent.getModel());
-						selectedTemplateProperty.get().select(modelPostSavedEvent.getModel());
+						templateProperty.set(
+							templateProperty.indexOf(modelPostSavedEvent.getModel()),
+							(Template) modelPostSavedEvent.getModel());
+						selectedTemplateProperty.get().select((Template) modelPostSavedEvent.getModel());
 					} else {
-						templateProperty.add(modelPostSavedEvent.getModel());
+						templateProperty.add((Template) modelPostSavedEvent.getModel());
 						if (selectedTemplateProperty.get().getSelectedItem() == null && templateProperty.size() > 0) {
 							selectedTemplateProperty.get().select(templateProperty.get(0));
 						}
 					}
 				} else if (modelPostSavedEvent.getModel() instanceof Playlist
-						&& modelPostSavedEvent.getModel().parent(Account.class).equals(selectedAccountProperty.get().getSelectedItem())) {
+						&& playlistDao.fetchOneAccountByPlaylist((Playlist) modelPostSavedEvent.getModel()).equals(
+							selectedAccountProperty.get().getSelectedItem())) {
 					if (playlistSourceListProperty.contains(modelPostSavedEvent.getModel())) {
 						playlistSourceListProperty.set(
 							playlistSourceListProperty.indexOf(modelPostSavedEvent.getModel()),
-							modelPostSavedEvent.getModel());
+							(Playlist) modelPostSavedEvent.getModel());
 					} else if (playlistDropListProperty.contains(modelPostSavedEvent.getModel())) {
 						playlistDropListProperty.set(
 							playlistDropListProperty.indexOf(modelPostSavedEvent.getModel()),
-							modelPostSavedEvent.getModel());
+							(Playlist) modelPostSavedEvent.getModel());
 					} else {
-						playlistSourceListProperty.add(modelPostSavedEvent.getModel());
+						playlistSourceListProperty.add((Playlist) modelPostSavedEvent.getModel());
 					}
 				}
 			}

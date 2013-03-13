@@ -15,8 +15,21 @@ import com.google.inject.Inject;
 
 public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.PlaylistDao {
 
+	private final Executor	create;
+
 	@Inject
-	private Executor	create;
+	public PlaylistDao(final Executor create) {
+		super(create);
+		this.create = create;
+	}
+
+	public Account fetchOneAccountByPlaylist(final Playlist playlist) {
+		return create
+			.select()
+			.from(Tables.ACCOUNT)
+			.where(Tables.PLAYLIST.ACCOUNT_ID.eq(Tables.ACCOUNT.ID), Tables.PLAYLIST.ID.eq(playlist.getId()))
+			.fetchOneInto(Account.class);
+	}
 
 	public List<Playlist> fetchByTemplate(final Template template) {
 		return create

@@ -37,7 +37,8 @@ import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.TagParser;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataCode;
@@ -104,6 +105,10 @@ public class UploadWorker extends Task<Void> {
 	private ExtendedPlaceholders	extendedPlacerholders;
 	@Inject
 	private EventBus				eventBus;
+	@Inject
+	private PlaylistDao				playlistDao;
+	@Inject
+	private UploadDao				uploadDao;
 
 	private UploadProgressEvent		uploadProgress;
 
@@ -207,7 +212,7 @@ public class UploadWorker extends Task<Void> {
 		switch (currentStatus) {
 			case DONE:
 				upload.setArchived(true);
-				upload.saveIt();
+				uploadDao.update(upload);
 				uploadProgress.done = true;
 			break;
 			case FAILED:
@@ -267,7 +272,7 @@ public class UploadWorker extends Task<Void> {
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
 		upload.setStarted(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		upload.saveIt();
+		uploadDao.update(upload);
 
 		// Get File and Check if existing
 		fileToUpload = new File(upload.getFile());
@@ -289,8 +294,8 @@ public class UploadWorker extends Task<Void> {
 
 		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
-		upload.setString("uploadurl", metadataService.submitMetadata(atomData, fileToUpload, upload.parent(Account.class)));
-		upload.saveIt();
+		upload.setUploadurl(metadataService.submitMetadata(atomData, fileToUpload, uploadDao.fetchOneAccountByUpload(upload)));
+		uploadDao.update(upload);
 
 		// Log operation
 		logger.info("Uploadurl received: {}", upload.getUploadurl());
@@ -312,14 +317,12 @@ public class UploadWorker extends Task<Void> {
 
 	private void playlistAction() {
 		// Add video to playlist
-		if (upload.getAll(Playlist.class) != null) {
-			for (final Playlist playlist : upload.getAll(Playlist.class)) {
-				try {
-					playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
-				} catch (final SystemException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
+			try {
+				playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
+			} catch (final SystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -378,7 +381,7 @@ public class UploadWorker extends Task<Void> {
 	private void setFailedStatus(final String status) {
 		upload.setFailed(true);
 		upload.setStarted(null);
-		upload.saveIt();
+		uploadDao.update(upload);
 		uploadProgress.failed = true;
 		uploadProgress.status = status;
 	}
@@ -417,7 +420,7 @@ public class UploadWorker extends Task<Void> {
 				request.setRequestProperty(entry.getKey(), entry.getValue());
 			}
 
-			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(upload.parent(Account.class)));
+			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)));
 
 			// Input
 			final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
@@ -449,7 +452,7 @@ public class UploadWorker extends Task<Void> {
 						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(
 							supplier,
 							Charsets.UTF_8))));
-						upload.saveIt();
+						uploadDao.update(upload);
 						currentStatus = STATUS.POSTPROCESS;
 					break;
 					case 308:

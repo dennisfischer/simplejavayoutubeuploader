@@ -400,11 +400,11 @@ public class QueueController implements Initializable {
 			public void run() {
 				if (modelSavedEvent.getModel() instanceof Upload) {
 					if (!queueTableview.getItems().contains(modelSavedEvent.getModel())) {
-						queueTableview.getItems().add(modelSavedEvent.getModel());
+						queueTableview.getItems().add((Upload) modelSavedEvent.getModel());
 					} else {
 						queueTableview.getItems().set(
 							queueTableview.getItems().indexOf(modelSavedEvent.getModel()),
-							modelSavedEvent.getModel());
+							(Upload) modelSavedEvent.getModel());
 						RefresherUtil.refresh(queueTableview, queueTableview.getItems());
 					}
 				}

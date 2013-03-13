@@ -34,6 +34,7 @@ import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
@@ -66,6 +67,8 @@ public class MetadataServiceImpl implements MetadataService {
 	private GoogleAuthUtil		authTokenHelper;
 	@Inject
 	private ThumbnailService	thumbnailService;
+	@Inject
+	private UploadDao			uploadDao;
 
 	private final String[]		deadEnds			= { "https://accounts.google.com/b/0/SmsAuthInterstitial" };
 
@@ -173,7 +176,7 @@ public class MetadataServiceImpl implements MetadataService {
 		this.upload = upload;
 		try {
 			final String googleContent = googleAuthUtil.getLoginContent(
-				upload.parent(Account.class),
+				uploadDao.fetchOneAccountByUpload(upload),
 				String.format(REDIRECT_URL, upload.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent));

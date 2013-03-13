@@ -11,28 +11,22 @@ package org.chaosfisch.youtubeuploader.models.validation;
 
 import java.io.File;
 
-import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.validation.ValidatorAdapter;
+public class FileSizeValidator {
 
-public class FileSizeValidator extends ValidatorAdapter<Model> {
-
-	private final String	stringToValidate;
-	private final int		size;
+	private final int	size;
 
 	public FileSizeValidator(final String stringToValidate, final int size) {
-		this.stringToValidate = stringToValidate;
 		this.size = size;
 	}
 
-	@Override
-	public void validate(final Model m) {
-		if (m.getString(stringToValidate) == null) {
+	public void validate(final String fileName) {
+		if (fileName == null || fileName.isEmpty()) {
 			return;
 		}
 
-		final File file = new File(m.getString(stringToValidate));
+		final File file = new File(fileName);
 		if (file.exists() && file.length() > size) {
-			m.addValidator(this, "file_size_error");
+			// TODO m.addValidator(this, "file_size_error");
 		}
 	}
 }

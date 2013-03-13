@@ -1,10 +1,6 @@
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -14,7 +10,7 @@ import org.chaosfisch.net.Msg;
 import org.chaosfisch.net.Server;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
@@ -41,6 +37,9 @@ public class ConsoleController {
 	@Named(value = ApplicationData.SERVICE_EXECUTOR)
 	private ListeningExecutorService					pool;
 
+	@Inject
+	private AccountDao									accountDao;
+
 	private Server										server;
 	private boolean										collectStatus	= false;
 	private final HashMap<Upload, UploadProgressEvent>	statuses		= new HashMap<>();
@@ -54,43 +53,7 @@ public class ConsoleController {
 		this.server = server;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void handle_upload(final Connection conn, final Msg msg) {
-		final Map<String, Object> map = gson.fromJson(((String) msg.getContent()).replaceAll("\\", "\\\\"), mapType);
-
-		for (final Map.Entry<String, Object> entry : map.entrySet()) {
-			if (entry.getValue().equals("null")) {
-				entry.setValue(null);
-			}
-		}
-		try {
-			final Account account = new Account();
-			account.fromMap((Map<String, Object>) map.get("account"));
-			if (Account.count("id = ?", account.getId()) == 0) {
-				account.insert();
-			} else {
-				account.save();
-			}
-			map.remove("account");
-			final Upload upload = new Upload();
-			upload.fromMap(map);
-
-			if (!Files.exists(Paths.get(upload.getFile()))) {
-				throw new FileNotFoundException(upload.getFile());
-			}
-
-			upload.setStarted(upload.getStarted() == null ? new Timestamp(System.currentTimeMillis()) : upload.getStarted());
-			upload.setAccountId(account.getId());
-			if (Upload.count("id = ?", upload.getId()) == 0) {
-				upload.insert();
-			} else {
-				upload.save();
-			}
-			server.sendMsg("upload_added", msg.getContent());
-		} catch (final Exception ex) {
-			server.sendMsg("upload_added_failed", msg.getContent());
-		}
-	}
+	public void handle_upload(final Connection conn, final Msg msg) {}
 
 	public void handle_status(final Connection conn, final Msg msg) {
 		collectStatus = true;

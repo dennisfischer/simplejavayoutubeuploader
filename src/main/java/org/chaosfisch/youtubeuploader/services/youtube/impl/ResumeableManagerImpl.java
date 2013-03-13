@@ -20,7 +20,7 @@ import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
 import org.slf4j.Logger;
@@ -39,6 +39,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private GoogleAuthUtil		authTokenHelper;
 	@Inject
 	private RequestSigner		requestSigner;
+	@Inject
+	private UploadDao			uploadDao;
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -56,7 +58,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 		final Request request = new Request.Builder(upload.getUploadurl())
 			.put(null)
 			.headers(ImmutableMap.of("Content-Range", "bytes */*"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(upload.parent(Account.class)))
+			.sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)))
 			.build();
 
 		try (final Response response = request.execute();) {
@@ -86,7 +88,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			if (response.getRaw().getFirstHeader("Location") != null) {
 				final Header location = response.getRaw().getFirstHeader("Location");
 				upload.setUploadurl(location.getValue());
-				upload.saveIt();
+				uploadDao.update(upload);
 			}
 			return resumeInfo;
 

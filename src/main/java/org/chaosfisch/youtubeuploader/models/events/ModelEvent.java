@@ -1,15 +1,14 @@
 package org.chaosfisch.youtubeuploader.models.events;
 
-import org.javalite.activejdbc.Model;
-
 public class ModelEvent {
-	private final Model	model;
+	private final Object	model;
 
-	public ModelEvent(final Model model) {
+	public ModelEvent(final Object model) {
 		this.model = model;
 	}
 
-	public Model getModel() {
+	public Object getModel() {
 		return model;
 	}
+
 }

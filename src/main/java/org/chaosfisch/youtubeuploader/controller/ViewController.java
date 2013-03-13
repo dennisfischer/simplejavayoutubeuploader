@@ -30,8 +30,10 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import org.chaosfisch.exceptions.SystemException;
+import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.I18nHelper;
+import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
@@ -76,28 +78,23 @@ public class ViewController implements Initializable {
 	private UploadController		uploadController;
 	@Inject
 	private AccountDao				accountDao;
+	@Inject
+	private TemplateDao				templateDao;
 
 	// @Inject private RemoteClient remoteClient;
 
-	public static final Template	standardTemplate	= Template.create(
-															"embed",
-															true,
-															"mobile",
-															true,
-															"commentvote",
-															true,
-															"rate",
-															true,
-															"comment",
-															0,
-															"category",
-															0,
-															"visibility",
-															0,
-															"videoresponse",
-															1,
-															"license",
-															0);
+	public static final Template	standardTemplate;
+	static {
+		standardTemplate = new Template();
+		standardTemplate.setEmbed(true);
+		standardTemplate.setMobile(true);
+		standardTemplate.setCommentvote(true);
+		standardTemplate.setRate(true);
+		standardTemplate.setComment((short) 0);
+		standardTemplate.setVisibility((short) 0);
+		standardTemplate.setVideoresponse((short) 0);
+		standardTemplate.setLicense((short) 0);
+	}
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is complete
@@ -160,16 +157,13 @@ public class ViewController implements Initializable {
 			@Override
 			public void handle(final ActionEvent event) {
 				if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
+					final Playlist playlist = new Playlist();
+					playlist.setTitle(title.getText());
+					playlist.setSummary(summary.getText());
+					playlist.setPrivate(playlistPrivate.isSelected());
+					playlist.setAccountId(accounts.getValue().getId());
 					try {
-						playlistService.addYoutubePlaylist(Playlist.create(
-							"title",
-							title.getText(),
-							"summary",
-							summary.getText(),
-							"private",
-							playlistPrivate.isSelected(),
-							"account_id",
-							accounts.getValue().getLongId()));
+						playlistService.addYoutubePlaylist(playlist);
 					} catch (final SystemException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -194,10 +188,9 @@ public class ViewController implements Initializable {
 			public void handle(final ActionEvent event) {
 				if (!textfield.getText().isEmpty()) {
 
-					final Template preset = Template.create();
-					preset.copyFrom(standardTemplate);
-					preset.setString("name", textfield.getText());
-					preset.save();
+					final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
+					template.setName(textfield.getText());
+					templateDao.insert(template);
 					myDialog.close();
 				}
 			}

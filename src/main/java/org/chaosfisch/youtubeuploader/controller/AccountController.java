@@ -33,6 +33,7 @@ import javafx.util.Callback;
 
 import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.models.AccountsType;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
@@ -81,14 +82,19 @@ public class AccountController implements Initializable {
 	@Inject
 	private GoogleAuthUtil					authTokenHelper;
 
+	@Inject
+	private AccountDao						accountDao;
+
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event) {
-		final Account acc = Account
-			.create("name", account.getText(), "password", password.getText(), "type", accountType.getValue().name());
+		final Account acc = new Account();
+		acc.setName(account.getText());
+		acc.setPassword(password.getText());
+		acc.setType(accountType.getValue().name());
 		if (authTokenHelper.verifyAccount(acc)) {
 			account.getStyleClass().remove("input-invalid");
 			password.getStyleClass().remove("input-invalid");
-			acc.save();
+			accountDao.insert(acc);
 			resetAccount(event);
 		} else {
 			account.getStyleClass().add("input-invalid");
@@ -159,7 +165,7 @@ public class AccountController implements Initializable {
 								public void handle(final ActionEvent event) {
 									param.getTableView().getSelectionModel().select(getIndex());
 									if (item != null) {
-										item.delete();
+										accountDao.delete(item);
 									}
 								}
 
@@ -177,7 +183,7 @@ public class AccountController implements Initializable {
 		accountType.setItems(FXCollections.observableArrayList(AccountsType.values()));
 		accountType.getSelectionModel().selectFirst();
 
-		final ObservableList<Account> list = FXCollections.observableArrayList(Account.findAll());
+		final ObservableList<Account> list = FXCollections.observableArrayList(accountDao.findAll());
 		accountTable.setItems(list);
 
 		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -193,11 +199,11 @@ public class AccountController implements Initializable {
 			public void run() {
 				if (modelSavedEvent.getModel() instanceof Account) {
 					if (!accountTable.getItems().contains(modelSavedEvent.getModel())) {
-						accountTable.getItems().add(modelSavedEvent.getModel());
+						accountTable.getItems().add((Account) modelSavedEvent.getModel());
 					} else {
-						accountTable
-							.getItems()
-							.set(accountTable.getItems().indexOf(modelSavedEvent.getModel()), modelSavedEvent.getModel());
+						accountTable.getItems().set(
+							accountTable.getItems().indexOf(modelSavedEvent.getModel()),
+							(Account) modelSavedEvent.getModel());
 					}
 				}
 			}
