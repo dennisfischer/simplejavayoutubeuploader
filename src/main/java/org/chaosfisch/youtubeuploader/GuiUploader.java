@@ -14,7 +14,6 @@ import javafx.stage.WindowEvent;
 import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 
-import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.guice.GuiceControllerFactory;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Injector;
 
 public class GuiUploader extends Application {
-
 	private static Uploader	uploader;
 	private static Logger	logger	= LoggerFactory.getLogger(GuiUploader.class);
 	/**
@@ -55,26 +53,7 @@ public class GuiUploader extends Application {
 			primaryStage.setMinWidth(1000);
 			primaryStage.setHeight(640);
 			primaryStage.setWidth(1000);
-			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-				@Override
-				public void handle(final WindowEvent event) {
-					final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-					final MonologFXButton yesButton = new MonologFXButton();
-					yesButton.setType(MonologFXButton.Type.YES);
-					yesButton.setLabel("Yes");
-					final MonologFXButton noButton = new MonologFXButton();
-					noButton.setType(MonologFXButton.Type.NO);
-					noButton.setLabel("No");
-					dialog.addButton(yesButton);
-					dialog.addButton(noButton);
-					dialog.setTitleText(I18nHelper.message("dialog.exitapplication.title"));
-					dialog.setMessage(I18nHelper.message("dialog.exitapplication.message"));
-					if (dialog.showDialog() == MonologFXButton.Type.NO) {
-						event.consume();
-					}
-				}
-			});
+			primaryStage.setOnCloseRequest(new ApplicationClosePromptDialog());
 			primaryStage.show();
 		} catch (final IOException e) {
 			logger.error("FXML Load error", e);
@@ -83,7 +62,7 @@ public class GuiUploader extends Application {
 
 	@Override
 	public void stop() throws Exception {
-		LogfileCommitter.commit();
+		// TODO LogfileCommitter.commit();
 		uploader.stopStarttimeChecker();
 		uploader.exit();
 	}
@@ -95,6 +74,26 @@ public class GuiUploader extends Application {
 
 		uploader = injector.getInstance(Uploader.class);
 		launch(args);
+	}
+
+	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
+		@Override
+		public void handle(final WindowEvent event) {
+			final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
+			final MonologFXButton yesButton = new MonologFXButton();
+			yesButton.setType(MonologFXButton.Type.YES);
+			yesButton.setLabel("Yes");
+			final MonologFXButton noButton = new MonologFXButton();
+			noButton.setType(MonologFXButton.Type.NO);
+			noButton.setLabel("No");
+			dialog.addButton(yesButton);
+			dialog.addButton(noButton);
+			dialog.setTitleText(I18nHelper.message("dialog.exitapplication.title"));
+			dialog.setMessage(I18nHelper.message("dialog.exitapplication.message"));
+			if (dialog.showDialog() == MonologFXButton.Type.NO) {
+				event.consume();
+			}
+		}
 	}
 
 }

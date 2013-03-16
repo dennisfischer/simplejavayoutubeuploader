@@ -27,7 +27,9 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 		return create
 			.select()
 			.from(Tables.ACCOUNT)
-			.where(Tables.PLAYLIST.ACCOUNT_ID.eq(Tables.ACCOUNT.ID), Tables.PLAYLIST.ID.eq(playlist.getId()))
+			.join(Tables.PLAYLIST)
+			.on(Tables.PLAYLIST.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
+			.where(Tables.PLAYLIST.ID.eq(playlist.getId()))
 			.fetchOneInto(Account.class);
 	}
 
@@ -35,7 +37,9 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 		return create
 			.select()
 			.from(Tables.PLAYLIST)
-			.where(Tables.TEMPLATE_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID), Tables.TEMPLATE_PLAYLIST.TEMPLATE_ID.eq(template.getId()))
+			.join(Tables.TEMPLATE_PLAYLIST)
+			.on(Tables.TEMPLATE_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
+			.where(Tables.TEMPLATE_PLAYLIST.TEMPLATE_ID.eq(template.getId()))
 			.fetchInto(Playlist.class);
 	}
 
@@ -43,7 +47,9 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 		return create
 			.select()
 			.from(Tables.PLAYLIST)
-			.where(Tables.UPLOAD_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID), Tables.UPLOAD_PLAYLIST.UPLOAD_ID.eq(upload.getId()))
+			.join(Tables.UPLOAD_PLAYLIST)
+			.on(Tables.UPLOAD_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
+			.where(Tables.UPLOAD_PLAYLIST.UPLOAD_ID.eq(upload.getId()))
 			.fetchInto(Playlist.class);
 	}
 

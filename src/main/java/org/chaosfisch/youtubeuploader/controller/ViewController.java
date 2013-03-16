@@ -94,6 +94,21 @@ public class ViewController implements Initializable {
 		standardTemplate.setVisibility((short) 0);
 		standardTemplate.setVideoresponse((short) 0);
 		standardTemplate.setLicense((short) 0);
+		standardTemplate.setNumber((short) 0);
+		standardTemplate.setFacebook(false);
+		standardTemplate.setTwitter(false);
+		standardTemplate.setDefaultdir(System.getProperty("user.home"));
+		standardTemplate.setClaim(false);
+		standardTemplate.setOverlay(false);
+		standardTemplate.setTrueview(false);
+		standardTemplate.setProduct(false);
+		standardTemplate.setInstream(false);
+		standardTemplate.setInstreamdefaults(false);
+		standardTemplate.setMonetizepartner(false);
+		standardTemplate.setMonetizeclaimtype(0);
+		standardTemplate.setMonetizeclaimpolicy(0);
+		standardTemplate.setMonetizeasset(0);
+		standardTemplate.setSyndication(0);
 	}
 
 	@Override
@@ -106,9 +121,6 @@ public class ViewController implements Initializable {
 		assert menuClose != null : "fx:id=\"menuClose\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuLogfile != null : "fx:id=\"menuLogfile\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert menuOpenFile != null : "fx:id=\"menuOpenFile\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-
-		// initialize your logic here: all @FXML variables will have been
-		// injected
 	}
 
 	// Handler for AnchorPane[fx:id="content_pane"] onDragDropped
@@ -152,26 +164,7 @@ public class ViewController implements Initializable {
 				playlistPrivate, I18nHelper.message("playlistDialog.playlistAccount"), accounts };
 		final InputDialog myDialog = new InputDialog(I18nHelper.message("playlistDialog.addPlaylistLabel"), message);
 
-		myDialog.setCallback(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(final ActionEvent event) {
-				if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
-					final Playlist playlist = new Playlist();
-					playlist.setTitle(title.getText());
-					playlist.setSummary(summary.getText());
-					playlist.setPrivate(playlistPrivate.isSelected());
-					playlist.setAccountId(accounts.getValue().getId());
-					try {
-						playlistService.addYoutubePlaylist(playlist);
-					} catch (final SystemException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					myDialog.close();
-				}
-			}
-		});
+		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate, summary, accounts, title, myDialog));
 	}
 
 	// Handler for MenuItem[fx:id="menuAddTemplate"] onAction
@@ -182,19 +175,7 @@ public class ViewController implements Initializable {
 
 		final InputDialog myDialog = new InputDialog(I18nHelper.message("templateDialog.addTemplateLabel"), message);
 
-		myDialog.setCallback(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(final ActionEvent event) {
-				if (!textfield.getText().isEmpty()) {
-
-					final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
-					template.setName(textfield.getText());
-					templateDao.insert(template);
-					myDialog.close();
-				}
-			}
-		});
+		myDialog.setCallback(new TemplateAddDialogCallback(myDialog, textfield));
 	}
 
 	// Handler for MenuItem[fx:id="menuConnectServer"] onAction
@@ -205,24 +186,7 @@ public class ViewController implements Initializable {
 				I18nHelper.message("remotclientDialog.labelPort"), port };
 
 		final InputDialog myDialog = new InputDialog(I18nHelper.message("remoteclientDialog.button"), message);
-		myDialog.setCallback(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(final ActionEvent event) {
-				if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
-					// try {
-					// if (!remoteClient.connect(host.getText(),
-					// port.getText())) {
-					// // SHOW CONNECTION FAILED DIALOG
-					// }
-					// } catch (final InvalidPortException e) {
-					// // TODO SHOW PORT INVALID DIALOG
-					// }
-
-					myDialog.close();
-				}
-			}
-		});
+		myDialog.setCallback(new ServerConnectDialogCallback(myDialog, port, host));
 
 	}
 
@@ -234,5 +198,89 @@ public class ViewController implements Initializable {
 	// Handler for MenuItem[fx:id="menuOpenFile"] onAction
 	public void menuOpen(final ActionEvent event) {
 		uploadController.openFiles(event);
+	}
+
+	private final class ServerConnectDialogCallback implements EventHandler<ActionEvent> {
+		private final InputDialog	myDialog;
+		private final TextField		port;
+		private final TextField		host;
+
+		private ServerConnectDialogCallback(final InputDialog myDialog, final TextField port, final TextField host) {
+			this.myDialog = myDialog;
+			this.port = port;
+			this.host = host;
+		}
+
+		@Override
+		public void handle(final ActionEvent event) {
+			if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
+				// try {
+				// if (!remoteClient.connect(host.getText(),
+				// port.getText())) {
+				// // SHOW CONNECTION FAILED DIALOG
+				// }
+				// } catch (final InvalidPortException e) {
+				// // TODO SHOW PORT INVALID DIALOG
+				// }
+
+				myDialog.close();
+			}
+		}
+	}
+
+	private final class TemplateAddDialogCallback implements EventHandler<ActionEvent> {
+		private final InputDialog	myDialog;
+		private final TextField		textfield;
+
+		private TemplateAddDialogCallback(final InputDialog myDialog, final TextField textfield) {
+			this.myDialog = myDialog;
+			this.textfield = textfield;
+		}
+
+		@Override
+		public void handle(final ActionEvent event) {
+			if (!textfield.getText().isEmpty()) {
+
+				final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
+				template.setName(textfield.getText());
+				templateDao.insert(template);
+				myDialog.close();
+			}
+		}
+	}
+
+	private final class PlaylistAddDialogCallback implements EventHandler<ActionEvent> {
+		private final CheckBox				playlistPrivate;
+		private final TextArea				summary;
+		private final ChoiceBox<Account>	accounts;
+		private final TextField				title;
+		private final InputDialog			myDialog;
+
+		private PlaylistAddDialogCallback(final CheckBox playlistPrivate, final TextArea summary, final ChoiceBox<Account> accounts,
+				final TextField title, final InputDialog myDialog) {
+			this.playlistPrivate = playlistPrivate;
+			this.summary = summary;
+			this.accounts = accounts;
+			this.title = title;
+			this.myDialog = myDialog;
+		}
+
+		@Override
+		public void handle(final ActionEvent event) {
+			if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
+				final Playlist playlist = new Playlist();
+				playlist.setTitle(title.getText());
+				playlist.setSummary(summary.getText());
+				playlist.setPrivate(playlistPrivate.isSelected());
+				playlist.setAccountId(accounts.getValue().getId());
+				try {
+					playlistService.addYoutubePlaylist(playlist);
+				} catch (final SystemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				myDialog.close();
+			}
+		}
 	}
 }

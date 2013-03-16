@@ -49,9 +49,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import javax.sql.DataSource;
-
 import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.CalendarTextField;
@@ -254,8 +251,6 @@ public class UploadController implements Initializable {
 	@Inject
 	private DirectoryChooser			directoryChooser;
 	@Inject
-	private DataSource					dataSource;
-	@Inject
 	private UploadViewModel				uploadViewModel;
 
 	@Override
@@ -350,63 +345,10 @@ public class UploadController implements Initializable {
 	}
 
 	private void initDragEventHandlers() {
-		final EventHandler<DragEvent> onDragOver = new EventHandler<DragEvent>() {
-
-			@Override
-			public void handle(final DragEvent event) {
-				if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasString()) {
-					event.acceptTransferModes(TransferMode.ANY);
-				}
-				event.consume();
-			}
-		};
-
-		final EventHandler<DragEvent> onDragDropped = new EventHandler<DragEvent>() {
-
-			@Override
-			public void handle(final DragEvent event) {
-				final Dragboard db = event.getDragboard();
-				boolean success = false;
-				if (db.hasString()) {
-					if (((Node) event.getTarget()).getParent() == playlistDropzone && event.getGestureSource() != playlistDropzone) {
-						uploadViewModel.movePlaylistToDropzone(Integer.parseInt(db.getString()));
-						success = true;
-					} else if (((Node) event.getTarget()).getParent() == playlistSourcezone
-							&& event.getGestureSource() != playlistSourcezone) {
-						uploadViewModel.removePlaylistFromDropzone(Integer.parseInt(db.getString()));
-						success = true;
-					}
-
-				}
-				event.setDropCompleted(success);
-				event.consume();
-			}
-		};
-
-		final EventHandler<DragEvent> onDragEntered = new EventHandler<DragEvent>() {
-
-			@Override
-			public void handle(final DragEvent event) {
-				if ((event.getGestureSource() != event.getTarget() && event.getTarget() == playlistDropzone || event.getTarget() == playlistSourcezone)
-						&& event.getDragboard().hasString()) {
-
-					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
-					((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dragentered");
-				}
-
-				event.consume();
-			}
-		};
-
-		final EventHandler<DragEvent> onDragExited = new EventHandler<DragEvent>() {
-
-			@Override
-			public void handle(final DragEvent event) {
-				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
-				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dropzone");
-				event.consume();
-			}
-		};
+		final EventHandler<DragEvent> onDragOver = new DragOverCallback();
+		final EventHandler<DragEvent> onDragDropped = new DragDroppedCallback();
+		final EventHandler<DragEvent> onDragEntered = new DragEnteredCallback();
+		final EventHandler<DragEvent> onDragExited = new DragExitedCallback();
 
 		playlistDropzone.setOnDragDropped(onDragDropped);
 		playlistDropzone.setOnDragEntered(onDragEntered);
@@ -420,113 +362,11 @@ public class UploadController implements Initializable {
 	}
 
 	private void initCustomFactories() {
-		final Callback<GridView<Playlist>, GridCell<Playlist>> playlistSourceCellFactory = new Callback<GridView<Playlist>, GridCell<Playlist>>() {
-
-			@Override
-			public PlaylistGridCell call(final GridView<Playlist> arg0) {
-				final PlaylistGridCell cell = new PlaylistGridCell();
-
-				cell.setOnDragDetected(new EventHandler<Event>() {
-
-					@Override
-					public void handle(final Event event) {
-						final Dragboard db = playlistSourcezone.startDragAndDrop(TransferMode.ANY);
-						final ClipboardContent content = new ClipboardContent();
-						content.putString(uploadViewModel.playlistSourceListProperty.indexOf(cell.itemProperty().get()) + "");
-						db.setContent(content);
-						event.consume();
-					}
-				});
-
-				cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-					@Override
-					public void handle(final MouseEvent event) {
-						if (event.getClickCount() == 2) {
-							uploadViewModel.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty.indexOf(cell
-								.itemProperty()
-								.get()));
-						}
-					}
-				});
-
-				return cell;
-			}
-		};
-
-		final Callback<GridView<Playlist>, GridCell<Playlist>> playlistDropCellFactory = new Callback<GridView<Playlist>, GridCell<Playlist>>() {
-
-			@Override
-			public PlaylistGridCell call(final GridView<Playlist> arg0) {
-				final PlaylistGridCell cell = new PlaylistGridCell();
-
-				cell.setOnDragDetected(new EventHandler<Event>() {
-
-					@Override
-					public void handle(final Event event) {
-						final Dragboard db = playlistDropzone.startDragAndDrop(TransferMode.ANY);
-						final ClipboardContent content = new ClipboardContent();
-						content.putString(uploadViewModel.playlistDropListProperty.indexOf(cell.itemProperty().get()) + "");
-						db.setContent(content);
-						event.consume();
-					}
-				});
-
-				cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-					@Override
-					public void handle(final MouseEvent event) {
-						if (event.getClickCount() == 2) {
-							uploadViewModel.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty.indexOf(cell
-								.itemProperty()
-								.get()));
-						}
-					}
-				});
-
-				return cell;
-			}
-		};
-		playlistSourcezone.setCellFactory(playlistSourceCellFactory);
-		playlistDropzone.setCellFactory(playlistDropCellFactory);
-
-		uploadFile.converterProperty().set(new StringConverter<File>() {
-
-			@Override
-			public String toString(final File object) {
-
-				if (object.getPath().length() > 50) {
-					final String fileName = object.getPath();
-					return fileName
-						.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
-						.concat(File.separator)
-						.concat("...")
-						.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
-				}
-
-				return object.getPath();
-			}
-
-			@Override
-			public File fromString(final String string) {
-				throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
-			}
-		});
-
-		uploadViewModel.idProperty.addListener(new InvalidationListener() {
-
-			@Override
-			public void invalidated(final Observable arg0) {
-				if (uploadViewModel.idProperty.get() == -1) {
-					addUpload.setText(I18nHelper.message("button.addUpload"));
-					addUpload.setId("addUpload");
-				} else {
-					addUpload.setText(I18nHelper.message("button.saveUpload"));
-					addUpload.setId("saveUpload");
-				}
-
-			}
-		});
+		playlistSourcezone.setCellFactory(new PlaylistSourceCellFactory());
+		playlistDropzone.setCellFactory(new PlaylistDropCellFactory());
+		accountList.setConverter(new AccountListViewConverter());
+		uploadFile.converterProperty().set(new UploadFileListViewConverter());
+		uploadViewModel.idProperty.addListener(new UploadIdInvalidationListener());
 	}
 
 	private void initSelection() {
@@ -637,104 +477,13 @@ public class UploadController implements Initializable {
 		uploadMessage.textProperty().bindBidirectional(uploadViewModel.messageProperty);
 
 		// VIEW MODEL MONETIZE BINDINGS
-		uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().addListener(new InvalidationListener() {
-
-			@Override
-			public void invalidated(final Observable observable) {
-				if (uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().get() == 1) {
-					monetizeClaim.selectedProperty().set(false);
-					monetizeOverlay.selectedProperty().set(false);
-					monetizeTrueView.selectedProperty().set(false);
-					monetizeInStream.selectedProperty().set(false);
-					monetizeInStreamDefaults.selectedProperty().set(false);
-					monetizeProductPlacement.selectedProperty().set(false);
-					partnerPane.disableProperty().set(true);
-				} else {
-					partnerPane.disableProperty().set(false);
-				}
-			}
-		});
-
-		monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().addListener(new InvalidationListener() {
-
-			@Override
-			public void invalidated(final Observable observable) {
-				if (!monetizePartner.isSelected()) {
-					return;
-				}
-				if (monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().get() == 0) {
-					monetizeOverlay.visibleProperty().set(true);
-					monetizeTrueView.visibleProperty().set(true);
-					monetizeInStream.visibleProperty().set(true);
-					monetizeInStreamDefaults.visibleProperty().set(true);
-					monetizeProductPlacement.visibleProperty().set(true);
-				} else {
-					monetizeOverlay.selectedProperty().set(false);
-					monetizeTrueView.selectedProperty().set(false);
-					monetizeInStream.selectedProperty().set(false);
-					monetizeInStreamDefaults.selectedProperty().set(false);
-					monetizeProductPlacement.selectedProperty().set(false);
-					monetizeOverlay.visibleProperty().set(false);
-					monetizeTrueView.visibleProperty().set(false);
-					monetizeInStream.visibleProperty().set(false);
-					monetizeInStreamDefaults.visibleProperty().set(false);
-					monetizeProductPlacement.visibleProperty().set(false);
-				}
-			}
-		});
-
-		assetType.selectedToggleProperty().addListener(new InvalidationListener() {
-
-			@Override
-			public void invalidated(final Observable observable) {
-				if (assetType.getSelectedToggle() == null) {
-					return;
-				}
-				if (assetType.getSelectedToggle().equals(assetWeb)) {
-					monetizeEIDR.visibleProperty().set(false);
-					monetizeISAN.visibleProperty().set(false);
-					monetizeNumberEpisode.visibleProperty().set(false);
-					monetizeNumberSeason.visibleProperty().set(false);
-					monetizeTitleEpisode.visibleProperty().set(false);
-					monetizeTMSID.visibleProperty().set(false);
-					labelEIDR.visibleProperty().set(false);
-					labelISAN.visibleProperty().set(false);
-					labelNumberEpisode.visibleProperty().set(false);
-					labelNumberSeason.visibleProperty().set(false);
-					labelTitleEpisode.visibleProperty().set(false);
-					labelTMSID.visibleProperty().set(false);
-					monetizeDescription.disableProperty().set(false);
-				} else if (assetType.getSelectedToggle().equals(assetTV)) {
-					monetizeEIDR.visibleProperty().set(true);
-					monetizeISAN.visibleProperty().set(true);
-					monetizeNumberEpisode.visibleProperty().set(true);
-					monetizeNumberSeason.visibleProperty().set(true);
-					monetizeTitleEpisode.visibleProperty().set(true);
-					monetizeTMSID.visibleProperty().set(true);
-					labelEIDR.visibleProperty().set(true);
-					labelISAN.visibleProperty().set(true);
-					labelNumberEpisode.visibleProperty().set(true);
-					labelNumberSeason.visibleProperty().set(true);
-					labelTitleEpisode.visibleProperty().set(true);
-					labelTMSID.visibleProperty().set(true);
-					monetizeDescription.disableProperty().set(true);
-				} else if (assetType.getSelectedToggle().equals(assetMovie)) {
-					monetizeDescription.disableProperty().set(false);
-					monetizeEIDR.visibleProperty().set(true);
-					monetizeISAN.visibleProperty().set(true);
-					monetizeNumberEpisode.visibleProperty().set(false);
-					monetizeNumberSeason.visibleProperty().set(false);
-					monetizeTitleEpisode.visibleProperty().set(false);
-					monetizeTMSID.visibleProperty().set(true);
-					labelEIDR.visibleProperty().set(true);
-					labelISAN.visibleProperty().set(true);
-					labelTMSID.visibleProperty().set(true);
-					labelNumberEpisode.visibleProperty().set(false);
-					labelNumberSeason.visibleProperty().set(false);
-					labelTitleEpisode.visibleProperty().set(false);
-				}
-			}
-		});
+		uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().addListener(new LicenseInvalidationListener());
+		monetizeClaimOption
+			.selectionModelProperty()
+			.get()
+			.selectedIndexProperty()
+			.addListener(new MonetizeClaimOptionInvalidationListener());
+		assetType.selectedToggleProperty().addListener(new AssetTypeInvalidaitonListener());
 
 		monetizeClaim.selectedProperty().bindBidirectional(uploadViewModel.claimProperty);
 		monetizeClaimType.itemsProperty().bindBidirectional(uploadViewModel.claimTypeProperty);
@@ -756,13 +505,7 @@ public class UploadController implements Initializable {
 		monetizeTrueView.selectedProperty().bindBidirectional(uploadViewModel.trueViewProperty);
 		monetizePartner.selectedProperty().bindBidirectional(uploadViewModel.partnerProperty);
 
-		monetizePartner.selectedProperty().addListener(new InvalidationListener() {
-
-			@Override
-			public void invalidated(final Observable arg0) {
-				togglePartner(null);
-			}
-		});
+		monetizePartner.selectedProperty().addListener(new MonetizePartnerInvalidationListener());
 	}
 
 	// Handler for ToggleButton[fx:id="monetizePartner"] onAction
@@ -838,18 +581,21 @@ public class UploadController implements Initializable {
 	public void addUpload(final ActionEvent event) {
 		final Upload upload = uploadViewModel.toUpload();
 
-		if (upload.isValid()) {
-			validationText.setId("validation_passed");
-			validationText.setText(I18nHelper.message("validation.info.added"));
-		} else {
-			validationText.setId("validation_error");
-			final StringBuilder stringBuilder = new StringBuilder("");
-			for (final String error : upload.errors().values()) {
-				stringBuilder.append(error);
-				stringBuilder.append('\n');
-			}
-			validationText.setText(stringBuilder.toString());
-		}
+		/*
+		 * TODO
+		 * if (upload.isValid()) {
+		 * validationText.setId("validation_passed");
+		 * validationText.setText(I18nHelper.message("validation.info.added"));
+		 * } else {
+		 * validationText.setId("validation_error");
+		 * final StringBuilder stringBuilder = new StringBuilder("");
+		 * for (final String error : upload.errors().values()) {
+		 * stringBuilder.append(error);
+		 * stringBuilder.append('\n');
+		 * }
+		 * validationText.setText(stringBuilder.toString());
+		 * }
+		 */
 	}
 
 	// Handler for Button[fx:id="openDefaultdir"] onAction
@@ -925,4 +671,275 @@ public class UploadController implements Initializable {
 	public void saveTemplate(final ActionEvent event) {
 		uploadViewModel.saveTemplate();
 	}
+
+	// {{ INNER CLASSES
+	private final class LicenseInvalidationListener implements InvalidationListener {
+		@Override
+		public void invalidated(final Observable observable) {
+			if (uploadViewModel.selectedLicenseProperty.getValue().selectedIndexProperty().get() == 1) {
+				monetizeClaim.selectedProperty().set(false);
+				monetizeOverlay.selectedProperty().set(false);
+				monetizeTrueView.selectedProperty().set(false);
+				monetizeInStream.selectedProperty().set(false);
+				monetizeInStreamDefaults.selectedProperty().set(false);
+				monetizeProductPlacement.selectedProperty().set(false);
+				partnerPane.disableProperty().set(true);
+			} else {
+				partnerPane.disableProperty().set(false);
+			}
+		}
+	}
+
+	private final class MonetizeClaimOptionInvalidationListener implements InvalidationListener {
+		@Override
+		public void invalidated(final Observable observable) {
+			if (!monetizePartner.isSelected()) {
+				return;
+			}
+			if (monetizeClaimOption.selectionModelProperty().get().selectedIndexProperty().get() == 0) {
+				monetizeOverlay.visibleProperty().set(true);
+				monetizeTrueView.visibleProperty().set(true);
+				monetizeInStream.visibleProperty().set(true);
+				monetizeInStreamDefaults.visibleProperty().set(true);
+				monetizeProductPlacement.visibleProperty().set(true);
+			} else {
+				monetizeOverlay.selectedProperty().set(false);
+				monetizeTrueView.selectedProperty().set(false);
+				monetizeInStream.selectedProperty().set(false);
+				monetizeInStreamDefaults.selectedProperty().set(false);
+				monetizeProductPlacement.selectedProperty().set(false);
+				monetizeOverlay.visibleProperty().set(false);
+				monetizeTrueView.visibleProperty().set(false);
+				monetizeInStream.visibleProperty().set(false);
+				monetizeInStreamDefaults.visibleProperty().set(false);
+				monetizeProductPlacement.visibleProperty().set(false);
+			}
+		}
+	}
+
+	private final class AssetTypeInvalidaitonListener implements InvalidationListener {
+		@Override
+		public void invalidated(final Observable observable) {
+			if (assetType.getSelectedToggle() == null) {
+				return;
+			}
+			if (assetType.getSelectedToggle().equals(assetWeb)) {
+				monetizeEIDR.visibleProperty().set(false);
+				monetizeISAN.visibleProperty().set(false);
+				monetizeNumberEpisode.visibleProperty().set(false);
+				monetizeNumberSeason.visibleProperty().set(false);
+				monetizeTitleEpisode.visibleProperty().set(false);
+				monetizeTMSID.visibleProperty().set(false);
+				labelEIDR.visibleProperty().set(false);
+				labelISAN.visibleProperty().set(false);
+				labelNumberEpisode.visibleProperty().set(false);
+				labelNumberSeason.visibleProperty().set(false);
+				labelTitleEpisode.visibleProperty().set(false);
+				labelTMSID.visibleProperty().set(false);
+				monetizeDescription.disableProperty().set(false);
+			} else if (assetType.getSelectedToggle().equals(assetTV)) {
+				monetizeEIDR.visibleProperty().set(true);
+				monetizeISAN.visibleProperty().set(true);
+				monetizeNumberEpisode.visibleProperty().set(true);
+				monetizeNumberSeason.visibleProperty().set(true);
+				monetizeTitleEpisode.visibleProperty().set(true);
+				monetizeTMSID.visibleProperty().set(true);
+				labelEIDR.visibleProperty().set(true);
+				labelISAN.visibleProperty().set(true);
+				labelNumberEpisode.visibleProperty().set(true);
+				labelNumberSeason.visibleProperty().set(true);
+				labelTitleEpisode.visibleProperty().set(true);
+				labelTMSID.visibleProperty().set(true);
+				monetizeDescription.disableProperty().set(true);
+			} else if (assetType.getSelectedToggle().equals(assetMovie)) {
+				monetizeDescription.disableProperty().set(false);
+				monetizeEIDR.visibleProperty().set(true);
+				monetizeISAN.visibleProperty().set(true);
+				monetizeNumberEpisode.visibleProperty().set(false);
+				monetizeNumberSeason.visibleProperty().set(false);
+				monetizeTitleEpisode.visibleProperty().set(false);
+				monetizeTMSID.visibleProperty().set(true);
+				labelEIDR.visibleProperty().set(true);
+				labelISAN.visibleProperty().set(true);
+				labelTMSID.visibleProperty().set(true);
+				labelNumberEpisode.visibleProperty().set(false);
+				labelNumberSeason.visibleProperty().set(false);
+				labelTitleEpisode.visibleProperty().set(false);
+			}
+		}
+	}
+
+	private final class MonetizePartnerInvalidationListener implements InvalidationListener {
+		@Override
+		public void invalidated(final Observable arg0) {
+			togglePartner(null);
+		}
+	}
+
+	private final class UploadIdInvalidationListener implements InvalidationListener {
+		@Override
+		public void invalidated(final Observable arg0) {
+			if (uploadViewModel.idProperty.get() == -1) {
+				addUpload.setText(I18nHelper.message("button.addUpload"));
+				addUpload.setId("addUpload");
+			} else {
+				addUpload.setText(I18nHelper.message("button.saveUpload"));
+				addUpload.setId("saveUpload");
+			}
+
+		}
+	}
+
+	private final class UploadFileListViewConverter extends StringConverter<File> {
+		@Override
+		public String toString(final File object) {
+
+			if (object.getPath().length() > 50) {
+				final String fileName = object.getPath();
+				return fileName
+					.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
+					.concat(File.separator)
+					.concat("...")
+					.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+			}
+
+			return object.getPath();
+		}
+
+		@Override
+		public File fromString(final String string) {
+			throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
+		}
+	}
+
+	private final class AccountListViewConverter extends StringConverter<Account> {
+		@Override
+		public String toString(final Account arg0) {
+			return arg0.getName();
+		}
+
+		@Override
+		public Account fromString(final String arg0) {
+			throw new UnsupportedClassVersionError();
+		}
+	}
+
+	private final class PlaylistDropCellFactory implements Callback<GridView<Playlist>, GridCell<Playlist>> {
+		@Override
+		public PlaylistGridCell call(final GridView<Playlist> arg0) {
+			final PlaylistGridCell cell = new PlaylistGridCell();
+
+			cell.setOnDragDetected(new EventHandler<Event>() {
+
+				@Override
+				public void handle(final Event event) {
+					final Dragboard db = playlistDropzone.startDragAndDrop(TransferMode.ANY);
+					final ClipboardContent content = new ClipboardContent();
+					content.putString(uploadViewModel.playlistDropListProperty.indexOf(cell.itemProperty().get()) + "");
+					db.setContent(content);
+					event.consume();
+				}
+			});
+
+			cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(final MouseEvent event) {
+					if (event.getClickCount() == 2) {
+						uploadViewModel.removePlaylistFromDropzone(uploadViewModel.playlistDropListProperty.indexOf(cell
+							.itemProperty()
+							.get()));
+					}
+				}
+			});
+
+			return cell;
+		}
+	}
+
+	private final class PlaylistSourceCellFactory implements Callback<GridView<Playlist>, GridCell<Playlist>> {
+		@Override
+		public PlaylistGridCell call(final GridView<Playlist> arg0) {
+			final PlaylistGridCell cell = new PlaylistGridCell();
+
+			cell.setOnDragDetected(new EventHandler<Event>() {
+
+				@Override
+				public void handle(final Event event) {
+					final Dragboard db = playlistSourcezone.startDragAndDrop(TransferMode.ANY);
+					final ClipboardContent content = new ClipboardContent();
+					content.putString(uploadViewModel.playlistSourceListProperty.indexOf(cell.itemProperty().get()) + "");
+					db.setContent(content);
+					event.consume();
+				}
+			});
+
+			cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(final MouseEvent event) {
+					if (event.getClickCount() == 2) {
+						uploadViewModel.movePlaylistToDropzone(uploadViewModel.playlistSourceListProperty
+							.indexOf(cell.itemProperty().get()));
+					}
+				}
+			});
+
+			return cell;
+		}
+	}
+
+	private final class DragExitedCallback implements EventHandler<DragEvent> {
+		@Override
+		public void handle(final DragEvent event) {
+			((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
+			((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dropzone");
+			event.consume();
+		}
+	}
+
+	private final class DragEnteredCallback implements EventHandler<DragEvent> {
+		@Override
+		public void handle(final DragEvent event) {
+			if ((event.getGestureSource() != event.getTarget() && event.getTarget() == playlistDropzone || event.getTarget() == playlistSourcezone)
+					&& event.getDragboard().hasString()) {
+
+				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
+				((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().add("dragentered");
+			}
+
+			event.consume();
+		}
+	}
+
+	private final class DragDroppedCallback implements EventHandler<DragEvent> {
+		@Override
+		public void handle(final DragEvent event) {
+			final Dragboard db = event.getDragboard();
+			boolean success = false;
+			if (db.hasString()) {
+				if (((Node) event.getTarget()).getParent() == playlistDropzone && event.getGestureSource() != playlistDropzone) {
+					uploadViewModel.movePlaylistToDropzone(Integer.parseInt(db.getString()));
+					success = true;
+				} else if (((Node) event.getTarget()).getParent() == playlistSourcezone && event.getGestureSource() != playlistSourcezone) {
+					uploadViewModel.removePlaylistFromDropzone(Integer.parseInt(db.getString()));
+					success = true;
+				}
+
+			}
+			event.setDropCompleted(success);
+			event.consume();
+		}
+	}
+
+	private final class DragOverCallback implements EventHandler<DragEvent> {
+		@Override
+		public void handle(final DragEvent event) {
+			if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasString()) {
+				event.acceptTransferModes(TransferMode.ANY);
+			}
+			event.consume();
+		}
+	}
+	// }} INNER CLASSES
 }

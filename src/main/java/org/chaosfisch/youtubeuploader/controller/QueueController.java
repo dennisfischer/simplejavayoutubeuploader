@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -36,6 +37,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -52,7 +54,6 @@ import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.RefresherUtil;
 import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
@@ -67,90 +68,94 @@ public class QueueController implements Initializable {
 
 	@FXML
 	// fx:id="actionOnFinish"
-	private ChoiceBox<String>			actionOnFinish;
+	private ChoiceBox<String>				actionOnFinish;
 
 	@FXML
 	// fx:id="columnAccount"
-	private TableColumn<Upload, String>	columnAccount;
+	private TableColumn<Upload, String>		columnAccount;
 
 	@FXML
 	// fx:id="columnActions"
-	private TableColumn<Upload, Upload>	columnActions;
+	private TableColumn<Upload, Integer>	columnActions;
 
 	@FXML
 	// fx:id="columnCategory"
-	private TableColumn<Upload, String>	columnCategory;
+	private TableColumn<Upload, String>		columnCategory;
 
 	@FXML
 	// fx:id="columnId"
-	private TableColumn<Upload, Number>	columnId;
+	private TableColumn<Upload, Number>		columnId;
 
 	@FXML
 	// fx:id="columnProgress"
-	private TableColumn<Upload, Upload>	columnProgress;
+	private TableColumn<Upload, Integer>	columnProgress;
 
 	@FXML
 	// fx:id="columnTitle"
-	private TableColumn<Upload, String>	columnTitle;
+	private TableColumn<Upload, String>		columnTitle;
 
 	@FXML
 	// fx:id="columnStarttime"
-	private TableColumn<Upload, Object>	columnStarttime;
+	private TableColumn<Upload, Timestamp>	columnStarttime;
 
 	@FXML
 	// fx:id="queueActionsGridpane"
-	private GridPane					queueActionsGridpane;
+	private GridPane						queueActionsGridpane;
 
 	@FXML
 	// fx:id="queueTableview"
-	private TableView<Upload>			queueTableview;
+	private TableView<Upload>				queueTableview;
 
 	@FXML
 	// fx:id="startQueue"
-	private Button						startQueue;
+	private Button							startQueue;
 
 	@FXML
 	// fx:id="stopQueue"
-	private Button						stopQueue;
+	private Button							stopQueue;
 
-	private final ListSpinner<Integer>	numberOfUploads	= new ListSpinner<Integer>(1, 5)
-															.withValue(1)
-															.withAlignment(Pos.CENTER_RIGHT)
-															.withPostfix(" Upload(s)")
-															.withPrefix("max. ")
-															.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>	uploadSpeed		= new ListSpinner<Integer>(0, 10000, 10)
-															.withValue(0)
-															.withAlignment(Pos.CENTER_RIGHT)
-															.withArrowPosition(ArrowPosition.LEADING)
-															.withPostfix(" kb/s")
-															.withEditable(true)
-															.withStringConverter(new StringConverter<Integer>() {
+	private final ListSpinner<Integer>		numberOfUploads		= new ListSpinner<Integer>(1, 5)
+																	.withValue(1)
+																	.withAlignment(Pos.CENTER_RIGHT)
+																	.withPostfix(" Upload(s)")
+																	.withPrefix("max. ")
+																	.withArrowPosition(ArrowPosition.LEADING);
+	private final ListSpinner<Integer>		uploadSpeed			= new ListSpinner<Integer>(0, 10000, 10)
+																	.withValue(0)
+																	.withAlignment(Pos.CENTER_RIGHT)
+																	.withArrowPosition(ArrowPosition.LEADING)
+																	.withPostfix(" kb/s")
+																	.withEditable(true)
+																	.withStringConverter(new StringConverter<Integer>() {
 
-																@Override
-																public String toString(final Integer arg0) {
-																	return arg0.toString();
-																}
+																		@Override
+																		public String toString(final Integer arg0) {
+																			return arg0.toString();
+																		}
 
-																@Override
-																public Integer fromString(final String string) {
-																	try {
-																		final Integer number = Integer.parseInt(string);
-																		return number;
-																	} catch (final NumberFormatException e) {
-																		return uploadSpeed.getValue();
-																	}
-																}
-															});
+																		@Override
+																		public Integer fromString(final String string) {
+																			try {
+																				final Integer number = Integer.parseInt(string);
+																				return number;
+																			} catch (final NumberFormatException e) {
+																				return uploadSpeed.getValue();
+																			}
+																		}
+																	});
 
 	@Inject
-	private Uploader					uploader;
+	private Uploader						uploader;
 	@Inject
-	private Throttle					throttle;
+	private Throttle						throttle;
 	@Inject
-	private UploadViewModel				uploadViewModel;
+	private UploadViewModel					uploadViewModel;
 	@Inject
-	private UploadDao					uploadDao;
+	private UploadDao						uploadDao;
+
+	private final SimpleDateFormat			startTimeDateFormat	= new SimpleDateFormat("dd.MM.yyyy hh:mm");
+	private final ObservableList<Upload>	uploads				= FXCollections.observableArrayList();
+	private final ObservableList<String>	actionOnFinishItems	= FXCollections.observableArrayList();
 
 	@Override
 	// This method is called by the FXMLLoader when initialization is
@@ -180,216 +185,37 @@ public class QueueController implements Initializable {
 		columnProgress.setMinWidth(230);
 		columnProgress.setPrefWidth(230);
 
-		columnId.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Number>("id"));
-		columnTitle.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("title"));
-		columnCategory.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("category"));
-		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, String>("name", Account.class));
-		columnProgress.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
-		columnActions.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Upload>("this"));
-		columnStarttime.setCellValueFactory(new ActiveJdbcCellValueFactory<Upload, Object>("started"));
-		columnStarttime.setCellFactory(new Callback<TableColumn<Upload, Object>, TableCell<Upload, Object>>() {
+		columnId.setCellValueFactory(new PropertyValueFactory<Upload, Number>("id"));
+		columnTitle.setCellValueFactory(new PropertyValueFactory<Upload, String>("title"));
+		columnCategory.setCellValueFactory(new PropertyValueFactory<Upload, String>("category"));
+		columnAccount.setCellValueFactory(new PropertyValueFactory<Upload, String>("accountid"));
+		columnProgress.setCellValueFactory(new PropertyValueFactory<Upload, Integer>("id"));
+		columnActions.setCellValueFactory(new PropertyValueFactory<Upload, Integer>("id"));
+		columnStarttime.setCellValueFactory(new PropertyValueFactory<Upload, Timestamp>("started"));
+		columnStarttime.setCellFactory(new StarttimeCellFactory());
+		columnProgress.setCellFactory(new ProgressCellFactory());
+		columnActions.setCellFactory(new ActionsCellFactory());
 
-			@Override
-			public TableCell<Upload, Object> call(final TableColumn<Upload, Object> param) {
-				final TableCell<Upload, Object> cell = new TableCell<Upload, Object>() {
-
-					@Override
-					public void updateItem(final Object date, final boolean empty) {
-						super.updateItem(date, empty);
-						if (empty) {
-							setGraphic(null);
-							setContentDisplay(null);
-						} else {
-							if (date instanceof Date) {
-								setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format((Date) date));
-							} else if (date instanceof Timestamp) {
-								setText(new SimpleDateFormat("dd.MM.yyyy hh:mm").format(((Timestamp) date).getTime()));
-							}
-						}
-					}
-				};
-				return cell;
-			}
-		});
-
-		columnProgress.setCellFactory(new Callback<TableColumn<Upload, Upload>, TableCell<Upload, Upload>>() {
-
-			@Override
-			public TableCell<Upload, Upload> call(final TableColumn<Upload, Upload> param) {
-				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
-
-					@Override
-					public void updateItem(final Upload upload, final boolean empty) {
-						super.updateItem(upload, empty);
-						if (empty) {
-							setGraphic(null);
-							setContentDisplay(null);
-						} else {
-							final HBox hbox = new HBox(10);
-
-							final ProgressIndicator progressIndicator = new ProgressIndicator(upload.getArchived() ? 100 : 0);
-							progressIndicator.setId("queue-" + upload.getId());
-
-							final Label label = new Label("");
-							label.setId("queue-text-" + upload.getId());
-							if (upload.getArchived()) {
-								label.setText("http://youtu.be/" + upload.getVideoid());
-								label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-									@Override
-									public void handle(final MouseEvent mouseEvent) {
-
-										if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2
-												&& Desktop.isDesktopSupported()) {
-											try {
-												Desktop.getDesktop().browse(new URI("http://youtu.be/" + upload.getVideoid()));
-											} catch (final URISyntaxException | IOException e) {
-												// TODO
-											}
-										}
-
-									}
-								});
-								progressIndicator.setProgress(100);
-							} else if (upload.getFailed()) {
-
-								label.setText(I18nHelper.message("queuetable.status.failed"));
-								progressIndicator.setProgress(0);
-							}
-							hbox.getChildren().addAll(progressIndicator, label);
-							setGraphic(hbox);
-							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-						}
-					}
-				};
-				return cell;
-			}
-		});
-
-		columnActions.setCellFactory(new Callback<TableColumn<Upload, Upload>, TableCell<Upload, Upload>>() {
-
-			@Override
-			public TableCell<Upload, Upload> call(final TableColumn<Upload, Upload> param) {
-				final TableCell<Upload, Upload> cell = new TableCell<Upload, Upload>() {
-
-					@Override
-					public void updateItem(final Upload upload, final boolean empty) {
-						super.updateItem(upload, empty);
-						if (empty) {
-							setGraphic(null);
-							setContentDisplay(null);
-						} else {
-							final Button btnRemove = new Button();
-							btnRemove.setId("removeUpload");
-							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
-
-								@Override
-								public void handle(final ActionEvent event) {
-									if (upload == null || upload.getInprogress()) {
-										return;
-									}
-									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-									dialog.setTitleText(I18nHelper.message("dialog.removeupload.title"));
-									dialog.setMessage(I18nHelper.message("dialog.removeupload.message"));
-									final MonologFXButton yesButton = new MonologFXButton();
-									yesButton.setType(MonologFXButton.Type.YES);
-									yesButton.setLabel("Yes");
-									final MonologFXButton noButton = new MonologFXButton();
-									noButton.setType(MonologFXButton.Type.NO);
-									noButton.setLabel("No");
-									dialog.addButton(yesButton);
-									dialog.addButton(noButton);
-									if (upload != null && dialog.showDialog() == MonologFXButton.Type.YES) {
-										uploadDao.delete(upload);
-									}
-								}
-							});
-							btnRemove.setDisable(upload.getInprogress());
-
-							final Button btnEdit = new Button();
-							btnEdit.setId("editUpload");
-							btnEdit.setOnAction(new EventHandler<ActionEvent>() {
-
-								@Override
-								public void handle(final ActionEvent event) {
-									if (upload == null || upload.getInprogress()) {
-										return;
-									}
-									uploadViewModel.fromUpload(upload);
-								}
-
-							});
-							btnEdit.setDisable(upload.getInprogress() || upload.getArchived());
-
-							final Button btnAbort = new Button(I18nHelper.message("button.abort"));
-							btnAbort.setId("abortUpload");
-							btnAbort.setOnAction(new EventHandler<ActionEvent>() {
-
-								@Override
-								public void handle(final ActionEvent arg0) {
-									if (upload == null || !upload.getInprogress()) {
-										return;
-									}
-									final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-									dialog.setTitleText(I18nHelper.message("dialog.abortupload.title"));
-									dialog.setMessage(I18nHelper.message("dialog.abortupload.message"));
-									final MonologFXButton yesButton = new MonologFXButton();
-									yesButton.setType(MonologFXButton.Type.YES);
-									yesButton.setLabel("Yes");
-									final MonologFXButton noButton = new MonologFXButton();
-									noButton.setType(MonologFXButton.Type.NO);
-									noButton.setLabel("No");
-									dialog.addButton(yesButton);
-									dialog.addButton(noButton);
-
-									if (dialog.showDialog() == MonologFXButton.Type.YES) {
-										uploader.abort(upload);
-									}
-								}
-							});
-							btnAbort.setDisable(!upload.getInprogress() || upload.getArchived());
-
-							final ToggleButton btnPauseOnFinish = new ToggleButton();
-							btnPauseOnFinish.setId("pauseOnFinishQueue");
-							btnPauseOnFinish.setOnAction(new EventHandler<ActionEvent>() {
-
-								@Override
-								public void handle(final ActionEvent arg0) {
-									upload.setPauseonfinish(btnPauseOnFinish.selectedProperty().get());
-									uploadDao.update(upload);
-								}
-							});
-							btnPauseOnFinish.selectedProperty().set(upload.getPauseonfinish());
-
-							final HBox hbox = new HBox(3d);
-							hbox.getChildren().addAll(btnRemove, btnEdit, btnAbort, btnPauseOnFinish);
-							setGraphic(hbox);
-							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-						}
-					}
-				};
-				return cell;
-			}
-
-		});
-
-		queueTableview.setItems(FXCollections.observableArrayList(uploadDao.findAll()));
-
-		actionOnFinish.setItems(FXCollections.observableArrayList(new String[] { I18nHelper.message("queuefinishedlist.donothing"),
-				I18nHelper.message("queuefinishedlist.closeapplication"), I18nHelper.message("queuefinishedlist.shutdown"),
-				I18nHelper.message("queuefinishedlist.hibernate") }));
-		actionOnFinish.getSelectionModel().selectFirst();
-
-		// Bindings
-		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 		startQueue.disableProperty().bind(uploader.inProgressProperty);
 		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
+		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 		uploader.maxUploads.bind(numberOfUploads.valueProperty());
 		throttle.maxBps.bind(uploadSpeed.valueProperty());
 
 		queueTableview.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
+		queueTableview.setItems(uploads);
+		actionOnFinish.setItems(actionOnFinishItems);
+		actionOnFinish.getSelectionModel().selectFirst();
+
 		EventBusUtil.getInstance().register(this);
+
+		uploads.addAll(uploadDao.findAll());
+		actionOnFinishItems.addAll(
+			I18nHelper.message("queuefinishedlist.donothing"),
+			I18nHelper.message("queuefinishedlist.closeapplication"),
+			I18nHelper.message("queuefinishedlist.shutdown"),
+			I18nHelper.message("queuefinishedlist.hibernate"));
 	}
 
 	@Subscribe
@@ -485,5 +311,184 @@ public class QueueController implements Initializable {
 		final int exp = (int) (Math.log(bytes) / Math.log(unit));
 		final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+
+	private final class ActionsCellFactory implements Callback<TableColumn<Upload, Integer>, TableCell<Upload, Integer>> {
+		@Override
+		public TableCell<Upload, Integer> call(final TableColumn<Upload, Integer> param) {
+			final TableCell<Upload, Integer> cell = new TableCell<Upload, Integer>() {
+
+				@Override
+				public void updateItem(final Integer id, final boolean empty) {
+					super.updateItem(id, empty);
+					if (empty) {
+						setGraphic(null);
+						setContentDisplay(null);
+					} else {
+						final Upload upload = getTableView().getItems().get(getIndex());
+						final Button btnRemove = new Button();
+						btnRemove.setId("removeUpload");
+						btnRemove.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent event) {
+								if (upload == null || upload.getInprogress()) {
+									return;
+								}
+								final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
+								dialog.setTitleText(I18nHelper.message("dialog.removeupload.title"));
+								dialog.setMessage(I18nHelper.message("dialog.removeupload.message"));
+								final MonologFXButton yesButton = new MonologFXButton();
+								yesButton.setType(MonologFXButton.Type.YES);
+								yesButton.setLabel("Yes");
+								final MonologFXButton noButton = new MonologFXButton();
+								noButton.setType(MonologFXButton.Type.NO);
+								noButton.setLabel("No");
+								dialog.addButton(yesButton);
+								dialog.addButton(noButton);
+								if (upload != null && dialog.showDialog() == MonologFXButton.Type.YES) {
+									uploadDao.delete(upload);
+								}
+							}
+						});
+						btnRemove.setDisable(upload.getInprogress());
+
+						final Button btnEdit = new Button();
+						btnEdit.setId("editUpload");
+						btnEdit.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent event) {
+								if (upload == null || upload.getInprogress()) {
+									return;
+								}
+								uploadViewModel.fromUpload(upload);
+							}
+
+						});
+						btnEdit.setDisable(upload.getInprogress() || upload.getArchived());
+
+						final Button btnAbort = new Button(I18nHelper.message("button.abort"));
+						btnAbort.setId("abortUpload");
+						btnAbort.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent arg0) {
+								if (upload == null || !upload.getInprogress()) {
+									return;
+								}
+								final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
+								dialog.setTitleText(I18nHelper.message("dialog.abortupload.title"));
+								dialog.setMessage(I18nHelper.message("dialog.abortupload.message"));
+								final MonologFXButton yesButton = new MonologFXButton();
+								yesButton.setType(MonologFXButton.Type.YES);
+								yesButton.setLabel("Yes");
+								final MonologFXButton noButton = new MonologFXButton();
+								noButton.setType(MonologFXButton.Type.NO);
+								noButton.setLabel("No");
+								dialog.addButton(yesButton);
+								dialog.addButton(noButton);
+
+								if (dialog.showDialog() == MonologFXButton.Type.YES) {
+									uploader.abort(upload);
+								}
+							}
+						});
+						btnAbort.setDisable(!upload.getInprogress() || upload.getArchived());
+
+						final ToggleButton btnPauseOnFinish = new ToggleButton();
+						btnPauseOnFinish.setId("pauseOnFinishQueue");
+						btnPauseOnFinish.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent arg0) {
+								upload.setPauseonfinish(btnPauseOnFinish.selectedProperty().get());
+								uploadDao.update(upload);
+							}
+						});
+						btnPauseOnFinish.selectedProperty().set(upload.getPauseonfinish());
+
+						final HBox hbox = new HBox(3d);
+						hbox.getChildren().addAll(btnRemove, btnEdit, btnAbort, btnPauseOnFinish);
+						setGraphic(hbox);
+						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+					}
+				}
+			};
+			return cell;
+		}
+	}
+
+	private final class ProgressCellFactory implements Callback<TableColumn<Upload, Integer>, TableCell<Upload, Integer>> {
+		@Override
+		public TableCell<Upload, Integer> call(final TableColumn<Upload, Integer> param) {
+			final TableCell<Upload, Integer> cell = new TableCell<Upload, Integer>() {
+
+				@Override
+				public void updateItem(final Integer id, final boolean empty) {
+					super.updateItem(id, empty);
+					if (empty) {
+						setGraphic(null);
+						setContentDisplay(null);
+					} else {
+						final HBox hbox = new HBox(10);
+						final Upload upload = getTableView().getItems().get(getIndex());
+						final ProgressIndicator progressIndicator = new ProgressIndicator(upload.getArchived() ? 100 : 0);
+						progressIndicator.setId("queue-" + upload.getId());
+
+						final Label label = new Label("");
+						label.setId("queue-text-" + upload.getId());
+						if (upload.getArchived()) {
+							label.setText("http://youtu.be/" + upload.getVideoid());
+							label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+								@Override
+								public void handle(final MouseEvent mouseEvent) {
+
+									if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2
+											&& Desktop.isDesktopSupported()) {
+										try {
+											Desktop.getDesktop().browse(new URI("http://youtu.be/" + upload.getVideoid()));
+										} catch (final URISyntaxException | IOException e) {
+											// TODO
+										}
+									}
+
+								}
+							});
+							progressIndicator.setProgress(100);
+						} else if (upload.getFailed()) {
+
+							label.setText(I18nHelper.message("queuetable.status.failed"));
+							progressIndicator.setProgress(0);
+						}
+						hbox.getChildren().addAll(progressIndicator, label);
+						setGraphic(hbox);
+						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+					}
+				}
+			};
+			return cell;
+		}
+	}
+
+	private final class StarttimeCellFactory implements Callback<TableColumn<Upload, Timestamp>, TableCell<Upload, Timestamp>> {
+		@Override
+		public TableCell<Upload, Timestamp> call(final TableColumn<Upload, Timestamp> param) {
+			final TableCell<Upload, Timestamp> cell = new TableCell<Upload, Timestamp>() {
+
+				@Override
+				public void updateItem(final Timestamp date, final boolean empty) {
+					super.updateItem(date, empty);
+					if (empty) {
+						setGraphic(null);
+						setContentDisplay(null);
+					} else {
+						setText(startTimeDateFormat.format(date.getTime()));
+					}
+				}
+			};
+			return cell;
+		}
 	}
 }

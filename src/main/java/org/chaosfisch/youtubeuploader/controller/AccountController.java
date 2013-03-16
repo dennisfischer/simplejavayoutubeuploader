@@ -28,6 +28,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
@@ -46,44 +47,47 @@ public class AccountController implements Initializable {
 
 	@FXML
 	// fx:id="account"
-	private TextField						account;
+	private TextField							account;
 
 	@FXML
 	// fx:id="accountTable"
-	private TableView<Account>				accountTable;
+	private TableView<Account>					accountTable;
 
 	@FXML
 	// fx:id="accountType"
-	private ChoiceBox<AccountsType>			accountType;
+	private ChoiceBox<AccountsType>				accountType;
 
 	@FXML
 	// fx:id="columnAccount"
-	private TableColumn<Account, String>	columnAccount;
+	private TableColumn<Account, String>		columnAccount;
 
 	@FXML
 	// fx:id="columnAccounttype"
-	private TableColumn<Account, String>	columnAccounttype;
+	private TableColumn<Account, String>		columnAccounttype;
 
 	@FXML
-	private TableColumn<Account, Account>	columnActions;
+	private TableColumn<Account, Integer>		columnActions;
 
 	@FXML
 	// fx:id="addAccount"
-	private Button							addAccount;
+	private Button								addAccount;
 
 	@FXML
 	// fx:id="password"
-	private PasswordField					password;
+	private PasswordField						password;
 
 	@FXML
 	// fx:id="resetAccount"
-	private Button							resetAccount;
+	private Button								resetAccount;
 
 	@Inject
-	private GoogleAuthUtil					authTokenHelper;
+	private GoogleAuthUtil						authTokenHelper;
 
 	@Inject
-	private AccountDao						accountDao;
+	private AccountDao							accountDao;
+
+	private final ObservableList<Account>		accountList		= FXCollections.observableArrayList();
+	private final ObservableList<AccountsType>	accountTypes	= FXCollections.observableArrayList();
 
 	// Handler for Button[fx:id="addAccount"] onAction
 	public void addAccount(final ActionEvent event) {
@@ -117,78 +121,22 @@ public class AccountController implements Initializable {
 
 		// initialize your logic here: all @FXML variables will have been
 
-		columnAccount.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, String>("name"));
-		columnAccounttype.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, String>("type"));
-		columnActions.setCellValueFactory(new ActiveJdbcCellValueFactory<Account, Account>("this"));
+		columnAccount.setCellValueFactory(new PropertyValueFactory<Account, String>("name"));
+		columnAccounttype.setCellValueFactory(new PropertyValueFactory<Account, String>("type"));
+		columnActions.setCellValueFactory(new PropertyValueFactory<Account, Integer>("id"));
 
-		columnAccounttype.setCellFactory(new Callback<TableColumn<Account, String>, TableCell<Account, String>>() {
-
-			@Override
-			public TableCell<Account, String> call(final TableColumn<Account, String> param) {
-				final TableCell<Account, String> cell = new TableCell<Account, String>() {
-
-					@Override
-					public void updateItem(final String item, final boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setText(null);
-							setGraphic(null);
-						} else {
-							setGraphic(new ImageView("/org/chaosfisch/youtubeuploader/resources/images/social/"
-									+ item.toLowerCase(Locale.getDefault()) + ".png"));
-							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-						}
-					}
-				};
-				return cell;
-			}
-		});
-
-		columnActions.setCellFactory(new Callback<TableColumn<Account, Account>, TableCell<Account, Account>>() {
-
-			@Override
-			public TableCell<Account, Account> call(final TableColumn<Account, Account> param) {
-				final TableCell<Account, Account> cell = new TableCell<Account, Account>() {
-
-					@Override
-					public void updateItem(final Account item, final boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setGraphic(null);
-							setContentDisplay(null);
-						} else {
-							final Button btnRemove = new Button("Remove Account");
-							btnRemove.setId("removeAccount");
-							btnRemove.setOnAction(new EventHandler<ActionEvent>() {
-
-								@Override
-								public void handle(final ActionEvent event) {
-									param.getTableView().getSelectionModel().select(getIndex());
-									if (item != null) {
-										accountDao.delete(item);
-									}
-								}
-
-							});
-							setGraphic(btnRemove);
-							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-						}
-					}
-				};
-				return cell;
-			}
-
-		});
-
-		accountType.setItems(FXCollections.observableArrayList(AccountsType.values()));
-		accountType.getSelectionModel().selectFirst();
-
-		final ObservableList<Account> list = FXCollections.observableArrayList(accountDao.findAll());
-		accountTable.setItems(list);
+		columnAccounttype.setCellFactory(new AccountTypeCellFactory());
+		columnActions.setCellFactory(new AccountActionsCellFactory());
 
 		accountTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
 		EventBusUtil.getInstance().register(this);
+
+		accountType.setItems(accountTypes);
+		accountTable.setItems(accountList);
+
+		accountTypes.addAll(AccountsType.values());
+		accountType.getSelectionModel().selectFirst();
+		accountList.addAll(accountDao.findAll());
 	}
 
 	@Subscribe
@@ -213,7 +161,6 @@ public class AccountController implements Initializable {
 	@Subscribe
 	public void onModelRemoved(final ModelPostRemovedEvent modelRemovedEvent) {
 		Platform.runLater(new Runnable() {
-
 			@Override
 			public void run() {
 				if (modelRemovedEvent.getModel() instanceof Account) {
@@ -228,5 +175,61 @@ public class AccountController implements Initializable {
 		accountType.getSelectionModel().selectFirst();
 		account.clear();
 		password.clear();
+	}
+
+	private final class AccountActionsCellFactory implements Callback<TableColumn<Account, Integer>, TableCell<Account, Integer>> {
+		@Override
+		public TableCell<Account, Integer> call(final TableColumn<Account, Integer> param) {
+			final TableCell<Account, Integer> cell = new TableCell<Account, Integer>() {
+
+				@Override
+				public void updateItem(final Integer item, final boolean empty) {
+					super.updateItem(item, empty);
+					if (empty) {
+						setGraphic(null);
+						setContentDisplay(null);
+					} else {
+						final Button btnRemove = new Button("Remove Account");
+						btnRemove.setId("removeAccount");
+						btnRemove.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(final ActionEvent event) {
+								param.getTableView().getSelectionModel().select(getIndex());
+								if (item != null) {
+									accountDao.deleteById(item);
+								}
+							}
+
+						});
+						setGraphic(btnRemove);
+						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+					}
+				}
+			};
+			return cell;
+		}
+	}
+
+	private final class AccountTypeCellFactory implements Callback<TableColumn<Account, String>, TableCell<Account, String>> {
+		@Override
+		public TableCell<Account, String> call(final TableColumn<Account, String> param) {
+			final TableCell<Account, String> cell = new TableCell<Account, String>() {
+
+				@Override
+				public void updateItem(final String item, final boolean empty) {
+					super.updateItem(item, empty);
+					if (empty) {
+						setText(null);
+						setGraphic(null);
+					} else {
+						setGraphic(new ImageView("/org/chaosfisch/youtubeuploader/resources/images/social/"
+								+ item.toLowerCase(Locale.getDefault()) + ".png"));
+						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+					}
+				}
+			};
+			return cell;
+		}
 	}
 }

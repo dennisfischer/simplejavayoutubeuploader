@@ -26,7 +26,9 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 		return create
 			.select()
 			.from(Tables.ACCOUNT)
-			.where(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID), Tables.UPLOAD.ID.eq(upload.getId()))
+			.join(Tables.UPLOAD)
+			.on(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
+			.where(Tables.UPLOAD.ID.eq(upload.getId()))
 			.fetchOneInto(Account.class);
 	}
 
@@ -53,6 +55,7 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	public long countAvailableStartingUploads() {
 		return create
 			.select()
+			.from(Tables.UPLOAD)
 			.where(
 				Tables.UPLOAD.ARCHIVED.eq(false).or(Tables.UPLOAD.ARCHIVED.isNull()),
 				Tables.UPLOAD.INPROGRESS.eq(false).or(Tables.UPLOAD.INPROGRESS.isNull()),

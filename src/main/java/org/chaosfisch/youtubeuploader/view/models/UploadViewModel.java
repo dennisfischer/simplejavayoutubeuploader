@@ -52,7 +52,6 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.TemplatePlaylist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.UploadPlaylist;
 import org.chaosfisch.youtubeuploader.models.AccountsType;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
@@ -191,7 +190,6 @@ public class UploadViewModel {
 		EventBusUtil.getInstance().register(this);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void init(final SingleSelectionModel<AtomCategory> categorySelectionModel, final SingleSelectionModel<File> fileSelectionModel,
 			final SingleSelectionModel<Account> AccountelectionModel, final SingleSelectionModel<String> commentSelectionModel,
 			final SingleSelectionModel<String> licenseSelectionModel, final SingleSelectionModel<String> videoresponseSelectionModel,
@@ -349,7 +347,7 @@ public class UploadViewModel {
 		thumbnailProperty.set("");
 		idProperty.setValue(-1);
 
-		claimProperty.set(template.getMonetizepartner().booleanValue());
+		claimProperty.set(template.getClaim().booleanValue());
 		overlayProperty.set(template.getOverlay().booleanValue());
 		trueViewProperty.set(template.getTrueview().booleanValue());
 		inStreamProperty.set(template.getInstream().booleanValue());
@@ -385,6 +383,15 @@ public class UploadViewModel {
 
 	public Upload toUpload() {
 		Upload upload = new Upload();
+
+		upload.setFacebook(false);
+		upload.setTwitter(false);
+		upload.setArchived(false);
+		upload.setFailed(false);
+		upload.setInprogress(false);
+		upload.setLocked(false);
+		upload.setPauseonfinish(false);
+
 		upload.setFile(selectedFileProperty.get().getSelectedItem().getAbsolutePath());
 		upload.setTitle(titleProperty.get());
 		upload.setCategory(selectedCategoryProperty.get().getSelectedItem().term);
@@ -458,20 +465,22 @@ public class UploadViewModel {
 		upload.setMonetizeseasonnb(numberSeasonProperty.get());
 		upload.setMonetizeepisodenb(numberEpisodeProperty.get());
 
-		if (upload.isValid()) {
-			fileProperty.remove(selectedFileProperty.get().getSelectedItem());
-			selectedFileProperty.get().selectNext();
-			idProperty.setValue(-1);
-
-			upload = uploadDao.insertReturning(upload);
-
-			for (final Playlist playlist : playlistDropListProperty.get()) {
-				final UploadPlaylist relation = new UploadPlaylist();
-				relation.setPlaylistId(playlist.getId());
-				relation.setUploadId(upload.getId());
-				uploadPlaylistDao.insert(relation);
-			}
-		}
+		upload = uploadDao.insertReturning(upload);
+		/*
+		 * TODO
+		 * if (upload.isValid()) {
+		 * fileProperty.remove(selectedFileProperty.get().getSelectedItem());
+		 * selectedFileProperty.get().selectNext();
+		 * idProperty.setValue(-1);
+		 * upload = uploadDao.insertReturning(upload);
+		 * for (final Playlist playlist : playlistDropListProperty.get()) {
+		 * final UploadPlaylist relation = new UploadPlaylist();
+		 * relation.setPlaylistId(playlist.getId());
+		 * relation.setUploadId(upload.getId());
+		 * uploadPlaylistDao.insert(relation);
+		 * }
+		 * }
+		 */
 
 		return upload;
 	}

@@ -6,23 +6,51 @@ import java.sql.SQLException;
 
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.jooq.Cursor;
+import org.jooq.Record;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.Executor;
 
 public class PlaylistTrigger extends org.h2.tools.TriggerAdapter {
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
-		final Executor create = new Executor(conn, SQLDialect.H2);
-		if (newRow == null) {
-			final PlaylistRecord result = (PlaylistRecord) create.fetchOne(oldRow, PlaylistRecord.class);
-			EventBusUtil.getInstance().post(new ModelPostRemovedEvent(result.into(Playlist.class)));
+		final Settings settings = new Settings();
+		settings.setExecuteLogging(false);
+		final Executor create = new Executor(conn, SQLDialect.H2, settings);
+		Integer firstId = null;
+		Integer lastId = null;
+		if (newRow != null) {
+			final Cursor<Record> result = create.fetchLazy(newRow);
+			while (result.hasNext()) {
+				final Playlist record = result.fetchOne().into(Playlist.class);
+				lastId = record.getId();
+				if (lastId == firstId) {
+					break;
+				}
+				if (firstId == null) {
+					firstId = record.getId();
+				}
+
+				EventBusUtil.getInstance().post(new ModelPostSavedEvent(record));
+			}
 		} else {
-			final PlaylistRecord result = (PlaylistRecord) create.fetchOne(newRow, PlaylistRecord.class);
-			EventBusUtil.getInstance().post(new ModelPostSavedEvent(result.into(Playlist.class)));
+			final Cursor<Record> result = create.fetchLazy(oldRow);
+			while (result.hasNext()) {
+				final Playlist record = result.fetchOne().into(Playlist.class);
+				lastId = record.getId();
+				if (lastId == firstId) {
+					break;
+				}
+				if (firstId == null) {
+					firstId = record.getId();
+				}
+
+				EventBusUtil.getInstance().post(new ModelPostRemovedEvent(record));
+			}
 		}
 	}
 }

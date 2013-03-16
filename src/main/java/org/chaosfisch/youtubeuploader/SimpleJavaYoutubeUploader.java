@@ -90,6 +90,6 @@ public class SimpleJavaYoutubeUploader {
 
 	public static void initDatabase() {
 		final Executor exec = injector.getInstance(Executor.class);
-		exec.update(Tables.UPLOAD).set(Tables.UPLOAD.INPROGRESS, true).execute();
+		exec.update(Tables.UPLOAD).set(Tables.UPLOAD.INPROGRESS, false).execute();
 	}
 }

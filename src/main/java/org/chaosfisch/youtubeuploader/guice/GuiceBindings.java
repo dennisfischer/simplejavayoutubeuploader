@@ -36,6 +36,7 @@ import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.spi.ThumbnailSe
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
 import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.Executor;
 
 import com.google.common.eventbus.EventBus;
@@ -78,7 +79,24 @@ public class GuiceBindings extends AbstractModule {
 			// ;INIT=RUNSCRIPT FROM '~/create.sql'\\;RUNSCRIPT FROM
 			// '~/populate.sql'"
 			final String url = "jdbc:h2:" + System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/" + dbName;
-			bind(Executor.class).toInstance(new Executor(DriverManager.getConnection(url, "username", ""), SQLDialect.H2));
+
+			final Settings settings = new Settings();
+			settings.setExecuteLogging(false);
+			final Executor create = new Executor(DriverManager.getConnection(url, "username", ""), SQLDialect.H2, settings);
+			bind(Executor.class).toInstance(create);
+			create
+				.execute("CREATE TRIGGER IF NOT EXISTS ACCOUNT_I AFTER INSERT ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_U AFTER UPDATE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_D AFTER DELETE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";"
+						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_I AFTER INSERT ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_U AFTER UPDATE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_D AFTER DELETE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";"
+						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_I AFTER INSERT ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_U AFTER UPDATE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_D AFTER DELETE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";"
+						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_I AFTER INSERT ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_U AFTER UPDATE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
+						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_D AFTER DELETE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";");
 		} catch (final Exception e) {
 			e.printStackTrace();
 			System.exit(1);
