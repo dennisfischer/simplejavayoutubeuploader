@@ -54,7 +54,8 @@ public class InputDialog extends Stage {
 
 		gridpane.add(submit, 1, data.length / 2 + 1);
 		GridPane.setHalignment(submit, HPos.RIGHT);
-		root.getChildren().add(gridpane);
+		root.getChildren()
+			.add(gridpane);
 		sizeToScene();
 		show();
 	}

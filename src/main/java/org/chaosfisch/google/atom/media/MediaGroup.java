@@ -18,21 +18,42 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("media:group")
 public class MediaGroup {
-	public @XStreamAlias("yt:aspectRatio") String									aspectRatio;
-	public @XStreamAlias("media:category") @XStreamImplicit List<MediaCategory>		category;
-	public @XStreamAlias("media:content") @XStreamImplicit List<MediaContent>		content;
-	public @XStreamAlias("media:credit") @XStreamImplicit List<MediaCredit>			credit;
-	public @XStreamAlias("media:description") String								description;
-	public @XStreamAlias("yt:duration") YoutubeDuration								duration;
-	public @XStreamAlias("media:keywords") String									keywords;
-	public @XStreamAlias("media:license") String									license;
-	public @XStreamAlias("media:player") MediaPlayer								player;
-	public @XStreamAlias("media:rating") MediaRating								rating;
-	public @XStreamAlias("media:restriction") MediaRestriction						restriction;
-	public @XStreamAlias("media:thumbnail") @XStreamImplicit List<MediaThumbnail>	thumbnails;
-	public @XStreamAlias("media:title") String										title;
-	public @XStreamAlias("yt:uploaded") String										uploaded;
-	public @XStreamAlias("yt:uploaderId") String									uploaderId;
-	public @XStreamAlias("yt:videoid") String										videoID;
-	public @XStreamAlias("yt:private") Object										ytPrivate;
+	public @XStreamAlias("yt:aspectRatio")
+	String					aspectRatio;
+	public @XStreamAlias("media:category")
+	@XStreamImplicit
+	List<MediaCategory>		category;
+	public @XStreamAlias("media:content")
+	@XStreamImplicit
+	List<MediaContent>		content;
+	public @XStreamAlias("media:credit")
+	@XStreamImplicit
+	List<MediaCredit>		credit;
+	public @XStreamAlias("media:description")
+	String					description;
+	public @XStreamAlias("yt:duration")
+	YoutubeDuration			duration;
+	public @XStreamAlias("media:keywords")
+	String					keywords;
+	public @XStreamAlias("media:license")
+	String					license;
+	public @XStreamAlias("media:player")
+	MediaPlayer				player;
+	public @XStreamAlias("media:rating")
+	MediaRating				rating;
+	public @XStreamAlias("media:restriction")
+	MediaRestriction		restriction;
+	public @XStreamAlias("media:thumbnail")
+	@XStreamImplicit
+	List<MediaThumbnail>	thumbnails;
+	public @XStreamAlias("media:title")
+	String					title;
+	public @XStreamAlias("yt:uploaded")
+	String					uploaded;
+	public @XStreamAlias("yt:uploaderId")
+	String					uploaderId;
+	public @XStreamAlias("yt:videoid")
+	String					videoID;
+	public @XStreamAlias("yt:private")
+	Object					ytPrivate;
 }

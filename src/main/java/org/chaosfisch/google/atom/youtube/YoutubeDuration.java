@@ -14,5 +14,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:duration")
 public class YoutubeDuration {
-	public @XStreamAsAttribute Integer	seconds;
+	public @XStreamAsAttribute
+	Integer	seconds;
 }

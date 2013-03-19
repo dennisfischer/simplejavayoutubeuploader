@@ -44,7 +44,8 @@ public class Server extends Thread {
 		while (!serverSocket.isClosed()) {
 			try {
 				cleanupClients();
-				connections.add(new Connection(serverSocket.accept(), protocol));
+				connections.add(new Connection(serverSocket.accept(),
+					protocol));
 				logger.info("Connected clients: " + connections.size());
 			} catch (final IOException e) {
 				if (!serverSocket.isClosed()) {

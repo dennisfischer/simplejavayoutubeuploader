@@ -24,7 +24,7 @@ import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class Uploader {
 	public SimpleIntegerProperty		maxUploads				= new SimpleIntegerProperty(1);
 
 	private volatile short				runningUploads			= 0;
-	private boolean						startTimeCheckerFlag	= true;
+	private final boolean				startTimeCheckerFlag	= true;
 
 	private final ExecutorService		executorService			= Executors.newFixedThreadPool(5);
 	private final Logger				logger					= LoggerFactory.getLogger(getClass());
@@ -61,7 +61,8 @@ public class Uploader {
 	private ListeningExecutorService	pool;
 
 	public Uploader() {
-		EventBusUtil.getInstance().register(this);
+		EventBusUtil.getInstance()
+			.register(this);
 		maxUploads.addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -85,6 +86,7 @@ public class Uploader {
 
 	public void exit() {
 		executorService.shutdownNow();
+		pool.shutdownNow();
 	}
 
 	public int getRunningUploads() {
@@ -102,7 +104,8 @@ public class Uploader {
 					try {
 						Thread.sleep(10000);
 					} catch (final InterruptedException e) {
-						Thread.currentThread().interrupt();
+						Thread.currentThread()
+							.interrupt();
 					}
 				}
 				return true;
@@ -111,7 +114,7 @@ public class Uploader {
 	}
 
 	private synchronized void sendUpload() {
-		if (inProgressProperty.get() && hasFreeUploadSpace()) {
+		if (!executorService.isShutdown() && inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = uploadDao.fetchNextUpload();
 			if (polled != null) {
 				if (uploadDao.fetchOneAccountByUpload(polled) == null) {
@@ -134,7 +137,8 @@ public class Uploader {
 	}
 
 	public void stopStarttimeChecker() {
-		startTimeCheckerFlag = false;
+		Thread.currentThread()
+			.interrupt();
 	}
 
 	private void uploadFinished(final Upload queue) {
@@ -185,7 +189,8 @@ public class Uploader {
 					try {
 						Thread.sleep(60000);
 					} catch (final InterruptedException e) {
-						Thread.currentThread().interrupt();
+						Thread.currentThread()
+							.interrupt();
 					}
 				}
 				return true;
@@ -202,7 +207,7 @@ public class Uploader {
 	}
 
 	@Subscribe
-	public void onUploadSaved(final ModelPostSavedEvent modelPostSavedEvent) {
+	public void onUploadSaved(final ModelAddedEvent modelPostSavedEvent) {
 		if (modelPostSavedEvent.getModel() instanceof Upload && !((Upload) modelPostSavedEvent.getModel()).getInprogress()) {
 			sendUpload();
 		}

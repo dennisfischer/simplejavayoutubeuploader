@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class UploadPlaylist extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadPlaylistRecord> {
 
-	private static final long serialVersionUID = 1408747767;
+	private static final long serialVersionUID = -1132647479;
 
 	/**
 	 * The singleton instance of <code>PUBLIC.UPLOAD_PLAYLIST</code>
@@ -84,7 +84,7 @@ public class UploadPlaylist extends org.jooq.impl.UpdatableTableImpl<org.chaosfi
 	 */
 	@Override
 	public java.util.List<org.jooq.ForeignKey<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadPlaylistRecord, ?>> getReferences() {
-		return java.util.Arrays.<org.jooq.ForeignKey<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadPlaylistRecord, ?>>asList(org.chaosfisch.youtubeuploader.db.generated.Keys.CONSTRAINT_65, org.chaosfisch.youtubeuploader.db.generated.Keys.CONSTRAINT_654);
+		return java.util.Arrays.<org.jooq.ForeignKey<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadPlaylistRecord, ?>>asList(org.chaosfisch.youtubeuploader.db.generated.Keys.CONSTRAINT_65);
 	}
 
 	/**

@@ -23,8 +23,10 @@ public class Client {
 	public Client(final String ip, final int port, final Protocol protocol) throws IOException {
 
 		try {
-			final Socket socket = new Socket(ip, port);
-			connection = new Connection(socket, protocol);
+			final Socket socket = new Socket(ip,
+				port);
+			connection = new Connection(socket,
+				protocol);
 		} catch (final IOException e) {
 			logger.warn("Connection couldn't be created", e);
 			throw e;

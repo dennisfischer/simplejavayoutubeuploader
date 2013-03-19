@@ -24,14 +24,14 @@ public class Sequences {
 	public static final org.jooq.Sequence<java.lang.Long> SYSTEM_SEQUENCE_2A5CCF61_A367_405F_8FAA_9B839A76258C = new org.jooq.impl.SequenceImpl<java.lang.Long>("SYSTEM_SEQUENCE_2A5CCF61_A367_405F_8FAA_9B839A76258C", org.chaosfisch.youtubeuploader.db.generated.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
 
 	/**
-	 * The sequence <code>PUBLIC.SYSTEM_SEQUENCE_6DCEAC25_F94A_4876_821B_E94C5BD2C7CD</code>
-	 */
-	public static final org.jooq.Sequence<java.lang.Long> SYSTEM_SEQUENCE_6DCEAC25_F94A_4876_821B_E94C5BD2C7CD = new org.jooq.impl.SequenceImpl<java.lang.Long>("SYSTEM_SEQUENCE_6DCEAC25_F94A_4876_821B_E94C5BD2C7CD", org.chaosfisch.youtubeuploader.db.generated.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
-
-	/**
 	 * The sequence <code>PUBLIC.SYSTEM_SEQUENCE_6E9E6C44_C2F3_401F_9CD7_A02558CA0298</code>
 	 */
 	public static final org.jooq.Sequence<java.lang.Long> SYSTEM_SEQUENCE_6E9E6C44_C2F3_401F_9CD7_A02558CA0298 = new org.jooq.impl.SequenceImpl<java.lang.Long>("SYSTEM_SEQUENCE_6E9E6C44_C2F3_401F_9CD7_A02558CA0298", org.chaosfisch.youtubeuploader.db.generated.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
+
+	/**
+	 * The sequence <code>PUBLIC.SYSTEM_SEQUENCE_8DCE5F2F_67FA_4C6F_AE0E_97307C80139B</code>
+	 */
+	public static final org.jooq.Sequence<java.lang.Long> SYSTEM_SEQUENCE_8DCE5F2F_67FA_4C6F_AE0E_97307C80139B = new org.jooq.impl.SequenceImpl<java.lang.Long>("SYSTEM_SEQUENCE_8DCE5F2F_67FA_4C6F_AE0E_97307C80139B", org.chaosfisch.youtubeuploader.db.generated.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
 
 	/**
 	 * The sequence <code>PUBLIC.SYSTEM_SEQUENCE_AF8B4195_456C_4905_8EC6_F236A3785C3B</code>

@@ -12,7 +12,7 @@ import org.chaosfisch.youtubeuploader.db.AbstractPojo;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Playlist extends AbstractPojo implements java.io.Serializable {
 
-	private static final long	serialVersionUID	= -311450230;
+	private static final long	serialVersionUID	= -1317279450;
 
 	private java.lang.Integer	id;
 	private java.lang.String	pkey;
@@ -24,6 +24,7 @@ public class Playlist extends AbstractPojo implements java.io.Serializable {
 	private java.lang.String	summary;
 	private java.lang.Integer	accountId;
 	private java.sql.Timestamp	modified;
+	private java.lang.Boolean	hidden;
 
 	public java.lang.Integer getId() {
 		return id;
@@ -103,5 +104,13 @@ public class Playlist extends AbstractPojo implements java.io.Serializable {
 
 	public void setModified(final java.sql.Timestamp modified) {
 		this.modified = modified;
+	}
+
+	public java.lang.Boolean getHidden() {
+		return hidden;
+	}
+
+	public void setHidden(final java.lang.Boolean hidden) {
+		this.hidden = hidden;
 	}
 }

@@ -13,5 +13,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("gml:Point")
 public class YoutubeGeoRssPoint {
-	public @XStreamAlias("gml:pos") String	pos;
+	public @XStreamAlias("gml:pos")
+	String	pos;
 }

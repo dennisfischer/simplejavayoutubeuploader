@@ -14,5 +14,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:episode")
 public class YoutubeEpisode {
-	@XStreamAsAttribute String	number;
+	@XStreamAsAttribute
+	String	number;
 }

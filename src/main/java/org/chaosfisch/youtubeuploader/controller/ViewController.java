@@ -38,8 +38,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.models.AccountsType;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
 
 import com.google.inject.Inject;
 
@@ -156,15 +155,21 @@ public class ViewController implements Initializable {
 		final CheckBox playlistPrivate = new CheckBox();
 		final TextArea summary = new TextArea();
 		final ChoiceBox<Account> accounts = new ChoiceBox<Account>();
-		accounts.setItems(FXCollections.observableList(accountDao.fetchByType(AccountsType.YOUTUBE.name())));
-		accounts.getSelectionModel().selectFirst();
+		accounts.setItems(FXCollections.observableList(accountDao.findAll()));
+		accounts.getSelectionModel()
+			.selectFirst();
 
 		final Object[] message = { I18nHelper.message("playlistDialog.playlistLabel"), title,
 				I18nHelper.message("playlistDialog.descriptionLabel"), summary, I18nHelper.message("playlistDialog.playlistPrivate"),
 				playlistPrivate, I18nHelper.message("playlistDialog.playlistAccount"), accounts };
-		final InputDialog myDialog = new InputDialog(I18nHelper.message("playlistDialog.addPlaylistLabel"), message);
+		final InputDialog myDialog = new InputDialog(I18nHelper.message("playlistDialog.addPlaylistLabel"),
+			message);
 
-		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate, summary, accounts, title, myDialog));
+		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate,
+			summary,
+			accounts,
+			title,
+			myDialog));
 	}
 
 	// Handler for MenuItem[fx:id="menuAddTemplate"] onAction
@@ -173,9 +178,11 @@ public class ViewController implements Initializable {
 		final TextField textfield = new TextField();
 		final Object[] message = { I18nHelper.message("templateDialog.templateLabel"), textfield };
 
-		final InputDialog myDialog = new InputDialog(I18nHelper.message("templateDialog.addTemplateLabel"), message);
+		final InputDialog myDialog = new InputDialog(I18nHelper.message("templateDialog.addTemplateLabel"),
+			message);
 
-		myDialog.setCallback(new TemplateAddDialogCallback(myDialog, textfield));
+		myDialog.setCallback(new TemplateAddDialogCallback(myDialog,
+			textfield));
 	}
 
 	// Handler for MenuItem[fx:id="menuConnectServer"] onAction
@@ -185,14 +192,18 @@ public class ViewController implements Initializable {
 		final Object[] message = { I18nHelper.message("remoteclientDialog.labelHost"), host,
 				I18nHelper.message("remotclientDialog.labelPort"), port };
 
-		final InputDialog myDialog = new InputDialog(I18nHelper.message("remoteclientDialog.button"), message);
-		myDialog.setCallback(new ServerConnectDialogCallback(myDialog, port, host));
+		final InputDialog myDialog = new InputDialog(I18nHelper.message("remoteclientDialog.button"),
+			message);
+		myDialog.setCallback(new ServerConnectDialogCallback(myDialog,
+			port,
+			host));
 
 	}
 
 	// Handler for MenuItem[fx:id="menuClose"] onAction
 	public void menuClose(final ActionEvent event) {
-		((Stage) content_pane.getScene().getWindow()).hide();
+		((Stage) content_pane.getScene()
+			.getWindow()).hide();
 	}
 
 	// Handler for MenuItem[fx:id="menuOpenFile"] onAction
@@ -213,7 +224,9 @@ public class ViewController implements Initializable {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
+			if (!host.getText()
+				.isEmpty() && !port.getText()
+				.isEmpty()) {
 				// try {
 				// if (!remoteClient.connect(host.getText(),
 				// port.getText())) {
@@ -239,7 +252,8 @@ public class ViewController implements Initializable {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!textfield.getText().isEmpty()) {
+			if (!textfield.getText()
+				.isEmpty()) {
 
 				final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
 				template.setName(textfield.getText());
@@ -267,12 +281,15 @@ public class ViewController implements Initializable {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
+			if (!title.getText()
+				.isEmpty() && !accounts.getSelectionModel()
+				.isEmpty()) {
 				final Playlist playlist = new Playlist();
 				playlist.setTitle(title.getText());
 				playlist.setSummary(summary.getText());
 				playlist.setPrivate(playlistPrivate.isSelected());
-				playlist.setAccountId(accounts.getValue().getId());
+				playlist.setAccountId(accounts.getValue()
+					.getId());
 				try {
 					playlistService.addYoutubePlaylist(playlist);
 				} catch (final SystemException e) {

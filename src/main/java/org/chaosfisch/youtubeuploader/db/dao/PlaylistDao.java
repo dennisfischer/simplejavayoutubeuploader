@@ -24,8 +24,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public Account fetchOneAccountByPlaylist(final Playlist playlist) {
-		return create
-			.select()
+		return create.select()
 			.from(Tables.ACCOUNT)
 			.join(Tables.PLAYLIST)
 			.on(Tables.PLAYLIST.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
@@ -34,8 +33,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public List<Playlist> fetchByTemplate(final Template template) {
-		return create
-			.select()
+		return create.select()
 			.from(Tables.PLAYLIST)
 			.join(Tables.TEMPLATE_PLAYLIST)
 			.on(Tables.TEMPLATE_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
@@ -44,8 +42,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public List<Playlist> fetchByUpload(final Upload upload) {
-		return create
-			.select()
+		return create.select()
 			.from(Tables.PLAYLIST)
 			.join(Tables.UPLOAD_PLAYLIST)
 			.on(Tables.UPLOAD_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
@@ -57,8 +54,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 		final Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.MINUTE, -5);
-		create
-			.delete(Tables.PLAYLIST)
+		create.delete(Tables.PLAYLIST)
 			.where(Tables.PLAYLIST.MODIFIED.le(new Timestamp(cal.getTimeInMillis())), Tables.PLAYLIST.ACCOUNT_ID.eq(account.getId()))
 			.execute();
 	}

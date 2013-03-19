@@ -6,8 +6,9 @@ import java.sql.SQLException;
 
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.models.events.ModelPostRemovedEvent;
-import org.chaosfisch.youtubeuploader.models.events.ModelPostSavedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelAddedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelRemovedEvent;
+import org.chaosfisch.youtubeuploader.models.events.ModelUpdatedEvent;
 import org.jooq.Cursor;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
@@ -20,13 +21,16 @@ public class AccountTrigger extends org.h2.tools.TriggerAdapter {
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
 		final Settings settings = new Settings();
 		settings.setExecuteLogging(false);
-		final Executor create = new Executor(conn, SQLDialect.H2, settings);
+		final Executor create = new Executor(conn,
+			SQLDialect.H2,
+			settings);
 		Integer firstId = null;
 		Integer lastId = null;
 		if (newRow != null) {
 			final Cursor<Record> result = create.fetchLazy(newRow);
 			while (result.hasNext()) {
-				final Account record = result.fetchOne().into(Account.class);
+				final Account record = result.fetchOne()
+					.into(Account.class);
 				lastId = record.getId();
 				if (lastId == firstId) {
 					break;
@@ -35,12 +39,19 @@ public class AccountTrigger extends org.h2.tools.TriggerAdapter {
 					firstId = record.getId();
 				}
 
-				EventBusUtil.getInstance().post(new ModelPostSavedEvent(record));
+				if (oldRow == null) {
+					EventBusUtil.getInstance()
+						.post(new ModelAddedEvent(record));
+				} else {
+					EventBusUtil.getInstance()
+						.post(new ModelUpdatedEvent(record));
+				}
 			}
 		} else {
 			final Cursor<Record> result = create.fetchLazy(oldRow);
 			while (result.hasNext()) {
-				final Account record = result.fetchOne().into(Account.class);
+				final Account record = result.fetchOne()
+					.into(Account.class);
 				lastId = record.getId();
 				if (lastId == firstId) {
 					break;
@@ -49,7 +60,8 @@ public class AccountTrigger extends org.h2.tools.TriggerAdapter {
 					firstId = record.getId();
 				}
 
-				EventBusUtil.getInstance().post(new ModelPostRemovedEvent(record));
+				EventBusUtil.getInstance()
+					.post(new ModelRemovedEvent(record));
 			}
 		}
 	}

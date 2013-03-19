@@ -1,75 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  Copyright (c) 2013 Dennis Fischer.
-  All rights reserved. This program and the accompanying materials
-  are made available under the terms of the GNU Public License v3.0+
-  which accompanies this distribution, and is available at
-  http://www.gnu.org/licenses/gpl.html
-  
-  Contributors: Dennis Fischer
--->
 <?import java.lang.*?>
 <?import java.util.*?>
-<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-<?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
-<?scenebuilder-stylesheet ../resources/style.css?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.QueueController">
+<VBox id="VBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml">
   <children>
-    <GridPane id="grid" fx:id="queueActionsGridpane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <children>
-        <Button fx:id="startQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#startQueue" text="%button.start" GridPane.columnIndex="0" GridPane.rowIndex="1">
-          <GridPane.margin>
-            <Insets fx:id="x1" />
-          </GridPane.margin>
-        </Button>
-        <Button fx:id="stopQueue" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopQueue" text="%button.stop" GridPane.columnIndex="1" GridPane.margin="$x1" GridPane.rowIndex="1" />
-        <ChoiceBox fx:id="actionOnFinish" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.margin="$x1" GridPane.rowIndex="1">
-          <items>
-            <FXCollections fx:factory="observableArrayList">
-              <String fx:value="Item 1" />
-              <String fx:value="Item 2" />
-              <String fx:value="Item 3" />
-            </FXCollections>
-          </items>
-        </ChoiceBox>
-        <Label text="%label.actionOnFinish" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.margin="$x1" GridPane.rowIndex="1" />
-        <TableView fx:id="queueTableview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0">
-          <columns>
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.id" fx:id="columnId" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.title" fx:id="columnTitle" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.category" fx:id="columnCategory" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.starttime" fx:id="columnStarttime" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.account" fx:id="columnAccount" />
-            <TableColumn editable="false" prefWidth="75.0" text="%queuetable.progress" fx:id="columnProgress" />
-            <TableColumn editable="false" prefWidth="75.0" resizable="true" text="%queuetable.actions" fx:id="columnActions" />
-          </columns>
-        </TableView>
-      </children>
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
-        <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" vgrow="SOMETIMES" />
-      </rowConstraints>
-    </GridPane>
+    <fx:include source="QueueOverview.fxml" VBox.vgrow="ALWAYS" />
+    <fx:include source="QueueCommand.fxml" VBox.vgrow="NEVER" />
   </children>
   <padding>
-    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" fx:id="x2" />
+    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
   </padding>
-</fx:root>
+</VBox>

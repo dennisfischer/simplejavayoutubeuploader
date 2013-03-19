@@ -13,24 +13,16 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Locale;
 
-import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
-import org.jooq.impl.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.sun.javafx.PlatformUtil;
 
 public class SimpleJavaYoutubeUploader {
 
 	private static boolean	server	= false;
 	private static Logger	logger	= LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
-	/**
-	 * The application DI injector
-	 */
-	static Injector			injector;
 
 	public static void main(String[] args) {
 		args = new String[] { "-test" };
@@ -42,14 +34,13 @@ public class SimpleJavaYoutubeUploader {
 		initLocale();
 		initSavedir();
 		initUpdater();
-		injector = Guice.createInjector(new GuiceBindings("youtubeuploader" + (server ? "-server" : "")));
 
 		if (!server) {
-			System.out.println("CLIENT");
-			GuiUploader.initialize(args, injector);
+			System.out.print("CLIENT");
+			GuiUploader.initialize(args, new GuiceBindings("youtubeuploader" + (server ? "-server" : "")));
 		} else {
-			System.out.println("SERVER");
-			ConsoleUploader.initialize(args, injector);
+			System.out.print("SERVER");
+			ConsoleUploader.initialize(args, new GuiceBindings("youtubeuploader" + (server ? "-server" : "")));
 		}
 	}
 
@@ -68,7 +59,8 @@ public class SimpleJavaYoutubeUploader {
 
 	private static void initLocale() {
 		final Locale[] availableLocales = { Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH };
-		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
+		if (!Arrays.asList(availableLocales)
+			.contains(Locale.getDefault())) {
 			Locale.setDefault(Locale.ENGLISH);
 		}
 	}
@@ -86,10 +78,5 @@ public class SimpleJavaYoutubeUploader {
 				logger.error(s);
 			}
 		});
-	}
-
-	public static void initDatabase() {
-		final Executor exec = injector.getInstance(Executor.class);
-		exec.update(Tables.UPLOAD).set(Tables.UPLOAD.INPROGRESS, false).execute();
 	}
 }

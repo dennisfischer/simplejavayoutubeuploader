@@ -109,4 +109,11 @@ public class PlaylistDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeupl
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist> fetchByModified(java.sql.Timestamp... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST.MODIFIED, values);
 	}
+
+	/**
+	 * Fetch records that have <code>HIDDEN IN (values)</code>
+	 */
+	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist> fetchByHidden(java.lang.Boolean... values) {
+		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST.HIDDEN, values);
+	}
 }

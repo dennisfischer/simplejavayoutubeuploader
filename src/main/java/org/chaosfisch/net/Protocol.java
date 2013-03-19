@@ -40,7 +40,8 @@ public class Protocol {
 		final String event = msg.getEvent();
 		final String handler = events.get(event);
 		try {
-			final Method m = protocolHandler.getClass().getMethod(handler, new Class[] { Msg.class });
+			final Method m = protocolHandler.getClass()
+				.getMethod(handler, new Class[] { Msg.class });
 			m.invoke(protocolHandler, new Object[] { msg });
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			logger.warn("Method wrongly invoked", e);

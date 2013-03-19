@@ -19,8 +19,11 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 @XStreamAlias("yt:state")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "state" })
 public class YoutubeState {
-	public @XStreamAsAttribute URL		helpUrl;
-	public @XStreamAsAttribute String	name;
-	public @XStreamAsAttribute String	reasonCode;
-	public String						state;
+	public @XStreamAsAttribute
+	URL				helpUrl;
+	public @XStreamAsAttribute
+	String			name;
+	public @XStreamAsAttribute
+	String			reasonCode;
+	public String	state;
 }

@@ -16,5 +16,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:player")
 public class MediaPlayer {
-	public @XStreamAsAttribute URL	url;
+	public @XStreamAsAttribute
+	URL	url;
 }

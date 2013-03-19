@@ -46,7 +46,8 @@ public class ConsoleController {
 	private final Object								object			= new Object();
 
 	public ConsoleController() {
-		EventBusUtil.getInstance().register(this);
+		EventBusUtil.getInstance()
+			.register(this);
 	}
 
 	public void setServer(final Server server) {
@@ -68,7 +69,8 @@ public class ConsoleController {
 						try {
 							wait();
 						} catch (final InterruptedException e) {
-							Thread.currentThread().interrupt();
+							Thread.currentThread()
+								.interrupt();
 						}
 					}
 				}

@@ -34,7 +34,8 @@ public class Computer {
 		}
 
 		try {
-			Runtime.getRuntime().exec(command);
+			Runtime.getRuntime()
+				.exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -55,7 +56,8 @@ public class Computer {
 		}
 
 		try {
-			Runtime.getRuntime().exec(command);
+			Runtime.getRuntime()
+				.exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}

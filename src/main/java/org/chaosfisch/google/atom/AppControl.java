@@ -15,6 +15,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("app:control")
 public class AppControl {
-	public @XStreamAlias("app:draft") String		draft;
-	public @XStreamAlias("yt:state") YoutubeState	state;
+	public @XStreamAlias("app:draft")
+	String			draft;
+	public @XStreamAlias("yt:state")
+	YoutubeState	state;
 }

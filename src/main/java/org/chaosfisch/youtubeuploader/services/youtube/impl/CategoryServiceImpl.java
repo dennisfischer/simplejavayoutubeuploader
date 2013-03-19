@@ -24,7 +24,7 @@ import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.ApplicationData;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
+import org.chaosfisch.youtubeuploader.services.youtube.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +46,8 @@ public class CategoryServiceImpl implements CategoryService {
 	/**
 	 * The default category url
 	 */
-	private final String				CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl="
-																+ Locale.getDefault().getLanguage();
+	private final String				CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl=" + Locale.getDefault()
+															.getLanguage();
 
 	@Override
 	public ListenableFuture<List<AtomCategory>> load() {
@@ -68,13 +68,14 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 
 		logger.debug("Sending http request");
-		try (final Response response = new Request.Builder(CATEGORY_URL).get().build().execute();) {
+		try (final Response response = new Request.Builder(CATEGORY_URL).get()
+			.build()
+			.execute();) {
 			if (response.getStatusCode() != 200) {
 				throw new SystemException(CategoryCode.UNEXPECTED_RESPONSE_CODE);
 			}
 			logger.debug("Received 200 response");
-			final AppCategories appCategories = XStreamHelper.parseFeed(
-				EntityUtils.toString(response.getEntity(), Charsets.UTF_8),
+			final AppCategories appCategories = XStreamHelper.parseFeed(EntityUtils.toString(response.getEntity(), Charsets.UTF_8),
 				AppCategories.class);
 
 			if (appCategories.categories == null || appCategories.categories.isEmpty()) {

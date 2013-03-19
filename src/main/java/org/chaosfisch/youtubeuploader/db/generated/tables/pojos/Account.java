@@ -12,12 +12,11 @@ import org.chaosfisch.youtubeuploader.db.AbstractPojo;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Account extends AbstractPojo implements java.io.Serializable {
 
-	private static final long	serialVersionUID	= -1011939423;
+	private static final long	serialVersionUID	= -716274334;
 
 	private java.lang.Integer	id;
 	private java.lang.String	name;
 	private java.lang.String	password;
-	private java.lang.String	type;
 
 	public java.lang.Integer getId() {
 		return id;
@@ -41,13 +40,5 @@ public class Account extends AbstractPojo implements java.io.Serializable {
 
 	public void setPassword(final java.lang.String password) {
 		this.password = password;
-	}
-
-	public java.lang.String getType() {
-		return type;
-	}
-
-	public void setType(final java.lang.String type) {
-		this.type = type;
 	}
 }

@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Account extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.AccountRecord> {
 
-	private static final long serialVersionUID = -1624627190;
+	private static final long serialVersionUID = 1683402227;
 
 	/**
 	 * The singleton instance of <code>PUBLIC.ACCOUNT</code>
@@ -40,11 +40,6 @@ public class Account extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.you
 	 * The column <code>PUBLIC.ACCOUNT.PASSWORD</code>. 
 	 */
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.AccountRecord, java.lang.String> PASSWORD = createField("PASSWORD", org.jooq.impl.SQLDataType.VARCHAR.length(255), this);
-
-	/**
-	 * The column <code>PUBLIC.ACCOUNT.TYPE</code>. 
-	 */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.AccountRecord, java.lang.String> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.VARCHAR.length(255), this);
 
 	/**
 	 * Create a <code>PUBLIC.ACCOUNT</code> table reference

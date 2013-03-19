@@ -59,7 +59,8 @@ public class Connection {
 	public void sendMsg(final String event, final Object body) {
 		if (!closed) {
 			try {
-				output.writeObject(new Msg(event, body));
+				output.writeObject(new Msg(event,
+					body));
 				output.flush();
 			} catch (final IOException e) {
 				logger.warn("Message IOException", e);
@@ -73,7 +74,8 @@ public class Connection {
 			public void run() {
 				readMessages();
 			}
-		}, "Connection-Readthread");
+		},
+			"Connection-Readthread");
 		readThread.start();
 	}
 

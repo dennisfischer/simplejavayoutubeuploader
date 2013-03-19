@@ -21,20 +21,20 @@ import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
+import org.chaosfisch.youtubeuploader.services.youtube.CategoryService;
+import org.chaosfisch.youtubeuploader.services.youtube.EnddirService;
+import org.chaosfisch.youtubeuploader.services.youtube.MetadataService;
+import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.youtube.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.youtube.ThumbnailService;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.CategoryServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.EnddirServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.PlaylistServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeableManagerImpl;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.CategoryService;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.EnddirService;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.MetadataService;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
-import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.impl.ThumbnailServiceImpl;
-import org.chaosfisch.youtubeuploader.services.youtube.thumbnail.spi.ThumbnailService;
+import org.chaosfisch.youtubeuploader.services.youtube.impl.ThumbnailServiceImpl;
 import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.view.models.UploadViewModel;
+import org.chaosfisch.youtubeuploader.vo.UploadViewModel;
 import org.jooq.SQLDialect;
 import org.jooq.conf.Settings;
 import org.jooq.impl.Executor;
@@ -55,26 +55,22 @@ public class GuiceBindings extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(CategoryService.class).to(CategoryServiceImpl.class).in(Singleton.class);
-		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
-		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
-		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
-		bind(ThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
-		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
-		bind(FileChooser.class).in(Singleton.class);
-		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
+		mapCommands();
+		mapServices();
+		mapUtil();
+
 		bind(Uploader.class).in(Singleton.class);
-		bind(GoogleAuthUtil.class).in(Singleton.class);
-		bind(Throttle.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
 		bind(UploadViewModel.class).in(Singleton.class);
-		bind(EventBus.class).in(Singleton.class);
 
-		bind(ListeningExecutorService.class).annotatedWith(Names.named(ApplicationData.SERVICE_EXECUTOR)).toInstance(
-			MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
+		bind(ListeningExecutorService.class).annotatedWith(Names.named(ApplicationData.SERVICE_EXECUTOR))
+			.toInstance(MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
 
-		requestStaticInjection(EventBusUtil.class);
+		mapDatabase();
 
+	}
+
+	private void mapDatabase() {
 		try {
 			// ;INIT=RUNSCRIPT FROM '~/create.sql'\\;RUNSCRIPT FROM
 			// '~/populate.sql'"
@@ -82,24 +78,54 @@ public class GuiceBindings extends AbstractModule {
 
 			final Settings settings = new Settings();
 			settings.setExecuteLogging(false);
-			final Executor create = new Executor(DriverManager.getConnection(url, "username", ""), SQLDialect.H2, settings);
+			final Executor create = new Executor(DriverManager.getConnection(url, "username", ""),
+				SQLDialect.H2,
+				settings);
 			bind(Executor.class).toInstance(create);
-			create
-				.execute("CREATE TRIGGER IF NOT EXISTS ACCOUNT_I AFTER INSERT ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_U AFTER UPDATE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_D AFTER DELETE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";"
-						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_I AFTER INSERT ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_U AFTER UPDATE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_D AFTER DELETE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";"
-						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_I AFTER INSERT ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_U AFTER UPDATE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_D AFTER DELETE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";"
-						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_I AFTER INSERT ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_U AFTER UPDATE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
-						+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_D AFTER DELETE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";");
+			create.execute("CREATE TRIGGER IF NOT EXISTS ACCOUNT_I AFTER INSERT ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_U AFTER UPDATE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS ACCOUNT_D AFTER DELETE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";"
+					+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_I AFTER INSERT ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_U AFTER UPDATE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS PLAYLIST_D AFTER DELETE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";"
+					+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_I AFTER INSERT ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_U AFTER UPDATE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS TEMPLATE_D AFTER DELETE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";"
+					+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_I AFTER INSERT ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_U AFTER UPDATE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n"
+					+ "CREATE TRIGGER IF NOT EXISTS UPLOAD_D AFTER DELETE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";");
 		} catch (final Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
+
+	private void mapUtil() {
+		bind(FileChooser.class).in(Singleton.class);
+		bind(RequestSigner.class).to(GDataRequestSigner.class)
+			.in(Singleton.class);
+		bind(GoogleAuthUtil.class).in(Singleton.class);
+		bind(Throttle.class).in(Singleton.class);
+		bind(EventBus.class).in(Singleton.class);
+		requestStaticInjection(EventBusUtil.class);
+	}
+
+	private void mapServices() {
+		bind(CategoryService.class).to(CategoryServiceImpl.class)
+			.in(Singleton.class);
+		bind(PlaylistService.class).to(PlaylistServiceImpl.class)
+			.in(Singleton.class);
+		bind(MetadataService.class).to(MetadataServiceImpl.class)
+			.in(Singleton.class);
+		bind(EnddirService.class).to(EnddirServiceImpl.class)
+			.in(Singleton.class);
+		bind(ThumbnailService.class).to(ThumbnailServiceImpl.class)
+			.in(Singleton.class);
+		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
+	}
+
+	private void mapCommands() {
+		bind(ICommandProvider.class).to(CommandProvider.class);
+	}
+
 }

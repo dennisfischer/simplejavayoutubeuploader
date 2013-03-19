@@ -43,7 +43,8 @@ public class RequestUtil {
 					e.printStackTrace();
 				}
 				if (!isRedirect) {
-					final int responseCode = response.getStatusLine().getStatusCode();
+					final int responseCode = response.getStatusLine()
+						.getStatusCode();
 					if (responseCode == 301 || responseCode == 302) {
 						return true;
 					}
@@ -58,7 +59,8 @@ public class RequestUtil {
 				final URI lastRedirectedUri = super.getLocationURI(request, response, context);
 				final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
 				try {
-					logger.info("Redirecting to: {}", lastRedirectedUri.toURL().toExternalForm());
+					logger.info("Redirecting to: {}", lastRedirectedUri.toURL()
+						.toExternalForm());
 				} catch (final MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -84,7 +86,8 @@ public class RequestUtil {
 	 */
 	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && (numRead = is.read(buf)) >= 0) {
+		while (!Thread.currentThread()
+			.isInterrupted() && (numRead = is.read(buf)) >= 0) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
@@ -107,7 +110,8 @@ public class RequestUtil {
 	 */
 	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && (numRead = is.read(buf, off, len)) >= 0) {
+		while (!Thread.currentThread()
+			.isInterrupted() && (numRead = is.read(buf, off, len)) >= 0) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();

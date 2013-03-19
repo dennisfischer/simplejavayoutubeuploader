@@ -62,7 +62,11 @@
                 </Tab>
                 <Tab closable="false" text="%tab.account">
                   <content>
-                    <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                    <fx:include source="Accounts.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+                      <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                      </padding>
+                    </fx:include>
                   </content>
                 </Tab>
                 <Tab closable="false" disable="false" text="%tab.settings">

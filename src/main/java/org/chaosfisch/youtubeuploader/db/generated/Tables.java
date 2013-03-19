@@ -19,11 +19,6 @@ public class Tables {
 	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Account ACCOUNT = org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT;
 
 	/**
-	 * The table PUBLIC.PLAYLIST
-	 */
-	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Playlist PLAYLIST = org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST;
-
-	/**
 	 * The table PUBLIC.TEMPLATE
 	 */
 	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Template TEMPLATE = org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE;
@@ -42,4 +37,9 @@ public class Tables {
 	 * The table PUBLIC.UPLOAD_PLAYLIST
 	 */
 	public static final org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist UPLOAD_PLAYLIST = org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST;
+
+	/**
+	 * The table PUBLIC.PLAYLIST
+	 */
+	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Playlist PLAYLIST = org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST;
 }

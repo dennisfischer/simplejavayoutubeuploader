@@ -29,7 +29,7 @@ import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +64,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		submitFeed.mediaGroup = null;
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
-		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
-			.post(new StringEntity(atomData, Charsets.UTF_8))
+		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(
+			new StringEntity(atomData,
+				Charsets.UTF_8))
 			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
@@ -93,8 +94,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		logger.debug("Playlist atomdata: {}", atomData);
 
-		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED)
-			.post(new StringEntity(atomData, Charsets.UTF_8))
+		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData,
+			Charsets.UTF_8))
 			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
@@ -116,8 +117,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final Map<Account, List<Playlist>> data = new HashMap<>();
 
 		for (final Account account : accounts) {
-			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
-				.get()
+			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
 				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
 				.build();
 			try (final Response response = request.execute();) {
@@ -169,6 +169,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		playlist.setSummary(entry.playlistSummary);
 		playlist.setThumbnail(thumbnail);
 		playlist.setAccountId(account.getId());
+		playlist.setHidden(false);
 
 		playlistDao.insert(playlist);
 		return playlist;

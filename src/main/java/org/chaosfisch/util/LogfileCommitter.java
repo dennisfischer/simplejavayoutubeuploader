@@ -48,11 +48,13 @@ public class LogfileCommitter {
 		logger.info("UUID:" + uuid);
 
 		final List<BasicNameValuePair> logfileParams = new ArrayList<BasicNameValuePair>();
-		logfileParams.add(new BasicNameValuePair("uuid", uuid));
-		logfileParams.add(new BasicNameValuePair("data", html));
+		logfileParams.add(new BasicNameValuePair("uuid",
+			uuid));
+		logfileParams.add(new BasicNameValuePair("data",
+			html));
 
-		final Request request = new Request.Builder(COMMIT_URL)
-			.post(new UrlEncodedFormEntity(logfileParams, Charsets.UTF_8))
+		final Request request = new Request.Builder(COMMIT_URL).post(new UrlEncodedFormEntity(logfileParams,
+			Charsets.UTF_8))
 			.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 			.build();
 		// Write the atomData to my webpage
@@ -78,7 +80,8 @@ public class LogfileCommitter {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 		String uuid = prefs.get(SETTING_UUID, null);
 		if (uuid == null) {
-			uuid = UUID.randomUUID().toString();
+			uuid = UUID.randomUUID()
+				.toString();
 			prefs.put(SETTING_UUID, uuid);
 		}
 		return uuid;

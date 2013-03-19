@@ -20,19 +20,28 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("feed")
 public class Feed {
-	public YoutubeAuthor											author;
-	public String													category;
-	public String													generator;
-	public String													id;
-	public @XStreamAlias("openSearch:itemsPerPage") Integer			itemsPerPage;
-	public @XStreamAlias("link") @XStreamImplicit List<Feedlink>	links;
-	public URL														logo;
-	public @XStreamAlias("media:group") MediaGroup					mediaGroup;
-	public @XStreamAlias("yt:playlistId") String					playlistId;
-	public @XStreamAlias("openSearch:startIndex") Integer			startIndex;
-	public String													subtitle;
-	public String													title;
-	public @XStreamAlias("openSearch:totalResults") Integer			totalResults;
-	public String													updated;
-	public @XStreamAlias("entry") @XStreamImplicit List<VideoEntry>	videoEntries;
+	public YoutubeAuthor	author;
+	public String			category;
+	public String			generator;
+	public String			id;
+	public @XStreamAlias("openSearch:itemsPerPage")
+	Integer					itemsPerPage;
+	public @XStreamAlias("link")
+	@XStreamImplicit
+	List<Feedlink>			links;
+	public URL				logo;
+	public @XStreamAlias("media:group")
+	MediaGroup				mediaGroup;
+	public @XStreamAlias("yt:playlistId")
+	String					playlistId;
+	public @XStreamAlias("openSearch:startIndex")
+	Integer					startIndex;
+	public String			subtitle;
+	public String			title;
+	public @XStreamAlias("openSearch:totalResults")
+	Integer					totalResults;
+	public String			updated;
+	public @XStreamAlias("entry")
+	@XStreamImplicit
+	List<VideoEntry>		videoEntries;
 }

@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Playlist extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord> {
 
-	private static final long serialVersionUID = -707370462;
+	private static final long serialVersionUID = -1106746516;
 
 	/**
 	 * The singleton instance of <code>PUBLIC.PLAYLIST</code>
@@ -75,6 +75,11 @@ public class Playlist extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.yo
 	 * The column <code>PUBLIC.PLAYLIST.MODIFIED</code>. 
 	 */
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord, java.sql.Timestamp> MODIFIED = createField("MODIFIED", org.jooq.impl.SQLDataType.TIMESTAMP, this);
+
+	/**
+	 * The column <code>PUBLIC.PLAYLIST.HIDDEN</code>. 
+	 */
+	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord, java.lang.Boolean> HIDDEN = createField("HIDDEN", org.jooq.impl.SQLDataType.BOOLEAN, this);
 
 	/**
 	 * Create a <code>PUBLIC.PLAYLIST</code> table reference

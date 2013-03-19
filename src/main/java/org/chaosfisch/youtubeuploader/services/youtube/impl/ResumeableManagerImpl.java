@@ -22,7 +22,7 @@ import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.spi.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.youtube.ResumeableManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +55,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	}
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
-		final Request request = new Request.Builder(upload.getUploadurl())
-			.put(null)
+		final Request request = new Request.Builder(upload.getUploadurl()).put(null)
 			.headers(ImmutableMap.of("Content-Range", "bytes */*"))
 			.sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)))
 			.build();
@@ -71,13 +70,15 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 			final long nextByteToUpload;
 
-			final Header range = response.getRaw().getFirstHeader("Range");
+			final Header range = response.getRaw()
+				.getFirstHeader("Range");
 			if (range == null) {
 				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
 			} else {
 				logger.info("Range header is: {}", range.getValue());
-				final String[] parts = range.getValue().split("-");
+				final String[] parts = range.getValue()
+					.split("-");
 				if (parts.length > 1) {
 					nextByteToUpload = Long.parseLong(parts[1]) + 1;
 				} else {
@@ -85,8 +86,10 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			if (response.getRaw().getFirstHeader("Location") != null) {
-				final Header location = response.getRaw().getFirstHeader("Location");
+			if (response.getRaw()
+				.getFirstHeader("Location") != null) {
+				final Header location = response.getRaw()
+					.getFirstHeader("Location");
 				upload.setUploadurl(location.getValue());
 				uploadDao.update(upload);
 			}
@@ -137,7 +140,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
 		} catch (final InterruptedException e) { // $codepro.audit.disable
 													// logExceptions
-			Thread.currentThread().interrupt();
+			Thread.currentThread()
+				.interrupt();
 		}
 	}
 

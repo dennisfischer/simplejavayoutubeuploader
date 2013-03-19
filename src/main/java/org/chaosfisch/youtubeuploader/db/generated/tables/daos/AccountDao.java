@@ -60,11 +60,4 @@ public class AccountDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuplo
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account> fetchByPassword(java.lang.String... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT.PASSWORD, values);
 	}
-
-	/**
-	 * Fetch records that have <code>TYPE IN (values)</code>
-	 */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account> fetchByType(java.lang.String... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT.TYPE, values);
-	}
 }

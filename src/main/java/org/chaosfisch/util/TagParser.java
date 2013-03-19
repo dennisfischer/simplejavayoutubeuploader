@@ -80,7 +80,8 @@ public class TagParser {
 				break;
 			}
 		}
-		return TagParser.removeInvalid(parsedOutput.toString().trim());
+		return TagParser.removeInvalid(parsedOutput.toString()
+			.trim());
 	}
 
 	/**

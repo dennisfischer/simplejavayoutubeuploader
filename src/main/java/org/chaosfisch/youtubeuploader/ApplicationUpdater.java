@@ -20,8 +20,12 @@ public class ApplicationUpdater implements UpdatedApplication {
 
 	public ApplicationUpdater() {
 		try {
-			final Updater updater = new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR,
-					ApplicationData.RELEASE, ApplicationData.VERSION, this);
+			final Updater updater = new Updater(ApplicationData.BASEURL,
+				getApplicationDirectory(),
+				ApplicationData.DATA_DIR,
+				ApplicationData.RELEASE,
+				ApplicationData.VERSION,
+				this);
 			updater.actionDisplay();
 		} catch (final UpdaterException | URISyntaxException ex) {
 			ex.printStackTrace();
@@ -30,11 +34,15 @@ public class ApplicationUpdater implements UpdatedApplication {
 
 	private String getApplicationDirectory() throws URISyntaxException {
 
-		final File file = new File(ApplicationUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+		final File file = new File(ApplicationUpdater.class.getProtectionDomain()
+			.getCodeSource()
+			.getLocation()
+			.toURI());
 		if (file.isDirectory()) {
 			return file.getAbsolutePath();
 		} else {
-			return file.getParentFile().getAbsolutePath();
+			return file.getParentFile()
+				.getAbsolutePath();
 		}
 	}
 

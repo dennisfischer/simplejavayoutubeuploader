@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Public extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = -1478915284;
+	private static final long serialVersionUID = 2064147787;
 
 	/**
 	 * The singleton instance of <code>PUBLIC</code>
@@ -36,8 +36,8 @@ public class Public extends org.jooq.impl.SchemaImpl {
 		return java.util.Arrays.<org.jooq.Sequence<?>>asList(
 			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_152EA5BC_51BA_428A_B47C_0C37C6156286,
 			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_2A5CCF61_A367_405F_8FAA_9B839A76258C,
-			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_6DCEAC25_F94A_4876_821B_E94C5BD2C7CD,
 			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_6E9E6C44_C2F3_401F_9CD7_A02558CA0298,
+			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_8DCE5F2F_67FA_4C6F_AE0E_97307C80139B,
 			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_AF8B4195_456C_4905_8EC6_F236A3785C3B,
 			org.chaosfisch.youtubeuploader.db.generated.Sequences.SYSTEM_SEQUENCE_B5B6AB52_40BA_432B_AE4B_E18A77B361FB);
 	}
@@ -52,10 +52,10 @@ public class Public extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
 			org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT,
-			org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST,
 			org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE,
 			org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST,
 			org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD,
-			org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST);
+			org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST,
+			org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST);
 	}
 }

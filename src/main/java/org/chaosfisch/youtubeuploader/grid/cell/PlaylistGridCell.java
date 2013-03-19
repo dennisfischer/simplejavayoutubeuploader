@@ -44,18 +44,28 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 				if (playlist.getThumbnail() != null) {
 					imageView = new ImageView(playlist.getThumbnail());
 					imageView.setPreserveRatio(true);
-					final double width = imageView.getImage().getWidth() > 0 ? imageView.getImage().getWidth() : 0;
-					final double height = imageView.getImage().getHeight() > 90 ? imageView.getImage().getHeight() : 180;
-					imageView.setViewport(new Rectangle2D(0, 45, width, height - 90));
+					final double width = imageView.getImage()
+						.getWidth() > 0 ? imageView.getImage()
+						.getWidth() : 0;
+					final double height = imageView.getImage()
+						.getHeight() > 90 ? imageView.getImage()
+						.getHeight() : 180;
+					imageView.setViewport(new Rectangle2D(0,
+						45,
+						width,
+						height - 90));
 				} else {
 					imageView = new ImageView(new Image(getClass().getResourceAsStream(
 						"/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
 				}
 
-				imageView.fitHeightProperty().bind(heightProperty());
-				imageView.fitWidthProperty().bind(widthProperty());
+				imageView.fitHeightProperty()
+					.bind(heightProperty());
+				imageView.fitWidthProperty()
+					.bind(widthProperty());
 
-				pane.getChildren().add(imageView);
+				pane.getChildren()
+					.add(imageView);
 				setGraphic(pane);
 				getGraphic().setOnMouseEntered(new EventHandler<MouseEvent>() {
 

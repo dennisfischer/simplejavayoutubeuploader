@@ -33,7 +33,8 @@ public class Response implements AutoCloseable {
 	}
 
 	public int getStatusCode() {
-		return response.getStatusLine().getStatusCode();
+		return response.getStatusLine()
+			.getStatusCode();
 	}
 
 	public HttpResponse getRaw() {
@@ -51,6 +52,8 @@ public class Response implements AutoCloseable {
 	public String getCurrentUrl() {
 		final HttpUriRequest currentReq = (HttpUriRequest) RequestUtil.context.getAttribute(ExecutionContext.HTTP_REQUEST);
 		final HttpHost currentHost = (HttpHost) RequestUtil.context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-		return currentReq.getURI().isAbsolute() ? currentReq.getURI().toString() : currentHost.toURI() + currentReq.getURI();
+		return currentReq.getURI()
+			.isAbsolute() ? currentReq.getURI()
+			.toString() : currentHost.toURI() + currentReq.getURI();
 	}
 }

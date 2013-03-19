@@ -13,11 +13,15 @@ public class SystemException extends Exception {
 		if (exception instanceof SystemException) {
 			final SystemException se = (SystemException) exception;
 			if (errorCode != null && errorCode != se.getErrorCode()) {
-				return new SystemException(exception.getMessage(), exception, errorCode);
+				return new SystemException(exception.getMessage(),
+					exception,
+					errorCode);
 			}
 			return se;
 		} else {
-			return new SystemException(exception.getMessage(), exception, errorCode);
+			return new SystemException(exception.getMessage(),
+				exception,
+				errorCode);
 		}
 	}
 
@@ -43,7 +47,8 @@ public class SystemException extends Exception {
 	}
 
 	public SystemException(final String message, final Throwable cause, final ErrorCode errorCode) {
-		super(message, cause);
+		super(message,
+			cause);
 		this.errorCode = errorCode;
 	}
 
@@ -83,7 +88,8 @@ public class SystemException extends Exception {
 			s.println(this);
 			s.println("\t-------------------------------");
 			if (errorCode != null) {
-				s.println("\t" + errorCode + ":" + errorCode.getClass().getName());
+				s.println("\t" + errorCode + ":" + errorCode.getClass()
+					.getName());
 			}
 			for (final String key : properties.keySet()) {
 				s.println("\t" + key + "=[" + properties.get(key) + "]");
