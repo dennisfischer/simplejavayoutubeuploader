@@ -7,20 +7,20 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services;
 
-public class ResumeInfo {
+import java.util.List;
 
-	public final Long	nextByteToUpload;
-	public final String	videoId;
+import org.chaosfisch.google.atom.AtomCategory;
 
-	ResumeInfo(final long nextByteToUpload) {
-		this.nextByteToUpload = nextByteToUpload;
-		videoId = null;
-	}
+import com.google.common.util.concurrent.ListenableFuture;
 
-	ResumeInfo(final String videoId) {
-		this.videoId = videoId;
-		nextByteToUpload = null;
-	}
+public interface CategoryService {
+
+	/**
+	 * Loads all available categorys from youtube
+	 * 
+	 * @return List<AtomCategory> of loaded - valid - categories
+	 */
+	ListenableFuture<List<AtomCategory>> load();
 }

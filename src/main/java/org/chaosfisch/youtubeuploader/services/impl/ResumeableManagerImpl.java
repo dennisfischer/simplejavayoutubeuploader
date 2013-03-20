@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.ResumeableManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

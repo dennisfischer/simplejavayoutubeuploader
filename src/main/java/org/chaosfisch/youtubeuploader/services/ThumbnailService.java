@@ -1,4 +1,4 @@
-package org.chaosfisch.youtubeuploader.services.youtube;
+package org.chaosfisch.youtubeuploader.services;
 
 import org.chaosfisch.exceptions.SystemException;
 

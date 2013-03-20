@@ -4,7 +4,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;

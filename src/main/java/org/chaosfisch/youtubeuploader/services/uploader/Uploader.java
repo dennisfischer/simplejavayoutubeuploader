@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.uploader;
+package org.chaosfisch.youtubeuploader.services.uploader;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -25,8 +25,8 @@ import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelAddedEvent;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
+import org.chaosfisch.youtubeuploader.services.uploader.events.UploadAbortEvent;
+import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

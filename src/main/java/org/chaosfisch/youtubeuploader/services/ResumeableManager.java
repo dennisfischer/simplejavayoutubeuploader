@@ -7,18 +7,23 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube;
-
-import java.io.File;
+package org.chaosfisch.youtubeuploader.services;
 
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.services.impl.ResumeInfo;
 
-public interface MetadataService {
-	String atomBuilder(Upload upload);
+public interface ResumeableManager {
+	String parseVideoId(String atomData);
 
-	String submitMetadata(String atomData, File fileToUpload, Account account) throws SystemException;
+	boolean canContinue();
 
-	void activateBrowserfeatures(Upload upload);
+	ResumeInfo fetchResumeInfo(Upload upload) throws SystemException;
+
+	void setRetries(int i);
+
+	int getRetries();
+
+	void delay();
+
 }

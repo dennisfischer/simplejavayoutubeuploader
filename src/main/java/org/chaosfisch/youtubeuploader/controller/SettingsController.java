@@ -21,7 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 
-import org.chaosfisch.youtubeuploader.services.youtube.impl.EnddirServiceImpl;
+import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
 
 import com.google.inject.Inject;
 

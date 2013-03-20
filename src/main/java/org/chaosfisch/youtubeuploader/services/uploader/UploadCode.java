@@ -1,4 +1,4 @@
-package org.chaosfisch.youtubeuploader.services.youtube.uploader;
+package org.chaosfisch.youtubeuploader.services.uploader;
 
 import org.chaosfisch.exceptions.ErrorCode;
 

@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

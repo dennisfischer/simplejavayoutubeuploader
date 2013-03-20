@@ -30,7 +30,7 @@ import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
+import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEvent;
 import org.chaosfisch.youtubeuploader.vo.UploadViewModel;
 
 import com.google.common.eventbus.EventBus;
@@ -226,8 +226,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		private String calculateEta(final long remainingBytes, final long speed) {
 			final long duration = 1000 * remainingBytes / speed;
 
-			return String.format("%d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration), TimeUnit.MILLISECONDS.toMinutes(duration),
-				TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+			return String.format("%d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration), TimeUnit.MILLISECONDS.toMinutes(duration)
+					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)), TimeUnit.MILLISECONDS.toSeconds(duration)
+					- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
 		}
 
 		private String humanReadableByteCount(final long bytes, final boolean si) {

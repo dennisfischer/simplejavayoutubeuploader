@@ -7,14 +7,14 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.EnddirService;
+import org.chaosfisch.youtubeuploader.services.EnddirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

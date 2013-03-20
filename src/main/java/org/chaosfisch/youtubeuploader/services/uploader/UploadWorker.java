@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.uploader;
+package org.chaosfisch.youtubeuploader.services.uploader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -41,14 +41,14 @@ import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.EnddirService;
-import org.chaosfisch.youtubeuploader.services.youtube.MetadataService;
-import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
-import org.chaosfisch.youtubeuploader.services.youtube.ResumeableManager;
-import org.chaosfisch.youtubeuploader.services.youtube.impl.MetadataCode;
-import org.chaosfisch.youtubeuploader.services.youtube.impl.ResumeInfo;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadAbortEvent;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.events.UploadProgressEvent;
+import org.chaosfisch.youtubeuploader.services.EnddirService;
+import org.chaosfisch.youtubeuploader.services.MetadataService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.ResumeableManager;
+import org.chaosfisch.youtubeuploader.services.impl.MetadataCode;
+import org.chaosfisch.youtubeuploader.services.impl.ResumeInfo;
+import org.chaosfisch.youtubeuploader.services.uploader.events.UploadAbortEvent;
+import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

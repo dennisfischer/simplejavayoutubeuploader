@@ -22,7 +22,7 @@ import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.inject.Inject;
 

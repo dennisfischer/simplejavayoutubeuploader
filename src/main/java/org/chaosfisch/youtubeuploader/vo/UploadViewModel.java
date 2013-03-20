@@ -57,7 +57,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.TemplatePlaylist
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.models.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.models.events.ModelRemovedEvent;
-import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.jooq.impl.Executor;
 
 import com.google.common.eventbus.Subscribe;

@@ -59,12 +59,12 @@ import jfxtras.labs.scene.control.grid.GridViewBuilder;
 
 import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.youtubeuploader.I18nHelper;
+import org.chaosfisch.youtubeuploader.controller.renderer.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.grid.cell.PlaylistGridCell;
-import org.chaosfisch.youtubeuploader.services.youtube.CategoryService;
+import org.chaosfisch.youtubeuploader.services.CategoryService;
 import org.chaosfisch.youtubeuploader.vo.UploadViewModel;
 
 import com.google.common.util.concurrent.FutureCallback;

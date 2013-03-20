@@ -7,8 +7,20 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.models;
+package org.chaosfisch.youtubeuploader.services.impl;
 
-public enum UploadPosition {
-	UPLOAD_BOTTOM, UPLOAD_DOWN, UPLOAD_TOP, UPLOAD_UP
+public class ResumeInfo {
+
+	public final Long	nextByteToUpload;
+	public final String	videoId;
+
+	ResumeInfo(final long nextByteToUpload) {
+		this.nextByteToUpload = nextByteToUpload;
+		videoId = null;
+	}
+
+	ResumeInfo(final String videoId) {
+		this.videoId = videoId;
+		nextByteToUpload = null;
+	}
 }

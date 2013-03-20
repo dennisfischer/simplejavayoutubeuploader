@@ -6,7 +6,7 @@ import org.chaosfisch.net.Server;
 import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.controller.ConsoleController;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.jooq.impl.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

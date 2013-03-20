@@ -38,7 +38,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.services.youtube.PlaylistService;
+import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import com.google.inject.Inject;
 

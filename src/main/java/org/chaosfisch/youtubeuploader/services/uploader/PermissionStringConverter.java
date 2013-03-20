@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.uploader;
+package org.chaosfisch.youtubeuploader.services.uploader;
 
 public class PermissionStringConverter {
 	public static final String	ALLOWED		= "allowed";

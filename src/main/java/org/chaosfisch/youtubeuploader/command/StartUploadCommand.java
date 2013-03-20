@@ -3,7 +3,7 @@ package org.chaosfisch.youtubeuploader.command;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import com.google.inject.Inject;
 

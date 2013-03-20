@@ -1,4 +1,4 @@
-package org.chaosfisch.youtubeuploader.services.youtube.uploader.events;
+package org.chaosfisch.youtubeuploader.services.uploader.events;
 
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 

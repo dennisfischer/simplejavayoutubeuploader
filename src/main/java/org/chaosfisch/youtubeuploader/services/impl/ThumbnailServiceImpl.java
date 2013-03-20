@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.youtubeuploader.models.Thumbnail;
-import org.chaosfisch.youtubeuploader.services.youtube.ThumbnailService;
+import org.chaosfisch.youtubeuploader.services.ThumbnailService;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;

@@ -16,7 +16,7 @@ import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.Uploader;
+import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.jooq.impl.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

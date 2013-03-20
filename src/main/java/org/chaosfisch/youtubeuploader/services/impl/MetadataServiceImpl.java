@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube.impl;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +37,9 @@ import org.chaosfisch.io.http.Response;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.youtube.MetadataService;
-import org.chaosfisch.youtubeuploader.services.youtube.ThumbnailService;
-import org.chaosfisch.youtubeuploader.services.youtube.uploader.PermissionStringConverter;
+import org.chaosfisch.youtubeuploader.services.MetadataService;
+import org.chaosfisch.youtubeuploader.services.ThumbnailService;
+import org.chaosfisch.youtubeuploader.services.uploader.PermissionStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

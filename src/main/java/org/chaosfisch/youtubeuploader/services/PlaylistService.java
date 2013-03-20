@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services.youtube;
+package org.chaosfisch.youtubeuploader.services;
 
 import java.util.List;
 import java.util.Map;

@@ -7,7 +7,7 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.grid.cell;
+package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
