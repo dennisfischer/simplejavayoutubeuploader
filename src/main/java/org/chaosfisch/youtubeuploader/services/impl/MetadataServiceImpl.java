@@ -368,7 +368,7 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("title",
 			extractor(content, "name=\"title\" value=\"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("session_token",
-			extractor(content, "name=\"session_token\" value=\"", "\"")));
+			extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video",
 			"1"));
 
