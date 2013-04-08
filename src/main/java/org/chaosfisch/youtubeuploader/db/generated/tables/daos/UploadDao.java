@@ -160,10 +160,10 @@ public class UploadDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuploa
 	}
 
 	/**
-	 * Fetch records that have <code>STARTED IN (values)</code>
+	 * Fetch records that have <code>DATE_OF_START IN (values)</code>
 	 */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByStarted(java.sql.Timestamp... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.STARTED, values);
+	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByDateOfStart(java.util.GregorianCalendar... values) {
+		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.DATE_OF_START, values);
 	}
 
 	/**
@@ -209,10 +209,10 @@ public class UploadDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuploa
 	}
 
 	/**
-	 * Fetch records that have <code>RELEASE IN (values)</code>
+	 * Fetch records that have <code>DATE_OF_RELEASE IN (values)</code>
 	 */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByRelease(java.sql.Timestamp... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.RELEASE, values);
+	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByDateOfRelease(java.util.GregorianCalendar... values) {
+		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.DATE_OF_RELEASE, values);
 	}
 
 	/**

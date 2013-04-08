@@ -3,26 +3,26 @@ package org.chaosfisch.youtubeuploader.command;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
-public class UpdateUploadCommand extends Service<Void> {
+public class RemoveTemplateCommand extends Service<Void> {
 
 	@Inject
-	private UploadDao	uploadDao;
+	private TemplateDao	templateDao;
 
-	public Upload		upload;
+	public Template		template;
 
 	@Override
 	protected Task<Void> createTask() {
 		return new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				Preconditions.checkNotNull(upload);
-				uploadDao.update(upload);
+				Preconditions.checkNotNull(template);
+				templateDao.delete(template);
 				return null;
 			}
 		};

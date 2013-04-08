@@ -11,9 +11,8 @@ package org.chaosfisch.youtubeuploader.services;
 
 import java.util.List;
 
+import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.AtomCategory;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface CategoryService {
 
@@ -21,6 +20,7 @@ public interface CategoryService {
 	 * Loads all available categorys from youtube
 	 * 
 	 * @return List<AtomCategory> of loaded - valid - categories
+	 * @throws SystemException
 	 */
-	ListenableFuture<List<AtomCategory>> load();
+	List<AtomCategory> load() throws SystemException;
 }

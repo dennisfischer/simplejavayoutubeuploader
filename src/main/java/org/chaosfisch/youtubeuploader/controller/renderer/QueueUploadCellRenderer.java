@@ -3,6 +3,7 @@ package org.chaosfisch.youtubeuploader.controller.renderer;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javafx.event.ActionEvent;
@@ -21,10 +22,8 @@ import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
-import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 
-import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
@@ -36,6 +35,7 @@ import org.chaosfisch.youtubeuploader.vo.UploadViewModel;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListCell<Upload>> {
 
@@ -45,6 +45,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private UploadViewModel		uploadViewModel;
 	@Inject
 	private EventBus			eventBus;
+	@Inject
+	@Named("i18n-resources")
+	private ResourceBundle		resources;
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -78,17 +81,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					if (item == null || item.getInprogress()) {
 						return;
 					}
-					final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-					dialog.setTitleText(I18nHelper.message("dialog.removeupload.title"));
-					dialog.setMessage(I18nHelper.message("dialog.removeupload.message"));
-					final MonologFXButton yesButton = new MonologFXButton();
-					yesButton.setType(MonologFXButton.Type.YES);
-					yesButton.setLabel("Yes");
-					final MonologFXButton noButton = new MonologFXButton();
-					noButton.setType(MonologFXButton.Type.NO);
-					noButton.setLabel("No");
-					dialog.addButton(yesButton);
-					dialog.addButton(noButton);
+
+					final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.removeupload.title"),
+						resources.getString("dialog.removeupload.message"));
 					if (dialog.showDialog() == MonologFXButton.Type.YES) {
 						final RemoveUploadCommand command = commandProvider.get(RemoveUploadCommand.class);
 						command.upload = item;
@@ -110,7 +105,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			});
 			btnEdit.setDisable(item.getArchived());
 
-			final Button btnAbort = new Button(I18nHelper.message("button.abort"));
+			final Button btnAbort = new Button(resources.getString("button.abort"));
 			btnAbort.setId("abortUpload");
 			btnAbort.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -119,17 +114,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					if (!item.getInprogress()) {
 						return;
 					}
-					final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-					dialog.setTitleText(I18nHelper.message("dialog.abortupload.title"));
-					dialog.setMessage(I18nHelper.message("dialog.abortupload.message"));
-					final MonologFXButton yesButton = new MonologFXButton();
-					yesButton.setType(MonologFXButton.Type.YES);
-					yesButton.setLabel("Yes");
-					final MonologFXButton noButton = new MonologFXButton();
-					noButton.setType(MonologFXButton.Type.NO);
-					noButton.setLabel("No");
-					dialog.addButton(yesButton);
-					dialog.addButton(noButton);
+
+					final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.abortupload.title"),
+						resources.getString("dialog.abortupload.message"));
 
 					if (dialog.showDialog() == MonologFXButton.Type.YES) {
 						final AbortUploadCommand command = commandProvider.get(AbortUploadCommand.class);
@@ -177,7 +164,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					.build();
 			} else if (item.getFailed()) {
 				progressNode = LabelBuilder.create()
-					.text(I18nHelper.message("queuetable.status.failed"))
+					.text(resources.getString("queuetable.status.failed"))
 					.prefWidth(500)
 					.build();
 			} else {

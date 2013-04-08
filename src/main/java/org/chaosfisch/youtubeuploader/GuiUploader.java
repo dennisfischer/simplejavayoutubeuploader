@@ -2,6 +2,7 @@ package org.chaosfisch.youtubeuploader;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -12,9 +13,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
 import javafx.stage.WindowEvent;
-import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFXButton;
 
+import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.jooq.impl.Executor;
@@ -26,6 +27,8 @@ import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.name.Named;
+import com.sun.javafx.css.StyleManager;
 
 public class GuiUploader extends GuiceApplication {
 	private static Logger	logger	= LoggerFactory.getLogger(GuiUploader.class);
@@ -37,6 +40,9 @@ public class GuiUploader extends GuiceApplication {
 	private Injector		injector;
 	@Inject
 	private Uploader		uploader;
+	@Inject
+	@Named("i18n-resources")
+	ResourceBundle			resources;
 
 	@Override
 	public void start(final Stage primaryStage) {
@@ -52,20 +58,18 @@ public class GuiUploader extends GuiceApplication {
 	}
 
 	private void initApplication(final Stage primaryStage) {
-
 		try {
+			StyleManager.getInstance()
+				.addUserAgentStylesheet("/org/chaosfisch/youtubeuploader/resources/style.css");
 			final Parent parent = fxmlLoader.load(
-				getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"),
-				I18nHelper.getResourceBundle())
+				getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
 				.getRoot();
 
 			final Scene scene = SceneBuilder.create()
 				.root(parent)
-				.stylesheets(getClass().getResource("/org/chaosfisch/youtubeuploader/resources/style.css")
-					.toExternalForm())
 				.build();
 			StageBuilder.create()
-				.title(I18nHelper.message("application.title"))
+				.title(resources.getString("application.title"))
 				.icons(new Image(getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")))
 				.minHeight(640)
 				.height(640)
@@ -105,17 +109,9 @@ public class GuiUploader extends GuiceApplication {
 	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
 		@Override
 		public void handle(final WindowEvent event) {
-			final MonologFX dialog = new MonologFX(MonologFX.Type.QUESTION);
-			final MonologFXButton yesButton = new MonologFXButton();
-			yesButton.setType(MonologFXButton.Type.YES);
-			yesButton.setLabel("Yes");
-			final MonologFXButton noButton = new MonologFXButton();
-			noButton.setType(MonologFXButton.Type.NO);
-			noButton.setLabel("No");
-			dialog.addButton(yesButton);
-			dialog.addButton(noButton);
-			dialog.setTitleText(I18nHelper.message("dialog.exitapplication.title"));
-			dialog.setMessage(I18nHelper.message("dialog.exitapplication.message"));
+			final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"),
+				resources.getString("dialog.exitapplication.message"));
+
 			if (dialog.showDialog() == MonologFXButton.Type.NO) {
 				event.consume();
 			} else {

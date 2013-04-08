@@ -57,16 +57,19 @@ public class ThrottledOutputStream extends FilterOutputStream {
 	public void write(final byte[] b, final int off, final int len) throws IOException {
 		// Check the throttle.
 		bytes += len;
+
 		final long elapsed = Math.max(System.currentTimeMillis() - start, 1);
 
 		final long bps = bytes * 1000L / elapsed;
 		if (throttle.maxBps.get() != 0 && bps > throttle.maxBps.multiply(1000)
 			.get()) {
+
 			// Oops, sending too fast.
 			final long wakeElapsed = bytes * 1000L / throttle.maxBps.multiply(1000)
 				.get();
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
+
 			} catch (final InterruptedException e) {
 				Thread.currentThread()
 					.interrupt();

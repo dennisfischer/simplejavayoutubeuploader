@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader.guice;
 
 import java.sql.DriverManager;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 
 import javafx.stage.FileChooser;
@@ -19,6 +20,7 @@ import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.Throttle;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.services.CategoryService;
@@ -55,6 +57,9 @@ public class GuiceBindings extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
+			.toInstance(ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"));
+
 		mapCommands();
 		mapServices();
 		mapUtil();
@@ -108,6 +113,7 @@ public class GuiceBindings extends AbstractModule {
 		bind(Throttle.class).in(Singleton.class);
 		bind(EventBus.class).in(Singleton.class);
 		requestStaticInjection(EventBusUtil.class);
+		requestStaticInjection(TextUtil.class);
 	}
 
 	private void mapServices() {

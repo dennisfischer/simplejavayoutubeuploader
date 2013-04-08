@@ -3,7 +3,6 @@ package org.chaosfisch.youtubeuploader.controller;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import org.chaosfisch.net.Connection;
 import org.chaosfisch.net.Msg;
@@ -17,9 +16,6 @@ import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEve
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -60,41 +56,20 @@ public class ConsoleController {
 		collectStatus = true;
 		final int uploads = uploader.getRunningUploads();
 
-		final ListenableFuture<Boolean> future = pool.submit(new Callable<Boolean>() {
-
-			@Override
-			public Boolean call() {
-				synchronized (object) {
-					while (collectStatus && statuses.size() != uploads) {
-						try {
-							wait();
-						} catch (final InterruptedException e) {
-							Thread.currentThread()
-								.interrupt();
-						}
-					}
-				}
-
-				for (final UploadProgressEvent event : statuses.values()) {
-					server.sendMsg("upload_status", event);
-				}
-				collectStatus = false;
-				statuses.clear();
-				return true;
+		while (collectStatus && statuses.size() != uploads) {
+			try {
+				wait();
+			} catch (final InterruptedException e) {
+				Thread.currentThread()
+					.interrupt();
 			}
-		});
+		}
 
-		Futures.addCallback(future, new FutureCallback<Boolean>() {
-			@Override
-			public void onFailure(final Throwable t) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onSuccess(final Boolean result) {
-				// TODO Auto-generated method stub
-			}
-		});
+		for (final UploadProgressEvent event : statuses.values()) {
+			server.sendMsg("upload_status", event);
+		}
+		collectStatus = false;
+		statuses.clear();
 	}
 
 	@Subscribe

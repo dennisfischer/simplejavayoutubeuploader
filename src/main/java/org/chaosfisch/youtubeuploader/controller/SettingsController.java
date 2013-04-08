@@ -7,9 +7,6 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-/**
- * Sample Skeleton for "Settings.fxml" Controller Class You can copy and paste this code into your favorite IDE
- **/
 
 package org.chaosfisch.youtubeuploader.controller;
 
@@ -18,34 +15,34 @@ import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 
 import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
 
 import com.google.inject.Inject;
 
-public class SettingsController implements Initializable {
+public class SettingsController {
 
 	@FXML
-	// fx:id="enddirCheckbox"
-	private CheckBox			enddirCheckbox; // Value injected by FXMLLoader
+	private ResourceBundle		resources;
+
+	@FXML
+	private URL					location;
+
+	@FXML
+	private CheckBox			enddirCheckbox;
 
 	@Inject
 	private EnddirServiceImpl	enddirService;
 
-	// Handler for CheckBox[fx:id="enddirCheckbox"] onAction
-	public void toggleEnddirTitle(final ActionEvent event) {
+	@FXML
+	void toggleEnddirTitle(final ActionEvent event) {
 		enddirService.setEnddirSetting(enddirService.getEnddirSetting());
 	}
 
-	@Override
-	// This method is called by the FXMLLoader when initialization is complete
-	public void initialize(final URL fxmlFileLocation, final ResourceBundle resources) {
+	@FXML
+	void initialize() {
 		assert enddirCheckbox != null : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
-
-		// initialize your logic here: all @FXML variables will have been
-		// injected
 		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
 	}
 }

@@ -1,6 +1,6 @@
 package org.chaosfisch.youtubeuploader.db.dao;
 
-import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -36,12 +36,14 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	}
 
 	public Upload fetchNextUpload() {
+		final GregorianCalendar cal = new GregorianCalendar();
+
 		return create.select()
 			.from(Tables.UPLOAD)
 			.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true),
-				Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD.STARTED.le(new Timestamp(System.currentTimeMillis()))
-					.or(Tables.UPLOAD.STARTED.isNull()))
-			.orderBy(Tables.UPLOAD.STARTED.desc(), Tables.UPLOAD.FAILED.asc())
+				Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD.DATE_OF_START.le(cal)
+					.or(Tables.UPLOAD.DATE_OF_START.isNull()))
+			.orderBy(Tables.UPLOAD.DATE_OF_START.desc(), Tables.UPLOAD.FAILED.asc())
 			.fetchOneInto(Upload.class);
 	}
 
@@ -53,10 +55,12 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	}
 
 	public long countAvailableStartingUploads() {
+		final GregorianCalendar cal = new GregorianCalendar();
+
 		return create.select()
 			.from(Tables.UPLOAD)
 			.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true), Tables.UPLOAD.FAILED.ne(true),
-				Tables.UPLOAD.STARTED.le(new Timestamp(System.currentTimeMillis())))
+				Tables.UPLOAD.DATE_OF_START.le(cal))
 			.fetchCount();
 	}
 }

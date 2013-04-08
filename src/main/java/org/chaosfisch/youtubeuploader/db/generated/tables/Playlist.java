@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Playlist extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord> {
 
-	private static final long serialVersionUID = -1106746516;
+	private static final long serialVersionUID = -1351528225;
 
 	/**
 	 * The singleton instance of <code>PUBLIC.PLAYLIST</code>
@@ -72,9 +72,9 @@ public class Playlist extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.yo
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord, java.lang.Integer> ACCOUNT_ID = createField("ACCOUNT_ID", org.jooq.impl.SQLDataType.INTEGER, this);
 
 	/**
-	 * The column <code>PUBLIC.PLAYLIST.MODIFIED</code>. 
+	 * The column <code>PUBLIC.PLAYLIST.DATE_OF_MODIFIED</code>. 
 	 */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord, java.sql.Timestamp> MODIFIED = createField("MODIFIED", org.jooq.impl.SQLDataType.TIMESTAMP, this);
+	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.PlaylistRecord, java.util.GregorianCalendar> DATE_OF_MODIFIED = createField("DATE_OF_MODIFIED", org.jooq.impl.SQLDataType.TIMESTAMP.asConvertedDataType(new org.chaosfisch.youtubeuploader.db.converter.CalendarConverter()), this);
 
 	/**
 	 * The column <code>PUBLIC.PLAYLIST.HIDDEN</code>. 

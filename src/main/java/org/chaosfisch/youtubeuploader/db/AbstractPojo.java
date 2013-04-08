@@ -10,7 +10,7 @@ abstract public class AbstractPojo {
 			return false;
 		}
 		final AbstractPojo that = (AbstractPojo) obj;
-		return that.getId()
+		return that.getId() != null && getId() != null && that.getId()
 			.equals(getId());
 	}
 }

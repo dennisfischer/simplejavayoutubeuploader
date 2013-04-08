@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class Upload extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord> {
 
-	private static final long serialVersionUID = -562905995;
+	private static final long serialVersionUID = -403131264;
 
 	/**
 	 * The singleton instance of <code>PUBLIC.UPLOAD</code>
@@ -112,9 +112,9 @@ public class Upload extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.yout
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.lang.Short> VIDEORESPONSE = createField("VIDEORESPONSE", org.jooq.impl.SQLDataType.SMALLINT, this);
 
 	/**
-	 * The column <code>PUBLIC.UPLOAD.STARTED</code>. 
+	 * The column <code>PUBLIC.UPLOAD.DATE_OF_START</code>. 
 	 */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.sql.Timestamp> STARTED = createField("STARTED", org.jooq.impl.SQLDataType.TIMESTAMP, this);
+	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.util.GregorianCalendar> DATE_OF_START = createField("DATE_OF_START", org.jooq.impl.SQLDataType.TIMESTAMP.asConvertedDataType(new org.chaosfisch.youtubeuploader.db.converter.CalendarConverter()), this);
 
 	/**
 	 * The column <code>PUBLIC.UPLOAD.INPROGRESS</code>. 
@@ -147,9 +147,9 @@ public class Upload extends org.jooq.impl.UpdatableTableImpl<org.chaosfisch.yout
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.lang.Short> LICENSE = createField("LICENSE", org.jooq.impl.SQLDataType.SMALLINT, this);
 
 	/**
-	 * The column <code>PUBLIC.UPLOAD.RELEASE</code>. 
+	 * The column <code>PUBLIC.UPLOAD.DATE_OF_RELEASE</code>. 
 	 */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.sql.Timestamp> RELEASE = createField("RELEASE", org.jooq.impl.SQLDataType.TIMESTAMP, this);
+	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, java.util.GregorianCalendar> DATE_OF_RELEASE = createField("DATE_OF_RELEASE", org.jooq.impl.SQLDataType.TIMESTAMP.asConvertedDataType(new org.chaosfisch.youtubeuploader.db.converter.CalendarConverter()), this);
 
 	/**
 	 * The column <code>PUBLIC.UPLOAD.NUMBER</code>. 

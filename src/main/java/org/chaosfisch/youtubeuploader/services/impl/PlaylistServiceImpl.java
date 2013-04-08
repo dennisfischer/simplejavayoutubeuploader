@@ -111,7 +111,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public Map<Account, List<Playlist>> synchronizePlaylists(final List<Account> accounts) throws SystemException {
+	public Map<Account, List<Playlist>> synchronizePlaylists(final Account[] accounts) throws SystemException {
 		logger.info("Synchronizing playlists.");
 
 		final Map<Account, List<Playlist>> data = new HashMap<>();

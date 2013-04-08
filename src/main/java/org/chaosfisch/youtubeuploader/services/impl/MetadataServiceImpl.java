@@ -27,14 +27,18 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.chaosfisch.exceptions.SystemException;
+import org.chaosfisch.google.atom.Category;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
+import org.chaosfisch.youtubeuploader.db.data.ClaimType;
+import org.chaosfisch.youtubeuploader.db.data.Comment;
+import org.chaosfisch.youtubeuploader.db.data.Visibility;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.MetadataService;
@@ -59,8 +63,6 @@ public class MetadataServiceImpl implements MetadataService {
 	private final Logger		logger				= LoggerFactory.getLogger(getClass());
 
 	@Inject
-	private GoogleAuthUtil		googleAuthUtil;
-	@Inject
 	private RequestSigner		requestSigner;
 	@Inject
 	private GoogleAuthUtil		authTokenHelper;
@@ -79,17 +81,12 @@ public class MetadataServiceImpl implements MetadataService {
 		// xstream
 
 		final VideoEntry videoEntry = new VideoEntry();
+		videoEntry.mediaGroup.category = new ArrayList<Category>(1);
+		videoEntry.mediaGroup.category.add(upload.getCategory());
+		videoEntry.mediaGroup.license = upload.getLicense()
+			.getMetaIdentifier();
 
-		videoEntry.mediaGroup.category = new ArrayList<MediaCategory>(1);
-		final MediaCategory mediaCategory = new MediaCategory();
-		mediaCategory.label = upload.getCategory();
-		mediaCategory.scheme = "http://gdata.youtube.com/schemas/2007/categories.cat";
-		mediaCategory.category = upload.getCategory();
-		videoEntry.mediaGroup.category.add(mediaCategory);
-
-		videoEntry.mediaGroup.license = upload.getLicense() == 0 ? "youtube" : "cc";
-
-		if (upload.getVisibility() == 2 || upload.getVisibility() == 3) {
+		if (upload.getVisibility() == Visibility.PRIVATE || upload.getVisibility() == Visibility.SCHEDULED) {
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
 
@@ -102,13 +99,15 @@ public class MetadataServiceImpl implements MetadataService {
 		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote",
 			PermissionStringConverter.convertBoolean(upload.getCommentvote())));
 		videoEntry.accessControl.add(new YoutubeAccessControl("videoRespond",
-			PermissionStringConverter.convertInteger(upload.getVideoresponse())));
+			PermissionStringConverter.convertInteger(upload.getVideoresponse()
+				.ordinal())));
 		videoEntry.accessControl.add(new YoutubeAccessControl("comment",
-			PermissionStringConverter.convertInteger(upload.getComment())));
+			PermissionStringConverter.convertInteger(upload.getComment()
+				.ordinal())));
 		videoEntry.accessControl.add(new YoutubeAccessControl("list",
-			PermissionStringConverter.convertBoolean(upload.getVisibility() == 0)));
+			PermissionStringConverter.convertBoolean(upload.getVisibility() == Visibility.PUBLIC)));
 
-		if (upload.getComment() == 3) {
+		if (upload.getComment() == Comment.FRIENDS_ONLY) {
 			videoEntry.accessControl.add(new YoutubeAccessControl("comment",
 				"allowed",
 				"group",
@@ -185,7 +184,7 @@ public class MetadataServiceImpl implements MetadataService {
 	public void activateBrowserfeatures(final Upload upload) {
 		this.upload = upload;
 		try {
-			final String googleContent = googleAuthUtil.getLoginContent(uploadDao.fetchOneAccountByUpload(upload),
+			final String googleContent = authTokenHelper.getLoginContent(uploadDao.fetchOneAccountByUpload(upload),
 				String.format(REDIRECT_URL, upload.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent));
@@ -245,12 +244,11 @@ public class MetadataServiceImpl implements MetadataService {
 				""));
 		}
 
-		if (upload.getRelease() != null) {
-			if (upload.getRelease()
+		if (upload.getDateOfRelease() != null) {
+			if (upload.getDateOfRelease()
 				.after(Calendar.getInstance()
 					.getTime())) {
-				final Calendar calendar = Calendar.getInstance();
-				calendar.setTime(upload.getRelease());
+				final Calendar calendar = upload.getDateOfRelease();
 
 				final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm",
 					Locale.getDefault());
@@ -280,7 +278,7 @@ public class MetadataServiceImpl implements MetadataService {
 				boolConverter(true)));
 			postMetaDataParams.add(new BasicNameValuePair("monetization_style",
 				"ads"));
-			if (!upload.getMonetizepartner() || upload.getMonetizeclaimpolicy() == 0) {
+			if (!upload.getMonetizepartner() || upload.getMonetizeclaimpolicy() == ClaimOption.MONETIZE) {
 				postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads",
 					boolConverter(upload.getOverlay())));
 				postMetaDataParams.add(new BasicNameValuePair("trueview_instream",
@@ -297,10 +295,11 @@ public class MetadataServiceImpl implements MetadataService {
 			// {{ PARTNER
 			if (upload.getMonetizepartner()) {
 				postMetaDataParams.add(new BasicNameValuePair("claim_type",
-					upload.getMonetizeclaimtype() == 0 ? "B" : upload.getMonetizeclaimtype() == 1 ? "V" : "A"));
+					upload.getMonetizeclaimtype() == ClaimType.AUDIO_VISUAL ? "B" : upload.getMonetizeclaimtype() == ClaimType.VISUAL ? "V"
+							: "A"));
 
-				final String toFind = upload.getMonetizeclaimpolicy() == 0 ? "Monetize in all countries"
-						: upload.getMonetizeclaimpolicy() == 1 ? "Track in all countries" : "Block in all countries";
+				final String toFind = upload.getMonetizeclaimpolicy() == ClaimOption.MONETIZE ? "Monetize in all countries"
+						: upload.getMonetizeclaimpolicy() == ClaimOption.TRACK ? "Track in all countries" : "Block in all countries";
 
 				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);

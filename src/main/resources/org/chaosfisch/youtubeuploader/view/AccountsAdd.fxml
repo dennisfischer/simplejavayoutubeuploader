@@ -21,8 +21,8 @@
             <Insets fx:id="x1" />
           </GridPane.margin>
         </Label>
-        <Button id="addAccount" fx:id="addButton" mnemonicParsing="false" onAction="#addAccount" text="%button.addAccount" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="2" />
-        <Button id="resetAccount" fx:id="resetButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetAccount" text="%button.reset" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="2" />
+        <Button id="addAccount" mnemonicParsing="false" onAction="#addAccount" text="%button.addAccount" GridPane.columnIndex="2" GridPane.margin="$x1" GridPane.rowIndex="2" />
+        <Button id="resetAccount" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetAccount" text="%button.reset" GridPane.columnIndex="3" GridPane.margin="$x1" GridPane.rowIndex="2" />
         <TextField id="account" fx:id="nameTextfield" maxWidth="-1.0" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="0" />
         <PasswordField id="password" fx:id="passwordTextfield" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.margin="$x1" GridPane.rowIndex="1" />
       </children>

@@ -7,7 +7,6 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -26,9 +25,6 @@ public class AccountAddController {
 	private URL				location;
 
 	@FXML
-	private Button			addButton;
-
-	@FXML
 	private TextField		nameTextfield;
 
 	@FXML
@@ -36,9 +32,6 @@ public class AccountAddController {
 
 	@FXML
 	private HBox			progressPane;
-
-	@FXML
-	private Button			resetButton;
 
 	@Inject
 	private CommandProvider	commandProvider;
@@ -61,10 +54,8 @@ public class AccountAddController {
 
 	@FXML
 	void initialize() {
-		assert addButton != null : "fx:id=\"addButton\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
 		assert nameTextfield != null : "fx:id=\"nameTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
 		assert passwordTextfield != null : "fx:id=\"passwordTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
-		assert resetButton != null : "fx:id=\"resetButton\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
 	}
 
 	private void _reset() {

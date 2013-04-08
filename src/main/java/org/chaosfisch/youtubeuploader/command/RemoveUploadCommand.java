@@ -6,6 +6,7 @@ import javafx.concurrent.Task;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 public class RemoveUploadCommand extends Service<Void> {
@@ -20,6 +21,7 @@ public class RemoveUploadCommand extends Service<Void> {
 		return new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
+				Preconditions.checkNotNull(upload);
 				uploadDao.delete(upload);
 				return null;
 			}

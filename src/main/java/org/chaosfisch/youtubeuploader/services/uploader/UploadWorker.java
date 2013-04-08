@@ -20,8 +20,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -280,8 +280,8 @@ public class UploadWorker extends Task<Void> {
 
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
-		upload.setStarted(new Timestamp(Calendar.getInstance()
-			.getTimeInMillis()));
+		final GregorianCalendar calendar = new GregorianCalendar();
+		upload.setDateOfStart(calendar);
 		uploadDao.update(upload);
 
 		// Get File and Check if existing
@@ -347,7 +347,7 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void browserAction() {
-		if (upload.getRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
+		if (upload.getDateOfRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
 			.isEmpty()) && !upload.getClaim()) {
 			return;
 		}
@@ -395,7 +395,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void setFailedStatus(final String status) {
 		upload.setFailed(true);
-		upload.setStarted(null);
+		upload.setDateOfStart(null);
 		uploadDao.update(upload);
 		uploadProgress.failed = true;
 		uploadProgress.status = status;

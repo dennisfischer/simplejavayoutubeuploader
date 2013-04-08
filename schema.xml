@@ -14,6 +14,19 @@
 			<includes>.*</includes>
 			<excludes></excludes>
 			<inputSchema>PUBLIC</inputSchema>
+			<customTypes>
+				<customType>
+					<name>java.util.GregorianCalendar</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
+				</customType>
+			</customTypes>
+			<forcedTypes>
+				<forcedType>
+					<name>java.util.GregorianCalendar</name>
+					<expressions>.*\.DATE_OF_.*</expressions>
+				</forcedType>
+			</forcedTypes>
+
 		</database>
 		<generate>
 			<!-- Generation flags: See advanced configuration properties -->
@@ -90,5 +103,8 @@
 			<packageName>org.chaosfisch.youtubeuploader.db.generated</packageName>
 			<directory>D:/Development/temp</directory>
 		</target>
+		<strategy>
+			<name>org.chaosfisch.youtubeuploader.CustomGeneratorStrategy</name>
+		</strategy>
 	</generator>
 </configuration>

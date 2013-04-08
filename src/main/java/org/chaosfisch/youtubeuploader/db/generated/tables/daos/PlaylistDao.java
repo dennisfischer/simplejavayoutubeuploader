@@ -104,10 +104,10 @@ public class PlaylistDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeupl
 	}
 
 	/**
-	 * Fetch records that have <code>MODIFIED IN (values)</code>
+	 * Fetch records that have <code>DATE_OF_MODIFIED IN (values)</code>
 	 */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist> fetchByModified(java.sql.Timestamp... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST.MODIFIED, values);
+	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist> fetchByDateOfModified(java.util.GregorianCalendar... values) {
+		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST.DATE_OF_MODIFIED, values);
 	}
 
 	/**

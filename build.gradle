@@ -38,7 +38,7 @@ dependencies {
 			'com.google.guava:guava:14+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
 			'org.jooq:jooq:3+','org.jooq:jooq-meta:3+', 'org.jooq:jooq-codegen:3+', 'com.cathive.fx:fx-guice:+'
 
-	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-r5-SNAPSHOT.jar")
+	compile files ("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-2.2-r5-SNAPSHOT.jar")
 
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
@@ -58,6 +58,7 @@ compileJava {
 run {
 	//add required JavaFX libs to runtime classpath
 	classpath += configurations.providedCompile
+	ignoreExitValue = true	
 }
 
 jar {

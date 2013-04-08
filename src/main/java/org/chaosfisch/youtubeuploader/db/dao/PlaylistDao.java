@@ -1,7 +1,7 @@
 package org.chaosfisch.youtubeuploader.db.dao;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
@@ -51,11 +51,11 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public void cleanByAccount(final Account account) {
-		final Calendar cal = Calendar.getInstance();
+		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.MINUTE, -5);
 		create.delete(Tables.PLAYLIST)
-			.where(Tables.PLAYLIST.MODIFIED.le(new Timestamp(cal.getTimeInMillis())), Tables.PLAYLIST.ACCOUNT_ID.eq(account.getId()))
+			.where(Tables.PLAYLIST.DATE_OF_MODIFIED.le(cal), Tables.PLAYLIST.ACCOUNT_ID.eq(account.getId()))
 			.execute();
 	}
 }

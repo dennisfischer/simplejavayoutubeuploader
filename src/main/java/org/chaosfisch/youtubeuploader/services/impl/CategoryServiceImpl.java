@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
@@ -30,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Ordering;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -50,17 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
 															.getLanguage();
 
 	@Override
-	public ListenableFuture<List<AtomCategory>> load() {
-		return service.submit(new Callable<List<AtomCategory>>() {
-
-			@Override
-			public List<AtomCategory> call() throws Exception {
-				return _load();
-			}
-		});
-	}
-
-	protected List<AtomCategory> _load() throws SystemException {
+	public List<AtomCategory> load() throws SystemException {
 		logger.debug("Loading categories.");
 		if (categories != null && !categories.isEmpty()) {
 			logger.debug("Categories already existing.");

@@ -21,5 +21,5 @@ public interface PlaylistService {
 
 	String addYoutubePlaylist(Playlist playlist) throws SystemException;
 
-	Map<Account, List<Playlist>> synchronizePlaylists(List<Account> accounts) throws SystemException;
+	Map<Account, List<Playlist>> synchronizePlaylists(Account[] accounts) throws SystemException;
 }

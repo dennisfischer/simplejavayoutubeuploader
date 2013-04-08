@@ -11,7 +11,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked" })
 public class UploadRecord extends org.jooq.impl.UpdatableRecordImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord> {
 
-	private static final long serialVersionUID = 1809901176;
+	private static final long serialVersionUID = -2119607460;
 
 	/**
 	 * Setter for <code>PUBLIC.UPLOAD.ID</code>. 
@@ -252,17 +252,17 @@ public class UploadRecord extends org.jooq.impl.UpdatableRecordImpl<org.chaosfis
 	}
 
 	/**
-	 * Setter for <code>PUBLIC.UPLOAD.STARTED</code>. 
+	 * Setter for <code>PUBLIC.UPLOAD.DATE_OF_START</code>. 
 	 */
-	public void setStarted(java.sql.Timestamp value) {
+	public void setDateOfStart(java.util.GregorianCalendar value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>PUBLIC.UPLOAD.STARTED</code>. 
+	 * Getter for <code>PUBLIC.UPLOAD.DATE_OF_START</code>. 
 	 */
-	public java.sql.Timestamp getStarted() {
-		return (java.sql.Timestamp) getValue(17);
+	public java.util.GregorianCalendar getDateOfStart() {
+		return (java.util.GregorianCalendar) getValue(17);
 	}
 
 	/**
@@ -350,17 +350,17 @@ public class UploadRecord extends org.jooq.impl.UpdatableRecordImpl<org.chaosfis
 	}
 
 	/**
-	 * Setter for <code>PUBLIC.UPLOAD.RELEASE</code>. 
+	 * Setter for <code>PUBLIC.UPLOAD.DATE_OF_RELEASE</code>. 
 	 */
-	public void setRelease(java.sql.Timestamp value) {
+	public void setDateOfRelease(java.util.GregorianCalendar value) {
 		setValue(24, value);
 	}
 
 	/**
-	 * Getter for <code>PUBLIC.UPLOAD.RELEASE</code>. 
+	 * Getter for <code>PUBLIC.UPLOAD.DATE_OF_RELEASE</code>. 
 	 */
-	public java.sql.Timestamp getRelease() {
-		return (java.sql.Timestamp) getValue(24);
+	public java.util.GregorianCalendar getDateOfRelease() {
+		return (java.util.GregorianCalendar) getValue(24);
 	}
 
 	/**

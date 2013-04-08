@@ -11,6 +11,7 @@ package org.chaosfisch.google.atom.media;
 
 import java.util.List;
 
+import org.chaosfisch.google.atom.Category;
 import org.chaosfisch.google.atom.youtube.YoutubeDuration;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -22,7 +23,7 @@ public class MediaGroup {
 	String					aspectRatio;
 	public @XStreamAlias("media:category")
 	@XStreamImplicit
-	List<MediaCategory>		category;
+	List<Category>			category;
 	public @XStreamAlias("media:content")
 	@XStreamImplicit
 	List<MediaContent>		content;

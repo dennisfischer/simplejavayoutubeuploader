@@ -26,27 +26,27 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.ViewController">
   <children>
-    <GridPane fx:id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <GridPane id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <MenuBar GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" GridPane.rowSpan="1">
           <menus>
             <Menu mnemonicParsing="false" text="%menu.file">
               <items>
-                <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile" fx:id="menuOpenFile" />
-                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close" fx:id="menuClose" />
+                <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile" />
+                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.edit">
               <items>
-                <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate" text="%menu.addTemplate" fx:id="menuAddTemplate" />
-                <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" fx:id="menuAddPlaylist" />
+                <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate" text="%menu.addTemplate" />
+                <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist" text="%menu.addPlaylist" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" onAction="#menuConnectServer" text="%menu.connectServer" fx:id="menuConnectServer" />
+                <MenuItem mnemonicParsing="false" onAction="#menuConnectServer" text="%menu.connectServer" />
               </items>
             </Menu>
           </menus>
         </MenuBar>
-        <AnchorPane fx:id="content_pane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" onDragDropped="#fileDragDropped" onDragOver="#fileDragOver" prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+        <AnchorPane id="content_pane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" onDragDropped="#fileDragDropped" onDragOver="#fileDragOver" prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
           <children>
             <TabPane prefHeight="-1.0" prefWidth="-1.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <tabs>

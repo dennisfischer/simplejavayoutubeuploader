@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   Copyright (c) 2013 Dennis Fischer.
   All rights reserved. This program and the accompanying materials
@@ -29,8 +30,6 @@
       </columnConstraints>
       <rowConstraints>
         <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>

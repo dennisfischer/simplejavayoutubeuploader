@@ -10,8 +10,8 @@
 package org.chaosfisch.util;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,22 +22,22 @@ public class ExtendedPlaceholders {
 	/**
 	 * The file for the {file} placeholder
 	 */
-	private String						file;
+	private String							file;
 
 	/**
 	 * Custom user defined placeholders
 	 */
-	private final Map<String, String>	map	= new WeakHashMap<String, String>(10);
+	private final HashMap<String, String>	map	= new HashMap<String, String>(10);
 
 	/**
 	 * The number which modifies {number} placeholder
 	 */
-	private int							number;
+	private int								number;
 
 	/**
 	 * The playlist for the {playlist} and {number} placeholders
 	 */
-	private Playlist					playlist;
+	private Playlist						playlist;
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
