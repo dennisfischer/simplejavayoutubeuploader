@@ -22,30 +22,22 @@ import org.chaosfisch.google.atom.AtomCategory;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.services.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Ordering;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class CategoryServiceImpl implements CategoryService {
-	@Inject
-	@Named(value = ApplicationData.SERVICE_EXECUTOR)
-	private ListeningExecutorService	service;
-
-	private List<AtomCategory>			categories;
-	private final Logger				logger			= LoggerFactory.getLogger(CategoryServiceImpl.class);
+	private List<AtomCategory>	categories;
+	private final Logger		logger			= LoggerFactory.getLogger(CategoryServiceImpl.class);
 
 	/**
 	 * The default category url
 	 */
-	private final String				CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl=" + Locale.getDefault()
-															.getLanguage();
+	private final String		CATEGORY_URL	= "http://gdata.youtube.com/schemas/2007/categories.cat?hl=" + Locale.getDefault()
+													.getLanguage();
 
 	@Override
 	public List<AtomCategory> load() throws SystemException {

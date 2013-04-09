@@ -8,7 +8,6 @@ import org.chaosfisch.net.Connection;
 import org.chaosfisch.net.Msg;
 import org.chaosfisch.net.Server;
 import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
@@ -16,11 +15,9 @@ import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEve
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class ConsoleController {
 	final Gson											gson			= new Gson();
@@ -29,9 +26,6 @@ public class ConsoleController {
 	private Uploader									uploader;
 	@Inject
 	private EventBus									eventBus;
-	@Inject
-	@Named(value = ApplicationData.SERVICE_EXECUTOR)
-	private ListeningExecutorService					pool;
 
 	@Inject
 	private AccountDao									accountDao;

@@ -24,7 +24,6 @@ import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -35,27 +34,22 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class PlaylistServiceImpl implements PlaylistService {
-	private static final String			YOUTUBE_PLAYLIST_FEED_50_RESULTS	= "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
-	private static final String			YOUTUBE_PLAYLIST_VIDEO_ADD_FEED		= "http://gdata.youtube.com/feeds/api/playlists/%s";
-	private static final String			YOUTUBE_PLAYLIST_ADD_FEED			= "http://gdata.youtube.com/feeds/api/users/default/playlists";
+	private static final String	YOUTUBE_PLAYLIST_FEED_50_RESULTS	= "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
+	private static final String	YOUTUBE_PLAYLIST_VIDEO_ADD_FEED		= "http://gdata.youtube.com/feeds/api/playlists/%s";
+	private static final String	YOUTUBE_PLAYLIST_ADD_FEED			= "http://gdata.youtube.com/feeds/api/users/default/playlists";
 	@Inject
-	private GoogleAuthUtil				authTokenHelper;
+	private GoogleAuthUtil		authTokenHelper;
 	@Inject
-	private RequestSigner				requestSigner;
+	private RequestSigner		requestSigner;
 	@Inject
-	private PlaylistDao					playlistDao;
+	private PlaylistDao			playlistDao;
 	@Inject
-	private AccountDao					accountDao;
+	private AccountDao			accountDao;
 
-	private final Logger				logger								= LoggerFactory.getLogger(PlaylistServiceImpl.class);
-	@Inject
-	@Named(value = ApplicationData.SERVICE_EXECUTOR)
-	private ListeningExecutorService	service;
+	private final Logger		logger								= LoggerFactory.getLogger(PlaylistServiceImpl.class);
 
 	@Override
 	public String addLatestVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
