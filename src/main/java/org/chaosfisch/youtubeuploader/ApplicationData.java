@@ -14,8 +14,8 @@ public interface ApplicationData {
 	String	DEVELOPER_KEY		= "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
 	String	GDATA_VERSION		= "2";
 	String	SERVICE_EXECUTOR	= "SERVICE_EXECUTOR";
-	String	VERSION				= "3.0.0.4";
-	int		RELEASE				= 4;
+	String	VERSION				= "3.0.0.6";
+	int		RELEASE				= 6;
 	String	BASEURL				= "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
 	String	DATA_DIR			= System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
 }

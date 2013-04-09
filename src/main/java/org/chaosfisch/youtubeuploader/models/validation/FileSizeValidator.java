@@ -25,6 +25,7 @@ public class FileSizeValidator {
 		}
 
 		final File file = new File(fileName);
+
 		if (file.exists() && file.length() > size) {
 			// TODO m.addValidator(this, "file_size_error");
 		}
