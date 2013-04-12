@@ -209,7 +209,8 @@ public class UploadWorker extends Task<Void> {
 		super.done();
 		try {
 			get();
-		} catch (final InterruptedException e) {
+		} catch (final InterruptedException e) { // $codepro.audit.disable
+													// logExceptions
 			Thread.currentThread()
 				.interrupt();
 		} catch (final Throwable t) {
@@ -285,7 +286,7 @@ public class UploadWorker extends Task<Void> {
 		uploadDao.update(upload);
 
 		// Get File and Check if existing
-		fileToUpload = new File(upload.getFile());
+		fileToUpload = upload.getFile();
 
 		if (!fileToUpload.exists()) {
 			throw new FileNotFoundException("Datei existiert nicht.");
@@ -348,7 +349,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void browserAction() {
 		if (upload.getDateOfRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
-			.isEmpty()) && !upload.getClaim()) {
+			.isEmpty()) && !upload.getMonetizeClaim()) {
 			return;
 		}
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
@@ -357,17 +358,17 @@ public class UploadWorker extends Task<Void> {
 		extendedPlacerholders.register("{title}", upload.getTitle());
 		extendedPlacerholders.register("{description}", upload.getDescription());
 
-		upload.setMonetizetitle(extendedPlacerholders.replace(upload.getMonetizetitle()));
-		upload.setMonetizedescription(extendedPlacerholders.replace(upload.getMonetizedescription()));
-		upload.setMonetizeid(extendedPlacerholders.replace(upload.getMonetizeid()));
-		upload.setMonetizenotes(extendedPlacerholders.replace(upload.getMonetizenotes()));
+		upload.setMonetizeTitle(extendedPlacerholders.replace(upload.getMonetizeTitle()));
+		upload.setMonetizeDescription(extendedPlacerholders.replace(upload.getMonetizeDescription()));
+		upload.setMonetizeId(extendedPlacerholders.replace(upload.getMonetizeId()));
+		upload.setMonetizeNotes(extendedPlacerholders.replace(upload.getMonetizeNotes()));
 
-		upload.setMonetizetmsid(extendedPlacerholders.replace(upload.getMonetizetmsid()));
-		upload.setMonetizeisan(extendedPlacerholders.replace(upload.getMonetizeisan()));
-		upload.setMonetizeeidr(extendedPlacerholders.replace(upload.getMonetizeeidr()));
-		upload.setMonetizetitleepisode(extendedPlacerholders.replace(upload.getMonetizetitleepisode()));
-		upload.setMonetizeseasonnb(extendedPlacerholders.replace(upload.getMonetizeseasonnb()));
-		upload.setMonetizeepisodenb(extendedPlacerholders.replace(upload.getMonetizeepisodenb()));
+		upload.setMonetizeTmsid(extendedPlacerholders.replace(upload.getMonetizeTmsid()));
+		upload.setMonetizeIsan(extendedPlacerholders.replace(upload.getMonetizeIsan()));
+		upload.setMonetizeEidr(extendedPlacerholders.replace(upload.getMonetizeEidr()));
+		upload.setMonetizeTitleepisode(extendedPlacerholders.replace(upload.getMonetizeTitleepisode()));
+		upload.setMonetizeSeasonNb(extendedPlacerholders.replace(upload.getMonetizeSeasonNb()));
+		upload.setMonetizeEpisodeNb(extendedPlacerholders.replace(upload.getMonetizeEpisodeNb()));
 
 		metadataService.activateBrowserfeatures(upload);
 	}

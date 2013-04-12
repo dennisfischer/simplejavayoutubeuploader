@@ -7,15 +7,26 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.models.validation;
+package org.chaosfisch.youtubeuploader.db.validation;
 
-import org.chaosfisch.util.TagParser;
+import java.io.File;
 
-public class TagValidator {
+public class FileSizeValidator implements Validator<String> {
 
-	public void validate(final String string) {
-		if (string != null && !TagParser.isValid(string)) {
-			// TODO m.addValidator(this, "tag_error");
+	private final int	size;
+
+	public FileSizeValidator(final int size) {
+		this.size = size;
+	}
+
+	@Override
+	public boolean validate(final String fileName) {
+		if (fileName != null && !fileName.isEmpty()) {
+			final File file = new File(fileName);
+			if (file.exists() && file.length() <= size) {
+				return true;
+			}
 		}
+		return false;
 	}
 }

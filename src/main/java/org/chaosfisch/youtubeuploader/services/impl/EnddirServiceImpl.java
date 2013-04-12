@@ -25,18 +25,18 @@ public class EnddirServiceImpl implements EnddirService {
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
-		if (upload.getEnddir() == null || upload.getEnddir()
-			.isEmpty()) {
+		if (upload.getEnddir() == null) {
 			return;
 		}
-		final File enddir = new File(upload.getEnddir());
-		if (!enddir.isDirectory()) {
+		if (!upload.getEnddir()
+			.isDirectory()) {
 			logger.warn("Enddir not existing!");
 		}
-		logger.debug("Moving file to {}", enddir);
+		logger.debug("Moving file to {}", upload.getEnddir()
+			.toString());
 
 		File endFile = null;
-		final String fileName = _getFileName(fileToMove, enddir, upload);
+		final String fileName = _getFileName(fileToMove, upload.getEnddir(), upload);
 		for (int i = 0; i < 100; i++) {
 			endFile = new File(_getIncrementedFileName(fileName, i));
 			if (!endFile.exists()) {
@@ -64,7 +64,9 @@ public class EnddirServiceImpl implements EnddirService {
 		if (getEnddirSetting()) {
 			fileName = enddir.getAbsolutePath() + "/" + upload.getTitle()
 				.replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
+				.getAbsolutePath()
 				.substring(upload.getFile()
+					.getAbsolutePath()
 					.lastIndexOf("."));
 		} else {
 			fileName = enddir.getAbsolutePath() + "/" + fileToMove.getName();

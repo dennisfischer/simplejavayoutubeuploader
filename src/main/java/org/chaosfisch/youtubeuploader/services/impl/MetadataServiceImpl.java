@@ -35,9 +35,11 @@ import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.data.Asset;
 import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
 import org.chaosfisch.youtubeuploader.db.data.ClaimType;
 import org.chaosfisch.youtubeuploader.db.data.Comment;
+import org.chaosfisch.youtubeuploader.db.data.Syndication;
 import org.chaosfisch.youtubeuploader.db.data.Visibility;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
@@ -82,7 +84,8 @@ public class MetadataServiceImpl implements MetadataService {
 
 		final VideoEntry videoEntry = new VideoEntry();
 		videoEntry.mediaGroup.category = new ArrayList<Category>(1);
-		videoEntry.mediaGroup.category.add(upload.getCategory());
+		videoEntry.mediaGroup.category.add(upload.getCategory()
+			.toCategory());
 		videoEntry.mediaGroup.license = upload.getLicense()
 			.getMetaIdentifier();
 
@@ -273,33 +276,33 @@ public class MetadataServiceImpl implements MetadataService {
 			}
 		}
 
-		if (upload.getClaim()) {
+		if (upload.getMonetizeClaim()) {
 			postMetaDataParams.add(new BasicNameValuePair("enable_monetization",
 				boolConverter(true)));
 			postMetaDataParams.add(new BasicNameValuePair("monetization_style",
 				"ads"));
-			if (!upload.getMonetizepartner() || upload.getMonetizeclaimpolicy() == ClaimOption.MONETIZE) {
+			if (!upload.getMonetizePartner() || upload.getMonetizeClaimoption() == ClaimOption.MONETIZE) {
 				postMetaDataParams.add(new BasicNameValuePair("enable_overlay_ads",
-					boolConverter(upload.getOverlay())));
+					boolConverter(upload.getMonetizeOverlay())));
 				postMetaDataParams.add(new BasicNameValuePair("trueview_instream",
-					boolConverter(upload.getTrueview())));
+					boolConverter(upload.getMonetizeTrueview())));
 				postMetaDataParams.add(new BasicNameValuePair("instream",
-					boolConverter(upload.getInstream())));
+					boolConverter(upload.getMonetizeInstream())));
 				postMetaDataParams.add(new BasicNameValuePair("long_ads_checkbox",
-					boolConverter(upload.getInstreamdefaults())));
+					boolConverter(upload.getMonetizeInstreamDefaults())));
 				postMetaDataParams.add(new BasicNameValuePair("paid_product",
-					boolConverter(upload.getProduct())));
+					boolConverter(upload.getMonetizeProduct())));
 				postMetaDataParams.add(new BasicNameValuePair("allow_syndication",
-					boolConverter(upload.getSyndication() == 0)));
+					boolConverter(upload.getMonetizeSyndication() == Syndication.GLOBAL)));
 			}
 			// {{ PARTNER
-			if (upload.getMonetizepartner()) {
+			if (upload.getMonetizePartner()) {
 				postMetaDataParams.add(new BasicNameValuePair("claim_type",
-					upload.getMonetizeclaimtype() == ClaimType.AUDIO_VISUAL ? "B" : upload.getMonetizeclaimtype() == ClaimType.VISUAL ? "V"
+					upload.getMonetizeClaimtype() == ClaimType.AUDIO_VISUAL ? "B" : upload.getMonetizeClaimtype() == ClaimType.VISUAL ? "V"
 							: "A"));
 
-				final String toFind = upload.getMonetizeclaimpolicy() == ClaimOption.MONETIZE ? "Monetize in all countries"
-						: upload.getMonetizeclaimpolicy() == ClaimOption.TRACK ? "Track in all countries" : "Block in all countries";
+				final String toFind = upload.getMonetizeClaimoption() == ClaimOption.MONETIZE ? "Monetize in all countries"
+						: upload.getMonetizeClaimoption() == ClaimOption.TRACK ? "Track in all countries" : "Block in all countries";
 
 				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);
@@ -317,40 +320,41 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("usage_policy",
 					usagePolicy));
 
-				final String prefix = upload.getMonetizeasset() == 0 ? "web_" : upload.getMonetizeasset() == 1 ? "tv_" : "movie_";
+				final String prefix = upload.getMonetizeAsset() == Asset.WEB ? "web_" : upload.getMonetizeAsset() == Asset.TV ? "tv_"
+						: "movie_";
 
 				postMetaDataParams.add(new BasicNameValuePair("asset_type",
 					prefix.substring(0, prefix.length() - 1)));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "custom_id",
-					upload.getMonetizeid()
-						.isEmpty() ? upload.getVideoid() : upload.getMonetizeid()));
+					upload.getMonetizeId()
+						.isEmpty() ? upload.getVideoid() : upload.getMonetizeId()));
 
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "notes",
-					upload.getMonetizenotes()));
+					upload.getMonetizeNotes()));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "tms_id",
-					upload.getMonetizetmsid()));
+					upload.getMonetizeTmsid()));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "isan",
-					upload.getMonetizeisan()));
+					upload.getMonetizeIsan()));
 				postMetaDataParams.add(new BasicNameValuePair(prefix + "eidr",
-					upload.getMonetizeeidr()));
+					upload.getMonetizeEidr()));
 
-				if (upload.getMonetizeasset() != 1) {
+				if (upload.getMonetizeAsset() != Asset.TV) {
 					// WEB + MOVIE ONLY
 					postMetaDataParams.add(new BasicNameValuePair(prefix + "title",
-						!upload.getMonetizetitle()
-							.isEmpty() ? upload.getMonetizetitle() : upload.getTitle()));
+						!upload.getMonetizeTitle()
+							.isEmpty() ? upload.getMonetizeTitle() : upload.getTitle()));
 					postMetaDataParams.add(new BasicNameValuePair(prefix + "description",
-						upload.getMonetizedescription()));
+						upload.getMonetizeDescription()));
 				} else {
 					// TV ONLY
 					postMetaDataParams.add(new BasicNameValuePair("show_title",
-						upload.getMonetizetitle()));
+						upload.getMonetizeTitle()));
 					postMetaDataParams.add(new BasicNameValuePair("episode_title",
-						upload.getMonetizetitleepisode()));
+						upload.getMonetizeTitleepisode()));
 					postMetaDataParams.add(new BasicNameValuePair("season_nb",
-						upload.getMonetizeseasonnb()));
+						upload.getMonetizeSeasonNb()));
 					postMetaDataParams.add(new BasicNameValuePair("episode_nb",
-						upload.getMonetizeepisodenb()));
+						upload.getMonetizeEpisodeNb()));
 				}
 			}
 			// }} PARTNER

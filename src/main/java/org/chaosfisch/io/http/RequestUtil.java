@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class RequestUtil {
 
 	static DefaultHttpClient	httpClient;
-	public static HttpContext	context	= new BasicHttpContext();
+	public static final HttpContext	context	= new BasicHttpContext();
 	static {
 		httpClient = new DefaultHttpClient();
 		httpClient.setRedirectStrategy(new DefaultRedirectStrategy() {

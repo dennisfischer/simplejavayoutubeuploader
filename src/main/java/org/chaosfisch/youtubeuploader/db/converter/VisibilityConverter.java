@@ -7,20 +7,17 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.services;
+package org.chaosfisch.youtubeuploader.db.converter;
 
-import java.util.List;
+import org.chaosfisch.youtubeuploader.db.data.Visibility;
+import org.jooq.impl.EnumConverter;
 
-import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.google.atom.AtomCategory;
+public class VisibilityConverter extends EnumConverter<String, Visibility> {
 
-public interface CategoryService {
+	private static final long	serialVersionUID	= -6647193407765825781L;
 
-	/**
-	 * Loads all available categorys from youtube
-	 * 
-	 * @return List<AtomCategory> of loaded - valid - categories
-	 * @throws SystemException
-	 */
-	List<AtomCategory> load() throws SystemException;
+	public VisibilityConverter() {
+		super(String.class,
+			Visibility.class);
+	}
 }

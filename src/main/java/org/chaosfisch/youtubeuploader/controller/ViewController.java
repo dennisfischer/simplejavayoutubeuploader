@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,10 +30,12 @@ import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
+import org.chaosfisch.youtubeuploader.db.data.Asset;
 import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
 import org.chaosfisch.youtubeuploader.db.data.ClaimType;
 import org.chaosfisch.youtubeuploader.db.data.Comment;
 import org.chaosfisch.youtubeuploader.db.data.License;
+import org.chaosfisch.youtubeuploader.db.data.Syndication;
 import org.chaosfisch.youtubeuploader.db.data.Videoresponse;
 import org.chaosfisch.youtubeuploader.db.data.Visibility;
 import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
@@ -56,7 +59,7 @@ public class ViewController {
 		final Dragboard db = event.getDragboard();
 
 		if (db.hasFiles()) {
-			// TODO uploadController.addUploadFiles(db.getFiles());
+			uploadController.addUploadFiles(db.getFiles());
 			event.setDropCompleted(true);
 		} else {
 			event.setDropCompleted(false);
@@ -130,7 +133,6 @@ public class ViewController {
 	@FXML
 	void menuOpen(final ActionEvent event) {
 		uploadController.openFiles(event);
-
 	}
 
 	@Inject
@@ -158,24 +160,24 @@ public class ViewController {
 		standardTemplate.setNumber((short) 0);
 		standardTemplate.setFacebook(false);
 		standardTemplate.setTwitter(false);
-		standardTemplate.setDefaultdir(System.getProperty("user.home"));
-		standardTemplate.setClaim(false);
-		standardTemplate.setOverlay(false);
-		standardTemplate.setTrueview(false);
-		standardTemplate.setProduct(false);
-		standardTemplate.setInstream(false);
-		standardTemplate.setInstreamdefaults(false);
-		standardTemplate.setMonetizepartner(false);
-		standardTemplate.setMonetizeclaimtype(ClaimType.AUDIO_VISUAL);
-		standardTemplate.setMonetizeclaimpolicy(ClaimOption.MONETIZE);
-		standardTemplate.setMonetizeasset(0);
-		standardTemplate.setSyndication(0);
+		standardTemplate.setDefaultdir(new File(System.getProperty("user.home")));
+		standardTemplate.setMonetizeClaim(false);
+		standardTemplate.setMonetizeOverlay(false);
+		standardTemplate.setMonetizeTrueview(false);
+		standardTemplate.setMonetizeProduct(false);
+		standardTemplate.setMonetizeInstream(false);
+		standardTemplate.setMonetizeInstreamDefaults(false);
+		standardTemplate.setMonetizePartner(false);
+		standardTemplate.setMonetizeClaimtype(ClaimType.AUDIO_VISUAL);
+		standardTemplate.setMonetizeClaimoption(ClaimOption.MONETIZE);
+		standardTemplate.setMonetizeAsset(Asset.WEB);
+		standardTemplate.setMonetizeSyndication(Syndication.GLOBAL);
 	}
 
 	@FXML
 	void initialize() {}
 
-	private final class ServerConnectDialogCallback implements EventHandler<ActionEvent> {
+	private final static class ServerConnectDialogCallback implements EventHandler<ActionEvent> {
 		private final InputDialog	myDialog;
 		private final TextField		port;
 		private final TextField		host;

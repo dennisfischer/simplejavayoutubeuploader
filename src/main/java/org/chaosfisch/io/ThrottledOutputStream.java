@@ -70,7 +70,8 @@ public class ThrottledOutputStream extends FilterOutputStream {
 			try {
 				Thread.sleep(wakeElapsed - elapsed);
 
-			} catch (final InterruptedException e) {
+			} catch (final InterruptedException e) { // $codepro.audit.disable
+														// logExceptions
 				Thread.currentThread()
 					.interrupt();
 			}

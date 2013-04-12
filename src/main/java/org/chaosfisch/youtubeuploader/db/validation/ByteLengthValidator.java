@@ -7,11 +7,11 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.models.validation;
+package org.chaosfisch.youtubeuploader.db.validation;
 
 import com.google.common.base.Charsets;
 
-public class ByteLengthValidator {
+public class ByteLengthValidator implements Validator<String> {
 	private final int	min;
 	private final int	max;
 
@@ -20,10 +20,12 @@ public class ByteLengthValidator {
 		this.max = max;
 	}
 
-	public void validate(final String string) {
-		if (string != null && (string.getBytes(Charsets.UTF_8).length < min || string.getBytes(Charsets.UTF_8).length > max)) {
-			// TODO m.addValidator(this, "byte_length_error");
+	@Override
+	public boolean validate(final String string) {
+		if (string != null && (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max)) {
+			return true;
 		}
+		return false;
 	}
 
 }

@@ -20,6 +20,14 @@ public class AtomCategory extends Category {
 	public @XStreamAlias("yt:deprecated")
 	Object	ytDeprecated;
 
+	public AtomCategory() {}
+
+	public AtomCategory(final String term, final String label, final String scheme) {
+		this.term = term;
+		this.label = label;
+		this.scheme = scheme;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()

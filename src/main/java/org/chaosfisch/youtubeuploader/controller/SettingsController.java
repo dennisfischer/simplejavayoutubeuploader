@@ -7,7 +7,6 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.net.URL;

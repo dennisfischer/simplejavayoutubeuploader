@@ -7,27 +7,21 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.models.validation;
+package org.chaosfisch.youtubeuploader.db.data;
 
-import java.io.File;
+import org.chaosfisch.util.TextUtil;
 
-public class FileSizeValidator {
+public enum Syndication {
+	GLOBAL("label.monetizeContentSyndicationGlobal"), MONETIZED_ONLY("label.monetizeContentSyndicationMonetizedOnly");
 
-	private final int	size;
+	private String	i18n;
 
-	public FileSizeValidator(final String stringToValidate, final int size) {
-		this.size = size;
+	private Syndication(final String i18n) {
+		this.i18n = i18n;
 	}
 
-	public void validate(final String fileName) {
-		if (fileName == null || fileName.isEmpty()) {
-			return;
-		}
-
-		final File file = new File(fileName);
-
-		if (file.exists() && file.length() > size) {
-			// TODO m.addValidator(this, "file_size_error");
-		}
+	@Override
+	public String toString() {
+		return TextUtil.getString(i18n);
 	}
 }

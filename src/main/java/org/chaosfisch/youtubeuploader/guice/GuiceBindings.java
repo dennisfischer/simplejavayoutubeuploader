@@ -11,7 +11,6 @@ package org.chaosfisch.youtubeuploader.guice;
 
 import java.sql.DriverManager;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
 
 import javafx.stage.FileChooser;
 
@@ -21,15 +20,12 @@ import org.chaosfisch.io.Throttle;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.TextUtil;
-import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
-import org.chaosfisch.youtubeuploader.services.CategoryService;
 import org.chaosfisch.youtubeuploader.services.EnddirService;
 import org.chaosfisch.youtubeuploader.services.MetadataService;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.chaosfisch.youtubeuploader.services.ResumeableManager;
 import org.chaosfisch.youtubeuploader.services.ThumbnailService;
-import org.chaosfisch.youtubeuploader.services.impl.CategoryServiceImpl;
 import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
 import org.chaosfisch.youtubeuploader.services.impl.MetadataServiceImpl;
 import org.chaosfisch.youtubeuploader.services.impl.PlaylistServiceImpl;
@@ -42,8 +38,6 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.Executor;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -68,11 +62,7 @@ public class GuiceBindings extends AbstractModule {
 		bind(UploadController.class).in(Singleton.class);
 		bind(UploadViewModel.class).in(Singleton.class);
 
-		bind(ListeningExecutorService.class).annotatedWith(Names.named(ApplicationData.SERVICE_EXECUTOR))
-			.toInstance(MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
-
 		mapDatabase();
-
 	}
 
 	private void mapDatabase() {
@@ -117,8 +107,6 @@ public class GuiceBindings extends AbstractModule {
 	}
 
 	private void mapServices() {
-		bind(CategoryService.class).to(CategoryServiceImpl.class)
-			.in(Singleton.class);
 		bind(PlaylistService.class).to(PlaylistServiceImpl.class)
 			.in(Singleton.class);
 		bind(MetadataService.class).to(MetadataServiceImpl.class)

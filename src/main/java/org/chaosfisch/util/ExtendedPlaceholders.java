@@ -15,14 +15,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.chaosfisch.youtubeuploader.I18nHelper;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 public class ExtendedPlaceholders {
 	/**
 	 * The file for the {file} placeholder
 	 */
-	private String							file;
+	private File							file;
 
 	/**
 	 * Custom user defined placeholders
@@ -49,7 +48,7 @@ public class ExtendedPlaceholders {
 	 * @param number
 	 *            for {number} modifications
 	 */
-	public ExtendedPlaceholders(final String file, final Playlist playlist, final int number) {
+	public ExtendedPlaceholders(final File file, final Playlist playlist, final int number) {
 		this.file = file;
 		this.playlist = playlist;
 		this.number = number;
@@ -81,24 +80,30 @@ public class ExtendedPlaceholders {
 			return "";
 		}
 		if (playlist != null) {
-			input = input.replaceAll(I18nHelper.message("autotitle.playlist"), playlist.getTitle());
+			input = input.replaceAll(TextUtil.getString("autotitle.playlist"), playlist.getTitle());
 
-			final Pattern p = Pattern.compile(I18nHelper.message("autotitle.numberPattern"));
+			final Pattern p = Pattern.compile(TextUtil.getString("autotitle.numberPattern"));
 			final Matcher m = p.matcher(input);
 
 			if (m.find()) {
 				input = m.replaceAll(zeroFill(playlist.getNumber() + 1 + number, Integer.parseInt(m.group(1))));
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
+				input = input.replaceAll(TextUtil.getString("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
 			} else {
-				input = input.replaceAll(I18nHelper.message("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
+				input = input.replaceAll(TextUtil.getString("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
 			}
 		}
 
-		int index = file.lastIndexOf(".");
-		if (index == -1) {
-			index = file.length();
+		if (file != null) {
+
+			final String fileName = file.getAbsolutePath();
+
+			int index = fileName.lastIndexOf(".");
+			if (index == -1) {
+				index = fileName.length();
+			}
+			input = input.replaceAll(TextUtil.getString("autotitle.file"),
+				fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
 		}
-		input = input.replaceAll(I18nHelper.message("autotitle.file"), file.substring(file.lastIndexOf(File.separator) + 1, index));
 
 		for (final Map.Entry<String, String> vars : map.entrySet()) {
 			input = input.replaceAll(Pattern.quote(vars.getKey()), vars.getValue());
@@ -122,7 +127,7 @@ public class ExtendedPlaceholders {
 	/**
 	 * @return the file
 	 */
-	public final String getFile() {
+	public final File getFile() {
 		return file;
 	}
 
@@ -130,7 +135,7 @@ public class ExtendedPlaceholders {
 	 * @param file
 	 *            the file to set
 	 */
-	public final void setFile(final String file) {
+	public final void setFile(final File file) {
 		this.file = file;
 	}
 

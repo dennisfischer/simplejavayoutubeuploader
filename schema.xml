@@ -19,11 +19,91 @@
 					<name>java.util.GregorianCalendar</name>
 					<converter>org.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
 				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Category</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.CategoryConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.ClaimOption</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.ClaimOptionConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.ClaimType</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.ClaimTypeConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Comment</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.CommentConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.License</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.LicenseConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Videoresponse</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.VideoresponseConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Visibility</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.VisibilityConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Asset</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.AssetConverter</converter>
+				</customType>
+				<customType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Syndication</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.SyndicationConverter</converter>
+				</customType>
+				<customType>
+					<name>java.io.File</name>
+					<converter>org.chaosfisch.youtubeuploader.db.converter.FileConverter</converter>
+				</customType>
 			</customTypes>
 			<forcedTypes>
 				<forcedType>
 					<name>java.util.GregorianCalendar</name>
 					<expressions>.*\.DATE_OF_.*</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Category</name>
+					<expressions>.*\.CATEGORY</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.ClaimOption</name>
+					<expressions>.*\.*CLAIMOPTION</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.ClaimType</name>
+					<expressions>.*\.*CLAIMTYPE</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Comment</name>
+					<expressions>.*\.COMMENT</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.License</name>
+					<expressions>.*\.LICENSE</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Videoresponse</name>
+					<expressions>.*\.VIDEORESPONSE</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Visibility</name>
+					<expressions>.*\.VISIBILITY</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Asset</name>
+					<expressions>.*\.*ASSET</expressions>
+				</forcedType>
+				<forcedType>
+					<name>org.chaosfisch.youtubeuploader.db.data.Syndication</name>
+					<expressions>.*\.*SYNDICATION</expressions>
+				</forcedType>
+				<forcedType>
+					<name>java.io.File</name>
+					<expressions>.*\.FILE|.*\.DEFAULTDIR|.*\.ENDDIR</expressions>
 				</forcedType>
 			</forcedTypes>
 

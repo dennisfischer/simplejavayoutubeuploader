@@ -7,11 +7,17 @@
  * 
  * Contributors: Dennis Fischer
  ******************************************************************************/
-package org.chaosfisch.youtubeuploader.models;
+package org.chaosfisch.youtubeuploader.db.converter;
 
-public class Thumbnail {
-	public String	error;
-	public boolean	success;
-	public String	preview_url;
-	public int		version;
+import org.chaosfisch.youtubeuploader.db.data.Comment;
+import org.jooq.impl.EnumConverter;
+
+public class CommentConverter extends EnumConverter<String, Comment> {
+
+	private static final long	serialVersionUID	= -5791845905794108072L;
+
+	public CommentConverter() {
+		super(String.class,
+			Comment.class);
+	}
 }
