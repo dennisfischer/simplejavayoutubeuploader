@@ -10,6 +10,7 @@
 package org.chaosfisch.youtubeuploader;
 
 import java.io.IOException;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -27,7 +28,8 @@ import jfxtras.labs.dialogs.MonologFXButton;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
-import org.jooq.impl.Executor;
+import org.jooq.Configuration;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,10 +110,12 @@ public class GuiUploader extends GuiceApplication {
 	}
 
 	public void initDatabase() {
-		final Executor exec = injector.getInstance(Executor.class);
-		exec.update(Tables.UPLOAD)
+		DSL.using(injector.getInstance(Configuration.class))
+			.update(Tables.UPLOAD)
 			.set(Tables.UPLOAD.INPROGRESS, false)
 			.set(Tables.UPLOAD.FAILED, false)
+			.set(Tables.UPLOAD.DATE_OF_START, (GregorianCalendar) null)
+			.set(Tables.UPLOAD.DATE_OF_RELEASE, (GregorianCalendar) null)
 			.execute();
 	}
 

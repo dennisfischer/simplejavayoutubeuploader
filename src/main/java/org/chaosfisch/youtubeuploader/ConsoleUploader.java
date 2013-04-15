@@ -16,7 +16,8 @@ import org.chaosfisch.util.LogfileCommitter;
 import org.chaosfisch.youtubeuploader.controller.ConsoleController;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
-import org.jooq.impl.Executor;
+import org.jooq.Configuration;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +71,8 @@ public class ConsoleUploader {
 	}
 
 	public static void initDatabase() {
-		final Executor exec = injector.getInstance(Executor.class);
-		exec.update(Tables.UPLOAD)
+		DSL.using(injector.getInstance(Configuration.class))
+			.update(Tables.UPLOAD)
 			.set(Tables.UPLOAD.INPROGRESS, false)
 			.execute();
 	}

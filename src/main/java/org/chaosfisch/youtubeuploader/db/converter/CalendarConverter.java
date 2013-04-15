@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 
 import org.jooq.Converter;
 
-public class CalendarConverter implements Converter<Timestamp, GregorianCalendar> {
+public class CalendarConverter implements Converter<Timestamp, Calendar> {
 
 	private static final long	serialVersionUID	= 1335558703543045626L;
 
@@ -24,13 +24,13 @@ public class CalendarConverter implements Converter<Timestamp, GregorianCalendar
 		if (databaseObject == null) {
 			return null;
 		}
-		final GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+		final GregorianCalendar calendar = new GregorianCalendar();
 		calendar.setTimeInMillis(databaseObject.getTime());
 		return calendar;
 	}
 
 	@Override
-	public Timestamp to(final GregorianCalendar userObject) {
+	public Timestamp to(final Calendar userObject) {
 		return userObject == null ? null : new Timestamp(userObject.getTimeInMillis());
 	}
 
@@ -40,7 +40,7 @@ public class CalendarConverter implements Converter<Timestamp, GregorianCalendar
 	}
 
 	@Override
-	public Class<GregorianCalendar> toType() {
-		return GregorianCalendar.class;
+	public Class<Calendar> toType() {
+		return Calendar.class;
 	}
 }

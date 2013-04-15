@@ -19,20 +19,16 @@ import org.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.jooq.Cursor;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
-import org.jooq.conf.Settings;
-import org.jooq.impl.Executor;
+import org.jooq.impl.DSL;
 
 public class AccountTrigger extends org.h2.tools.TriggerAdapter {
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
-		final Settings settings = new Settings();
-		settings.setExecuteLogging(false);
-		final Executor create = new Executor(conn,
-			SQLDialect.H2,
-			settings);
+		final DSLContext create = DSL.using(conn, SQLDialect.H2);
 		Integer firstId = null;
 		Integer lastId = null;
 		if (newRow != null) {

@@ -10,13 +10,9 @@
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,6 +25,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -37,7 +34,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -68,12 +65,12 @@ import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveTemplateCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateTemplateCommand;
+import org.chaosfisch.youtubeuploader.command.UploadControllerAddCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
-import org.chaosfisch.youtubeuploader.db.dao.UploadPlaylistDao;
 import org.chaosfisch.youtubeuploader.db.data.Asset;
 import org.chaosfisch.youtubeuploader.db.data.Category;
 import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
@@ -90,10 +87,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.UploadPlaylist;
-import org.chaosfisch.youtubeuploader.db.validation.ByteLengthValidator;
-import org.chaosfisch.youtubeuploader.db.validation.FileSizeValidator;
-import org.chaosfisch.youtubeuploader.db.validation.TagValidator;
+import org.chaosfisch.youtubeuploader.db.validation.UploadValidationCode;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.chaosfisch.youtubeuploader.vo.UploadViewVO;
 
@@ -110,7 +104,7 @@ public class UploadController {
 	private URL									location;
 
 	@FXML
-	private ChoiceBox<Account>					uploadAccount;
+	private ComboBox<Account>					uploadAccount;
 
 	@FXML
 	private Button								addUpload;
@@ -155,16 +149,16 @@ public class UploadController {
 	private Label								labelTitleEpisode;
 
 	@FXML
-	private ChoiceBox<Asset>					monetizeAsset;
+	private ComboBox<Asset>						monetizeAsset;
 
 	@FXML
 	private CheckBox							monetizeClaim;
 
 	@FXML
-	private ChoiceBox<ClaimOption>				monetizeClaimOption;
+	private ComboBox<ClaimOption>				monetizeClaimOption;
 
 	@FXML
-	private ChoiceBox<ClaimType>				monetizeClaimType;
+	private ComboBox<ClaimType>					monetizeClaimType;
 
 	@FXML
 	private TextField							monetizeCustomID;
@@ -203,7 +197,7 @@ public class UploadController {
 	private CheckBox							monetizeProductPlacement;
 
 	@FXML
-	private ChoiceBox<Syndication>				monetizeSyndication;
+	private ComboBox<Syndication>				monetizeSyndication;
 
 	@FXML
 	private TextField							monetizeTMSID;
@@ -257,13 +251,13 @@ public class UploadController {
 	private Button								saveTemplate;
 
 	@FXML
-	private ChoiceBox<Template>					templates;
+	private ComboBox<Template>					templates;
 
 	@FXML
-	private ChoiceBox<Category>					uploadCategory;
+	private ComboBox<Category>					uploadCategory;
 
 	@FXML
-	private ChoiceBox<Comment>					uploadComment;
+	private ComboBox<Comment>					uploadComment;
 
 	@FXML
 	private CheckBox							uploadCommentvote;
@@ -284,13 +278,13 @@ public class UploadController {
 	private CheckBox							uploadFacebook;
 
 	@FXML
-	private ChoiceBox<File>						uploadFile;
+	private ComboBox<File>						uploadFile;
 
 	@FXML
 	private GridPane							uploadGrid;
 
 	@FXML
-	private ChoiceBox<License>					uploadLicense;
+	private ComboBox<License>					uploadLicense;
 
 	@FXML
 	private TextArea							uploadMessage;
@@ -314,10 +308,10 @@ public class UploadController {
 	private CheckBox							uploadTwitter;
 
 	@FXML
-	private ChoiceBox<Videoresponse>			uploadVideoresponse;
+	private ComboBox<Videoresponse>				uploadVideoresponse;
 
 	@FXML
-	private ChoiceBox<Visibility>				uploadVisibility;
+	private ComboBox<Visibility>				uploadVisibility;
 
 	@FXML
 	private TitledPane							x2;
@@ -354,8 +348,6 @@ public class UploadController {
 	@Inject
 	private UploadDao							uploadDao;
 	@Inject
-	private UploadPlaylistDao					uploadPlaylistDao;
-	@Inject
 	private EventBus							eventBus;
 
 	private final ObservableList<File>			filesList			= FXCollections.observableArrayList();
@@ -381,97 +373,67 @@ public class UploadController {
 		final Upload upload = beanPathAdapter.getBean()
 			.getUpload();
 
-		final ByteLengthValidator titleValidator = new ByteLengthValidator(1,
-			100);
-		final ByteLengthValidator descriptionValidator = new ByteLengthValidator(0,
-			5000);
-		final TagValidator tagValidator = new TagValidator();
-		final FileSizeValidator thumbnailValidator = new FileSizeValidator(2097152);
+		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
+		command.upload = upload;
+		command.playlists = playlistTargetList;
+		command.account = uploadAccount.getValue();
+		command.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-		if (uploadAccount.getValue() == null) {
-			// ERROR ACCOUNT
-		} else if (uploadFile.getValue() == null) {
-			// ERROR FILE
-		} else if (uploadTitle.getText() == null || uploadTitle.getText()
-			.isEmpty()) {
-			// ERROR TITLE
-		} else if (!titleValidator.validate(uploadTitle.getText())) {
-			// ERROR TITLE LENGTH
-		} else if (uploadCategory.getValue() == null) {
-			// ERROR CATEGORY
-		} else if (!descriptionValidator.validate(uploadDescription.getText())) {
-			// ERORR DESCRIPTION
-		} else if (uploadDescription.getText()
-			.contains("<") || uploadDescription.getText()
-			.contains(">")) {
-			// ERROR DESCRIPTION
-		} else if (!tagValidator.validate(uploadTags.getText())) {
-			// ERROR TAGS
-		} else if (!thumbnailValidator.validate(uploadThumbnail.getText())) {
-			// ERROR THUMBNAIL
-		}
-
-		upload.setAccountId(uploadAccount.getValue()
-			.getId());
-
-		try {
-			if (uploadFile.getValue()
-				.isFile()) {
-				upload.setMimetype(Files.probeContentType(Paths.get(uploadFile.getValue()
-					.getAbsolutePath())));
+			@Override
+			public void handle(final WorkerStateEvent event) {
+				// Cleanup (reset form)
+				filesList.remove(uploadFile.getValue());
+				uploadFile.getSelectionModel()
+					.selectNext();
+				idProperty.setValue(-1);
 			}
+		});
+		command.setOnFailed(new EventHandler<WorkerStateEvent>() {
 
-		} catch (final IOException e) { // $codepro.audit.disable logExceptions
-			upload.setMimetype("application/octet-stream");
-		}
+			@Override
+			public void handle(final WorkerStateEvent event) {
+				try {
+					final UploadValidationCode error = UploadValidationCode.valueOf(event.getSource()
+						.getException()
+						.getMessage());
+					System.out.println("Error occured: " + error.name());
+					switch (error) {
+						case ACCOUNT_NULL:
+						break;
+						case CATEGORY_NULL:
+						break;
+						case DESCRIPTION_ILLEGAL:
+						break;
+						case DESCRIPTION_LENGTH:
+						break;
+						case DESCRIPTION_NULL:
+						break;
+						case FILE_NULL:
+						break;
+						case PLAYLISTS_NULL:
+						break;
+						case TAGS_ILLEGAL:
+						break;
+						case THUMBNAIL_SIZE:
+						break;
+						case TITLE_ILLEGAL:
+						break;
+						case TITLE_NULL:
+						break;
+						case UPLOAD_NULL:
+						break;
+						default:
+						break;
 
-		if (started.getValue() == null || started.getValue()
-			.getTimeInMillis() <= System.currentTimeMillis()) {
-			upload.setDateOfStart(null);
-		}
-
-		if (release.getValue() == null || release.getValue()
-			.getTimeInMillis() <= System.currentTimeMillis()) {
-			upload.setDateOfRelease(null);
-		} else {
-			final GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTime(release.getValue()
-				.getTime());
-			final int unroundedMinutes = calendar.get(Calendar.MINUTE);
-			final int mod = unroundedMinutes % 30;
-			calendar.add(Calendar.MINUTE, mod < 16 ? -mod : 30 - mod);
-			upload.setDateOfRelease(calendar);
-		}
-
-		if (upload.getId() == -1) {
-			upload.setId(null);
-			upload.setArchived(false);
-			upload.setFailed(false);
-			upload.setInprogress(false);
-			upload.setLocked(false);
-			upload.setPauseonfinish(false);
-			uploadDao.insertReturning(upload);
-		} else {
-			upload.setArchived(false);
-			upload.setFailed(false);
-			upload.setLocked(false);
-			uploadDao.update(upload);
-		}
-
-		uploadPlaylistDao.delete(uploadPlaylistDao.fetchByUploadId(upload.getId()));
-		for (final Playlist playlist : playlistTargetList) {
-			final UploadPlaylist relation = new UploadPlaylist();
-			relation.setPlaylistId(playlist.getId());
-			relation.setUploadId(upload.getId());
-			uploadPlaylistDao.insert(relation);
-		}
-
-		// Cleanup (reset form)
-		filesList.remove(uploadFile.getValue());
-		uploadFile.getSelectionModel()
-			.selectNext();
-		idProperty.setValue(-1);
-
+					}
+				} catch (final Exception e) {
+					event.getSource()
+						.getException()
+						.printStackTrace();
+				}
+			}
+		});
+		command.start();
 	}
 
 	@FXML
@@ -509,6 +471,7 @@ public class UploadController {
 	@FXML
 	void refreshPlaylists(final ActionEvent event) {
 		final RefreshPlaylistsCommand command = commandProvider.get(RefreshPlaylistsCommand.class);
+		command.accounts = new Account[accountsList.size()];
 		accountsList.toArray(command.accounts);
 		command.start();
 	}
@@ -760,6 +723,16 @@ public class UploadController {
 			.selectedItemProperty()
 			.addListener(new AccountChangeListener());
 
+		templates.getSelectionModel()
+			.selectedItemProperty()
+			.addListener(new ChangeListener<Template>() {
+
+				@Override
+				public void changed(final ObservableValue<? extends Template> observable, final Template oldValue, final Template newValue) {
+					beanPathAdapter.setBean(uploadViewVO);
+				}
+			});
+
 		final PreviewTitleInvalidationListener previewTitleInvalidationListener = new PreviewTitleInvalidationListener();
 		number.valueProperty()
 			.addListener(previewTitleInvalidationListener);
@@ -945,11 +918,11 @@ public class UploadController {
 
 	private void initSelection() {
 
-		final ChoiceBox<?>[] controls = new ChoiceBox[] { uploadVisibility, uploadComment, uploadLicense, uploadVideoresponse,
-				uploadAccount, monetizeClaimOption, monetizeClaimType, uploadCategory, templates };
+		final ComboBox<?>[] controls = new ComboBox[] { uploadVisibility, uploadComment, uploadLicense, uploadVideoresponse, uploadAccount,
+				monetizeClaimOption, monetizeClaimType, uploadCategory, templates };
 
-		for (final ChoiceBox<?> choiceBox : controls) {
-			choiceBox.getSelectionModel()
+		for (final ComboBox<?> comboBox : controls) {
+			comboBox.getSelectionModel()
 				.selectFirst();
 		}
 	}

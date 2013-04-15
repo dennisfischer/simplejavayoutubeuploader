@@ -381,7 +381,7 @@ public class UploadWorker extends Task<Void> {
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(),
 			null,
 			// upload.parent(Playlist.class),
-			upload.getNumber());
+			0);// upload.getNumber());
 		upload.setTitle(extendedPlaceholders.replace(upload.getTitle()));
 		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
 		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));

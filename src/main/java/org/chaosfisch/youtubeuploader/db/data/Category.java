@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.chaosfisch.youtubeuploader.db.data;
 
-import org.chaosfisch.google.atom.AtomCategory;
+import org.chaosfisch.google.atom.media.MediaCategory;
 import org.chaosfisch.util.TextUtil;
 
 public enum Category {
@@ -33,18 +33,18 @@ public enum Category {
 
 	private Category(final String term, final String label, final String scheme) {
 		this.term = term;
-		this.label = label;
+		this.label = TextUtil.getString(label);
 		this.scheme = scheme;
 	}
 
-	public AtomCategory toCategory() {
-		return new AtomCategory(term,
+	public MediaCategory toCategory() {
+		return new MediaCategory(term,
 			label,
 			scheme);
 	}
 
 	@Override
 	public String toString() {
-		return TextUtil.getString(label);
+		return label;
 	}
 }

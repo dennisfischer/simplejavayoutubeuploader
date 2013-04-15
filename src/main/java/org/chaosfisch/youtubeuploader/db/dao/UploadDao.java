@@ -14,29 +14,31 @@ import java.util.GregorianCalendar;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.jooq.impl.Executor;
+import org.jooq.Configuration;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.google.inject.Inject;
 
 public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.UploadDao {
-	private final Executor	create;
+	private final DSLContext	context;
 
 	@Inject
-	public UploadDao(final Executor create) {
-		super(create);
-		this.create = create;
+	public UploadDao(final Configuration configuration) {
+		super(configuration);
+		context = DSL.using(configuration);
 	}
 
 	public Upload insertReturning(final Upload upload) {
-		return create.insertInto(Tables.UPLOAD)
-			.set(create.newRecord(Tables.UPLOAD, upload))
+		return context.insertInto(Tables.UPLOAD)
+			.set(context.newRecord(Tables.UPLOAD, upload))
 			.returning()
 			.fetchOne()
 			.into(Upload.class);
 	}
 
 	public Account fetchOneAccountByUpload(final Upload upload) {
-		return create.select()
+		return context.select()
 			.from(Tables.ACCOUNT)
 			.join(Tables.UPLOAD)
 			.on(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
@@ -47,7 +49,7 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	public Upload fetchNextUpload() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
-		return create.select()
+		return context.select()
 			.from(Tables.UPLOAD)
 			.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true),
 				Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD.DATE_OF_START.le(cal)
@@ -57,7 +59,7 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	}
 
 	public long countLeftUploads() {
-		return create.select()
+		return context.select()
 			.from(Tables.UPLOAD)
 			.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.eq(false))
 			.fetchCount();
@@ -66,7 +68,7 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 	public long countAvailableStartingUploads() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
-		return create.select()
+		return context.select()
 			.from(Tables.UPLOAD)
 			.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true), Tables.UPLOAD.FAILED.ne(true),
 				Tables.UPLOAD.DATE_OF_START.le(cal))

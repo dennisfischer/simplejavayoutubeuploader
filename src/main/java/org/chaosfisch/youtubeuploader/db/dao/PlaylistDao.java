@@ -18,22 +18,24 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.jooq.impl.Executor;
+import org.jooq.Configuration;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.google.inject.Inject;
 
 public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.PlaylistDao {
 
-	private final Executor	create;
+	private final DSLContext	context;
 
 	@Inject
-	public PlaylistDao(final Executor create) {
-		super(create);
-		this.create = create;
+	public PlaylistDao(final Configuration configuration) {
+		super(configuration);
+		context = DSL.using(configuration);
 	}
 
 	public Account fetchOneAccountByPlaylist(final Playlist playlist) {
-		return create.select()
+		return context.select()
 			.from(Tables.ACCOUNT)
 			.join(Tables.PLAYLIST)
 			.on(Tables.PLAYLIST.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
@@ -42,7 +44,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public List<Playlist> fetchByTemplate(final Template template) {
-		return create.select()
+		return context.select()
 			.from(Tables.PLAYLIST)
 			.join(Tables.TEMPLATE_PLAYLIST)
 			.on(Tables.TEMPLATE_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
@@ -51,7 +53,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 	}
 
 	public List<Playlist> fetchByUpload(final Upload upload) {
-		return create.select()
+		return context.select()
 			.from(Tables.PLAYLIST)
 			.join(Tables.UPLOAD_PLAYLIST)
 			.on(Tables.UPLOAD_PLAYLIST.PLAYLIST_ID.eq(Tables.PLAYLIST.ID))
@@ -63,7 +65,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.MINUTE, -5);
-		create.delete(Tables.PLAYLIST)
+		context.delete(Tables.PLAYLIST)
 			.where(Tables.PLAYLIST.DATE_OF_MODIFIED.le(cal), Tables.PLAYLIST.ACCOUNT_ID.eq(account.getId()))
 			.execute();
 	}

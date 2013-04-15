@@ -19,27 +19,22 @@ import org.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.jooq.Cursor;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
-import org.jooq.conf.Settings;
-import org.jooq.impl.Executor;
+import org.jooq.impl.DSL;
 
 public class UploadTrigger extends org.h2.tools.TriggerAdapter {
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
-		final Settings settings = new Settings();
-		settings.setExecuteLogging(false);
-		final Executor create = new Executor(conn,
-			SQLDialect.H2,
-			settings);
+		final DSLContext create = DSL.using(conn, SQLDialect.H2);
 		Integer firstId = null;
 		Integer lastId = null;
 		if (newRow != null) {
 			final Cursor<Record> result = create.fetchLazy(newRow);
 			while (result.hasNext()) {
-				final Upload record = result.fetchOne()
-					.into(Upload.class);
+				final Upload record = result.fetchOneInto(Upload.class);
 				lastId = record.getId();
 				if (lastId.equals(firstId)) {
 					break;
@@ -59,8 +54,7 @@ public class UploadTrigger extends org.h2.tools.TriggerAdapter {
 		} else {
 			final Cursor<Record> result = create.fetchLazy(oldRow);
 			while (result.hasNext()) {
-				final Upload record = result.fetchOne()
-					.into(Upload.class);
+				final Upload record = result.fetchOneInto(Upload.class);
 				lastId = record.getId();
 				lastId = record.getId();
 				if (lastId.equals(firstId)) {
