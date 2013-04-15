@@ -1,12 +1,12 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors: Dennis Fischer
- ******************************************************************************/
+ */
 package org.chaosfisch.youtubeuploader;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ import com.google.inject.name.Named;
 import com.sun.javafx.css.StyleManager;
 
 public class GuiUploader extends GuiceApplication {
-	private static Logger	logger	= LoggerFactory.getLogger(GuiUploader.class);
+	private static final Logger	logger	= LoggerFactory.getLogger(GuiUploader.class);
 	private static Module	injectionModule;
 
 	@Inject
@@ -114,8 +114,6 @@ public class GuiUploader extends GuiceApplication {
 			.update(Tables.UPLOAD)
 			.set(Tables.UPLOAD.INPROGRESS, false)
 			.set(Tables.UPLOAD.FAILED, false)
-			.set(Tables.UPLOAD.DATE_OF_START, (GregorianCalendar) null)
-			.set(Tables.UPLOAD.DATE_OF_RELEASE, (GregorianCalendar) null)
 			.execute();
 	}
 

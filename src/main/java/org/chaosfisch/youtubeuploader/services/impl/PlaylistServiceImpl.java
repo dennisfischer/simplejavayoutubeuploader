@@ -1,12 +1,12 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors: Dennis Fischer
- ******************************************************************************/
+ */
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
 
-		try (final Response response = request.execute();) {
+		try (final Response response = request.execute()) {
 			logger.debug("Video added to playlist!");
 			return response.getContent();
 		} catch (final IOException e) {
@@ -93,7 +93,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 			.build();
-		try (final Response response = request.execute();) {
+		try (final Response response = request.execute()) {
 			if (response.getStatusCode() != 200 && response.getStatusCode() != 201) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
 			}
@@ -114,7 +114,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
 				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
 				.build();
-			try (final Response response = request.execute();) {
+			try (final Response response = request.execute()) {
 				if (response.getStatusCode() != 200) {
 					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
 				}
@@ -132,7 +132,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	protected List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
 		final Feed feed = XStreamHelper.parseFeed(content, Feed.class);
 
-		final List<Playlist> list = new ArrayList<Playlist>();
+		final List<Playlist> list = new ArrayList<>();
 
 		if (feed.videoEntries == null) {
 			logger.info("No playlists found.");

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="true">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/out" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.gradle" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="jupidator" level="project" />
+    <orderEntry type="library" exported="" name="jfxtras-labs-2.2-2.2-r5-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="httpmime-4.2.2" level="project" />
+    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="logback-core-1.0.9" level="project" />
+    <orderEntry type="library" exported="" name="guice-3.0" level="project" />
+    <orderEntry type="library" exported="" name="logback-classic-1.0.9" level="project" />
+    <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
+    <orderEntry type="library" exported="" name="h2-1.3.170" level="project" />
+    <orderEntry type="library" exported="" name="httpcore-4.2.2" level="project" />
+    <orderEntry type="library" exported="" name="commons-codec-1.6" level="project" />
+    <orderEntry type="library" exported="" name="xmlpull-1.1.3.1" level="project" />
+    <orderEntry type="library" exported="" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" exported="" name="xstream-1.4.3" level="project" />
+    <orderEntry type="library" exported="" name="fx-guice-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
+    <orderEntry type="library" exported="" name="jooq-codegen-3.0.0-RC3" level="project" />
+    <orderEntry type="library" exported="" name="xpp3_min-1.1.4c" level="project" />
+    <orderEntry type="library" exported="" name="jooq-meta-3.0.0-RC3" level="project" />
+    <orderEntry type="library" exported="" name="jooq-3.0.0-RC3" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.7.2" level="project" />
+    <orderEntry type="library" exported="" name="httpclient-4.2.2" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
+  </component>
+</module>
+

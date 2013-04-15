@@ -1,12 +1,12 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors: Dennis Fischer
- ******************************************************************************/
+ */
 package org.chaosfisch.youtubeuploader.controller;
 
 import java.net.URL;
@@ -133,8 +133,7 @@ public class QueueCommandController {
 		@Override
 		public Integer fromString(final String string) {
 			try {
-				final Integer number = Integer.parseInt(string);
-				return number;
+                return Integer.parseInt(string);
 			} catch (final NumberFormatException e) { // $codepro.audit.disable
 														// logExceptions
 				return uploadSpeed.getValue();

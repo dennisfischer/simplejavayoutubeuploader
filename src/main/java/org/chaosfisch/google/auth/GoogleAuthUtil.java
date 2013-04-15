@@ -1,12 +1,12 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors: Dennis Fischer
- ******************************************************************************/
+ */
 package org.chaosfisch.google.auth;
 
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -34,7 +33,7 @@ import com.google.inject.Inject;
 
 public class GoogleAuthUtil {
 
-	final HashMap<Integer, String>	authtokens				= new HashMap<Integer, String>();
+	final HashMap<Integer, String>	authtokens				= new HashMap<>();
 	private static final String		CLIENT_LOGIN_URL		= "https://accounts.google.com/ClientLogin";
 	private static final String		ISSUE_AUTH_TOKEN_URL	= "https://www.google.com/accounts/IssueAuthToken";
 
@@ -60,7 +59,7 @@ public class GoogleAuthUtil {
 
 	private String _receiveToken(final Account account, final String service, final String source) throws SystemException {
 		// STEP 1 CLIENT LOGIN
-		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<BasicNameValuePair>();
+		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<>();
 		clientLoginRequestParams.add(new BasicNameValuePair("Email",
 			account.getName()));
 		clientLoginRequestParams.add(new BasicNameValuePair("Passwd",
@@ -80,7 +79,7 @@ public class GoogleAuthUtil {
 			.sign(requestSigner)
 			.build();
 
-		try (final Response response = clientLoginRequest.execute();) {
+		try (final Response response = clientLoginRequest.execute()) {
 			final HttpEntity clientLoginEntity = response.getEntity();
 			if (response.getStatusCode() != 200) {
 				throw new SystemException(AuthCode.RESPONSE_NOT_200);
@@ -109,8 +108,8 @@ public class GoogleAuthUtil {
 
 	}
 
-	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws ClientProtocolException,
-			IOException {
+	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws
+            IOException {
 		// STEP 3 TOKEN AUTH
 		try {
 			final String tokenAuthUrl = String.format(
@@ -120,7 +119,7 @@ public class GoogleAuthUtil {
 			final Request tokenAuthRequest = new Request.Builder(tokenAuthUrl).get()
 				.build();
 
-			try (final Response response = tokenAuthRequest.execute();) {
+			try (final Response response = tokenAuthRequest.execute()) {
 				return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
 			}
 		} catch (final UnsupportedEncodingException e) {
@@ -128,12 +127,12 @@ public class GoogleAuthUtil {
 		}
 	}
 
-	private String issueAuthToken(final String clientLoginContent) throws ClientProtocolException, IOException {
+	private String issueAuthToken(final String clientLoginContent) throws IOException {
 		// STEP 2 ISSUE AUTH TOKEN
 		final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
 		final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
 
-		final List<BasicNameValuePair> issueAuthTokenParams = new ArrayList<BasicNameValuePair>();
+		final List<BasicNameValuePair> issueAuthTokenParams = new ArrayList<>();
 		issueAuthTokenParams.add(new BasicNameValuePair("SID",
 			sid));
 		issueAuthTokenParams.add(new BasicNameValuePair("LSID",
@@ -149,7 +148,7 @@ public class GoogleAuthUtil {
 			Charset.forName("utf-8")))
 			.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 			.build();
-		try (final Response response = issueAuthTokenRequest.execute();) {
+		try (final Response response = issueAuthTokenRequest.execute()) {
 			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
 		}
 	}

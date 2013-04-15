@@ -1,12 +1,12 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2013 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors: Dennis Fischer
- ******************************************************************************/
+ */
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public class MetadataServiceImpl implements MetadataService {
 		// xstream
 
 		final VideoEntry videoEntry = new VideoEntry();
-		videoEntry.mediaGroup.category = new ArrayList<Category>(1);
+		videoEntry.mediaGroup.category = new ArrayList<>(1);
 		videoEntry.mediaGroup.category.add(upload.getCategory()
 			.toCategory());
 		videoEntry.mediaGroup.license = upload.getLicense()
@@ -163,7 +163,7 @@ public class MetadataServiceImpl implements MetadataService {
 			.sign(requestSigner, authTokenHelper.getAuthHeader(account))
 			.build();
 		// Write the atomData to GOOGLE
-		try (final Response response = request.execute();) {
+		try (final Response response = request.execute()) {
 			// Check the response code for any problematic codes.
 			if (response.getStatusCode() == 400) {
 				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
@@ -201,11 +201,11 @@ public class MetadataServiceImpl implements MetadataService {
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length()));
 	}
 
-	private String redirectToYoutube(final String content) throws IOException, ClientProtocolException, SystemException {
+	private String redirectToYoutube(final String content) throws IOException, SystemException {
 		final Request request = new Request.Builder(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
 			.replaceAll(Pattern.quote("\\x3d"), "=")).get()
 			.build();
-		try (final Response response = request.execute();) {
+		try (final Response response = request.execute()) {
 			if (Arrays.asList(deadEnds)
 				.contains(response.getCurrentUrl())) {
 				throw new SystemException(MetadataCode.DEAD_END);
@@ -218,7 +218,7 @@ public class MetadataServiceImpl implements MetadataService {
 		return flag ? "yes" : "no";
 	}
 
-	private void changeMetadata(final String content) throws IOException, ClientProtocolException {
+	private void changeMetadata(final String content) throws IOException {
 		Integer thumbnailId = null;
 		try {
 			if (upload.getThumbnail() != null && !upload.getThumbnail()
@@ -233,7 +233,7 @@ public class MetadataServiceImpl implements MetadataService {
 			}
 		}
 
-		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<BasicNameValuePair>();
+		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<>();
 
 		if (thumbnailId != null) {
 			postMetaDataParams.add(new BasicNameValuePair("still_id",
@@ -380,6 +380,7 @@ public class MetadataServiceImpl implements MetadataService {
 			new UrlEncodedFormEntity(postMetaDataParams,
 				Charsets.UTF_8))
 			.build();
-		try (final Response response = request.execute();) {}
-	}
+        try (Response response = request.execute()) {
+        }
+    }
 }

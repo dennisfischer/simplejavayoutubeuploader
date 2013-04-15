@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="fx-guice-2.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/com.cathive.fx/fx-guice/2.0.0/jar/8b96cde08acaf72fe8685dcf368335ef262eebc6/fx-guice-2.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/com.cathive.fx/fx-guice/2.0.0/source/7271fb6fb7fe9f7cb4b1304ae52653f8e43f9dd2/fx-guice-2.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
