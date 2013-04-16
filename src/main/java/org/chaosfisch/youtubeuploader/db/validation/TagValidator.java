@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.validation;
 
 import org.chaosfisch.util.TagParser;
@@ -15,9 +16,6 @@ public class TagValidator implements Validator<String> {
 
     @Override
     public boolean validate(final String string) {
-        if (string == null || TagParser.isValid(string)) {
-            return true;
-        }
-        return false;
+        return string == null || TagParser.isValid(string);
     }
 }

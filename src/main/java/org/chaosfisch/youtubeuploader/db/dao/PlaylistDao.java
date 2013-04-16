@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.dao;
 
 import com.google.inject.Inject;
@@ -69,7 +70,7 @@ public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tab
                 .execute();
     }
 
-    public List<Playlist> fetchUnhidden(Integer id) {
+    public List<Playlist> fetchUnhidden(final Integer id) {
         return context.select().from(Tables.PLAYLIST).where(Tables.PLAYLIST.ACCOUNT_ID.eq(id).and(Tables.PLAYLIST.HIDDEN.eq(false))).fetchInto(Playlist.class);
     }
 }

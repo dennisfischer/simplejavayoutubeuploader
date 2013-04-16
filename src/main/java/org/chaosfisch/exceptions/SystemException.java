@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.exceptions;
 
 import java.io.PrintStream;
@@ -86,7 +87,9 @@ public class SystemException extends Exception {
 
     @Override
     public void printStackTrace(final PrintStream s) {
-        printStackTrace(new PrintWriter(s));
+        try (PrintWriter writer = new PrintWriter(s)) {
+            printStackTrace(writer);
+        }
     }
 
     @Override

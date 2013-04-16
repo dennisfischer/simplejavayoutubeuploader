@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.validation;
 
 import com.google.common.base.Charsets;
@@ -22,10 +23,7 @@ public class ByteLengthValidator implements Validator<String> {
 
     @Override
     public boolean validate(final String string) {
-        if (string == null || (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max)) {
-            return true;
-        }
-        return false;
+        return string == null || (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max);
     }
 
 }

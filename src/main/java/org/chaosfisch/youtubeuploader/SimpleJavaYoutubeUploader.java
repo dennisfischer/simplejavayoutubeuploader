@@ -16,9 +16,9 @@ import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class SimpleJavaYoutubeUploader {
+public final class SimpleJavaYoutubeUploader {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         initLocale();
         initSavedir();

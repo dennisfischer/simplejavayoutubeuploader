@@ -9,24 +9,24 @@
   -->
 
 <launch4jConfig>
-  <dontWrapJar>true</dontWrapJar>
-  <headerType>gui</headerType>
-  <jar>SimpleJavaYoutubeUploader.jar</jar>
-  <outfile>/../../../out/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
-  <errTitle></errTitle>
-  <cmdLine></cmdLine>
-  <chdir></chdir>
-  <priority>normal</priority>
-  <downloadUrl>http://java.com/download</downloadUrl>
-  <supportUrl></supportUrl>
-  <customProcName>true</customProcName>
-  <stayAlive>false</stayAlive>
-  <manifest></manifest>
-  <icon>/../resources/org/chaosfisch/youtubeuploader/resources/images/film.ico</icon>
-  <jre>
-    <path></path>
-    <minVersion>1.7.0</minVersion>
-    <maxVersion></maxVersion>
-    <jdkPreference>preferJre</jdkPreference>
-  </jre>
+    <dontWrapJar>true</dontWrapJar>
+    <headerType>gui</headerType>
+    <jar>SimpleJavaYoutubeUploader.jar</jar>
+    <outfile>/../../../out/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
+    <errTitle/>
+    <cmdLine/>
+    <chdir/>
+    <priority>normal</priority>
+    <downloadUrl>http://java.com/download</downloadUrl>
+    <supportUrl/>
+    <customProcName>true</customProcName>
+    <stayAlive>false</stayAlive>
+    <manifest/>
+    <icon>/../resources/org/chaosfisch/youtubeuploader/resources/images/film.ico</icon>
+    <jre>
+        <path/>
+        <minVersion>1.7.0</minVersion>
+        <maxVersion/>
+        <jdkPreference>preferJre</jdkPreference>
+    </jre>
 </launch4jConfig>

@@ -7,23 +7,23 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.google.atom.media;
 
-import org.chaosfisch.google.atom.Category;
+package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
+import org.chaosfisch.google.atom.Category;
 
 @XStreamAlias("media:category")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "category" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"category"})
 public class MediaCategory extends Category {
-	public MediaCategory(final String term, final String label, final String scheme) {
-		this.term = term;
-		this.label = label;
-		this.scheme = scheme;
-		category = term;
-	}
+    public MediaCategory(final String term, final String label, final String scheme) {
+        this.term = term;
+        this.label = label;
+        this.scheme = scheme;
+        category = term;
+    }
 
-	public String	category;
+    public final String category;
 }

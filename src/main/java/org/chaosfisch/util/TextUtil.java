@@ -7,21 +7,22 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.util;
 
-import java.util.ResourceBundle;
+package org.chaosfisch.util;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class TextUtil {
+import java.util.ResourceBundle;
 
-	@Inject
-	@Named("i18n-resources")
-	static ResourceBundle	resources;
+public final class TextUtil {
 
-	public static String getString(final String key) {
-		return resources.getString(key);
-	}
+    @Inject
+    @Named("i18n-resources")
+    static ResourceBundle resources;
+
+    public static String getString(final String key) {
+        return resources.getString(key);
+    }
 
 }

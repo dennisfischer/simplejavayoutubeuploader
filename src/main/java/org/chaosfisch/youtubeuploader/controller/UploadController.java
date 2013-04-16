@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
 import com.google.common.eventbus.EventBus;
@@ -374,14 +375,14 @@ public class UploadController {
         });
         command.setOnRunning(new EventHandler<WorkerStateEvent>() {
             @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                Node[] nodes = new Node[]{uploadAccount, uploadCategory,
+            public void handle(final WorkerStateEvent workerStateEvent) {
+                final Node[] nodes = new Node[]{uploadAccount, uploadCategory,
                         uploadDescription,
                         uploadFile,
                         uploadTags,
                         uploadThumbnail,
                         uploadTitle};
-                for (Node node : nodes) {
+                for (final Node node : nodes) {
                     node.getStyleClass().remove("input-invalid");
                 }
             }
@@ -652,7 +653,7 @@ public class UploadController {
                 } else if (modelUpdatedEvent.getModel() instanceof Playlist
                         && playlistDao.fetchOneAccountByPlaylist((Playlist) modelUpdatedEvent.getModel())
                         .equals(uploadAccount.getValue())) {
-                    if (((Playlist) modelUpdatedEvent.getModel()).getHidden() == true) {
+                    if (((Playlist) modelUpdatedEvent.getModel()).getHidden()) {
                         playlistSourceList.remove(modelUpdatedEvent.getModel());
                         playlistTargetList.remove(modelUpdatedEvent.getModel());
                     } else if (playlistSourceList.contains(modelUpdatedEvent.getModel())) {
@@ -972,7 +973,7 @@ public class UploadController {
         }
     }
 
-    public void fromUpload(Upload item) {
+    public void fromUpload(final Upload item) {
         uploadViewVO.setUpload(item);
         beanPathAdapter.setBean(uploadViewVO);
     }
@@ -1027,7 +1028,7 @@ public class UploadController {
     private final class PreviewTitleInvalidationListenerFile implements ChangeListener<File> {
 
         @Override
-        public void changed(ObservableValue<? extends File> observableValue, File file, File file2) {
+        public void changed(final ObservableValue<? extends File> observableValue, final File file, final File file2) {
             final String value = uploadTitle.getText();
             uploadTitle.setText("");
             uploadTitle.setText(value);

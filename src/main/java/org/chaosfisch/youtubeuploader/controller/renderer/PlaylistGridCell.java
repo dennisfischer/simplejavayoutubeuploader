@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import javafx.beans.value.ChangeListener;
@@ -19,69 +20,80 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.grid.GridCell;
-
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class PlaylistGridCell extends GridCell<Playlist> {
-	public PlaylistGridCell() {
-		itemProperty().addListener(new ChangeListener<Playlist>() {
+    private Image defaultThumbnail;
 
-			@Override
-			public void changed(final ObservableValue<? extends Playlist> observable, final Playlist oldValue, final Playlist playlist) {
-				getChildren().clear();
+    public PlaylistGridCell() {
+        itemProperty().addListener(new ChangeListener<Playlist>() {
 
-				if (playlist == null) {
-					setGraphic(null);
-					return;
-				}
+            @Override
+            public void changed(final ObservableValue<? extends Playlist> observable, final Playlist oldValue, final Playlist playlist) {
+                getChildren().clear();
 
-				getStyleClass().add("image-grid-cell");
+                if (playlist == null) {
+                    setGraphic(null);
+                    return;
+                }
 
-				final Tooltip tooltip = new Tooltip(playlist.getTitle());
+                getStyleClass().add("image-grid-cell");
 
-				final Pane pane = new Pane();
-				ImageView imageView;
-				if (playlist.getThumbnail() != null) {
-					imageView = new ImageView(playlist.getThumbnail());
-					imageView.setPreserveRatio(true);
-					final double width = imageView.getImage()
-						.getWidth() > 0 ? imageView.getImage()
-						.getWidth() : 0;
-					final double height = imageView.getImage()
-						.getHeight() > 90 ? imageView.getImage()
-						.getHeight() : 180;
-					imageView.setViewport(new Rectangle2D(0,
-						45,
-						width,
-						height - 90));
-				} else {
-					imageView = new ImageView(new Image(getClass().getResourceAsStream(
-						"/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")));
-				}
+                final Tooltip tooltip = new Tooltip(playlist.getTitle());
 
-				imageView.fitHeightProperty()
-					.bind(heightProperty());
-				imageView.fitWidthProperty()
-					.bind(widthProperty());
+                final Pane pane = new Pane();
+                final ImageView imageView;
+                if (playlist.getThumbnail() != null) {
+                    imageView = new ImageView(playlist.getThumbnail());
+                    imageView.setPreserveRatio(true);
+                    final double width = imageView.getImage()
+                            .getWidth() > 0 ? imageView.getImage()
+                            .getWidth() : 0;
+                    final double height = imageView.getImage()
+                            .getHeight() > 90 ? imageView.getImage()
+                            .getHeight() : 180;
+                    imageView.setViewport(new Rectangle2D(0,
+                            45,
+                            width,
+                            height - 90));
+                } else {
+                    if (defaultThumbnail == null) {
+                        try (InputStream inputStream = getClass().getResourceAsStream(
+                                "/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")) {
+                            PlaylistGridCell.this.defaultThumbnail = new Image(inputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                    }
+                    imageView = new ImageView(defaultThumbnail);
+                }
 
-				pane.getChildren()
-					.add(imageView);
-				setGraphic(pane);
-				getGraphic().setOnMouseEntered(new EventHandler<MouseEvent>() {
+                imageView.fitHeightProperty()
+                        .bind(heightProperty());
+                imageView.fitWidthProperty()
+                        .bind(widthProperty());
 
-					@Override
-					public void handle(final MouseEvent event) {
-						tooltip.show(getGraphic(), event.getScreenX(), event.getScreenY());
-					}
-				});
-				getGraphic().setOnMouseExited(new EventHandler<MouseEvent>() {
+                pane.getChildren()
+                        .add(imageView);
+                setGraphic(pane);
+                getGraphic().setOnMouseEntered(new EventHandler<MouseEvent>() {
 
-					@Override
-					public void handle(final MouseEvent event) {
-						tooltip.hide();
-					}
-				});
-			}
-		});
-	}
+                    @Override
+                    public void handle(final MouseEvent event) {
+                        tooltip.show(getGraphic(), event.getScreenX(), event.getScreenY());
+                    }
+                });
+                getGraphic().setOnMouseExited(new EventHandler<MouseEvent>() {
+
+                    @Override
+                    public void handle(final MouseEvent event) {
+                        tooltip.hide();
+                    }
+                });
+            }
+        });
+    }
 }
