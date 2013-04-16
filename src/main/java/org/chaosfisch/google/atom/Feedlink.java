@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,16 +15,21 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:feedLink")
 public class Feedlink {
-	public @XStreamAlias("gd:countHint")
+	public
+	@XStreamAlias("gd:countHint")
 	@XStreamAsAttribute
-	Integer	countHint;
-	public @XStreamAlias("yt:hasEntries")
+	Integer countHint;
+	public
+	@XStreamAlias("yt:hasEntries")
 	@XStreamAsAttribute
-	Boolean	hasEntries;
-	public @XStreamAsAttribute
-	String	href;
-	public @XStreamAsAttribute
-	String	rel;
-	public @XStreamAsAttribute
-	String	type;
+	Boolean hasEntries;
+	public
+	@XStreamAsAttribute
+	String  href;
+	public
+	@XStreamAsAttribute
+	String  rel;
+	public
+	@XStreamAsAttribute
+	String  type;
 }

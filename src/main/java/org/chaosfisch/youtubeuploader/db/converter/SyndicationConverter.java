@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.Syndication;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class SyndicationConverter extends EnumConverter<String, Syndication> {
 
-	private static final long	serialVersionUID	= 1272871337480273706L;
+	private static final long serialVersionUID = 1272871337480273706L;
 
 	public SyndicationConverter() {
-		super(String.class,
-			Syndication.class);
+		super(String.class, Syndication.class);
 	}
 }

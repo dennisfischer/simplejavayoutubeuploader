@@ -7,22 +7,23 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.net;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class Server extends Thread {
-	private ServerSocket				serverSocket;
-	private final Logger				logger		= LoggerFactory.getLogger(getClass());
-	private final Protocol				protocol;
-	private final int					port;
-	private final ArrayList<Connection>	connections	= new ArrayList<>();
+	private ServerSocket serverSocket;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Protocol protocol;
+	private final int      port;
+	private final ArrayList<Connection> connections = new ArrayList<>();
 
 	public Server(final int port, final Protocol protocol) {
 		super("Server");
@@ -44,8 +45,7 @@ public class Server extends Thread {
 		while (!serverSocket.isClosed()) {
 			try {
 				cleanupClients();
-				connections.add(new Connection(serverSocket.accept(),
-					protocol));
+				connections.add(new Connection(serverSocket.accept(), protocol));
 				logger.info("Connected clients: " + connections.size());
 			} catch (final IOException e) {
 				if (!serverSocket.isClosed()) {

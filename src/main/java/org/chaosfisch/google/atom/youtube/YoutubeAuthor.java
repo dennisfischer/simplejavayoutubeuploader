@@ -7,14 +7,16 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("author")
 public class YoutubeAuthor {
-	public String	name;
-	public String	uri;
-	public @XStreamAlias("yt:userId")
-	String			userID;
+	public String name;
+	public String uri;
+	public
+	@XStreamAlias("yt:userId")
+	String userID;
 }

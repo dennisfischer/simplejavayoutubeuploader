@@ -17,12 +17,12 @@ import java.util.ResourceBundle;
 
 public final class TextUtil {
 
-    @Inject
-    @Named("i18n-resources")
-    static ResourceBundle resources;
+	@Inject
+	@Named("i18n-resources")
+	static ResourceBundle resources;
 
-    public static String getString(final String key) {
-        return resources.getString(key);
-    }
+	public static String getString(final String key) {
+		return resources.getString(key);
+	}
 
 }

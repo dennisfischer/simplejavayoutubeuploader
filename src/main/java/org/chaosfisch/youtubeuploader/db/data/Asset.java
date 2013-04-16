@@ -13,16 +13,16 @@ package org.chaosfisch.youtubeuploader.db.data;
 import org.chaosfisch.util.TextUtil;
 
 public enum Asset {
-    WEB("label.monetizeWeb"), TV("label.monetizeTV"), MOVIE("label.monetizeMovie");
+	WEB("label.monetizeWeb"), TV("label.monetizeTV"), MOVIE("label.monetizeMovie");
 
-    private final String i18n;
+	private final String i18n;
 
-    private Asset(final String i18n) {
-        this.i18n = i18n;
-    }
+	private Asset(final String i18n) {
+		this.i18n = i18n;
+	}
 
-    @Override
-    public String toString() {
-        return TextUtil.getString(i18n);
-    }
+	@Override
+	public String toString() {
+		return TextUtil.getString(i18n);
+	}
 }

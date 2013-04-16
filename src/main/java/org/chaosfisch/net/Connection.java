@@ -19,83 +19,82 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Connection {
-    private ObjectOutputStream output = null;
-    private ObjectInputStream input = null;
-    private final Socket socket;
-    private final Protocol protocol;
-    private boolean closed = false;
-    private final static Logger logger = LoggerFactory.getLogger(Connection.class);
+	private ObjectOutputStream output = null;
+	private ObjectInputStream  input  = null;
+	private final Socket   socket;
+	private final Protocol protocol;
+	private              boolean closed = false;
+	private final static Logger  logger = LoggerFactory.getLogger(Connection.class);
 
-    Connection(final Socket socket, final Protocol protocol) {
-        this.socket = socket;
-        this.protocol = protocol;
-        try (ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream()); ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
-            this.output = output;
-            this.input = input;
-            receiveMessages();
-        } catch (final IOException e) {
-            logger.warn("Could not get Streams", e);
-        }
-    }
+	Connection(final Socket socket, final Protocol protocol) {
+		this.socket = socket;
+		this.protocol = protocol;
+		try (ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+			 ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
+			this.output = output;
+			this.input = input;
+			receiveMessages();
+		} catch (final IOException e) {
+			logger.warn("Could not get Streams", e);
+		}
+	}
 
-    public Msg getMsg() {
-        if (!closed) {
-            try {
-                return (Msg) input.readObject();
-            } catch (final ClassNotFoundException e) {
-                logger.error("Invalid data object transported", e);
-            } catch (final IOException e) {
-                logger.error(e.getMessage(), e);
-                close();
-            }
-        }
-        return null;
-    }
+	public Msg getMsg() {
+		if (!closed) {
+			try {
+				return (Msg) input.readObject();
+			} catch (final ClassNotFoundException e) {
+				logger.error("Invalid data object transported", e);
+			} catch (final IOException e) {
+				logger.error(e.getMessage(), e);
+				close();
+			}
+		}
+		return null;
+	}
 
-    public boolean isClosed() {
-        return closed;
-    }
+	public boolean isClosed() {
+		return closed;
+	}
 
-    public void sendMsg(final String event, final Object body) {
-        if (!closed) {
-            try {
-                output.writeObject(new Msg(event,
-                        body));
-                output.flush();
-            } catch (final IOException e) {
-                logger.warn("Message IOException", e);
-            }
-        }
-    }
+	public void sendMsg(final String event, final Object body) {
+		if (!closed) {
+			try {
+				output.writeObject(new Msg(event, body));
+				output.flush();
+			} catch (final IOException e) {
+				logger.warn("Message IOException", e);
+			}
+		}
+	}
 
-    private void receiveMessages() {
-        final Thread readThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                readMessages();
-            }
-        },
-                "Connection-Readthread");
-        readThread.start();
-    }
+	private void receiveMessages() {
+		final Thread readThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				readMessages();
+			}
+		}, "Connection-Readthread");
+		readThread.start();
+	}
 
-    private void readMessages() {
-        while (!socket.isClosed()) {
-            protocol.processMsg(getMsg());
-        }
-    }
+	private void readMessages() {
+		while (!socket.isClosed()) {
+			protocol.processMsg(getMsg());
+		}
+	}
 
-    public void close() {
-        closed = true;
-        if (socket.isClosed()) {
-            return;
-        }
-        try {
-            input.close();
-            output.close();
-            socket.close();
-        } catch (final IOException e) {
-            logger.warn("Could not close socket", e);
-        }
-    }
+	public void close() {
+		closed = true;
+		if (socket.isClosed()) {
+			return;
+		}
+		try {
+			input.close();
+			output.close();
+			socket.close();
+		} catch (final IOException e) {
+			logger.warn("Could not close socket", e);
+		}
+	}
 }

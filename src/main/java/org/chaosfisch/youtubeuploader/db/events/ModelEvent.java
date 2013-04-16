@@ -7,10 +7,11 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.events;
 
 public class ModelEvent {
-	private final Object	model;
+	private final Object model;
 
 	public ModelEvent(final Object model) {
 		this.model = model;

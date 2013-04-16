@@ -7,11 +7,10 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import com.google.inject.Inject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,7 +23,6 @@ import javafx.util.StringConverter;
 import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
-
 import org.chaosfisch.io.Throttle;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
@@ -32,55 +30,52 @@ import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
-import com.google.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class QueueCommandController {
 
 	@FXML
-	private ResourceBundle					resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL								location;
+	private URL location;
 
 	@FXML
-	private ChoiceBox<String>				actionOnFinish;
+	private ChoiceBox<String> actionOnFinish;
 
 	@FXML
-	private Button							startQueue;
+	private Button startQueue;
 
 	@FXML
-	private Button							stopQueue;
+	private Button stopQueue;
 
 	@FXML
-	private HBox							viewElementsHBox;
+	private HBox viewElementsHBox;
 
-	private final ListSpinner<Integer>		numberOfUploads		= new ListSpinner<Integer>(1,
-																	5).withValue(1)
-																	.withAlignment(Pos.CENTER_RIGHT)
-																	.withPostfix(" Upload(s)")
-																	.withPrefix("max. ")
-																	.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>		uploadSpeed			= new ListSpinner<Integer>(0,
-																	10000,
-																	10).withValue(0)
-																	.withAlignment(Pos.CENTER_RIGHT)
-																	.withArrowPosition(ArrowPosition.LEADING)
-																	.withPostfix(" kb/s")
-																	.withEditable(true)
-																	.withStringConverter(new UploadSpeedStringConverter());
-	private final ObservableList<String>	actionOnFinishItems	= FXCollections.observableArrayList();
+	private final ListSpinner<Integer>   numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
+																							 .withAlignment(Pos.CENTER_RIGHT)
+																							 .withPostfix(" Upload(s)")
+																							 .withPrefix("max. ")
+																							 .withArrowPosition(ArrowPosition.LEADING);
+	private final ListSpinner<Integer>   uploadSpeed         = new ListSpinner<Integer>(0, 10000, 10).withValue(0)
+																									 .withAlignment(Pos.CENTER_RIGHT)
+																									 .withArrowPosition(ArrowPosition.LEADING)
+																									 .withPostfix(" kb/s")
+																									 .withEditable(true)
+																									 .withStringConverter(new UploadSpeedStringConverter());
+	private final ObservableList<String> actionOnFinishItems = FXCollections.observableArrayList();
 
 	@Inject
-	private Uploader						uploader;
+	private Uploader         uploader;
 	@Inject
-	private Throttle						throttle;
+	private Throttle         throttle;
 	@Inject
-	private ICommandProvider				commandProvider;
+	private ICommandProvider commandProvider;
 
 	@FXML
 	void startQueue(final ActionEvent event) {
-		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"),
-			resources.getString("dialog.youtubetos.message"));
+		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"));
 		if (dialog.showDialog() == MonologFXButton.Type.YES) {
 			final StartUploadCommand command = commandProvider.get(StartUploadCommand.class);
 			command.start();
@@ -100,26 +95,20 @@ public class QueueCommandController {
 		assert stopQueue != null : "fx:id=\"stopQueue\" was not injected: check your FXML file 'Queue.fxml'.";
 		assert viewElementsHBox != null : "fx:id=\"viewElementsHBox\" was not injected: check your FXML file 'Queue.fxml'.";
 
-		viewElementsHBox.getChildren()
-			.addAll(numberOfUploads, uploadSpeed);
+		viewElementsHBox.getChildren().addAll(numberOfUploads, uploadSpeed);
 
 		initBindindings();
 
-		actionOnFinishItems.addAll(resources.getString("queuefinishedlist.donothing"),
-			resources.getString("queuefinishedlist.closeapplication"), resources.getString("queuefinishedlist.shutdown"),
-			resources.getString("queuefinishedlist.hibernate"));
+		actionOnFinishItems.addAll(resources.getString("queuefinishedlist.donothing"), resources.getString("queuefinishedlist.closeapplication"), resources
+				.getString("queuefinishedlist.shutdown"), resources.getString("queuefinishedlist.hibernate"));
 		actionOnFinish.setItems(actionOnFinishItems);
-		actionOnFinish.getSelectionModel()
-			.selectFirst();
+		actionOnFinish.getSelectionModel().selectFirst();
 	}
 
 	private void initBindindings() {
-		startQueue.disableProperty()
-			.bind(uploader.inProgressProperty);
-		stopQueue.disableProperty()
-			.bind(uploader.inProgressProperty.not());
-		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel()
-			.selectedIndexProperty());
+		startQueue.disableProperty().bind(uploader.inProgressProperty);
+		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
+		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
 		uploader.maxUploads.bind(numberOfUploads.valueProperty());
 		throttle.maxBps.bind(uploadSpeed.valueProperty());
 	}
@@ -133,9 +122,9 @@ public class QueueCommandController {
 		@Override
 		public Integer fromString(final String string) {
 			try {
-                return Integer.parseInt(string);
+				return Integer.parseInt(string);
 			} catch (final NumberFormatException e) { // $codepro.audit.disable
-														// logExceptions
+				// logExceptions
 				return uploadSpeed.getValue();
 			}
 		}

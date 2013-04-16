@@ -18,49 +18,43 @@ import java.io.IOException;
 
 public final class Computer {
 
-    private final static Logger logger = LoggerFactory.getLogger(Computer.class);
+	private final static Logger logger = LoggerFactory.getLogger(Computer.class);
 
-    /**
-     * Sends this system to hibernation mode
-     */
-    public static void hibernateComputer() {
-        String command = "";
-        if (PlatformUtil.isWindows()) {
-            command = "rundll32 powrprof.dll,SetSuspendState";
-        } else if (PlatformUtil.isLinux()) {
-            command = "pm-hibernate";
-        } else if (PlatformUtil.isMac()) {
-            command = "osascript -e 'tell application \"Finder\" to sleep'";
-        }
+	/** Sends this system to hibernation mode */
+	public static void hibernateComputer() {
+		String command = "";
+		if (PlatformUtil.isWindows()) {
+			command = "rundll32 powrprof.dll,SetSuspendState";
+		} else if (PlatformUtil.isLinux()) {
+			command = "pm-hibernate";
+		} else if (PlatformUtil.isMac()) {
+			command = "osascript -e 'tell application \"Finder\" to sleep'";
+		}
 
-        try {
-            Runtime.getRuntime()
-                    .exec(command);
-        } catch (final IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-        System.exit(0);
-    }
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		System.exit(0);
+	}
 
-    /**
-     * Sends this system to shutdown mode
-     */
-    public static void shutdownComputer() {
-        String command = "";
-        if (PlatformUtil.isWindows()) {
-            command = "shutdown -t 60 -s -f";
-        } else if (PlatformUtil.isLinux()) {
-            command = "shutdown -t 60 -h -f";
-        } else if (PlatformUtil.isMac()) {
-            command = "osascript -e 'tell application\"Finder\" to shut down'";
-        }
+	/** Sends this system to shutdown mode */
+	public static void shutdownComputer() {
+		String command = "";
+		if (PlatformUtil.isWindows()) {
+			command = "shutdown -t 60 -s -f";
+		} else if (PlatformUtil.isLinux()) {
+			command = "shutdown -t 60 -h -f";
+		} else if (PlatformUtil.isMac()) {
+			command = "osascript -e 'tell application\"Finder\" to shut down'";
+		}
 
-        try {
-            Runtime.getRuntime()
-                    .exec(command);
-        } catch (final IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-        System.exit(0);
-    }
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		System.exit(0);
+	}
 }

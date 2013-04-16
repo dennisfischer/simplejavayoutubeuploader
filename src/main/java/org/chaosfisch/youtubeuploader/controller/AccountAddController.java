@@ -7,11 +7,10 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import com.google.inject.Inject;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,31 +18,31 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-
 import org.chaosfisch.youtubeuploader.command.AddAccountCommand;
 import org.chaosfisch.youtubeuploader.guice.CommandProvider;
 
-import com.google.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class AccountAddController {
 
 	@FXML
-	private ResourceBundle	resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL				location;
+	private URL location;
 
 	@FXML
-	private TextField		nameTextfield;
+	private TextField nameTextfield;
 
 	@FXML
-	private PasswordField	passwordTextfield;
+	private PasswordField passwordTextfield;
 
 	@FXML
-	private HBox			progressPane;
+	private HBox progressPane;
 
 	@Inject
-	private CommandProvider	commandProvider;
+	private CommandProvider commandProvider;
 
 	@FXML
 	void addAccount(final ActionEvent event) {
@@ -70,19 +69,15 @@ public class AccountAddController {
 	private void _reset() {
 		nameTextfield.clear();
 		passwordTextfield.clear();
-		nameTextfield.getStyleClass()
-			.remove("input-invalid");
-		passwordTextfield.getStyleClass()
-			.remove("input-invalid");
+		nameTextfield.getStyleClass().remove("input-invalid");
+		passwordTextfield.getStyleClass().remove("input-invalid");
 	}
 
 	private final class AccountAddRunning implements EventHandler<WorkerStateEvent> {
 		@Override
 		public void handle(final WorkerStateEvent event) {
-			nameTextfield.getStyleClass()
-				.remove("input-invalid");
-			passwordTextfield.getStyleClass()
-				.remove("input-invalid");
+			nameTextfield.getStyleClass().remove("input-invalid");
+			passwordTextfield.getStyleClass().remove("input-invalid");
 			progressPane.setVisible(true);
 		}
 	}
@@ -99,10 +94,8 @@ public class AccountAddController {
 		@Override
 		public void handle(final WorkerStateEvent event) {
 			progressPane.setVisible(false);
-			nameTextfield.getStyleClass()
-				.add("input-invalid");
-			passwordTextfield.getStyleClass()
-				.add("input-invalid");
+			nameTextfield.getStyleClass().add("input-invalid");
+			passwordTextfield.getStyleClass().add("input-invalid");
 		}
 	}
 

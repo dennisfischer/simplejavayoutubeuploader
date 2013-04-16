@@ -7,12 +7,12 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.services.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
+import com.google.common.base.Charsets;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -24,9 +24,9 @@ import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.youtubeuploader.db.data.Thumbnail;
 import org.chaosfisch.youtubeuploader.services.ThumbnailService;
 
-import com.google.common.base.Charsets;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class ThumbnailServiceImpl implements ThumbnailService {
 
@@ -48,28 +48,23 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 			try {
 				return parseResponse(json);
 			} catch (final JsonSyntaxException e) {
-				throw SystemException.wrap(e, ThumbnailCode.UPLOAD_JSON)
-					.set("json", json);
+				throw SystemException.wrap(e, ThumbnailCode.UPLOAD_JSON).set("json", json);
 			}
 		} catch (final IOException e) {
 			throw SystemException.wrap(e, ThumbnailCode.UPLOAD_RESPONSE);
 		}
 	}
 
-	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile)
-			throws UnsupportedEncodingException {
+	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile) throws UnsupportedEncodingException {
 		final MultipartEntity reqEntity = new MultipartEntity();
 
-		reqEntity.addPart("video_id", new StringBody(videoid,
-			Charsets.UTF_8));
-		reqEntity.addPart("is_ajax", new StringBody("1",
-			Charsets.UTF_8));
+		reqEntity.addPart("video_id", new StringBody(videoid, Charsets.UTF_8));
+		reqEntity.addPart("is_ajax", new StringBody("1", Charsets.UTF_8));
 
 		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(),
-			content.indexOf("\"", content.indexOf(search) + search.length()));
-		reqEntity.addPart("session_token", new StringBody(sessiontoken,
-			Charsets.UTF_8));
+		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf("\"", content
+				.indexOf(search) + search.length()));
+		reqEntity.addPart("session_token", new StringBody(sessiontoken, Charsets.UTF_8));
 		reqEntity.addPart("imagefile", new FileBody(thumbnailFile));
 		return reqEntity;
 	}

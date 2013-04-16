@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.License;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class LicenseConverter extends EnumConverter<String, License> {
 
-	private static final long	serialVersionUID	= -3587020045735245811L;
+	private static final long serialVersionUID = -3587020045735245811L;
 
 	public LicenseConverter() {
-		super(String.class,
-			License.class);
+		super(String.class, License.class);
 	}
 }

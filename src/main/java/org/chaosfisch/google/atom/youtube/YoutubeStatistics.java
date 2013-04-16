@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,16 +15,22 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:statistics")
 public class YoutubeStatistics {
-	public @XStreamAsAttribute
-	Integer	favoriteCount;
-	public @XStreamAsAttribute
-	String	lastWebAccess;
-	public @XStreamAsAttribute
-	Integer	subscriberCount;
-	public @XStreamAsAttribute
-	Integer	totalUploadViews;
-	public @XStreamAsAttribute
-	Integer	videoWatchCount;
-	public @XStreamAsAttribute
-	Integer	viewCount;
+	public
+	@XStreamAsAttribute
+	Integer favoriteCount;
+	public
+	@XStreamAsAttribute
+	String  lastWebAccess;
+	public
+	@XStreamAsAttribute
+	Integer subscriberCount;
+	public
+	@XStreamAsAttribute
+	Integer totalUploadViews;
+	public
+	@XStreamAsAttribute
+	Integer videoWatchCount;
+	public
+	@XStreamAsAttribute
+	Integer viewCount;
 }

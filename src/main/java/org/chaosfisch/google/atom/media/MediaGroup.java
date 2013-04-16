@@ -7,54 +7,71 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.media;
-
-import java.util.List;
-
-import org.chaosfisch.google.atom.Category;
-import org.chaosfisch.google.atom.youtube.YoutubeDuration;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.chaosfisch.google.atom.Category;
+import org.chaosfisch.google.atom.youtube.YoutubeDuration;
+
+import java.util.List;
 
 @XStreamAlias("media:group")
 public class MediaGroup {
-	public @XStreamAlias("yt:aspectRatio")
-	String					aspectRatio;
-	public @XStreamAlias("media:category")
+	public
+	@XStreamAlias("yt:aspectRatio")
+	String               aspectRatio;
+	public
+	@XStreamAlias("media:category")
 	@XStreamImplicit
-	List<Category>			category;
-	public @XStreamAlias("media:content")
+	List<Category>       category;
+	public
+	@XStreamAlias("media:content")
 	@XStreamImplicit
-	List<MediaContent>		content;
-	public @XStreamAlias("media:credit")
+	List<MediaContent>   content;
+	public
+	@XStreamAlias("media:credit")
 	@XStreamImplicit
-	List<MediaCredit>		credit;
-	public @XStreamAlias("media:description")
-	String					description;
-	public @XStreamAlias("yt:duration")
-	YoutubeDuration			duration;
-	public @XStreamAlias("media:keywords")
-	String					keywords;
-	public @XStreamAlias("media:license")
-	String					license;
-	public @XStreamAlias("media:player")
-	MediaPlayer				player;
-	public @XStreamAlias("media:rating")
-	MediaRating				rating;
-	public @XStreamAlias("media:restriction")
-	MediaRestriction		restriction;
-	public @XStreamAlias("media:thumbnail")
+	List<MediaCredit>    credit;
+	public
+	@XStreamAlias("media:description")
+	String               description;
+	public
+	@XStreamAlias("yt:duration")
+	YoutubeDuration      duration;
+	public
+	@XStreamAlias("media:keywords")
+	String               keywords;
+	public
+	@XStreamAlias("media:license")
+	String               license;
+	public
+	@XStreamAlias("media:player")
+	MediaPlayer          player;
+	public
+	@XStreamAlias("media:rating")
+	MediaRating          rating;
+	public
+	@XStreamAlias("media:restriction")
+	MediaRestriction     restriction;
+	public
+	@XStreamAlias("media:thumbnail")
 	@XStreamImplicit
-	List<MediaThumbnail>	thumbnails;
-	public @XStreamAlias("media:title")
-	String					title;
-	public @XStreamAlias("yt:uploaded")
-	String					uploaded;
-	public @XStreamAlias("yt:uploaderId")
-	String					uploaderId;
-	public @XStreamAlias("yt:videoid")
-	String					videoID;
-	public @XStreamAlias("yt:private")
-	Object					ytPrivate;
+	List<MediaThumbnail> thumbnails;
+	public
+	@XStreamAlias("media:title")
+	String               title;
+	public
+	@XStreamAlias("yt:uploaded")
+	String               uploaded;
+	public
+	@XStreamAlias("yt:uploaderId")
+	String               uploaderId;
+	public
+	@XStreamAlias("yt:videoid")
+	String               videoID;
+	public
+	@XStreamAlias("yt:private")
+	Object               ytPrivate;
 }

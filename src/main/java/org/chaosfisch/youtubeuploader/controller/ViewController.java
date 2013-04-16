@@ -7,12 +7,10 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -25,34 +23,28 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
-import org.chaosfisch.youtubeuploader.db.data.Asset;
-import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
-import org.chaosfisch.youtubeuploader.db.data.ClaimType;
-import org.chaosfisch.youtubeuploader.db.data.Comment;
-import org.chaosfisch.youtubeuploader.db.data.License;
-import org.chaosfisch.youtubeuploader.db.data.Syndication;
-import org.chaosfisch.youtubeuploader.db.data.Videoresponse;
-import org.chaosfisch.youtubeuploader.db.data.Visibility;
+import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
-import com.google.inject.Inject;
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class ViewController {
 
 	@FXML
-	private ResourceBundle	resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL				location;
+	private URL location;
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {
@@ -83,32 +75,25 @@ public class ViewController {
 		final TextArea summary = new TextArea();
 		final ChoiceBox<Account> accounts = new ChoiceBox<>();
 		accounts.setItems(FXCollections.observableList(accountDao.findAll()));
-		accounts.getSelectionModel()
-			.selectFirst();
+		accounts.getSelectionModel().selectFirst();
 
-		final Object[] message = { resources.getString("playlistDialog.playlistLabel"), title,
-				resources.getString("playlistDialog.descriptionLabel"), summary, resources.getString("playlistDialog.playlistPrivate"),
-				playlistPrivate, resources.getString("playlistDialog.playlistAccount"), accounts };
-		final InputDialog myDialog = new InputDialog(resources.getString("playlistDialog.addPlaylistLabel"),
-			message);
+		final Object[] message = {resources.getString("playlistDialog.playlistLabel"), title,
+								  resources.getString("playlistDialog.descriptionLabel"), summary,
+								  resources.getString("playlistDialog.playlistPrivate"), playlistPrivate,
+								  resources.getString("playlistDialog.playlistAccount"), accounts};
+		final InputDialog myDialog = new InputDialog(resources.getString("playlistDialog.addPlaylistLabel"), message);
 
-		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate,
-			summary,
-			accounts,
-			title,
-			myDialog));
+		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate, summary, accounts, title, myDialog));
 	}
 
 	@FXML
 	void menuAddTemplate(final ActionEvent event) {
 		final TextField textfield = new TextField();
-		final Object[] message = { resources.getString("templateDialog.templateLabel"), textfield };
+		final Object[] message = {resources.getString("templateDialog.templateLabel"), textfield};
 
-		final InputDialog myDialog = new InputDialog(resources.getString("templateDialog.addTemplateLabel"),
-			message);
+		final InputDialog myDialog = new InputDialog(resources.getString("templateDialog.addTemplateLabel"), message);
 
-		myDialog.setCallback(new TemplateAddDialogCallback(myDialog,
-			textfield));
+		myDialog.setCallback(new TemplateAddDialogCallback(myDialog, textfield));
 	}
 
 	@FXML
@@ -120,14 +105,11 @@ public class ViewController {
 	void menuConnectServer(final ActionEvent event) {
 		final TextField host = new TextField();
 		final TextField port = new TextField();
-		final Object[] message = { resources.getString("remoteclientDialog.labelHost"), host,
-				resources.getString("remotclientDialog.labelPort"), port };
+		final Object[] message = {resources.getString("remoteclientDialog.labelHost"), host,
+								  resources.getString("remotclientDialog.labelPort"), port};
 
-		final InputDialog myDialog = new InputDialog(resources.getString("remoteclientDialog.button"),
-			message);
-		myDialog.setCallback(new ServerConnectDialogCallback(myDialog,
-			port,
-			host));
+		final InputDialog myDialog = new InputDialog(resources.getString("remoteclientDialog.button"), message);
+		myDialog.setCallback(new ServerConnectDialogCallback(myDialog, port, host));
 	}
 
 	@FXML
@@ -136,17 +118,18 @@ public class ViewController {
 	}
 
 	@Inject
-	private PlaylistService			playlistService;
+	private PlaylistService  playlistService;
 	@Inject
-	private UploadController		uploadController;
+	private UploadController uploadController;
 	@Inject
-	private AccountDao				accountDao;
+	private AccountDao       accountDao;
 	@Inject
-	private TemplateDao				templateDao;
+	private TemplateDao      templateDao;
 
 	// @Inject private RemoteClient remoteClient;
 
-	public static final Template	standardTemplate;
+	public static final Template standardTemplate;
+
 	static {
 		standardTemplate = new Template();
 		standardTemplate.setEmbed(true);
@@ -175,12 +158,13 @@ public class ViewController {
 	}
 
 	@FXML
-	void initialize() {}
+	void initialize() {
+	}
 
 	private final static class ServerConnectDialogCallback implements EventHandler<ActionEvent> {
-		private final InputDialog	myDialog;
-		private final TextField		port;
-		private final TextField		host;
+		private final InputDialog myDialog;
+		private final TextField   port;
+		private final TextField   host;
 
 		private ServerConnectDialogCallback(final InputDialog myDialog, final TextField port, final TextField host) {
 			this.myDialog = myDialog;
@@ -190,9 +174,7 @@ public class ViewController {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!host.getText()
-				.isEmpty() && !port.getText()
-				.isEmpty()) {
+			if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
 				// try {
 				// if (!remoteClient.connect(host.getText(),
 				// port.getText())) {
@@ -208,8 +190,8 @@ public class ViewController {
 	}
 
 	private final class TemplateAddDialogCallback implements EventHandler<ActionEvent> {
-		private final InputDialog	myDialog;
-		private final TextField		textfield;
+		private final InputDialog myDialog;
+		private final TextField   textfield;
 
 		private TemplateAddDialogCallback(final InputDialog myDialog, final TextField textfield) {
 			this.myDialog = myDialog;
@@ -218,8 +200,7 @@ public class ViewController {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!textfield.getText()
-				.isEmpty()) {
+			if (!textfield.getText().isEmpty()) {
 
 				final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
 				template.setName(textfield.getText());
@@ -230,14 +211,13 @@ public class ViewController {
 	}
 
 	private final class PlaylistAddDialogCallback implements EventHandler<ActionEvent> {
-		private final CheckBox				playlistPrivate;
-		private final TextArea				summary;
-		private final ChoiceBox<Account>	accounts;
-		private final TextField				title;
-		private final InputDialog			myDialog;
+		private final CheckBox           playlistPrivate;
+		private final TextArea           summary;
+		private final ChoiceBox<Account> accounts;
+		private final TextField          title;
+		private final InputDialog        myDialog;
 
-		private PlaylistAddDialogCallback(final CheckBox playlistPrivate, final TextArea summary, final ChoiceBox<Account> accounts,
-				final TextField title, final InputDialog myDialog) {
+		private PlaylistAddDialogCallback(final CheckBox playlistPrivate, final TextArea summary, final ChoiceBox<Account> accounts, final TextField title, final InputDialog myDialog) {
 			this.playlistPrivate = playlistPrivate;
 			this.summary = summary;
 			this.accounts = accounts;
@@ -247,15 +227,12 @@ public class ViewController {
 
 		@Override
 		public void handle(final ActionEvent event) {
-			if (!title.getText()
-				.isEmpty() && !accounts.getSelectionModel()
-				.isEmpty()) {
+			if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
 				final Playlist playlist = new Playlist();
 				playlist.setTitle(title.getText());
 				playlist.setSummary(summary.getText());
 				playlist.setPrivate(playlistPrivate.isSelected());
-				playlist.setAccountId(accounts.getValue()
-					.getId());
+				playlist.setAccountId(accounts.getValue().getId());
 				try {
 					playlistService.addYoutubePlaylist(playlist);
 				} catch (final SystemException e) {

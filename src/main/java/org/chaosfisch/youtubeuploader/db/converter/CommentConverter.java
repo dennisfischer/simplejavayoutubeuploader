@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.Comment;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class CommentConverter extends EnumConverter<String, Comment> {
 
-	private static final long	serialVersionUID	= -5791845905794108072L;
+	private static final long serialVersionUID = -5791845905794108072L;
 
 	public CommentConverter() {
-		super(String.class,
-			Comment.class);
+		super(String.class, Comment.class);
 	}
 }

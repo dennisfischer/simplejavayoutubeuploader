@@ -12,10 +12,10 @@ package org.chaosfisch.youtubeuploader.db;
 
 public abstract class AbstractTemplate extends AbstractPojo {
 
-    protected abstract String getName();
+	protected abstract String getName();
 
-    @Override
-    public String toString() {
-        return getName();
-    }
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

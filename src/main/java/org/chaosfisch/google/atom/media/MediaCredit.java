@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,17 +16,21 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:credit")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "credit" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"credit"})
 public class MediaCredit {
-	public String	credit;
-	public @XStreamAsAttribute
-	String			role;
-	public @XStreamAsAttribute
-	String			scheme;
-	public @XStreamAsAttribute
+	public String credit;
+	public
+	@XStreamAsAttribute
+	String role;
+	public
+	@XStreamAsAttribute
+	String scheme;
+	public
+	@XStreamAsAttribute
 	@XStreamAlias("yt:display")
-	String			ytDisplay;
-	public @XStreamAsAttribute
+	String ytDisplay;
+	public
+	@XStreamAsAttribute
 	@XStreamAlias("yt:type")
-	String			ytType;
+	String ytType;
 }

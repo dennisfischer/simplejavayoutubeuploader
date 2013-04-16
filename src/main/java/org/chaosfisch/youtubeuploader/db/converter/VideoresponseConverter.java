@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.Videoresponse;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class VideoresponseConverter extends EnumConverter<String, Videoresponse> {
 
-	private static final long	serialVersionUID	= 2850579520867941679L;
+	private static final long serialVersionUID = 2850579520867941679L;
 
 	public VideoresponseConverter() {
-		super(String.class,
-			Videoresponse.class);
+		super(String.class, Videoresponse.class);
 	}
 }

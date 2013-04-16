@@ -7,15 +7,17 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.google.atom.media;
 
-import java.net.URL;
+package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
+import java.net.URL;
+
 @XStreamAlias("media:player")
 public class MediaPlayer {
-	public @XStreamAsAttribute
-	URL	url;
+	public
+	@XStreamAsAttribute
+	URL url;
 }

@@ -7,17 +7,17 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.youtubeuploader.guice;
 
-import javafx.concurrent.Service;
+package org.chaosfisch.youtubeuploader.guice;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import javafx.concurrent.Service;
 
 public class CommandProvider implements ICommandProvider {
 
 	@Inject
-	public Injector	injector;
+	public Injector injector;
 
 	@Override
 	public <T extends Service<?>> T get(final Class<T> type) {

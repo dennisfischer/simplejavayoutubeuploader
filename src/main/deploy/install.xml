@@ -1,4 +1,5 @@
 <?xml version="1.0" standalone="yes" ?>
+
 <!--
   ~ Copyright (c) 2013 Dennis Fischer.
   ~ All rights reserved. This program and the accompanying materials
@@ -9,45 +10,46 @@
   ~ Contributors: Dennis Fischer
   -->
 <installation version="1.0">
-	<!-- The info section -->
-	<info>
-		<appname>Simple Java Youtube Uploader</appname>
-		<appversion>3.0 Nigthly</appversion>
-		<authors>
-			<author email="" name="Dennis Fischer aka CHAOSFISCH" />
-		</authors>
-		<url>http://code.google.com/p/simple-java-youtube-uploader/</url>
-		<javaversion>1.7</javaversion>
-		<requiresjdk>no</requiresjdk>
-	</info>
-	<guiprefs width="600" height="480" resizable="no">
-		<laf name="kunststoff">
-			<os family="unix" />
-		</laf>
-		<modifier key="useHeadingPanel" value="yes" />
-		<modifier key="useHeadingForSummary" value="yes" />
-		<modifier key="headingImageOnLeft" value="yes" />
-		<modifier key="headingLineCount" value="2" />
-		<modifier key="headingFontSize" value="1.5" />
-		<modifier key="headingBackgroundColor" value="0x00ffffff" />
-		<modifier key="headingPanelCounter" value="text" />
-		<modifier key="headingPanelCounterPos" value="inHeading" />
-	</guiprefs>
-	<locale>
-		<langpack iso3="deu" />
-		<langpack iso3="eng" />
-	</locale>
-	<panels>
-		<panel classname="HelloPanel" />
-		<panel classname="LicencePanel" />
-		<panel classname="TargetPanel" />
-		<panel classname="InstallPanel" />
-		<panel classname="FinishPanel" />
-	</panels>
-	<packs>
-		<pack name="Core" required="yes">
-			<description>Core installation files</description>
-			<file src="../../distributions/simple-java-youtube-uploader.javafx-3.0-SNAPSHOT.zip" unpack="true" targetdir="$INSTALL_PATH" />
-		</pack>
-	</packs>
+    <!-- The info section -->
+    <info>
+        <appname>Simple Java Youtube Uploader</appname>
+        <appversion>3.0 Nigthly</appversion>
+        <authors>
+            <author email="" name="Dennis Fischer aka CHAOSFISCH"/>
+        </authors>
+        <url>http://code.google.com/p/simple-java-youtube-uploader/</url>
+        <javaversion>1.7</javaversion>
+        <requiresjdk>no</requiresjdk>
+    </info>
+    <guiprefs width="600" height="480" resizable="no">
+        <laf name="kunststoff">
+            <os family="unix"/>
+        </laf>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useHeadingForSummary" value="yes"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingLineCount" value="2"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inHeading"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="deu"/>
+        <langpack iso3="eng"/>
+    </locale>
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    <packs>
+        <pack name="Core" required="yes">
+            <description>Core installation files</description>
+            <file src="../../distributions/simple-java-youtube-uploader.javafx-3.0-SNAPSHOT.zip" unpack="true"
+                  targetdir="$INSTALL_PATH"/>
+        </pack>
+    </packs>
 </installation>

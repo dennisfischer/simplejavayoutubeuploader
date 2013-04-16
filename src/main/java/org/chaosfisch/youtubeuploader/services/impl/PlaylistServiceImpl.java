@@ -7,14 +7,12 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.services.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 import org.apache.http.entity.StringEntity;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.Feed;
@@ -32,24 +30,26 @@ import org.chaosfisch.youtubeuploader.services.PlaylistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlaylistServiceImpl implements PlaylistService {
-	private static final String	YOUTUBE_PLAYLIST_FEED_50_RESULTS	= "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
-	private static final String	YOUTUBE_PLAYLIST_VIDEO_ADD_FEED		= "http://gdata.youtube.com/feeds/api/playlists/%s";
-	private static final String	YOUTUBE_PLAYLIST_ADD_FEED			= "http://gdata.youtube.com/feeds/api/users/default/playlists";
+	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
+	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
+	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
 	@Inject
-	private GoogleAuthUtil		authTokenHelper;
+	private GoogleAuthUtil authTokenHelper;
 	@Inject
-	private RequestSigner		requestSigner;
+	private RequestSigner  requestSigner;
 	@Inject
-	private PlaylistDao			playlistDao;
+	private PlaylistDao    playlistDao;
 	@Inject
-	private AccountDao			accountDao;
+	private AccountDao     accountDao;
 
-	private final Logger		logger								= LoggerFactory.getLogger(PlaylistServiceImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(PlaylistServiceImpl.class);
 
 	@Override
 	public String addLatestVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
@@ -58,12 +58,14 @@ public class PlaylistServiceImpl implements PlaylistService {
 		submitFeed.mediaGroup = null;
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
-		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(
-			new StringEntity(atomData,
-				Charsets.UTF_8))
-			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
-			.build();
+		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(new StringEntity(atomData, Charsets.UTF_8))
+																													   .headers(ImmutableMap
+																															   .of("Content-Type", "application/atom+xml; charset=utf-8;"))
+																													   .sign(requestSigner, authTokenHelper
+																															   .getAuthHeader(accountDao
+																																	   .fetchOneById(playlist
+																																			   .getAccountId())))
+																													   .build();
 
 		try (final Response response = request.execute()) {
 			logger.debug("Video added to playlist!");
@@ -88,11 +90,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		logger.debug("Playlist atomdata: {}", atomData);
 
-		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData,
-			Charsets.UTF_8))
-			.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-			.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
-			.build();
+		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData, Charsets.UTF_8))
+																			  .headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
+																			  .sign(requestSigner, authTokenHelper.getAuthHeader(accountDao
+																					  .fetchOneById(playlist.getAccountId())))
+																			  .build();
 		try (final Response response = request.execute()) {
 			if (response.getStatusCode() != 200 && response.getStatusCode() != 201) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
@@ -112,8 +114,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		for (final Account account : accounts) {
 			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
-				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
-				.build();
+																						 .sign(requestSigner, authTokenHelper
+																								 .getAuthHeader(account))
+																						 .build();
 			try (final Response response = request.execute()) {
 				if (response.getStatusCode() != 200) {
 					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());

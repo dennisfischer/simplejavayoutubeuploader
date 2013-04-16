@@ -9,28 +9,28 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
+
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml" fx:controller="org.chaosfisch.youtubeuploader.controller.SettingsController">
-  <children>
-    <GridPane prefHeight="400.0" prefWidth="600.0" styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <children>
-        <Label styleClass="grid" text="%enddircheckbox.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <CheckBox fx:id="enddirCheckbox" mnemonicParsing="false" onAction="#toggleEnddirTitle" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-      </children>
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0" />
-        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES" />
-      </rowConstraints>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0"
+            minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.chaosfisch.youtubeuploader.controller.SettingsController">
+    <GridPane prefHeight="400.0" prefWidth="600.0" styleClass="grid" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0"/>
+            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-1.0"
+                               prefWidth="-1.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <Label styleClass="grid" text="%enddircheckbox.label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <CheckBox fx:id="enddirCheckbox" mnemonicParsing="false" onAction="#toggleEnddirTitle" text=""
+                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
     </GridPane>
-  </children>
 </AnchorPane>

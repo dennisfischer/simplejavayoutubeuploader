@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,6 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("yt:duration")
 public class YoutubeDuration {
-	public @XStreamAsAttribute
-	Integer	seconds;
+	public
+	@XStreamAsAttribute
+	Integer seconds;
 }

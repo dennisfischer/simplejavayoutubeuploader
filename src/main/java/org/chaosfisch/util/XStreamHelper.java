@@ -19,35 +19,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class XStreamHelper {
-    final static XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
+	final static XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 
-    public static String parseObjectToFeed(final Object o) {
-        xStream.processAnnotations(o.getClass());
-        return xStream.toXML(o);
-    }
+	public static String parseObjectToFeed(final Object o) {
+		xStream.processAnnotations(o.getClass());
+		return xStream.toXML(o);
+	}
 
-    public static void parseObjectToFile(final Object o, final File file) throws IOException {
-        try (FileOutputStream fio = new FileOutputStream(file)) {
-            xStream.processAnnotations(o.getClass());
-            xStream.toXML(o, fio);
-        }
-    }
+	public static void parseObjectToFile(final Object o, final File file) throws IOException {
+		try (FileOutputStream fio = new FileOutputStream(file)) {
+			xStream.processAnnotations(o.getClass());
+			xStream.toXML(o, fio);
+		}
+	}
 
-    public static <T> T parseFileToObject(final File xml, final Class<T> clazz) {
-        xStream.processAnnotations(clazz);
-        final Object o = xStream.fromXML(xml);
-        if (clazz.isInstance(o)) {
-            return clazz.cast(o);
-        }
-        throw new IllegalArgumentException("atomData of invalid clazz object!");
-    }
+	public static <T> T parseFileToObject(final File xml, final Class<T> clazz) {
+		xStream.processAnnotations(clazz);
+		final Object o = xStream.fromXML(xml);
+		if (clazz.isInstance(o)) {
+			return clazz.cast(o);
+		}
+		throw new IllegalArgumentException("atomData of invalid clazz object!");
+	}
 
-    public static <T> T parseFeed(final String atomData, final Class<T> clazz) {
-        xStream.processAnnotations(clazz);
-        final Object o = xStream.fromXML(atomData);
-        if (clazz.isInstance(o)) {
-            return clazz.cast(o);
-        }
-        throw new IllegalArgumentException("atomData of invalid clazz object!");
-    }
+	public static <T> T parseFeed(final String atomData, final Class<T> clazz) {
+		xStream.processAnnotations(clazz);
+		final Object o = xStream.fromXML(atomData);
+		if (clazz.isInstance(o)) {
+			return clazz.cast(o);
+		}
+		throw new IllegalArgumentException("atomData of invalid clazz object!");
+	}
 }

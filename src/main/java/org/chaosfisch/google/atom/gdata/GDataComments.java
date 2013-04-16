@@ -7,18 +7,19 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.gdata;
-
-import java.util.List;
-
-import org.chaosfisch.google.atom.Feedlink;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.chaosfisch.google.atom.Feedlink;
+
+import java.util.List;
 
 @XStreamAlias("gd:comments")
 public class GDataComments {
-	public @XStreamAlias("gd:feedLink")
+	public
+	@XStreamAlias("gd:feedLink")
 	@XStreamImplicit
-	List<Feedlink>	links;
+	List<Feedlink> links;
 }

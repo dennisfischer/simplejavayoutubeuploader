@@ -7,32 +7,31 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
+
+import com.google.inject.Inject;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-
-import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
-
-import com.google.inject.Inject;
-
 public class SettingsController {
 
 	@FXML
-	private ResourceBundle		resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL					location;
+	private URL location;
 
 	@FXML
-	private CheckBox			enddirCheckbox;
+	private CheckBox enddirCheckbox;
 
 	@Inject
-	private EnddirServiceImpl	enddirService;
+	private EnddirServiceImpl enddirService;
 
 	@FXML
 	void toggleEnddirTitle(final ActionEvent event) {

@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,10 +15,13 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("category")
 public class Category {
-	public @XStreamAsAttribute
-	String	label;
-	public @XStreamAsAttribute
-	String	scheme;
-	public @XStreamAsAttribute
-	String	term;
+	public
+	@XStreamAsAttribute
+	String label;
+	public
+	@XStreamAsAttribute
+	String scheme;
+	public
+	@XStreamAsAttribute
+	String term;
 }

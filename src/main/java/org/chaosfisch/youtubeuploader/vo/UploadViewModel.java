@@ -30,101 +30,94 @@ import java.util.Iterator;
 
 public class UploadViewModel {
 
-    // {{ UploadOptions
-    public final SimpleListProperty<Account> accountProperty = new SimpleListProperty<>(FXCollections.<Account>observableArrayList());
-    public final SimpleListProperty<Template> templateProperty = new SimpleListProperty<>(FXCollections.<Template>observableArrayList());
-    public final SimpleListProperty<Playlist> playlistDropListProperty = new SimpleListProperty<>(FXCollections.<Playlist>observableArrayList());
-    public final SimpleListProperty<Playlist> playlistSourceListProperty = new SimpleListProperty<>(FXCollections.<Playlist>observableArrayList());
-    public final SimpleListProperty<File> fileProperty = new SimpleListProperty<>(FXCollections.<File>observableArrayList());
-    public final SimpleObjectProperty<Calendar> starttimeProperty = new SimpleObjectProperty<>(Calendar.getInstance());
-    public final SimpleObjectProperty<Calendar> releasetimeProperty = new SimpleObjectProperty<>(Calendar.getInstance());
-    public final SimpleStringProperty thumbnailProperty = new SimpleStringProperty();
-    public final SimpleIntegerProperty idProperty = new SimpleIntegerProperty(-1);
-    public SimpleObjectProperty<SingleSelectionModel<File>> selectedFileProperty;
-    public SimpleObjectProperty<SingleSelectionModel<Account>> selectedAccountProperty;
-    public SimpleObjectProperty<SingleSelectionModel<Template>> selectedTemplateProperty;
-    // }} UploadOptions
+	// {{ UploadOptions
+	public final SimpleListProperty<Account>    accountProperty            = new SimpleListProperty<>(FXCollections.<Account>observableArrayList());
+	public final SimpleListProperty<Template>   templateProperty           = new SimpleListProperty<>(FXCollections.<Template>observableArrayList());
+	public final SimpleListProperty<Playlist>   playlistDropListProperty   = new SimpleListProperty<>(FXCollections.<Playlist>observableArrayList());
+	public final SimpleListProperty<Playlist>   playlistSourceListProperty = new SimpleListProperty<>(FXCollections.<Playlist>observableArrayList());
+	public final SimpleListProperty<File>       fileProperty               = new SimpleListProperty<>(FXCollections.<File>observableArrayList());
+	public final SimpleObjectProperty<Calendar> starttimeProperty          = new SimpleObjectProperty<>(Calendar.getInstance());
+	public final SimpleObjectProperty<Calendar> releasetimeProperty        = new SimpleObjectProperty<>(Calendar.getInstance());
+	public final SimpleStringProperty           thumbnailProperty          = new SimpleStringProperty();
+	public final SimpleIntegerProperty          idProperty                 = new SimpleIntegerProperty(-1);
+	public SimpleObjectProperty<SingleSelectionModel<File>>     selectedFileProperty;
+	public SimpleObjectProperty<SingleSelectionModel<Account>>  selectedAccountProperty;
+	public SimpleObjectProperty<SingleSelectionModel<Template>> selectedTemplateProperty;
+	// }} UploadOptions
 
-    @Inject
-    private PlaylistService playlistService;
-    @Inject
-    private AccountDao accountDao;
-    @Inject
-    private PlaylistDao playlistDao;
-    @Inject
-    private UploadDao uploadDao;
-    @Inject
-    private TemplatePlaylistDao templatePlaylistDao;
+	@Inject
+	private PlaylistService     playlistService;
+	@Inject
+	private AccountDao          accountDao;
+	@Inject
+	private PlaylistDao         playlistDao;
+	@Inject
+	private UploadDao           uploadDao;
+	@Inject
+	private TemplatePlaylistDao templatePlaylistDao;
 
-    private void _reset(final Template template) {
+	private void _reset(final Template template) {
 
-        final Account account = accountDao.fetchOneById(template.getAccountId());
-        if (account != null) {
-            selectedAccountProperty.get()
-                    .select(account);
-        }
+		final Account account = accountDao.fetchOneById(template.getAccountId());
+		if (account != null) {
+			selectedAccountProperty.get().select(account);
+		}
 
-        final Iterator<Playlist> playlistDropListIterator = playlistDropListProperty.get()
-                .iterator();
-        while (playlistDropListIterator.hasNext()) {
-            final Playlist playlist = playlistDropListIterator.next();
-            playlistSourceListProperty.add(playlist);
-            playlistDropListIterator.remove();
-        }
+		final Iterator<Playlist> playlistDropListIterator = playlistDropListProperty.get().iterator();
+		while (playlistDropListIterator.hasNext()) {
+			final Playlist playlist = playlistDropListIterator.next();
+			playlistSourceListProperty.add(playlist);
+			playlistDropListIterator.remove();
+		}
 
-        for (final Playlist playlist : playlistDao.fetchByTemplate(template)) {
-            playlistDropListProperty.add(playlist);
-            playlistSourceListProperty.remove(playlist);
-        }
+		for (final Playlist playlist : playlistDao.fetchByTemplate(template)) {
+			playlistDropListProperty.add(playlist);
+			playlistSourceListProperty.remove(playlist);
+		}
 
-        releasetimeProperty.set(Calendar.getInstance());
-        starttimeProperty.set(Calendar.getInstance());
-        thumbnailProperty.set("");
-        idProperty.setValue(-1);
-    }
+		releasetimeProperty.set(Calendar.getInstance());
+		starttimeProperty.set(Calendar.getInstance());
+		thumbnailProperty.set("");
+		idProperty.setValue(-1);
+	}
 
-    public void fromUpload(final Upload upload) {
-        idProperty.set(upload.getId());
-        if (!fileProperty.contains(upload.getFile())) {
-            fileProperty.add(upload.getFile());
-        }
+	public void fromUpload(final Upload upload) {
+		idProperty.set(upload.getId());
+		if (!fileProperty.contains(upload.getFile())) {
+			fileProperty.add(upload.getFile());
+		}
 
-        selectedAccountProperty.get()
-                .select(accountDao.fetchOneById(upload.getId()));
+		selectedAccountProperty.get().select(accountDao.fetchOneById(upload.getId()));
 
-        final Iterator<Playlist> playlistDropListIterator = playlistDropListProperty.get()
-                .iterator();
-        while (playlistDropListIterator.hasNext()) {
-            final Playlist playlist = playlistDropListIterator.next();
-            playlistSourceListProperty.add(playlist);
-            playlistDropListIterator.remove();
-        }
+		final Iterator<Playlist> playlistDropListIterator = playlistDropListProperty.get().iterator();
+		while (playlistDropListIterator.hasNext()) {
+			final Playlist playlist = playlistDropListIterator.next();
+			playlistSourceListProperty.add(playlist);
+			playlistDropListIterator.remove();
+		}
 
-        for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
-            playlistDropListProperty.add(playlist);
-            playlistSourceListProperty.remove(playlist);
-        }
-    }
+		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
+			playlistDropListProperty.add(playlist);
+			playlistSourceListProperty.remove(playlist);
+		}
+	}
 
-    public void saveTemplate() {
-        final Template template = selectedTemplateProperty.get()
-                .getSelectedItem();
+	public void saveTemplate() {
+		final Template template = selectedTemplateProperty.get().getSelectedItem();
 
-        if (selectedAccountProperty.get() != null) {
-            template.setAccountId(selectedAccountProperty.get()
-                    .getSelectedItem()
-                    .getId());
-        }
+		if (selectedAccountProperty.get() != null) {
+			template.setAccountId(selectedAccountProperty.get().getSelectedItem().getId());
+		}
 
-        // Clear all existing template playlist relations
-        templatePlaylistDao.delete(templatePlaylistDao.fetchByTemplateId(template.getId()));
-        for (final Playlist playlist : playlistDropListProperty.get()) {
-            final TemplatePlaylist relation = new TemplatePlaylist();
-            relation.setPlaylistId(playlist.getId());
-            relation.setTemplateId(template.getId());
-            templatePlaylistDao.insert(relation);
-        }
+		// Clear all existing template playlist relations
+		templatePlaylistDao.delete(templatePlaylistDao.fetchByTemplateId(template.getId()));
+		for (final Playlist playlist : playlistDropListProperty.get()) {
+			final TemplatePlaylist relation = new TemplatePlaylist();
+			relation.setPlaylistId(playlist.getId());
+			relation.setTemplateId(template.getId());
+			templatePlaylistDao.insert(relation);
+		}
 
-    }
+	}
 
 }

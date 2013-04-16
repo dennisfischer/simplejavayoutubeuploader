@@ -7,27 +7,26 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.command;
 
+import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-
 import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 
-import com.google.inject.Inject;
-
 public class AddAccountCommand extends Service<Void> {
 
 	@Inject
-	private GoogleAuthUtil	authTokenHelper;
+	private GoogleAuthUtil authTokenHelper;
 
 	@Inject
-	private AccountDao		accountDao;
+	private AccountDao accountDao;
 
-	public String			name;
-	public String			password;
+	public String name;
+	public String password;
 
 	@Override
 	protected Task<Void> createTask() {

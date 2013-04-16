@@ -7,17 +7,18 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.net;
 
 import java.io.Serializable;
 
 public class Msg implements Serializable {
 	/**
-	 * 
+	 *
 	 */
-	private static final long	serialVersionUID	= -2022475929850602317L;
-	private final String		event;
-	private Object				content;
+	private static final long serialVersionUID = -2022475929850602317L;
+	private final String event;
+	private       Object content;
 
 	Msg(final String event) {
 		this.event = event;

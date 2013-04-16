@@ -14,8 +14,8 @@ import org.chaosfisch.util.TagParser;
 
 public class TagValidator implements Validator<String> {
 
-    @Override
-    public boolean validate(final String string) {
-        return string == null || TagParser.isValid(string);
-    }
+	@Override
+	public boolean validate(final String string) {
+		return string == null || TagParser.isValid(string);
+	}
 }

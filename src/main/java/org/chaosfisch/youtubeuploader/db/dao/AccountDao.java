@@ -7,11 +7,11 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.dao;
 
-import org.jooq.Configuration;
-
 import com.google.inject.Inject;
+import org.jooq.Configuration;
 
 public class AccountDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao {
 

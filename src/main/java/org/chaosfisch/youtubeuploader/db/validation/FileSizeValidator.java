@@ -7,13 +7,14 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.validation;
 
 import java.io.File;
 
 public class FileSizeValidator implements Validator<String> {
 
-	private final int	size;
+	private final int size;
 
 	public FileSizeValidator(final int size) {
 		this.size = size;

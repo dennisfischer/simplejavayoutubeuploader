@@ -18,35 +18,34 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class Protocol {
-    private final HashMap<String, String> events = new HashMap<>();
-    private final Object protocolHandler;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final HashMap<String, String> events = new HashMap<>();
+	private final Object protocolHandler;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Protocol(final Object protocolHandler) {
-        this.protocolHandler = protocolHandler;
-    }
+	public Protocol(final Object protocolHandler) {
+		this.protocolHandler = protocolHandler;
+	}
 
-    public void addMsgHandler(final String header, final String function) {
-        events.put(header, function);
-    }
+	public void addMsgHandler(final String header, final String function) {
+		events.put(header, function);
+	}
 
-    public void addMsgHandler(final String header) {
-        events.put(header, header);
-    }
+	public void addMsgHandler(final String header) {
+		events.put(header, header);
+	}
 
-    public void processMsg(final Msg msg) {
-        if (msg == null) {
-            return;
-        }
-        final String event = msg.getEvent();
-        final String handler = events.get(event);
-        try {
-            final Method m = protocolHandler.getClass()
-                    .getMethod(handler, new Class[]{Msg.class});
-            m.invoke(protocolHandler, msg);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            logger.warn("Method wrongly invoked", e);
-        }
-    }
+	public void processMsg(final Msg msg) {
+		if (msg == null) {
+			return;
+		}
+		final String event = msg.getEvent();
+		final String handler = events.get(event);
+		try {
+			final Method m = protocolHandler.getClass().getMethod(handler, new Class[] {Msg.class});
+			m.invoke(protocolHandler, msg);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.warn("Method wrongly invoked", e);
+		}
+	}
 
 }

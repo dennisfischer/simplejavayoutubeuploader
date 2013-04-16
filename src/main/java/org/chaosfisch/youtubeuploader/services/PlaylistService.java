@@ -7,14 +7,15 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.youtubeuploader.services;
 
-import java.util.List;
-import java.util.Map;
+package org.chaosfisch.youtubeuploader.services;
 
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PlaylistService {
 	String addLatestVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;

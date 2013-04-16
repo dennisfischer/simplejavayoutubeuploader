@@ -7,11 +7,12 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.services;
 
-import java.io.File;
-
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+
+import java.io.File;
 
 public interface EnddirService {
 	void moveFileByUpload(File fileToMove, Upload upload);

@@ -7,25 +7,16 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.io.http;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.params.HttpParams;
 
 public class Request {
 	public enum Method {
@@ -76,13 +67,13 @@ public class Request {
 	}
 
 	public static class Builder {
-		private final String		url;
-		private HttpParams			params;
-		private Method				method;
-		private Map<String, String>	headers;
-		private HttpEntity			entity;
-		private RequestSigner		requestSigner;
-		private String				authHeader;
+		private final String              url;
+		private       HttpParams          params;
+		private       Method              method;
+		private       Map<String, String> headers;
+		private       HttpEntity          entity;
+		private       RequestSigner       requestSigner;
+		private       String              authHeader;
 
 		public Builder(final String url) {
 			this.url = url;
@@ -152,7 +143,7 @@ public class Request {
 
 	}
 
-	private final HttpUriRequest	httpRequest;
+	private final HttpUriRequest httpRequest;
 
 	private Request(final Builder builder) {
 		httpRequest = builder.method.get(builder.url);
@@ -177,7 +168,7 @@ public class Request {
 		}
 	}
 
-	public Response execute() throws  IOException {
+	public Response execute() throws IOException {
 		return new Response(RequestUtil.execute(httpRequest));
 	}
 }

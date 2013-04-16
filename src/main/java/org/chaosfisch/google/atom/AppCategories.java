@@ -7,17 +7,19 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.google.atom;
 
-import java.util.List;
+package org.chaosfisch.google.atom;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+import java.util.List;
+
 @XStreamAlias("app:categories")
 public class AppCategories {
 
-	public @XStreamAlias("atom:category")
+	public
+	@XStreamAlias("atom:category")
 	@XStreamImplicit
-	List<AtomCategory>	categories;
+	List<AtomCategory> categories;
 }

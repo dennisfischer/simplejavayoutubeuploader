@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,12 +16,14 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:rating")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "rating" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"rating"})
 public class MediaRating {
-	public @XStreamAsAttribute
-	String			country;
-	public String	rating;
-	public @XStreamAsAttribute
-	String			scheme;
+	public
+	@XStreamAsAttribute
+	String country;
+	public String rating;
+	public
+	@XStreamAsAttribute
+	String scheme;
 
 }

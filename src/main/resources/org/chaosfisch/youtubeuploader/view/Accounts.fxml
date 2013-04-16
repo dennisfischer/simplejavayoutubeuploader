@@ -9,23 +9,20 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
+
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<HBox prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" xmlns:fx="http://javafx.com/fxml">
-  <children>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<HBox layoutX="0.0" prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" xmlns:fx="http://javafx.com/fxml">
     <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" HBox.hgrow="ALWAYS">
-      <children>
-        <fx:include source="AccountsOverview.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" VBox.vgrow="ALWAYS" />
-        <fx:include source="AccountsAdd.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" VBox.vgrow="NEVER" />
-      </children>
+        <fx:include source="AccountsOverview.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
+                    VBox.vgrow="ALWAYS"/>
+        <fx:include source="AccountsAdd.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
+                    VBox.vgrow="NEVER"/>
     </VBox>
-  </children>
+    <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+    </padding>
 </HBox>

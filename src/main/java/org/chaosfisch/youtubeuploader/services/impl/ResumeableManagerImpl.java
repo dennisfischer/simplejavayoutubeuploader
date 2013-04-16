@@ -30,120 +30,116 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class ResumeableManagerImpl implements ResumeableManager {
-    private static final double BACKOFF = 3.13;
-    private int numberOfRetries;
-    private static final int MAX_RETRIES = 5;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private static final double BACKOFF = 3.13;
+	private int numberOfRetries;
+	private static final int    MAX_RETRIES = 5;
+	private final        Logger logger      = LoggerFactory.getLogger(getClass());
 
-    @Inject
-    private GoogleAuthUtil authTokenHelper;
-    @Inject
-    private RequestSigner requestSigner;
-    @Inject
-    private UploadDao uploadDao;
+	@Inject
+	private GoogleAuthUtil authTokenHelper;
+	@Inject
+	private RequestSigner  requestSigner;
+	@Inject
+	private UploadDao      uploadDao;
 
-    @Override
-    public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
-        ResumeInfo resumeInfo;
-        do {
-            if (!canResume()) {
-                return null;
-            }
-            resumeInfo = resumeFileUpload(upload);
-        } while (resumeInfo == null);
-        return resumeInfo;
-    }
+	@Override
+	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
+		ResumeInfo resumeInfo;
+		do {
+			if (!canResume()) {
+				return null;
+			}
+			resumeInfo = resumeFileUpload(upload);
+		} while (resumeInfo == null);
+		return resumeInfo;
+	}
 
-    private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
-        final Request request = new Request.Builder(upload.getUploadurl()).put(null)
-                .headers(ImmutableMap.of("Content-Range", "bytes */*"))
-                .sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)))
-                .build();
+	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
+		final Request request = new Request.Builder(upload.getUploadurl()).put(null)
+																		  .headers(ImmutableMap.of("Content-Range", "bytes */*"))
+																		  .sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao
+																				  .fetchOneAccountByUpload(upload)))
+																		  .build();
 
-        try (final Response response = request.execute()) {
+		try (final Response response = request.execute()) {
 
-            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
-                return new ResumeInfo(parseVideoId(EntityUtils.toString(response.getEntity())));
-            } else if (response.getStatusCode() != 308) {
-                throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
-            }
+			if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+				return new ResumeInfo(parseVideoId(EntityUtils.toString(response.getEntity())));
+			} else if (response.getStatusCode() != 308) {
+				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+			}
 
-            final long nextByteToUpload;
+			final long nextByteToUpload;
 
-            final Header range = response.getRaw()
-                    .getFirstHeader("Range");
-            if (range == null) {
-                logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
-                nextByteToUpload = 0;
-            } else {
-                logger.info("Range header is: {}", range.getValue());
-                final String[] parts = range.getValue()
-                        .split("-");
-                if (parts.length > 1) {
-                    nextByteToUpload = Long.parseLong(parts[1]) + 1;
-                } else {
-                    nextByteToUpload = 0;
-                }
-            }
-            final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-            if (response.getRaw()
-                    .getFirstHeader("Location") != null) {
-                final Header location = response.getRaw()
-                        .getFirstHeader("Location");
-                upload.setUploadurl(location.getValue());
-                uploadDao.update(upload);
-            }
-            return resumeInfo;
+			final Header range = response.getRaw().getFirstHeader("Range");
+			if (range == null) {
+				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
+				nextByteToUpload = 0;
+			} else {
+				logger.info("Range header is: {}", range.getValue());
+				final String[] parts = range.getValue().split("-");
+				if (parts.length > 1) {
+					nextByteToUpload = Long.parseLong(parts[1]) + 1;
+				} else {
+					nextByteToUpload = 0;
+				}
+			}
+			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
+			if (response.getRaw().getFirstHeader("Location") != null) {
+				final Header location = response.getRaw().getFirstHeader("Location");
+				upload.setUploadurl(location.getValue());
+				uploadDao.update(upload);
+			}
+			return resumeInfo;
 
-        } catch (final IOException e) {
-            throw SystemException.wrap(e, ResumeCode.IO_ERROR);
-        }
-    }
+		} catch (final IOException e) {
+			throw SystemException.wrap(e, ResumeCode.IO_ERROR);
+		}
+	}
 
-    @Override
-    public String parseVideoId(final String atomData) {
-        logger.info(atomData);
-        final VideoEntry videoEntry = XStreamHelper.parseFeed(atomData, VideoEntry.class);
-        return videoEntry.mediaGroup.videoID;
-    }
+	@Override
+	public String parseVideoId(final String atomData) {
+		logger.info(atomData);
+		final VideoEntry videoEntry = XStreamHelper.parseFeed(atomData, VideoEntry.class);
+		return videoEntry.mediaGroup.videoID;
+	}
 
-    @Override
-    public boolean canContinue() {
-        return !(numberOfRetries > MAX_RETRIES);
-    }
+	@Override
+	public boolean canContinue() {
+		return !(numberOfRetries > MAX_RETRIES);
+	}
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean canResume() {
-        numberOfRetries++;
-        if (canContinue()) {
-            delay();
-            return true;
-        }
-        return false;
-    }
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private boolean canResume() {
+		numberOfRetries++;
+		if (canContinue()) {
+			delay();
+			return true;
+		}
+		return false;
+	}
 
-    @Override
-    public void setRetries(final int i) {
-        numberOfRetries = i;
-    }
+	@Override
+	public void setRetries(final int i) {
+		numberOfRetries = i;
+	}
 
-    @Override
-    public int getRetries() {
-        return numberOfRetries;
-    }
+	@Override
+	public int getRetries() {
+		return numberOfRetries;
+	}
 
-    @Override
-    public void delay() {
-        try {
-            final int sleepSeconds = (int) Math.pow(BACKOFF, numberOfRetries);
-            logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
-            Thread.sleep(sleepSeconds * 1000L);
-            logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
-        } catch (final InterruptedException e) { // $codepro.audit.disable
-            // logExceptions
-            Thread.currentThread()
-                    .interrupt();
-        }
-    }
+	@Override
+	public void delay() {
+		try {
+			final int sleepSeconds = (int) Math.pow(BACKOFF, numberOfRetries);
+			logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
+			Thread.sleep(sleepSeconds * 1000L);
+			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
+		} catch (final InterruptedException e) { // $codepro.audit.disable
+			// logExceptions
+			Thread.currentThread().interrupt();
+		}
+	}
 
 }

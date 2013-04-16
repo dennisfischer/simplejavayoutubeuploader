@@ -7,13 +7,14 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.google.auth;
 
-import java.net.HttpURLConnection;
+package org.chaosfisch.google.auth;
 
 import org.apache.http.HttpRequest;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.youtubeuploader.ApplicationData;
+
+import java.net.HttpURLConnection;
 
 public class GDataRequestSigner implements RequestSigner {
 	@Override

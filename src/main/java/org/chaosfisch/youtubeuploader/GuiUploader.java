@@ -41,95 +41,91 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class GuiUploader extends GuiceApplication {
-    private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
-    private static Module injectionModule;
+	private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
+	private static Module injectionModule;
 
-    @Inject
-    private GuiceFXMLLoader fxmlLoader;
-    @Inject
-    private Injector injector;
-    @Inject
-    private Uploader uploader;
-    @Inject
-    @Named("i18n-resources")
-    ResourceBundle resources;
+	@Inject
+	private GuiceFXMLLoader fxmlLoader;
+	@Inject
+	private Injector        injector;
+	@Inject
+	private Uploader        uploader;
+	@Inject
+	@Named("i18n-resources")
+	ResourceBundle resources;
 
-    @Override
-    public void start(final Stage primaryStage) {
-        Platform.setImplicitExit(true);
-        initApplication(primaryStage);
-        initDatabase();
-        uploader.runStarttimeChecker();
-    }
+	@Override
+	public void start(final Stage primaryStage) {
+		Platform.setImplicitExit(true);
+		initApplication(primaryStage);
+		initDatabase();
+		uploader.runStarttimeChecker();
+	}
 
-    @Override
-    public void init(final List<Module> modules) throws Exception {
-        modules.add(injectionModule);
-    }
+	@Override
+	public void init(final List<Module> modules) throws Exception {
+		modules.add(injectionModule);
+	}
 
-    private void initApplication(final Stage primaryStage) {
-        try {
-            StyleManager.getInstance()
-                    .addUserAgentStylesheet("/org/chaosfisch/youtubeuploader/resources/style.css");
-            final Parent parent = fxmlLoader.load(
-                    getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
-                    .getRoot();
+	private void initApplication(final Stage primaryStage) {
+		try {
+			StyleManager.getInstance().addUserAgentStylesheet("/org/chaosfisch/youtubeuploader/resources/style.css");
+			final Parent parent = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
+											.getRoot();
 
-            final Scene scene = SceneBuilder.create()
-                    .root(parent)
-                    .build();
+			final Scene scene = SceneBuilder.create().root(parent).build();
 
-            try (InputStream iconInputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")) {
-                StageBuilder.create()
-                        .title(resources.getString("application.title"))
-                        .icons(new Image(iconInputStream))
-                        .minHeight(640)
-                        .height(640)
-                        .minWidth(1000)
-                        .width(1000)
-                        .scene(scene)
-                        .resizable(true)
-                        .onCloseRequest(new ApplicationClosePromptDialog())
-                        .applyTo(primaryStage);
-            }
+			try (InputStream iconInputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")) {
+				StageBuilder.create()
+							.title(resources.getString("application.title"))
+							.icons(new Image(iconInputStream))
+							.minHeight(640)
+							.height(640)
+							.minWidth(1000)
+							.width(1000)
+							.scene(scene)
+							.resizable(true)
+							.onCloseRequest(new ApplicationClosePromptDialog())
+							.applyTo(primaryStage);
+			}
 
-            primaryStage.show();
-        } catch (final IOException e) {
-            logger.error("FXML Load error", e);
-        }
-    }
+			primaryStage.show();
+		} catch (final IOException e) {
+			logger.error("FXML Load error", e);
+		}
+	}
 
-    @Override
-    public void stop() throws Exception {
-        // TODO LogfileCommitter.commit();
-        uploader.stopStarttimeChecker();
-        uploader.exit();
-    }
+	@Override
+	public void stop() throws Exception {
+		// TODO LogfileCommitter.commit();
+		uploader.stopStarttimeChecker();
+		uploader.exit();
+	}
 
-    public static void initialize(final String[] args, final Module injectionModule) {
-        GuiUploader.injectionModule = injectionModule;
-        launch(args);
-    }
+	public static void initialize(final String[] args, final Module injectionModule) {
+		GuiUploader.injectionModule = injectionModule;
+		launch(args);
+	}
 
-    public void initDatabase() {
-        DSL.using(injector.getInstance(Configuration.class))
-                .update(Tables.UPLOAD)
-                .set(Tables.UPLOAD.INPROGRESS, false)
-                .set(Tables.UPLOAD.FAILED, false)
-                .execute();
-    }
+	public void initDatabase() {
+		DSL.using(injector.getInstance(Configuration.class))
+		   .update(Tables.UPLOAD)
+		   .set(Tables.UPLOAD.INPROGRESS, false)
+		   .set(Tables.UPLOAD.FAILED, false)
+		   .execute();
+	}
 
-    private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
-        @Override
-        public void handle(final WindowEvent event) {
-            final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"),
-                    resources.getString("dialog.exitapplication.message"));
+	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
+		@Override
+		public void handle(final WindowEvent event) {
+			final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"), resources
+					.getString("dialog.exitapplication.message"));
 
-            if (dialog.showDialog() == MonologFXButton.Type.NO) {
-                event.consume();
-            } else {
-                Platform.exit();
-            }
-        }
-    }
+			if (dialog.showDialog() == MonologFXButton.Type.NO) {
+				event.consume();
+			} else {
+				Platform.exit();
+			}
+		}
+	}
 }

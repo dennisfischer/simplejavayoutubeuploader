@@ -7,13 +7,14 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.youtubeuploader.services;
 
-import java.io.File;
+package org.chaosfisch.youtubeuploader.services;
 
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+
+import java.io.File;
 
 public interface MetadataService {
 	String atomBuilder(Upload upload);

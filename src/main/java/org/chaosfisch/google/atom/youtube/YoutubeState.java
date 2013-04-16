@@ -7,23 +7,27 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.google.atom.youtube;
 
-import java.net.URL;
+package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
+import java.net.URL;
+
 @XStreamAlias("yt:state")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "state" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"state"})
 public class YoutubeState {
-	public @XStreamAsAttribute
-	URL				helpUrl;
-	public @XStreamAsAttribute
-	String			name;
-	public @XStreamAsAttribute
-	String			reasonCode;
-	public String	state;
+	public
+	@XStreamAsAttribute
+	URL    helpUrl;
+	public
+	@XStreamAsAttribute
+	String name;
+	public
+	@XStreamAsAttribute
+	String reasonCode;
+	public String state;
 }

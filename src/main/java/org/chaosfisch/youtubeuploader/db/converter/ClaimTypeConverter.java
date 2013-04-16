@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.ClaimType;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class ClaimTypeConverter extends EnumConverter<String, ClaimType> {
 
-	private static final long	serialVersionUID	= 417856196526112892L;
+	private static final long serialVersionUID = 417856196526112892L;
 
 	public ClaimTypeConverter() {
-		super(String.class,
-			ClaimType.class);
+		super(String.class, ClaimType.class);
 	}
 }

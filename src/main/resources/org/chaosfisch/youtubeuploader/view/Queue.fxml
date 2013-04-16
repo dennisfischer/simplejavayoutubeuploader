@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-
 <!--
   ~ Copyright (c) 2013 Dennis Fischer.
   ~ All rights reserved. This program and the accompanying materials
@@ -16,12 +10,12 @@
   ~ Contributors: Dennis Fischer
   -->
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
 <VBox id="VBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml">
-  <children>
-    <fx:include source="QueueOverview.fxml" VBox.vgrow="ALWAYS" />
-    <fx:include source="QueueCommand.fxml" VBox.vgrow="NEVER" />
-  </children>
-  <padding>
-    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-  </padding>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+    <fx:include source="QueueOverview.fxml" VBox.vgrow="ALWAYS"/>
+    <fx:include source="QueueCommand.fxml" VBox.vgrow="NEVER"/>
 </VBox>

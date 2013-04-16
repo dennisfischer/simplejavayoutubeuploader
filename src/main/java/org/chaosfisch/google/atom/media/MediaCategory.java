@@ -18,12 +18,12 @@ import org.chaosfisch.google.atom.Category;
 @XStreamAlias("media:category")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"category"})
 public class MediaCategory extends Category {
-    public MediaCategory(final String term, final String label, final String scheme) {
-        this.term = term;
-        this.label = label;
-        this.scheme = scheme;
-        category = term;
-    }
+	public MediaCategory(final String term, final String label, final String scheme) {
+		this.term = term;
+		this.label = label;
+		this.scheme = scheme;
+		category = term;
+	}
 
-    public final String category;
+	public final String category;
 }

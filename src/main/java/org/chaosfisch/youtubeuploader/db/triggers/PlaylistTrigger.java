@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.triggers;
 
 import org.chaosfisch.util.EventBusUtil;
@@ -27,46 +28,43 @@ import java.sql.SQLException;
 
 public class PlaylistTrigger extends TriggerAdapter {
 
-    @Override
-    public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
-        final DSLContext create = DSL.using(conn, SQLDialect.H2);
-        Integer firstId = null;
-        Integer lastId;
-        if (newRow != null) {
-            final Cursor<Record> result = create.fetchLazy(newRow);
-            while (result.hasNext()) {
-                final Playlist record = result.fetchOneInto(Playlist.class);
-                lastId = record.getId();
-                if (lastId.equals(firstId)) {
-                    break;
-                }
-                if (firstId == null) {
-                    firstId = record.getId();
-                }
+	@Override
+	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
+		final DSLContext create = DSL.using(conn, SQLDialect.H2);
+		Integer firstId = null;
+		Integer lastId;
+		if (newRow != null) {
+			final Cursor<Record> result = create.fetchLazy(newRow);
+			while (result.hasNext()) {
+				final Playlist record = result.fetchOneInto(Playlist.class);
+				lastId = record.getId();
+				if (lastId.equals(firstId)) {
+					break;
+				}
+				if (firstId == null) {
+					firstId = record.getId();
+				}
 
-                if (oldRow == null) {
-                    EventBusUtil.getInstance()
-                            .post(new ModelAddedEvent(record));
-                } else {
-                    EventBusUtil.getInstance()
-                            .post(new ModelUpdatedEvent(record));
-                }
-            }
-        } else {
-            final Cursor<Record> result = create.fetchLazy(oldRow);
-            while (result.hasNext()) {
-                final Playlist record = result.fetchOneInto(Playlist.class);
-                lastId = record.getId();
-                if (lastId.equals(firstId)) {
-                    break;
-                }
-                if (firstId == null) {
-                    firstId = record.getId();
-                }
+				if (oldRow == null) {
+					EventBusUtil.getInstance().post(new ModelAddedEvent(record));
+				} else {
+					EventBusUtil.getInstance().post(new ModelUpdatedEvent(record));
+				}
+			}
+		} else {
+			final Cursor<Record> result = create.fetchLazy(oldRow);
+			while (result.hasNext()) {
+				final Playlist record = result.fetchOneInto(Playlist.class);
+				lastId = record.getId();
+				if (lastId.equals(firstId)) {
+					break;
+				}
+				if (firstId == null) {
+					firstId = record.getId();
+				}
 
-                EventBusUtil.getInstance()
-                        .post(new ModelRemovedEvent(record));
-            }
-        }
-    }
+				EventBusUtil.getInstance().post(new ModelRemovedEvent(record));
+			}
+		}
+	}
 }

@@ -9,92 +9,93 @@
  */
 
 #refreshPlaylists {
-	-fx-graphic: url("images/refresh.png");
+    -fx-graphic: url("images/refresh.png");
 }
 
 #removeAccount, #removeTemplate, #removeUpload {
-	-fx-graphic: url("images/delete.png");
+    -fx-graphic: url("images/delete.png");
 }
 
 #addUpload, #addAccount {
-	-fx-graphic: url("images/add.png");
+    -fx-graphic: url("images/add.png");
 }
 
 .searchFile {
-	-fx-graphic: url("images/folder_explore.png");
+    -fx-graphic: url("images/folder_explore.png");
 }
 
 #resetUpload, #resetAccount, #abortUpload {
-	-fx-graphic: url("images/cancel.png");
+    -fx-graphic: url("images/cancel.png");
 }
 
 #saveTemplate, #saveUpload {
-	-fx-graphic: url("images/save.png");
+    -fx-graphic: url("images/save.png");
 }
 
 #editUpload {
-	-fx-graphic: url("images/pencil.png");
+    -fx-graphic: url("images/pencil.png");
 }
 
 #uploadTop {
-	-fx-graphic: url("images/arrow-double-up.png");
+    -fx-graphic: url("images/arrow-double-up.png");
 }
 
 #uploadUp {
-	-fx-graphic: url("images/arrow_up.png");
+    -fx-graphic: url("images/arrow_up.png");
 }
 
 #uploadDown {
-	-fx-graphic: url("images/arrow_down.png");
+    -fx-graphic: url("images/arrow_down.png");
 }
 
 #uploadBottom {
-	-fx-graphic: url("images/arrow-double-down.png");
+    -fx-graphic: url("images/arrow-double-down.png");
 }
 
 #pauseOnFinishQueue {
-	-fx-graphic: url("images/time_delete.png");
+    -fx-graphic: url("images/time_delete.png");
 }
 
 .grid {
-	-fx-hgap: 5px;
-	-fx-vgap: 5px;
-	-fx-padding: 5px 5px 5px 5px;
+    -fx-hgap: 5px;
+    -fx-vgap: 5px;
+    -fx-padding: 5px 5px 5px 5px;
 }
+
 .outergrid {
-	-fx-hgap: 5px;
-	-fx-vgap: 5px;
+    -fx-hgap: 5px;
+    -fx-vgap: 5px;
 }
 
 .dropzone {
-	-fx-border-width: 1px;
-	-fx-border-style: dashed;
-	-fx-border-color: black;
-	-fx-background-color: null;
-	-fx-background-image: url("images/playlist-dropzone.png");
-	-fx-background-position: center;
-	-fx-background-repeat: no-repeat;
+    -fx-border-width: 1px;
+    -fx-border-style: dashed;
+    -fx-border-color: black;
+    -fx-background-color: null;
+    -fx-background-image: url("images/playlist-dropzone.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
 }
 
 #validation_error {
-	-fx-padding: 5px;
-	-fx-text-fill: rgb(255,128,128);
-	-fx-graphic: url("images/cancel.png");
+    -fx-padding: 5px;
+    -fx-text-fill: rgb(255, 128, 128);
+    -fx-graphic: url("images/cancel.png");
 }
 
 #validation_passed {
-	-fx-padding: 5px;
-	-fx-text-fill: rgb(0,128,192);
-	-fx-graphic: url("images/information.png");
+    -fx-padding: 5px;
+    -fx-text-fill: rgb(0, 128, 192);
+    -fx-graphic: url("images/information.png");
 }
 
 .dragentered {
-	-fx-border-width: 1px;
-	-fx-border-style: solid;
-	-fx-border-color: black;
-	-fx-border-insets: 3px 3px 3px 3px;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: black;
+    -fx-border-insets: 3px 3px 3px 3px;
 }
 
 .input-invalid {
-	-fx-background-color: rgb(232,102,102);
+    -fx-background-color: rgb(232, 102, 102);
 }

@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,5 +16,5 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("yt:episode")
 public class YoutubeEpisode {
 	@XStreamAsAttribute
-	String	number;
+	String number;
 }

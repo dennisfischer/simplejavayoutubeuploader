@@ -7,29 +7,23 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBuilder;
-import javafx.scene.control.CheckBoxBuilder;
-import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.PaneBuilder;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
@@ -39,30 +33,29 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.guice.CommandProvider;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class AccountOverviewController {
 
 	@FXML
-	private ResourceBundle					resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL								location;
+	private URL location;
 
 	@FXML
-	private ListView<Account>				accountListView;
-	private final ObservableList<Account>	accountItems	= FXCollections.observableArrayList();
+	private ListView<Account> accountListView;
+	private final ObservableList<Account> accountItems = FXCollections.observableArrayList();
 
 	@Inject
-	private CommandProvider					commandProvider;
+	private CommandProvider commandProvider;
 	@Inject
-	private EventBus						eventbus;
+	private EventBus        eventbus;
 	@Inject
-	private AccountDao						accountDao;
+	private AccountDao      accountDao;
 	@Inject
-	private PlaylistDao						playlistDao;
+	private PlaylistDao     playlistDao;
 
 	@FXML
 	void initialize() {
@@ -162,61 +155,51 @@ public class AccountOverviewController {
 					return;
 				}
 
-				final Label nameLabel = LabelBuilder.create()
-					.text(item.getName())
-					.build();
-				final Button removeAccountButton = ButtonBuilder.create()
-					.text("Remove")
-					// TODO i18n
-					.id("removeAccount")
-					.onAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(final ActionEvent event) {
-							accountDao.deleteById(item.getId());
-						}
-					})
-					.build();
+				final Label nameLabel = LabelBuilder.create().text(item.getName()).build();
+				final Button removeAccountButton = ButtonBuilder.create().text("Remove")
+						// TODO i18n
+						.id("removeAccount").onAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(final ActionEvent event) {
+								accountDao.deleteById(item.getId());
+							}
+						}).build();
 
 				removeAccountButton.layoutXProperty()
-					.bind(nameLabel.layoutXProperty()
-						.add(nameLabel.widthProperty())
-						.add(10));
+								   .bind(nameLabel.layoutXProperty().add(nameLabel.widthProperty()).add(10));
 
-				final Label playlistLabel = LabelBuilder.create()
-					.text("Hidden playlists:")
-					// TODO i18n
-					.build();
+				final Label playlistLabel = LabelBuilder.create().text("Hidden playlists:")
+						// TODO i18n
+						.build();
 
 				playlistLabel.layoutXProperty()
-					.bind(removeAccountButton.layoutXProperty()
-						.add(removeAccountButton.widthProperty())
-						.add(10));
+							 .bind(removeAccountButton.layoutXProperty()
+													  .add(removeAccountButton.widthProperty())
+													  .add(10));
 
 				final VBox playlistContainer = new VBox();
 				playlistContainer.layoutXProperty()
-					.bind(playlistLabel.layoutXProperty()
-						.add(playlistLabel.widthProperty())
-						.add(10));
+								 .bind(playlistLabel.layoutXProperty().add(playlistLabel.widthProperty()).add(10));
 
 				for (final Playlist playlist : playlistDao.fetchByAccountId(item.getId())) {
 					playlistContainer.getChildren()
-						.add(CheckBoxBuilder.create()
-							.text(playlist.getTitle())
-							.selected(playlist.getHidden())
-							.onAction(new EventHandler<ActionEvent>() {
+									 .add(CheckBoxBuilder.create()
+														 .text(playlist.getTitle())
+														 .selected(playlist.getHidden())
+														 .onAction(new EventHandler<ActionEvent>() {
 
-								@Override
-								public void handle(final ActionEvent event) {
-									playlist.setHidden(!playlist.getHidden());
-									playlistDao.update(playlist);
-								}
-							})
-							.build());
+															 @Override
+															 public void handle(final ActionEvent event) {
+																 playlist.setHidden(!playlist.getHidden());
+																 playlistDao.update(playlist);
+															 }
+														 })
+														 .build());
 				}
 
 				final Pane container = PaneBuilder.create()
-					.children(nameLabel, removeAccountButton, playlistLabel, playlistContainer)
-					.build();
+												  .children(nameLabel, removeAccountButton, playlistLabel, playlistContainer)
+												  .build();
 
 				setGraphic(container);
 			}

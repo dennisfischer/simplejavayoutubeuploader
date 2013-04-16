@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,11 +16,13 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("content")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "content" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"content"})
 public class YoutubeContent {
-	public String	content;
-	public @XStreamAsAttribute
-	String			src;
-	public @XStreamAsAttribute
-	String			type;
+	public String content;
+	public
+	@XStreamAsAttribute
+	String src;
+	public
+	@XStreamAsAttribute
+	String type;
 }

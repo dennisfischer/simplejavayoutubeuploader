@@ -7,12 +7,14 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("georss:where")
 public class YoutubeGeoRss {
-	public @XStreamAlias("gml:Point")
-	YoutubeGeoRssPoint	point;
+	public
+	@XStreamAlias("gml:Point")
+	YoutubeGeoRssPoint point;
 }

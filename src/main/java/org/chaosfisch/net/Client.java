@@ -18,29 +18,27 @@ import java.net.Socket;
 
 public class Client {
 
-    private final Connection connection;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Connection connection;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Client(final String ip, final int port, final Protocol protocol) throws IOException {
+	public Client(final String ip, final int port, final Protocol protocol) throws IOException {
 
-        try {
-            final Socket socket = new Socket(ip,
-                    port);
-            connection = new Connection(socket,
-                    protocol);
-        } catch (final IOException e) {
-            logger.warn("Connection couldn't be created", e);
-            throw e;
-        }
-    }
+		try {
+			final Socket socket = new Socket(ip, port);
+			connection = new Connection(socket, protocol);
+		} catch (final IOException e) {
+			logger.warn("Connection couldn't be created", e);
+			throw e;
+		}
+	}
 
-    public void close() {
-        if (connection != null) {
-            connection.close();
-        }
-    }
+	public void close() {
+		if (connection != null) {
+			connection.close();
+		}
+	}
 
-    public void sendMsg(final String event, final Object body) {
-        connection.sendMsg(event, body);
-    }
+	public void sendMsg(final String event, final Object body) {
+		connection.sendMsg(event, body);
+	}
 }

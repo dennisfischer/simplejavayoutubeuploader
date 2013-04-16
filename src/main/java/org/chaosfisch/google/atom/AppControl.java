@@ -7,16 +7,18 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom;
 
-import org.chaosfisch.google.atom.youtube.YoutubeState;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.chaosfisch.google.atom.youtube.YoutubeState;
 
 @XStreamAlias("app:control")
 public class AppControl {
-	public @XStreamAlias("app:draft")
-	String			draft;
-	public @XStreamAlias("yt:state")
-	YoutubeState	state;
+	public
+	@XStreamAlias("app:draft")
+	String       draft;
+	public
+	@XStreamAlias("yt:state")
+	YoutubeState state;
 }

@@ -7,11 +7,12 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.io.http;
 
-import java.net.HttpURLConnection;
-
 import org.apache.http.HttpRequest;
+
+import java.net.HttpURLConnection;
 
 public interface RequestSigner {
 	void sign(HttpRequest request);

@@ -7,15 +7,16 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.youtubeuploader.db.converter;
 
-import java.io.File;
+package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.jooq.Converter;
 
+import java.io.File;
+
 public class FileConverter implements Converter<String, File> {
 
-	private static final long	serialVersionUID	= 1335558703543045626L;
+	private static final long serialVersionUID = 1335558703543045626L;
 
 	@Override
 	public File from(final String databaseObject) {

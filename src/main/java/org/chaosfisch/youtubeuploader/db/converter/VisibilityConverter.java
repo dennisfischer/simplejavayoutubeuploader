@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.Visibility;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class VisibilityConverter extends EnumConverter<String, Visibility> {
 
-	private static final long	serialVersionUID	= -6647193407765825781L;
+	private static final long serialVersionUID = -6647193407765825781L;
 
 	public VisibilityConverter() {
-		super(String.class,
-			Visibility.class);
+		super(String.class, Visibility.class);
 	}
 }

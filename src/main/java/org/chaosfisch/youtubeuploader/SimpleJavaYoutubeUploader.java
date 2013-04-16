@@ -18,33 +18,32 @@ import java.util.Locale;
 
 public final class SimpleJavaYoutubeUploader {
 
-    public static void main(final String[] args) {
+	public static void main(final String[] args) {
 
-        initLocale();
-        initSavedir();
-        initUpdater();
+		initLocale();
+		initSavedir();
+		initUpdater();
 
-        GuiUploader.initialize(args, new GuiceBindings("youtubeuploader"));
-    }
+		GuiUploader.initialize(args, new GuiceBindings("youtubeuploader"));
+	}
 
-    private static void initUpdater() {
-        new ApplicationUpdater();
-    }
+	private static void initUpdater() {
+		new ApplicationUpdater();
+	}
 
-    private static void initSavedir() {
-        String userHome = System.getProperty("user.home");
-        if (PlatformUtil.isMac()) {
-            userHome += "/Library/Application Support/";
-        }
-        System.setProperty("user.home", userHome);
+	private static void initSavedir() {
+		String userHome = System.getProperty("user.home");
+		if (PlatformUtil.isMac()) {
+			userHome += "/Library/Application Support/";
+		}
+		System.setProperty("user.home", userHome);
 
-    }
+	}
 
-    private static void initLocale() {
-        final Locale[] availableLocales = {Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH};
-        if (!Arrays.asList(availableLocales)
-                .contains(Locale.getDefault())) {
-            Locale.setDefault(Locale.ENGLISH);
-        }
-    }
+	private static void initLocale() {
+		final Locale[] availableLocales = {Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH};
+		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
+			Locale.setDefault(Locale.ENGLISH);
+		}
+	}
 }

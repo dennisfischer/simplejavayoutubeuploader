@@ -7,19 +7,18 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.command;
 
+import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
-
-import com.google.inject.Inject;
 
 public class StopUploadCommand extends Service<Void> {
 
 	@Inject
-	private Uploader	uploader;
+	private Uploader uploader;
 
 	@Override
 	protected Task<Void> createTask() {

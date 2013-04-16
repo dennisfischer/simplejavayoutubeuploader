@@ -7,20 +7,21 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.services.uploader.events;
 
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
 public class UploadProgressEvent {
-	private long		diffBytes;
-	private long		diffTime;
-	private final long	fileSize;
-	public final Upload	upload;
-	private long		time;
-	private long		totalBytesUploaded;
-	public boolean		failed;
-	public boolean		done;
-	public String		status;
+	private       long    diffBytes;
+	private       long    diffTime;
+	private final long    fileSize;
+	public final  Upload  upload;
+	private       long    time;
+	private       long    totalBytesUploaded;
+	public        boolean failed;
+	public        boolean done;
+	public        String  status;
 
 	public UploadProgressEvent(final Upload upload, final long fileSize) {
 		this.upload = upload;

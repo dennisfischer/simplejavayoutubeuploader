@@ -7,17 +7,17 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-
 import org.chaosfisch.youtubeuploader.controller.renderer.QueueUploadCellRenderer;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
@@ -25,28 +25,27 @@ import org.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class QueueOverviewController {
 
 	@FXML
-	private ResourceBundle					resources;
+	private ResourceBundle resources;
 
 	@FXML
-	private URL								location;
+	private URL location;
 
 	@FXML
-	private ListView<Upload>				queueListView;
-	private final ObservableList<Upload>	uploads	= FXCollections.observableArrayList();
+	private ListView<Upload> queueListView;
+	private final ObservableList<Upload> uploads = FXCollections.observableArrayList();
 
 	@Inject
-	private UploadDao						uploadDao;
+	private UploadDao               uploadDao;
 	@Inject
-	private EventBus						eventBus;
+	private EventBus                eventBus;
 	@Inject
-	private QueueUploadCellRenderer			queueUploadCellRenderer;
+	private QueueUploadCellRenderer queueUploadCellRenderer;
 
 	@FXML
 	void initialize() {

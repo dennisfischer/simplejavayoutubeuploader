@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
 
 import org.chaosfisch.youtubeuploader.db.data.Category;
@@ -14,10 +15,9 @@ import org.jooq.impl.EnumConverter;
 
 public class CategoryConverter extends EnumConverter<String, Category> {
 
-	private static final long	serialVersionUID	= -5248752584645209507L;
+	private static final long serialVersionUID = -5248752584645209507L;
 
 	public CategoryConverter() {
-		super(String.class,
-			Category.class);
+		super(String.class, Category.class);
 	}
 }

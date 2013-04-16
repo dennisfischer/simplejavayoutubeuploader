@@ -7,12 +7,13 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.services.impl;
 
 public class ResumeInfo {
 
-	public final Long	nextByteToUpload;
-	public final String	videoId;
+	public final Long   nextByteToUpload;
+	public final String videoId;
 
 	ResumeInfo(final long nextByteToUpload) {
 		this.nextByteToUpload = nextByteToUpload;

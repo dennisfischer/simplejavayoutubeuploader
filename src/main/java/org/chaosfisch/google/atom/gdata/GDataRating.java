@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.gdata;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,14 +15,19 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:rating")
 public class GDataRating {
-	public @XStreamAsAttribute
-	Double	average;
-	public @XStreamAsAttribute
-	Integer	max;
-	public @XStreamAsAttribute
-	Integer	min;
-	public @XStreamAsAttribute
-	Integer	numRaters;
-	public @XStreamAsAttribute
-	Integer	value;
+	public
+	@XStreamAsAttribute
+	Double  average;
+	public
+	@XStreamAsAttribute
+	Integer max;
+	public
+	@XStreamAsAttribute
+	Integer min;
+	public
+	@XStreamAsAttribute
+	Integer numRaters;
+	public
+	@XStreamAsAttribute
+	Integer value;
 }

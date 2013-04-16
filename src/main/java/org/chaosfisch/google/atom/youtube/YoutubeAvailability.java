@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.youtube;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,7 +16,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("yt:availability")
 public class YoutubeAvailability {
 	@XStreamAsAttribute
-	String	end;
+	String end;
 	@XStreamAsAttribute
-	String	start;
+	String start;
 }

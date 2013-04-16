@@ -13,17 +13,17 @@ package org.chaosfisch.youtubeuploader.db.validation;
 import com.google.common.base.Charsets;
 
 public class ByteLengthValidator implements Validator<String> {
-    private final int min;
-    private final int max;
+	private final int min;
+	private final int max;
 
-    public ByteLengthValidator(final int min, final int max) {
-        this.min = min;
-        this.max = max;
-    }
+	public ByteLengthValidator(final int min, final int max) {
+		this.min = min;
+		this.max = max;
+	}
 
-    @Override
-    public boolean validate(final String string) {
-        return string == null || (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max);
-    }
+	@Override
+	public boolean validate(final String string) {
+		return string == null || (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max);
+	}
 
 }

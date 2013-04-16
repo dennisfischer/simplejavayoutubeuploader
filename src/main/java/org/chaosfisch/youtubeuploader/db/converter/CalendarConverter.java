@@ -7,17 +7,18 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.converter;
+
+import org.jooq.Converter;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.jooq.Converter;
-
 public class CalendarConverter implements Converter<Timestamp, Calendar> {
 
-	private static final long	serialVersionUID	= 1335558703543045626L;
+	private static final long serialVersionUID = 1335558703543045626L;
 
 	@Override
 	public GregorianCalendar from(final Timestamp databaseObject) {

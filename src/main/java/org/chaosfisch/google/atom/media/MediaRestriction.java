@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -15,13 +16,15 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 @XStreamAlias("media:restriction")
-@XStreamConverter(value = ToAttributedValueConverter.class, strings = { "restriction" })
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {"restriction"})
 public class MediaRestriction {
-	public @XStreamAlias("relationship")
+	public
+	@XStreamAlias("relationship")
 	@XStreamAsAttribute
-	String			relationship;
-	public String	restriction;
-	public @XStreamAlias("type")
+	String relationship;
+	public String restriction;
+	public
+	@XStreamAlias("type")
 	@XStreamAsAttribute
-	String			type;
+	String type;
 }

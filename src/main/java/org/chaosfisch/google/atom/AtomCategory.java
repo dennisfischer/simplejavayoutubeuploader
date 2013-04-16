@@ -7,20 +7,25 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("atom:category")
 public class AtomCategory extends Category {
-	public @XStreamAlias("yt:assignable")
-	Object	ytAssignable;
-	public @XStreamAlias("yt:browsable")
-	Object	ytBrowsable;
-	public @XStreamAlias("yt:deprecated")
-	Object	ytDeprecated;
+	public
+	@XStreamAlias("yt:assignable")
+	Object ytAssignable;
+	public
+	@XStreamAlias("yt:browsable")
+	Object ytBrowsable;
+	public
+	@XStreamAlias("yt:deprecated")
+	Object ytDeprecated;
 
-	public AtomCategory() {}
+	public AtomCategory() {
+	}
 
 	public AtomCategory(final String term, final String label, final String scheme) {
 		this.term = term;

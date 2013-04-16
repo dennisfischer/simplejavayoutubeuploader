@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.google.atom.media;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -14,19 +15,24 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:thumbnail")
 public class MediaThumbnail {
-	public @XStreamAlias("height")
+	public
+	@XStreamAlias("height")
 	@XStreamAsAttribute
-	String	height;
-	public @XStreamAlias("yt:name")
+	String height;
+	public
+	@XStreamAlias("yt:name")
 	@XStreamAsAttribute
-	String	name;
-	public @XStreamAlias("time")
+	String name;
+	public
+	@XStreamAlias("time")
 	@XStreamAsAttribute
-	String	time;
-	public @XStreamAlias("url")
+	String time;
+	public
+	@XStreamAlias("url")
 	@XStreamAsAttribute
-	String	url;
-	public @XStreamAlias("width")
+	String url;
+	public
+	@XStreamAlias("width")
 	@XStreamAsAttribute
-	String	width;
+	String width;
 }

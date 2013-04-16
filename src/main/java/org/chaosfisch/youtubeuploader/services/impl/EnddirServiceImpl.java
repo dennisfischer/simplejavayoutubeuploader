@@ -7,10 +7,8 @@
  *
  * Contributors: Dennis Fischer
  */
-package org.chaosfisch.youtubeuploader.services.impl;
 
-import java.io.File;
-import java.util.prefs.Preferences;
+package org.chaosfisch.youtubeuploader.services.impl;
 
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
@@ -18,22 +16,23 @@ import org.chaosfisch.youtubeuploader.services.EnddirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.prefs.Preferences;
+
 public class EnddirServiceImpl implements EnddirService {
-	private static final String	SETTING_ENDDIR_TITLE	= "general.enddir.title";
-	private final Logger		logger					= LoggerFactory.getLogger(EnddirServiceImpl.class);
-	private final Preferences	prefs					= Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final String      SETTING_ENDDIR_TITLE = "general.enddir.title";
+	private final        Logger      logger               = LoggerFactory.getLogger(EnddirServiceImpl.class);
+	private final        Preferences prefs                = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
 		if (upload.getEnddir() == null) {
 			return;
 		}
-		if (!upload.getEnddir()
-			.isDirectory()) {
+		if (!upload.getEnddir().isDirectory()) {
 			logger.warn("Enddir not existing!");
 		}
-		logger.debug("Moving file to {}", upload.getEnddir()
-			.toString());
+		logger.debug("Moving file to {}", upload.getEnddir().toString());
 
 		File endFile = null;
 		final String fileName = _getFileName(fileToMove, upload.getEnddir(), upload);
@@ -63,11 +62,12 @@ public class EnddirServiceImpl implements EnddirService {
 		final String fileName;
 		if (getEnddirSetting()) {
 			fileName = enddir.getAbsolutePath() + "/" + upload.getTitle()
-				.replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
-				.getAbsolutePath()
-				.substring(upload.getFile()
-					.getAbsolutePath()
-					.lastIndexOf("."));
+															  .replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
+																											.getAbsolutePath()
+																											.substring(upload
+																													.getFile()
+																													.getAbsolutePath()
+																													.lastIndexOf("."));
 		} else {
 			fileName = enddir.getAbsolutePath() + "/" + fileToMove.getName();
 
