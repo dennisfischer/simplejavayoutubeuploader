@@ -27,24 +27,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AccountTrigger extends TriggerAdapter {
+	Integer firstId;
+	Integer lastId;
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
+		firstId = null;
+		lastId = null;
 		final DSLContext create = DSL.using(conn, SQLDialect.H2);
-		Integer firstId = null;
-		Integer lastId;
+
 		if (newRow != null) {
 			final Cursor<Record> result = create.fetchLazy(newRow);
 			while (result.hasNext()) {
-				final Account record = result.fetchOneInto(Account.class);
-				lastId = record.getId();
-				if (lastId.equals(firstId)) {
-					break;
+				final Account record = getAccount(result);
+				if (record == null) {
+					return;
 				}
-				if (firstId == null) {
-					firstId = record.getId();
-				}
-
 				if (oldRow == null) {
 					EventBusUtil.getInstance().post(new ModelAddedEvent(record));
 				} else {
@@ -54,17 +52,24 @@ public class AccountTrigger extends TriggerAdapter {
 		} else {
 			final Cursor<Record> result = create.fetchLazy(oldRow);
 			while (result.hasNext()) {
-				final Account record = result.fetchOneInto(Account.class);
-				lastId = record.getId();
-				if (lastId.equals(firstId)) {
-					break;
+				final Account record = getAccount(result);
+				if (record == null) {
+					return;
 				}
-				if (firstId == null) {
-					firstId = record.getId();
-				}
-
 				EventBusUtil.getInstance().post(new ModelRemovedEvent(record));
 			}
 		}
+	}
+
+	private Account getAccount(final Cursor<Record> result) {
+		final Account record = result.fetchOneInto(Account.class);
+		lastId = record.getId();
+		if (lastId.equals(firstId)) {
+			return null;
+		}
+		if (firstId == null) {
+			firstId = record.getId();
+		}
+		return record;
 	}
 }

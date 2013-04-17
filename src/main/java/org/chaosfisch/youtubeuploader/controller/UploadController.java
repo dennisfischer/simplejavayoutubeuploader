@@ -10,6 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.controller;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -67,9 +68,11 @@ import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.chaosfisch.youtubeuploader.vo.UploadViewVO;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -94,100 +97,10 @@ public class UploadController {
 	private Slider gridWidthSlider;
 
 	@FXML
-	private Label labelContentInformation;
-
-	@FXML
-	private Label labelCustomId;
-
-	@FXML
-	private Label labelDescription;
-
-	@FXML
-	private Label labelEIDR;
-
-	@FXML
-	private Label labelISAN;
-
-	@FXML
-	private Label labelMonetizeTitle;
-
-	@FXML
-	private Label labelNote;
-
-	@FXML
-	private Label labelNumberEpisode;
-
-	@FXML
-	private Label labelNumberSeason;
-
-	@FXML
-	private Label labelTMSID;
-
-	@FXML
-	private Label labelTitleEpisode;
-
-	@FXML
-	private ComboBox<Asset> monetizeAsset;
-
-	@FXML
-	private CheckBox monetizeClaim;
-
-	@FXML
-	private ComboBox<ClaimOption> monetizeClaimOption;
-
-	@FXML
-	private ComboBox<ClaimType> monetizeClaimType;
-
-	@FXML
-	private TextField monetizeCustomID;
-
-	@FXML
-	private TextField monetizeDescription;
-
-	@FXML
-	private TextField monetizeEIDR;
-
-	@FXML
-	private TextField monetizeISAN;
-
-	@FXML
-	private CheckBox monetizeInStream;
-
-	@FXML
-	private CheckBox monetizeInStreamDefaults;
-
-	@FXML
-	private TextField monetizeNotes;
-
-	@FXML
-	private TextField monetizeNumberEpisode;
-
-	@FXML
-	private TextField monetizeNumberSeason;
-
-	@FXML
-	private CheckBox monetizeOverlay;
+	private GridPane monetizeGridPane;
 
 	@FXML
 	private ToggleButton monetizePartner;
-
-	@FXML
-	private CheckBox monetizeProductPlacement;
-
-	@FXML
-	private ComboBox<Syndication> monetizeSyndication;
-
-	@FXML
-	private TextField monetizeTMSID;
-
-	@FXML
-	private TextField monetizeTitle;
-
-	@FXML
-	private TextField monetizeTitleEpisode;
-
-	@FXML
-	private CheckBox monetizeTrueView;
 
 	@FXML
 	private Button openDefaultdir;
@@ -325,6 +238,9 @@ public class UploadController {
 	@Inject
 	private EventBus         eventBus;
 
+	@Inject
+	private GuiceFXMLLoader fxmlLoader;
+
 	private final ObservableList<File>          filesList          = FXCollections.observableArrayList();
 	private final ObservableList<Category>      categoriesList     = FXCollections.observableArrayList();
 	private final ObservableList<Account>       accountsList       = FXCollections.observableArrayList();
@@ -333,15 +249,13 @@ public class UploadController {
 	private final ObservableList<Comment>       commentsList       = FXCollections.observableArrayList();
 	private final ObservableList<License>       licensesList       = FXCollections.observableArrayList();
 	private final ObservableList<Videoresponse> videoresponsesList = FXCollections.observableArrayList();
-	private final ObservableList<ClaimOption>   claimOptionsList   = FXCollections.observableArrayList();
-	private final ObservableList<ClaimType>     claimTypesList     = FXCollections.observableArrayList();
 	private final ObservableList<Playlist>      playlistSourceList = FXCollections.observableArrayList();
 	private final ObservableList<Playlist>      playlistTargetList = FXCollections.observableArrayList();
-	private final ObservableList<Asset>         assetList          = FXCollections.observableArrayList();
-	private final ObservableList<Syndication>   syndicationList    = FXCollections.observableArrayList();
 	private final SimpleIntegerProperty         idProperty         = new SimpleIntegerProperty();
 	private final UploadViewVO                  uploadViewVO       = new UploadViewVO();
 	private final BeanPathAdapter<UploadViewVO> beanPathAdapter    = new BeanPathAdapter<>(uploadViewVO);
+	private UploadMonetizationController uploadMonetizationController;
+	private UploadPartnerController      uploadPartnerController;
 
 	public UploadController() {
 		idProperty.setValue(null);
@@ -353,8 +267,9 @@ public class UploadController {
 
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
 		command.upload = upload;
-		command.playlists = playlistTargetList;
 		command.account = uploadAccount.getValue();
+		command.playlists = new Playlist[playlistTargetList.size()];
+		playlistTargetList.toArray(command.playlists);
 		command.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
@@ -486,6 +401,18 @@ public class UploadController {
 	void resetUpload(final ActionEvent event) {
 		uploadViewVO.reset();
 		beanPathAdapter.setBean(uploadViewVO);
+
+		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
+		while (playlistIterator.hasNext()) {
+			final Playlist playlist = playlistIterator.next();
+			playlistSourceList.add(playlist);
+			playlistIterator.remove();
+		}
+
+		for (final Playlist playlist : playlistDao.fetchByTemplate(uploadViewVO.getTemplate())) {
+			playlistTargetList.add(playlist);
+			playlistSourceList.remove(playlist);
+		}
 	}
 
 	@FXML
@@ -493,27 +420,20 @@ public class UploadController {
 		uploadViewVO.setTemplate(uploadViewVO.getTemplate());
 		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
 		command.template = uploadViewVO.getTemplate();
+		command.account = uploadAccount.getValue();
+		command.playlists = new Playlist[playlistTargetList.size()];
+		playlistTargetList.toArray(command.playlists);
 		command.start();
 	}
 
 	@FXML
 	void togglePartner(final ActionEvent event) {
-		final Control[] controls = new Control[] {monetizeClaim, monetizeClaimType, monetizeClaimOption, monetizeEIDR,
-												  monetizeISAN, monetizeNumberEpisode, monetizeNumberSeason,
-												  monetizeTitleEpisode, monetizeTMSID, monetizeCustomID, monetizeNotes,
-												  monetizeDescription, monetizeTitle, monetizeInStreamDefaults,
-												  monetizeInStream, monetizeAsset, labelContentInformation, labelEIDR,
-												  labelISAN, labelNumberEpisode, labelNumberSeason, labelTitleEpisode,
-												  labelTMSID, labelCustomId, labelMonetizeTitle, labelNote,
-												  labelDescription};
 		if (monetizePartner.isSelected()) {
-			for (final Control control : controls) {
-				control.setVisible(true);
-			}
+			monetizeGridPane.getChildren().retainAll(monetizePartner);
+			monetizeGridPane.add(uploadPartnerController.getNode(), 0, 0, GridPane.REMAINING, 1);
 		} else {
-			for (final Control control : controls) {
-				control.setVisible(false);
-			}
+			monetizeGridPane.getChildren().retainAll(monetizePartner);
+			monetizeGridPane.add(uploadMonetizationController.getNode(), 0, 0, GridPane.REMAINING, 1);
 		}
 	}
 
@@ -522,38 +442,7 @@ public class UploadController {
 		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert gridWidthSlider != null : "fx:id=\"gridWidthSlider\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelContentInformation != null : "fx:id=\"labelContentInformation\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelCustomId != null : "fx:id=\"labelCustomId\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelDescription != null : "fx:id=\"labelDescription\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelEIDR != null : "fx:id=\"labelEIDR\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelISAN != null : "fx:id=\"labelISAN\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelMonetizeTitle != null : "fx:id=\"labelMonetizeTitle\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelNote != null : "fx:id=\"labelNote\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelNumberEpisode != null : "fx:id=\"labelNumberEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelNumberSeason != null : "fx:id=\"labelNumberSeason\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelTMSID != null : "fx:id=\"labelTMSID\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert labelTitleEpisode != null : "fx:id=\"labelTitleEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeAsset != null : "fx:id=\"monetizeAsset\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeClaim != null : "fx:id=\"monetizeClaim\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeClaimOption != null : "fx:id=\"monetizeClaimOption\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeClaimType != null : "fx:id=\"monetizeClaimType\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeCustomID != null : "fx:id=\"monetizeCustomID\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeDescription != null : "fx:id=\"monetizeDescription\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeEIDR != null : "fx:id=\"monetizeEIDR\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeISAN != null : "fx:id=\"monetizeISAN\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeInStream != null : "fx:id=\"monetizeInStream\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeInStreamDefaults != null : "fx:id=\"monetizeInStreamDefaults\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeNotes != null : "fx:id=\"monetizeNotes\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeNumberEpisode != null : "fx:id=\"monetizeNumberEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeNumberSeason != null : "fx:id=\"monetizeNumberSeason\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeOverlay != null : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert monetizePartner != null : "fx:id=\"monetizePartner\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeProductPlacement != null : "fx:id=\"monetizeProductPlacement\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeSyndication != null : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeTMSID != null : "fx:id=\"monetizeTMSID\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeTitle != null : "fx:id=\"monetizeTitle\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeTitleEpisode != null : "fx:id=\"monetizeTitleEpisode\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizeTrueView != null : "fx:id=\"monetizeTrueView\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -686,11 +575,7 @@ public class UploadController {
 		videoresponsesList.addAll(Videoresponse.values());
 		commentsList.addAll(Comment.values());
 		licensesList.addAll(License.values());
-		claimTypesList.addAll(ClaimType.values());
-		claimOptionsList.addAll(ClaimOption.values());
 		categoriesList.addAll(Category.values());
-		assetList.addAll(Asset.values());
-		syndicationList.addAll(Syndication.values());
 
 		accountsList.addAll(accountDao.findAll());
 		templatesList.addAll(templateDao.findAll());
@@ -710,9 +595,17 @@ public class UploadController {
 		uploadAccount.setConverter(new AccountListViewConverter());
 		uploadFile.setConverter(new UploadFileListViewConverter());
 		idProperty.addListener(new UploadIdInvalidationListener());
+		try {
+			uploadPartnerController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/UploadPartner.fxml"), resources)
+												.getController();
+			uploadMonetizationController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/UploadMonetization.fxml"), resources)
+													 .getController();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		monetizeClaimOption.getSelectionModel().selectedItemProperty().addListener(new ClaimOptionChangeListener());
-		monetizeAsset.getSelectionModel().selectedItemProperty().addListener(new AssetChangeListener());
+		monetizeGridPane.add(uploadMonetizationController.getNode(), 0, 0, GridPane.REMAINING, 1);
+
 		monetizePartner.selectedProperty().addListener(new MonetizePartnerInvalidationListener());
 		uploadLicense.getSelectionModel().selectedItemProperty().addListener(new LicenseChangeListener());
 		uploadAccount.getSelectionModel().selectedItemProperty().addListener(new AccountChangeListener());
@@ -736,13 +629,8 @@ public class UploadController {
 		uploadComment.setItems(commentsList);
 		uploadLicense.setItems(licensesList);
 		uploadVideoresponse.setItems(videoresponsesList);
-		monetizeClaimOption.setItems(claimOptionsList);
-		monetizeClaimType.setItems(claimTypesList);
 		playlistTargetzone.setItems(playlistTargetList);
 		playlistSourcezone.setItems(playlistSourceList);
-		monetizeAsset.setItems(assetList);
-		monetizeSyndication.setItems(syndicationList);
-
 	}
 
 	private void initDragEventHandlers() {
@@ -811,27 +699,7 @@ public class UploadController {
 		beanPathAdapter.bindBidirectional("template.visibility", uploadVisibility.valueProperty(), Visibility.class);
 		beanPathAdapter.bindBidirectional("template.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
 		beanPathAdapter.bindBidirectional("template.license", uploadLicense.valueProperty(), License.class);
-		beanPathAdapter.bindBidirectional("template.monetizeClaimoption", monetizeClaimOption.valueProperty(), ClaimOption.class);
-		beanPathAdapter.bindBidirectional("template.monetizeClaimtype", monetizeClaimType.valueProperty(), ClaimType.class);
-		beanPathAdapter.bindBidirectional("template.monetizeAsset", monetizeAsset.valueProperty(), Asset.class);
-		beanPathAdapter.bindBidirectional("template.monetizeSyndication", monetizeSyndication.valueProperty(), Syndication.class);
 		// *****************************************************************************************
-		beanPathAdapter.bindBidirectional("template.monetizeClaim", monetizeClaim.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeId", monetizeCustomID.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeDescription", monetizeDescription.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeEidr", monetizeEIDR.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeInstream", monetizeInStream.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeInstreamDefaults", monetizeInStreamDefaults.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeIsan", monetizeISAN.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeNotes", monetizeNotes.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeEpisodeNb", monetizeNumberEpisode.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeSeasonNb", monetizeNumberSeason.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeOverlay", monetizeOverlay.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeProduct", monetizeProductPlacement.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeTitle", monetizeTitle.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeTitleepisode", monetizeTitleEpisode.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeTmsid", monetizeTMSID.textProperty());
-		beanPathAdapter.bindBidirectional("template.monetizeTrueview", monetizeTrueView.selectedProperty());
 		beanPathAdapter.bindBidirectional("template.monetizePartner", monetizePartner.selectedProperty());
 		// *****************************************************************************************
 		// *****************************************************************************************
@@ -853,31 +721,11 @@ public class UploadController {
 		beanPathAdapter.bindBidirectional("upload.visibility", uploadVisibility.valueProperty(), Visibility.class);
 		beanPathAdapter.bindBidirectional("upload.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
 		beanPathAdapter.bindBidirectional("upload.license", uploadLicense.valueProperty(), License.class);
-		beanPathAdapter.bindBidirectional("upload.monetizeClaimoption", monetizeClaimOption.valueProperty(), ClaimOption.class);
-		beanPathAdapter.bindBidirectional("upload.monetizeClaimtype", monetizeClaimType.valueProperty(), ClaimType.class);
-		beanPathAdapter.bindBidirectional("upload.monetizeAsset", monetizeAsset.valueProperty(), Asset.class);
-		beanPathAdapter.bindBidirectional("upload.monetizeSyndication", monetizeSyndication.valueProperty(), Syndication.class);
 		// *****************************************************************************************
 		beanPathAdapter.bindBidirectional("upload.facebook", uploadFacebook.selectedProperty());
 		beanPathAdapter.bindBidirectional("upload.twitter", uploadTwitter.selectedProperty());
 		beanPathAdapter.bindBidirectional("upload.message", uploadMessage.textProperty());
 		// *****************************************************************************************
-		beanPathAdapter.bindBidirectional("upload.monetizeClaim", monetizeClaim.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeId", monetizeCustomID.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeDescription", monetizeDescription.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeEidr", monetizeEIDR.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeInstream", monetizeInStream.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeInstreamDefaults", monetizeInStreamDefaults.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeIsan", monetizeISAN.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeNotes", monetizeNotes.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeEpisodeNb", monetizeNumberEpisode.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeSeasonNb", monetizeNumberSeason.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeOverlay", monetizeOverlay.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeProduct", monetizeProductPlacement.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeTitle", monetizeTitle.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeTitleepisode", monetizeTitleEpisode.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeTmsid", monetizeTMSID.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizeTrueview", monetizeTrueView.selectedProperty());
 		beanPathAdapter.bindBidirectional("upload.monetizePartner", monetizePartner.selectedProperty());
 
 		beanPathAdapter.bindBidirectional("upload.id", idProperty);
@@ -887,8 +735,7 @@ public class UploadController {
 	private void initSelection() {
 
 		final ComboBox<?>[] controls = new ComboBox[] {uploadVisibility, uploadComment, uploadLicense,
-													   uploadVideoresponse, uploadAccount, monetizeClaimOption,
-													   monetizeClaimType, uploadCategory, templates};
+													   uploadVideoresponse, uploadAccount, uploadCategory, templates};
 
 		for (final ComboBox<?> comboBox : controls) {
 			comboBox.getSelectionModel().selectFirst();
@@ -896,16 +743,17 @@ public class UploadController {
 	}
 
 	public void movePlaylistToDropzone(final int model) {
-		if (model >= 0) {
-			playlistTargetList.add(playlistSourceList.get(model));
-			playlistSourceList.remove(model);
-		}
+		movePlaylist(model, playlistSourceList, playlistTargetList);
 	}
 
 	public void removePlaylistFromDropzone(final int model) {
+		movePlaylist(model, playlistTargetList, playlistSourceList);
+	}
+
+	private void movePlaylist(final int model, final List<Playlist> from, final List<Playlist> to) {
 		if (model >= 0) {
-			playlistSourceList.add(playlistTargetList.get(model));
-			playlistTargetList.remove(model);
+			to.add(from.get(model));
+			from.remove(model);
 		}
 	}
 
@@ -926,6 +774,20 @@ public class UploadController {
 	public void fromUpload(final Upload item) {
 		uploadViewVO.setUpload(item);
 		beanPathAdapter.setBean(uploadViewVO);
+
+		uploadAccount.getSelectionModel().select(accountDao.fetchOneById(item.getId()));
+
+		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
+		while (playlistIterator.hasNext()) {
+			final Playlist playlist = playlistIterator.next();
+			playlistSourceList.add(playlist);
+			playlistIterator.remove();
+		}
+
+		for (final Playlist playlist : playlistDao.fetchByUpload(item)) {
+			playlistTargetList.add(playlist);
+			playlistSourceList.remove(playlist);
+		}
 	}
 
 	// {{ INNER CLASSES
@@ -985,10 +847,8 @@ public class UploadController {
 		}
 	}
 
+	//TODO
 	private final class LicenseChangeListener implements ChangeListener<License> {
-		final CheckBox[] controls = new CheckBox[] {monetizeClaim, monetizeOverlay, monetizeTrueView, monetizeInStream,
-													monetizeInStreamDefaults, monetizeProductPlacement};
-
 		@Override
 		public void changed(final ObservableValue<? extends License> observable, final License oldValue, final License newValue) {
 			if (newValue == null) {
@@ -996,98 +856,10 @@ public class UploadController {
 			}
 			switch (newValue) {
 				case CREATIVE_COMMONS:
-					for (final CheckBox checkBox : controls) {
-						checkBox.setSelected(false);
-					}
 					partnerPane.setDisable(true);
 					break;
 				case YOUTUBE:
 					partnerPane.setDisable(false);
-					break;
-			}
-		}
-	}
-
-	private final class ClaimOptionChangeListener implements ChangeListener<ClaimOption> {
-		final CheckBox[] controls = new CheckBox[] {monetizeClaim, monetizeOverlay, monetizeTrueView, monetizeInStream,
-													monetizeInStreamDefaults, monetizeProductPlacement};
-
-		@Override
-		public void changed(final ObservableValue<? extends ClaimOption> observable, final ClaimOption oldValue, final ClaimOption newValue) {
-			if (!monetizePartner.isSelected()) {
-				return;
-			}
-			if (newValue == null) {
-				return;
-			}
-			switch (newValue) {
-				case MONETIZE:
-					for (final CheckBox checkBox : controls) {
-						checkBox.setVisible(true);
-					}
-					break;
-				case BLOCK:
-				case TRACK:
-					for (final CheckBox checkBox : controls) {
-						checkBox.setSelected(false);
-						checkBox.setVisible(false);
-					}
-					break;
-			}
-		}
-	}
-
-	private final class AssetChangeListener implements ChangeListener<Asset> {
-		@Override
-		public void changed(final ObservableValue<? extends Asset> observable, final Asset oldValue, final Asset newValue) {
-			if (newValue == null) {
-				return;
-			}
-			switch (newValue) {
-				case MOVIE:
-					monetizeDescription.setDisable(false);
-					monetizeEIDR.setVisible(true);
-					monetizeISAN.setVisible(true);
-					monetizeNumberEpisode.setVisible(true);
-					monetizeNumberSeason.setVisible(true);
-					monetizeTitleEpisode.setVisible(true);
-					monetizeTMSID.setVisible(true);
-					labelEIDR.setVisible(true);
-					labelISAN.setVisible(true);
-					labelTMSID.setVisible(true);
-					labelNumberEpisode.setVisible(false);
-					labelNumberSeason.setVisible(false);
-					labelTitleEpisode.setVisible(false);
-					break;
-				case TV:
-					monetizeDescription.setDisable(true);
-					monetizeEIDR.setVisible(true);
-					monetizeISAN.setVisible(true);
-					monetizeNumberEpisode.setVisible(true);
-					monetizeNumberSeason.setVisible(true);
-					monetizeTitleEpisode.setVisible(true);
-					monetizeTMSID.setVisible(true);
-					labelEIDR.setVisible(true);
-					labelISAN.setVisible(true);
-					labelNumberEpisode.setVisible(true);
-					labelNumberSeason.setVisible(true);
-					labelTitleEpisode.setVisible(true);
-					labelTMSID.setVisible(true);
-					break;
-				case WEB:
-					monetizeDescription.setDisable(false);
-					monetizeEIDR.setVisible(false);
-					monetizeISAN.setVisible(false);
-					monetizeNumberEpisode.setVisible(false);
-					monetizeNumberSeason.setVisible(false);
-					monetizeTitleEpisode.setVisible(false);
-					monetizeTMSID.setVisible(false);
-					labelEIDR.setVisible(false);
-					labelISAN.setVisible(false);
-					labelNumberEpisode.setVisible(false);
-					labelNumberSeason.setVisible(false);
-					labelTitleEpisode.setVisible(false);
-					labelTMSID.setVisible(false);
 					break;
 			}
 		}
@@ -1148,24 +920,8 @@ public class UploadController {
 		@Override
 		public PlaylistGridCell call(final GridView<Playlist> arg0) {
 			final PlaylistGridCell cell = new PlaylistGridCell();
-			cell.setOnDragDetected(new EventHandler<Event>() {
-				@Override
-				public void handle(final Event event) {
-					final Dragboard db = playlistTargetzone.startDragAndDrop(TransferMode.ANY);
-					final ClipboardContent content = new ClipboardContent();
-					content.putString(playlistTargetList.indexOf(cell.itemProperty().get()) + "");
-					db.setContent(content);
-					event.consume();
-				}
-			});
-			cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(final MouseEvent event) {
-					if (event.getClickCount() == 2) {
-						removePlaylistFromDropzone(playlistTargetList.indexOf(cell.itemProperty().get()));
-					}
-				}
-			});
+			cell.setOnDragDetected(new PlaylistDragDetected(playlistTargetzone, playlistTargetList, cell));
+			cell.setOnMouseClicked(new PlaylistMouseClicked(playlistTargetList, cell));
 			return cell;
 		}
 	}
@@ -1174,25 +930,47 @@ public class UploadController {
 		@Override
 		public PlaylistGridCell call(final GridView<Playlist> arg0) {
 			final PlaylistGridCell cell = new PlaylistGridCell();
-			cell.setOnDragDetected(new EventHandler<Event>() {
-				@Override
-				public void handle(final Event event) {
-					final Dragboard db = playlistSourcezone.startDragAndDrop(TransferMode.ANY);
-					final ClipboardContent content = new ClipboardContent();
-					content.putString(playlistSourceList.indexOf(cell.itemProperty().get()) + "");
-					db.setContent(content);
-					event.consume();
-				}
-			});
-			cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(final MouseEvent event) {
-					if (event.getClickCount() == 2) {
-						movePlaylistToDropzone(playlistSourceList.indexOf(cell.itemProperty().get()));
-					}
-				}
-			});
+			cell.setOnDragDetected(new PlaylistDragDetected(playlistSourcezone, playlistSourceList, cell));
+			cell.setOnMouseClicked(new PlaylistMouseClicked(playlistSourceList, cell));
 			return cell;
+		}
+	}
+
+	private final class PlaylistDragDetected implements EventHandler<Event> {
+		private final GridView<Playlist>       gridView;
+		private final ObservableList<Playlist> playlists;
+		private final PlaylistGridCell         cell;
+
+		public PlaylistDragDetected(final GridView<Playlist> gridView, final ObservableList<Playlist> playlists, final PlaylistGridCell cell) {
+			this.gridView = gridView;
+			this.playlists = playlists;
+			this.cell = cell;
+		}
+
+		@Override
+		public void handle(final Event event) {
+			final Dragboard db = gridView.startDragAndDrop(TransferMode.ANY);
+			final ClipboardContent content = new ClipboardContent();
+			content.putString(playlists.indexOf(cell.itemProperty().get()) + "");
+			db.setContent(content);
+			event.consume();
+		}
+	}
+
+	private final class PlaylistMouseClicked implements EventHandler<MouseEvent> {
+		private final ObservableList<Playlist> playlists;
+		private final PlaylistGridCell         cell;
+
+		public PlaylistMouseClicked(final ObservableList<Playlist> playlists, final PlaylistGridCell cell) {
+			this.playlists = playlists;
+			this.cell = cell;
+		}
+
+		@Override
+		public void handle(final MouseEvent event) {
+			if (event.getClickCount() == 2) {
+				movePlaylistToDropzone(playlists.indexOf(cell.itemProperty().get()));
+			}
 		}
 	}
 

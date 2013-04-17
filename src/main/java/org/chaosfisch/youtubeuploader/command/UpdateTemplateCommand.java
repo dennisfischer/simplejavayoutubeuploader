@@ -15,14 +15,23 @@ import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
+import org.chaosfisch.youtubeuploader.db.dao.TemplatePlaylistDao;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.TemplatePlaylist;
 
 public class UpdateTemplateCommand extends Service<Void> {
 
 	@Inject
 	private TemplateDao templateDao;
 
-	public Template template;
+	@Inject
+	private TemplatePlaylistDao templatePlaylistDao;
+
+	public Template   template;
+	public Account    account;
+	public Playlist[] playlists;
 
 	@Override
 	protected Task<Void> createTask() {
@@ -30,6 +39,19 @@ public class UpdateTemplateCommand extends Service<Void> {
 			@Override
 			protected Void call() throws Exception {
 				Preconditions.checkNotNull(template);
+
+				if (account != null) {
+					template.setAccountId(account.getId());
+				}
+
+				templatePlaylistDao.delete(templatePlaylistDao.fetchByTemplateId(template.getId()));
+				for (final Playlist playlist : playlists) {
+					final TemplatePlaylist relation = new TemplatePlaylist();
+					relation.setPlaylistId(playlist.getId());
+					relation.setTemplateId(template.getId());
+					templatePlaylistDao.insert(relation);
+				}
+
 				templateDao.update(template);
 				return null;
 			}

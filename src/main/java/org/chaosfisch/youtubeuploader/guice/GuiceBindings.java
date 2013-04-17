@@ -21,17 +21,21 @@ import org.chaosfisch.io.Throttle;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.TextUtil;
+import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.services.*;
 import org.chaosfisch.youtubeuploader.services.impl.*;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
-import org.chaosfisch.youtubeuploader.vo.UploadViewModel;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultConnectionProvider;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.util.ResourceBundle;
 
@@ -53,16 +57,19 @@ public class GuiceBindings extends AbstractModule {
 
 		bind(Uploader.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
-		bind(UploadViewModel.class).in(Singleton.class);
 
 		mapDatabase();
 	}
 
 	private void mapDatabase() {
 		try {
-			// ;INIT=RUNSCRIPT FROM '~/create.sql'\\;RUNSCRIPT FROM
-			// '~/populate.sql'"
-			final String url = "jdbc:h2:" + System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/" + dbName;
+			final File schema = new File(ApplicationData.HOME + "/SimpleJavaYoutubeUploader/schema.sql");
+			if (!schema.exists()) {
+				try (final InputStream inputStream = getClass().getResourceAsStream("/schema.sql")) {
+					Files.copy(inputStream, Paths.get(schema.toURI()));
+				}
+			}
+			final String url = "jdbc:h2:~/SimpleJavaYoutubeUploader/" + dbName + ";INIT=RUNSCRIPT FROM '~/SimpleJavaYoutubeUploader/schema.sql'";
 
 			final DefaultConfiguration configuration = new DefaultConfiguration();
 			configuration.set(SQLDialect.H2);

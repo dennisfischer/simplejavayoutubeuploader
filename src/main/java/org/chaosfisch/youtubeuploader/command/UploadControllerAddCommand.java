@@ -26,7 +26,6 @@ import org.chaosfisch.youtubeuploader.db.validation.UploadValidationCode;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -39,9 +38,9 @@ public class UploadControllerAddCommand extends Service<Void> {
 	@Inject
 	private UploadPlaylistDao uploadPlaylistDao;
 
-	public Upload         upload;
-	public List<Playlist> playlists;
-	public Account        account;
+	public Upload     upload;
+	public Playlist[] playlists;
+	public Account    account;
 
 	@Override
 	protected Task<Void> createTask() {

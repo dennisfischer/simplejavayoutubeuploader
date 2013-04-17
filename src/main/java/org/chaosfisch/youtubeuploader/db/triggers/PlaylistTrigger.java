@@ -27,22 +27,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PlaylistTrigger extends TriggerAdapter {
+	Integer firstId;
+	Integer lastId;
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {
+		firstId = null;
+		lastId = null;
 		final DSLContext create = DSL.using(conn, SQLDialect.H2);
-		Integer firstId = null;
-		Integer lastId;
+
 		if (newRow != null) {
 			final Cursor<Record> result = create.fetchLazy(newRow);
 			while (result.hasNext()) {
-				final Playlist record = result.fetchOneInto(Playlist.class);
-				lastId = record.getId();
-				if (lastId.equals(firstId)) {
-					break;
-				}
-				if (firstId == null) {
-					firstId = record.getId();
+				final Playlist record = getPlaylist(result);
+				if (record == null) {
+					return;
 				}
 
 				if (oldRow == null) {
@@ -54,17 +53,25 @@ public class PlaylistTrigger extends TriggerAdapter {
 		} else {
 			final Cursor<Record> result = create.fetchLazy(oldRow);
 			while (result.hasNext()) {
-				final Playlist record = result.fetchOneInto(Playlist.class);
-				lastId = record.getId();
-				if (lastId.equals(firstId)) {
-					break;
-				}
-				if (firstId == null) {
-					firstId = record.getId();
+				final Playlist record = getPlaylist(result);
+				if (record == null) {
+					return;
 				}
 
 				EventBusUtil.getInstance().post(new ModelRemovedEvent(record));
 			}
 		}
+	}
+
+	private Playlist getPlaylist(final Cursor<Record> result) {
+		final Playlist record = result.fetchOneInto(Playlist.class);
+		lastId = record.getId();
+		if (lastId.equals(firstId)) {
+			return null;
+		}
+		if (firstId == null) {
+			firstId = record.getId();
+		}
+		return record;
 	}
 }

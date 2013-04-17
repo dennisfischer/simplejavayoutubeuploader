@@ -37,7 +37,6 @@ public final class SimpleJavaYoutubeUploader {
 			userHome += "/Library/Application Support/";
 		}
 		System.setProperty("user.home", userHome);
-
 	}
 
 	private static void initLocale() {

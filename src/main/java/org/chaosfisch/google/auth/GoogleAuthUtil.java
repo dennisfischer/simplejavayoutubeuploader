@@ -100,16 +100,17 @@ public class GoogleAuthUtil {
 
 	}
 
-	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws IOException {
+	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws IOException, SystemException {
 		// STEP 3 TOKEN AUTH
 		try {
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder
-					.encode(issueAuthTokenContent, "UTF-8"), URLEncoder.encode(redirectUrl, "UTF-8"));
+					.encode(issueAuthTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
+																												  .name()));
 
 			final Request tokenAuthRequest = new Request.Builder(tokenAuthUrl).get().build();
 
 			try (final Response response = tokenAuthRequest.execute()) {
-				return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
+				return response.getContent();
 			}
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException(e);

@@ -153,23 +153,26 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	protected Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
-		String thumbnail = null;
-		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
-			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
-		}
-
 		final Playlist playlist = new Playlist();
 		playlist.setTitle(entry.title);
 		playlist.setPkey(entry.playlistId);
 		playlist.setUrl(entry.title);
 		playlist.setNumber(entry.playlistCountHint);
 		playlist.setSummary(entry.playlistSummary);
-		playlist.setThumbnail(thumbnail);
+		playlist.setThumbnail(getThumbnail(entry));
 		playlist.setAccountId(account.getId());
 		playlist.setHidden(false);
 
 		playlistDao.insert(playlist);
 		return playlist;
+	}
+
+	private String getThumbnail(final VideoEntry entry) {
+		String thumbnail = null;
+		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
+			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
+		}
+		return thumbnail;
 	}
 
 	protected Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
@@ -178,11 +181,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		playlist.setNumber(entry.playlistCountHint);
 		playlist.setSummary(entry.playlistSummary);
 		playlist.setAccountId(account.getId());
-		String thumbnail = null;
-		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
-			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
-		}
-		playlist.setThumbnail(thumbnail);
+		playlist.setThumbnail(getThumbnail(entry));
 
 		playlistDao.update(playlist);
 		return playlist;

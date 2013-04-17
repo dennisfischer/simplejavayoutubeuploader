@@ -16,6 +16,6 @@ public interface ApplicationData {
 	String VERSION       = "3.0.0.6";
 	int    RELEASE       = 6;
 	String BASEURL       = "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
-	String DATA_DIR      = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
 	String HOME          = System.getProperty("user.home");
+	String DATA_DIR      = HOME + "/SimpleJavaYoutubeUploader";
 }

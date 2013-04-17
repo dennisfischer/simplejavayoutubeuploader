@@ -33,18 +33,17 @@ public final class XStreamHelper {
 		}
 	}
 
-	public static <T> T parseFileToObject(final File xml, final Class<T> clazz) {
+	public static <T> T parseFeed(final File xml, final Class<T> clazz) {
 		xStream.processAnnotations(clazz);
-		final Object o = xStream.fromXML(xml);
-		if (clazz.isInstance(o)) {
-			return clazz.cast(o);
-		}
-		throw new IllegalArgumentException("atomData of invalid clazz object!");
+		return getObject(clazz, xStream.fromXML(xml));
 	}
 
 	public static <T> T parseFeed(final String atomData, final Class<T> clazz) {
 		xStream.processAnnotations(clazz);
-		final Object o = xStream.fromXML(atomData);
+		return getObject(clazz, xStream.fromXML(atomData));
+	}
+
+	private static <T> T getObject(final Class<T> clazz, final Object o) {
 		if (clazz.isInstance(o)) {
 			return clazz.cast(o);
 		}
