@@ -309,7 +309,7 @@ public class UploadWorker extends Task<Void> {
 			try {
 				playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
 			} catch (final SystemException e) {
-				// TODO Auto-generated catch block
+				// TODO Log this exception - still unclear if it should get pushed up
 				e.printStackTrace();
 			}
 		}

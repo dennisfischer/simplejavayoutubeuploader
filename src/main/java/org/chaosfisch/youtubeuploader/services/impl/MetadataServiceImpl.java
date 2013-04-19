@@ -171,7 +171,7 @@ public class MetadataServiceImpl implements MetadataService {
 
 			changeMetadata(redirectToYoutube(googleContent));
 		} catch (final IOException | SystemException e) {
-			// TODO Auto-generated catch block
+			// TODO Log this exception - still unclear if it should get pushed up
 			e.printStackTrace();
 		}
 	}

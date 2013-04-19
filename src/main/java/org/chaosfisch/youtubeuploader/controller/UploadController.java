@@ -396,7 +396,7 @@ public class UploadController {
 		}
 	}
 
-	//TODO This reset feature bugs
+	//TODO This reset feature bugs, ADD INPUT FROM BOTH! MonetizationComponents
 	@FXML
 	void resetUpload(final ActionEvent event) {
 		uploadViewVO.reset();

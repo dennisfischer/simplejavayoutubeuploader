@@ -11,11 +11,11 @@
 package org.chaosfisch.youtubeuploader;
 
 public class ApplicationData {
-	String DEVELOPER_KEY = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
-	String GDATA_VERSION = "2";
-	String VERSION       = "3.0.0.6";
-	int    RELEASE       = 6;
-	String BASEURL       = "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
-	String HOME          = System.getProperty("user.home");
-	String DATA_DIR      = HOME + "/SimpleJavaYoutubeUploader";
+	public static final String DEVELOPER_KEY = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
+	public static final String GDATA_VERSION = "2";
+	public static final String VERSION       = "3.0.0.7";
+	public static final int    RELEASE       = 7;
+	public static final String BASEURL       = "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
+	public static final String HOME          = System.getProperty("user.home");
+	public static final String DATA_DIR      = HOME + "/SimpleJavaYoutubeUploader";
 }
