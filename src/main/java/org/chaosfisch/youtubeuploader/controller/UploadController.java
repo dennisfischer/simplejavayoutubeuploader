@@ -788,7 +788,6 @@ public class UploadController {
 		}
 	}
 
-	// {{ INNER CLASSES
 	private final class AccountChangeListener implements ChangeListener<Account> {
 		@Override
 		public void changed(final ObservableValue<? extends Account> observable, final Account oldValue, final Account newValue) {
@@ -845,7 +844,6 @@ public class UploadController {
 		}
 	}
 
-	//TODO CHECK AND VERIFY THAT LICENSE CHANGE LISTENER IS IMPLEMENTED CORRECTLY
 	private final class LicenseChangeListener implements ChangeListener<License> {
 		@Override
 		public void changed(final ObservableValue<? extends License> observable, final License oldValue, final License newValue) {
@@ -855,9 +853,11 @@ public class UploadController {
 			switch (newValue) {
 				case CREATIVE_COMMONS:
 					partnerPane.setDisable(true);
+					partnerPane.getStyleClass().add("partnerPaneDisabled");
 					break;
 				case YOUTUBE:
 					partnerPane.setDisable(false);
+					partnerPane.getStyleClass().remove("partnerPaneDisabled");
 					break;
 			}
 		}
@@ -1022,7 +1022,4 @@ public class UploadController {
 			event.consume();
 		}
 	}
-
-	// }} INNER CLASSES
-
 }

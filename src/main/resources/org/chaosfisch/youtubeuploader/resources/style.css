@@ -32,6 +32,10 @@
     -fx-graphic: url("images/save.png");
 }
 
+.partnerPaneDisabled {
+    -fx-text-fill: darkgray;
+}
+
 .accountCellContainer {
 }
 
