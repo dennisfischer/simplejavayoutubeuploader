@@ -97,7 +97,6 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void stop() throws Exception {
-		// TODO LogfileCommitter.commit();
 		uploader.stopStarttimeChecker();
 		uploader.exit();
 	}

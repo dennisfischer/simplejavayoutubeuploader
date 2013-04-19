@@ -9,6 +9,7 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
+
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
@@ -104,6 +105,10 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
         </rowConstraints>
+        <Label text="%label.monetizeContentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+        <ComboBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
+                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="15"/>
     </GridPane>
 </AnchorPane>
