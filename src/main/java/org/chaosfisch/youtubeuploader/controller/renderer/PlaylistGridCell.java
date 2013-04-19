@@ -25,7 +25,6 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import java.io.IOException;
 import java.io.InputStream;
 
-//TODO Could need some code rework
 public class PlaylistGridCell extends GridCell<Playlist> {
 	private Image defaultThumbnail;
 
@@ -56,14 +55,7 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 										  : 180;
 					imageView.setViewport(new Rectangle2D(0, 45, width, height - 90));
 				} else {
-					if (defaultThumbnail == null) {
-						try (InputStream inputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")) {
-							PlaylistGridCell.this.defaultThumbnail = new Image(inputStream);
-						} catch (IOException e) {
-							e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-						}
-					}
-					imageView = new ImageView(defaultThumbnail);
+					imageView = new ImageView(getDefaultThumbnail());
 				}
 
 				imageView.fitHeightProperty().bind(heightProperty());
@@ -85,6 +77,17 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 						tooltip.hide();
 					}
 				});
+			}
+
+			private Image getDefaultThumbnail() {
+				if (defaultThumbnail == null) {
+					try (InputStream inputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")) {
+						PlaylistGridCell.this.defaultThumbnail = new Image(inputStream);
+					} catch (IOException e) {
+						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+					}
+				}
+				return defaultThumbnail;
 			}
 		});
 	}

@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="21a08e30-0f87-41a4-a993-a28723a4cba8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/renderer/PlaylistGridCell.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/renderer/PlaylistGridCell.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366405519771" ignored="false" />
+    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366405743115" ignored="false" />
     <file path="/launch4j.xml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366050431865" ignored="false" />
     <file path="/MetadataServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366405619531" ignored="false" />
     <file path="/PlaylistServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366057518188" ignored="false" />
@@ -34,7 +31,7 @@
     <file path="/SystemException.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366097040657" ignored="false" />
     <file path="/Connection.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366097121233" ignored="false" />
     <file path="/UploadWorker.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366405650316" ignored="false" />
-    <file path="/PlaylistGridCell.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366399275906" ignored="false" />
+    <file path="/PlaylistGridCell.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366405865544" ignored="false" />
     <file path="/AccountsAdd.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366098271594" ignored="false" />
     <file path="/SimpleJavaYoutubeUploader.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366098516103" ignored="false" />
     <file path="/Settings.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366098780261" ignored="false" />
@@ -182,25 +179,34 @@
       <file leaf-file-name="UploadController.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="372" column="69" selection-start="11559" selection-end="11559" vertical-scroll-proportion="0.0">
+            <state line="398" column="6" selection-start="12292" selection-end="12292" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApplicationData.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ViewController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/ViewController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="105" column="10" selection-start="3536" selection-end="3536" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ApplicationData.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="55" selection-start="638" selection-end="638" vertical-scroll-proportion="0.20481928">
+            <state line="15" column="55" selection-start="638" selection-end="638" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MetadataServiceImpl.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="MetadataServiceImpl.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="173" column="81" selection-start="7317" selection-end="7317" vertical-scroll-proportion="0.0">
+            <state line="173" column="15" selection-start="7251" selection-end="7251" vertical-scroll-proportion="0.33274648">
               <folding />
             </state>
           </provider>
@@ -348,7 +354,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/InputDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/LogfileCommitter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/XStreamHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/io/http/RequestUtil.java" />
@@ -364,6 +369,7 @@
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/renderer/PlaylistGridCell.java" />
       </list>
     </option>
   </component>
@@ -1058,7 +1064,11 @@
       <created>1366405523069</created>
       <updated>1366405523069</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fixed compile errors after changing ApplicationData.java from interface to class">
+      <created>1366405747243</created>
+      <updated>1366405747243</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1095,7 +1105,7 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1755603" sideWeight="0.27616927" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32405347" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32405347" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1154,7 +1164,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Did 4 TODOs - toUpload, toTemplate, fromUpload, fromTemplate in UploadPartnerController.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed compile errors after changing ApplicationData.java from interface to class" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1175,18 +1185,12 @@
     <MESSAGE value="Improved general views - added css and i18n options for existing TODOs - fixed / optimized general code behavior / style." />
     <MESSAGE value="Verified working of LicenseChangeListener and added css disabled option" />
     <MESSAGE value="Did 4 TODOs - toUpload, toTemplate, fromUpload, fromTemplate in UploadPartnerController.java" />
+    <MESSAGE value="Fixed compile errors after changing ApplicationData.java from interface to class" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/Uploader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="13" selection-start="1390" selection-end="1390" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/PlaylistService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="4" selection-start="649" selection-end="649" vertical-scroll-proportion="0.0">
@@ -1229,13 +1233,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/ViewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="10" selection-start="3536" selection-end="3536" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/GuiUploader.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="96" column="14" selection-start="3037" selection-end="3037" vertical-scroll-proportion="0.74010324">
@@ -1271,23 +1268,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="173" column="81" selection-start="7317" selection-end="7317" vertical-scroll-proportion="0.0">
+        <state line="15" column="55" selection-start="638" selection-end="638" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/renderer/PlaylistGridCell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="0" selection-start="894" selection-end="894" vertical-scroll-proportion="0.0636833">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="372" column="69" selection-start="11559" selection-end="11559" vertical-scroll-proportion="0.0">
+        <state line="398" column="6" selection-start="12292" selection-end="12292" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/ViewController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="55" selection-start="638" selection-end="638" vertical-scroll-proportion="0.20481928">
+        <state line="105" column="10" selection-start="3536" selection-end="3536" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="173" column="15" selection-start="7251" selection-end="7251" vertical-scroll-proportion="0.33274648">
           <folding />
         </state>
       </provider>
