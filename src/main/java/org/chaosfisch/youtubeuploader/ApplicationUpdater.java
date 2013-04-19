@@ -17,7 +17,7 @@ import com.panayotis.jupidator.UpdaterException;
 import java.io.File;
 import java.net.URISyntaxException;
 
-public class ApplicationUpdater implements UpdatedApplication {
+class ApplicationUpdater implements UpdatedApplication {
 
 	public ApplicationUpdater() {
 		try {
@@ -31,9 +31,9 @@ public class ApplicationUpdater implements UpdatedApplication {
 	private String getApplicationDirectory() throws URISyntaxException {
 
 		final File file = new File(ApplicationUpdater.class.getProtectionDomain()
-														   .getCodeSource()
-														   .getLocation()
-														   .toURI());
+				.getCodeSource()
+				.getLocation()
+				.toURI());
 		if (file.isDirectory()) {
 			return file.getAbsolutePath();
 		} else {

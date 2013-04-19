@@ -52,7 +52,7 @@ public class SystemException extends Exception {
 		this.errorCode = errorCode;
 	}
 
-	public SystemException(final String message, final Throwable cause, final ErrorCode errorCode) {
+	private SystemException(final String message, final Throwable cause, final ErrorCode errorCode) {
 		super(message, cause);
 		this.errorCode = errorCode;
 	}

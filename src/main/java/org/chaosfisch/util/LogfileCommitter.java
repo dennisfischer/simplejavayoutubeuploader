@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.prefs.Preferences;
 
 public final class LogfileCommitter {
-	public static final  String SETTING_UUID = "hidden.uuid";
+	private static final String SETTING_UUID = "hidden.uuid";
 	private static final String COMMIT_URL   = "http://youtubeuploader.square7.ch/nightly/receiver.php";
 	private static final Logger logger       = LoggerFactory.getLogger(LogfileCommitter.class);
 	private static final File   htmlFile     = new File(System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/applog.html");
@@ -52,8 +52,8 @@ public final class LogfileCommitter {
 		logfileParams.add(new BasicNameValuePair("data", html));
 
 		final Request request = new Request.Builder(COMMIT_URL).post(new UrlEncodedFormEntity(logfileParams, Charsets.UTF_8))
-															   .headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-															   .build();
+				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
+				.build();
 		// Write the atomData to my webpage
 
 		try (final Response response = request.execute()) {

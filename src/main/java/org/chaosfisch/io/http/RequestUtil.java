@@ -29,7 +29,7 @@ import java.net.URI;
 
 public final class RequestUtil {
 
-	static final DefaultHttpClient httpClient;
+	private static final DefaultHttpClient httpClient;
 	public static final HttpContext context = new BasicHttpContext();
 
 	static {

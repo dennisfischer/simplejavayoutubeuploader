@@ -23,7 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class InputDialog extends Stage {
-	final Button submit = new Button("Okay");
+	private final Button submit = new Button("Okay");
 
 	public InputDialog(final String title, final Object[] data) {
 		super();

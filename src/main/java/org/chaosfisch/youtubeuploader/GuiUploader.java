@@ -71,22 +71,22 @@ public class GuiUploader extends GuiceApplication {
 		try {
 			StyleManager.getInstance().addUserAgentStylesheet("/org/chaosfisch/youtubeuploader/resources/style.css");
 			final Parent parent = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
-											.getRoot();
+					.getRoot();
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
 
 			try (InputStream iconInputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")) {
 				StageBuilder.create()
-							.title(resources.getString("application.title"))
-							.icons(new Image(iconInputStream))
-							.minHeight(640)
-							.height(640)
-							.minWidth(1000)
-							.width(1000)
-							.scene(scene)
-							.resizable(true)
-							.onCloseRequest(new ApplicationClosePromptDialog())
-							.applyTo(primaryStage);
+						.title(resources.getString("application.title"))
+						.icons(new Image(iconInputStream))
+						.minHeight(640)
+						.height(640)
+						.minWidth(1000)
+						.width(1000)
+						.scene(scene)
+						.resizable(true)
+						.onCloseRequest(new ApplicationClosePromptDialog())
+						.applyTo(primaryStage);
 			}
 
 			primaryStage.show();
@@ -107,12 +107,12 @@ public class GuiUploader extends GuiceApplication {
 		launch(args);
 	}
 
-	public void initDatabase() {
+	void initDatabase() {
 		DSL.using(injector.getInstance(Configuration.class))
-		   .update(Tables.UPLOAD)
-		   .set(Tables.UPLOAD.INPROGRESS, false)
-		   .set(Tables.UPLOAD.FAILED, false)
-		   .execute();
+				.update(Tables.UPLOAD)
+				.set(Tables.UPLOAD.INPROGRESS, false)
+				.set(Tables.UPLOAD.FAILED, false)
+				.execute();
 	}
 
 	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {

@@ -17,17 +17,17 @@ import jfxtras.labs.dialogs.MonologFXButton.Type;
 import jfxtras.labs.dialogs.MonologFXButtonBuilder;
 
 public class ConfirmDialog {
-	final MonologFX dialog;
+	private final MonologFX dialog;
 
 	public ConfirmDialog(final String title, final String message) {
 		final MonologFXButton yesButton = MonologFXButtonBuilder.create()
-																.type(MonologFXButton.Type.YES)
-																.label("Yes")
-																.build();
+				.type(MonologFXButton.Type.YES)
+				.label("Yes")
+				.build();
 		final MonologFXButton noButton = MonologFXButtonBuilder.create()
-															   .type(MonologFXButton.Type.NO)
-															   .label("No")
-															   .build();
+				.type(MonologFXButton.Type.NO)
+				.label("No")
+				.build();
 
 		dialog = new MonologFX(MonologFX.Type.QUESTION);
 		dialog.setTitleText(title);

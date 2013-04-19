@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class XStreamHelper {
-	final static XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
+	private final static XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 
 	public static String parseObjectToFeed(final Object o) {
 		xStream.processAnnotations(o.getClass());

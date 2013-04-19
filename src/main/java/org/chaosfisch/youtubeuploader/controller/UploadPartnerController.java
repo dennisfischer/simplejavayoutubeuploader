@@ -134,20 +134,20 @@ public class UploadPartnerController {
 		assetList.addAll(Asset.values());
 	}
 
-	public void fromUpload(Upload upload) {
+	public void fromUpload(final Upload upload) {
 		//TODO
 	}
 
-	public void fromTemplate(Template template) {
+	public void fromTemplate(final Template template) {
 		//TODO
 	}
 
-	public Upload toUpload(Upload upload) {
+	public Upload toUpload(final Upload upload) {
 		//TODO
 		return null;
 	}
 
-	public Template toTemplate(Template template) {
+	public Template toTemplate(final Template template) {
 		//TODO
 		return null;
 	}

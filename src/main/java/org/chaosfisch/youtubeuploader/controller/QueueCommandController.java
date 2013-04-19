@@ -54,16 +54,16 @@ public class QueueCommandController {
 	private HBox viewElementsHBox;
 
 	private final ListSpinner<Integer>   numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
-																							 .withAlignment(Pos.CENTER_RIGHT)
-																							 .withPostfix(" Upload(s)")
-																							 .withPrefix("max. ")
-																							 .withArrowPosition(ArrowPosition.LEADING);
+			.withAlignment(Pos.CENTER_RIGHT)
+			.withPostfix(" Upload(s)")
+			.withPrefix("max. ")
+			.withArrowPosition(ArrowPosition.LEADING);
 	private final ListSpinner<Integer>   uploadSpeed         = new ListSpinner<Integer>(0, 10000, 10).withValue(0)
-																									 .withAlignment(Pos.CENTER_RIGHT)
-																									 .withArrowPosition(ArrowPosition.LEADING)
-																									 .withPostfix(" kb/s")
-																									 .withEditable(true)
-																									 .withStringConverter(new UploadSpeedStringConverter());
+			.withAlignment(Pos.CENTER_RIGHT)
+			.withArrowPosition(ArrowPosition.LEADING)
+			.withPostfix(" kb/s")
+			.withEditable(true)
+			.withStringConverter(new UploadSpeedStringConverter());
 	private final ObservableList<String> actionOnFinishItems = FXCollections.observableArrayList();
 
 	@Inject
@@ -115,8 +115,8 @@ public class QueueCommandController {
 
 	private final class UploadSpeedStringConverter extends StringConverter<Integer> {
 		@Override
-		public String toString(final Integer arg0) {
-			return arg0.toString();
+		public String toString(final Integer integer) {
+			return integer.toString();
 		}
 
 		@Override

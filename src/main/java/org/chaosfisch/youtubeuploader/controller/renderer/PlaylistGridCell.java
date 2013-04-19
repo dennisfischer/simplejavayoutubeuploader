@@ -25,6 +25,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import java.io.IOException;
 import java.io.InputStream;
 
+//TODO Could need some code rework
 public class PlaylistGridCell extends GridCell<Playlist> {
 	private Image defaultThumbnail;
 

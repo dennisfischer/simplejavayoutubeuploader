@@ -18,7 +18,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressBarBuilder;
 import javafx.scene.layout.StackPane;
 
-public class ProgressNodeRenderer extends StackPane {
+class ProgressNodeRenderer extends StackPane {
 
 	private final ProgressBar progressBar = ProgressBarBuilder.create().scaleY(2).prefWidth(500).progress(0).build();
 

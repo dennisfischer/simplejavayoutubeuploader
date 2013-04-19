@@ -61,7 +61,7 @@ public class UploadMonetizationController {
 		monetizeSyndication.getSelectionModel().selectFirst();
 	}
 
-	public void fromUpload(Upload upload) {
+	public void fromUpload(final Upload upload) {
 		monetizeOverlay.setSelected(upload.getMonetizeOverlay() == null ? false : upload.getMonetizeOverlay());
 		monetizeTrueView.setSelected(upload.getMonetizeTrueview() == null ? false : upload.getMonetizeTrueview());
 		monetizeProduct.setSelected(upload.getMonetizeProduct() == null ? false : upload.getMonetizeProduct());
@@ -70,7 +70,7 @@ public class UploadMonetizationController {
 									 : upload.getMonetizeSyndication());
 	}
 
-	public void fromTemplate(Template template) {
+	public void fromTemplate(final Template template) {
 		monetizeOverlay.setSelected(template.getMonetizeOverlay() == null ? false : template.getMonetizeOverlay());
 		monetizeTrueView.setSelected(template.getMonetizeTrueview() == null ? false : template.getMonetizeTrueview());
 		monetizeProduct.setSelected(template.getMonetizeProduct() == null ? false : template.getMonetizeProduct());
@@ -79,7 +79,7 @@ public class UploadMonetizationController {
 									 : template.getMonetizeSyndication());
 	}
 
-	public Upload toUpload(Upload upload) {
+	public Upload toUpload(final Upload upload) {
 		upload.setMonetizeOverlay(monetizeOverlay.isSelected());
 		upload.setMonetizeTrueview(monetizeTrueView.isSelected());
 		upload.setMonetizeProduct(monetizeProduct.isSelected());
@@ -89,7 +89,7 @@ public class UploadMonetizationController {
 		return upload;
 	}
 
-	public Template toTemplate(Template template) {
+	public Template toTemplate(final Template template) {
 		template.setMonetizeOverlay(monetizeOverlay.isSelected());
 		template.setMonetizeTrueview(monetizeTrueView.isSelected());
 		template.setMonetizeProduct(monetizeProduct.isSelected());

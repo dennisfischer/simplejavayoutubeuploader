@@ -80,21 +80,21 @@ public class MetadataServiceImpl implements MetadataService {
 		}
 
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(upload.getEmbed())));
+				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(upload.getEmbed())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(upload.getRate())));
+				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(upload.getRate())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(upload.getMobile())));
+				.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(upload.getMobile())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(upload.getCommentvote())));
+				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(upload.getCommentvote())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(upload.getVideoresponse()
-																											   .ordinal())));
+				.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(upload.getVideoresponse()
+						.ordinal())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(upload.getComment()
-																										  .ordinal())));
+				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(upload.getComment()
+						.ordinal())));
 		videoEntry.accessControl
-				  .add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(upload.getVisibility() == Visibility.PUBLIC)));
+				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(upload.getVisibility() == Visibility.PUBLIC)));
 
 		if (upload.getComment() == Comment.FRIENDS_ONLY) {
 			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends"));
@@ -141,10 +141,9 @@ public class MetadataServiceImpl implements MetadataService {
 	public String submitMetadata(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
 		final Request request = new Request.Builder(METADATA_UPLOAD_URL).post(new StringEntity(atomData, Charsets.UTF_8))
-																		.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload
-																				.getAbsolutePath()))
-																		.sign(requestSigner, authTokenHelper.getAuthHeader(account))
-																		.build();
+				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+				.build();
 		// Write the atomData to GOOGLE
 		try (final Response response = request.execute()) {
 			// Check the response code for any problematic codes.
@@ -156,7 +155,7 @@ public class MetadataServiceImpl implements MetadataService {
 				return response.getRaw().getFirstHeader("Location").getValue();
 			} else {
 				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getRaw()
-																							   .getStatusLine());
+						.getStatusLine());
 			}
 		} catch (final IOException e) {
 			throw SystemException.wrap(e, MetadataCode.REQUEST_IO_ERROR);
@@ -177,7 +176,7 @@ public class MetadataServiceImpl implements MetadataService {
 		}
 	}
 
-	private String extractor(final String input, final String search, final String end) {
+	private String extractor(final String input, final String search, @SuppressWarnings("SameParameterValue") final String end) {
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
 				.length()));
 	}

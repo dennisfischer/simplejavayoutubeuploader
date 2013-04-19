@@ -51,23 +51,20 @@ public class EnddirServiceImpl implements EnddirService {
 
 	}
 
-	protected String _getIncrementedFileName(final String fileName, final int increment) {
+	String _getIncrementedFileName(final String fileName, final int increment) {
 		if (increment == 0) {
 			return fileName;
 		}
 		return fileName.substring(0, fileName.lastIndexOf(".")) + "_" + increment + fileName.substring(fileName.lastIndexOf("."));
 	}
 
-	protected String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
+	String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
 		final String fileName;
 		if (getEnddirSetting()) {
 			fileName = enddir.getAbsolutePath() + "/" + upload.getTitle()
-															  .replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
-																											.getAbsolutePath()
-																											.substring(upload
-																													.getFile()
-																													.getAbsolutePath()
-																													.lastIndexOf("."));
+					.replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
+					.getAbsolutePath()
+					.substring(upload.getFile().getAbsolutePath().lastIndexOf("."));
 		} else {
 			fileName = enddir.getAbsolutePath() + "/" + fileToMove.getName();
 

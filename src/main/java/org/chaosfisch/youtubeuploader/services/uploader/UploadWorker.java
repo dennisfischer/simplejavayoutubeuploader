@@ -165,9 +165,7 @@ public class UploadWorker extends Task<Void> {
 		if (resumeInfo == null) {
 			currentStatus = STATUS.FAILED;
 			throw new SystemException(UploadCode.MAX_RETRIES_REACHED).set("url", upload.getUploadurl())
-																	 .set("time", Calendar.getInstance()
-																						  .getTime()
-																						  .toString());
+					.set("time", Calendar.getInstance().getTime().toString());
 		}
 		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
 		if (resumeInfo.videoId != null) { // upload actually completed despite
@@ -326,7 +324,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void browserAction() {
 		if (upload.getDateOfRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
-																						 .isEmpty()) && !upload.getMonetizeClaim()) {
+				.isEmpty()) && !upload.getMonetizeClaim()) {
 			return;
 		}
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");

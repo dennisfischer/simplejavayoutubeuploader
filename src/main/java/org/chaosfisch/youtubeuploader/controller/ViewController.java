@@ -103,13 +103,7 @@ public class ViewController {
 
 	@FXML
 	void menuConnectServer(final ActionEvent event) {
-		final TextField host = new TextField();
-		final TextField port = new TextField();
-		final Object[] message = {resources.getString("remoteclientDialog.labelHost"), host,
-								  resources.getString("remotclientDialog.labelPort"), port};
-
-		final InputDialog myDialog = new InputDialog(resources.getString("remoteclientDialog.button"), message);
-		myDialog.setCallback(new ServerConnectDialogCallback(myDialog, port, host));
+		//TODO for @version 3.0.1.0
 	}
 
 	@FXML
@@ -155,38 +149,6 @@ public class ViewController {
 		standardTemplate.setMonetizeClaimoption(ClaimOption.MONETIZE);
 		standardTemplate.setMonetizeAsset(Asset.WEB);
 		standardTemplate.setMonetizeSyndication(Syndication.GLOBAL);
-	}
-
-	@FXML
-	void initialize() {
-	}
-
-	private final static class ServerConnectDialogCallback implements EventHandler<ActionEvent> {
-		private final InputDialog myDialog;
-		private final TextField   port;
-		private final TextField   host;
-
-		private ServerConnectDialogCallback(final InputDialog myDialog, final TextField port, final TextField host) {
-			this.myDialog = myDialog;
-			this.port = port;
-			this.host = host;
-		}
-
-		@Override
-		public void handle(final ActionEvent event) {
-			if (!host.getText().isEmpty() && !port.getText().isEmpty()) {
-				// try {
-				// if (!remoteClient.connect(host.getText(),
-				// port.getText())) {
-				// // SHOW CONNECTION FAILED DIALOG
-				// }
-				// } catch (final InvalidPortException e) {
-				// // TODO SHOW PORT INVALID DIALOG
-				// }
-
-				myDialog.close();
-			}
-		}
 	}
 
 	private final class TemplateAddDialogCallback implements EventHandler<ActionEvent> {

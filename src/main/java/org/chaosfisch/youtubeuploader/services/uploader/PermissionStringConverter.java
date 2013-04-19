@@ -11,9 +11,9 @@
 package org.chaosfisch.youtubeuploader.services.uploader;
 
 public final class PermissionStringConverter {
-	public static final String ALLOWED   = "allowed";
-	public static final String DENIED    = "denied";
-	public static final String MODERATED = "moderated";
+	private static final String ALLOWED   = "allowed";
+	private static final String DENIED    = "denied";
+	private static final String MODERATED = "moderated";
 
 	/**
 	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed

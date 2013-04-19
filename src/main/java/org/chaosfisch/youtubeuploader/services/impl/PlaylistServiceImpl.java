@@ -59,13 +59,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
 		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(new StringEntity(atomData, Charsets.UTF_8))
-																													   .headers(ImmutableMap
-																															   .of("Content-Type", "application/atom+xml; charset=utf-8;"))
-																													   .sign(requestSigner, authTokenHelper
-																															   .getAuthHeader(accountDao
-																																	   .fetchOneById(playlist
-																																			   .getAccountId())))
-																													   .build();
+				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
+				.build();
 
 		try (final Response response = request.execute()) {
 			logger.debug("Video added to playlist!");
@@ -91,10 +87,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		logger.debug("Playlist atomdata: {}", atomData);
 
 		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData, Charsets.UTF_8))
-																			  .headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-																			  .sign(requestSigner, authTokenHelper.getAuthHeader(accountDao
-																					  .fetchOneById(playlist.getAccountId())))
-																			  .build();
+				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
+				.build();
 		try (final Response response = request.execute()) {
 			if (response.getStatusCode() != 200 && response.getStatusCode() != 201) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
@@ -114,9 +109,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		for (final Account account : accounts) {
 			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
-																						 .sign(requestSigner, authTokenHelper
-																								 .getAuthHeader(account))
-																						 .build();
+					.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+					.build();
 			try (final Response response = request.execute()) {
 				if (response.getStatusCode() != 200) {
 					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
@@ -132,7 +126,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return data;
 	}
 
-	protected List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
+	List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
 		final Feed feed = XStreamHelper.parseFeed(content, Feed.class);
 
 		final List<Playlist> list = new ArrayList<>();
@@ -152,7 +146,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return list;
 	}
 
-	protected Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
+	Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
 		final Playlist playlist = new Playlist();
 		playlist.setTitle(entry.title);
 		playlist.setPkey(entry.playlistId);
@@ -175,7 +169,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return thumbnail;
 	}
 
-	protected Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
+	Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
 		playlist.setTitle(entry.title);
 		playlist.setUrl(entry.title);
 		playlist.setNumber(entry.playlistCountHint);
@@ -187,7 +181,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return playlist;
 	}
 
-	protected void _cleanPlaylists(final Account account) {
+	void _cleanPlaylists(final Account account) {
 		playlistDao.cleanByAccount(account);
 	}
 }

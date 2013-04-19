@@ -12,7 +12,7 @@
     -fx-graphic: url("images/refresh.png");
 }
 
-#removeAccount, #removeTemplate, #removeUpload {
+#removeTemplate {
     -fx-graphic: url("images/delete.png");
 }
 
@@ -24,7 +24,7 @@
     -fx-graphic: url("images/folder_explore.png");
 }
 
-#resetUpload, #resetAccount, #abortUpload {
+#resetUpload, #resetAccount {
     -fx-graphic: url("images/cancel.png");
 }
 
@@ -32,27 +32,53 @@
     -fx-graphic: url("images/save.png");
 }
 
-#editUpload {
+.accountCellContainer {
+}
+
+.accountCellRemoveButton {
+    -fx-graphic: url("images/delete.png");
+}
+
+.accountCellCheckbox {
+}
+
+.accountCellHiddenPlaylistsLabel {
+}
+
+.accountCellHiddenPlaylistsContainer {
+}
+
+.queueCellContainer {
+}
+
+.queueCellTopContainer {
+}
+
+.queueCellBottomContainer {
+}
+
+.queueCellHyperlink {
+}
+
+.queueCellFailedLabel {
+}
+
+.queueCellTitleLabel {
+}
+
+.queueCellRemoveButton {
+    -fx-graphic: url("images/delete.png");
+}
+
+.queueCellAbortButton {
+    -fx-graphic: url("images/cancel.png");
+}
+
+.queueCellEditButton {
     -fx-graphic: url("images/pencil.png");
 }
 
-#uploadTop {
-    -fx-graphic: url("images/arrow-double-up.png");
-}
-
-#uploadUp {
-    -fx-graphic: url("images/arrow_up.png");
-}
-
-#uploadDown {
-    -fx-graphic: url("images/arrow_down.png");
-}
-
-#uploadBottom {
-    -fx-graphic: url("images/arrow-double-down.png");
-}
-
-#pauseOnFinishQueue {
+.queueCellPauseButton {
     -fx-graphic: url("images/time_delete.png");
 }
 

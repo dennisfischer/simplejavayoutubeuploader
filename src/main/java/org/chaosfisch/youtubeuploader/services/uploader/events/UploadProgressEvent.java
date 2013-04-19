@@ -16,7 +16,7 @@ public class UploadProgressEvent {
 	private       long    diffBytes;
 	private       long    diffTime;
 	private final long    fileSize;
-	public final  Upload  upload;
+	private final Upload  upload;
 	private       long    time;
 	private       long    totalBytesUploaded;
 	public        boolean failed;

@@ -211,13 +211,13 @@ public class UploadController {
 	private TitledPane x5;
 
 	private final CalendarTextField    started            = new CalendarTextField().withValue(Calendar.getInstance())
-																				   .withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																				   .withShowTime(true);
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+			.withShowTime(true);
 	private final CalendarTextField    release            = new CalendarTextField().withValue(Calendar.getInstance())
-																				   .withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-																				   .withShowTime(true);
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
+			.withShowTime(true);
 	private final ListSpinner<Integer> number             = new ListSpinner<Integer>(-1000, 1000).withValue(0)
-																								 .withAlignment(Pos.CENTER_RIGHT);
+			.withAlignment(Pos.CENTER_RIGHT);
 	private final GridView<Playlist>   playlistSourcezone = GridViewBuilder.create(Playlist.class).build();
 	private final GridView<Playlist>   playlistTargetzone = GridViewBuilder.create(Playlist.class).build();
 
@@ -300,8 +300,8 @@ public class UploadController {
 				try {
 					//noinspection ThrowableResultOfMethodCallIgnored
 					final UploadValidationCode error = UploadValidationCode.valueOf(event.getSource()
-																						 .getException()
-																						 .getMessage());
+							.getException()
+							.getMessage());
 					switch (error) {
 						case ACCOUNT_NULL:
 							uploadAccount.getStyleClass().add("input-invalid");
@@ -597,9 +597,9 @@ public class UploadController {
 		idProperty.addListener(new UploadIdInvalidationListener());
 		try {
 			uploadPartnerController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/UploadPartner.fxml"), resources)
-												.getController();
+					.getController();
 			uploadMonetizationController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/youtubeuploader/view/UploadMonetization.fxml"), resources)
-													 .getController();
+					.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -650,12 +650,10 @@ public class UploadController {
 
 	private void initBindings() {
 		release.disableProperty()
-			   .bind(uploadVisibility.getSelectionModel()
-									 .selectedIndexProperty()
-									 .isNotEqualTo(2)
-									 .and(uploadVisibility.getSelectionModel()
-														  .selectedIndexProperty()
-														  .isNotEqualTo(0)));
+				.bind(uploadVisibility.getSelectionModel()
+						.selectedIndexProperty()
+						.isNotEqualTo(2)
+						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
 		uploadMessage.disableProperty().bind(release.disableProperty());
 		uploadFacebook.disableProperty().bind(release.disableProperty());
 		uploadTwitter.disableProperty().bind(release.disableProperty());
@@ -847,7 +845,7 @@ public class UploadController {
 		}
 	}
 
-	//TODO
+	//TODO CHECK AND VERIFY THAT LICENSE CHANGE LISTENER IS IMPLEMENTED CORRECTLY
 	private final class LicenseChangeListener implements ChangeListener<License> {
 		@Override
 		public void changed(final ObservableValue<? extends License> observable, final License oldValue, final License newValue) {
@@ -891,9 +889,9 @@ public class UploadController {
 			if (object.getPath().length() > 50) {
 				final String fileName = object.getPath();
 				return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
-							   .concat(File.separator)
-							   .concat("...")
-							   .concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+						.concat(File.separator)
+						.concat("...")
+						.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
 			}
 			return object.getPath();
 		}
