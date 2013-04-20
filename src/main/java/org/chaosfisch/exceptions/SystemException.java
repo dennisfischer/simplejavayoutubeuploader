@@ -19,22 +19,6 @@ public class SystemException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public static SystemException wrap(final Throwable exception, final ErrorCode errorCode) {
-		if (exception instanceof SystemException) {
-			final SystemException se = (SystemException) exception;
-			if (errorCode != null && errorCode != se.getErrorCode()) {
-				return new SystemException(exception.getMessage(), exception, errorCode);
-			}
-			return se;
-		} else {
-			return new SystemException(exception.getMessage(), exception, errorCode);
-		}
-	}
-
-	public static SystemException wrap(final Throwable exception) {
-		return wrap(exception, null);
-	}
-
 	private ErrorCode errorCode;
 	private final Map<String, Object> properties = new TreeMap<>();
 
@@ -49,11 +33,6 @@ public class SystemException extends Exception {
 
 	public SystemException(final Throwable cause, final ErrorCode errorCode) {
 		super(cause);
-		this.errorCode = errorCode;
-	}
-
-	private SystemException(final String message, final Throwable cause, final ErrorCode errorCode) {
-		super(message, cause);
 		this.errorCode = errorCode;
 	}
 
@@ -78,6 +57,11 @@ public class SystemException extends Exception {
 	public SystemException set(final String name, final Object value) {
 		properties.put(name, value);
 		return this;
+	}
+
+	@Override
+	public void printStackTrace() {
+		printStackTrace(System.out);
 	}
 
 	@Override

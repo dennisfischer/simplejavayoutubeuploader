@@ -33,14 +33,14 @@ import java.util.List;
 
 public class GoogleAuthUtil {
 
-	final                HashMap<Integer, String> authtokens           = new HashMap<>();
+	private final        HashMap<Integer, String> authtokens           = new HashMap<>();
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 
 	@Inject
 	RequestSigner requestSigner;
 
-	public String getAuthToken(final Account account) throws SystemException {
+	String getAuthToken(final Account account) throws SystemException {
 
 		if (!authtokens.containsKey(account.getId())) {
 
@@ -67,9 +67,9 @@ public class GoogleAuthUtil {
 		clientLoginRequestParams.add(new BasicNameValuePair("source", source));
 
 		final Request clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientLoginRequestParams, Charsets.UTF_8))
-																				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-																				.sign(requestSigner)
-																				.build();
+				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
+				.sign(requestSigner)
+				.build();
 
 		try (final Response response = clientLoginRequest.execute()) {
 			final HttpEntity clientLoginEntity = response.getEntity();
@@ -105,7 +105,7 @@ public class GoogleAuthUtil {
 		try {
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder
 					.encode(issueAuthTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
-																												  .name()));
+					.name()));
 
 			final Request tokenAuthRequest = new Request.Builder(tokenAuthUrl).get().build();
 
@@ -131,8 +131,8 @@ public class GoogleAuthUtil {
 
 		final Request issueAuthTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueAuthTokenParams, Charset
 				.forName("utf-8")))
-																					   .headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-																					   .build();
+				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
+				.build();
 		try (final Response response = issueAuthTokenRequest.execute()) {
 			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
 		}

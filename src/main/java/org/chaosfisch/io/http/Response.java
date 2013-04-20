@@ -53,13 +53,13 @@ public class Response implements AutoCloseable {
 		try {
 			return EntityUtils.toString(getEntity(), Charsets.UTF_8);
 		} catch (ParseException | IOException e) {
-			throw SystemException.wrap(e, HttpCode.IO_ERROR);
+			throw new SystemException(e, HttpCode.IO_ERROR);
 		}
 	}
 
 	public String getCurrentUrl() {
 		final HttpUriRequest currentReq = (HttpUriRequest) RequestUtil.context
-																	  .getAttribute(ExecutionContext.HTTP_REQUEST);
+				.getAttribute(ExecutionContext.HTTP_REQUEST);
 		final HttpHost currentHost = (HttpHost) RequestUtil.context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 		return currentReq.getURI().isAbsolute()
 			   ? currentReq.getURI().toString()

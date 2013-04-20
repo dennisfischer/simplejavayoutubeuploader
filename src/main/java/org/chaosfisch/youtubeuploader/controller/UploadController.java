@@ -740,11 +740,11 @@ public class UploadController {
 		}
 	}
 
-	public void movePlaylistToDropzone(final int model) {
+	void movePlaylistToDropzone(final int model) {
 		movePlaylist(model, playlistSourceList, playlistTargetList);
 	}
 
-	public void removePlaylistFromDropzone(final int model) {
+	void removePlaylistFromDropzone(final int model) {
 		movePlaylist(model, playlistTargetList, playlistSourceList);
 	}
 

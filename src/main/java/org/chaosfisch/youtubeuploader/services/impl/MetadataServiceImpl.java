@@ -158,7 +158,7 @@ public class MetadataServiceImpl implements MetadataService {
 						.getStatusLine());
 			}
 		} catch (final IOException e) {
-			throw SystemException.wrap(e, MetadataCode.REQUEST_IO_ERROR);
+			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
 		}
 	}
 
@@ -176,7 +176,8 @@ public class MetadataServiceImpl implements MetadataService {
 		}
 	}
 
-	private String extractor(final String input, final String search, @SuppressWarnings("SameParameterValue") final String end) {
+	@SuppressWarnings("SameParameterValue")
+	private String extractor(final String input, final String search, final String end) {
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
 				.length()));
 	}

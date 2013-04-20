@@ -441,7 +441,7 @@ public class UploadWorker extends Task<Void> {
 				start = end + 1;
 			}
 		} catch (final FileNotFoundException ex) {
-			throw SystemException.wrap(ex, UploadCode.FILE_NOT_FOUND).set("file", fileToUpload);
+			throw new SystemException(ex, UploadCode.FILE_NOT_FOUND).set("file", fileToUpload);
 		} catch (final IOException ex) {
 			if (currentStatus != STATUS.ABORTED) {
 				throw SystemException.wrap(ex, UploadCode.FILE_IO_ERROR);

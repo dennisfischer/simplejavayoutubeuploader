@@ -124,6 +124,7 @@ public final class RequestUtil {
 	 * @param buf
 	 * 		the byte array to use as a buffer
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		final int numRead;
 		if ((numRead = is.read(buf, off, len)) >= 0) {

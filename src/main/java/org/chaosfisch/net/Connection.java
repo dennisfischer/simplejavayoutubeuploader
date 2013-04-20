@@ -18,7 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Connection {
+class Connection {
 	private ObjectOutputStream output = null;
 	private ObjectInputStream  input  = null;
 	private final Socket   socket;
@@ -39,7 +39,7 @@ public class Connection {
 		}
 	}
 
-	public Msg getMsg() {
+	Msg getMsg() {
 		if (!closed) {
 			try {
 				return (Msg) input.readObject();

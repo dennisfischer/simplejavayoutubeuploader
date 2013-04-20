@@ -41,6 +41,7 @@ public class ExtendedPlaceholders {
 	 * @param number
 	 * 		for {number} modifications
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public ExtendedPlaceholders(final File file, final Playlist playlist, final int number) {
 		this.file = file;
 		this.playlist = playlist;

@@ -48,10 +48,10 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 			try {
 				return parseResponse(json);
 			} catch (final JsonSyntaxException e) {
-				throw SystemException.wrap(e, ThumbnailCode.UPLOAD_JSON).set("json", json);
+				throw new SystemException(e, ThumbnailCode.UPLOAD_JSON).set("json", json);
 			}
 		} catch (final IOException e) {
-			throw SystemException.wrap(e, ThumbnailCode.UPLOAD_RESPONSE);
+			throw new SystemException(e, ThumbnailCode.UPLOAD_RESPONSE);
 		}
 	}
 

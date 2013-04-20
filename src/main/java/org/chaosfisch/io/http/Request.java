@@ -90,6 +90,7 @@ public class Request {
 			return this;
 		}
 
+		@SuppressWarnings("SameParameterValue")
 		public Builder put(final HttpEntity entity) {
 			method = Method.PUT;
 			this.entity = entity;

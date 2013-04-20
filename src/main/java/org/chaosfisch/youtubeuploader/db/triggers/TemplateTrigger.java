@@ -27,8 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TemplateTrigger extends TriggerAdapter {
-	Integer firstId;
-	Integer lastId;
+	private Integer firstId;
+	private Integer lastId;
 
 	@Override
 	public void fire(final Connection conn, final ResultSet oldRow, final ResultSet newRow) throws SQLException {

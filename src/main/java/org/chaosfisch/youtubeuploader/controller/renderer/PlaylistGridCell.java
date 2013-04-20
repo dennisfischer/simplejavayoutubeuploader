@@ -21,12 +21,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.grid.GridCell;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class PlaylistGridCell extends GridCell<Playlist> {
 	private Image defaultThumbnail;
+	private final Logger logger = LoggerFactory.getLogger(PlaylistGridCell.class);
 
 	public PlaylistGridCell() {
 		itemProperty().addListener(new ChangeListener<Playlist>() {
@@ -84,7 +87,7 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 					try (InputStream inputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")) {
 						PlaylistGridCell.this.defaultThumbnail = new Image(inputStream);
 					} catch (IOException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+						logger.warn("Default thumbnail load error", e);
 					}
 				}
 				return defaultThumbnail;
