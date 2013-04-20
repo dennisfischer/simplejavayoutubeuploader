@@ -265,6 +265,12 @@ public class UploadController {
 	void addUpload(final ActionEvent event) {
 		final Upload upload = beanPathAdapter.getBean().getUpload();
 
+		if (monetizePartner.isSelected()) {
+			uploadPartnerController.toUpload(upload);
+		} else {
+			uploadMonetizationController.toUpload(upload);
+		}
+
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
 		command.upload = upload;
 		command.account = uploadAccount.getValue();

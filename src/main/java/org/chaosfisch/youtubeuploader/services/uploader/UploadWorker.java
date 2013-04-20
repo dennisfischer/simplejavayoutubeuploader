@@ -27,7 +27,9 @@ import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
+import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.TagParser;
+import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
@@ -47,6 +49,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -319,7 +323,19 @@ public class UploadWorker extends Task<Void> {
 		playlistAction();
 		enddirAction();
 		browserAction();
+		logfileAction();
 		currentStatus = STATUS.DONE;
+	}
+
+	private void logfileAction() {
+		try {
+			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/SimpleJavuploads/"));
+			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), GsonHelper.toJSON(upload)
+					.getBytes(Charsets.UTF_8));
+		} catch (IOException e) {
+			// TODO Log this exception - still unclear if it should get pushed up
+			e.printStackTrace();
+		}
 	}
 
 	private void browserAction() {
@@ -419,7 +435,6 @@ public class UploadWorker extends Task<Void> {
 					case 200:
 						throw new SystemException(UploadCode.UPLOAD_REPONSE_200);
 					case 201:
-
 						final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
 							@Override
 							public InputStream getInput() throws IOException {
@@ -444,7 +459,7 @@ public class UploadWorker extends Task<Void> {
 			throw new SystemException(ex, UploadCode.FILE_NOT_FOUND).set("file", fileToUpload);
 		} catch (final IOException ex) {
 			if (currentStatus != STATUS.ABORTED) {
-				throw SystemException.wrap(ex, UploadCode.FILE_IO_ERROR);
+				throw new SystemException(ex, UploadCode.FILE_IO_ERROR);
 			}
 		}
 	}

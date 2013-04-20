@@ -56,10 +56,9 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
 		final Request request = new Request.Builder(upload.getUploadurl()).put(null)
-																		  .headers(ImmutableMap.of("Content-Range", "bytes */*"))
-																		  .sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao
-																				  .fetchOneAccountByUpload(upload)))
-																		  .build();
+				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)))
+				.build();
 
 		try (final Response response = request.execute()) {
 
@@ -93,7 +92,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			return resumeInfo;
 
 		} catch (final IOException e) {
-			throw SystemException.wrap(e, ResumeCode.IO_ERROR);
+			throw new SystemException(e, ResumeCode.IO_ERROR);
 		}
 	}
 

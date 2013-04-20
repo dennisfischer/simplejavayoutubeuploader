@@ -198,47 +198,11 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	private void changeMetadata(final String content) throws IOException {
-		Integer thumbnailId = null;
-		try {
-			if (upload.getThumbnail() != null && !upload.getThumbnail().isEmpty()) {
-				thumbnailId = thumbnailService.upload(content, upload.getThumbnail(), upload.getVideoid());
-			}
-		} catch (final SystemException ex) {
-			if (ex.getErrorCode() instanceof ThumbnailCode) {
-				logger.warn("Thumbnail not set", ex);
-			} else {
-				logger.warn("Unknown exception", ex);
-			}
-		}
 
 		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<>();
 
-		if (thumbnailId != null) {
-			postMetaDataParams.add(new BasicNameValuePair("still_id", "0"));
-			postMetaDataParams.add(new BasicNameValuePair("still_id_custom_thumb_version", thumbnailId.toString()));
-		} else {
-			postMetaDataParams.add(new BasicNameValuePair("still_id", "2"));
-			postMetaDataParams.add(new BasicNameValuePair("still_id_custom_thumb_version", ""));
-		}
-
-		if (upload.getDateOfRelease() != null) {
-			if (upload.getDateOfRelease().after(Calendar.getInstance().getTime())) {
-				final Calendar calendar = upload.getDateOfRelease();
-
-				final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
-				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-				postMetaDataParams.add(new BasicNameValuePair("publish_time", dateFormat.format(calendar.getTime())));
-				postMetaDataParams.add(new BasicNameValuePair("publish_timezone", "UTC"));
-				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
-
-				if (upload.getMessage() != null && !upload.getMessage().isEmpty()) {
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_custom_message", upload.getMessage()));
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_facebook", boolConverter(upload.getFacebook())));
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_twitter", boolConverter(upload.getTwitter())));
-				}
-			}
-		}
+		getMetadataThumbnail(content, postMetaDataParams);
+		getMetadataDateOfRelease(postMetaDataParams);
 
 		if (upload.getMonetizeClaim()) {
 			postMetaDataParams.add(new BasicNameValuePair("enable_monetization", boolConverter(true)));
@@ -251,7 +215,6 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("paid_product", boolConverter(upload.getMonetizeProduct())));
 				postMetaDataParams.add(new BasicNameValuePair("allow_syndication", boolConverter(upload.getMonetizeSyndication() == Syndication.GLOBAL)));
 			}
-			// {{ PARTNER
 			if (upload.getMonetizePartner()) {
 				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getMonetizeClaimtype() == ClaimType.AUDIO_VISUAL
 																			? "B"
@@ -278,26 +241,23 @@ public class MetadataServiceImpl implements MetadataService {
 				}
 				postMetaDataParams.add(new BasicNameValuePair("usage_policy", usagePolicy));
 
-				final String prefix = upload.getMonetizeAsset() == Asset.WEB
-									  ? "web_"
-									  : upload.getMonetizeAsset() == Asset.TV ? "tv_" : "movie_";
+				final String assetName = upload.getMonetizeAsset().name().toLowerCase(Locale.getDefault());
 
-				postMetaDataParams.add(new BasicNameValuePair("asset_type", prefix.substring(0, prefix.length() - 1)));
-				postMetaDataParams.add(new BasicNameValuePair(prefix + "custom_id", upload.getMonetizeId().isEmpty()
-																					? upload.getVideoid()
-																					: upload.getMonetizeId()));
+				postMetaDataParams.add(new BasicNameValuePair("asset_type", assetName));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_custom_id", upload.getMonetizeId().isEmpty()
+																						? upload.getVideoid()
+																						: upload.getMonetizeId()));
 
-				postMetaDataParams.add(new BasicNameValuePair(prefix + "notes", upload.getMonetizeNotes()));
-				postMetaDataParams.add(new BasicNameValuePair(prefix + "tms_id", upload.getMonetizeTmsid()));
-				postMetaDataParams.add(new BasicNameValuePair(prefix + "isan", upload.getMonetizeIsan()));
-				postMetaDataParams.add(new BasicNameValuePair(prefix + "eidr", upload.getMonetizeEidr()));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_notes", upload.getMonetizeNotes()));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_tms_id", upload.getMonetizeTmsid()));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_isan", upload.getMonetizeIsan()));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_eidr", upload.getMonetizeEidr()));
 
 				if (upload.getMonetizeAsset() != Asset.TV) {
 					// WEB + MOVIE ONLY
-					postMetaDataParams.add(new BasicNameValuePair(prefix + "title", !upload.getMonetizeTitle().isEmpty()
-																					? upload.getMonetizeTitle()
-																					: upload.getTitle()));
-					postMetaDataParams.add(new BasicNameValuePair(prefix + "description", upload.getMonetizeDescription()));
+					postMetaDataParams.add(new BasicNameValuePair(assetName + "_title", !upload.getMonetizeTitle()
+							.isEmpty() ? upload.getMonetizeTitle() : upload.getTitle()));
+					postMetaDataParams.add(new BasicNameValuePair(assetName + "_description", upload.getMonetizeDescription()));
 				} else {
 					// TV ONLY
 					postMetaDataParams.add(new BasicNameValuePair("show_title", upload.getMonetizeTitle()));
@@ -306,7 +266,6 @@ public class MetadataServiceImpl implements MetadataService {
 					postMetaDataParams.add(new BasicNameValuePair("episode_nb", upload.getMonetizeEpisodeNb()));
 				}
 			}
-			// }} PARTNER
 		}
 
 		final StringBuilder modified = new StringBuilder();
@@ -324,6 +283,50 @@ public class MetadataServiceImpl implements MetadataService {
 		final Request request = new Request.Builder(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
 		try (Response response = request.execute()) {
+		}
+	}
+
+	private void getMetadataDateOfRelease(final List<BasicNameValuePair> postMetaDataParams) {
+		if (upload.getDateOfRelease() != null) {
+			if (upload.getDateOfRelease().after(Calendar.getInstance().getTime())) {
+				final Calendar calendar = upload.getDateOfRelease();
+
+				final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
+				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+				postMetaDataParams.add(new BasicNameValuePair("publish_time", dateFormat.format(calendar.getTime())));
+				postMetaDataParams.add(new BasicNameValuePair("publish_timezone", "UTC"));
+				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
+
+				if (upload.getMessage() != null && !upload.getMessage().isEmpty()) {
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_custom_message", upload.getMessage()));
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_facebook", boolConverter(upload.getFacebook())));
+					postMetaDataParams.add(new BasicNameValuePair("creator_share_twitter", boolConverter(upload.getTwitter())));
+				}
+			}
+		}
+	}
+
+	private void getMetadataThumbnail(final String content, final List<BasicNameValuePair> postMetaDataParams) {
+		Integer thumbnailId = null;
+		try {
+			if (upload.getThumbnail() != null && !upload.getThumbnail().isEmpty()) {
+				thumbnailId = thumbnailService.upload(content, upload.getThumbnail(), upload.getVideoid());
+			}
+		} catch (final SystemException ex) {
+			if (ex.getErrorCode() instanceof ThumbnailCode) {
+				logger.warn("Thumbnail not set", ex);
+			} else {
+				logger.warn("Unknown exception", ex);
+			}
+		}
+
+		if (thumbnailId != null) {
+			postMetaDataParams.add(new BasicNameValuePair("still_id", "0"));
+			postMetaDataParams.add(new BasicNameValuePair("still_id_custom_thumb_version", thumbnailId.toString()));
+		} else {
+			postMetaDataParams.add(new BasicNameValuePair("still_id", "2"));
+			postMetaDataParams.add(new BasicNameValuePair("still_id_custom_thumb_version", ""));
 		}
 	}
 }

@@ -10,6 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.services.impl;
 
+import com.google.common.io.Files;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.EnddirService;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class EnddirServiceImpl implements EnddirService {
@@ -42,13 +44,15 @@ public class EnddirServiceImpl implements EnddirService {
 				break;
 			}
 		}
-
-		if (endFile != null && fileToMove.renameTo(endFile)) {
-			logger.debug("Done moving: {}", endFile.getAbsolutePath());
-		} else {
-			logger.debug("Failed moving file to {}", endFile);
+		if (endFile == null) {
+			return;
 		}
 
+		try {
+			Files.move(fileToMove, endFile);
+		} catch (IOException e) {
+			logger.debug("Failed moving file to {}", endFile);
+		}
 	}
 
 	String _getIncrementedFileName(final String fileName, final int increment) {

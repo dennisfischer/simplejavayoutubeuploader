@@ -67,7 +67,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			logger.debug("Video added to playlist!");
 			return response.getContent();
 		} catch (final IOException e) {
-			throw SystemException.wrap(e, PlaylistCode.ADD_VIDEO_IO_ERROR);
+			throw new SystemException(e, PlaylistCode.ADD_VIDEO_IO_ERROR);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			logger.info("Added playlist to youtube");
 			return response.getContent();
 		} catch (final IOException e) {
-			throw SystemException.wrap(e, PlaylistCode.ADD_PLAYLIST_IO_ERROR);
+			throw new SystemException(e, PlaylistCode.ADD_PLAYLIST_IO_ERROR);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 				data.put(account, _parsePlaylistsFeed(account, response.getContent()));
 				_cleanPlaylists(account);
 			} catch (final IOException e) {
-				throw SystemException.wrap(e, PlaylistCode.SYNCH_IO_ERROR);
+				throw new SystemException(e, PlaylistCode.SYNCH_IO_ERROR);
 			}
 		}
 		logger.info("Playlists synchronized");
