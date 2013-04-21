@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +58,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 	private final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
+	private final HashMap<Integer, QueueUploadCell> cells = new HashMap<>();
+
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
 		return new QueueUploadCell();
@@ -67,16 +70,13 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		Upload upload;
 		Parent progressNode;
 
-		public QueueUploadCell() {
-			super();
-			eventBus.register(this);
-		}
-
 		@Override
 		protected void updateItem(final Upload item, final boolean empty) {
 			super.updateItem(item, empty);
 			if (item == null) {
 				return;
+			} else if (upload == null) {
+				eventBus.register(this);
 			}
 			upload = item;
 
@@ -149,6 +149,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		public void onUploadProgress(final UploadProgressEvent uploadProgress) {
 
 			if (!uploadProgress.getUpload().equals(upload)) {
+				System.out.println(uploadProgress.getUpload().getId() + " vs " + upload.getId());
 				return;
 			}
 			if (progressNode instanceof ProgressNodeRenderer) {

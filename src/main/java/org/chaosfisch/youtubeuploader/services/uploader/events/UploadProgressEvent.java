@@ -16,7 +16,7 @@ public class UploadProgressEvent {
 	private       long    diffBytes;
 	private       long    diffTime;
 	private final long    fileSize;
-	private final Upload  upload;
+	private       Upload  upload;
 	private       long    time;
 	private       long    totalBytesUploaded;
 	public        boolean failed;
@@ -60,5 +60,9 @@ public class UploadProgressEvent {
 	public void setTime(final long diffTime) {
 		this.diffTime = diffTime;
 		time += diffTime;
+	}
+
+	public void setUpload(final Upload upload) {
+		this.upload = upload;
 	}
 }

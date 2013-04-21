@@ -48,9 +48,10 @@ import java.util.regex.Pattern;
 
 public class MetadataServiceImpl implements MetadataService {
 
-	private static final String METADATA_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
-	private static final String REDIRECT_URL        = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	private final        Logger logger              = LoggerFactory.getLogger(getClass());
+	private static final String METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
+	private final        Logger logger                         = LoggerFactory.getLogger(getClass());
 
 	@Inject
 	private RequestSigner    requestSigner;
@@ -138,9 +139,9 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	@Override
-	public String submitMetadata(final String atomData, final File fileToUpload, final Account account) throws SystemException {
+	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
-		final Request request = new Request.Builder(METADATA_UPLOAD_URL).post(new StringEntity(atomData, Charsets.UTF_8))
+		final Request request = new Request.Builder(METADATA_CREATE_RESUMEABLE_URL).post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
 				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
 				.build();
@@ -158,6 +159,24 @@ public class MetadataServiceImpl implements MetadataService {
 						.getStatusLine());
 			}
 		} catch (final IOException e) {
+			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
+		}
+	}
+
+	@Override
+	public void updateMetaData(final String atomData, final String videoId, final Account account) throws SystemException {
+		final Request request = new Request.Builder(METADATA_UPDATE_URL.concat("/")
+				.concat(videoId)).put(new StringEntity(atomData, Charsets.UTF_8))
+				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;"))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+				.build();
+
+		try (final Response response = request.execute()) {
+			if (response.getStatusCode() != 200) {
+				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData)
+						.set("code", response.getStatusCode());
+			}
+		} catch (IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
 		}
 	}

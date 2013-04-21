@@ -19,7 +19,9 @@ import java.io.File;
 public interface MetadataService {
 	String atomBuilder(Upload upload);
 
-	String submitMetadata(String atomData, File fileToUpload, Account account) throws SystemException;
+	String createMetaData(String atomData, File fileToUpload, Account account) throws SystemException;
+
+	void updateMetaData(String atomData, String videoId, Account account) throws SystemException;
 
 	void activateBrowserfeatures(Upload upload);
 }

@@ -32,6 +32,7 @@ import org.chaosfisch.util.TagParser;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.EnddirService;
@@ -286,7 +287,7 @@ public class UploadWorker extends Task<Void> {
 
 		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
-		upload.setUploadurl(metadataService.submitMetadata(atomData, fileToUpload, uploadDao.fetchOneAccountByUpload(upload)));
+		upload.setUploadurl(metadataService.createMetaData(atomData, fileToUpload, uploadDao.fetchOneAccountByUpload(upload)));
 		uploadDao.update(upload);
 
 		// Log operation
@@ -307,6 +308,16 @@ public class UploadWorker extends Task<Void> {
 		}
 	}
 
+	@Subscribe
+	public void onUploadUpdated(final ModelUpdatedEvent modelUpdatedEvent) {
+		if (modelUpdatedEvent.getModel() instanceof Upload && upload.equals(modelUpdatedEvent.getModel())) {
+			upload = (Upload) modelUpdatedEvent.getModel();
+			if (uploadProgress != null) {
+				uploadProgress.setUpload(upload);
+			}
+		}
+	}
+
 	private void playlistAction() {
 		// Add video to playlist
 		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
@@ -323,8 +334,19 @@ public class UploadWorker extends Task<Void> {
 		playlistAction();
 		enddirAction();
 		browserAction();
+		updateUploadAction();
 		logfileAction();
 		currentStatus = STATUS.DONE;
+	}
+
+	private void updateUploadAction() {
+		String atomData = metadataService.atomBuilder(upload);
+		try {
+			metadataService.updateMetaData(atomData, upload.getVideoid(), uploadDao.fetchOneAccountByUpload(upload));
+		} catch (SystemException e) {
+			// TODO Log this exception - still unclear if it should get pushed up
+			e.printStackTrace();
+		}
 	}
 
 	private void logfileAction() {
