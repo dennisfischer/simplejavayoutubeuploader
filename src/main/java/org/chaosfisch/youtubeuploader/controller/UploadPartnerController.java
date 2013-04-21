@@ -17,7 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import org.chaosfisch.youtubeuploader.db.data.Asset;
@@ -41,16 +41,16 @@ public class UploadPartnerController {
 	private AnchorPane anchorPane;
 
 	@FXML
-	private ComboBox<Asset> monetizeAsset;
+	private ChoiceBox<Asset> monetizeAsset;
 
 	@FXML
 	private CheckBox monetizeClaim;
 
 	@FXML
-	private ComboBox<ClaimOption> monetizeClaimOption;
+	private ChoiceBox<ClaimOption> monetizeClaimOption;
 
 	@FXML
-	private ComboBox<ClaimType> monetizeClaimType;
+	private ChoiceBox<ClaimType> monetizeClaimType;
 
 	@FXML
 	private TextField monetizeDescription;
@@ -86,7 +86,7 @@ public class UploadPartnerController {
 	private TextField monetizeSeasonNb;
 
 	@FXML
-	private ComboBox<Syndication> monetizeSyndication;
+	private ChoiceBox<Syndication> monetizeSyndication;
 
 	@FXML
 	private TextField monetizeTMSID;

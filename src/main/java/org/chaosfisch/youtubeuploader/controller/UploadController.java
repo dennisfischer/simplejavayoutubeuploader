@@ -50,6 +50,7 @@ import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveTemplateCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateTemplateCommand;
 import org.chaosfisch.youtubeuploader.command.UploadControllerAddCommand;
+import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
 import org.chaosfisch.youtubeuploader.controller.renderer.PlaylistGridCell;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
@@ -85,7 +86,7 @@ public class UploadController {
 	private URL location;
 
 	@FXML
-	private ComboBox<Account> uploadAccount;
+	private ChoiceBox<Account> uploadAccount;
 
 	@FXML
 	private Button addUpload;
@@ -142,13 +143,13 @@ public class UploadController {
 	private Button saveTemplate;
 
 	@FXML
-	private ComboBox<Template> templates;
+	private ChoiceBox<Template> templates;
 
 	@FXML
-	private ComboBox<Category> uploadCategory;
+	private ChoiceBox<Category> uploadCategory;
 
 	@FXML
-	private ComboBox<Comment> uploadComment;
+	private ChoiceBox<Comment> uploadComment;
 
 	@FXML
 	private CheckBox uploadCommentvote;
@@ -169,13 +170,13 @@ public class UploadController {
 	private CheckBox uploadFacebook;
 
 	@FXML
-	private ComboBox<File> uploadFile;
+	private ChoiceBox<File> uploadFile;
 
 	@FXML
 	private GridPane uploadGrid;
 
 	@FXML
-	private ComboBox<License> uploadLicense;
+	private ChoiceBox<License> uploadLicense;
 
 	@FXML
 	private TextArea uploadMessage;
@@ -199,10 +200,10 @@ public class UploadController {
 	private CheckBox uploadTwitter;
 
 	@FXML
-	private ComboBox<Videoresponse> uploadVideoresponse;
+	private ChoiceBox<Videoresponse> uploadVideoresponse;
 
 	@FXML
-	private ComboBox<Visibility> uploadVisibility;
+	private ChoiceBox<Visibility> uploadVisibility;
 
 	@FXML
 	private TitledPane x2;
@@ -601,7 +602,7 @@ public class UploadController {
 	private void initCustomFactories() {
 		playlistSourcezone.setCellFactory(new PlaylistSourceCellFactory());
 		playlistTargetzone.setCellFactory(new PlaylistTargetCellFactory());
-		uploadAccount.setConverter(new AccountListViewConverter());
+		uploadAccount.setConverter(new AccountStringConverter());
 		uploadFile.setConverter(new UploadFileListViewConverter());
 		idProperty.addListener(new UploadIdInvalidationListener());
 		try {
@@ -661,7 +662,7 @@ public class UploadController {
 		release.disableProperty()
 				.bind(uploadVisibility.getSelectionModel()
 						.selectedIndexProperty()
-						.isNotEqualTo(2)
+						.isNotEqualTo(3)
 						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
 		uploadMessage.disableProperty().bind(release.disableProperty());
 		uploadFacebook.disableProperty().bind(release.disableProperty());
@@ -679,20 +680,16 @@ public class UploadController {
 
 		previewTitle.textProperty().bindBidirectional(uploadTitle.textProperty(), new PreviewTitleStringConverter());
 
-		beanPathAdapter.bindBidirectional("template.defaultdir", fileChooser.initialDirectoryProperty(), File.class);
-		beanPathAdapter.bindBidirectional("template.defaultdir", directoryChooser.initialDirectoryProperty(), File.class);
-
-		beanPathAdapter.bindBidirectional("template.commentvote", uploadCommentvote.selectedProperty());
-
 		final SimpleObjectProperty<File> defaultDirProperty = new SimpleObjectProperty<>();
 		uploadDefaultdir.textProperty().bindBidirectional(defaultDirProperty, new DefaultDirStringConverter());
 		final SimpleObjectProperty<File> enddirProperty = new SimpleObjectProperty<>();
 		uploadEnddir.textProperty().bindBidirectional(enddirProperty, new DefaultDirStringConverter());
 
+		beanPathAdapter.bindBidirectional("template.defaultdir", fileChooser.initialDirectoryProperty(), File.class);
+		beanPathAdapter.bindBidirectional("template.defaultdir", directoryChooser.initialDirectoryProperty(), File.class);
+		beanPathAdapter.bindBidirectional("template.commentvote", uploadCommentvote.selectedProperty());
 		beanPathAdapter.bindBidirectional("template.defaultdir", defaultDirProperty, File.class);
 		beanPathAdapter.bindBidirectional("template.enddir", enddirProperty, File.class);
-		beanPathAdapter.bindBidirectional("upload.enddir", enddirProperty, File.class);
-
 		beanPathAdapter.bindBidirectional("template.description", uploadDescription.textProperty());
 		beanPathAdapter.bindBidirectional("template.embed", uploadEmbed.selectedProperty());
 		beanPathAdapter.bindBidirectional("template.mobile", uploadMobile.selectedProperty());
@@ -700,13 +697,11 @@ public class UploadController {
 		beanPathAdapter.bindBidirectional("template.keywords", uploadTags.textProperty());
 		beanPathAdapter.bindBidirectional("template.title", uploadTitle.textProperty());
 		beanPathAdapter.bindBidirectional("template.thumbnail", uploadThumbnail.textProperty());
-		// *****************************************************************************************
 		beanPathAdapter.bindBidirectional("template.category", uploadCategory.valueProperty(), Category.class);
 		beanPathAdapter.bindBidirectional("template.comment", uploadComment.valueProperty(), Comment.class);
 		beanPathAdapter.bindBidirectional("template.visibility", uploadVisibility.valueProperty(), Visibility.class);
 		beanPathAdapter.bindBidirectional("template.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
 		beanPathAdapter.bindBidirectional("template.license", uploadLicense.valueProperty(), License.class);
-		// *****************************************************************************************
 		beanPathAdapter.bindBidirectional("template.monetizePartner", monetizePartner.selectedProperty());
 		// *****************************************************************************************
 		// *****************************************************************************************
@@ -721,18 +716,16 @@ public class UploadController {
 		beanPathAdapter.bindBidirectional("upload.thumbnail", uploadThumbnail.textProperty());
 		beanPathAdapter.bindBidirectional("upload.dateOfStart", started.valueProperty(), Calendar.class);
 		beanPathAdapter.bindBidirectional("upload.dateOfRelease", release.valueProperty(), Calendar.class);
-		// *****************************************************************************************
+		beanPathAdapter.bindBidirectional("upload.enddir", enddirProperty, File.class);
 		beanPathAdapter.bindBidirectional("upload.file", uploadFile.valueProperty(), File.class);
 		beanPathAdapter.bindBidirectional("upload.category", uploadCategory.valueProperty(), Category.class);
 		beanPathAdapter.bindBidirectional("upload.comment", uploadComment.valueProperty(), Comment.class);
 		beanPathAdapter.bindBidirectional("upload.visibility", uploadVisibility.valueProperty(), Visibility.class);
 		beanPathAdapter.bindBidirectional("upload.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
 		beanPathAdapter.bindBidirectional("upload.license", uploadLicense.valueProperty(), License.class);
-		// *****************************************************************************************
 		beanPathAdapter.bindBidirectional("upload.facebook", uploadFacebook.selectedProperty());
 		beanPathAdapter.bindBidirectional("upload.twitter", uploadTwitter.selectedProperty());
 		beanPathAdapter.bindBidirectional("upload.message", uploadMessage.textProperty());
-		// *****************************************************************************************
 		beanPathAdapter.bindBidirectional("upload.monetizePartner", monetizePartner.selectedProperty());
 
 		beanPathAdapter.bindBidirectional("upload.id", idProperty);
@@ -741,10 +734,10 @@ public class UploadController {
 
 	private void initSelection() {
 
-		final ComboBox<?>[] controls = new ComboBox[] {uploadVisibility, uploadComment, uploadLicense,
-													   uploadVideoresponse, uploadAccount, uploadCategory, templates};
+		final ChoiceBox<?>[] controls = new ChoiceBox[] {uploadVisibility, uploadComment, uploadLicense,
+														 uploadVideoresponse, uploadAccount, uploadCategory, templates};
 
-		for (final ComboBox<?> comboBox : controls) {
+		for (final ChoiceBox<?> comboBox : controls) {
 			comboBox.getSelectionModel().selectFirst();
 		}
 	}
@@ -908,18 +901,6 @@ public class UploadController {
 		@Override
 		public File fromString(final String string) {
 			throw new RuntimeException("This method is not implemented: uploadFile is readonly!");
-		}
-	}
-
-	private final static class AccountListViewConverter extends StringConverter<Account> {
-		@Override
-		public String toString(final Account arg0) {
-			return arg0.getName();
-		}
-
-		@Override
-		public Account fromString(final String arg0) {
-			throw new UnsupportedClassVersionError();
 		}
 	}
 

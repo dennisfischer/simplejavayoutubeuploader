@@ -26,9 +26,11 @@ import javafx.scene.input.TransferMode;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
+import org.chaosfisch.youtubeuploader.ApplicationData;
+import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
-import org.chaosfisch.youtubeuploader.db.generated.tables.daos.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
@@ -74,6 +76,8 @@ public class ViewController {
 		final CheckBox playlistPrivate = new CheckBox();
 		final TextArea summary = new TextArea();
 		final ChoiceBox<Account> accounts = new ChoiceBox<>();
+		accounts.setMaxWidth(Double.MAX_VALUE);
+		accounts.setConverter(new AccountStringConverter());
 		accounts.setItems(FXCollections.observableList(accountDao.findAll()));
 		accounts.getSelectionModel().selectFirst();
 
@@ -120,8 +124,6 @@ public class ViewController {
 	@Inject
 	private TemplateDao      templateDao;
 
-	// @Inject private RemoteClient remoteClient;
-
 	public static final Template standardTemplate;
 
 	static {
@@ -137,7 +139,7 @@ public class ViewController {
 		standardTemplate.setNumber(0);
 		standardTemplate.setFacebook(false);
 		standardTemplate.setTwitter(false);
-		standardTemplate.setDefaultdir(new File(System.getProperty("user.home")));
+		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
 		standardTemplate.setMonetizeClaim(false);
 		standardTemplate.setMonetizeOverlay(false);
 		standardTemplate.setMonetizeTrueview(false);
@@ -198,7 +200,7 @@ public class ViewController {
 				try {
 					playlistService.addYoutubePlaylist(playlist);
 				} catch (final SystemException e) {
-					e.printStackTrace();
+					e.printStackTrace(); //TODO Handle this exception
 				}
 				myDialog.close();
 			}

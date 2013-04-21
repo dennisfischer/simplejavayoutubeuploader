@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.AnchorPane;
 import org.chaosfisch.youtubeuploader.db.data.Syndication;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
@@ -41,7 +41,7 @@ public class UploadMonetizationController {
 	private CheckBox monetizeProduct;
 
 	@FXML
-	private ComboBox<Syndication> monetizeSyndication;
+	private ChoiceBox<Syndication> monetizeSyndication;
 
 	@FXML
 	private CheckBox monetizeTrueView;

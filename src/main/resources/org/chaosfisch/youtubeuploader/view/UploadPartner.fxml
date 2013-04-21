@@ -22,8 +22,8 @@
         <CheckBox fx:id="monetizeClaim" disable="false" mnemonicParsing="false" prefWidth="-1.0"
                   text="%label.monetizeClaim" visible="true" GridPane.columnIndex="0" GridPane.columnSpan="2"
                   GridPane.rowIndex="0"/>
-        <ComboBox fx:id="monetizeClaimOption" disable="false" maxWidth="1.7976931348623157E308" prefWidth="-1.0"
-                  visible="true" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1"/>
+        <ChoiceBox fx:id="monetizeClaimOption" disable="false" maxWidth="1.7976931348623157E308" prefWidth="-1.0"
+                   visible="true" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1"/>
         <Label id="labelContentInformation" disable="false" text="%label.monetizeContentInformation" visible="true"
                GridPane.columnIndex="0" GridPane.rowIndex="7"/>
         <Label id="labelTMSID" disable="false" text="%label.monetizeTMSID" visible="true" GridPane.columnIndex="0"
@@ -78,10 +78,10 @@
                GridPane.columnIndex="2" GridPane.rowIndex="11"/>
         <TextField fx:id="monetizeTitleEpisode" disable="false" maxHeight="-1.0" prefWidth="-1.0" visible="true"
                    GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="12"/>
-        <ComboBox fx:id="monetizeAsset" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                  GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
-        <ComboBox fx:id="monetizeClaimType" disable="false" maxWidth="1.7976931348623157E308" visible="true"
-                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
+        <ChoiceBox fx:id="monetizeAsset" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
+        <ChoiceBox fx:id="monetizeClaimType" disable="false" maxWidth="1.7976931348623157E308" visible="true"
+                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
         <columnConstraints>
             <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0"/>
             <ColumnConstraints hgrow="SOMETIMES"/>
@@ -108,7 +108,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
         </rowConstraints>
         <Label text="%label.monetizeContentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
-        <ComboBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
-                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="15"/>
+        <ChoiceBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
+                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="15"/>
     </GridPane>
 </AnchorPane>

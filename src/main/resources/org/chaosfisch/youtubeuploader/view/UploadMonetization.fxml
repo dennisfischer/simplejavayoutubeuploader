@@ -15,19 +15,13 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane fx:id="anchorPane" maxWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.chaosfisch.youtubeuploader.controller.UploadMonetizationController">
-    <GridPane id="GridPane" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid">
+    <GridPane id="GridPane" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0"/>
         </columnConstraints>
-        <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-        </rowConstraints>
         <CheckBox fx:id="monetizeOverlay" allowIndeterminate="false" indeterminate="false" mnemonicParsing="false"
                   prefWidth="-1.0" text="%label.monetizeOverlay" GridPane.columnIndex="0"
                   GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
@@ -36,7 +30,14 @@
         <CheckBox fx:id="monetizeProduct" mnemonicParsing="false" prefWidth="-1.0" text="%label.monetizeProduct"
                   GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
         <Label text="%label.monetizeContentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <ComboBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
-                  GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3"/>
+        <ChoiceBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
+                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT"
+                   GridPane.rowIndex="3"/>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
     </GridPane>
 </AnchorPane>
