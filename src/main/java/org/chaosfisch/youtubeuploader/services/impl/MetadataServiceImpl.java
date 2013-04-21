@@ -51,7 +51,7 @@ public class MetadataServiceImpl implements MetadataService {
 	private static final String METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	private final        Logger logger                         = LoggerFactory.getLogger(getClass());
+	private final        Logger logger                         = LoggerFactory.getLogger(MetadataServiceImpl.class);
 
 	@Inject
 	private RequestSigner    requestSigner;
@@ -182,16 +182,15 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) {
+	public void activateBrowserfeatures(final Upload upload) throws SystemException {
 		this.upload = upload;
 		try {
 			final String googleContent = authTokenHelper.getLoginContent(uploadDao.fetchOneAccountByUpload(upload), String
 					.format(REDIRECT_URL, upload.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent));
-		} catch (final IOException | SystemException e) {
-			// TODO Log this exception - still unclear if it should get pushed up
-			e.printStackTrace();
+		} catch (final IOException e) {
+			throw new SystemException(e, MetadataCode.BROWSER_IO_ERROR);
 		}
 	}
 
@@ -301,6 +300,7 @@ public class MetadataServiceImpl implements MetadataService {
 
 		final Request request = new Request.Builder(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
+		//noinspection EmptyTryBlock
 		try (Response response = request.execute()) {
 		}
 	}

@@ -186,7 +186,6 @@ public class Uploader {
 	@Subscribe
 	public void onUploadJobDoneAndFailed(final UploadProgressEvent uploadProgressEvent) {
 		if (uploadProgressEvent.done || uploadProgressEvent.failed) {
-			logger.info("Status: {}", uploadProgressEvent.status);
 			uploadFinished(uploadProgressEvent.getUpload());
 		}
 	}

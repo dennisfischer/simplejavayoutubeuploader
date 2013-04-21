@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.records;
 @SuppressWarnings({"all", "unchecked"})
 public class UploadRecord extends org.jooq.impl.UpdatableRecordImpl<UploadRecord> {
 
-	private static final long serialVersionUID = -1958275109;
+	private static final long serialVersionUID = -1572753873;
 
 	/** Setter for <code>PUBLIC.UPLOAD.ID</code>. */
 	public void setId(Integer value) {
@@ -539,6 +539,16 @@ public class UploadRecord extends org.jooq.impl.UpdatableRecordImpl<UploadRecord
 	/** Getter for <code>PUBLIC.UPLOAD.MONETIZE_PARTNER</code>. */
 	public Boolean getMonetizePartner() {
 		return (Boolean) getValue(51);
+	}
+
+	/** Setter for <code>PUBLIC.UPLOAD.STATUS</code>. */
+	public void setStatus(String value) {
+		setValue(52, value);
+	}
+
+	/** Getter for <code>PUBLIC.UPLOAD.STATUS</code>. */
+	public String getStatus() {
+		return (String) getValue(52);
 	}
 
 	// -------------------------------------------------------------------------

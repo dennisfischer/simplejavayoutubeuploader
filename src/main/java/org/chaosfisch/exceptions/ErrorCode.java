@@ -7,8 +7,11 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.exceptions;
 
 public interface ErrorCode {
 	int getNumber();
+
+	String name();
 }

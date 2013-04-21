@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated;
 @SuppressWarnings({"all", "unchecked"})
 public class Public extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = 1069005130;
+	private static final long serialVersionUID = 1222378026;
 
 	/** The singleton instance of <code>PUBLIC</code> */
 	public static final Public PUBLIC = new Public();
@@ -52,6 +52,6 @@ public class Public extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util
 				.Arrays
-				.<org.jooq.Table<?>>asList(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT, org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE, org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD, org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST);
+				.<org.jooq.Table<?>>asList(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT, org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE, org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD);
 	}
 }

@@ -200,7 +200,7 @@ public class ViewController {
 				try {
 					playlistService.addYoutubePlaylist(playlist);
 				} catch (final SystemException e) {
-					e.printStackTrace(); //TODO Handle this exception
+					e.printStackTrace(); //TODO Handle this exception - show some kind of error dialog
 				}
 				myDialog.close();
 			}

@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
 import jfxtras.labs.dialogs.MonologFXButton;
+import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
@@ -41,6 +42,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -111,8 +113,10 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.onAction(new QueueCellHyperlinkHandler(item))
 						.build();
 			} else if (item.getFailed()) {
+				final String status = TextUtil.getString(item.getStatus().toLowerCase(Locale.getDefault()));
+
 				progressNode = LabelBuilder.create()
-						.text(resources.getString("queuetable.status.failed"))
+						.text(status)
 						.styleClass("queueCellFailedLabel")
 						.prefWidth(500)
 						.build();

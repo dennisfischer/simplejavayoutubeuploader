@@ -299,4 +299,9 @@ public class UploadDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuploa
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByMonetizePartner(Boolean... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.MONETIZE_PARTNER, values);
 	}
+
+	/** Fetch records that have <code>STATUS IN (values)</code> */
+	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByStatus(String... values) {
+		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.STATUS, values);
+	}
 }

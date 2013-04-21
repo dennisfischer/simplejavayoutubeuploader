@@ -21,7 +21,6 @@ public class UploadProgressEvent {
 	private       long    totalBytesUploaded;
 	public        boolean failed;
 	public        boolean done;
-	public        String  status;
 
 	public UploadProgressEvent(final Upload upload, final long fileSize) {
 		this.upload = upload;

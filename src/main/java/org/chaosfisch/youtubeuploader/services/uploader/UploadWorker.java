@@ -18,6 +18,7 @@ import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import javafx.concurrent.Task;
+import org.chaosfisch.exceptions.ErrorCode;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.auth.AuthCode;
 import org.chaosfisch.google.auth.GoogleAuthUtil;
@@ -59,7 +60,17 @@ public class UploadWorker extends Task<Void> {
 
 	/** Status enum for handling control flow */
 	protected enum STATUS {
-		ABORTED, DONE, FAILED, FAILED_FILE, FAILED_META, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
+		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD, POSTPROCESS_BROWSER;
+		private ErrorCode errorCode;
+
+		private ErrorCode getErrorCode() {
+			return errorCode;
+		}
+
+		private STATUS setErrorCode(final ErrorCode errorCode) {
+			this.errorCode = errorCode;
+			return this;
+		}
 	}
 
 	private static final int    DEFAULT_BUFFER_SIZE = 65536;
@@ -113,10 +124,8 @@ public class UploadWorker extends Task<Void> {
 		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
 		 * fehlschlagen und muss wiederholbar sein.
 		 */
-		while (!(currentStatus.equals(STATUS.ABORTED) || currentStatus.equals(STATUS.DONE) || currentStatus.equals(STATUS.FAILED) || currentStatus
-				.equals(STATUS.FAILED_FILE) || currentStatus.equals(STATUS.FAILED_META)) && resumeableManager.canContinue() && !isCancelled() && !Thread
-				.currentThread()
-				.isInterrupted()) {
+		while (!currentStatus.equals(STATUS.ABORTED) && !currentStatus.equals(STATUS.DONE) && !currentStatus.equals(STATUS.FAILED) && resumeableManager
+				.canContinue() && !isCancelled() && !Thread.currentThread().isInterrupted()) {
 			try {
 
 				switch (currentStatus) {
@@ -139,14 +148,23 @@ public class UploadWorker extends Task<Void> {
 						// Schritt 4: Postprocessing
 						postprocess();
 						break;
+					case POSTPROCESS_BROWSER:
+						postprocessBrowser();
+						break;
 					default:
 						break;
 				}
 				resumeableManager.setRetries(0);
 			} catch (final SystemException e) {
 				if (e.getErrorCode() instanceof MetadataCode) {
-					logger.warn("MetadataException - upload aborted", e);
-					currentStatus = STATUS.FAILED_META;
+					if (e.getErrorCode().equals(MetadataCode.BAD_REQUEST)) {
+						logger.warn("Bad request", e);
+						currentStatus = STATUS.FAILED.setErrorCode(MetadataCode.BAD_REQUEST);
+					} else {
+						logger.warn("Metadata IO error", e);
+						resumeableManager.setRetries(resumeableManager.getRetries() + 1);
+						resumeableManager.delay();
+					}
 				} else if (e.getErrorCode() instanceof AuthCode) {
 					logger.warn("AuthException", e);
 					resumeableManager.setRetries(resumeableManager.getRetries() + 1);
@@ -154,7 +172,13 @@ public class UploadWorker extends Task<Void> {
 				} else if (e.getErrorCode() instanceof UploadCode) {
 					if (e.getErrorCode().equals(UploadCode.FILE_NOT_FOUND)) {
 						logger.warn("File not found - upload failed", e);
-						currentStatus = STATUS.FAILED_FILE;
+						currentStatus = STATUS.FAILED.setErrorCode(UploadCode.FILE_NOT_FOUND);
+					} else if (e.getErrorCode().equals(UploadCode.LOGFILE_IO_ERROR)) {
+						logger.warn("Logfile IO Error", e);
+					} else if (e.getErrorCode().equals(UploadCode.PLAYLIST_IO_ERROR)) {
+						logger.warn("Playlist IO Error", e);
+					} else if (e.getErrorCode().equals(UploadCode.UPDATE_METADATA_IO_ERROR)) {
+						logger.warn("Update Metadata IO Error", e);
 					} else {
 						logger.warn("UploadException", e);
 						currentStatus = STATUS.RESUMEINFO;
@@ -163,6 +187,39 @@ public class UploadWorker extends Task<Void> {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected void done() {
+		super.done();
+		try {
+			get();
+		} catch (final InterruptedException e) { // $codepro.audit.disable
+			// logExceptions
+			Thread.currentThread().interrupt();
+		} catch (final Throwable t) {
+			logger.debug("ERROR", t);
+		}
+
+		upload.setInprogress(false);
+		switch (currentStatus) {
+			case DONE:
+				upload.setArchived(true);
+				uploadDao.update(upload);
+				uploadProgress.done = true;
+				break;
+			case FAILED:
+				setFailedStatus(currentStatus.getErrorCode());
+				break;
+			case ABORTED:
+				setFailedStatus(UploadCode.USER_ABORT);
+				break;
+			default:
+				setFailedStatus(UploadCode.UNKNOWN_ERROR);
+				break;
+		}
+		eventBus.post(uploadProgress);
+		cancel();
 	}
 
 	private void resumeinfo() throws SystemException {
@@ -187,45 +244,6 @@ public class UploadWorker extends Task<Void> {
 			logger.info("Next byte to upload is {].", resumeInfo.nextByteToUpload);
 			currentStatus = STATUS.UPLOAD;
 		}
-	}
-
-	@Override
-	protected void done() {
-		super.done();
-		try {
-			get();
-		} catch (final InterruptedException e) { // $codepro.audit.disable
-			// logExceptions
-			Thread.currentThread().interrupt();
-		} catch (final Throwable t) {
-			logger.debug("ERROR", t);
-		}
-
-		upload.setInprogress(false);
-		switch (currentStatus) {
-			case DONE:
-				upload.setArchived(true);
-				uploadDao.update(upload);
-				uploadProgress.done = true;
-				break;
-			case FAILED:
-				setFailedStatus("Upload failed!");
-				break;
-			case FAILED_FILE:
-				setFailedStatus("File not found!");
-				break;
-			case FAILED_META:
-				setFailedStatus("Corrupted Uploadinformation!");
-				break;
-			case ABORTED:
-				setFailedStatus("Beendet auf Userrequest");
-				break;
-			default:
-				setFailedStatus("Unknown-Error");
-				break;
-		}
-		eventBus.post(uploadProgress);
-		cancel();
 	}
 
 	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte) throws IOException {
@@ -318,49 +336,56 @@ public class UploadWorker extends Task<Void> {
 		}
 	}
 
-	private void playlistAction() {
+	private void playlistAction() throws SystemException {
 		// Add video to playlist
 		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
 			try {
 				playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
 			} catch (final SystemException e) {
-				// TODO Log this exception - still unclear if it should get pushed up
-				e.printStackTrace();
+				throw new SystemException(e, UploadCode.PLAYLIST_IO_ERROR);
 			}
 		}
 	}
 
-	private void postprocess() {
-		playlistAction();
-		enddirAction();
-		browserAction();
-		updateUploadAction();
-		logfileAction();
-		currentStatus = STATUS.DONE;
+	private void postprocessBrowser() throws SystemException {
+		try {
+			browserAction();
+		} finally {
+			currentStatus = STATUS.DONE;
+		}
 	}
 
-	private void updateUploadAction() {
+	private void postprocess() throws SystemException {
+		try {
+			playlistAction();
+			updateUploadAction();
+			logfileAction();
+			enddirAction();
+		} finally {
+			currentStatus = STATUS.POSTPROCESS_BROWSER;
+		}
+	}
+
+	private void updateUploadAction() throws SystemException {
 		String atomData = metadataService.atomBuilder(upload);
 		try {
 			metadataService.updateMetaData(atomData, upload.getVideoid(), uploadDao.fetchOneAccountByUpload(upload));
 		} catch (SystemException e) {
-			// TODO Log this exception - still unclear if it should get pushed up
-			e.printStackTrace();
+			throw new SystemException(e, UploadCode.UPDATE_METADATA_IO_ERROR).set("atomdata", atomData);
 		}
 	}
 
-	private void logfileAction() {
+	private void logfileAction() throws SystemException {
 		try {
 			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
 			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), GsonHelper.toJSON(upload)
 					.getBytes(Charsets.UTF_8));
 		} catch (IOException e) {
-			// TODO Log this exception - still unclear if it should get pushed up
-			e.printStackTrace();
+			throw new SystemException(e, UploadCode.LOGFILE_IO_ERROR);
 		}
 	}
 
-	private void browserAction() {
+	private void browserAction() throws SystemException {
 		if (upload.getDateOfRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
 				.isEmpty()) && !upload.getMonetizeClaim()) {
 			return;
@@ -405,12 +430,12 @@ public class UploadWorker extends Task<Void> {
 		this.upload = upload;
 	}
 
-	private void setFailedStatus(final String status) {
+	private void setFailedStatus(final ErrorCode errorCode) {
 		upload.setFailed(true);
+		upload.setStatus(errorCode.getClass().getName() + "." + errorCode.name());
 		upload.setDateOfStart(null);
 		uploadDao.update(upload);
 		uploadProgress.failed = true;
-		uploadProgress.status = status;
 	}
 
 	private void upload() throws SystemException {

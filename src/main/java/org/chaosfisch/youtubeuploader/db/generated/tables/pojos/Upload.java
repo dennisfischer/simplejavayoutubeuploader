@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.pojos;
 @SuppressWarnings({"all", "unchecked"})
 public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo implements java.io.Serializable {
 
-	private static final long serialVersionUID = 9684632;
+	private static final long serialVersionUID = 1921265921;
 
 	private Integer                                              id;
 	private Boolean                                              archived;
@@ -73,6 +73,7 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 	private org.chaosfisch.youtubeuploader.db.data.ClaimOption   monetizeClaimoption;
 	private org.chaosfisch.youtubeuploader.db.data.Asset         monetizeAsset;
 	private Boolean                                              monetizePartner;
+	private String                                               status;
 
 	public Integer getId() {
 		return this.id;
@@ -488,5 +489,13 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 
 	public void setMonetizePartner(Boolean monetizePartner) {
 		this.monetizePartner = monetizePartner;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

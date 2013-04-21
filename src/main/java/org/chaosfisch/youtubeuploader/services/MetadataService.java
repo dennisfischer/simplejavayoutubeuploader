@@ -23,5 +23,5 @@ public interface MetadataService {
 
 	void updateMetaData(String atomData, String videoId, Account account) throws SystemException;
 
-	void activateBrowserfeatures(Upload upload);
+	void activateBrowserfeatures(Upload upload) throws SystemException;
 }

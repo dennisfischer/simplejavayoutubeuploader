@@ -35,9 +35,9 @@ public class Tables {
 	/** The table PUBLIC.TEMPLATE_PLAYLIST */
 	public static final org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist TEMPLATE_PLAYLIST = org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST;
 
-	/** The table PUBLIC.UPLOAD */
-	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Upload UPLOAD = org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD;
-
 	/** The table PUBLIC.UPLOAD_PLAYLIST */
 	public static final org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist UPLOAD_PLAYLIST = org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST;
+
+	/** The table PUBLIC.UPLOAD */
+	public static final org.chaosfisch.youtubeuploader.db.generated.tables.Upload UPLOAD = org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD;
 }
