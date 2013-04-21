@@ -62,30 +62,24 @@ public class UploadMonetizationController {
 	}
 
 	public void fromUpload(final Upload upload) {
-		monetizeOverlay.setSelected(upload.getMonetizeOverlay() == null ? false : upload.getMonetizeOverlay());
-		monetizeTrueView.setSelected(upload.getMonetizeTrueview() == null ? false : upload.getMonetizeTrueview());
-		monetizeProduct.setSelected(upload.getMonetizeProduct() == null ? false : upload.getMonetizeProduct());
-		monetizeSyndication.setValue(upload.getMonetizeSyndication() == null
-									 ? Syndication.GLOBAL
-									 : upload.getMonetizeSyndication());
+		monetizeOverlay.setSelected(upload.getMonetizeOverlay() != null && upload.getMonetizeOverlay());
+		monetizeTrueView.setSelected(upload.getMonetizeTrueview() != null && upload.getMonetizeTrueview());
+		monetizeProduct.setSelected(upload.getMonetizeProduct() != null && upload.getMonetizeProduct());
+		monetizeSyndication.setValue(upload.getMonetizeSyndication());
 	}
 
 	public void fromTemplate(final Template template) {
-		monetizeOverlay.setSelected(template.getMonetizeOverlay() == null ? false : template.getMonetizeOverlay());
-		monetizeTrueView.setSelected(template.getMonetizeTrueview() == null ? false : template.getMonetizeTrueview());
-		monetizeProduct.setSelected(template.getMonetizeProduct() == null ? false : template.getMonetizeProduct());
-		monetizeSyndication.setValue(template.getMonetizeSyndication() == null
-									 ? Syndication.GLOBAL
-									 : template.getMonetizeSyndication());
+		monetizeOverlay.setSelected(template.getMonetizeOverlay() != null && template.getMonetizeOverlay());
+		monetizeTrueView.setSelected(template.getMonetizeTrueview() != null && template.getMonetizeTrueview());
+		monetizeProduct.setSelected(template.getMonetizeProduct() != null && template.getMonetizeProduct());
+		monetizeSyndication.setValue(template.getMonetizeSyndication());
 	}
 
 	public Upload toUpload(final Upload upload) {
 		upload.setMonetizeOverlay(monetizeOverlay.isSelected());
 		upload.setMonetizeTrueview(monetizeTrueView.isSelected());
 		upload.setMonetizeProduct(monetizeProduct.isSelected());
-		upload.setMonetizeSyndication(monetizeSyndication.getValue() == null
-									  ? Syndication.GLOBAL
-									  : monetizeSyndication.getValue());
+		upload.setMonetizeSyndication(monetizeSyndication.getValue());
 		return upload;
 	}
 
@@ -93,9 +87,7 @@ public class UploadMonetizationController {
 		template.setMonetizeOverlay(monetizeOverlay.isSelected());
 		template.setMonetizeTrueview(monetizeTrueView.isSelected());
 		template.setMonetizeProduct(monetizeProduct.isSelected());
-		template.setMonetizeSyndication(monetizeSyndication.getValue() == null
-										? Syndication.GLOBAL
-										: monetizeSyndication.getValue());
+		template.setMonetizeSyndication(monetizeSyndication.getValue());
 		return template;
 	}
 

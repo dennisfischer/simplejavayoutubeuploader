@@ -13,10 +13,9 @@ package org.chaosfisch.youtubeuploader.db.converter;
 import org.jooq.Converter;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CalendarConverter implements Converter<Timestamp, Calendar> {
+public class CalendarConverter implements Converter<Timestamp, GregorianCalendar> {
 
 	private static final long serialVersionUID = 1335558703543045626L;
 
@@ -31,7 +30,7 @@ public class CalendarConverter implements Converter<Timestamp, Calendar> {
 	}
 
 	@Override
-	public Timestamp to(final Calendar userObject) {
+	public Timestamp to(final GregorianCalendar userObject) {
 		return userObject == null ? null : new Timestamp(userObject.getTimeInMillis());
 	}
 
@@ -41,7 +40,7 @@ public class CalendarConverter implements Converter<Timestamp, Calendar> {
 	}
 
 	@Override
-	public Class<Calendar> toType() {
-		return Calendar.class;
+	public Class<GregorianCalendar> toType() {
+		return GregorianCalendar.class;
 	}
 }

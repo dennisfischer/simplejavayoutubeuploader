@@ -134,7 +134,7 @@ public class ViewController {
 		standardTemplate.setVisibility(Visibility.PUBLIC);
 		standardTemplate.setVideoresponse(Videoresponse.MODERATED);
 		standardTemplate.setLicense(License.YOUTUBE);
-		standardTemplate.setNumber((short) 0);
+		standardTemplate.setNumber(0);
 		standardTemplate.setFacebook(false);
 		standardTemplate.setTwitter(false);
 		standardTemplate.setDefaultdir(new File(System.getProperty("user.home")));

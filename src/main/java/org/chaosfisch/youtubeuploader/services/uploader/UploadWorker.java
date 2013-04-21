@@ -329,7 +329,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void logfileAction() {
 		try {
-			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/SimpleJavuploads/"));
+			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
 			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), GsonHelper.toJSON(upload)
 					.getBytes(Charsets.UTF_8));
 		} catch (IOException e) {

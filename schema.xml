@@ -26,7 +26,7 @@
             <inputSchema>PUBLIC</inputSchema>
             <customTypes>
                 <customType>
-                    <name>java.util.Calendar</name>
+                    <name>java.util.GregorianCalendar</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
                 </customType>
                 <customType>
@@ -72,7 +72,7 @@
             </customTypes>
             <forcedTypes>
                 <forcedType>
-                    <name>java.util.Calendar</name>
+                    <name>java.util.GregorianCalendar</name>
                     <expressions>.*\.DATE_OF_.*</expressions>
                 </forcedType>
                 <forcedType>

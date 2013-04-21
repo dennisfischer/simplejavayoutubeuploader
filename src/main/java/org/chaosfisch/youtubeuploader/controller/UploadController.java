@@ -343,6 +343,9 @@ public class UploadController {
 
 	@FXML
 	void openDefaultdir(final ActionEvent event) {
+		if (directoryChooser.getInitialDirectory() == null || !directoryChooser.getInitialDirectory().isDirectory()) {
+			directoryChooser.setInitialDirectory(new File(ApplicationData.HOME));
+		}
 		final File directory = directoryChooser.showDialog(null);
 		if (directory != null) {
 			directoryChooser.setInitialDirectory(directory);
@@ -353,7 +356,7 @@ public class UploadController {
 
 	@FXML
 	void openEnddir(final ActionEvent event) {
-		if (!directoryChooser.getInitialDirectory().isDirectory()) {
+		if (directoryChooser.getInitialDirectory() == null || !directoryChooser.getInitialDirectory().isDirectory()) {
 			directoryChooser.setInitialDirectory(new File(ApplicationData.HOME));
 		}
 		final File directory = directoryChooser.showDialog(null);
@@ -364,7 +367,7 @@ public class UploadController {
 
 	@FXML
 	void openFiles(final ActionEvent event) {
-		if (!fileChooser.getInitialDirectory().isDirectory()) {
+		if (fileChooser.getInitialDirectory() == null || !fileChooser.getInitialDirectory().isDirectory()) {
 			fileChooser.setInitialDirectory(new File(ApplicationData.HOME));
 		}
 		final List<File> files = fileChooser.showOpenMultipleDialog(null);
@@ -375,7 +378,7 @@ public class UploadController {
 
 	@FXML
 	void openThumbnail(final ActionEvent event) {
-		if (!fileChooser.getInitialDirectory().isDirectory()) {
+		if (fileChooser.getInitialDirectory() == null || !fileChooser.getInitialDirectory().isDirectory()) {
 			fileChooser.setInitialDirectory(new File(ApplicationData.HOME));
 		}
 		final File file = fileChooser.showOpenDialog(null);
