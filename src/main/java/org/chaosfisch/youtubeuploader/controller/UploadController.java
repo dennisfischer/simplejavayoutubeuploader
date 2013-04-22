@@ -38,14 +38,12 @@ import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
-import jfxtras.labs.scene.control.BeanPathAdapter;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.GridViewBuilder;
 import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveTemplateCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateTemplateCommand;
@@ -66,16 +64,12 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.db.validation.UploadValidationCode;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.vo.UploadViewVO;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UploadController {
 
@@ -253,10 +247,11 @@ public class UploadController {
 	private final ObservableList<Playlist>      playlistSourceList = FXCollections.observableArrayList();
 	private final ObservableList<Playlist>      playlistTargetList = FXCollections.observableArrayList();
 	private final SimpleIntegerProperty         idProperty         = new SimpleIntegerProperty();
-	private final UploadViewVO                  uploadViewVO       = new UploadViewVO();
-	private final BeanPathAdapter<UploadViewVO> beanPathAdapter    = new BeanPathAdapter<>(uploadViewVO);
+	private final SimpleObjectProperty<File>    defaultDirProperty = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<File>    enddirProperty     = new SimpleObjectProperty<>();
 	private UploadMonetizationController uploadMonetizationController;
 	private UploadPartnerController      uploadPartnerController;
+	private Upload uploadStore = null;
 
 	public UploadController() {
 		idProperty.setValue(null);
@@ -264,13 +259,8 @@ public class UploadController {
 
 	@FXML
 	void addUpload(final ActionEvent event) {
-		final Upload upload = beanPathAdapter.getBean().getUpload();
-
-		if (monetizePartner.isSelected()) {
-			uploadPartnerController.toUpload(upload);
-		} else {
-			uploadMonetizationController.toUpload(upload);
-		}
+		final Upload upload = uploadStore == null ? new Upload() : uploadStore;
+		toUpload(upload);
 
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
 		command.upload = upload;
@@ -284,10 +274,8 @@ public class UploadController {
 				// Cleanup (reset form)
 				filesList.remove(uploadFile.getValue());
 				uploadFile.getSelectionModel().selectNext();
-				idProperty.setValue(null);
-				uploadViewVO.setUpload(new Upload());
-				uploadViewVO.reset();
-				beanPathAdapter.setBean(uploadViewVO);
+
+				_reset();
 			}
 		});
 		command.setOnRunning(new EventHandler<WorkerStateEvent>() {
@@ -344,9 +332,6 @@ public class UploadController {
 
 	@FXML
 	void openDefaultdir(final ActionEvent event) {
-		if (directoryChooser.getInitialDirectory() == null || !directoryChooser.getInitialDirectory().isDirectory()) {
-			directoryChooser.setInitialDirectory(new File(ApplicationData.HOME));
-		}
 		final File directory = directoryChooser.showDialog(null);
 		if (directory != null) {
 			directoryChooser.setInitialDirectory(directory);
@@ -357,9 +342,6 @@ public class UploadController {
 
 	@FXML
 	void openEnddir(final ActionEvent event) {
-		if (directoryChooser.getInitialDirectory() == null || !directoryChooser.getInitialDirectory().isDirectory()) {
-			directoryChooser.setInitialDirectory(new File(ApplicationData.HOME));
-		}
 		final File directory = directoryChooser.showDialog(null);
 		if (directory != null) {
 			uploadEnddir.setText(directory.getAbsolutePath());
@@ -368,9 +350,6 @@ public class UploadController {
 
 	@FXML
 	void openFiles(final ActionEvent event) {
-		if (fileChooser.getInitialDirectory() == null || !fileChooser.getInitialDirectory().isDirectory()) {
-			fileChooser.setInitialDirectory(new File(ApplicationData.HOME));
-		}
 		final List<File> files = fileChooser.showOpenMultipleDialog(null);
 		if (files != null && files.size() > 0) {
 			addUploadFiles(files);
@@ -379,9 +358,6 @@ public class UploadController {
 
 	@FXML
 	void openThumbnail(final ActionEvent event) {
-		if (fileChooser.getInitialDirectory() == null || !fileChooser.getInitialDirectory().isDirectory()) {
-			fileChooser.setInitialDirectory(new File(ApplicationData.HOME));
-		}
 		final File file = fileChooser.showOpenDialog(null);
 		if (file != null) {
 			uploadThumbnail.setText(file.getAbsolutePath());
@@ -406,30 +382,22 @@ public class UploadController {
 		}
 	}
 
-	//TODO This reset feature bugs, ADD INPUT FROM BOTH! MonetizationComponents
 	@FXML
 	void resetUpload(final ActionEvent event) {
-		uploadViewVO.reset();
-		beanPathAdapter.setBean(uploadViewVO);
+		_reset();
+	}
 
-		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
-		while (playlistIterator.hasNext()) {
-			final Playlist playlist = playlistIterator.next();
-			playlistSourceList.add(playlist);
-			playlistIterator.remove();
-		}
-
-		for (final Playlist playlist : playlistDao.fetchByTemplate(uploadViewVO.getTemplate())) {
-			playlistTargetList.add(playlist);
-			playlistSourceList.remove(playlist);
-		}
+	private void _reset() {
+		fromTemplate(templates.getValue() == null ? ViewController.standardTemplate : templates.getValue());
 	}
 
 	@FXML
 	void saveTemplate(final ActionEvent event) {
-		uploadViewVO.setTemplate(uploadViewVO.getTemplate());
+		if (templates.getValue() == null) {
+			return;
+		}
 		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
-		command.template = uploadViewVO.getTemplate();
+		command.template = templates.getValue();
 		command.account = uploadAccount.getValue();
 		command.playlists = new Playlist[playlistTargetList.size()];
 		playlistTargetList.toArray(command.playlists);
@@ -497,7 +465,6 @@ public class UploadController {
 		initData();
 		initSelection();
 
-		beanPathAdapter.setBean(uploadViewVO);
 		eventBus.register(this);
 	}
 
@@ -624,7 +591,7 @@ public class UploadController {
 
 			@Override
 			public void changed(final ObservableValue<? extends Template> observable, final Template oldValue, final Template newValue) {
-				beanPathAdapter.setBean(uploadViewVO);
+				_reset();
 			}
 		});
 
@@ -680,56 +647,193 @@ public class UploadController {
 
 		previewTitle.textProperty().bindBidirectional(uploadTitle.textProperty(), new PreviewTitleStringConverter());
 
-		final SimpleObjectProperty<File> defaultDirProperty = new SimpleObjectProperty<>();
 		uploadDefaultdir.textProperty().bindBidirectional(defaultDirProperty, new DefaultDirStringConverter());
-		final SimpleObjectProperty<File> enddirProperty = new SimpleObjectProperty<>();
 		uploadEnddir.textProperty().bindBidirectional(enddirProperty, new DefaultDirStringConverter());
+	}
 
-		beanPathAdapter.bindBidirectional("template.defaultdir", fileChooser.initialDirectoryProperty(), File.class);
-		beanPathAdapter.bindBidirectional("template.defaultdir", directoryChooser.initialDirectoryProperty(), File.class);
-		beanPathAdapter.bindBidirectional("template.commentvote", uploadCommentvote.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.defaultdir", defaultDirProperty, File.class);
-		beanPathAdapter.bindBidirectional("template.enddir", enddirProperty, File.class);
-		beanPathAdapter.bindBidirectional("template.description", uploadDescription.textProperty());
-		beanPathAdapter.bindBidirectional("template.embed", uploadEmbed.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.mobile", uploadMobile.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.rate", uploadRate.selectedProperty());
-		beanPathAdapter.bindBidirectional("template.keywords", uploadTags.textProperty());
-		beanPathAdapter.bindBidirectional("template.title", uploadTitle.textProperty());
-		beanPathAdapter.bindBidirectional("template.thumbnail", uploadThumbnail.textProperty());
-		beanPathAdapter.bindBidirectional("template.category", uploadCategory.valueProperty(), Category.class);
-		beanPathAdapter.bindBidirectional("template.comment", uploadComment.valueProperty(), Comment.class);
-		beanPathAdapter.bindBidirectional("template.visibility", uploadVisibility.valueProperty(), Visibility.class);
-		beanPathAdapter.bindBidirectional("template.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
-		beanPathAdapter.bindBidirectional("template.license", uploadLicense.valueProperty(), License.class);
-		beanPathAdapter.bindBidirectional("template.monetizePartner", monetizePartner.selectedProperty());
-		// *****************************************************************************************
-		// *****************************************************************************************
-		// *****************************************************************************************
-		beanPathAdapter.bindBidirectional("upload.commentvote", uploadCommentvote.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.description", uploadDescription.textProperty());
-		beanPathAdapter.bindBidirectional("upload.embed", uploadEmbed.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.mobile", uploadMobile.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.rate", uploadRate.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.keywords", uploadTags.textProperty());
-		beanPathAdapter.bindBidirectional("upload.title", uploadTitle.textProperty());
-		beanPathAdapter.bindBidirectional("upload.thumbnail", uploadThumbnail.textProperty());
-		beanPathAdapter.bindBidirectional("upload.dateOfStart", started.valueProperty(), Calendar.class);
-		beanPathAdapter.bindBidirectional("upload.dateOfRelease", release.valueProperty(), Calendar.class);
-		beanPathAdapter.bindBidirectional("upload.enddir", enddirProperty, File.class);
-		beanPathAdapter.bindBidirectional("upload.file", uploadFile.valueProperty(), File.class);
-		beanPathAdapter.bindBidirectional("upload.category", uploadCategory.valueProperty(), Category.class);
-		beanPathAdapter.bindBidirectional("upload.comment", uploadComment.valueProperty(), Comment.class);
-		beanPathAdapter.bindBidirectional("upload.visibility", uploadVisibility.valueProperty(), Visibility.class);
-		beanPathAdapter.bindBidirectional("upload.videoresponse", uploadVideoresponse.valueProperty(), Videoresponse.class);
-		beanPathAdapter.bindBidirectional("upload.license", uploadLicense.valueProperty(), License.class);
-		beanPathAdapter.bindBidirectional("upload.facebook", uploadFacebook.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.twitter", uploadTwitter.selectedProperty());
-		beanPathAdapter.bindBidirectional("upload.message", uploadMessage.textProperty());
-		beanPathAdapter.bindBidirectional("upload.monetizePartner", monetizePartner.selectedProperty());
+	private Upload toUpload(final Upload upload) {
+		upload.setId(idProperty.getValue());
+		upload.setCategory(uploadCategory.getValue());
+		upload.setCommentvote(uploadCommentvote.isSelected());
+		upload.setComment(uploadComment.getValue());
 
-		beanPathAdapter.bindBidirectional("upload.id", idProperty);
-		beanPathAdapter.bindBidirectional("template", templates.valueProperty(), Template.class);
+		if (started.getValue() != null) {
+			final GregorianCalendar cal = new GregorianCalendar();
+			cal.setTimeInMillis(started.getValue().getTimeInMillis());
+			upload.setDateOfStart(cal);
+		}
+		if (release.getValue() != null) {
+			final GregorianCalendar cal = new GregorianCalendar();
+			cal.setTimeInMillis(release.getValue().getTimeInMillis());
+			upload.setDateOfRelease(cal);
+		}
+		upload.setDescription(uploadDescription.getText());
+		upload.setEmbed(uploadEmbed.isSelected());
+		upload.setEnddir(enddirProperty.getValue());
+		upload.setFile(uploadFile.getValue());
+		upload.setKeywords(uploadTags.getText());
+		upload.setLicense(uploadLicense.getValue());
+
+		upload.setMobile(uploadMobile.isSelected());
+
+		upload.setRate(uploadRate.isSelected());
+
+		upload.setThumbnail(uploadThumbnail.getText());
+		upload.setTitle(uploadTitle.getText());
+
+		upload.setVisibility(uploadVisibility.getValue());
+		upload.setVideoresponse(uploadVideoresponse.getValue());
+
+		upload.setFacebook(uploadFacebook.isSelected());
+		upload.setTwitter(uploadTwitter.isSelected());
+		upload.setMessage(uploadMessage.getText());
+		upload.setMonetizePartner(monetizePartner.isSelected());
+
+		if (monetizePartner.isSelected()) {
+			uploadPartnerController.toUpload(upload);
+		} else {
+			uploadMonetizationController.toUpload(upload);
+		}
+
+		return upload;
+	}
+
+	private Template toTemplate(Template template) {
+		template.setCategory(uploadCategory.getValue());
+		template.setCommentvote(uploadCommentvote.isSelected());
+		template.setComment(uploadComment.getValue());
+		template.setDescription(uploadDescription.getText());
+		template.setDefaultdir(defaultDirProperty.getValue());
+		template.setEmbed(uploadEmbed.isSelected());
+		template.setEnddir(enddirProperty.getValue());
+		template.setKeywords(uploadTags.getText());
+		template.setLicense(uploadLicense.getValue());
+
+		template.setMobile(uploadMobile.isSelected());
+
+		template.setRate(uploadRate.isSelected());
+
+		template.setThumbnail(uploadThumbnail.getText());
+		template.setTitle(uploadTitle.getText());
+
+		template.setVisibility(uploadVisibility.getValue());
+		template.setVideoresponse(uploadVideoresponse.getValue());
+
+		template.setFacebook(uploadFacebook.isSelected());
+		template.setTwitter(uploadTwitter.isSelected());
+		template.setMessage(uploadMessage.getText());
+		template.setMonetizePartner(monetizePartner.isSelected());
+
+		if (monetizePartner.isSelected()) {
+			uploadPartnerController.toTemplate(template);
+		} else {
+			uploadMonetizationController.toTemplate(template);
+		}
+
+		return template;
+	}
+
+	public void fromUpload(final Upload upload) {
+		_reset();
+
+		uploadStore = upload;
+		idProperty.setValue(upload.getId());
+		uploadCategory.setValue(upload.getCategory());
+		uploadCommentvote.setSelected(upload.getCommentvote());
+		uploadComment.setValue(upload.getComment());
+
+		started.setValue(upload.getDateOfStart());
+		release.setValue(upload.getDateOfRelease());
+
+		uploadDescription.setText(upload.getDescription());
+		uploadEmbed.setSelected(upload.getEmbed());
+		enddirProperty.setValue(upload.getEnddir());
+		uploadFile.setValue(upload.getFile());
+		uploadTags.setText(upload.getKeywords());
+		uploadLicense.setValue(upload.getLicense());
+		uploadMobile.setSelected(upload.getMobile());
+		uploadRate.setSelected(upload.getRate());
+
+		uploadThumbnail.setText(upload.getThumbnail());
+		uploadTitle.setText(upload.getTitle());
+		uploadVisibility.setValue(upload.getVisibility());
+		uploadVideoresponse.setValue(upload.getVideoresponse());
+		uploadFacebook.setSelected(upload.getFacebook());
+		uploadTwitter.setSelected(upload.getTwitter());
+		uploadMessage.setText(upload.getMessage());
+
+		monetizePartner.setSelected(upload.getMonetizePartner());
+
+		if (monetizePartner.isSelected()) {
+			uploadPartnerController.fromUpload(upload);
+		} else {
+			uploadMonetizationController.fromUpload(upload);
+		}
+
+		uploadAccount.getSelectionModel().select(accountDao.fetchOneById(upload.getId()));
+
+		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
+		while (playlistIterator.hasNext()) {
+			final Playlist playlist = playlistIterator.next();
+			playlistSourceList.add(playlist);
+			playlistIterator.remove();
+		}
+
+		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
+			playlistTargetList.add(playlist);
+			playlistSourceList.remove(playlist);
+		}
+	}
+
+	private void fromTemplate(Template template) {
+		if (template.getDefaultdir().isDirectory()) {
+			fileChooser.setInitialDirectory(template.getDefaultdir());
+			directoryChooser.setInitialDirectory(template.getDefaultdir());
+		}
+
+		idProperty.setValue(null);
+		uploadStore = null;
+		uploadCategory.setValue(template.getCategory());
+		uploadCommentvote.setSelected(template.getCommentvote());
+		uploadComment.setValue(template.getComment());
+		uploadDescription.setText(template.getDescription());
+		uploadEmbed.setSelected(template.getEmbed());
+		enddirProperty.setValue(template.getEnddir());
+		uploadTags.setText(template.getKeywords());
+		uploadLicense.setValue(template.getLicense());
+		uploadMobile.setSelected(template.getMobile());
+		uploadRate.setSelected(template.getRate());
+
+		uploadThumbnail.setText(template.getThumbnail());
+		uploadTitle.setText(template.getTitle());
+		uploadVisibility.setValue(template.getVisibility());
+		uploadVideoresponse.setValue(template.getVideoresponse());
+		uploadFacebook.setSelected(template.getFacebook());
+		uploadTwitter.setSelected(template.getTwitter());
+		uploadMessage.setText(template.getMessage());
+
+		monetizePartner.setSelected(template.getMonetizePartner());
+
+		if (monetizePartner.isSelected()) {
+			uploadPartnerController.fromTemplate(template);
+		} else {
+			uploadMonetizationController.fromTemplate(template);
+		}
+
+		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
+		while (playlistIterator.hasNext()) {
+			final Playlist playlist = playlistIterator.next();
+			playlistSourceList.add(playlist);
+			playlistIterator.remove();
+		}
+
+		if (templates.getValue() != null) {
+			for (final Playlist playlist : playlistDao.fetchByTemplate(templates.getValue())) {
+				playlistTargetList.add(playlist);
+				playlistSourceList.remove(playlist);
+			}
+		}
+
 	}
 
 	private void initSelection() {
@@ -768,25 +872,6 @@ public class UploadController {
 				index = file.length();
 			}
 			uploadTitle.setText(file.substring(file.lastIndexOf(File.separator) + 1, index));
-		}
-	}
-
-	public void fromUpload(final Upload item) {
-		uploadViewVO.setUpload(item);
-		beanPathAdapter.setBean(uploadViewVO);
-
-		uploadAccount.getSelectionModel().select(accountDao.fetchOneById(item.getId()));
-
-		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
-		while (playlistIterator.hasNext()) {
-			final Playlist playlist = playlistIterator.next();
-			playlistSourceList.add(playlist);
-			playlistIterator.remove();
-		}
-
-		for (final Playlist playlist : playlistDao.fetchByUpload(item)) {
-			playlistTargetList.add(playlist);
-			playlistSourceList.remove(playlist);
 		}
 	}
 
@@ -875,7 +960,7 @@ public class UploadController {
 	private final class UploadIdInvalidationListener implements InvalidationListener {
 		@Override
 		public void invalidated(final Observable arg0) {
-			if (idProperty.getValue() == null) {
+			if (idProperty.getValue() == null || idProperty.getValue() == 0) {
 				addUpload.setText(resources.getString("button.addUpload"));
 				addUpload.setId("addUpload");
 			} else {
