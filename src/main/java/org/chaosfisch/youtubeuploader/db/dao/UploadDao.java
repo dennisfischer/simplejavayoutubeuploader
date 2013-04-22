@@ -31,51 +31,52 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 
 	public Upload insertReturning(final Upload upload) {
 		return context.insertInto(Tables.UPLOAD)
-					  .set(context.newRecord(Tables.UPLOAD, upload))
-					  .returning()
-					  .fetchOne()
-					  .into(Upload.class);
+				.set(context.newRecord(Tables.UPLOAD, upload))
+				.returning()
+				.fetchOne()
+				.into(Upload.class);
 	}
 
 	public Account fetchOneAccountByUpload(final Upload upload) {
 		return context.select()
-					  .from(Tables.ACCOUNT)
-					  .join(Tables.UPLOAD)
-					  .on(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
-					  .where(Tables.UPLOAD.ID.eq(upload.getId()))
-					  .fetchOneInto(Account.class);
+				.from(Tables.ACCOUNT)
+				.join(Tables.UPLOAD)
+				.on(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
+				.where(Tables.UPLOAD.ID.eq(upload.getId()))
+				.fetchOneInto(Account.class);
 	}
 
 	public Upload fetchNextUpload() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
 		return context.select()
-					  .from(Tables.UPLOAD)
-					  .where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.ne(true), Tables.UPLOAD
-							  .INPROGRESS
-							  .ne(true), Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD
-							  .DATE_OF_START
-							  .le(cal)
-							  .or(Tables.UPLOAD.DATE_OF_START.isNull()))
-					  .orderBy(Tables.UPLOAD.DATE_OF_START.desc(), Tables.UPLOAD.FAILED.asc())
-					  .fetchOneInto(Upload.class);
+				.from(Tables.UPLOAD)
+				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.ne(true), Tables.UPLOAD
+						.INPROGRESS
+						.ne(true), Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD
+						.DATE_OF_START
+						.le(cal)
+						.or(Tables.UPLOAD.DATE_OF_START.isNull()))
+				.orderBy(Tables.UPLOAD.DATE_OF_START.desc(), Tables.UPLOAD.FAILED.asc())
+				.limit(1)
+				.fetchOneInto(Upload.class);
 	}
 
 	public long countLeftUploads() {
 		return context.select()
-					  .from(Tables.UPLOAD)
-					  .where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.eq(false))
-					  .fetchCount();
+				.from(Tables.UPLOAD)
+				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.eq(false))
+				.fetchCount();
 	}
 
 	public long countAvailableStartingUploads() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
 		return context.select()
-					  .from(Tables.UPLOAD)
-					  .where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true), Tables.UPLOAD
-							  .FAILED
-							  .ne(true), Tables.UPLOAD.DATE_OF_START.le(cal))
-					  .fetchCount();
+				.from(Tables.UPLOAD)
+				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true), Tables.UPLOAD
+						.FAILED
+						.ne(true), Tables.UPLOAD.DATE_OF_START.le(cal))
+				.fetchCount();
 	}
 }

@@ -626,14 +626,22 @@ public class UploadController {
 	}
 
 	private void initBindings() {
-		release.disableProperty()
+		release.disableProperty().bind(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(3));
+		uploadMessage.disableProperty()
 				.bind(uploadVisibility.getSelectionModel()
 						.selectedIndexProperty()
 						.isNotEqualTo(3)
 						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
-		uploadMessage.disableProperty().bind(release.disableProperty());
-		uploadFacebook.disableProperty().bind(release.disableProperty());
-		uploadTwitter.disableProperty().bind(release.disableProperty());
+		uploadFacebook.disableProperty()
+				.bind(uploadVisibility.getSelectionModel()
+						.selectedIndexProperty()
+						.isNotEqualTo(3)
+						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
+		uploadTwitter.disableProperty()
+				.bind(uploadVisibility.getSelectionModel()
+						.selectedIndexProperty()
+						.isNotEqualTo(3)
+						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
 		gridWidthSlider.minProperty().set(1280);
 		gridWidthSlider.maxProperty().set(2000);
 		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));

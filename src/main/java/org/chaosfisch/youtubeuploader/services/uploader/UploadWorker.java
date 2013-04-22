@@ -351,18 +351,18 @@ public class UploadWorker extends Task<Void> {
 		try {
 			browserAction();
 		} finally {
-			currentStatus = STATUS.DONE;
+			currentStatus = STATUS.POSTPROCESS;
 		}
 	}
 
 	private void postprocess() throws SystemException {
 		try {
 			playlistAction();
-			updateUploadAction();
+			//updateUploadAction();
 			logfileAction();
 			enddirAction();
 		} finally {
-			currentStatus = STATUS.POSTPROCESS_BROWSER;
+			currentStatus = STATUS.DONE;
 		}
 	}
 
@@ -490,7 +490,7 @@ public class UploadWorker extends Task<Void> {
 						};
 						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
 						uploadDao.update(upload);
-						currentStatus = STATUS.POSTPROCESS;
+						currentStatus = STATUS.POSTPROCESS_BROWSER;
 						break;
 					case 308:
 						// OK, the chunk completed succesfully

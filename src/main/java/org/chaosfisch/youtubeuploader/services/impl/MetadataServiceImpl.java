@@ -122,7 +122,7 @@ public class MetadataServiceImpl implements MetadataService {
 					protected void writeText(final QuickWriter writer, final String text) {
 						if (isCDATA) {
 							writer.write("<![CDATA[");
-							writer.write(text);
+							writer.write(text == null || text.equals("null") ? "" : text);
 							writer.write("]]>");
 						} else {
 							super.writeText(writer, text);
@@ -295,6 +295,7 @@ public class MetadataServiceImpl implements MetadataService {
 		modified.deleteCharAt(modified.length() - 1);
 		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified.toString()));
 		postMetaDataParams.add(new BasicNameValuePair("title", extractor(content, "name=\"title\" value=\"", "\"")));
+
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
 
@@ -302,12 +303,15 @@ public class MetadataServiceImpl implements MetadataService {
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
 		//noinspection EmptyTryBlock
 		try (Response response = request.execute()) {
+			System.out.println(response.getContent());
+		} catch (SystemException e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void getMetadataDateOfRelease(final List<BasicNameValuePair> postMetaDataParams) {
 		if (upload.getDateOfRelease() != null) {
-			if (upload.getDateOfRelease().after(Calendar.getInstance().getTime())) {
+			if (upload.getDateOfRelease().after(Calendar.getInstance())) {
 				final Calendar calendar = upload.getDateOfRelease();
 
 				final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
@@ -315,6 +319,7 @@ public class MetadataServiceImpl implements MetadataService {
 
 				postMetaDataParams.add(new BasicNameValuePair("publish_time", dateFormat.format(calendar.getTime())));
 				postMetaDataParams.add(new BasicNameValuePair("publish_timezone", "UTC"));
+				postMetaDataParams.add(new BasicNameValuePair("time_published", "0"));
 				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
 
 				if (upload.getMessage() != null && !upload.getMessage().isEmpty()) {
