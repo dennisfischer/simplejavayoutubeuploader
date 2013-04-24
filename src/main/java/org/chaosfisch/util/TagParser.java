@@ -14,7 +14,8 @@ import com.google.common.base.Charsets;
 
 public final class TagParser {
 	/** the separator between "block" tags */
-	private static final char BLOCK_DELIMITER = '"';
+	private static final char   BLOCK_DELIMITER = '"';
+	private static final String STRING_TO_MATCH = ",";
 
 	/** flag if block is open */
 	private static boolean blockOpen;
@@ -35,8 +36,7 @@ public final class TagParser {
 		if (parsed.getBytes(Charsets.UTF_8).length > 500 || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
-		final String[] tags = parsed.split(",");
-		for (final String tag : tags) {
+		for (final String tag : RegexpUtils.getPattern(STRING_TO_MATCH).split(parsed)) {
 			if (tag.length() > 30 || tag.length() < 2 || tag.getBytes(Charsets.UTF_8).length > 30) {
 				return false;
 			}
@@ -56,7 +56,7 @@ public final class TagParser {
 
 		input = input.trim();
 
-		final StringBuilder parsedOutput = new StringBuilder();
+		final StringBuilder parsedOutput = new StringBuilder(500);
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
 				case TagParser.BLOCK_DELIMITER:
@@ -89,7 +89,7 @@ public final class TagParser {
 	 * @return the cleaned string
 	 */
 	private static String removeInvalid(final String input) {
-		final String[] tags = input.split(",");
+		final String[] tags = RegexpUtils.getPattern(STRING_TO_MATCH).split(input);
 		final String[] tmpTags = new String[250];
 		int i = 0;
 		for (final String tag : tags) {

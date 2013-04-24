@@ -26,11 +26,9 @@ import org.chaosfisch.io.Throttle;
 import org.chaosfisch.io.ThrottledOutputStream;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.RequestUtil;
-import org.chaosfisch.util.EventBusUtil;
-import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.util.GsonHelper;
-import org.chaosfisch.util.TagParser;
+import org.chaosfisch.util.*;
 import org.chaosfisch.youtubeuploader.ApplicationData;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
@@ -110,6 +108,8 @@ public class UploadWorker extends Task<Void> {
 	private PlaylistDao          playlistDao;
 	@Inject
 	private UploadDao            uploadDao;
+	@Inject
+	private AccountDao           accountDao;
 
 	private UploadProgressEvent uploadProgress;
 
@@ -305,7 +305,7 @@ public class UploadWorker extends Task<Void> {
 
 		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
-		upload.setUploadurl(metadataService.createMetaData(atomData, fileToUpload, uploadDao.fetchOneAccountByUpload(upload)));
+		upload.setUploadurl(metadataService.createMetaData(atomData, fileToUpload, accountDao.findById(upload.getAccountId())));
 		uploadDao.update(upload);
 
 		// Log operation
@@ -358,7 +358,7 @@ public class UploadWorker extends Task<Void> {
 	private void postprocess() throws SystemException {
 		try {
 			playlistAction();
-			//updateUploadAction();
+			updateUploadAction();
 			logfileAction();
 			enddirAction();
 		} finally {
@@ -367,9 +367,9 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void updateUploadAction() throws SystemException {
-		String atomData = metadataService.atomBuilder(upload);
+		final String atomData = metadataService.atomBuilder(upload);
 		try {
-			metadataService.updateMetaData(atomData, upload.getVideoid(), uploadDao.fetchOneAccountByUpload(upload));
+			metadataService.updateMetaData(atomData, upload.getVideoid(), accountDao.findById(upload.getAccountId()));
 		} catch (SystemException e) {
 			throw new SystemException(e, UploadCode.UPDATE_METADATA_IO_ERROR).set("atomdata", atomData);
 		}
@@ -423,7 +423,7 @@ public class UploadWorker extends Task<Void> {
 		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
 		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));
 		upload.setKeywords(TagParser.parseAll(upload.getKeywords()));
-		upload.setKeywords(upload.getKeywords().replaceAll("\"", ""));
+		upload.setKeywords(RegexpUtils.getPattern("\"").matcher(upload.getKeywords()).replaceAll(""));
 	}
 
 	public void run(final Upload upload) {
@@ -432,7 +432,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void setFailedStatus(final ErrorCode errorCode) {
 		upload.setFailed(true);
-		upload.setStatus(errorCode.getClass().getName() + "." + errorCode.name());
+		upload.setStatus(errorCode.getClass().getName() + '.' + errorCode.name());
 		upload.setDateOfStart(null);
 		uploadDao.update(upload);
 		uploadProgress.failed = true;
@@ -466,7 +466,7 @@ public class UploadWorker extends Task<Void> {
 			//Properties
 			request.setRequestProperty("Content-Type", upload.getMimetype());
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)));
+			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
 			request.connect();
 
 			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));

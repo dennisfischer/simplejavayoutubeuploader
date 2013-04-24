@@ -21,6 +21,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
@@ -43,11 +44,13 @@ public class Uploader {
 	private final ExecutorService executorService = Executors.newFixedThreadPool(7);
 	private final Logger          logger          = LoggerFactory.getLogger(getClass());
 	@Inject
-	private Injector  injector;
+	private Injector   injector;
 	@Inject
-	private EventBus  eventBus;
+	private EventBus   eventBus;
 	@Inject
-	private UploadDao uploadDao;
+	private UploadDao  uploadDao;
+	@Inject
+	private AccountDao accountDao;
 
 	public Uploader() {
 		EventBusUtil.getInstance().register(this);
@@ -103,7 +106,7 @@ public class Uploader {
 		if (!executorService.isShutdown() && inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = uploadDao.fetchNextUpload();
 			if (polled != null) {
-				if (uploadDao.fetchOneAccountByUpload(polled) == null) {
+				if (accountDao.findById(polled.getAccountId()) == null) {
 					polled.setLocked(true);
 					uploadDao.update(polled);
 				} else {

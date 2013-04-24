@@ -62,7 +62,7 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 		reqEntity.addPart("is_ajax", new StringBody("1", Charsets.UTF_8));
 
 		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf("\"", content
+		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
 				.indexOf(search) + search.length()));
 		reqEntity.addPart("session_token", new StringBody(sessiontoken, Charsets.UTF_8));
 		reqEntity.addPart("imagefile", new FileBody(thumbnailFile));

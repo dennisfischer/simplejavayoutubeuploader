@@ -12,7 +12,6 @@ package org.chaosfisch.youtubeuploader.db.dao;
 
 import com.google.inject.Inject;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
@@ -35,15 +34,6 @@ public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.table
 				.returning()
 				.fetchOne()
 				.into(Upload.class);
-	}
-
-	public Account fetchOneAccountByUpload(final Upload upload) {
-		return context.select()
-				.from(Tables.ACCOUNT)
-				.join(Tables.UPLOAD)
-				.on(Tables.UPLOAD.ACCOUNT_ID.eq(Tables.ACCOUNT.ID))
-				.where(Tables.UPLOAD.ID.eq(upload.getId()))
-				.fetchOneInto(Account.class);
 	}
 
 	public Upload fetchNextUpload() {

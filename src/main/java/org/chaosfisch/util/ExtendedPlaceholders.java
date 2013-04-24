@@ -93,7 +93,7 @@ public class ExtendedPlaceholders {
 
 			final String fileName = file.getAbsolutePath();
 
-			int index = fileName.lastIndexOf(".");
+			int index = fileName.lastIndexOf('.');
 			if (index == -1) {
 				index = fileName.length();
 			}

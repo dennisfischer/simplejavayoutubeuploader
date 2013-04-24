@@ -20,7 +20,9 @@ import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
+import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.util.XStreamHelper;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.ResumeableManager;
@@ -41,6 +43,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private RequestSigner  requestSigner;
 	@Inject
 	private UploadDao      uploadDao;
+	@Inject
+	private AccountDao     accountDao;
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -57,7 +61,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
 		final Request request = new Request.Builder(upload.getUploadurl()).put(null)
 				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(uploadDao.fetchOneAccountByUpload(upload)))
+				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())))
 				.build();
 
 		try (final Response response = request.execute()) {
@@ -76,7 +80,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				nextByteToUpload = 0;
 			} else {
 				logger.info("Range header is: {}", range.getValue());
-				final String[] parts = range.getValue().split("-");
+
+				final String[] parts = RegexpUtils.getPattern("-").split(range.getValue());
 				if (parts.length > 1) {
 					nextByteToUpload = Long.parseLong(parts[1]) + 1;
 				} else {

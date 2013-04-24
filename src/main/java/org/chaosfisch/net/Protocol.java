@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class Protocol {
-	private final HashMap<String, String> events = new HashMap<>();
+	private final HashMap<String, String> events = new HashMap<>(10);
 	private final Object protocolHandler;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 

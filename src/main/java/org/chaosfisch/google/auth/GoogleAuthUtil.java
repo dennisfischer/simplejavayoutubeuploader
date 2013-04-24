@@ -29,11 +29,10 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GoogleAuthUtil {
 
-	private final        HashMap<Integer, String> authtokens           = new HashMap<>();
+	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 
@@ -58,7 +57,7 @@ public class GoogleAuthUtil {
 
 	private String _receiveToken(final Account account, final String service, final String source) throws SystemException {
 		// STEP 1 CLIENT LOGIN
-		final List<BasicNameValuePair> clientLoginRequestParams = new ArrayList<>();
+		final ArrayList<BasicNameValuePair> clientLoginRequestParams = new ArrayList<>(6);
 		clientLoginRequestParams.add(new BasicNameValuePair("Email", account.getName()));
 		clientLoginRequestParams.add(new BasicNameValuePair("Passwd", account.getPassword()));
 		clientLoginRequestParams.add(new BasicNameValuePair("service", service));
@@ -122,7 +121,7 @@ public class GoogleAuthUtil {
 		final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
 		final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
 
-		final List<BasicNameValuePair> issueAuthTokenParams = new ArrayList<>();
+		final ArrayList<BasicNameValuePair> issueAuthTokenParams = new ArrayList<>(5);
 		issueAuthTokenParams.add(new BasicNameValuePair("SID", sid));
 		issueAuthTokenParams.add(new BasicNameValuePair("LSID", lsid));
 		issueAuthTokenParams.add(new BasicNameValuePair("service", "gaia"));

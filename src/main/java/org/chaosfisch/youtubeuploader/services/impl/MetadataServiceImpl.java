@@ -28,7 +28,7 @@ import org.chaosfisch.google.auth.GoogleAuthUtil;
 import org.chaosfisch.io.http.Request;
 import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.Response;
-import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
@@ -60,7 +60,7 @@ public class MetadataServiceImpl implements MetadataService {
 	@Inject
 	private ThumbnailService thumbnailService;
 	@Inject
-	private UploadDao        uploadDao;
+	private AccountDao       accountDao;
 
 	private final String[] deadEnds = {"https://accounts.google.com/b/0/SmsAuthInterstitial"};
 
@@ -185,7 +185,7 @@ public class MetadataServiceImpl implements MetadataService {
 	public void activateBrowserfeatures(final Upload upload) throws SystemException {
 		this.upload = upload;
 		try {
-			final String googleContent = authTokenHelper.getLoginContent(uploadDao.fetchOneAccountByUpload(upload), String
+			final String googleContent = authTokenHelper.getLoginContent(accountDao.findById(upload.getAccountId()), String
 					.format(REDIRECT_URL, upload.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent));
@@ -217,7 +217,7 @@ public class MetadataServiceImpl implements MetadataService {
 
 	private void changeMetadata(final String content) throws IOException {
 
-		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<>();
+		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<>(40);
 
 		getMetadataThumbnail(content, postMetaDataParams);
 		getMetadataDateOfRelease(postMetaDataParams);
@@ -286,7 +286,7 @@ public class MetadataServiceImpl implements MetadataService {
 			}
 		}
 
-		final StringBuilder modified = new StringBuilder();
+		final StringBuilder modified = new StringBuilder(postMetaDataParams.size() * 15);
 		for (final BasicNameValuePair param : postMetaDataParams) {
 			modified.append(param.getName());
 			modified.append(',');

@@ -11,6 +11,7 @@
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.common.io.Files;
+import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.services.EnddirService;
@@ -59,18 +60,19 @@ public class EnddirServiceImpl implements EnddirService {
 		if (increment == 0) {
 			return fileName;
 		}
-		return fileName.substring(0, fileName.lastIndexOf(".")) + "_" + increment + fileName.substring(fileName.lastIndexOf("."));
+		return fileName.substring(0, fileName.lastIndexOf('.')) + '_' + increment + fileName.substring(fileName.lastIndexOf('.'));
 	}
 
 	String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
 		final String fileName;
 		if (getEnddirSetting()) {
-			fileName = enddir.getAbsolutePath() + "/" + upload.getTitle()
-					.replaceAll("[\\?\\*:\\\\<>\"/]", "") + upload.getFile()
+			fileName = enddir.getAbsolutePath() + '/' + RegexpUtils.getPattern("[\\?\\*:\\\\<>\"/]")
+					.matcher(upload.getTitle())
+					.replaceAll("") + upload.getFile()
 					.getAbsolutePath()
-					.substring(upload.getFile().getAbsolutePath().lastIndexOf("."));
+					.substring(upload.getFile().getAbsolutePath().lastIndexOf('.'));
 		} else {
-			fileName = enddir.getAbsolutePath() + "/" + fileToMove.getName();
+			fileName = enddir.getAbsolutePath() + '/' + fileToMove.getName();
 
 		}
 		return fileName;

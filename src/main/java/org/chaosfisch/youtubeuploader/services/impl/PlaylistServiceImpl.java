@@ -105,7 +105,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Map<Account, List<Playlist>> synchronizePlaylists(final Account[] accounts) throws SystemException {
 		logger.info("Synchronizing playlists.");
 
-		final Map<Account, List<Playlist>> data = new HashMap<>();
+		final Map<Account, List<Playlist>> data = new HashMap<>(accounts.length);
 
 		for (final Account account : accounts) {
 			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
@@ -129,7 +129,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
 		final Feed feed = XStreamHelper.parseFeed(content, Feed.class);
 
-		final List<Playlist> list = new ArrayList<>();
+		final List<Playlist> list = new ArrayList<>(25);
 
 		if (feed.videoEntries == null) {
 			logger.info("No playlists found.");

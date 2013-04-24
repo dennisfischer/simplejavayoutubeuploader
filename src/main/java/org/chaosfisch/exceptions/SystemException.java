@@ -76,10 +76,10 @@ public class SystemException extends Exception {
 		s.println(this);
 		s.println("\t-------------------------------");
 		if (errorCode != null) {
-			s.println("\t" + errorCode + ":" + errorCode.getClass().getName());
+			s.println("\t" + errorCode + ':' + errorCode.getClass().getName());
 		}
-		for (final String key : properties.keySet()) {
-			s.println("\t" + key + "=[" + properties.get(key) + "]");
+		for (final Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
+			s.println('\t' + stringObjectEntry.getKey() + "=[" + stringObjectEntry.getValue() + ']');
 		}
 		s.println("\t-------------------------------");
 		final StackTraceElement[] trace = getStackTrace();

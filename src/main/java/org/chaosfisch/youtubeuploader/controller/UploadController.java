@@ -293,6 +293,7 @@ public class UploadController {
 			@Override
 			public void handle(final WorkerStateEvent event) {
 				try {
+					//TODO MAKE Validation more visible!
 					//noinspection ThrowableResultOfMethodCallIgnored
 					final UploadValidationCode error = UploadValidationCode.valueOf(event.getSource()
 							.getException()
@@ -397,7 +398,7 @@ public class UploadController {
 			return;
 		}
 		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
-		command.template = templates.getValue();
+		command.template = toTemplate(templates.getValue());
 		command.account = uploadAccount.getValue();
 		command.playlists = new Playlist[playlistTargetList.size()];
 		playlistTargetList.toArray(command.playlists);
@@ -706,7 +707,7 @@ public class UploadController {
 		return upload;
 	}
 
-	private Template toTemplate(Template template) {
+	private Template toTemplate(final Template template) {
 		template.setCategory(uploadCategory.getValue());
 		template.setCommentvote(uploadCommentvote.isSelected());
 		template.setComment(uploadComment.getValue());
@@ -778,7 +779,14 @@ public class UploadController {
 			uploadMonetizationController.fromUpload(upload);
 		}
 
-		uploadAccount.getSelectionModel().select(accountDao.fetchOneById(upload.getId()));
+		uploadAccount.getSelectionModel().select(accountDao.findById(upload.getAccountId()));
+
+		if (uploadAccount.getValue() == null) {
+			uploadAccount.getSelectionModel().selectFirst();
+		}
+		if (uploadCategory.getValue() == null) {
+			uploadCategory.getSelectionModel().selectFirst();
+		}
 
 		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
 		while (playlistIterator.hasNext()) {
@@ -793,7 +801,7 @@ public class UploadController {
 		}
 	}
 
-	private void fromTemplate(Template template) {
+	private void fromTemplate(final Template template) {
 		if (template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
 			directoryChooser.setInitialDirectory(template.getDefaultdir());
@@ -826,6 +834,14 @@ public class UploadController {
 			uploadPartnerController.fromTemplate(template);
 		} else {
 			uploadMonetizationController.fromTemplate(template);
+		}
+
+		uploadAccount.getSelectionModel().select(accountDao.findById(template.getAccountId()));
+		if (uploadAccount.getValue() == null) {
+			uploadAccount.getSelectionModel().selectFirst();
+		}
+		if (uploadCategory.getValue() == null) {
+			uploadCategory.getSelectionModel().selectFirst();
 		}
 
 		final Iterator<Playlist> playlistIterator = playlistTargetList.iterator();
@@ -875,7 +891,7 @@ public class UploadController {
 		uploadFile.getSelectionModel().selectFirst();
 		if (uploadTitle.getText() == null || uploadTitle.getText().isEmpty()) {
 			final String file = files.get(0).getAbsolutePath();
-			int index = file.lastIndexOf(".");
+			int index = file.lastIndexOf('.');
 			if (index == -1) {
 				index = file.length();
 			}
@@ -1017,7 +1033,7 @@ public class UploadController {
 		}
 	}
 
-	private final class PlaylistDragDetected implements EventHandler<Event> {
+	private static final class PlaylistDragDetected implements EventHandler<Event> {
 		private final GridView<Playlist>       gridView;
 		private final ObservableList<Playlist> playlists;
 		private final PlaylistGridCell         cell;
@@ -1032,7 +1048,7 @@ public class UploadController {
 		public void handle(final Event event) {
 			final Dragboard db = gridView.startDragAndDrop(TransferMode.ANY);
 			final ClipboardContent content = new ClipboardContent();
-			content.putString(playlists.indexOf(cell.itemProperty().get()) + "");
+			content.putString(String.valueOf(playlists.indexOf(cell.itemProperty().get())));
 			db.setContent(content);
 			event.consume();
 		}

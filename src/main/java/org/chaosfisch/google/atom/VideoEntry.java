@@ -26,7 +26,7 @@ public class VideoEntry {
 	public
 	@XStreamAlias("yt:accessControl")
 	@XStreamImplicit
-	final List<YoutubeAccessControl> accessControl = new ArrayList<>();
+	final List<YoutubeAccessControl> accessControl = new ArrayList<>(10);
 	public
 	@XStreamAlias("app:control")
 	AppControl appControl;

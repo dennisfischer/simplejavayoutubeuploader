@@ -23,7 +23,7 @@ public class Server extends Thread {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Protocol protocol;
 	private final int      port;
-	private final ArrayList<Connection> connections = new ArrayList<>();
+	private final ArrayList<Connection> connections = new ArrayList<>(10);
 
 	public Server(final int port, final Protocol protocol) {
 		super("Server");

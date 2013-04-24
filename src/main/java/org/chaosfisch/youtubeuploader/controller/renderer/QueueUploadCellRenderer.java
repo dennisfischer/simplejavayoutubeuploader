@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -59,8 +58,6 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private ResourceBundle   resources;
 
 	private final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
-
-	private final HashMap<Integer, QueueUploadCell> cells = new HashMap<>();
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -182,7 +179,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				return bytes + " B";
 			}
 			final int exp = (int) (Math.log(bytes) / Math.log(unit));
-			final String pre = ("kMGTPE").charAt(exp - 1) + "";
+			final String pre = String.valueOf(("kMGTPE").charAt(exp - 1));
 			return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 		}
 
