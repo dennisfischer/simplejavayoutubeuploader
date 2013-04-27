@@ -43,8 +43,6 @@
                           text="%menu.addTemplate"/>
                 <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist"
                           text="%menu.addPlaylist"/>
-                <SeparatorMenuItem mnemonicParsing="false"/>
-                <MenuItem mnemonicParsing="false" onAction="#menuConnectServer" text="%menu.connectServer"/>
             </Menu>
         </MenuBar>
         <AnchorPane id="content_pane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"

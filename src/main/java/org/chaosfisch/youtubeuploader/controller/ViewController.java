@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import jfxtras.labs.dialogs.MonologFX;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
@@ -38,6 +39,7 @@ import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ViewController {
@@ -103,11 +105,6 @@ public class ViewController {
 	@FXML
 	void menuClose(final ActionEvent event) {
 		Platform.exit();
-	}
-
-	@FXML
-	void menuConnectServer(final ActionEvent event) {
-		//TODO for @version 3.0.1.0
 	}
 
 	@FXML
@@ -200,7 +197,12 @@ public class ViewController {
 				try {
 					playlistService.addYoutubePlaylist(playlist);
 				} catch (final SystemException e) {
-					e.printStackTrace(); //TODO Handle this exception - show some kind of error dialog
+					final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
+					monologFX.setTitleText(resources.getString("dialog.playlistadd.error.title"));
+					monologFX.setMessage(resources.getString((e.getErrorCode()
+							.getClass()
+							.getName() + '.' + e.getErrorCode().name()).toLowerCase(Locale.getDefault())));
+					monologFX.showDialog();
 				}
 				myDialog.close();
 			}

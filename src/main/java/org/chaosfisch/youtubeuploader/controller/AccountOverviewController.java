@@ -119,7 +119,6 @@ public class AccountOverviewController {
 		}
 	}
 
-	// FIXME JAVAFX 2.X BUG! WORKAROUND
 	private void _triggerPlaylist() {
 		Platform.runLater(new Runnable() {
 

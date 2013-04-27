@@ -802,7 +802,7 @@ public class UploadController {
 	}
 
 	private void fromTemplate(final Template template) {
-		if (template.getDefaultdir().isDirectory()) {
+		if (template.getDefaultdir() != null && template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
 			directoryChooser.setInitialDirectory(template.getDefaultdir());
 		}
@@ -819,7 +819,6 @@ public class UploadController {
 		uploadLicense.setValue(template.getLicense());
 		uploadMobile.setSelected(template.getMobile());
 		uploadRate.setSelected(template.getRate());
-
 		uploadThumbnail.setText(template.getThumbnail());
 		uploadTitle.setText(template.getTitle());
 		uploadVisibility.setValue(template.getVisibility());
@@ -858,6 +857,11 @@ public class UploadController {
 			}
 		}
 
+		playlistSourcezone.setItems(null);
+		playlistSourcezone.setItems(playlistSourceList);
+
+		playlistTargetzone.setItems(null);
+		playlistTargetzone.setItems(playlistTargetList);
 	}
 
 	private void initSelection() {
@@ -1066,7 +1070,12 @@ public class UploadController {
 		@Override
 		public void handle(final MouseEvent event) {
 			if (event.getClickCount() == 2) {
-				movePlaylistToDropzone(playlists.indexOf(cell.itemProperty().get()));
+
+				if (playlists.equals(playlistTargetList)) {
+					removePlaylistFromDropzone(playlists.indexOf(cell.itemProperty().get()));
+				} else if (playlists.equals(playlistSourceList)) {
+					movePlaylistToDropzone(playlists.indexOf(cell.itemProperty().get()));
+				}
 			}
 		}
 	}
