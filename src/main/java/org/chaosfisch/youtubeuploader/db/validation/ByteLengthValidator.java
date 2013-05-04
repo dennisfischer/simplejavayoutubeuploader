@@ -23,7 +23,7 @@ public class ByteLengthValidator implements Validator<String> {
 
 	@Override
 	public boolean validate(final String string) {
-		return string == null || (string.getBytes(Charsets.UTF_8).length > min || string.getBytes(Charsets.UTF_8).length <= max);
+		return string == null || (string.getBytes(Charsets.UTF_8).length > min && string.getBytes(Charsets.UTF_8).length <= max);
 	}
 
 }

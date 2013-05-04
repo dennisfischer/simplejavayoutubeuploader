@@ -66,7 +66,7 @@ public class UploadControllerAddCommand extends Service<Void> {
 					upload.setDescription("");
 				} else {
 					checkArgument(!upload.getDescription().contains("<") && !upload.getDescription()
-																				   .contains(">"), UploadValidationCode.DESCRIPTION_ILLEGAL);
+							.contains(">"), UploadValidationCode.DESCRIPTION_ILLEGAL);
 				}
 				if (upload.getKeywords() == null) {
 					upload.setKeywords("");
@@ -78,12 +78,12 @@ public class UploadControllerAddCommand extends Service<Void> {
 				upload.setMimetype("application/octet-stream");
 
 				if (upload.getDateOfStart() == null || upload.getDateOfStart()
-															 .getTimeInMillis() <= System.currentTimeMillis()) {
+						.getTimeInMillis() <= System.currentTimeMillis()) {
 					upload.setDateOfStart(null);
 				}
 
 				if (upload.getDateOfRelease() == null || upload.getDateOfRelease()
-															   .getTimeInMillis() <= System.currentTimeMillis()) {
+						.getTimeInMillis() <= System.currentTimeMillis()) {
 					upload.setDateOfRelease(null);
 				} else {
 					final GregorianCalendar calendar = new GregorianCalendar();
@@ -101,7 +101,7 @@ public class UploadControllerAddCommand extends Service<Void> {
 					upload.setInprogress(false);
 					upload.setLocked(false);
 					upload.setPauseonfinish(false);
-					uploadDao.insertReturning(upload);
+					upload = uploadDao.insertReturning(upload);
 				} else {
 					upload.setArchived(false);
 					upload.setFailed(false);

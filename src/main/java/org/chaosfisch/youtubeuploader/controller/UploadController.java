@@ -28,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -281,11 +282,7 @@ public class UploadController {
 		command.setOnRunning(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(final WorkerStateEvent workerStateEvent) {
-				final Node[] nodes = new Node[] {uploadAccount, uploadCategory, uploadDescription, uploadFile,
-												 uploadTags, uploadThumbnail, uploadTitle};
-				for (final Node node : nodes) {
-					node.getStyleClass().remove("input-invalid");
-				}
+				resetControlls();
 			}
 		});
 		command.setOnFailed(new EventHandler<WorkerStateEvent>() {
@@ -293,7 +290,6 @@ public class UploadController {
 			@Override
 			public void handle(final WorkerStateEvent event) {
 				try {
-					//TODO MAKE Validation more visible!
 					//noinspection ThrowableResultOfMethodCallIgnored
 					final UploadValidationCode error = UploadValidationCode.valueOf(event.getSource()
 							.getException()
@@ -301,26 +297,74 @@ public class UploadController {
 					switch (error) {
 						case ACCOUNT_NULL:
 							uploadAccount.getStyleClass().add("input-invalid");
+							uploadAccount.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.account"))
+									.build());
+							uploadAccount.getTooltip()
+									.show(uploadAccount, getTooltipX(uploadAccount), getTooltipY(uploadAccount));
 							break;
 						case CATEGORY_NULL:
 							uploadCategory.getStyleClass().add("input-invalid");
+							uploadCategory.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.category"))
+									.build());
+							uploadCategory.getTooltip()
+									.show(uploadCategory, getTooltipX(uploadCategory), getTooltipY(uploadCategory));
 							break;
 						case DESCRIPTION_ILLEGAL:
+							uploadDescription.getStyleClass().add("input-invalid");
+							uploadDescription.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.description.characters"))
+									.build());
+							uploadDescription.getTooltip()
+									.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
+							break;
 						case DESCRIPTION_LENGTH:
 							uploadDescription.getStyleClass().add("input-invalid");
+							uploadDescription.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.description"))
+									.build());
+							uploadDescription.getTooltip()
+									.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
 							break;
 						case FILE_NULL:
 							uploadFile.getStyleClass().add("input-invalid");
+							uploadFile.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.filelist"))
+									.build());
+							uploadFile.getTooltip().show(uploadFile, getTooltipX(uploadFile), getTooltipY(uploadFile));
 							break;
 						case TAGS_ILLEGAL:
 							uploadTags.getStyleClass().add("input-invalid");
+							uploadTags.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.tags"))
+									.build());
+							uploadTags.getTooltip().show(uploadTags, getTooltipX(uploadTags), getTooltipY(uploadTags));
 							break;
 						case THUMBNAIL_SIZE:
 							uploadThumbnail.getStyleClass().add("input-invalid");
+							uploadThumbnail.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.thumbnail"))
+									.build());
+							uploadThumbnail.getTooltip()
+									.show(uploadThumbnail, getTooltipX(uploadThumbnail), getTooltipY(uploadThumbnail));
 							break;
 						case TITLE_ILLEGAL:
 						case TITLE_NULL:
 							uploadTitle.getStyleClass().add("input-invalid");
+							uploadTitle.setTooltip(TooltipBuilder.create()
+									.autoHide(true)
+									.text(resources.getString("validation.title"))
+									.build());
+							uploadTitle.getTooltip()
+									.show(uploadTitle, getTooltipX(uploadTitle), getTooltipY(uploadTitle));
 							break;
 					}
 				} catch (final Exception e) {
@@ -329,6 +373,26 @@ public class UploadController {
 			}
 		});
 		command.start();
+	}
+
+	private void resetControlls() {
+		final Control[] nodes = new Control[] {uploadAccount, uploadCategory, uploadDescription, uploadFile, uploadTags,
+											   uploadThumbnail, uploadTitle};
+		for (final Control node : nodes) {
+			node.getStyleClass().remove("input-invalid");
+			node.setTooltip(null);
+		}
+	}
+
+	private double getTooltipY(final Node node) {
+		final Point2D p = node.localToScene(0.0, 0.0);
+		return p.getY() + node.getScene().getY() + node.getScene().getWindow().getY() + node.getLayoutBounds()
+				.getHeight() - 5;
+	}
+
+	private double getTooltipX(final Node node) {
+		Point2D p = node.localToScene(0.0, 0.0);
+		return p.getX() + node.getScene().getX() + node.getScene().getWindow().getX() - 5;
 	}
 
 	@FXML
@@ -802,6 +866,7 @@ public class UploadController {
 	}
 
 	private void fromTemplate(final Template template) {
+		resetControlls();
 		if (template.getDefaultdir() != null && template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
 			directoryChooser.setInitialDirectory(template.getDefaultdir());
