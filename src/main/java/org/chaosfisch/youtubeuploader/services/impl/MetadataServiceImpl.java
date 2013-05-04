@@ -222,6 +222,14 @@ public class MetadataServiceImpl implements MetadataService {
 		getMetadataThumbnail(content, postMetaDataParams);
 		getMetadataDateOfRelease(postMetaDataParams);
 
+		if (upload.getVisibility().equals(Visibility.PUBLIC) || upload.getVisibility().equals(Visibility.SCHEDULED)) {
+			if (upload.getMessage() != null && !upload.getMessage().isEmpty()) {
+				postMetaDataParams.add(new BasicNameValuePair("creator_share_custom_message", upload.getMessage()));
+				postMetaDataParams.add(new BasicNameValuePair("creator_share_facebook", boolConverter(upload.getFacebook())));
+				postMetaDataParams.add(new BasicNameValuePair("creator_share_twitter", boolConverter(upload.getTwitter())));
+			}
+		}
+
 		if (upload.getMonetizeClaim()) {
 			postMetaDataParams.add(new BasicNameValuePair("enable_monetization", boolConverter(true)));
 			postMetaDataParams.add(new BasicNameValuePair("monetization_style", "ads"));
@@ -322,11 +330,6 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("time_published", "0"));
 				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
 
-				if (upload.getMessage() != null && !upload.getMessage().isEmpty()) {
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_custom_message", upload.getMessage()));
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_facebook", boolConverter(upload.getFacebook())));
-					postMetaDataParams.add(new BasicNameValuePair("creator_share_twitter", boolConverter(upload.getTwitter())));
-				}
 			}
 		}
 	}

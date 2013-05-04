@@ -154,7 +154,6 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		public void onUploadProgress(final UploadProgressEvent uploadProgress) {
 
 			if (!uploadProgress.getUpload().equals(upload)) {
-				System.out.println(uploadProgress.getUpload().getId() + " vs " + upload.getId());
 				return;
 			}
 			if (progressNode instanceof ProgressNodeRenderer) {

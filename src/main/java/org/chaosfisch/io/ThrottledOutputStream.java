@@ -19,7 +19,6 @@ public class ThrottledOutputStream extends FilterOutputStream {
 	private final long     start;
 	private final Throttle throttle;
 
-	// / Constructor.
 	public ThrottledOutputStream(final OutputStream out, final Throttle throttle) {
 		super(out);
 		this.throttle = throttle;
@@ -29,21 +28,35 @@ public class ThrottledOutputStream extends FilterOutputStream {
 
 	private final byte[] oneByte = new byte[1];
 
-	// / Writes a byte. This method will block until the byte is actually
-	// written.
-	// @param b the byte to be written
-	// @exception IOException if an I/O error has occurred
+	/**
+	 * Writes a byte. This method will block until the byte is actually
+	 * written.
+	 *
+	 * @param b
+	 * 		the byte to be written
+	 *
+	 * @throws IOException
+	 * 		if an I/O error has occurred
+	 */
 	@Override
 	public void write(final int b) throws IOException {
 		oneByte[0] = (byte) b;
 		write(oneByte, 0, 1);
 	}
 
-	// / Writes a subarray of bytes.
-	// @param b the data to be written
-	// @param off the start offset in the data
-	// @param len the number of bytes that are written
-	// @exception IOException if an I/O error has occurred
+	/**
+	 * Writes a subarray of bytes.
+	 *
+	 * @param b
+	 * 		the data to be written
+	 * @param off
+	 * 		the start offset in the data
+	 * @param len
+	 * 		the number of bytes that are written
+	 *
+	 * @throws IOException
+	 * 		if an I/O error has occurred
+	 */
 	@Override
 	public void write(final byte[] b, final int off, final int len) throws IOException {
 		// Check the throttle.
