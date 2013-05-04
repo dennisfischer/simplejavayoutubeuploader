@@ -47,7 +47,7 @@ public class UploadControllerAddCommand extends Service<Void> {
 		return new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				final ByteLengthValidator titleValidator = new ByteLengthValidator(1, 100);
+				final ByteLengthValidator titleValidator = new ByteLengthValidator(2, 100);
 				final ByteLengthValidator descriptionValidator = new ByteLengthValidator(0, 5000);
 				final TagValidator tagValidator = new TagValidator();
 				final FileSizeValidator thumbnailValidator = new FileSizeValidator(2097152);

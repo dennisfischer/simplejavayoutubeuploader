@@ -8,6 +8,14 @@
  * Contributors: Dennis Fischer
  */
 
+.tooltip {
+    -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);
+}
+
+.page-corner {
+    -fx-background-color: linear-gradient(from 0% 0% to 50% 50%, #3278fa, #99bcfd);
+}
+
 #refreshPlaylists {
     -fx-graphic: url("images/refresh.png");
 }
@@ -107,18 +115,6 @@
     -fx-background-repeat: no-repeat;
 }
 
-#validation_error {
-    -fx-padding: 5px;
-    -fx-text-fill: rgb(255, 128, 128);
-    -fx-graphic: url("images/cancel.png");
-}
-
-#validation_passed {
-    -fx-padding: 5px;
-    -fx-text-fill: rgb(0, 128, 192);
-    -fx-graphic: url("images/information.png");
-}
-
 .dragentered {
     -fx-border-width: 1px;
     -fx-border-style: solid;
@@ -127,5 +123,5 @@
 }
 
 .input-invalid {
-    -fx-background-color: rgb(232, 102, 102);
+    -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);
 }

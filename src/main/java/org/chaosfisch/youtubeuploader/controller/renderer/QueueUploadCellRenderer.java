@@ -99,6 +99,10 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					.styleClass("queueCellPauseButton")
 					.onAction(new QueueCellPauseButtonHandler(item))
 					.selected(item.getPauseonfinish())
+					.tooltip(TooltipBuilder.create()
+							.autoHide(true)
+							.text(resources.getString("tooltip.queuecellpause"))
+							.build())
 					.build();
 
 			if (item.getArchived()) {
