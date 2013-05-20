@@ -14,6 +14,7 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,27 +26,21 @@ public class ExtendedPlaceholders {
 	/** Custom user defined placeholders */
 	private final HashMap<String, String> map = new HashMap<>(10);
 
-	/** The number which modifies {number} placeholder */
-	private int number;
-
 	/** The playlist for the {playlist} and {number} placeholders */
-	private Playlist playlist;
+	private List<Playlist> playlists;
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
 	 *
 	 * @param file
 	 * 		for {file}
-	 * @param playlist
-	 * 		for {playlist} and {number}
-	 * @param number
-	 * 		for {number} modifications
+	 * @param playlists
+	 * 		for {playlist(i)} and {number(i)(j)}
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public ExtendedPlaceholders(final File file, final Playlist playlist, final int number) {
+	public ExtendedPlaceholders(final File file, final List<Playlist> playlists) {
 		this.file = file;
-		this.playlist = playlist;
-		this.number = number;
+		this.playlists = playlists;
 	}
 
 	public ExtendedPlaceholders() {
@@ -75,21 +70,44 @@ public class ExtendedPlaceholders {
 		if (input == null) {
 			return "";
 		}
-		if (playlist != null) {
-			input = input.replaceAll(TextUtil.getString("autotitle.playlist"), playlist.getTitle());
+		if (!playlists.isEmpty()) {
+			Matcher m = RegexpUtils.getPattern(TextUtil.getString("autotitle.numberPattern")).matcher(input);
 
-			final Pattern p = Pattern.compile(TextUtil.getString("autotitle.numberPattern"));
-			final Matcher m = p.matcher(input);
+			StringBuffer sb = new StringBuffer(input.length() + 100);
+			while (m.find()) {
+				m.appendReplacement(sb, "");
+				final int playlist = m.group(1) == null ? 0 : Integer.parseInt(m.group(1)) - 1;
+				final int number = m.group(2) == null ? 0 : Integer.parseInt(m.group(2));
+				final int zeros = m.group(3) == null ? 1 : Integer.parseInt(m.group(3));
 
-			if (m.find()) {
-				input = m.replaceAll(zeroFill(playlist.getNumber() + 1 + number, Integer.parseInt(m.group(1))));
-				input = input.replaceAll(TextUtil.getString("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
-			} else {
-				input = input.replaceAll(TextUtil.getString("autotitle.numberDefault"), String.valueOf(playlist.getNumber() + 1 + number));
+				if (playlist != -1 && playlists.size() > playlist) {
+					sb.append(zeroFill(playlists.get(playlist).getNumber() + 1 + number, zeros));
+				} else {
+					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+				}
 			}
+			m.appendTail(sb);
+			input = sb.toString();
+
+			m = RegexpUtils.getPattern(TextUtil.getString("autotitle.playlistPattern")).matcher(input);
+			sb = new StringBuffer(input.length() + 100);
+			while (m.find()) {
+				m.appendReplacement(sb, "");
+				final int playlist = m.group(1) == null ? 0 : Integer.parseInt(m.group(1)) - 1;
+
+				if (playlist != -1 && playlists.size() > playlist) {
+					sb.append(playlists.get(playlist).getTitle());
+				} else {
+					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+				}
+			}
+			m.appendTail(sb);
+			input = sb.toString();
 		}
 
-		if (file != null) {
+		if (file != null)
+
+		{
 
 			final String fileName = file.getAbsolutePath();
 
@@ -100,9 +118,12 @@ public class ExtendedPlaceholders {
 			input = input.replaceAll(TextUtil.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
 		}
 
-		for (final Map.Entry<String, String> vars : map.entrySet()) {
+		for (final Map.Entry<String, String> vars : map.entrySet())
+
+		{
 			input = input.replaceAll(Pattern.quote(vars.getKey()), vars.getValue());
 		}
+
 		return input;
 	}
 
@@ -133,29 +154,16 @@ public class ExtendedPlaceholders {
 		this.file = file;
 	}
 
-	/** @return the number */
-	public final int getNumber() {
-		return number;
+	/** @return the playlists */
+	public final List<Playlist> getPlaylists() {
+		return playlists;
 	}
 
 	/**
-	 * @param number
-	 * 		the number to set
+	 * @param playlists
+	 * 		the playlists to set
 	 */
-	public final void setNumber(final int number) {
-		this.number = number;
-	}
-
-	/** @return the playlist */
-	public final Playlist getPlaylist() {
-		return playlist;
-	}
-
-	/**
-	 * @param playlist
-	 * 		the playlist to set
-	 */
-	public final void setPlaylist(final Playlist playlist) {
-		this.playlist = playlist;
+	public final void setPlaylists(final List<Playlist> playlists) {
+		this.playlists = playlists;
 	}
 }

@@ -29,7 +29,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -40,7 +39,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.GridViewBuilder;
@@ -206,16 +204,14 @@ public class UploadController {
 	@FXML
 	private TitledPane x5;
 
-	private final CalendarTextField    started            = new CalendarTextField().withValue(Calendar.getInstance())
+	private final CalendarTextField  started            = new CalendarTextField().withValue(Calendar.getInstance())
 			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
 			.withShowTime(true);
-	private final CalendarTextField    release            = new CalendarTextField().withValue(Calendar.getInstance())
+	private final CalendarTextField  release            = new CalendarTextField().withValue(Calendar.getInstance())
 			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
 			.withShowTime(true);
-	private final ListSpinner<Integer> number             = new ListSpinner<Integer>(-1000, 1000).withValue(0)
-			.withAlignment(Pos.CENTER_RIGHT);
-	private final GridView<Playlist>   playlistSourcezone = GridViewBuilder.create(Playlist.class).build();
-	private final GridView<Playlist>   playlistTargetzone = GridViewBuilder.create(Playlist.class).build();
+	private final GridView<Playlist> playlistSourcezone = GridViewBuilder.create(Playlist.class).build();
+	private final GridView<Playlist> playlistTargetzone = GridViewBuilder.create(Playlist.class).build();
 
 	@Inject
 	private FileChooser      fileChooser;
@@ -624,9 +620,8 @@ public class UploadController {
 	}
 
 	private void initControls() {
-		extendedSettingsGrid.add(number, 1, 1, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(started, 1, 12, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(release, 1, 13, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(started, 1, 11, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
 	}
@@ -660,7 +655,6 @@ public class UploadController {
 			}
 		});
 
-		number.valueProperty().addListener(new PreviewTitleInvalidationListener());
 		uploadFile.getSelectionModel().selectedItemProperty().addListener(new PreviewTitleInvalidationListenerFile());
 
 		uploadFile.setItems(filesList);
@@ -998,7 +992,7 @@ public class UploadController {
 		@Override
 		public String toString(final String value) {
 			extendedPlaceholders.setFile(uploadFile.getValue() == null ? null : uploadFile.getValue());
-			extendedPlaceholders.setNumber(number.getValue());
+			extendedPlaceholders.setPlaylists(playlistTargetList);
 			return extendedPlaceholders.replace(value);
 		}
 	}

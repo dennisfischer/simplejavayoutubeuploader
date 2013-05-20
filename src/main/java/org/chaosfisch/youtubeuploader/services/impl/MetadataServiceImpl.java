@@ -302,7 +302,15 @@ public class MetadataServiceImpl implements MetadataService {
 
 		modified.deleteCharAt(modified.length() - 1);
 		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified.toString()));
-		postMetaDataParams.add(new BasicNameValuePair("title", extractor(content, "name=\"title\" value=\"", "\"")));
+		postMetaDataParams.add(new BasicNameValuePair("title", upload.getTitle()));
+		postMetaDataParams.add(new BasicNameValuePair("description", upload.getDescription() == null
+																	 ? ""
+																	 : upload.getDescription()));
+		postMetaDataParams.add(new BasicNameValuePair("keywords", upload.getKeywords() == null
+																  ? ""
+																  : upload.getKeywords().equals("null")
+																	? ""
+																	: upload.getKeywords().replace(",", " ")));
 
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
@@ -329,7 +337,6 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("publish_timezone", "UTC"));
 				postMetaDataParams.add(new BasicNameValuePair("time_published", "0"));
 				postMetaDataParams.add(new BasicNameValuePair("privacy", "scheduled"));
-
 			}
 		}
 	}

@@ -94,6 +94,11 @@ public class UploadControllerAddCommand extends Service<Void> {
 					upload.setDateOfRelease(calendar);
 				}
 
+				if (!upload.getMonetizePartner() && (upload.getMonetizeOverlay() || upload.getMonetizeTrueview() || upload
+						.getMonetizeProduct())) {
+					upload.setMonetizeClaim(true);
+				}
+
 				if (upload.getId() == null || upload.getId().equals(0)) {
 					upload.setId(null);
 					upload.setArchived(false);

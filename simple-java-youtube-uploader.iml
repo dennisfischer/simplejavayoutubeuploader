@@ -36,6 +36,7 @@
     <orderEntry type="library" exported="" name="jooq-meta-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="jooq-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="jooq-codegen-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="hsqldb-2.2.9" level="project" />
   </component>
 </module>
 

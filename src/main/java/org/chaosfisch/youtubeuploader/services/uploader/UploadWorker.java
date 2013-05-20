@@ -17,7 +17,10 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import org.chaosfisch.exceptions.ErrorCode;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.auth.AuthCode;
@@ -28,12 +31,15 @@ import org.chaosfisch.io.http.RequestSigner;
 import org.chaosfisch.io.http.RequestUtil;
 import org.chaosfisch.util.*;
 import org.chaosfisch.youtubeuploader.ApplicationData;
+import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
+import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.chaosfisch.youtubeuploader.services.EnddirService;
 import org.chaosfisch.youtubeuploader.services.MetadataService;
 import org.chaosfisch.youtubeuploader.services.PlaylistService;
@@ -53,6 +59,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class UploadWorker extends Task<Void> {
 
@@ -110,6 +117,8 @@ public class UploadWorker extends Task<Void> {
 	private UploadDao            uploadDao;
 	@Inject
 	private AccountDao           accountDao;
+	@Inject
+	private ICommandProvider     commandProvider;
 
 	private UploadProgressEvent uploadProgress;
 
@@ -292,7 +301,36 @@ public class UploadWorker extends Task<Void> {
 			throw new FileNotFoundException("Datei existiert nicht.");
 		}
 
-		currentStatus = STATUS.METADATA;
+		final Object monitor = new Object();
+
+		final EventHandler<WorkerStateEvent> eventHandler = new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(final WorkerStateEvent workerStateEvent) {
+				currentStatus = STATUS.METADATA;
+				synchronized (monitor) {
+					monitor.notifyAll();
+				}
+			}
+		};
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final RefreshPlaylistsCommand command = commandProvider.get(RefreshPlaylistsCommand.class);
+				command.accounts = new Account[] {accountDao.findById(upload.getAccountId())};
+				command.setOnFailed(eventHandler);
+				command.setOnSucceeded(eventHandler);
+				command.start();
+			}
+		});
+
+		synchronized (monitor) {
+			try {
+				monitor.wait();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
 	private void metadata() throws SystemException {
@@ -351,7 +389,7 @@ public class UploadWorker extends Task<Void> {
 		try {
 			browserAction();
 		} finally {
-			currentStatus = STATUS.POSTPROCESS;
+			currentStatus = STATUS.DONE;
 		}
 	}
 
@@ -362,7 +400,7 @@ public class UploadWorker extends Task<Void> {
 			logfileAction();
 			enddirAction();
 		} finally {
-			currentStatus = STATUS.DONE;
+			currentStatus = STATUS.POSTPROCESS_BROWSER;
 		}
 	}
 
@@ -416,9 +454,8 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void replacePlaceholders() {
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), null,
-				// upload.parent(Playlist.class),
-				0);// upload.getNumber());
+		final List<Playlist> playlists = playlistDao.fetchByUpload(upload);
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists);
 		upload.setTitle(extendedPlaceholders.replace(upload.getTitle()));
 		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
 		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));
@@ -490,7 +527,7 @@ public class UploadWorker extends Task<Void> {
 						};
 						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
 						uploadDao.update(upload);
-						currentStatus = STATUS.POSTPROCESS_BROWSER;
+						currentStatus = STATUS.POSTPROCESS;
 						break;
 					case 308:
 						// OK, the chunk completed succesfully

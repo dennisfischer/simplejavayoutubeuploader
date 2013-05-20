@@ -29,7 +29,7 @@ public class EnddirServiceImpl implements EnddirService {
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
-		if (upload.getEnddir() == null) {
+		if (upload.getEnddir() == null || !upload.getEnddir().exists()) {
 			return;
 		}
 		if (!upload.getEnddir().isDirectory()) {

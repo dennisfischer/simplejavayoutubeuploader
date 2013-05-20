@@ -22,7 +22,7 @@ public final class SimpleJavaYoutubeUploader {
 		initLocale();
 		initUpdater();
 
-		GuiUploader.initialize(args, new GuiceBindings("youtubeuploader"));
+		GuiUploader.initialize(args, new GuiceBindings("youtubeuploader-v3"));
 	}
 
 	private static void initUpdater() {

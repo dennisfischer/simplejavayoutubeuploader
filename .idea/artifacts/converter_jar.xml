@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="converter:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/converter_jar</output-path>
+    <root id="archive" name="converter_jar.jar">
+      <element id="module-output" name="converter" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/artifacts-23/filestore/org.hsqldb/hsqldb/2.2.9/jar/23365fb055315725a8e69777e3d2e1e8a5d4878f/hsqldb-2.2.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/artifacts-23/filestore/com.h2database/h2/1.3.170/jar/7200aeef0a3c6889d049f4d8f6f26266721ccc48/h2-1.3.170.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/artifacts-23/filestore/com.thoughtworks.xstream/xstream/1.4.3/jar/3427c153a5ad0f2cfa923528ad8be875c8cb1cff/xstream-1.4.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
