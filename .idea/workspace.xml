@@ -12,67 +12,14 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="21a08e30-0f87-41a4-a993-a28723a4cba8" name="Default" comment="Fixed message (yt) setting">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Asset.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Category.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/ClaimOption.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/ClaimType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Comment.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/DBConverter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/License.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Syndication.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/util/TextUtil.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Videoresponse.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Visibility.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/converter_jar.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/hsqldb_2_2_9.xml" />
-      <change type="DELETED" beforePath="D:\Development\simple-java-youtube-uploader\.idea\libraries\jooq_3_0_0_RC3.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\simple-java-youtube-uploader\.idea\libraries\jooq_codegen_3_0_0_RC3.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\simple-java-youtube-uploader\.idea\libraries\jooq_meta_3_0_0_RC3.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/jupidator.jar" afterPath="$PROJECT_DIR$/lib/jupidator.jar" />
+    <list default="true" id="21a08e30-0f87-41a4-a993-a28723a4cba8" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/converter/converter.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationUpdater.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationUpdater.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/EnddirServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/EnddirServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/ExtendedPlaceholders.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/ExtendedPlaceholders.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/SimpleJavaYoutubeUploader.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/SimpleJavaYoutubeUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/view/Upload.fxml" afterPath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/view/Upload.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/UploadController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/command/UploadControllerAddCommand.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/command/UploadControllerAddCommand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" afterPath="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/aopalliance_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/aopalliance_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/resources/application_de.properties" afterPath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/resources/application_de.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/resources/application_en.properties" afterPath="$PROJECT_DIR$/src/main/resources/org/chaosfisch/youtubeuploader/resources/application_en.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/asm_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/asm_3_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/cglib_2_2_1_v20090111.xml" afterPath="$PROJECT_DIR$/.idea/libraries/cglib_2_2_1_v20090111.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/commons_codec_1_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/commons_codec_1_6.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/commons_logging_1_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/commons_logging_1_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/fx_guice_2_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/fx_guice_2_0_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/gson_2_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/gson_2_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/guava_14_0_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/guava_14_0_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/guice_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/guice_3_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/h2_1_3_170.xml" afterPath="$PROJECT_DIR$/.idea/libraries/h2_1_3_170.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/httpclient_4_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/httpclient_4_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/httpcore_4_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/httpcore_4_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/httpmime_4_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/httpmime_4_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/javax_inject_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/javax_inject_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/logback_classic_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/logback_classic_1_0_9.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/logback_core_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/logback_core_1_0_9.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/schema.sql" afterPath="$PROJECT_DIR$/src/main/resources/schema.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simple-java-youtube-uploader.iml" afterPath="$PROJECT_DIR$/simple-java-youtube-uploader.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/slf4j_api_1_7_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/slf4j_api_1_7_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/xmlpull_1_1_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/xmlpull_1_1_3_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/xpp3_min_1_1_4c.xml" afterPath="$PROJECT_DIR$/.idea/libraries/xpp3_min_1_1_4c.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/xstream_1_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/xstream_1_4_3.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1369077364816" ignored="false" />
+    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1369078515475" ignored="false" />
     <file path="/launch4j.xml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366050431865" ignored="false" />
     <file path="/MetadataServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1369076204024" ignored="false" />
     <file path="/PlaylistServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366789384161" ignored="false" />
@@ -260,7 +207,17 @@
     <favorites_list name="simple-java-youtube-uploader" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="ApplicationUpdater.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationUpdater.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="25" column="9" selection-start="884" selection-end="884" vertical-scroll-proportion="0.4047619">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -423,7 +380,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/util/ExtendedPlaceholders.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/impl/MetadataServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Asset.java" />
@@ -439,6 +395,7 @@
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/DBConverter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/DBConverter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationUpdater.java" />
       </list>
     </option>
   </component>
@@ -1199,7 +1156,11 @@
       <created>1367659417511</created>
       <updated>1367659417511</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Added a database converter. Implemented {number} and {playlist} placeholders. Removed number database column. Fixed Metadata postprocessBrowser. Added Playlist refresh before Upload. Adjusted ExtendedPlaceholders.java">
+      <created>1369078527438</created>
+      <updated>1369078527438</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1241,8 +1202,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32901135" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29722518" sideWeight="0.6703786" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31625834" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29722518" sideWeight="0.6837416" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31625834" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5077951" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1296,7 +1257,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed message (yt) setting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a database converter. Implemented {number} and {playlist} placeholders. Removed number database column. Fixed Metadata postprocessBrowser. Added Playlist refresh before Upload. Adjusted ExtendedPlaceholders.java" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1331,6 +1292,7 @@
     <MESSAGE value="Made validation more visible" />
     <MESSAGE value="Added tooltip and fixed minor validation error." />
     <MESSAGE value="Fixed message (yt) setting" />
+    <MESSAGE value="Added a database converter. Implemented {number} and {playlist} placeholders. Removed number database column. Fixed Metadata postprocessBrowser. Added Playlist refresh before Upload. Adjusted ExtendedPlaceholders.java" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1340,20 +1302,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/services/uploader/UploadWorker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="318" column="45" selection-start="10618" selection-end="10618" vertical-scroll-proportion="0.4489796">
-          <folding>
-            <element signature="e#10286#10509#0" expanded="true" />
-            <element signature="e#10302#10320#0" expanded="true" />
-            <element signature="e#10504#10505#0" expanded="true" />
-            <element signature="e#10532#10874#0" expanded="true" />
-            <element signature="e#10869#10870#0" expanded="true" />
-            <element signature="e#18133#18146#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/converter/data/Syndication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="12" selection-start="451" selection-end="451" vertical-scroll-proportion="0.116972476">
@@ -1446,32 +1394,32 @@
         <state line="44" column="35" selection-start="1526" selection-end="1526" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="ALTER TABLE TEMPLATE..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="ALTER TABLE UPLOAD..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..PRESETS..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..QUEUE..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..UPLOADS..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..TEMPLATES..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
-            <marker date="1369078407359" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="ALTER TABLE TEMPLATE..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="ALTER TABLE UPLOAD..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..PRESETS..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..QUEUE..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..UPLOADS..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..TEMPLATES..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
+            <marker date="1369078526843" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
           </folding>
         </state>
       </provider>
@@ -1488,6 +1436,13 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="48" selection-start="729" selection-end="729" vertical-scroll-proportion="0.19495413">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/ApplicationUpdater.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="9" selection-start="884" selection-end="884" vertical-scroll-proportion="0.4047619">
           <folding />
         </state>
       </provider>

@@ -23,8 +23,6 @@ class ApplicationUpdater implements UpdatedApplication {
 			updater.actionDisplay();
 		} catch (final UpdaterException ex) {
 			ex.printStackTrace();
-		} catch (Exception e) {
-			//TODO WAIT FOR FIX
 		}
 	}
 
