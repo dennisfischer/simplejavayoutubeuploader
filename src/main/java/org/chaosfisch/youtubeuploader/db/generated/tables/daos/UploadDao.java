@@ -165,11 +165,6 @@ public class UploadDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuploa
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.DATE_OF_RELEASE, values);
 	}
 
-	/** Fetch records that have <code>NUMBER IN (values)</code> */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByNumber(Integer... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.NUMBER, values);
-	}
-
 	/** Fetch records that have <code>PAUSEONFINISH IN (values)</code> */
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByPauseonfinish(Boolean... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.PAUSEONFINISH, values);

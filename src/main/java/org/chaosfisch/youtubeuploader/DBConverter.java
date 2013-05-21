@@ -19,20 +19,20 @@ import java.sql.*;
 
 public final class DBConverter {
 
-	private static final String OS = System.getProperty("os.name").toLowerCase();
-
-	public static boolean isMac() {
-		return (OS.contains("mac"));
-	}
-
 	public static void main(final String[] args) throws SQLException, IOException {
 
-		if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/db/youtubeuploader.db.data"))) {
-			System.out.println("Converting v2");
-			convertV2();
-		} else if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/youtubeuploader.h2.db"))) {
-			System.out.println("Converting v3");
-			convertV3();
+		try {
+			if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/db/youtubeuploader.db.data"))) {
+				System.out.println("Converting v2");
+				convertV2();
+			} else if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/youtubeuploader.h2.db"))) {
+				System.out.println("Converting v3");
+				convertV3();
+			} else {
+				System.out.println("Nothing to convert");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

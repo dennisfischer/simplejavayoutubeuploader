@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.pojos;
 @SuppressWarnings({"all", "unchecked"})
 public class Template extends org.chaosfisch.youtubeuploader.db.AbstractTemplate implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1496551756;
+	private static final long serialVersionUID = 1211836367;
 
 	private Integer                                              id;
 	private org.chaosfisch.youtubeuploader.db.data.Category      category;
@@ -31,7 +31,6 @@ public class Template extends org.chaosfisch.youtubeuploader.db.AbstractTemplate
 	private String                                               keywords;
 	private Boolean                                              mobile;
 	private String                                               name;
-	private Integer                                              number;
 	private Boolean                                              rate;
 	private org.chaosfisch.youtubeuploader.db.data.Videoresponse videoresponse;
 	private org.chaosfisch.youtubeuploader.db.data.Visibility    visibility;
@@ -143,14 +142,6 @@ public class Template extends org.chaosfisch.youtubeuploader.db.AbstractTemplate
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Integer getNumber() {
-		return this.number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
 	}
 
 	public Boolean getRate() {

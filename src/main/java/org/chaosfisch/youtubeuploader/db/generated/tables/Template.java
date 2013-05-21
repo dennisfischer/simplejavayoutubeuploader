@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @SuppressWarnings({"all", "unchecked"})
 public class Template extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.TemplateRecord> {
 
-	private static final long serialVersionUID = -854881272;
+	private static final long serialVersionUID = 633744547;
 
 	/** The singleton instance of <code>PUBLIC.TEMPLATE</code> */
 	public static final Template TEMPLATE = new Template();
@@ -92,9 +92,6 @@ public class Template extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeuplo
 			.SQLDataType
 			.VARCHAR
 			.length(255), this);
-
-	/** The column <code>PUBLIC.TEMPLATE.NUMBER</code>. */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.TemplateRecord, Integer> NUMBER = createField("NUMBER", org.jooq.impl.SQLDataType.INTEGER, this);
 
 	/** The column <code>PUBLIC.TEMPLATE.RATE</code>. */
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.TemplateRecord, Boolean> RATE = createField("RATE", org.jooq.impl.SQLDataType.BOOLEAN, this);

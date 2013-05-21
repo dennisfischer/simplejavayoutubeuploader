@@ -90,11 +90,6 @@ public class TemplateDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeupl
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.NAME, values);
 	}
 
-	/** Fetch records that have <code>NUMBER IN (values)</code> */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template> fetchByNumber(Integer... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.NUMBER, values);
-	}
-
 	/** Fetch records that have <code>RATE IN (values)</code> */
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template> fetchByRate(Boolean... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.RATE, values);

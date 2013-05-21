@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.pojos;
 @SuppressWarnings({"all", "unchecked"})
 public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo implements java.io.Serializable {
 
-	private static final long serialVersionUID = 1921265921;
+	private static final long serialVersionUID = -1706927986;
 
 	private Integer                                              id;
 	private Boolean                                              archived;
@@ -46,7 +46,6 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 	private java.io.File                                         enddir;
 	private org.chaosfisch.youtubeuploader.db.data.License       license;
 	private java.util.GregorianCalendar                          dateOfRelease;
-	private Integer                                              number;
 	private Boolean                                              pauseonfinish;
 	private String                                               thumbnail;
 	private Boolean                                              facebook;
@@ -273,14 +272,6 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 
 	public void setDateOfRelease(java.util.GregorianCalendar dateOfRelease) {
 		this.dateOfRelease = dateOfRelease;
-	}
-
-	public Integer getNumber() {
-		return this.number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
 	}
 
 	public Boolean getPauseonfinish() {

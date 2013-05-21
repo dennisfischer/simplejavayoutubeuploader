@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @SuppressWarnings({"all", "unchecked"})
 public class Upload extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord> {
 
-	private static final long serialVersionUID = 1341406196;
+	private static final long serialVersionUID = -697705617;
 
 	/** The singleton instance of <code>PUBLIC.UPLOAD</code> */
 	public static final Upload UPLOAD = new Upload();
@@ -186,9 +186,6 @@ public class Upload extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeupload
 			.SQLDataType
 			.TIMESTAMP
 			.asConvertedDataType(new org.chaosfisch.youtubeuploader.db.converter.CalendarConverter()), this);
-
-	/** The column <code>PUBLIC.UPLOAD.NUMBER</code>. */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, Integer> NUMBER = createField("NUMBER", org.jooq.impl.SQLDataType.INTEGER, this);
 
 	/** The column <code>PUBLIC.UPLOAD.PAUSEONFINISH</code>. */
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, Boolean> PAUSEONFINISH = createField("PAUSEONFINISH", org.jooq.impl.SQLDataType.BOOLEAN, this);
@@ -358,7 +355,7 @@ public class Upload extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeupload
 			.impl
 			.SQLDataType
 			.VARCHAR
-			.length(2147483647), this);
+			.length(255), this);
 
 	/** Create a <code>PUBLIC.UPLOAD</code> table reference */
 	public Upload() {
