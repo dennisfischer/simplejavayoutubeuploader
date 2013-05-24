@@ -19,6 +19,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.chaosfisch.youtubeuploader.command.AddAccountCommand;
+import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.guice.CommandProvider;
 
 import java.net.URL;
@@ -43,6 +44,9 @@ public class AccountAddController {
 
 	@Inject
 	private CommandProvider commandProvider;
+
+	@Inject
+	private AccountDao accountDao;
 
 	@FXML
 	void addAccount(final ActionEvent event) {

@@ -71,16 +71,8 @@ public class Uploader {
 		return runningUploads < maxUploads.get();
 	}
 
-	public boolean isRunning() {
-		return inProgressProperty.get() && runningUploads != 0;
-	}
-
 	public void exit() {
 		executorService.shutdownNow();
-	}
-
-	public int getRunningUploads() {
-		return runningUploads;
 	}
 
 	public void start() {

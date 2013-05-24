@@ -22,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -527,6 +528,8 @@ public class UploadController {
 		initSelection();
 
 		eventBus.register(this);
+
+		refreshPlaylists(null);
 	}
 
 	@Subscribe
@@ -540,6 +543,7 @@ public class UploadController {
 					if (uploadAccount.getValue() == null && accountsList.size() > 0) {
 						uploadAccount.getSelectionModel().selectFirst();
 					}
+					refreshPlaylists(null);
 				} else if (modelAddedEvent.getModel() instanceof Template) {
 
 					templatesList.add((Template) modelAddedEvent.getModel());
@@ -655,7 +659,9 @@ public class UploadController {
 			}
 		});
 
-		uploadFile.getSelectionModel().selectedItemProperty().addListener(new PreviewTitleInvalidationListenerFile());
+		final PreviewTitleChangeListener previewTitleChangeListener = new PreviewTitleChangeListener();
+		uploadFile.getSelectionModel().selectedItemProperty().addListener(previewTitleChangeListener);
+		playlistTargetList.addListener(previewTitleChangeListener);
 
 		uploadFile.setItems(filesList);
 		uploadCategory.setItems(categoriesList);
@@ -997,21 +1003,19 @@ public class UploadController {
 		}
 	}
 
-	private final class PreviewTitleInvalidationListener implements InvalidationListener {
+	private final class PreviewTitleChangeListener implements ListChangeListener<Playlist>, ChangeListener<File> {
 
 		@Override
-		public void invalidated(final Observable observable) {
-			final String value = uploadTitle.getText();
-			uploadTitle.setText("");
-			uploadTitle.setText(value);
+		public void onChanged(final Change<? extends Playlist> change) {
+			_change();
 		}
-
-	}
-
-	private final class PreviewTitleInvalidationListenerFile implements ChangeListener<File> {
 
 		@Override
 		public void changed(final ObservableValue<? extends File> observableValue, final File file, final File file2) {
+			_change();
+		}
+
+		private void _change() {
 			final String value = uploadTitle.getText();
 			uploadTitle.setText("");
 			uploadTitle.setText(value);

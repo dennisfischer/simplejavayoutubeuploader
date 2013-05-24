@@ -228,7 +228,7 @@ public class UploadWorker extends Task<Void> {
 				break;
 		}
 		eventBus.post(uploadProgress);
-		cancel();
+		updatePlaylists();
 	}
 
 	private void resumeinfo() throws SystemException {
@@ -301,6 +301,10 @@ public class UploadWorker extends Task<Void> {
 			throw new FileNotFoundException("Datei existiert nicht.");
 		}
 
+		updatePlaylists();
+	}
+
+	private void updatePlaylists() {
 		final Object monitor = new Object();
 
 		final EventHandler<WorkerStateEvent> eventHandler = new EventHandler<WorkerStateEvent>() {
