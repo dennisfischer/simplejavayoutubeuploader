@@ -10,19 +10,34 @@
 
 package org.chaosfisch.youtubeuploader;
 
-import com.panayotis.jupidator.ApplicationInfo;
 import com.panayotis.jupidator.UpdatedApplication;
 import com.panayotis.jupidator.Updater;
 import com.panayotis.jupidator.UpdaterException;
+
+import java.io.File;
+import java.net.URISyntaxException;
 
 class ApplicationUpdater implements UpdatedApplication {
 
 	public ApplicationUpdater() {
 		try {
-			final Updater updater = new Updater(ApplicationData.BASEURL, new ApplicationInfo(ApplicationData.RELEASE, ApplicationData.VERSION), this);
+			final Updater updater = new Updater(ApplicationData.BASEURL, getApplicationDirectory(), ApplicationData.DATA_DIR, ApplicationData.RELEASE, ApplicationData.VERSION, this);
 			updater.actionDisplay();
-		} catch (final UpdaterException ex) {
+		} catch (final URISyntaxException | UpdaterException ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	private String getApplicationDirectory() throws URISyntaxException {
+
+		final File file = new File(ApplicationUpdater.class.getProtectionDomain()
+				.getCodeSource()
+				.getLocation()
+				.toURI());
+		if (file.isDirectory()) {
+			return file.getAbsolutePath();
+		} else {
+			return file.getParentFile().getAbsolutePath();
 		}
 	}
 

@@ -12,6 +12,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -19,7 +21,7 @@ apply plugin: 'application'
 
 buildscript {
     buildDir = 'out'
-    version = '3.0.0.7'
+    version = '3.0.0.8'
 }
 
 allprojects
@@ -89,27 +91,6 @@ task javaFXPackager(type: Exec) {
     ]
 }
 
-task javaFXPackagerConverter(type: Exec) {
-    commandLine = [
-            'C:/Program Files/Java/jdk1.7.0_21/bin/javafxpackager.exe',
-            '-createjar',
-            '-srcdir',
-            sourceSets.main.output.classesDir,
-            '-outdir',
-            jar.destinationDir,
-            '-outfile',
-            'Converter.jar',
-            '-appclass',
-            'org.chaosfisch.youtubeuploader.DBConverter',
-            '-nocss2bin',
-            '-classpath',
-            configurations.runtime.collect { "lib/" + it.name }.join(' ').concat(" SimpleJavaYoutubeUploader.jar"),
-            '-manifestAttrs',
-            'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
-                    'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
-    ]
-}
-
 task copyTask(type: Copy) {
     from sourceSets.main.output.resourcesDir
     into sourceSets.main.output.classesDir
@@ -118,7 +99,6 @@ task copyTask(type: Copy) {
 task distribute(type: Zip) {
     baseName 'simple-java-youtube-uploader'
     from(jar)
-    from("$buildDir/libs/Converter.jar")
     from("$buildDir/launch4j")
     into("lib") {
         from(project.configurations.runtime)
@@ -127,7 +107,5 @@ task distribute(type: Zip) {
 
 
 distribute.dependsOn javaFXPackager
-distribute.dependsOn javaFXPackagerConverter
 distribute.dependsOn launch4j
 javaFXPackager.dependsOn copyTask
-javaFXPackagerConverter.dependsOn copyTask

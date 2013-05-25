@@ -12,8 +12,11 @@ package org.chaosfisch.youtubeuploader;
 
 import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 public final class SimpleJavaYoutubeUploader {
 
@@ -21,8 +24,21 @@ public final class SimpleJavaYoutubeUploader {
 
 		initLocale();
 		initUpdater();
+		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
+		if (prefs.getInt("version", 0) <= 6) {
+			try {
+				DBConverter.main(args);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			prefs.putInt("version", ApplicationData.RELEASE);
+		}
 		GuiUploader.initialize(args, new GuiceBindings("youtubeuploader-v3"));
+
 	}
 
 	private static void initUpdater() {
