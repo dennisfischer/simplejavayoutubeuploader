@@ -28,6 +28,7 @@ import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.ApplicationData;
+import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class ViewController {
 
@@ -110,6 +112,17 @@ public class ViewController {
 	@FXML
 	void menuOpen(final ActionEvent event) {
 		uploadController.openFiles(event);
+	}
+
+	@FXML
+	void migrateDatabase(ActionEvent event) {
+		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+		prefs.putInt("version", 0);
+
+		final MonologFX monologFX = new MonologFX(MonologFX.Type.INFO);
+		monologFX.setTitleText(resources.getString("dialog.migratedatabase.title"));
+		monologFX.setMessage(resources.getString("dialog.migratedatabase.text"));
+		monologFX.showDialog();
 	}
 
 	@Inject

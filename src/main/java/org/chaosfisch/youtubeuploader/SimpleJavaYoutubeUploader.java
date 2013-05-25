@@ -29,9 +29,7 @@ public final class SimpleJavaYoutubeUploader {
 		if (prefs.getInt("version", 0) <= 6) {
 			try {
 				DBConverter.main(args);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (SQLException | IOException e) {
 				e.printStackTrace();
 			}
 
