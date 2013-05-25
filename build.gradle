@@ -10,6 +10,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -82,7 +84,7 @@ task javaFXPackager(type: Exec) {
             '-classpath',
             configurations.runtime.collect { "lib/" + it.name }.join(' '),
             '-manifestAttrs',
-            'Implementation-Title=Simple Java Youtube Uploader 3.0 Nightly,Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
+            'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
                     'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
     ]
 }
@@ -103,7 +105,7 @@ task javaFXPackagerConverter(type: Exec) {
             '-classpath',
             configurations.runtime.collect { "lib/" + it.name }.join(' ').concat(" SimpleJavaYoutubeUploader.jar"),
             '-manifestAttrs',
-            'Implementation-Title=Simple Java Youtube Uploader 3.0 Nightly,Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
+            'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
                     'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
     ]
 }
