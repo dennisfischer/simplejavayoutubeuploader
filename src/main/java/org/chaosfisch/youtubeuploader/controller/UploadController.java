@@ -260,6 +260,9 @@ public class UploadController {
 		final Upload upload = uploadStore == null ? new Upload() : uploadStore;
 		toUpload(upload);
 
+		if (uploadEnddir.getText() == null || uploadEnddir.getText().isEmpty()) {
+			upload.setEnddir(null);
+		}
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
 		command.upload = upload;
 		command.account = uploadAccount.getValue();

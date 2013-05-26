@@ -11,6 +11,8 @@
 package org.chaosfisch.youtubeuploader;
 
 import org.chaosfisch.youtubeuploader.converter.data.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,20 +21,22 @@ import java.sql.*;
 
 public final class DBConverter {
 
+	private static final Logger logger = LoggerFactory.getLogger(DBConverter.class);
+
 	public static void main(final String[] args) throws SQLException, IOException {
 
 		try {
 			if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/db/youtubeuploader.db.data"))) {
-				System.out.println("Converting v2");
+				logger.info("Converting v2");
 				convertV2();
 			} else if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/youtubeuploader.h2.db"))) {
-				System.out.println("Converting v3");
+				logger.info("Converting v3");
 				convertV3();
 			} else {
-				System.out.println("Nothing to convert");
+				logger.info("Nothing to convert");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Conversion error", e);
 		}
 	}
 
@@ -40,8 +44,7 @@ public final class DBConverter {
 		try {
 			Class.forName("org.h2.Driver");
 		} catch (Exception e) {
-			System.out.println("ERROR: failed to load H2 JDBC driver.");
-			e.printStackTrace();
+			logger.error("ERROR: failed to load H2 JDBC driver.", e);
 			return null;
 		}
 		final File schema = new File(ApplicationData.HOME + "/SimpleJavaYoutubeUploader/schema.sql");
@@ -86,44 +89,32 @@ public final class DBConverter {
 		return con;
 	}
 
-	private static void convertV2() {
+	private static void convertV2() throws SQLException, IOException {
 		try {
-			try {
-				Class.forName("org.hsqldb.jdbcDriver");
-			} catch (Exception e) {
-				System.out.println("ERROR: failed to load HSQLDB JDBC driver.");
-				e.printStackTrace();
-				return;
-			}
-
-			try {
-				Class.forName("org.h2.Driver");
-			} catch (Exception e) {
-				System.out.println("ERROR: failed to load H2 JDBC driver.");
-				e.printStackTrace();
-				return;
-			}
-
-			final Connection connectionOld = DriverManager.getConnection("jdbc:hsqldb:file:" + ApplicationData.DATA_DIR + "/db/youtubeuploader.db;encoding=UTF-8;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish;", "sa", "");
-			final Connection connectionNew = getNewConnection();
-
-			transferAccountsV2(connectionOld, connectionNew);
-			transferTemplatesV2(connectionOld, connectionNew);
-			transferUploadsV2(connectionOld, connectionNew);
-			connectionNew.close();
-			connectionOld.close();
+			Class.forName("org.hsqldb.jdbcDriver");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("ERROR: failed to load HSQLDB JDBC driver.", e);
 			return;
 		}
 
 		try {
-			copyFolder(new File(ApplicationData.DATA_DIR + "/db"), new File(ApplicationData.DATA_DIR + "/db_backup"));
-			deleteRecursive(new File(ApplicationData.DATA_DIR + "/db"));
-		} catch (IOException e) {
-			e.printStackTrace();
+			Class.forName("org.h2.Driver");
+		} catch (Exception e) {
+			logger.error("ERROR: failed to load H2 JDBC driver.", e);
+			return;
 		}
 
+		final Connection connectionOld = DriverManager.getConnection("jdbc:hsqldb:file:" + ApplicationData.DATA_DIR + "/db/youtubeuploader.db;encoding=UTF-8;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish;", "sa", "");
+		final Connection connectionNew = getNewConnection();
+
+		transferAccountsV2(connectionOld, connectionNew);
+		transferTemplatesV2(connectionOld, connectionNew);
+		transferUploadsV2(connectionOld, connectionNew);
+		connectionNew.close();
+		connectionOld.close();
+
+		copyFolder(new File(ApplicationData.DATA_DIR + "/db"), new File(ApplicationData.DATA_DIR + "/db_backup"));
+		deleteRecursive(new File(ApplicationData.DATA_DIR + "/db"));
 	}
 
 	private static void transferAccountsV2(final Connection connectionOld, final Connection connectionNew) throws SQLException {
@@ -276,8 +267,7 @@ public final class DBConverter {
 		try {
 			Class.forName("org.h2.Driver");
 		} catch (Exception e) {
-			System.out.println("ERROR: failed to load H2 JDBC driver.");
-			e.printStackTrace();
+			logger.error("ERROR: failed to load H2 JDBC driver.", e);
 			return;
 		}
 		final Connection connectionOld = DriverManager.getConnection("jdbc:h2:" + ApplicationData.DATA_DIR + "/youtubeuploader", "username", "");

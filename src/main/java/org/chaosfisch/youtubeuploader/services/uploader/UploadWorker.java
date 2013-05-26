@@ -224,6 +224,7 @@ public class UploadWorker extends Task<Void> {
 				setFailedStatus(UploadCode.USER_ABORT);
 				break;
 			default:
+				logger.info("Unknow error: {} ::::::: {}", currentStatus.getErrorCode(), upload.getStatus());
 				setFailedStatus(UploadCode.UNKNOWN_ERROR);
 				break;
 		}
