@@ -19,7 +19,7 @@ import java.net.Socket;
 public class Client {
 
 	private final Connection connection;
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(Client.class);
 
 	public Client(final String ip, final int port, final Protocol protocol) throws IOException {
 

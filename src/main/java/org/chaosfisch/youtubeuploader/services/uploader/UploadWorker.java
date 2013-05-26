@@ -328,6 +328,7 @@ public class UploadWorker extends Task<Void> {
 			}
 		});
 
+		//noinspection SynchronizationOnLocalVariableOrMethodParameter
 		synchronized (monitor) {
 			try {
 				monitor.wait();

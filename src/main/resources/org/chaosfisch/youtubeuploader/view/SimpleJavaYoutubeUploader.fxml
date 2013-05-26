@@ -43,9 +43,7 @@
                           text="%menu.addPlaylist"/>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu.help">
-                <items>
-                    <MenuItem mnemonicParsing="false" onAction="#migrateDatabase" text="%menu.migratedatabase"/>
-                </items>
+                <MenuItem mnemonicParsing="false" onAction="#migrateDatabase" text="%menu.migratedatabase"/>
             </Menu>
         </MenuBar>
         <AnchorPane id="content_pane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"

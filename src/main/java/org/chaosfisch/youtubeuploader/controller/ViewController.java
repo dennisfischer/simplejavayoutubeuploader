@@ -115,7 +115,7 @@ public class ViewController {
 	}
 
 	@FXML
-	void migrateDatabase(ActionEvent event) {
+	void migrateDatabase(final ActionEvent event) {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 		prefs.putInt("version", 0);
 

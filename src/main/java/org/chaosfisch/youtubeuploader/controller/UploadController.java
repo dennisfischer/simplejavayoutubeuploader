@@ -365,6 +365,7 @@ public class UploadController {
 							break;
 					}
 				} catch (final Exception e) {
+					//noinspection ThrowableResultOfMethodCallIgnored
 					event.getSource().getException().printStackTrace();
 				}
 			}
@@ -388,7 +389,7 @@ public class UploadController {
 	}
 
 	private double getTooltipX(final Node node) {
-		Point2D p = node.localToScene(0.0, 0.0);
+		final Point2D p = node.localToScene(0.0, 0.0);
 		return p.getX() + node.getScene().getX() + node.getScene().getWindow().getX() - 5;
 	}
 

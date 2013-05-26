@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="jooq-meta-3.0.1">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.jooq/jooq-meta/3.0.1/jar/abeee97a4a08414fe80c5a5c11fa3f786843c624/jooq-meta-3.0.1.jar!/" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.jooq/jooq-meta/3.0.1/source/a44b783595770faf2cee487e4f0456494b6b2de5/jooq-meta-3.0.1-sources.jar!/" />

@@ -121,7 +121,7 @@ public final class DBConverter {
 			copyFolder(new File(ApplicationData.DATA_DIR + "/db"), new File(ApplicationData.DATA_DIR + "/db_backup"));
 			deleteRecursive(new File(ApplicationData.DATA_DIR + "/db"));
 		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			e.printStackTrace();
 		}
 
 	}
@@ -437,9 +437,10 @@ public final class DBConverter {
 		if (src.isDirectory()) {
 
 			//if directory not exists, create it
-			if (!dest.exists()) {
-				dest.mkdir();
+			if (!dest.exists() && dest.mkdir()) {
 				System.out.println("Directory copied from " + src + "  to " + dest);
+			} else {
+				return;
 			}
 
 			//list all the directory contents
@@ -456,20 +457,22 @@ public final class DBConverter {
 		} else {
 			//if file, then copy it
 			//Use bytes stream to support all file types
-			final InputStream in = new FileInputStream(src);
-			final OutputStream out = new FileOutputStream(dest);
 
-			final byte[] buffer = new byte[1024];
+			try (final InputStream in = new FileInputStream(src);
+				 final OutputStream out = new FileOutputStream(dest)) {
 
-			int length;
-			//copy the file content in bytes
-			while ((length = in.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
+				final byte[] buffer = new byte[1024];
+
+				int length;
+				//copy the file content in bytes
+				while ((length = in.read(buffer)) > 0) {
+					out.write(buffer, 0, length);
+				}
+
+				in.close();
+				out.close();
+				System.out.println("File copied from " + src + " to " + dest);
 			}
-
-			in.close();
-			out.close();
-			System.out.println("File copied from " + src + " to " + dest);
 		}
 	}
 
@@ -478,8 +481,11 @@ public final class DBConverter {
 			throw new FileNotFoundException(path.getAbsolutePath());
 		}
 		if (path.isDirectory()) {
-			for (final File f : path.listFiles()) {
-				deleteRecursive(f);
+			final File[] files = path.listFiles();
+			if (files != null) {
+				for (final File f : files) {
+					deleteRecursive(f);
+				}
 			}
 		}
 		path.deleteOnExit();
