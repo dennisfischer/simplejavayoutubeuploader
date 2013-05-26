@@ -319,9 +319,9 @@ public class MetadataServiceImpl implements MetadataService {
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
 		//noinspection EmptyTryBlock
 		try (Response response = request.execute()) {
-			System.out.println(response.getContent());
+			logger.info(response.getContent());
 		} catch (SystemException e) {
-			e.printStackTrace();
+			logger.warn("Metadata not set", e);
 		}
 	}
 
