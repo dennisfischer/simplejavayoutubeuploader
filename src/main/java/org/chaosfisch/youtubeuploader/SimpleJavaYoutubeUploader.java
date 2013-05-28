@@ -10,8 +10,6 @@
 
 package org.chaosfisch.youtubeuploader;
 
-import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -35,7 +33,7 @@ public final class SimpleJavaYoutubeUploader {
 
 			prefs.putInt("version", ApplicationData.RELEASE);
 		}
-		GuiUploader.initialize(args, new GuiceBindings("youtubeuploader-v3"));
+		GuiUploader.initialize(args);
 
 	}
 

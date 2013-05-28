@@ -16,6 +16,8 @@ import org.apache.http.ProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
@@ -33,7 +35,10 @@ public final class RequestUtil {
 	public static final HttpContext context = new BasicHttpContext();
 
 	static {
-		httpClient = new DefaultHttpClient();
+		final PoolingClientConnectionManager cxMgr = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault());
+		cxMgr.setMaxTotal(10);
+		cxMgr.setDefaultMaxPerRoute(10);
+		httpClient = new DefaultHttpClient(cxMgr);
 		httpClient.setRedirectStrategy(new DefaultRedirectStrategy() {
 			@Override
 			public boolean isRedirected(final HttpRequest request, final HttpResponse response, final HttpContext context) {

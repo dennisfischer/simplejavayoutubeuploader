@@ -11,6 +11,7 @@
 package org.chaosfisch.youtubeuploader.controller;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -275,8 +276,6 @@ public class UploadController {
 				// Cleanup (reset form)
 				filesList.remove(uploadFile.getValue());
 				uploadFile.getSelectionModel().selectNext();
-
-				_reset();
 			}
 		});
 		command.setOnRunning(new EventHandler<WorkerStateEvent>() {
@@ -780,9 +779,12 @@ public class UploadController {
 		template.setCommentvote(uploadCommentvote.isSelected());
 		template.setComment(uploadComment.getValue());
 		template.setDescription(uploadDescription.getText());
-		template.setDefaultdir(defaultDirProperty.getValue());
+		template.setDefaultdir(Strings.isNullOrEmpty(uploadDefaultdir.getText())
+							   ? null
+							   : defaultDirProperty.getValue());
 		template.setEmbed(uploadEmbed.isSelected());
-		template.setEnddir(enddirProperty.getValue());
+
+		template.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
 		template.setKeywords(uploadTags.getText());
 		template.setLicense(uploadLicense.getValue());
 
@@ -895,6 +897,8 @@ public class UploadController {
 		uploadFacebook.setSelected(template.getFacebook());
 		uploadTwitter.setSelected(template.getTwitter());
 		uploadMessage.setText(template.getMessage());
+		defaultDirProperty.setValue(template.getDefaultdir());
+		enddirProperty.setValue(template.getEnddir());
 
 		monetizePartner.setSelected(template.getMonetizePartner());
 

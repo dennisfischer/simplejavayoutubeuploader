@@ -29,6 +29,7 @@ import javafx.stage.WindowEvent;
 import jfxtras.labs.dialogs.MonologFXButton;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
+import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
 import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 import org.jooq.Configuration;
 import org.jooq.impl.DSL;
@@ -42,7 +43,6 @@ import java.util.ResourceBundle;
 
 public class GuiUploader extends GuiceApplication {
 	private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
-	private static Module injectionModule;
 
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
@@ -64,7 +64,7 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void init(final List<Module> modules) throws Exception {
-		modules.add(injectionModule);
+		modules.add(new GuiceBindings("youtubeuploader-v3"));
 	}
 
 	private void initApplication(final Stage primaryStage) {
@@ -77,7 +77,7 @@ public class GuiUploader extends GuiceApplication {
 
 			try (InputStream iconInputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/film.png")) {
 				StageBuilder.create()
-						.title(resources.getString("application.title"))
+						.title(resources.getString("application.title") + ' ' + ApplicationData.VERSION)
 						.icons(new Image(iconInputStream))
 						.minHeight(640)
 						.height(640)
@@ -101,8 +101,7 @@ public class GuiUploader extends GuiceApplication {
 		uploader.exit();
 	}
 
-	public static void initialize(final String[] args, final Module injectionModule) {
-		GuiUploader.injectionModule = injectionModule;
+	public static void initialize(final String[] args) {
 		launch(args);
 	}
 

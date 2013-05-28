@@ -313,7 +313,7 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(20, Types.VARCHAR);
 			stmtUploadInsert.setObject(21, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtUploadInsert.setString(22, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equals("youtube")
+			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube")
 															? 0
 															: 1].name());
 			stmtUploadInsert.setNull(24, Types.TIMESTAMP);
@@ -376,7 +376,7 @@ public final class DBConverter {
 			stmtPresetInsert.setString(12, Visibility.values()[rsTemplate.getInt("VISIBILITY")].name());
 			stmtPresetInsert.setObject(13, rsTemplate.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtPresetInsert.setString(14, rsTemplate.getString("ENDDIR"));
-			stmtPresetInsert.setString(15, License.values()[rsTemplate.getString("LICENSE").equals("youtube")
+			stmtPresetInsert.setString(15, License.values()[rsTemplate.getString("LICENSE").equalsIgnoreCase("youtube")
 															? 0
 															: 1].name());
 			stmtPresetInsert.setString(16, rsTemplate.getString("TITLE"));
