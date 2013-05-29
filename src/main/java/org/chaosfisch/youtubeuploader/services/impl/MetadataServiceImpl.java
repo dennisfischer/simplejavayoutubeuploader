@@ -11,6 +11,7 @@
 package org.chaosfisch.youtubeuploader.services.impl;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
@@ -85,8 +86,6 @@ public class MetadataServiceImpl implements MetadataService {
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(upload.getRate())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("syndicate", PermissionStringConverter.convertBoolean(upload.getMobile())));
-		videoEntry.accessControl
 				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(upload.getCommentvote())));
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(upload.getVideoresponse()
@@ -96,10 +95,6 @@ public class MetadataServiceImpl implements MetadataService {
 						.ordinal())));
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(upload.getVisibility() == Visibility.PUBLIC)));
-
-		if (upload.getComment() == Comment.FRIENDS_ONLY) {
-			videoEntry.accessControl.add(new YoutubeAccessControl("comment", "allowed", "group", "friends"));
-		}
 
 		videoEntry.mediaGroup.title = upload.getTitle();
 		videoEntry.mediaGroup.description = upload.getDescription();
@@ -119,10 +114,11 @@ public class MetadataServiceImpl implements MetadataService {
 					}
 
 					@Override
-					protected void writeText(final QuickWriter writer, final String text) {
+					protected void writeText(final QuickWriter writer, String text) {
+						text = Strings.nullToEmpty(text).equals("null") ? "" : Strings.nullToEmpty(text);
 						if (isCDATA) {
 							writer.write("<![CDATA[");
-							writer.write(text == null || text.equals("null") ? "" : text);
+							writer.write(text);
 							writer.write("]]>");
 						} else {
 							super.writeText(writer, text);
@@ -242,17 +238,17 @@ public class MetadataServiceImpl implements MetadataService {
 				postMetaDataParams.add(new BasicNameValuePair("allow_syndication", boolConverter(upload.getMonetizeSyndication() == Syndication.GLOBAL)));
 			}
 			if (upload.getMonetizePartner()) {
-				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getMonetizeClaimtype() == ClaimType.AUDIO_VISUAL
-																			? "B"
-																			: upload.getMonetizeClaimtype() == ClaimType.VISUAL
-																			  ? "V"
-																			  : "A"));
+				postMetaDataParams.add(new BasicNameValuePair("claim_type", upload.getMonetizeClaimtype() == ClaimType.AUDIO_VISUAL ?
+																			"B" :
+																			upload.getMonetizeClaimtype() == ClaimType.VISUAL ?
+																			"V" :
+																			"A"));
 
-				final String toFind = upload.getMonetizeClaimoption() == ClaimOption.MONETIZE
-									  ? "Monetize in all countries"
-									  : upload.getMonetizeClaimoption() == ClaimOption.TRACK
-										? "Track in all countries"
-										: "Block in all countries";
+				final String toFind = upload.getMonetizeClaimoption() == ClaimOption.MONETIZE ?
+									  "Monetize in all countries" :
+									  upload.getMonetizeClaimoption() == ClaimOption.TRACK ?
+									  "Track in all countries" :
+									  "Block in all countries";
 
 				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);
@@ -270,9 +266,10 @@ public class MetadataServiceImpl implements MetadataService {
 				final String assetName = upload.getMonetizeAsset().name().toLowerCase(Locale.getDefault());
 
 				postMetaDataParams.add(new BasicNameValuePair("asset_type", assetName));
-				postMetaDataParams.add(new BasicNameValuePair(assetName + "_custom_id", upload.getMonetizeId().isEmpty()
-																						? upload.getVideoid()
-																						: upload.getMonetizeId()));
+				postMetaDataParams.add(new BasicNameValuePair(assetName + "_custom_id", upload.getMonetizeId()
+																								.isEmpty() ?
+																						upload.getVideoid() :
+																						upload.getMonetizeId()));
 
 				postMetaDataParams.add(new BasicNameValuePair(assetName + "_notes", upload.getMonetizeNotes()));
 				postMetaDataParams.add(new BasicNameValuePair(assetName + "_tms_id", upload.getMonetizeTmsid()));
@@ -303,14 +300,32 @@ public class MetadataServiceImpl implements MetadataService {
 		modified.deleteCharAt(modified.length() - 1);
 		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified.toString()));
 		postMetaDataParams.add(new BasicNameValuePair("title", upload.getTitle()));
-		postMetaDataParams.add(new BasicNameValuePair("description", upload.getDescription() == null
-																	 ? ""
-																	 : upload.getDescription()));
-		postMetaDataParams.add(new BasicNameValuePair("keywords", upload.getKeywords() == null
-																  ? ""
-																  : upload.getKeywords().equals("null")
-																	? ""
-																	: upload.getKeywords().replace(",", " ")));
+		postMetaDataParams.add(new BasicNameValuePair("description", Strings.nullToEmpty(upload.getDescription())));
+		postMetaDataParams.add(new BasicNameValuePair("keywords", Strings.nullToEmpty(upload.getKeywords())
+				.replace(",", " ")));
+
+		postMetaDataParams.add(new BasicNameValuePair("allow_comments", upload.getComment().equals(Comment.DENIED) ?
+																		"no" :
+																		"yes"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_comments_detail", upload.getComment()
+																					   .equals(Comment.ALLOWED) ?
+																			   "all" :
+																			   "approval"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_comment_ratings", upload.getCommentvote() ? "yes" : "no"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_ratings", upload.getRate() ? "yes" : "no"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_responses", upload.getVideoresponse()
+																				 .equals(Videoresponse.DENIED) ?
+																		 "no" :
+																		 "yes"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_responses_detail", upload.getVideoresponse()
+																						.equals(Videoresponse.ALLOWED) ?
+																				"all" :
+																				"approval"));
+		postMetaDataParams.add(new BasicNameValuePair("reuse", upload.getLicense().equals(License.YOUTUBE) ?
+															   "all_rights_reserved" :
+															   "creative_commons"));
+		postMetaDataParams.add(new BasicNameValuePair("allow_embedding", upload.getEmbed() ? "yes" : "no"));
+		postMetaDataParams.add(new BasicNameValuePair("creator_share_feeds", "yes"));
 
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));

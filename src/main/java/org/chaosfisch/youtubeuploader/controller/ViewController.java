@@ -139,7 +139,6 @@ public class ViewController {
 	static {
 		standardTemplate = new Template();
 		standardTemplate.setEmbed(true);
-		standardTemplate.setMobile(true);
 		standardTemplate.setCommentvote(true);
 		standardTemplate.setRate(true);
 		standardTemplate.setComment(Comment.ALLOWED);

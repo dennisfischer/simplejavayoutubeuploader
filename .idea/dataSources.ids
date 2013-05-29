@@ -178,7 +178,7 @@
     </libraries>
     <schema name="PUBLIC" catalog="YOUTUBEUPLOADER-V3"/>
     <table name="ACCOUNT" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfRjQ4NzdERkFfRDJERV80NDIyX0IyNDFfNzA2QUNDOTdCRDcyKQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfNzZBOUFEMzJfRDgxNl80MTdFXzhCRDhfRjJGNDQzQ0Y2QzE1KQ==" autoIncrement="true"/>
       <column name="NAME" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12" def="J0NBU0VXSEVOKChOQU1FIElTIE5VTEwpLCAnJywgTkFNRSkn"/>
       <column name="PASSWORD" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12" def="J0NBU0VXSEVOKChQQVNTV09SRCBJUyBOVUxMKSwgJycsIFBBU1NXT1JEKSc="/>
       <primary-key name="CONSTRAINT_E" columns="ID"/>
@@ -187,7 +187,7 @@
       <exported-key name="CONSTRAINT_1D4" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="ACCOUNT_ID"/>
     </table>
     <table name="PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfRUY4NDEyN0ZfQzBFQl80Qjk0X0ExOThfRTRERDUyQzEwMTYzKQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfOUE5RDcxNjlfRDE3Rl80MUREXzgwNENfNDBENUI3RkRDMjMzKQ==" autoIncrement="true"/>
       <column name="PKEY" sqlType="VARCHAR" length="255" precision="0" nullable="false" jdbcType="12"/>
       <column name="PRIVATE" sqlType="BOOLEAN" length="1" precision="0" nullable="true" jdbcType="16" def="Q0FTRVdIRU4oKFBSSVZBVEUgSVMgTlVMTCksIEZBTFNFLCBQUklWQVRFKQ=="/>
       <column name="TITLE" sqlType="VARCHAR" length="255" precision="0" nullable="false" jdbcType="12"/>
@@ -205,7 +205,7 @@
       <index name="CONSTRAINT_36_INDEX_9" unique="false" columns="ACCOUNT_ID"/>
     </table>
     <table name="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfQ0NDREUwOTZfODc3Rl80ODRDXzg4OTJfQ0FCN0EyN0Y2MzZCKQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfNzdGRDdFNDRfN0I5MV80Q0JDX0E4MTdfNDA5RUQ2Njc0NzNCKQ==" autoIncrement="true"/>
       <column name="CATEGORY" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12"/>
       <column name="COMMENT" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12" def="J0NBU0VXSEVOKChDT01NRU5UIElTIE5VTEwpLCAnQUxMT1dFRCcsIENPTU1FTlQpJw=="/>
       <column name="COMMENTVOTE" sqlType="BOOLEAN" length="1" precision="0" nullable="true" jdbcType="16" def="Q0FTRVdIRU4oKENPTU1FTlRWT1RFIElTIE5VTEwpLCBGQUxTRSwgQ09NTUVOVFZPVEUp"/>
@@ -250,10 +250,10 @@
       <primary-key name="CONSTRAINT_D" columns="ID"/>
       <foreign-key name="CONSTRAINT_1C" columns="ACCOUNT_ID" ref-table="ACCOUNT" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="2" deferrability="2"/>
       <exported-key name="CONSTRAINT_B88" table="TEMPLATE_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="TEMPLATE_ID"/>
-      <index name="CONSTRAINT_1C_INDEX_6" unique="false" columns="ACCOUNT_ID"/>
+      <index name="CONSTRAINT_1C_INDEX_D" unique="false" columns="ACCOUNT_ID"/>
     </table>
     <table name="TEMPLATE_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfNzdEQkNFNkRfRDEzQV80ODNDXzg2NjRfMzBGMUYyMDE1MEMxKQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfOTdDQzMwOTlfNUZGN180RUY4XzkwMjZfMTkyMzcwQUU0MTQ3KQ==" autoIncrement="true"/>
       <column name="PLAYLIST_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
       <column name="TEMPLATE_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
       <primary-key name="CONSTRAINT_F" columns="ID"/>
@@ -263,7 +263,7 @@
       <index name="CONSTRAINT_B8_INDEX_F" unique="false" columns="PLAYLIST_ID"/>
     </table>
     <table name="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfOEY2OTJDMDlfQUMyQl80ODlGX0ExMjJfODRFNUMwRTkyODZGKQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfQjYwNEU0MTVfMjAzMV80REZGX0E3NjZfQzQ2MkYyMzA4NkI4KQ==" autoIncrement="true"/>
       <column name="ARCHIVED" sqlType="BOOLEAN" length="1" precision="0" nullable="true" jdbcType="16" def="Q0FTRVdIRU4oKEFSQ0hJVkVEIElTIE5VTEwpLCBGQUxTRSwgQVJDSElWRUQp"/>
       <column name="CATEGORY" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12"/>
       <column name="COMMENT" sqlType="VARCHAR" length="255" precision="0" nullable="true" jdbcType="12" def="J0NBU0VXSEVOKChDT01NRU5UIElTIE5VTEwpLCAnQUxMT1dFRCcsIENPTU1FTlQpJw=="/>
@@ -318,10 +318,10 @@
       <primary-key name="CONSTRAINT_95" columns="ID"/>
       <foreign-key name="CONSTRAINT_1D4" columns="ACCOUNT_ID" ref-table="ACCOUNT" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="2" deferrability="2"/>
       <exported-key name="CONSTRAINT_654" table="UPLOAD_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="UPLOAD_ID"/>
-      <index name="CONSTRAINT_1D4_INDEX_6" unique="false" columns="ACCOUNT_ID"/>
+      <index name="CONSTRAINT_1D4_INDEX_9" unique="false" columns="ACCOUNT_ID"/>
     </table>
     <table name="UPLOAD_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
-      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfQkQ1QzM4MTJfMzVFNV80RDg3X0IwQTlfNzA3RTA3RTUyOUI1KQ==" autoIncrement="true"/>
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4" def="KE5FWFQgVkFMVUUgRk9SIFBVQkxJQy5TWVNURU1fU0VRVUVOQ0VfNTFBOTdBQUFfRUQxQ180NjIxX0E0QzdfRjE4OEY0NDI1NDFGKQ==" autoIncrement="true"/>
       <column name="PLAYLIST_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
       <column name="UPLOAD_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
       <primary-key name="CONSTRAINT_EF" columns="ID"/>

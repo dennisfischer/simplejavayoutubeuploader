@@ -31,16 +31,20 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultConnectionProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.DriverManager;
 import java.util.ResourceBundle;
 
 public class GuiceBindings extends AbstractModule {
 	private final String dbName;
+	private final static Logger logger = LoggerFactory.getLogger(GuiceBindings.class);
 
 	@SuppressWarnings("SameParameterValue")
 	public GuiceBindings(final String dbName) {
@@ -65,10 +69,8 @@ public class GuiceBindings extends AbstractModule {
 	private void mapDatabase() {
 		try {
 			final File schema = new File(ApplicationData.HOME + "/SimpleJavaYoutubeUploader/schema.sql");
-			if (!schema.exists()) {
-				try (final InputStream inputStream = getClass().getResourceAsStream("/schema.sql")) {
-					Files.copy(inputStream, Paths.get(schema.toURI()));
-				}
+			try (final InputStream inputStream = getClass().getResourceAsStream("/schema.sql")) {
+				Files.copy(inputStream, Paths.get(schema.toURI()), StandardCopyOption.REPLACE_EXISTING);
 			}
 			final String url = "jdbc:h2:~/SimpleJavaYoutubeUploader/" + dbName + ";INIT=RUNSCRIPT FROM '~/SimpleJavaYoutubeUploader/schema.sql'";
 
@@ -80,7 +82,7 @@ public class GuiceBindings extends AbstractModule {
 			DSL.using(configuration)
 					.execute("CREATE TRIGGER IF NOT EXISTS ACCOUNT_I AFTER INSERT ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS ACCOUNT_U AFTER UPDATE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS ACCOUNT_D AFTER DELETE ON ACCOUNT FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.AccountTrigger\";" + "CREATE TRIGGER IF NOT EXISTS PLAYLIST_I AFTER INSERT ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS PLAYLIST_U AFTER UPDATE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS PLAYLIST_D AFTER DELETE ON PLAYLIST FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.PlaylistTrigger\";" + "CREATE TRIGGER IF NOT EXISTS TEMPLATE_I AFTER INSERT ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS TEMPLATE_U AFTER UPDATE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS TEMPLATE_D AFTER DELETE ON TEMPLATE FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.TemplateTrigger\";" + "CREATE TRIGGER IF NOT EXISTS UPLOAD_I AFTER INSERT ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS UPLOAD_U AFTER UPDATE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";\r\n" + "CREATE TRIGGER IF NOT EXISTS UPLOAD_D AFTER DELETE ON UPLOAD FOR EACH ROW CALL \"org.chaosfisch.youtubeuploader.db.triggers.UploadTrigger\";");
 		} catch (final Exception e) {
-			e.printStackTrace();
+			logger.error("Couldn't init database", e);
 			System.exit(1);
 		}
 	}

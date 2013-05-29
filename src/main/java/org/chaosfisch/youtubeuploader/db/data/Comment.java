@@ -13,7 +13,7 @@ package org.chaosfisch.youtubeuploader.db.data;
 import org.chaosfisch.util.TextUtil;
 
 public enum Comment {
-	ALLOWED("commentlist.allowed"), MODERATED("commentlist.moderated"), DENIED("commentlist.denied"), FRIENDS_ONLY("commentlist.friendsonly");
+	ALLOWED("commentlist.allowed"), MODERATED("commentlist.moderated"), DENIED("commentlist.denied");
 
 	private final String i18n;
 

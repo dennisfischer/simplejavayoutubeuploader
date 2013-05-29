@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.pojos;
 @SuppressWarnings({"all", "unchecked"})
 public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1706927986;
+	private static final long serialVersionUID = -414398454;
 
 	private Integer                                              id;
 	private Boolean                                              archived;
@@ -32,7 +32,6 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 	private java.io.File                                         file;
 	private String                                               keywords;
 	private String                                               mimetype;
-	private Boolean                                              mobile;
 	private Boolean                                              rate;
 	private String                                               title;
 	private String                                               uploadurl;
@@ -160,14 +159,6 @@ public class Upload extends org.chaosfisch.youtubeuploader.db.AbstractPojo imple
 
 	public void setMimetype(String mimetype) {
 		this.mimetype = mimetype;
-	}
-
-	public Boolean getMobile() {
-		return this.mobile;
-	}
-
-	public void setMobile(Boolean mobile) {
-		this.mobile = mobile;
 	}
 
 	public Boolean getRate() {

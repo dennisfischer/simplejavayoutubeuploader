@@ -80,11 +80,6 @@ public class TemplateDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeupl
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.KEYWORDS, values);
 	}
 
-	/** Fetch records that have <code>MOBILE IN (values)</code> */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template> fetchByMobile(Boolean... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.MOBILE, values);
-	}
-
 	/** Fetch records that have <code>NAME IN (values)</code> */
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template> fetchByName(String... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE.NAME, values);

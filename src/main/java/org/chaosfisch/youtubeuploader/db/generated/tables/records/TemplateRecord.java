@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables.records;
 @SuppressWarnings({"all", "unchecked"})
 public class TemplateRecord extends org.jooq.impl.UpdatableRecordImpl<TemplateRecord> {
 
-	private static final long serialVersionUID = -565381407;
+	private static final long serialVersionUID = -741280420;
 
 	/** Setter for <code>PUBLIC.TEMPLATE.ID</code>. */
 	public void setId(Integer value) {
@@ -101,344 +101,334 @@ public class TemplateRecord extends org.jooq.impl.UpdatableRecordImpl<TemplateRe
 		return (String) getValue(7);
 	}
 
-	/** Setter for <code>PUBLIC.TEMPLATE.MOBILE</code>. */
-	public void setMobile(Boolean value) {
-		setValue(8, value);
-	}
-
-	/** Getter for <code>PUBLIC.TEMPLATE.MOBILE</code>. */
-	public Boolean getMobile() {
-		return (Boolean) getValue(8);
-	}
-
 	/** Setter for <code>PUBLIC.TEMPLATE.NAME</code>. */
 	public void setName(String value) {
-		setValue(9, value);
+		setValue(8, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.NAME</code>. */
 	public String getName() {
-		return (String) getValue(9);
+		return (String) getValue(8);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.RATE</code>. */
 	public void setRate(Boolean value) {
-		setValue(10, value);
+		setValue(9, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.RATE</code>. */
 	public Boolean getRate() {
-		return (Boolean) getValue(10);
+		return (Boolean) getValue(9);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.VIDEORESPONSE</code>. */
 	public void setVideoresponse(org.chaosfisch.youtubeuploader.db.data.Videoresponse value) {
-		setValue(11, value);
+		setValue(10, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.VIDEORESPONSE</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.Videoresponse getVideoresponse() {
-		return (org.chaosfisch.youtubeuploader.db.data.Videoresponse) getValue(11);
+		return (org.chaosfisch.youtubeuploader.db.data.Videoresponse) getValue(10);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.VISIBILITY</code>. */
 	public void setVisibility(org.chaosfisch.youtubeuploader.db.data.Visibility value) {
-		setValue(12, value);
+		setValue(11, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.VISIBILITY</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.Visibility getVisibility() {
-		return (org.chaosfisch.youtubeuploader.db.data.Visibility) getValue(12);
+		return (org.chaosfisch.youtubeuploader.db.data.Visibility) getValue(11);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.ACCOUNT_ID</code>. */
 	public void setAccountId(Integer value) {
-		setValue(13, value);
+		setValue(12, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.ACCOUNT_ID</code>. */
 	public Integer getAccountId() {
-		return (Integer) getValue(13);
+		return (Integer) getValue(12);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.ENDDIR</code>. */
 	public void setEnddir(java.io.File value) {
-		setValue(14, value);
+		setValue(13, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.ENDDIR</code>. */
 	public java.io.File getEnddir() {
-		return (java.io.File) getValue(14);
+		return (java.io.File) getValue(13);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.LICENSE</code>. */
 	public void setLicense(org.chaosfisch.youtubeuploader.db.data.License value) {
-		setValue(15, value);
+		setValue(14, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.LICENSE</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.License getLicense() {
-		return (org.chaosfisch.youtubeuploader.db.data.License) getValue(15);
+		return (org.chaosfisch.youtubeuploader.db.data.License) getValue(14);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.TITLE</code>. */
 	public void setTitle(String value) {
-		setValue(16, value);
+		setValue(15, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.TITLE</code>. */
 	public String getTitle() {
-		return (String) getValue(16);
+		return (String) getValue(15);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.THUMBNAIL</code>. */
 	public void setThumbnail(String value) {
-		setValue(17, value);
+		setValue(16, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.THUMBNAIL</code>. */
 	public String getThumbnail() {
-		return (String) getValue(17);
+		return (String) getValue(16);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.FACEBOOK</code>. */
 	public void setFacebook(Boolean value) {
-		setValue(18, value);
+		setValue(17, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.FACEBOOK</code>. */
 	public Boolean getFacebook() {
-		return (Boolean) getValue(18);
+		return (Boolean) getValue(17);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.TWITTER</code>. */
 	public void setTwitter(Boolean value) {
-		setValue(19, value);
+		setValue(18, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.TWITTER</code>. */
 	public Boolean getTwitter() {
-		return (Boolean) getValue(19);
+		return (Boolean) getValue(18);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MESSAGE</code>. */
 	public void setMessage(String value) {
-		setValue(20, value);
+		setValue(19, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MESSAGE</code>. */
 	public String getMessage() {
-		return (String) getValue(20);
+		return (String) getValue(19);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_INSTREAM_DEFAULTS</code>. */
 	public void setMonetizeInstreamDefaults(Boolean value) {
-		setValue(21, value);
+		setValue(20, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_INSTREAM_DEFAULTS</code>. */
 	public Boolean getMonetizeInstreamDefaults() {
-		return (Boolean) getValue(21);
+		return (Boolean) getValue(20);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIM</code>. */
 	public void setMonetizeClaim(Boolean value) {
-		setValue(22, value);
+		setValue(21, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIM</code>. */
 	public Boolean getMonetizeClaim() {
-		return (Boolean) getValue(22);
+		return (Boolean) getValue(21);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_OVERLAY</code>. */
 	public void setMonetizeOverlay(Boolean value) {
-		setValue(23, value);
+		setValue(22, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_OVERLAY</code>. */
 	public Boolean getMonetizeOverlay() {
-		return (Boolean) getValue(23);
+		return (Boolean) getValue(22);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_TRUEVIEW</code>. */
 	public void setMonetizeTrueview(Boolean value) {
-		setValue(24, value);
+		setValue(23, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_TRUEVIEW</code>. */
 	public Boolean getMonetizeTrueview() {
-		return (Boolean) getValue(24);
+		return (Boolean) getValue(23);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_INSTREAM</code>. */
 	public void setMonetizeInstream(Boolean value) {
-		setValue(25, value);
+		setValue(24, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_INSTREAM</code>. */
 	public Boolean getMonetizeInstream() {
-		return (Boolean) getValue(25);
+		return (Boolean) getValue(24);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_PRODUCT</code>. */
 	public void setMonetizeProduct(Boolean value) {
-		setValue(26, value);
+		setValue(25, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_PRODUCT</code>. */
 	public Boolean getMonetizeProduct() {
-		return (Boolean) getValue(26);
+		return (Boolean) getValue(25);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_SYNDICATION</code>. */
 	public void setMonetizeSyndication(org.chaosfisch.youtubeuploader.db.data.Syndication value) {
-		setValue(27, value);
+		setValue(26, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_SYNDICATION</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.Syndication getMonetizeSyndication() {
-		return (org.chaosfisch.youtubeuploader.db.data.Syndication) getValue(27);
+		return (org.chaosfisch.youtubeuploader.db.data.Syndication) getValue(26);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_TITLE</code>. */
 	public void setMonetizeTitle(String value) {
-		setValue(28, value);
+		setValue(27, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_TITLE</code>. */
 	public String getMonetizeTitle() {
-		return (String) getValue(28);
+		return (String) getValue(27);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_DESCRIPTION</code>. */
 	public void setMonetizeDescription(String value) {
-		setValue(29, value);
+		setValue(28, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_DESCRIPTION</code>. */
 	public String getMonetizeDescription() {
-		return (String) getValue(29);
+		return (String) getValue(28);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_ID</code>. */
 	public void setMonetizeId(String value) {
-		setValue(30, value);
+		setValue(29, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_ID</code>. */
 	public String getMonetizeId() {
-		return (String) getValue(30);
+		return (String) getValue(29);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_NOTES</code>. */
 	public void setMonetizeNotes(String value) {
-		setValue(31, value);
+		setValue(30, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_NOTES</code>. */
 	public String getMonetizeNotes() {
-		return (String) getValue(31);
+		return (String) getValue(30);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_TMSID</code>. */
 	public void setMonetizeTmsid(String value) {
-		setValue(32, value);
+		setValue(31, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_TMSID</code>. */
 	public String getMonetizeTmsid() {
-		return (String) getValue(32);
+		return (String) getValue(31);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_ISAN</code>. */
 	public void setMonetizeIsan(String value) {
-		setValue(33, value);
+		setValue(32, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_ISAN</code>. */
 	public String getMonetizeIsan() {
-		return (String) getValue(33);
+		return (String) getValue(32);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_EIDR</code>. */
 	public void setMonetizeEidr(String value) {
-		setValue(34, value);
+		setValue(33, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_EIDR</code>. */
 	public String getMonetizeEidr() {
-		return (String) getValue(34);
+		return (String) getValue(33);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_TITLEEPISODE</code>. */
 	public void setMonetizeTitleepisode(String value) {
-		setValue(35, value);
+		setValue(34, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_TITLEEPISODE</code>. */
 	public String getMonetizeTitleepisode() {
-		return (String) getValue(35);
+		return (String) getValue(34);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_SEASON_NB</code>. */
 	public void setMonetizeSeasonNb(String value) {
-		setValue(36, value);
+		setValue(35, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_SEASON_NB</code>. */
 	public String getMonetizeSeasonNb() {
-		return (String) getValue(36);
+		return (String) getValue(35);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_EPISODE_NB</code>. */
 	public void setMonetizeEpisodeNb(String value) {
-		setValue(37, value);
+		setValue(36, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_EPISODE_NB</code>. */
 	public String getMonetizeEpisodeNb() {
-		return (String) getValue(37);
+		return (String) getValue(36);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIMTYPE</code>. */
 	public void setMonetizeClaimtype(org.chaosfisch.youtubeuploader.db.data.ClaimType value) {
-		setValue(38, value);
+		setValue(37, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIMTYPE</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.ClaimType getMonetizeClaimtype() {
-		return (org.chaosfisch.youtubeuploader.db.data.ClaimType) getValue(38);
+		return (org.chaosfisch.youtubeuploader.db.data.ClaimType) getValue(37);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIMOPTION</code>. */
 	public void setMonetizeClaimoption(org.chaosfisch.youtubeuploader.db.data.ClaimOption value) {
-		setValue(39, value);
+		setValue(38, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_CLAIMOPTION</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.ClaimOption getMonetizeClaimoption() {
-		return (org.chaosfisch.youtubeuploader.db.data.ClaimOption) getValue(39);
+		return (org.chaosfisch.youtubeuploader.db.data.ClaimOption) getValue(38);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_ASSET</code>. */
 	public void setMonetizeAsset(org.chaosfisch.youtubeuploader.db.data.Asset value) {
-		setValue(40, value);
+		setValue(39, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_ASSET</code>. */
 	public org.chaosfisch.youtubeuploader.db.data.Asset getMonetizeAsset() {
-		return (org.chaosfisch.youtubeuploader.db.data.Asset) getValue(40);
+		return (org.chaosfisch.youtubeuploader.db.data.Asset) getValue(39);
 	}
 
 	/** Setter for <code>PUBLIC.TEMPLATE.MONETIZE_PARTNER</code>. */
 	public void setMonetizePartner(Boolean value) {
-		setValue(41, value);
+		setValue(40, value);
 	}
 
 	/** Getter for <code>PUBLIC.TEMPLATE.MONETIZE_PARTNER</code>. */
 	public Boolean getMonetizePartner() {
-		return (Boolean) getValue(41);
+		return (Boolean) getValue(40);
 	}
 
 	// -------------------------------------------------------------------------

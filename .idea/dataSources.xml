@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="88573813">
+  <component name="DataSourceManagerImpl" format="xml" hash="1523394491">
     <data-source source="LOCAL" name="V3 Old" product="H2" version="1.3.170 (2012-11-30)" jdbc-version="4.0" driver-name="H2 JDBC Driver" driver-version="1.3.170 (2012-11-30)" uuid="5a845a27-af0a-430b-aaad-3712d1edff2b">
       <identifier-quote-string>&quot;</identifier-quote-string>
       <synchronize>true</synchronize>

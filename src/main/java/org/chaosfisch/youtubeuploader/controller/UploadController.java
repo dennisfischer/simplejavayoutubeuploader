@@ -177,9 +177,6 @@ public class UploadController {
 	private TextArea uploadMessage;
 
 	@FXML
-	private CheckBox uploadMobile;
-
-	@FXML
 	private CheckBox uploadRate;
 
 	@FXML
@@ -513,7 +510,6 @@ public class UploadController {
 		assert uploadGrid != null : "fx:id=\"uploadGrid\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadLicense != null : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadMessage != null : "fx:id=\"uploadMessage\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadMobile != null : "fx:id=\"uploadMobile\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert uploadThumbnail != null : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -749,9 +745,6 @@ public class UploadController {
 		upload.setFile(uploadFile.getValue());
 		upload.setKeywords(uploadTags.getText());
 		upload.setLicense(uploadLicense.getValue());
-
-		upload.setMobile(uploadMobile.isSelected());
-
 		upload.setRate(uploadRate.isSelected());
 
 		upload.setThumbnail(uploadThumbnail.getText());
@@ -779,17 +772,14 @@ public class UploadController {
 		template.setCommentvote(uploadCommentvote.isSelected());
 		template.setComment(uploadComment.getValue());
 		template.setDescription(uploadDescription.getText());
-		template.setDefaultdir(Strings.isNullOrEmpty(uploadDefaultdir.getText())
-							   ? null
-							   : defaultDirProperty.getValue());
+		template.setDefaultdir(Strings.isNullOrEmpty(uploadDefaultdir.getText()) ?
+							   null :
+							   defaultDirProperty.getValue());
 		template.setEmbed(uploadEmbed.isSelected());
 
 		template.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
 		template.setKeywords(uploadTags.getText());
 		template.setLicense(uploadLicense.getValue());
-
-		template.setMobile(uploadMobile.isSelected());
-
 		template.setRate(uploadRate.isSelected());
 
 		template.setThumbnail(uploadThumbnail.getText());
@@ -830,7 +820,6 @@ public class UploadController {
 		uploadFile.setValue(upload.getFile());
 		uploadTags.setText(upload.getKeywords());
 		uploadLicense.setValue(upload.getLicense());
-		uploadMobile.setSelected(upload.getMobile());
 		uploadRate.setSelected(upload.getRate());
 
 		uploadThumbnail.setText(upload.getThumbnail());
@@ -888,7 +877,6 @@ public class UploadController {
 		enddirProperty.setValue(template.getEnddir());
 		uploadTags.setText(template.getKeywords());
 		uploadLicense.setValue(template.getLicense());
-		uploadMobile.setSelected(template.getMobile());
 		uploadRate.setSelected(template.getRate());
 		uploadThumbnail.setText(template.getThumbnail());
 		uploadTitle.setText(template.getTitle());

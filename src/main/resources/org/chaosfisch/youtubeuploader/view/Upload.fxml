@@ -172,8 +172,6 @@
                                         text="%button.enddir" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
                                 <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed"
                                           GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                                <CheckBox fx:id="uploadMobile" mnemonicParsing="false" text="%checkbox.mobile"
-                                          GridPane.columnIndex="2" GridPane.rowIndex="5"/>
                                 <Label disable="false" text="%label.thumbnail" GridPane.columnIndex="0"
                                        GridPane.rowIndex="10"/>
                                 <TextField fx:id="uploadThumbnail" disable="false" prefWidth="-1.0"

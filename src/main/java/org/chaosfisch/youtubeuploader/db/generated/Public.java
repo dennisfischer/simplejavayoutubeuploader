@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated;
 @SuppressWarnings({"all", "unchecked"})
 public class Public extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = -1948726116;
+	private static final long serialVersionUID = -1283526375;
 
 	/** The singleton instance of <code>PUBLIC</code> */
 	public static final Public PUBLIC = new Public();
@@ -39,7 +39,7 @@ public class Public extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Sequence<?>> getSequences0() {
 		return java.util
 				.Arrays
-				.<org.jooq.Sequence<?>>asList(Sequences.SYSTEM_SEQUENCE_77DBCE6D_D13A_483C_8664_30F1F20150C1, Sequences.SYSTEM_SEQUENCE_8F692C09_AC2B_489F_A122_84E5C0E9286F, Sequences.SYSTEM_SEQUENCE_BD5C3812_35E5_4D87_B0A9_707E07E529B5, Sequences.SYSTEM_SEQUENCE_CCCDE096_877F_484C_8892_CAB7A27F636B, Sequences.SYSTEM_SEQUENCE_EF84127F_C0EB_4B94_A198_E4DD52C10163, Sequences.SYSTEM_SEQUENCE_F4877DFA_D2DE_4422_B241_706ACC97BD72);
+				.<org.jooq.Sequence<?>>asList(Sequences.SYSTEM_SEQUENCE_51A97AAA_ED1C_4621_A4C7_F188F442541F, Sequences.SYSTEM_SEQUENCE_76A9AD32_D816_417E_8BD8_F2F443CF6C15, Sequences.SYSTEM_SEQUENCE_77FD7E44_7B91_4CBC_A817_409ED667473B, Sequences.SYSTEM_SEQUENCE_97CC3099_5FF7_4EF8_9026_192370AE4147, Sequences.SYSTEM_SEQUENCE_9A9D7169_D17F_41DD_804C_40D5B7FDC233, Sequences.SYSTEM_SEQUENCE_B604E415_2031_4DFF_A766_C462F23086B8);
 	}
 
 	@Override
@@ -52,6 +52,6 @@ public class Public extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util
 				.Arrays
-				.<org.jooq.Table<?>>asList(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT, org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD, org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE);
+				.<org.jooq.Table<?>>asList(org.chaosfisch.youtubeuploader.db.generated.tables.Account.ACCOUNT, org.chaosfisch.youtubeuploader.db.generated.tables.Playlist.PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.TemplatePlaylist.TEMPLATE_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Template.TEMPLATE, org.chaosfisch.youtubeuploader.db.generated.tables.UploadPlaylist.UPLOAD_PLAYLIST, org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD);
 	}
 }

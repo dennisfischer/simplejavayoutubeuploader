@@ -19,7 +19,7 @@ package org.chaosfisch.youtubeuploader.db.generated.tables;
 @SuppressWarnings({"all", "unchecked"})
 public class Upload extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord> {
 
-	private static final long serialVersionUID = -697705617;
+	private static final long serialVersionUID = 878353925;
 
 	/** The singleton instance of <code>PUBLIC.UPLOAD</code> */
 	public static final Upload UPLOAD = new Upload();
@@ -95,9 +95,6 @@ public class Upload extends org.jooq.impl.TableImpl<org.chaosfisch.youtubeupload
 			.SQLDataType
 			.VARCHAR
 			.length(255), this);
-
-	/** The column <code>PUBLIC.UPLOAD.MOBILE</code>. */
-	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, Boolean> MOBILE = createField("MOBILE", org.jooq.impl.SQLDataType.BOOLEAN, this);
 
 	/** The column <code>PUBLIC.UPLOAD.RATE</code>. */
 	public final org.jooq.TableField<org.chaosfisch.youtubeuploader.db.generated.tables.records.UploadRecord, Boolean> RATE = createField("RATE", org.jooq.impl.SQLDataType.BOOLEAN, this);

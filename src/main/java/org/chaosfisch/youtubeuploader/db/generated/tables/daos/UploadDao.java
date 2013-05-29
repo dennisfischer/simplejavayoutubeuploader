@@ -95,11 +95,6 @@ public class UploadDao extends org.jooq.impl.DAOImpl<org.chaosfisch.youtubeuploa
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.MIMETYPE, values);
 	}
 
-	/** Fetch records that have <code>MOBILE IN (values)</code> */
-	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByMobile(Boolean... values) {
-		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.MOBILE, values);
-	}
-
 	/** Fetch records that have <code>RATE IN (values)</code> */
 	public java.util.List<org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload> fetchByRate(Boolean... values) {
 		return fetch(org.chaosfisch.youtubeuploader.db.generated.tables.Upload.UPLOAD.RATE, values);
