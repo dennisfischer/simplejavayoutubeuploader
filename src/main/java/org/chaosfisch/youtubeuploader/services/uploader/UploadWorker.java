@@ -437,6 +437,7 @@ public class UploadWorker extends Task<Void> {
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
 		extendedPlacerholders.setFile(upload.getFile());
+		extendedPlacerholders.setPlaylists(playlistDao.fetchByUpload(upload));
 		extendedPlacerholders.register("{title}", upload.getTitle());
 		extendedPlacerholders.register("{description}", upload.getDescription());
 
