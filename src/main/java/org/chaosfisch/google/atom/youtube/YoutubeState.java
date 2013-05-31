@@ -20,14 +20,14 @@ import java.net.URL;
 @XStreamAlias("yt:state")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"state"})
 public class YoutubeState {
-	public
+
 	@XStreamAsAttribute
-	URL    helpUrl;
-	public
+	public URL helpUrl;
+
 	@XStreamAsAttribute
-	String name;
-	public
+	public String name;
+
 	@XStreamAsAttribute
-	String reasonCode;
+	public String reasonCode;
 	public String state;
 }

@@ -15,21 +15,21 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:feedLink")
 public class Feedlink {
-	public
+
 	@XStreamAlias("gd:countHint")
 	@XStreamAsAttribute
-	Integer countHint;
-	public
+	public Integer countHint;
+
 	@XStreamAlias("yt:hasEntries")
 	@XStreamAsAttribute
-	Boolean hasEntries;
-	public
+	public Boolean hasEntries;
+
 	@XStreamAsAttribute
-	String  href;
-	public
+	public String href;
+
 	@XStreamAsAttribute
-	String  rel;
-	public
+	public String rel;
+
 	@XStreamAsAttribute
-	String  type;
+	public String type;
 }

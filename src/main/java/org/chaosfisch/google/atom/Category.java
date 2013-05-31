@@ -15,13 +15,13 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("category")
 public class Category {
-	public
+
 	@XStreamAsAttribute
-	String label;
-	public
+	public String label;
+
 	@XStreamAsAttribute
-	String scheme;
-	public
+	public String scheme;
+
 	@XStreamAsAttribute
-	String term;
+	public String term;
 }

@@ -12,6 +12,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -42,6 +44,8 @@ dependencies {
             'org.jooq:jooq:3+', 'com.cathive.fx:fx-guice:+', 'org.hsqldb:hsqldb:+'
 
     compile files("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-2.2-r5-SNAPSHOT.jar")
+
+    testCompile 'junit:junit:4.10'
 
     providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }

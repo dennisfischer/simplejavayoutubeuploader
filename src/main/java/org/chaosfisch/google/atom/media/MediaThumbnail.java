@@ -15,24 +15,24 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:thumbnail")
 public class MediaThumbnail {
-	public
+
 	@XStreamAlias("height")
 	@XStreamAsAttribute
-	String height;
-	public
+	public String height;
+
 	@XStreamAlias("yt:name")
 	@XStreamAsAttribute
-	String name;
-	public
+	public String name;
+
 	@XStreamAlias("time")
 	@XStreamAsAttribute
-	String time;
-	public
+	public String time;
+
 	@XStreamAlias("url")
 	@XStreamAsAttribute
-	String url;
-	public
+	public String url;
+
 	@XStreamAlias("width")
 	@XStreamAsAttribute
-	String width;
+	public String width;
 }

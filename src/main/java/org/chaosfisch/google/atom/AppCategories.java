@@ -18,8 +18,7 @@ import java.util.List;
 @XStreamAlias("app:categories")
 public class AppCategories {
 
-	public
 	@XStreamAlias("atom:category")
 	@XStreamImplicit
-	List<AtomCategory> categories;
+	public List<AtomCategory> categories;
 }

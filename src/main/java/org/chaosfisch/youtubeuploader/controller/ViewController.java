@@ -25,6 +25,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import jfxtras.labs.dialogs.MonologFX;
 import org.chaosfisch.exceptions.SystemException;
+import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.ApplicationData;
@@ -36,7 +37,6 @@ import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import java.io.File;
 import java.net.URL;

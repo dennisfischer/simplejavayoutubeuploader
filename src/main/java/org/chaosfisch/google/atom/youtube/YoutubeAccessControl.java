@@ -19,15 +19,15 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"access"})
 public class YoutubeAccessControl {
 	public String access;
-	public
+
 	@XStreamAsAttribute
-	String action;
-	public
+	public String action;
+
 	@XStreamAsAttribute
-	String permission;
-	public
+	public String permission;
+
 	@XStreamAsAttribute
-	String type;
+	public String type;
 
 	public YoutubeAccessControl() {
 

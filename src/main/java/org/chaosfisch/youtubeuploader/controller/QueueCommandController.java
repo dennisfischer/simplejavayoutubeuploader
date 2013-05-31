@@ -23,12 +23,12 @@ import javafx.util.StringConverter;
 import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
-import org.chaosfisch.io.Throttle;
+import org.chaosfisch.google.youtube.upload.Uploader;
+import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 import java.net.URL;
 import java.util.ResourceBundle;

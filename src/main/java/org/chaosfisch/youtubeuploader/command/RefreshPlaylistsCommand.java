@@ -14,10 +14,10 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.services.PlaylistService;
 
 import java.util.List;
 import java.util.Map;

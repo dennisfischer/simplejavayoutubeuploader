@@ -24,31 +24,31 @@ public class Feed {
 	public String        category;
 	public String        generator;
 	public String        id;
-	public
+
 	@XStreamAlias("openSearch:itemsPerPage")
-	Integer        itemsPerPage;
-	public
+	public Integer itemsPerPage;
+
 	@XStreamAlias("link")
 	@XStreamImplicit
-	List<Feedlink> links;
-	public URL logo;
-	public
+	public List<Feedlink> links;
+	public URL            logo;
+
 	@XStreamAlias("media:group")
-	MediaGroup mediaGroup;
+	public MediaGroup mediaGroup;
 	public
 	@XStreamAlias("yt:playlistId")
-	String     playlistId;
-	public
+	String playlistId;
+
 	@XStreamAlias("openSearch:startIndex")
-	Integer    startIndex;
-	public String subtitle;
-	public String title;
-	public
+	public Integer startIndex;
+	public String  subtitle;
+	public String  title;
+
 	@XStreamAlias("openSearch:totalResults")
-	Integer totalResults;
-	public String updated;
-	public
+	public Integer totalResults;
+	public String  updated;
+
 	@XStreamAlias("entry")
 	@XStreamImplicit
-	List<VideoEntry> videoEntries;
+	public List<VideoEntry> videoEntries;
 }

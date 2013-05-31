@@ -15,24 +15,24 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:content")
 public class MediaContent {
-	public
+
 	@XStreamAsAttribute
-	Integer duration;
-	public
+	public Integer duration;
+
 	@XStreamAsAttribute
 	@XStreamAlias("yt:format")
-	String  format;
-	public
+	public String format;
+
 	@XStreamAsAttribute
-	Boolean isDefault;
-	public
+	public Boolean isDefault;
+
 	@XStreamAsAttribute
 	@XStreamAlias("yt:name")
-	String  name;
-	public
+	public String name;
+
 	@XStreamAsAttribute
-	String  type;
-	public
+	public String type;
+
 	@XStreamAsAttribute
-	String  url;
+	public String url;
 }

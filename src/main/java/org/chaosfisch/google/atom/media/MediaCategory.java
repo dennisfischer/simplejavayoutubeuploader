@@ -18,6 +18,8 @@ import org.chaosfisch.google.atom.Category;
 @XStreamAlias("media:category")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"category"})
 public class MediaCategory extends Category {
+	public final String category;
+
 	public MediaCategory(final String term, final String label, final String scheme) {
 		this.term = term;
 		this.label = label;
@@ -25,5 +27,4 @@ public class MediaCategory extends Category {
 		category = term;
 	}
 
-	public final String category;
 }

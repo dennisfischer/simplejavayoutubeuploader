@@ -159,9 +159,9 @@ public final class DBConverter {
 			stmtPresetInsert.setString(12, Visibility.values()[rsPreset.getInt("VISIBILITY")].name());
 			stmtPresetInsert.setObject(13, rsPreset.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtPresetInsert.setString(14, rsPreset.getString("ENDDIR"));
-			stmtPresetInsert.setString(15, License.values()[rsPreset.getString("LICENSE").equals("youtube")
-															? 0
-															: 1].name());
+			stmtPresetInsert.setString(15, License.values()[rsPreset.getString("LICENSE").equals("youtube") ?
+															0 :
+															1].name());
 			stmtPresetInsert.setString(16, rsPreset.getString("TITLE"));
 			stmtPresetInsert.setNull(17, Types.VARCHAR);
 			stmtPresetInsert.setBoolean(18, false);
@@ -228,9 +228,9 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(20, Types.VARCHAR);
 			stmtUploadInsert.setObject(21, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtUploadInsert.setString(22, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equals("youtube")
-															? 0
-															: 1].name());
+			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equals("youtube") ?
+															0 :
+															1].name());
 			stmtUploadInsert.setNull(24, Types.TIMESTAMP);
 			stmtUploadInsert.setBoolean(25, false);
 			stmtUploadInsert.setNull(26, Types.VARCHAR);
@@ -313,9 +313,9 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(20, Types.VARCHAR);
 			stmtUploadInsert.setObject(21, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtUploadInsert.setString(22, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube")
-															? 0
-															: 1].name());
+			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube") ?
+															0 :
+															1].name());
 			stmtUploadInsert.setNull(24, Types.TIMESTAMP);
 			stmtUploadInsert.setBoolean(25, rsUpload.getBoolean("PAUSEONFINISH"));
 			stmtUploadInsert.setString(26, rsUpload.getString("THUMBNAIL"));
@@ -376,9 +376,8 @@ public final class DBConverter {
 			stmtPresetInsert.setString(12, Visibility.values()[rsTemplate.getInt("VISIBILITY")].name());
 			stmtPresetInsert.setObject(13, rsTemplate.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtPresetInsert.setString(14, rsTemplate.getString("ENDDIR"));
-			stmtPresetInsert.setString(15, License.values()[rsTemplate.getString("LICENSE").equalsIgnoreCase("youtube")
-															? 0
-															: 1].name());
+			stmtPresetInsert.setString(15, License.values()[rsTemplate.getString("LICENSE")
+																	.equalsIgnoreCase("youtube") ? 0 : 1].name());
 			stmtPresetInsert.setString(16, rsTemplate.getString("TITLE"));
 			stmtPresetInsert.setString(17, rsTemplate.getString("THUMBNAIL"));
 			stmtPresetInsert.setBoolean(18, rsTemplate.getBoolean("FACEBOOK"));

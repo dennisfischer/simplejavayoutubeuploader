@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
 import jfxtras.labs.dialogs.MonologFXButton;
+import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
@@ -34,7 +35,6 @@ import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.services.uploader.events.UploadProgressEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

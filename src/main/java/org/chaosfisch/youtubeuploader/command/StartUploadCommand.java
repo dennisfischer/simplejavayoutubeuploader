@@ -13,7 +13,7 @@ package org.chaosfisch.youtubeuploader.command;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
+import org.chaosfisch.google.youtube.upload.Uploader;
 
 public class StartUploadCommand extends Service<Void> {
 

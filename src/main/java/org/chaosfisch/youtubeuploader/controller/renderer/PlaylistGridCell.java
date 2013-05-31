@@ -53,9 +53,9 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 					imageView = new ImageView(playlist.getThumbnail());
 					imageView.setPreserveRatio(true);
 					final double width = imageView.getImage().getWidth() > 0 ? imageView.getImage().getWidth() : 0;
-					final double height = imageView.getImage().getHeight() > 90
-										  ? imageView.getImage().getHeight()
-										  : 180;
+					final double height = imageView.getImage().getHeight() > 90 ?
+										  imageView.getImage().getHeight() :
+										  180;
 					imageView.setViewport(new Rectangle2D(0, 45, width, height - 90));
 				} else {
 					imageView = new ImageView(getDefaultThumbnail());

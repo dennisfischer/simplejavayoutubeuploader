@@ -14,8 +14,8 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.chaosfisch.google.youtube.upload.Uploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.services.uploader.Uploader;
 
 public class AbortUploadCommand extends Service<Void> {
 

@@ -13,14 +13,14 @@ package org.chaosfisch.youtubeuploader.command;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.chaosfisch.google.auth.GoogleAuthUtil;
+import org.chaosfisch.google.auth.ClientLogin;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 
 public class AddAccountCommand extends Service<Void> {
 
 	@Inject
-	private GoogleAuthUtil authTokenHelper;
+	private ClientLogin authTokenHelper;
 
 	@Inject
 	private AccountDao accountDao;

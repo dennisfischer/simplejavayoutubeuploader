@@ -243,7 +243,7 @@
                 <panes>
                     <fx:reference source="x5"/>
                     <TitledPane fx:id="x2" animated="true" collapsible="true" expanded="false"
-                                styleClass="first-titled-pane" text="%accordion.playlists">
+                                text="%accordion.playlists">
                         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <GridPane fx:id="playlistGrid" gridLinesVisible="false" prefHeight="438.0" prefWidth="432.0"
                                       styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"

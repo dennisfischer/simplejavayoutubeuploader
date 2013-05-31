@@ -16,7 +16,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("yt:availability")
 public class YoutubeAvailability {
 	@XStreamAsAttribute
-	String end;
+	public String end;
 	@XStreamAsAttribute
-	String start;
+	public String start;
 }

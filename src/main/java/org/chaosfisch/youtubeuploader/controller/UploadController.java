@@ -18,6 +18,7 @@ import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -689,6 +690,13 @@ public class UploadController {
 		playlistSourcezone.setOnDragOver(onDragOver);
 	}
 
+	private void initTwitterFacebookBinding(BooleanProperty booleanProperty) {
+		booleanProperty.bind(uploadVisibility.getSelectionModel()
+				.selectedIndexProperty()
+				.isNotEqualTo(3)
+				.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
+	}
+
 	private void initBindings() {
 		release.disableProperty().bind(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(3));
 		uploadMessage.disableProperty()
@@ -696,16 +704,8 @@ public class UploadController {
 						.selectedIndexProperty()
 						.isNotEqualTo(3)
 						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
-		uploadFacebook.disableProperty()
-				.bind(uploadVisibility.getSelectionModel()
-						.selectedIndexProperty()
-						.isNotEqualTo(3)
-						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
-		uploadTwitter.disableProperty()
-				.bind(uploadVisibility.getSelectionModel()
-						.selectedIndexProperty()
-						.isNotEqualTo(3)
-						.and(uploadVisibility.getSelectionModel().selectedIndexProperty().isNotEqualTo(0)));
+		initTwitterFacebookBinding(uploadFacebook.disableProperty());
+		initTwitterFacebookBinding(uploadTwitter.disableProperty());
 		gridWidthSlider.minProperty().set(1280);
 		gridWidthSlider.maxProperty().set(2000);
 		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));

@@ -18,8 +18,7 @@ import java.util.List;
 
 @XStreamAlias("gd:comments")
 public class GDataComments {
-	public
 	@XStreamAlias("gd:feedLink")
 	@XStreamImplicit
-	List<Feedlink> links;
+	public List<Feedlink> links;
 }

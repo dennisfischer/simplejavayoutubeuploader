@@ -15,19 +15,19 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("gd:rating")
 public class GDataRating {
-	public
+
 	@XStreamAsAttribute
-	Double  average;
-	public
+	public Double average;
+
 	@XStreamAsAttribute
-	Integer max;
-	public
+	public Integer max;
+
 	@XStreamAsAttribute
-	Integer min;
-	public
+	public Integer min;
+
 	@XStreamAsAttribute
-	Integer numRaters;
-	public
+	public Integer numRaters;
+
 	@XStreamAsAttribute
-	Integer value;
+	public Integer value;
 }

@@ -14,7 +14,7 @@ import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
-import org.chaosfisch.youtubeuploader.services.impl.EnddirServiceImpl;
+import org.chaosfisch.services.impl.EnddirServiceImpl;
 
 import java.net.URL;
 import java.util.ResourceBundle;

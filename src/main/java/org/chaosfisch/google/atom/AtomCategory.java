@@ -14,15 +14,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("atom:category")
 public class AtomCategory extends Category {
-	public
+
 	@XStreamAlias("yt:assignable")
-	Object ytAssignable;
-	public
+	public Object ytAssignable;
+
 	@XStreamAlias("yt:browsable")
-	Object ytBrowsable;
-	public
+	public Object ytBrowsable;
+
 	@XStreamAlias("yt:deprecated")
-	Object ytDeprecated;
+	public Object ytDeprecated;
 
 	public AtomCategory() {
 	}

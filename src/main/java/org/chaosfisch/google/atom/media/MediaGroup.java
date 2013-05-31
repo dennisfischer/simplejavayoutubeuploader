@@ -19,59 +19,59 @@ import java.util.List;
 
 @XStreamAlias("media:group")
 public class MediaGroup {
-	public
+
 	@XStreamAlias("yt:aspectRatio")
-	String               aspectRatio;
-	public
+	public String aspectRatio;
+
 	@XStreamAlias("media:category")
 	@XStreamImplicit
-	List<Category>       category;
-	public
+	public List<Category> category;
+
 	@XStreamAlias("media:content")
 	@XStreamImplicit
-	List<MediaContent>   content;
-	public
+	public List<MediaContent> content;
+
 	@XStreamAlias("media:credit")
 	@XStreamImplicit
-	List<MediaCredit>    credit;
-	public
+	public List<MediaCredit> credit;
+
 	@XStreamAlias("media:description")
-	String               description;
-	public
+	public String description;
+
 	@XStreamAlias("yt:duration")
-	YoutubeDuration      duration;
-	public
+	public YoutubeDuration duration;
+
 	@XStreamAlias("media:keywords")
-	String               keywords;
-	public
+	public String keywords;
+
 	@XStreamAlias("media:license")
-	String               license;
-	public
+	public String license;
+
 	@XStreamAlias("media:player")
-	MediaPlayer          player;
-	public
+	public MediaPlayer player;
+
 	@XStreamAlias("media:rating")
-	MediaRating          rating;
-	public
+	public MediaRating rating;
+
 	@XStreamAlias("media:restriction")
-	MediaRestriction     restriction;
-	public
+	public MediaRestriction restriction;
+
 	@XStreamAlias("media:thumbnail")
 	@XStreamImplicit
-	List<MediaThumbnail> thumbnails;
-	public
+	public List<MediaThumbnail> thumbnails;
+
 	@XStreamAlias("media:title")
-	String               title;
-	public
+	public String title;
+
 	@XStreamAlias("yt:uploaded")
-	String               uploaded;
-	public
+	public String uploaded;
+
 	@XStreamAlias("yt:uploaderId")
-	String               uploaderId;
-	public
+	public String uploaderId;
+
 	@XStreamAlias("yt:videoid")
-	String               videoID;
-	public
+	public String videoID;
+
 	@XStreamAlias("yt:private")
-	Object               ytPrivate;
+	public Object ytPrivate;
 }

@@ -15,10 +15,10 @@ import org.chaosfisch.google.atom.youtube.YoutubeState;
 
 @XStreamAlias("app:control")
 public class AppControl {
-	public
+
 	@XStreamAlias("app:draft")
-	String       draft;
-	public
+	public String draft;
+
 	@XStreamAlias("yt:state")
-	YoutubeState state;
+	public YoutubeState state;
 }

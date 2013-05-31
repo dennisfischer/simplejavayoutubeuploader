@@ -17,7 +17,7 @@ import java.net.URL;
 
 @XStreamAlias("media:player")
 public class MediaPlayer {
-	public
+
 	@XStreamAsAttribute
-	URL url;
+	public URL url;
 }

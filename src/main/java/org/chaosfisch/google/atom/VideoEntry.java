@@ -23,92 +23,94 @@ import java.util.List;
 
 @XStreamAlias("entry")
 public class VideoEntry {
-	public
 	@XStreamAlias("yt:accessControl")
 	@XStreamImplicit
-	final List<YoutubeAccessControl> accessControl = new ArrayList<>(10);
-	public
+	public final List<YoutubeAccessControl> accessControl = new ArrayList<>(10);
+
 	@XStreamAlias("app:control")
-	AppControl appControl;
-	public
+	public AppControl appControl;
+
 	@XStreamAlias("app:edited")
-	String     appEdited;
+	public String        appEdited;
 	public YoutubeAuthor author;
-	public
+
 	@XStreamAlias("category")
 	@XStreamImplicit
-	List<Category> categories;
-	public
+	public List<Category> categories;
+
 	@XStreamAlias("gd:comments")
-	GDataComments  comments;
+	public GDataComments  comments;
 	public YoutubeContent content;
-	public
+
 	@Deprecated
 	@XStreamAlias("gd:rating")
-	GDataRating   gdRating;
-	public
+	public GDataRating gdRating;
+
 	@XStreamAlias("georss:where")
-	YoutubeGeoRss geoRssWhere;
-	public String id;
-	public
+	public YoutubeGeoRss geoRssWhere;
+	public String        id;
+
 	@XStreamAlias("link")
 	@XStreamImplicit
-	List<Feedlink> links;
-	public
+	public List<Feedlink> links;
+
 	@XStreamAlias("yt:location")
-	String         location;
-	public
+	public String location;
+
 	@XStreamAlias("media:group")
-	MediaGroup mediaGroup = new MediaGroup();
-	public
+	public MediaGroup mediaGroup = new MediaGroup();
+
 	@XStreamAlias("yt:countHint")
-	Integer playlistCountHint;
-	public
+	public Integer playlistCountHint;
+
 	@XStreamAlias("yt:playlistId")
-	String  playlistId;
-	public
+	public String playlistId;
+
 	@XStreamAlias("summary")
-	String  playlistSummary;
+	public String playlistSummary;
 	public String published;
-	public
+
 	@XStreamAlias("yt:statistics")
-	YoutubeStatistics statistics;
-	public String title;
-	public String updated;
+	public YoutubeStatistics statistics;
+	public String            title;
+	public String            updated;
+
 	@XStreamAlias("xmlns")
 	@XStreamAsAttribute
-	String xmlns      = "http://www.w3.org/2005/Atom";
+	public String xmlns = "http://www.w3.org/2005/Atom";
+
 	@XStreamAlias("xmlns:media")
 	@XStreamAsAttribute
-	String xmlnsMedia = "http://search.yahoo.com/mrss/";
+	public String xmlnsMedia = "http://search.yahoo.com/mrss/";
+
 	@XStreamAlias("xmlns:yt")
 	@XStreamAsAttribute
-	String xmlnsYt    = "http://gdata.youtube.com/schemas/2007";
-	public
+	public String xmlnsYt = "http://gdata.youtube.com/schemas/2007";
+
 	@XStreamAlias("yt:availability")
-	YoutubeAvailability ytAvailability;
-	public
+	public YoutubeAvailability ytAvailability;
+
 	@XStreamAlias("yt:episode")
-	YoutubeEpisode      ytEpisode;
-	public
+	public YoutubeEpisode ytEpisode;
+
 	@XStreamAlias("yt:firstReleased")
-	String              ytFirstReleased;
-	public
+	public String ytFirstReleased;
+
 	@XStreamAlias("yt:hd")
-	Object              ytHD;
-	public
+	public Object ytHD;
+
 	@XStreamAlias("yt:noembed")
-	Object              ytNoEmbed;
-	public
+	public Object ytNoEmbed;
+
 	@XStreamAlias("yt:position")
-	Integer             ytPosition;
-	public
+	public Integer ytPosition;
+
 	@XStreamAlias("yt:private")
-	Object              ytPrivate;
-	public
+	public Object ytPrivate;
+
 	@XStreamAlias("yt:rating")
-	YoutubeRating       ytRating;
-	public
+	public YoutubeRating ytRating;
+
 	@XStreamAlias("yt:recorded")
-	String              ytRecorded;
+	public String ytRecorded;
 }
