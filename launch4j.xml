@@ -12,7 +12,7 @@
     <dontWrapJar>true</dontWrapJar>
     <headerType>gui</headerType>
     <jar>SimpleJavaYoutubeUploader.jar</jar>
-    <outfile>/../../../out/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
+    <outfile>out/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
     <errTitle/>
     <cmdLine/>
     <chdir/>
@@ -22,11 +22,17 @@
     <customProcName>true</customProcName>
     <stayAlive>false</stayAlive>
     <manifest/>
-    <icon>/../resources/org/chaosfisch/youtubeuploader/resources/images/film.ico</icon>
+    <icon>src/main/resources/org/chaosfisch/youtubeuploader/resources/images/film.ico</icon>
     <jre>
         <path/>
         <minVersion>1.7.0</minVersion>
         <maxVersion/>
         <jdkPreference>preferJre</jdkPreference>
     </jre>
+    <splash>
+        <file>src/main/resources/org/chaosfisch/youtubeuploader/resources/images/splash.bmp</file>
+        <waitForWindow>true</waitForWindow>
+        <timeout>5</timeout>
+        <timeoutErr>true</timeoutErr>
+    </splash>
 </launch4jConfig>
