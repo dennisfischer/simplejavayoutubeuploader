@@ -10,18 +10,28 @@
 
 package org.chaosfisch.youtubeuploader;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 import java.util.prefs.Preferences;
 
 public final class SimpleJavaYoutubeUploader {
 
 	public static void main(final String[] args) {
-
-		initLocale();
+		loadVMOptions();
 		initUpdater();
+		initApplication(args);
+	}
+
+	private static void initApplication(final String[] args) {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 		if (prefs.getInt("version", 0) <= 6) {
@@ -34,17 +44,29 @@ public final class SimpleJavaYoutubeUploader {
 			prefs.putInt("version", ApplicationData.RELEASE);
 		}
 		GuiUploader.initialize(args);
-
 	}
 
 	private static void initUpdater() {
 		new ApplicationUpdater();
 	}
 
-	private static void initLocale() {
-		final Locale[] availableLocales = {Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH, Locale.ITALY, Locale.ITALIAN};
-		if (!Arrays.asList(availableLocales).contains(Locale.getDefault())) {
-			Locale.setDefault(Locale.ENGLISH);
+	private static void loadVMOptions() {
+
+		final File file = new File("SimpleJavaYoutubeUploader.vmoptions");
+		if (!file.exists()) {
+			return;
+		}
+		try {
+			final Properties custom = new Properties();
+			custom.load(Files.newReader(file, Charsets.UTF_8));
+			for (final Map.Entry<Object, Object> entry : custom.entrySet()) {
+				if (!Strings.isNullOrEmpty(entry.getValue().toString())) {
+					System.setProperty(entry.getKey().toString(), entry.getValue().toString());
+				}
+			}
+		} catch (Exception e) {
+			final Logger logger = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+			logger.warn("VMOptions ignored", e);
 		}
 	}
 }

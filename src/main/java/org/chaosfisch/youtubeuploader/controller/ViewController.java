@@ -191,6 +191,10 @@ public class ViewController {
 		assert openFAQ != null : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert openLogs != null : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 
+		loadMenuGraphics();
+	}
+
+	private void loadMenuGraphics() {
 		try (InputStream addPlaylistStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/table_add.png");
 			 InputStream addTemplateStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/page_add.png");
 			 InputStream closeStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/cancel.png");
