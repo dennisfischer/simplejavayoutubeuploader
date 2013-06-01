@@ -17,7 +17,7 @@ public final class TagParser {
 	private static final char   BLOCK_DELIMITER = '"';
 	private static final String STRING_TO_MATCH = ",";
 
-	/** flag if block is open */
+	/** flag if block is openBrowser */
 	private static boolean blockOpen;
 
 	/** the separator between tags */

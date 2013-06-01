@@ -16,29 +16,35 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import jfxtras.labs.dialogs.MonologFX;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.youtube.PlaylistService;
+import org.chaosfisch.util.DesktopUtil;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
+import org.chaosfisch.youtubeuploader.controller.renderer.DirectoryOpenErrorDialog;
+import org.chaosfisch.youtubeuploader.controller.renderer.URLOpenErrorDialog;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -51,6 +57,31 @@ public class ViewController {
 
 	@FXML
 	private URL location;
+
+	@FXML
+	private MenuItem menuAddPlaylist;
+
+	@FXML
+	private MenuItem menuAddTemplate;
+
+	@FXML
+	private MenuItem menuClose;
+
+	@FXML
+	private MenuItem menuOpen;
+
+	@FXML
+	private MenuItem migrateDatabase;
+
+	@FXML
+	private MenuItem openDocumentation;
+
+	@FXML
+	private MenuItem openFAQ;
+
+	@FXML
+	private MenuItem openLogs;
+	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {
@@ -123,6 +154,64 @@ public class ViewController {
 		monologFX.setTitleText(resources.getString("dialog.migratedatabase.title"));
 		monologFX.setMessage(resources.getString("dialog.migratedatabase.text"));
 		monologFX.showDialog();
+	}
+
+	@FXML
+	void openDocumentation(final ActionEvent event) {
+		final String url = "http://uploader.chaosfisch.com/documentation.html";
+		if (!DesktopUtil.openBrowser(url)) {
+			new URLOpenErrorDialog(url);
+		}
+	}
+
+	@FXML
+	void openFAQ(final ActionEvent event) {
+		final String url = "http://uploader.chaosfisch.com/faq.html";
+		if (!DesktopUtil.openBrowser(url)) {
+			new URLOpenErrorDialog(url);
+		}
+	}
+
+	@FXML
+	void openLogs(final ActionEvent event) {
+		final String directory = ApplicationData.DATA_DIR;
+		if (!DesktopUtil.openDirectory(directory)) {
+			new DirectoryOpenErrorDialog(directory);
+		}
+	}
+
+	@FXML
+	void initialize() {
+		assert menuAddPlaylist != null : "fx:id=\"menuAddPlaylist\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert menuAddTemplate != null : "fx:id=\"menuAddTemplate\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert menuClose != null : "fx:id=\"menuClose\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert menuOpen != null : "fx:id=\"menuOpen\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert migrateDatabase != null : "fx:id=\"migrateDatabase\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert openDocumentation != null : "fx:id=\"openDocumentation\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert openFAQ != null : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert openLogs != null : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+
+		try (InputStream addPlaylistStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/table_add.png");
+			 InputStream addTemplateStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/page_add.png");
+			 InputStream closeStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/cancel.png");
+			 InputStream openStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/folder_explore.png");
+			 InputStream databaseStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/database_refresh.png");
+			 InputStream documentationStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/book.png");
+			 InputStream faqStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/help.png");
+			 InputStream logsStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/report.png")
+
+		) {
+			menuAddPlaylist.setGraphic(new ImageView(new Image(addPlaylistStream)));
+			menuAddTemplate.setGraphic(new ImageView(new Image(addTemplateStream)));
+			menuClose.setGraphic(new ImageView(new Image(closeStream)));
+			menuOpen.setGraphic(new ImageView(new Image(openStream)));
+			migrateDatabase.setGraphic(new ImageView(new Image(databaseStream)));
+			openDocumentation.setGraphic(new ImageView(new Image(documentationStream)));
+			openFAQ.setGraphic(new ImageView(new Image(faqStream)));
+			openLogs.setGraphic(new ImageView(new Image(logsStream)));
+		} catch (IOException e) {
+			logger.warn("Icons not loaded", e);
+		}
 	}
 
 	@Inject

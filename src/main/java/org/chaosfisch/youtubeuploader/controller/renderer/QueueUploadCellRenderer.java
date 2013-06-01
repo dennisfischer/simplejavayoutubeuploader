@@ -18,9 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
@@ -28,6 +26,7 @@ import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
 import jfxtras.labs.dialogs.MonologFXButton;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
+import org.chaosfisch.util.DesktopUtil;
 import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
@@ -35,12 +34,7 @@ import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -56,8 +50,6 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	@Inject
 	@Named("i18n-resources")
 	private ResourceBundle   resources;
-
-	private final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -274,10 +266,10 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 			@Override
 			public void handle(final ActionEvent event) {
-				try {
-					Desktop.getDesktop().browse(URI.create("http://youtu.be/" + item.getVideoid()));
-				} catch (final IOException e) {
-					logger.warn("Browser couldn't be opened at %s", "http://youtu.be/" + item.getVideoid(), e);
+				final String url = "http://youtu.be/" + item.getVideoid();
+
+				if (!DesktopUtil.openBrowser(url)) {
+					new URLOpenErrorDialog(url);
 				}
 			}
 		}
