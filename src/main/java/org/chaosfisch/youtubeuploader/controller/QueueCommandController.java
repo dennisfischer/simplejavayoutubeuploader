@@ -28,6 +28,7 @@ import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
+import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 
 import java.net.URL;
@@ -72,6 +73,13 @@ public class QueueCommandController {
 	private Throttle         throttle;
 	@Inject
 	private ICommandProvider commandProvider;
+	@Inject
+	private UploadDao        uploadDao;
+
+	@FXML
+	void clearQueue(final ActionEvent event) {
+		uploadDao.delete(uploadDao.fetchByArchived(true));
+	}
 
 	@FXML
 	void startQueue(final ActionEvent event) {

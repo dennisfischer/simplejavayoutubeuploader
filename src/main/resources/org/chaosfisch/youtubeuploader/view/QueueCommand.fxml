@@ -13,9 +13,7 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <HBox fx:id="viewElementsHBox" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.chaosfisch.youtubeuploader.controller.QueueCommandController">
@@ -29,4 +27,5 @@
         </labelFor>
     </Label>
     <fx:reference source="actionOnFinish"/>
+    <Button mnemonicParsing="false" onAction="#clearQueue" text="%button.clearQueue"/>
 </HBox>

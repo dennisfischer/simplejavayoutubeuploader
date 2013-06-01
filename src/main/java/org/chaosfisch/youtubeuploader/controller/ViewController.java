@@ -265,6 +265,7 @@ public class ViewController {
 
 				final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
 				template.setName(textfield.getText());
+				template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 				templateDao.insert(template);
 				myDialog.close();
 			}
