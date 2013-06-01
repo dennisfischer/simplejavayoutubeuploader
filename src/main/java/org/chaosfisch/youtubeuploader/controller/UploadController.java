@@ -690,7 +690,7 @@ public class UploadController {
 		playlistSourcezone.setOnDragOver(onDragOver);
 	}
 
-	private void initTwitterFacebookBinding(BooleanProperty booleanProperty) {
+	private void initTwitterFacebookBinding(final BooleanProperty booleanProperty) {
 		booleanProperty.bind(uploadVisibility.getSelectionModel()
 				.selectedIndexProperty()
 				.isNotEqualTo(3)
