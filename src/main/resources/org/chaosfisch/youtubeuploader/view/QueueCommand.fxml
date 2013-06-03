@@ -23,7 +23,7 @@
             onAction="#stopQueue" text="%button.stop"/>
     <Label alignment="CENTER_LEFT" minHeight="-1.0" minWidth="-1.0" text="%label.actionOnFinish" underline="false">
         <labelFor>
-            <ChoiceBox fx:id="actionOnFinish" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"/>
+            <ComboBox fx:id="actionOnFinish" editable="true" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"/>
         </labelFor>
     </Label>
     <fx:reference source="actionOnFinish"/>

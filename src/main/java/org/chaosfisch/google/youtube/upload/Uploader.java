@@ -17,6 +17,7 @@ import com.google.inject.Injector;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
@@ -25,6 +26,7 @@ import org.chaosfisch.util.Computer;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.slf4j.Logger;
@@ -35,9 +37,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Uploader {
-	public final SimpleIntegerProperty actionOnFinish     = new SimpleIntegerProperty(0);
-	public final SimpleBooleanProperty inProgressProperty = new SimpleBooleanProperty(false);
-	public final SimpleIntegerProperty maxUploads         = new SimpleIntegerProperty(1);
+	public final SimpleObjectProperty<ActionOnFinish> actionOnFinish     = new SimpleObjectProperty<>();
+	public final SimpleBooleanProperty                inProgressProperty = new SimpleBooleanProperty(false);
+	public final SimpleIntegerProperty                maxUploads         = new SimpleIntegerProperty(1);
 
 	private volatile short runningUploads = 0;
 
@@ -140,19 +142,23 @@ public class Uploader {
 			logger.info("All uploads finished");
 			switch (actionOnFinish.get()) {
 				default:
-				case 0:
+				case NOTHING:
 					return;
-				case 1:
+				case CLOSE:
 					logger.info("CLOSING APPLICATION");
 					Platform.exit();
 					break;
-				case 2:
+				case SHUTDOWN:
 					logger.info("SHUTDOWN COMPUTER");
 					Computer.shutdownComputer();
 					break;
-				case 3:
+				case SLEEP:
 					logger.info("HIBERNATE COMPUTER");
 					Computer.hibernateComputer();
+					break;
+				case CUSTOM:
+					logger.info("Custom command: {}", actionOnFinish.get().getCommand());
+					Computer.customCommand(actionOnFinish.get().getCommand());
 					break;
 			}
 		}

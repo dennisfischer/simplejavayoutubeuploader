@@ -57,4 +57,12 @@ public final class Computer {
 		}
 		System.exit(0);
 	}
+
+	public static void customCommand(final String command) {
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (final IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 }

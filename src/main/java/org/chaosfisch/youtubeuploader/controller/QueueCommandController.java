@@ -17,7 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import jfxtras.labs.dialogs.MonologFXButton;
@@ -29,6 +29,7 @@ import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
+import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 
 import java.net.URL;
@@ -43,7 +44,7 @@ public class QueueCommandController {
 	private URL location;
 
 	@FXML
-	private ChoiceBox<String> actionOnFinish;
+	private ComboBox<ActionOnFinish> actionOnFinish;
 
 	@FXML
 	private Button startQueue;
@@ -54,18 +55,18 @@ public class QueueCommandController {
 	@FXML
 	private HBox viewElementsHBox;
 
-	private final ListSpinner<Integer>   numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
+	private final ListSpinner<Integer>           numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
 			.withAlignment(Pos.CENTER_RIGHT)
 			.withPostfix(" Upload(s)")
 			.withPrefix("max. ")
 			.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>   uploadSpeed         = new ListSpinner<Integer>(0, 10000, 10).withValue(0)
+	private final ListSpinner<Integer>           uploadSpeed         = new ListSpinner<Integer>(0, 10000, 10).withValue(0)
 			.withAlignment(Pos.CENTER_RIGHT)
 			.withArrowPosition(ArrowPosition.LEADING)
 			.withPostfix(" kb/s")
 			.withEditable(true)
 			.withStringConverter(new UploadSpeedStringConverter());
-	private final ObservableList<String> actionOnFinishItems = FXCollections.observableArrayList();
+	private final ObservableList<ActionOnFinish> actionOnFinishItems = FXCollections.observableArrayList();
 
 	@Inject
 	private Uploader         uploader;
@@ -107,8 +108,7 @@ public class QueueCommandController {
 
 		initBindindings();
 
-		actionOnFinishItems.addAll(resources.getString("queuefinishedlist.donothing"), resources.getString("queuefinishedlist.closeapplication"), resources
-				.getString("queuefinishedlist.shutdown"), resources.getString("queuefinishedlist.hibernate"));
+		actionOnFinishItems.addAll(ActionOnFinish.values());
 		actionOnFinish.setItems(actionOnFinishItems);
 		actionOnFinish.getSelectionModel().selectFirst();
 	}
@@ -116,9 +116,25 @@ public class QueueCommandController {
 	private void initBindindings() {
 		startQueue.disableProperty().bind(uploader.inProgressProperty);
 		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
-		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedIndexProperty());
+		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedItemProperty());
 		uploader.maxUploads.bind(numberOfUploads.valueProperty());
 		throttle.maxBps.bind(uploadSpeed.valueProperty());
+		actionOnFinish.setConverter(new StringConverter<ActionOnFinish>() {
+			@Override
+			public String toString(final ActionOnFinish actionOnFinish) {
+				return actionOnFinish.toString();
+			}
+
+			@Override
+			public ActionOnFinish fromString(final String command) {
+				for (final ActionOnFinish action : ActionOnFinish.values()) {
+					if (action.toString().equals(command)) {
+						return action;
+					}
+				}
+				return ActionOnFinish.CUSTOM.set(command);
+			}
+		});
 	}
 
 	private final class UploadSpeedStringConverter extends StringConverter<Integer> {
