@@ -135,7 +135,7 @@ public final class DBConverter {
 		final Statement stmtPresetSelect = connectionOld.createStatement();
 		final ResultSet rsPreset = stmtPresetSelect.executeQuery("SELECT * FROM PRESETS");
 
-		final PreparedStatement stmtPresetInsert = connectionNew.prepareStatement("INSERT INTO TEMPLATE (CATEGORY, COMMENT, COMMENTVOTE, DEFAULTDIR, DESCRIPTION, EMBED, KEYWORDS, MOBILE, NAME, RATE, VIDEORESPONSE, VISIBILITY, ACCOUNT_ID, ENDDIR, LICENSE, TITLE, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		final PreparedStatement stmtPresetInsert = connectionNew.prepareStatement("INSERT INTO TEMPLATE (CATEGORY, COMMENT, COMMENTVOTE, DEFAULTDIR, DESCRIPTION, EMBED, KEYWORDS, NAME, RATE, VIDEORESPONSE, VISIBILITY, ACCOUNT_ID, ENDDIR, LICENSE, TITLE, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		while (rsPreset.next()) {
 			Category category = Category.GAMES;
@@ -152,28 +152,28 @@ public final class DBConverter {
 			stmtPresetInsert.setString(5, rsPreset.getString("DESCRIPTION"));
 			stmtPresetInsert.setBoolean(6, rsPreset.getBoolean("EMBED"));
 			stmtPresetInsert.setString(7, rsPreset.getString("KEYWORDS"));
-			stmtPresetInsert.setBoolean(8, rsPreset.getBoolean("MOBILE"));
-			stmtPresetInsert.setString(9, rsPreset.getString("NAME"));
-			stmtPresetInsert.setBoolean(10, rsPreset.getBoolean("RATE"));
-			stmtPresetInsert.setString(11, Videoresponse.values()[rsPreset.getInt("VIDEORESPONSE")].name());
-			stmtPresetInsert.setString(12, Visibility.values()[rsPreset.getInt("VISIBILITY")].name());
-			stmtPresetInsert.setObject(13, rsPreset.getObject("ACCOUNT_ID"), Types.INTEGER);
-			stmtPresetInsert.setString(14, rsPreset.getString("ENDDIR"));
-			stmtPresetInsert.setString(15, License.values()[rsPreset.getString("LICENSE").equals("youtube") ?
+			stmtPresetInsert.setString(8, rsPreset.getString("NAME"));
+			stmtPresetInsert.setBoolean(9, rsPreset.getBoolean("RATE"));
+			stmtPresetInsert.setString(10, Videoresponse.values()[rsPreset.getInt("VIDEORESPONSE")].name());
+			stmtPresetInsert.setString(11, Visibility.values()[rsPreset.getInt("VISIBILITY")].name());
+			stmtPresetInsert.setObject(12, rsPreset.getObject("ACCOUNT_ID"), Types.INTEGER);
+			stmtPresetInsert.setString(13, rsPreset.getString("ENDDIR"));
+			stmtPresetInsert.setString(14, License.values()[rsPreset.getString("LICENSE").equals("youtube") ?
 															0 :
 															1].name());
-			stmtPresetInsert.setString(16, rsPreset.getString("TITLE"));
-			stmtPresetInsert.setNull(17, Types.VARCHAR);
+			stmtPresetInsert.setString(15, rsPreset.getString("TITLE"));
+			stmtPresetInsert.setNull(16, Types.VARCHAR);
+			stmtPresetInsert.setBoolean(17, false);
 			stmtPresetInsert.setBoolean(18, false);
-			stmtPresetInsert.setBoolean(19, false);
-			stmtPresetInsert.setNull(20, Types.VARCHAR);
+			stmtPresetInsert.setNull(19, Types.VARCHAR);
+			stmtPresetInsert.setBoolean(20, false);
 			stmtPresetInsert.setBoolean(21, false);
 			stmtPresetInsert.setBoolean(22, false);
 			stmtPresetInsert.setBoolean(23, false);
 			stmtPresetInsert.setBoolean(24, false);
 			stmtPresetInsert.setBoolean(25, false);
-			stmtPresetInsert.setBoolean(26, false);
-			stmtPresetInsert.setString(27, Syndication.GLOBAL.name());
+			stmtPresetInsert.setString(26, Syndication.GLOBAL.name());
+			stmtPresetInsert.setNull(27, Types.VARCHAR);
 			stmtPresetInsert.setNull(28, Types.VARCHAR);
 			stmtPresetInsert.setNull(29, Types.VARCHAR);
 			stmtPresetInsert.setNull(30, Types.VARCHAR);
@@ -183,11 +183,10 @@ public final class DBConverter {
 			stmtPresetInsert.setNull(34, Types.VARCHAR);
 			stmtPresetInsert.setNull(35, Types.VARCHAR);
 			stmtPresetInsert.setNull(36, Types.VARCHAR);
-			stmtPresetInsert.setNull(37, Types.VARCHAR);
-			stmtPresetInsert.setString(38, ClaimType.AUDIO_VISUAL.name());
-			stmtPresetInsert.setString(39, ClaimOption.MONETIZE.name());
-			stmtPresetInsert.setString(40, Asset.WEB.name());
-			stmtPresetInsert.setBoolean(41, false);
+			stmtPresetInsert.setString(37, ClaimType.AUDIO_VISUAL.name());
+			stmtPresetInsert.setString(38, ClaimOption.MONETIZE.name());
+			stmtPresetInsert.setString(39, Asset.WEB.name());
+			stmtPresetInsert.setBoolean(40, false);
 			stmtPresetInsert.execute();
 		}
 	}
@@ -196,7 +195,7 @@ public final class DBConverter {
 		final Statement stmtUploadSelect = connectionOld.createStatement();
 		final ResultSet rsUpload = stmtUploadSelect.executeQuery("SELECT * FROM QUEUE WHERE ARCHIVED=FALSE");
 
-		final PreparedStatement stmtUploadInsert = connectionNew.prepareStatement("INSERT INTO UPLOAD (ARCHIVED, CATEGORY, COMMENT, COMMENTVOTE, DESCRIPTION, EMBED, FAILED, FILE, KEYWORDS, MIMETYPE, MOBILE, RATE, TITLE, UPLOADURL, VIDEORESPONSE, VISIBILITY, DATE_OF_START, INPROGRESS, LOCKED, VIDEOID, ACCOUNT_ID, ENDDIR, LICENSE, DATE_OF_RELEASE, PAUSEONFINISH, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER, STATUS) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		final PreparedStatement stmtUploadInsert = connectionNew.prepareStatement("INSERT INTO UPLOAD (ARCHIVED, CATEGORY, COMMENT, COMMENTVOTE, DESCRIPTION, EMBED, FAILED, FILE, KEYWORDS, MIMETYPE, RATE, TITLE, UPLOADURL, VIDEORESPONSE, VISIBILITY, DATE_OF_START, INPROGRESS, LOCKED, VIDEOID, ACCOUNT_ID, ENDDIR, LICENSE, DATE_OF_RELEASE, PAUSEONFINISH, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER, STATUS) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		while (rsUpload.next()) {
 			Category category = Category.GAMES;
@@ -216,34 +215,34 @@ public final class DBConverter {
 			stmtUploadInsert.setString(8, rsUpload.getString("FILE"));
 			stmtUploadInsert.setString(9, rsUpload.getString("KEYWORDS"));
 			stmtUploadInsert.setString(10, rsUpload.getString("MIMETYPE"));
-			stmtUploadInsert.setBoolean(11, rsUpload.getBoolean("MOBILE"));
-			stmtUploadInsert.setBoolean(12, rsUpload.getBoolean("RATE"));
-			stmtUploadInsert.setString(13, rsUpload.getString("TITLE"));
-			stmtUploadInsert.setNull(14, Types.VARCHAR);
-			stmtUploadInsert.setString(15, Videoresponse.values()[rsUpload.getInt("VIDEORESPONSE")].name());
-			stmtUploadInsert.setString(16, Visibility.PRIVATE.name());
-			stmtUploadInsert.setNull(17, Types.TIMESTAMP);
+			stmtUploadInsert.setBoolean(11, rsUpload.getBoolean("RATE"));
+			stmtUploadInsert.setString(12, rsUpload.getString("TITLE"));
+			stmtUploadInsert.setNull(13, Types.VARCHAR);
+			stmtUploadInsert.setString(14, Videoresponse.values()[rsUpload.getInt("VIDEORESPONSE")].name());
+			stmtUploadInsert.setString(15, Visibility.PRIVATE.name());
+			stmtUploadInsert.setNull(16, Types.TIMESTAMP);
+			stmtUploadInsert.setBoolean(17, false);
 			stmtUploadInsert.setBoolean(18, false);
-			stmtUploadInsert.setBoolean(19, false);
-			stmtUploadInsert.setNull(20, Types.VARCHAR);
-			stmtUploadInsert.setObject(21, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
-			stmtUploadInsert.setString(22, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equals("youtube") ?
+			stmtUploadInsert.setNull(19, Types.VARCHAR);
+			stmtUploadInsert.setObject(20, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
+			stmtUploadInsert.setString(21, rsUpload.getString("ENDDIR"));
+			stmtUploadInsert.setString(22, License.values()[rsUpload.getString("LICENSE").equals("youtube") ?
 															0 :
 															1].name());
-			stmtUploadInsert.setNull(24, Types.TIMESTAMP);
-			stmtUploadInsert.setBoolean(25, false);
-			stmtUploadInsert.setNull(26, Types.VARCHAR);
+			stmtUploadInsert.setNull(23, Types.TIMESTAMP);
+			stmtUploadInsert.setBoolean(24, false);
+			stmtUploadInsert.setNull(25, Types.VARCHAR);
+			stmtUploadInsert.setBoolean(26, false);
 			stmtUploadInsert.setBoolean(27, false);
-			stmtUploadInsert.setBoolean(28, false);
-			stmtUploadInsert.setNull(29, Types.VARCHAR);
+			stmtUploadInsert.setNull(28, Types.VARCHAR);
+			stmtUploadInsert.setBoolean(29, false);
 			stmtUploadInsert.setBoolean(30, false);
 			stmtUploadInsert.setBoolean(31, false);
 			stmtUploadInsert.setBoolean(32, false);
 			stmtUploadInsert.setBoolean(33, false);
 			stmtUploadInsert.setBoolean(34, false);
-			stmtUploadInsert.setBoolean(35, false);
-			stmtUploadInsert.setString(36, Syndication.GLOBAL.name());
+			stmtUploadInsert.setString(35, Syndication.GLOBAL.name());
+			stmtUploadInsert.setNull(36, Types.VARCHAR);
 			stmtUploadInsert.setNull(37, Types.VARCHAR);
 			stmtUploadInsert.setNull(38, Types.VARCHAR);
 			stmtUploadInsert.setNull(39, Types.VARCHAR);
@@ -253,12 +252,11 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(43, Types.VARCHAR);
 			stmtUploadInsert.setNull(44, Types.VARCHAR);
 			stmtUploadInsert.setNull(45, Types.VARCHAR);
-			stmtUploadInsert.setNull(46, Types.VARCHAR);
-			stmtUploadInsert.setString(47, ClaimType.AUDIO_VISUAL.name());
-			stmtUploadInsert.setString(48, ClaimOption.MONETIZE.name());
-			stmtUploadInsert.setString(49, Asset.WEB.name());
-			stmtUploadInsert.setBoolean(50, false);
-			stmtUploadInsert.setNull(51, Types.VARCHAR);
+			stmtUploadInsert.setString(46, ClaimType.AUDIO_VISUAL.name());
+			stmtUploadInsert.setString(47, ClaimOption.MONETIZE.name());
+			stmtUploadInsert.setString(48, Asset.WEB.name());
+			stmtUploadInsert.setBoolean(49, false);
+			stmtUploadInsert.setNull(50, Types.VARCHAR);
 			stmtUploadInsert.execute();
 		}
 	}
@@ -282,7 +280,7 @@ public final class DBConverter {
 		final Statement stmtUploadSelect = connectionOld.createStatement();
 		final ResultSet rsUpload = stmtUploadSelect.executeQuery("SELECT * FROM UPLOADS WHERE ARCHIVED  = FALSE");
 
-		final PreparedStatement stmtUploadInsert = connectionNew.prepareStatement("INSERT INTO UPLOAD (ARCHIVED, CATEGORY, COMMENT, COMMENTVOTE, DESCRIPTION, EMBED, FAILED, FILE, KEYWORDS, MIMETYPE, MOBILE, RATE, TITLE, UPLOADURL, VIDEORESPONSE, VISIBILITY, DATE_OF_START, INPROGRESS, LOCKED, VIDEOID, ACCOUNT_ID, ENDDIR, LICENSE, DATE_OF_RELEASE, PAUSEONFINISH, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER, STATUS) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		final PreparedStatement stmtUploadInsert = connectionNew.prepareStatement("INSERT INTO UPLOAD (ARCHIVED, CATEGORY, COMMENT, COMMENTVOTE, DESCRIPTION, EMBED, FAILED, FILE, KEYWORDS, MIMETYPE, RATE, TITLE, UPLOADURL, VIDEORESPONSE, VISIBILITY, DATE_OF_START, INPROGRESS, LOCKED, VIDEOID, ACCOUNT_ID, ENDDIR, LICENSE, DATE_OF_RELEASE, PAUSEONFINISH, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER, STATUS) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		while (rsUpload.next()) {
 			Category category = Category.GAMES;
 			for (final Category cat : Category.values()) {
@@ -299,51 +297,50 @@ public final class DBConverter {
 			stmtUploadInsert.setBoolean(6, rsUpload.getBoolean("EMBED"));
 			stmtUploadInsert.setBoolean(7, false);
 			stmtUploadInsert.setString(8, rsUpload.getString("FILE"));
-			stmtUploadInsert.setString(9, rsUpload.getString("KEYWORDS"));
-			stmtUploadInsert.setString(10, rsUpload.getString("MIMETYPE"));
-			stmtUploadInsert.setBoolean(11, rsUpload.getBoolean("MOBILE"));
-			stmtUploadInsert.setBoolean(12, rsUpload.getBoolean("RATE"));
-			stmtUploadInsert.setString(13, rsUpload.getString("TITLE"));
-			stmtUploadInsert.setNull(14, Types.VARCHAR);
-			stmtUploadInsert.setString(15, Videoresponse.values()[rsUpload.getInt("VIDEORESPONSE")].name());
-			stmtUploadInsert.setString(16, Visibility.values()[rsUpload.getInt("VISIBILITY")].name());
-			stmtUploadInsert.setNull(17, Types.TIMESTAMP);
+			stmtUploadInsert.setString(9, rsUpload.getString("MIMETYPE"));
+			stmtUploadInsert.setBoolean(10, rsUpload.getBoolean("MOBILE"));
+			stmtUploadInsert.setBoolean(11, rsUpload.getBoolean("RATE"));
+			stmtUploadInsert.setString(12, rsUpload.getString("TITLE"));
+			stmtUploadInsert.setNull(13, Types.VARCHAR);
+			stmtUploadInsert.setString(14, Videoresponse.values()[rsUpload.getInt("VIDEORESPONSE")].name());
+			stmtUploadInsert.setString(15, Visibility.values()[rsUpload.getInt("VISIBILITY")].name());
+			stmtUploadInsert.setNull(16, Types.TIMESTAMP);
+			stmtUploadInsert.setBoolean(17, false);
 			stmtUploadInsert.setBoolean(18, false);
-			stmtUploadInsert.setBoolean(19, false);
-			stmtUploadInsert.setNull(20, Types.VARCHAR);
-			stmtUploadInsert.setObject(21, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
-			stmtUploadInsert.setString(22, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(23, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube") ?
+			stmtUploadInsert.setNull(19, Types.VARCHAR);
+			stmtUploadInsert.setObject(20, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
+			stmtUploadInsert.setString(21, rsUpload.getString("ENDDIR"));
+			stmtUploadInsert.setString(22, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube") ?
 															0 :
 															1].name());
-			stmtUploadInsert.setNull(24, Types.TIMESTAMP);
-			stmtUploadInsert.setBoolean(25, rsUpload.getBoolean("PAUSEONFINISH"));
-			stmtUploadInsert.setString(26, rsUpload.getString("THUMBNAIL"));
-			stmtUploadInsert.setBoolean(27, rsUpload.getBoolean("FACEBOOK"));
-			stmtUploadInsert.setBoolean(28, rsUpload.getBoolean("TWITTER"));
-			stmtUploadInsert.setString(29, rsUpload.getString("MESSAGE"));
-			stmtUploadInsert.setBoolean(30, rsUpload.getBoolean("INSTREAMDEFAULTS"));
-			stmtUploadInsert.setBoolean(31, rsUpload.getBoolean("CLAIM"));
-			stmtUploadInsert.setBoolean(32, rsUpload.getBoolean("OVERLAY"));
-			stmtUploadInsert.setBoolean(33, rsUpload.getBoolean("TRUEVIEW"));
-			stmtUploadInsert.setBoolean(34, rsUpload.getBoolean("INSTREAM"));
-			stmtUploadInsert.setBoolean(35, rsUpload.getBoolean("PRODUCT"));
-			stmtUploadInsert.setString(36, Syndication.values()[rsUpload.getInt("SYNDICATION")].name());
-			stmtUploadInsert.setString(37, rsUpload.getString("MONETIZETITLE"));
-			stmtUploadInsert.setString(38, rsUpload.getString("MONETIZEDESCRIPTION"));
-			stmtUploadInsert.setString(39, rsUpload.getString("MONETIZEID"));
-			stmtUploadInsert.setString(40, rsUpload.getString("MONETIZENOTES"));
-			stmtUploadInsert.setString(41, rsUpload.getString("MONETIZETMSID"));
-			stmtUploadInsert.setString(42, rsUpload.getString("MONETIZEISAN"));
-			stmtUploadInsert.setString(43, rsUpload.getString("MONETIZEEIDR"));
-			stmtUploadInsert.setString(44, rsUpload.getString("MONETIZETITLEEPISODE"));
-			stmtUploadInsert.setString(45, rsUpload.getString("MONETIZESEASONNB"));
-			stmtUploadInsert.setString(46, rsUpload.getString("MONETIZEEPISODENB"));
-			stmtUploadInsert.setString(47, ClaimType.values()[rsUpload.getInt("MONETIZECLAIMTYPE")].name());
-			stmtUploadInsert.setString(48, ClaimOption.values()[rsUpload.getInt("MONETIZECLAIMPOLICY")].name());
-			stmtUploadInsert.setString(49, Asset.values()[rsUpload.getInt("MONETIZEASSET")].name());
-			stmtUploadInsert.setBoolean(50, rsUpload.getBoolean("MONETIZEPARTNER"));
-			stmtUploadInsert.setNull(51, Types.VARCHAR);
+			stmtUploadInsert.setNull(23, Types.TIMESTAMP);
+			stmtUploadInsert.setBoolean(24, rsUpload.getBoolean("PAUSEONFINISH"));
+			stmtUploadInsert.setString(25, rsUpload.getString("THUMBNAIL"));
+			stmtUploadInsert.setBoolean(26, rsUpload.getBoolean("FACEBOOK"));
+			stmtUploadInsert.setBoolean(27, rsUpload.getBoolean("TWITTER"));
+			stmtUploadInsert.setString(28, rsUpload.getString("MESSAGE"));
+			stmtUploadInsert.setBoolean(29, rsUpload.getBoolean("INSTREAMDEFAULTS"));
+			stmtUploadInsert.setBoolean(30, rsUpload.getBoolean("CLAIM"));
+			stmtUploadInsert.setBoolean(31, rsUpload.getBoolean("OVERLAY"));
+			stmtUploadInsert.setBoolean(32, rsUpload.getBoolean("TRUEVIEW"));
+			stmtUploadInsert.setBoolean(33, rsUpload.getBoolean("INSTREAM"));
+			stmtUploadInsert.setBoolean(34, rsUpload.getBoolean("PRODUCT"));
+			stmtUploadInsert.setString(35, Syndication.values()[rsUpload.getInt("SYNDICATION")].name());
+			stmtUploadInsert.setString(36, rsUpload.getString("MONETIZETITLE"));
+			stmtUploadInsert.setString(37, rsUpload.getString("MONETIZEDESCRIPTION"));
+			stmtUploadInsert.setString(38, rsUpload.getString("MONETIZEID"));
+			stmtUploadInsert.setString(39, rsUpload.getString("MONETIZENOTES"));
+			stmtUploadInsert.setString(40, rsUpload.getString("MONETIZETMSID"));
+			stmtUploadInsert.setString(41, rsUpload.getString("MONETIZEISAN"));
+			stmtUploadInsert.setString(42, rsUpload.getString("MONETIZEEIDR"));
+			stmtUploadInsert.setString(43, rsUpload.getString("MONETIZETITLEEPISODE"));
+			stmtUploadInsert.setString(44, rsUpload.getString("MONETIZESEASONNB"));
+			stmtUploadInsert.setString(45, rsUpload.getString("MONETIZEEPISODENB"));
+			stmtUploadInsert.setString(46, ClaimType.values()[rsUpload.getInt("MONETIZECLAIMTYPE")].name());
+			stmtUploadInsert.setString(47, ClaimOption.values()[rsUpload.getInt("MONETIZECLAIMPOLICY")].name());
+			stmtUploadInsert.setString(48, Asset.values()[rsUpload.getInt("MONETIZEASSET")].name());
+			stmtUploadInsert.setBoolean(49, rsUpload.getBoolean("MONETIZEPARTNER"));
+			stmtUploadInsert.setNull(50, Types.VARCHAR);
 			stmtUploadInsert.execute();
 		}
 	}
@@ -352,7 +349,7 @@ public final class DBConverter {
 		final Statement stmtPresetSelect = connectionOld.createStatement();
 		final ResultSet rsTemplate = stmtPresetSelect.executeQuery("SELECT * FROM TEMPLATES");
 
-		final PreparedStatement stmtPresetInsert = connectionNew.prepareStatement("INSERT INTO TEMPLATE (CATEGORY, COMMENT, COMMENTVOTE, DEFAULTDIR, DESCRIPTION, EMBED, KEYWORDS, MOBILE, NAME, RATE, VIDEORESPONSE, VISIBILITY, ACCOUNT_ID, ENDDIR, LICENSE, TITLE, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		final PreparedStatement stmtPresetInsert = connectionNew.prepareStatement("INSERT INTO TEMPLATE (CATEGORY, COMMENT, COMMENTVOTE, DEFAULTDIR, DESCRIPTION, EMBED, KEYWORDS, NAME, RATE, VIDEORESPONSE, VISIBILITY, ACCOUNT_ID, ENDDIR, LICENSE, TITLE, THUMBNAIL, FACEBOOK, TWITTER, MESSAGE, MONETIZE_INSTREAM_DEFAULTS, MONETIZE_CLAIM, MONETIZE_OVERLAY, MONETIZE_TRUEVIEW, MONETIZE_INSTREAM, MONETIZE_PRODUCT, MONETIZE_SYNDICATION, MONETIZE_TITLE, MONETIZE_DESCRIPTION, MONETIZE_ID, MONETIZE_NOTES, MONETIZE_TMSID, MONETIZE_ISAN, MONETIZE_EIDR, MONETIZE_TITLEEPISODE, MONETIZE_SEASON_NB, MONETIZE_EPISODE_NB, MONETIZE_CLAIMTYPE, MONETIZE_CLAIMOPTION, MONETIZE_ASSET, MONETIZE_PARTNER) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		while (rsTemplate.next()) {
 			Category category = Category.GAMES;
@@ -369,41 +366,40 @@ public final class DBConverter {
 			stmtPresetInsert.setString(5, rsTemplate.getString("DESCRIPTION"));
 			stmtPresetInsert.setBoolean(6, rsTemplate.getBoolean("EMBED"));
 			stmtPresetInsert.setString(7, rsTemplate.getString("KEYWORDS"));
-			stmtPresetInsert.setBoolean(8, rsTemplate.getBoolean("MOBILE"));
-			stmtPresetInsert.setString(9, rsTemplate.getString("NAME"));
-			stmtPresetInsert.setBoolean(10, rsTemplate.getBoolean("RATE"));
-			stmtPresetInsert.setString(11, Videoresponse.values()[rsTemplate.getInt("VIDEORESPONSE")].name());
-			stmtPresetInsert.setString(12, Visibility.values()[rsTemplate.getInt("VISIBILITY")].name());
-			stmtPresetInsert.setObject(13, rsTemplate.getObject("ACCOUNT_ID"), Types.INTEGER);
-			stmtPresetInsert.setString(14, rsTemplate.getString("ENDDIR"));
-			stmtPresetInsert.setString(15, License.values()[rsTemplate.getString("LICENSE")
+			stmtPresetInsert.setString(8, rsTemplate.getString("NAME"));
+			stmtPresetInsert.setBoolean(9, rsTemplate.getBoolean("RATE"));
+			stmtPresetInsert.setString(10, Videoresponse.values()[rsTemplate.getInt("VIDEORESPONSE")].name());
+			stmtPresetInsert.setString(11, Visibility.values()[rsTemplate.getInt("VISIBILITY")].name());
+			stmtPresetInsert.setObject(12, rsTemplate.getObject("ACCOUNT_ID"), Types.INTEGER);
+			stmtPresetInsert.setString(13, rsTemplate.getString("ENDDIR"));
+			stmtPresetInsert.setString(14, License.values()[rsTemplate.getString("LICENSE")
 																	.equalsIgnoreCase("youtube") ? 0 : 1].name());
-			stmtPresetInsert.setString(16, rsTemplate.getString("TITLE"));
-			stmtPresetInsert.setString(17, rsTemplate.getString("THUMBNAIL"));
-			stmtPresetInsert.setBoolean(18, rsTemplate.getBoolean("FACEBOOK"));
-			stmtPresetInsert.setBoolean(19, rsTemplate.getBoolean("TWITTER"));
-			stmtPresetInsert.setString(20, rsTemplate.getString("MESSAGE"));
-			stmtPresetInsert.setBoolean(21, rsTemplate.getBoolean("INSTREAMDEFAULTS"));
-			stmtPresetInsert.setBoolean(22, rsTemplate.getBoolean("CLAIM"));
-			stmtPresetInsert.setBoolean(23, rsTemplate.getBoolean("OVERLAY"));
-			stmtPresetInsert.setBoolean(24, rsTemplate.getBoolean("TRUEVIEW"));
-			stmtPresetInsert.setBoolean(25, rsTemplate.getBoolean("INSTREAM"));
-			stmtPresetInsert.setBoolean(26, rsTemplate.getBoolean("PRODUCT"));
-			stmtPresetInsert.setString(27, Syndication.values()[rsTemplate.getInt("SYNDICATION")].name());
-			stmtPresetInsert.setString(28, rsTemplate.getString("MONETIZETITLE"));
-			stmtPresetInsert.setString(29, rsTemplate.getString("MONETIZEDESCRIPTION"));
-			stmtPresetInsert.setString(30, rsTemplate.getString("MONETIZEID"));
-			stmtPresetInsert.setString(31, rsTemplate.getString("MONETIZENOTES"));
-			stmtPresetInsert.setString(32, rsTemplate.getString("MONETIZETMSID"));
-			stmtPresetInsert.setString(33, rsTemplate.getString("MONETIZEISAN"));
-			stmtPresetInsert.setString(34, rsTemplate.getString("MONETIZEEIDR"));
-			stmtPresetInsert.setString(35, rsTemplate.getString("MONETIZETITLEEPISODE"));
-			stmtPresetInsert.setString(36, rsTemplate.getString("MONETIZESEASONNB"));
-			stmtPresetInsert.setString(37, rsTemplate.getString("MONETIZEEPISODENB"));
-			stmtPresetInsert.setString(38, ClaimType.values()[rsTemplate.getInt("MONETIZECLAIMTYPE")].name());
-			stmtPresetInsert.setString(39, ClaimOption.values()[rsTemplate.getInt("MONETIZECLAIMPOLICY")].name());
-			stmtPresetInsert.setString(40, Asset.values()[rsTemplate.getInt("MONETIZEASSET")].name());
-			stmtPresetInsert.setBoolean(41, rsTemplate.getBoolean("MONETIZEPARTNER"));
+			stmtPresetInsert.setString(15, rsTemplate.getString("TITLE"));
+			stmtPresetInsert.setString(16, rsTemplate.getString("THUMBNAIL"));
+			stmtPresetInsert.setBoolean(17, rsTemplate.getBoolean("FACEBOOK"));
+			stmtPresetInsert.setBoolean(18, rsTemplate.getBoolean("TWITTER"));
+			stmtPresetInsert.setString(19, rsTemplate.getString("MESSAGE"));
+			stmtPresetInsert.setBoolean(20, rsTemplate.getBoolean("INSTREAMDEFAULTS"));
+			stmtPresetInsert.setBoolean(21, rsTemplate.getBoolean("CLAIM"));
+			stmtPresetInsert.setBoolean(22, rsTemplate.getBoolean("OVERLAY"));
+			stmtPresetInsert.setBoolean(23, rsTemplate.getBoolean("TRUEVIEW"));
+			stmtPresetInsert.setBoolean(24, rsTemplate.getBoolean("INSTREAM"));
+			stmtPresetInsert.setBoolean(25, rsTemplate.getBoolean("PRODUCT"));
+			stmtPresetInsert.setString(26, Syndication.values()[rsTemplate.getInt("SYNDICATION")].name());
+			stmtPresetInsert.setString(27, rsTemplate.getString("MONETIZETITLE"));
+			stmtPresetInsert.setString(28, rsTemplate.getString("MONETIZEDESCRIPTION"));
+			stmtPresetInsert.setString(29, rsTemplate.getString("MONETIZEID"));
+			stmtPresetInsert.setString(30, rsTemplate.getString("MONETIZENOTES"));
+			stmtPresetInsert.setString(31, rsTemplate.getString("MONETIZETMSID"));
+			stmtPresetInsert.setString(32, rsTemplate.getString("MONETIZEISAN"));
+			stmtPresetInsert.setString(33, rsTemplate.getString("MONETIZEEIDR"));
+			stmtPresetInsert.setString(34, rsTemplate.getString("MONETIZETITLEEPISODE"));
+			stmtPresetInsert.setString(35, rsTemplate.getString("MONETIZESEASONNB"));
+			stmtPresetInsert.setString(36, rsTemplate.getString("MONETIZEEPISODENB"));
+			stmtPresetInsert.setString(37, ClaimType.values()[rsTemplate.getInt("MONETIZECLAIMTYPE")].name());
+			stmtPresetInsert.setString(38, ClaimOption.values()[rsTemplate.getInt("MONETIZECLAIMPOLICY")].name());
+			stmtPresetInsert.setString(39, Asset.values()[rsTemplate.getInt("MONETIZEASSET")].name());
+			stmtPresetInsert.setBoolean(40, rsTemplate.getBoolean("MONETIZEPARTNER"));
 			stmtPresetInsert.execute();
 		}
 	}

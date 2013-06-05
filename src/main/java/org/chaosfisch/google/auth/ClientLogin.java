@@ -73,12 +73,12 @@ public class ClientLogin {
 		try (final Response response = clientLoginRequest.execute()) {
 			final HttpEntity clientLoginEntity = response.getEntity();
 			if (response.getStatusCode() != 200) {
-				throw new SystemException(AuthCode.RESPONSE_NOT_200);
+				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", response.getStatusCode());
 			}
 
 			return EntityUtils.toString(clientLoginEntity, Charsets.UTF_8);
 		} catch (final IOException e) {
-			throw new SystemException(AuthCode.AUTH_IO_ERROR);
+			throw new SystemException(e, AuthCode.AUTH_IO_ERROR);
 		}
 	}
 

@@ -12,6 +12,8 @@ package org.chaosfisch.exceptions;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -94,4 +96,20 @@ public class SystemException extends Exception {
 		s.flush();
 	}
 
+	@Override
+	public StackTraceElement[] getStackTrace() {
+		final StackTraceElement[] elements = super.getStackTrace();
+
+		String poperties = "";
+
+		for (final Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
+			poperties = poperties.concat('\t' + stringObjectEntry.getKey() + "=[" + stringObjectEntry.getValue() + ']');
+		}
+		final ArrayList<StackTraceElement> list = new ArrayList<>(Arrays.asList(elements));
+		list.add(0, new StackTraceElement("SystemException", "properties", poperties, properties.size()));
+
+		final StackTraceElement[] tmp = new StackTraceElement[list.size()];
+		list.toArray(tmp);
+		return tmp;
+	}
 }
