@@ -33,6 +33,6 @@
         <file>src/main/resources/org/chaosfisch/youtubeuploader/resources/images/splash.bmp</file>
         <waitForWindow>true</waitForWindow>
         <timeout>5</timeout>
-        <timeoutErr>true</timeoutErr>
+        <timeoutErr>false</timeoutErr>
     </splash>
 </launch4jConfig>

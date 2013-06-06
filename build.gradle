@@ -18,6 +18,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -25,7 +27,7 @@ apply plugin: 'application'
 
 buildscript {
     buildDir = 'out'
-    version = "3.0.1.0";
+    version = "3.0.1.1";
 }
 
 allprojects
