@@ -37,6 +37,7 @@ import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListCell<Upload>> {
@@ -155,8 +156,23 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				renderer.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
 				renderer.setEta(calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
 				renderer.setSpeed(humanReadableByteCount(speed).concat("/s"));
+				renderer.setFinish(calculateFinish(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
+				renderer.setBytes(humanReadableByteCount(uploadProgress.getTotalBytesUploaded()) + " / " + humanReadableByteCount(uploadProgress
+						.getFileSize()));
 			}
 
+		}
+
+		private String calculateFinish(final long remainingBytes, final long speed) {
+
+			final long duration = 1000 * remainingBytes / speed + System.currentTimeMillis() + TimeZone.getDefault()
+					.getOffset(System.currentTimeMillis());
+
+			return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration) - TimeUnit.DAYS
+					.toHours(TimeUnit.MILLISECONDS.toDays(duration)), TimeUnit.MILLISECONDS
+					.toMinutes(duration) - TimeUnit.HOURS
+					.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)), TimeUnit.MILLISECONDS
+					.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
 		}
 
 		private String calculateEta(final long remainingBytes, final long speed) {

@@ -34,9 +34,9 @@
     <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="hsqldb-2.2.9" level="project" />
     <orderEntry type="library" exported="" name="jooq-3.0.1" level="project" />
-    <orderEntry type="library" exported="" name="fx-guice-2.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="hamcrest-core-1.1" level="project" />
+    <orderEntry type="library" exported="" name="fx-guice-2.1.1" level="project" />
   </component>
 </module>
 

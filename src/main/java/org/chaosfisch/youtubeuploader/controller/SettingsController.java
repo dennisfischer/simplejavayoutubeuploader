@@ -19,6 +19,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import org.chaosfisch.services.impl.EnddirServiceImpl;
+import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
+import org.chaosfisch.youtubeuploader.controller.renderer.ProgressNodeRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class SettingsController {
 
@@ -42,12 +45,16 @@ public class SettingsController {
 	@FXML
 	private TextField homeDirTextField;
 
+	@FXML
+	private CheckBox progressCheckbox;
+
 	@Inject
 	private EnddirServiceImpl enddirService;
 
-	final                Properties vmOptions     = new Properties();
-	final                File       vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
-	private static final Logger     logger        = LoggerFactory.getLogger(SettingsController.class);
+	final                Properties  vmOptions     = new Properties();
+	final                File        vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
+	private static final Logger      logger        = LoggerFactory.getLogger(SettingsController.class);
+	private final static Preferences prefs         = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@FXML
 	void openHomeDir(final ActionEvent event) {
@@ -66,10 +73,16 @@ public class SettingsController {
 	}
 
 	@FXML
+	void toggleProgress(final ActionEvent event) {
+		prefs.putBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, progressCheckbox.isSelected());
+	}
+
+	@FXML
 	void initialize() {
 		assert enddirCheckbox != null : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert homeDirTextField != null : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
 		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
+		progressCheckbox.setSelected(prefs.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
 
 		loadVMOptions();
 	}

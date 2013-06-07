@@ -13,10 +13,7 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-1.0"
             minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
@@ -32,6 +29,7 @@
         <rowConstraints>
             <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES"/>
         </rowConstraints>
         <Label text="%label.homedir" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         <CheckBox fx:id="enddirCheckbox" mnemonicParsing="false" onAction="#toggleEnddirTitle"
@@ -41,5 +39,8 @@
                    GridPane.rowIndex="1"/>
         <Button id="openHomeDir" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#openHomeDir"
                 styleClass="searchFile" text="%button.defaultdir" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <CheckBox fx:id="progressCheckbox" mnemonicParsing="false" onAction="#toggleProgress"
+                  text="%progresscheckbox.label" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
+                  GridPane.rowIndex="2"/>
     </GridPane>
 </AnchorPane>

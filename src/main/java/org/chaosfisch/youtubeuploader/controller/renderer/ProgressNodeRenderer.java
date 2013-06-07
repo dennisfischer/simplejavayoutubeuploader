@@ -11,19 +11,28 @@
 package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressBarBuilder;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 
-class ProgressNodeRenderer extends StackPane {
+import java.util.prefs.Preferences;
 
-	private final ProgressBar progressBar = ProgressBarBuilder.create().scaleY(2).prefWidth(500).progress(0).build();
+public class ProgressNodeRenderer extends StackPane {
 
-	private final Label progressSpeed = LabelBuilder.create().build();
-	private final Label progressEta   = LabelBuilder.create().build();
+	private final static Preferences prefs            = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	public static final  String      DISPLAY_PROGRESS = "display_progress";
+
+	private final ProgressBar progressBar    = ProgressBarBuilder.create().scaleY(2).prefWidth(500).progress(0).build();
+	private final Label       progressSpeed  = LabelBuilder.create().build();
+	private final Label       progressEta    = LabelBuilder.create().build();
+	private final Label       progressFinish = LabelBuilder.create().build();
+	private final Label       progressBytes  = LabelBuilder.create().build();
 
 	public ProgressNodeRenderer() {
 		super();
@@ -36,8 +45,34 @@ class ProgressNodeRenderer extends StackPane {
 
 		progressEta.alignmentProperty().set(Pos.CENTER_RIGHT);
 		progressEta.prefWidthProperty().bind(progressBar.widthProperty().subtract(6));
+		progressFinish.alignmentProperty().set(Pos.CENTER_RIGHT);
+		progressFinish.prefWidthProperty().bind(progressBar.widthProperty().subtract(6));
 
-		getChildren().addAll(progressBar, progressInfo, progressEta, progressSpeed);
+		progressFinish.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+		progressBytes.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+		progressSpeed.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+		progressEta.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+
+		getChildren().addAll(progressBar, progressInfo, progressEta, progressSpeed, progressFinish, progressBytes);
+
+		setOnMouseEntered(new EventHandler<MouseEvent>() {
+			public void handle(final MouseEvent me) {
+				progressSpeed.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressEta.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressFinish.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressBytes.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+			}
+		});
+
+		setOnMouseExited(new EventHandler<MouseEvent>() {
+			public void handle(final MouseEvent me) {
+				progressSpeed.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressEta.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressFinish.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressBytes.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+			}
+		});
+
 	}
 
 	public void setProgress(final double progress) {
@@ -66,6 +101,26 @@ class ProgressNodeRenderer extends StackPane {
 			@Override
 			public void run() {
 				progressSpeed.setText(speed);
+			}
+		});
+	}
+
+	public void setFinish(final String finish) {
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				progressFinish.setText(finish);
+			}
+		});
+	}
+
+	public void setBytes(final String bytes) {
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				progressBytes.setText(bytes);
 			}
 		});
 	}
