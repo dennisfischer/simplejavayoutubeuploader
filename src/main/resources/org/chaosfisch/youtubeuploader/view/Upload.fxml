@@ -81,10 +81,6 @@
                            focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity"
                            minWidth="-Infinity" style="-fx-background-color: #cccccc&#10;" text=""
                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
-                <ScrollPane fx:id="playlistDropScrollpane" fitToHeight="false" fitToWidth="false" hbarPolicy="AS_NEEDED"
-                            maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pannable="false"
-                            prefHeight="-1.0" prefWidth="-1.0" styleClass="dropzone" vbarPolicy="NEVER"
-                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
                 <columnConstraints>
                     <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-1.0" minWidth="-Infinity"/>
                     <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-Infinity"/>
@@ -110,6 +106,10 @@
                                     vgrow="SOMETIMES"/>
                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
+                <ScrollPane fx:id="playlistDropScrollpane" fitToHeight="false" fitToWidth="false" hbarPolicy="AS_NEEDED"
+                            maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pannable="false"
+                            prefHeight="-1.0" prefWidth="-1.0" styleClass="dropzone" vbarPolicy="NEVER"
+                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
             </GridPane>
             <Accordion maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" visible="true"
                        GridPane.columnIndex="1" GridPane.rowIndex="0">
@@ -245,7 +245,7 @@
                     <TitledPane fx:id="x2" animated="true" collapsible="true" expanded="false"
                                 text="%accordion.playlists">
                         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <GridPane fx:id="playlistGrid" gridLinesVisible="false" prefHeight="438.0" prefWidth="432.0"
+                            <GridPane fx:id="playlistGrid" gridLinesVisible="false" prefHeight="-1.0" prefWidth="-1.0"
                                       styleClass="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <Button fx:id="refreshPlaylists" alignment="CENTER" contentDisplay="GRAPHIC_ONLY"
@@ -253,8 +253,9 @@
                                         mnemonicParsing="false" onAction="#refreshPlaylists" style="&#10;"
                                         GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                                 <Slider fx:id="gridWidthSlider" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                <ScrollPane fx:id="playlistSourceScrollpane" prefHeight="200.0" prefWidth="200.0"
-                                            styleClass="dropzone" GridPane.columnIndex="0"
+                                <ScrollPane fx:id="playlistSourceScrollpane" fitToHeight="false" fitToWidth="false"
+                                            hbarPolicy="AS_NEEDED" prefHeight="-1.0" prefWidth="-1.0"
+                                            styleClass="dropzone" vbarPolicy="AS_NEEDED" GridPane.columnIndex="0"
                                             GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
                                 <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
@@ -268,8 +269,8 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                 </padding>
                                 <rowConstraints>
-                                    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity"
-                                                    prefHeight="-1.0" vgrow="SOMETIMES"/>
+                                    <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0"
+                                                    vgrow="SOMETIMES"/>
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                                     vgrow="SOMETIMES"/>
                                 </rowConstraints>

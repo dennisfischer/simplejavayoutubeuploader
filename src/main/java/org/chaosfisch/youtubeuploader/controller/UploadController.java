@@ -274,6 +274,7 @@ public class UploadController {
 				// Cleanup (reset form)
 				filesList.remove(uploadFile.getValue());
 				uploadFile.getSelectionModel().selectNext();
+				idProperty.setValue(null);
 			}
 		});
 		command.setOnRunning(new EventHandler<WorkerStateEvent>() {
@@ -708,14 +709,15 @@ public class UploadController {
 		initTwitterFacebookBinding(uploadTwitter.disableProperty());
 		gridWidthSlider.minProperty().set(1280);
 		gridWidthSlider.maxProperty().set(2000);
+
+		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty());
+		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(10));
 		playlistSourcezone.cellWidthProperty().bind(gridWidthSlider.valueProperty().divide(9));
 		playlistSourcezone.cellHeightProperty().bind(gridWidthSlider.valueProperty().divide(16));
 		playlistTargetzone.minWidthProperty().bind(playlistDropScrollpane.widthProperty().subtract(5));
 		playlistTargetzone.prefHeightProperty().bind(playlistDropScrollpane.heightProperty());
 		playlistTargetzone.cellHeightProperty().set(68);
 		playlistTargetzone.cellWidthProperty().set(120);
-		playlistSourcezone.minHeightProperty().bind(playlistSourceScrollpane.heightProperty().subtract(5));
-		playlistSourcezone.prefWidthProperty().bind(playlistSourceScrollpane.widthProperty().subtract(5));
 
 		previewTitle.textProperty().bindBidirectional(uploadTitle.textProperty(), new PreviewTitleStringConverter());
 
@@ -964,6 +966,20 @@ public class UploadController {
 		}
 	}
 
+	private void _triggerPlaylist() {
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				playlistTargetzone.setItems(null);
+				playlistTargetzone.setItems(playlistTargetList);
+
+				playlistSourcezone.setItems(null);
+				playlistSourcezone.setItems(playlistSourceList);
+			}
+		});
+	}
+
 	private final class AccountChangeListener implements ChangeListener<Account> {
 		@Override
 		public void changed(final ObservableValue<? extends Account> observable, final Account oldValue, final Account newValue) {
@@ -972,6 +988,8 @@ public class UploadController {
 			if (newValue != null) {
 				playlistSourceList.addAll(playlistDao.fetchUnhidden(newValue.getId()));
 			}
+			_triggerPlaylist();
+
 		}
 	}
 
