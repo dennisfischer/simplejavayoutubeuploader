@@ -185,7 +185,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		}
 
 		private String humanReadableByteCount(final long bytes) {
-			final int unit = 1000;
+			final int unit = 1024;
 			if (bytes < unit) {
 				return bytes + " B";
 			}
