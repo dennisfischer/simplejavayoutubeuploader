@@ -452,6 +452,7 @@ public class UploadWorker extends Task<Void> {
 		upload.setMonetizeTitleepisode(extendedPlacerholders.replace(upload.getMonetizeTitleepisode()));
 		upload.setMonetizeSeasonNb(extendedPlacerholders.replace(upload.getMonetizeSeasonNb()));
 		upload.setMonetizeEpisodeNb(extendedPlacerholders.replace(upload.getMonetizeEpisodeNb()));
+		upload.setThumbnail(extendedPlacerholders.replace(upload.getThumbnail()));
 
 		metadataService.activateBrowserfeatures(upload);
 	}
