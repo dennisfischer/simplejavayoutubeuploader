@@ -37,15 +37,15 @@ public class UploadTrigger extends TriggerAdapter {
 		lastId = null;
 
 		final DSLContext create = DSL.using(conn, SQLDialect.H2);
-		if (newRow != null) {
+		if (null != newRow) {
 			final Cursor<Record> result = create.fetchLazy(newRow, Tables.UPLOAD.fields());
 			while (result.hasNext()) {
 				final Upload record = getUpload(result);
-				if (record == null) {
+				if (null == record) {
 					return;
 				}
 
-				if (oldRow == null) {
+				if (null == oldRow) {
 					EventBusUtil.getInstance().post(new ModelAddedEvent(record));
 				} else {
 					EventBusUtil.getInstance().post(new ModelUpdatedEvent(record));
@@ -55,7 +55,7 @@ public class UploadTrigger extends TriggerAdapter {
 			final Cursor<Record> result = create.fetchLazy(oldRow, Tables.UPLOAD.fields());
 			while (result.hasNext()) {
 				final Upload record = getUpload(result);
-				if (record == null) {
+				if (null == record) {
 					return;
 				}
 
@@ -70,7 +70,7 @@ public class UploadTrigger extends TriggerAdapter {
 		if (lastId.equals(firstId)) {
 			return null;
 		}
-		if (firstId == null) {
+		if (null == firstId) {
 			firstId = record.getId();
 		}
 		return record;

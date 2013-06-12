@@ -33,11 +33,11 @@ public final class TagParser {
 	 */
 	public static boolean isValid(final String input) {
 		final String parsed = TagParser.parseAll(input);
-		if (parsed.getBytes(Charsets.UTF_8).length > 500 || parsed.contains("<") || parsed.contains(">")) {
+		if (500 < parsed.getBytes(Charsets.UTF_8).length || parsed.contains("<") || parsed.contains(">")) {
 			return false;
 		}
 		for (final String tag : RegexpUtils.getPattern(STRING_TO_MATCH).split(parsed)) {
-			if (tag.length() > 30 || tag.length() < 2 || tag.getBytes(Charsets.UTF_8).length > 30) {
+			if (30 < tag.length() || 2 > tag.length() || 30 < tag.getBytes(Charsets.UTF_8).length) {
 				return false;
 			}
 		}
@@ -93,16 +93,16 @@ public final class TagParser {
 		final String[] tmpTags = new String[250];
 		int i = 0;
 		for (final String tag : tags) {
-			if (!(tag.length() > 30) && !(tag.length() < 2) && !(tag.getBytes(Charsets.UTF_8).length > 30)) {
+			if (!(30 < tag.length()) && !(2 > tag.length()) && !(30 < tag.getBytes(Charsets.UTF_8).length)) {
 				tmpTags[i] = tag;
 				i++;
 			}
 		}
 		final StringBuilder stringBuilder = new StringBuilder(30);
-		if (tmpTags.length > 0) {
+		if (0 < tmpTags.length) {
 			stringBuilder.append(tmpTags[0]);
 			for (int j = 1; j < tmpTags.length; j++) {
-				if (tmpTags[j] == null) {
+				if (null == tmpTags[j]) {
 					break;
 				}
 				stringBuilder.append(',');

@@ -17,7 +17,7 @@ public enum Comment {
 
 	private final String i18n;
 
-	private Comment(final String i18n) {
+	Comment(final String i18n) {
 		this.i18n = i18n;
 	}
 

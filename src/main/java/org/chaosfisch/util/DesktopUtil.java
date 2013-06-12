@@ -23,13 +23,13 @@ public final class DesktopUtil {
 	static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
 
 	public static boolean openBrowser(final String url) {
-		final Desktop d = Desktop.getDesktop();
-		if (!d.isSupported(Desktop.Action.BROWSE)) {
+		final Desktop desktop = Desktop.getDesktop();
+		if (!desktop.isSupported(Desktop.Action.BROWSE)) {
 			return false;
 		}
 		try {
 			final URI address = URI.create(url);
-			d.browse(address);
+			desktop.browse(address);
 			return true;
 		} catch (IOException e) {
 			logger.error("Browser IOException at {}", url, e);
@@ -44,12 +44,12 @@ public final class DesktopUtil {
 			return false;
 		}
 
-		final Desktop d = Desktop.getDesktop();
-		if (!d.isSupported(Desktop.Action.OPEN)) {
+		final Desktop desktop = Desktop.getDesktop();
+		if (!desktop.isSupported(Desktop.Action.OPEN)) {
 			return false;
 		}
 		try {
-			d.open(dir);
+			desktop.open(dir);
 			return true;
 		} catch (IOException e) {
 			logger.error("Directory IOException at {}", dir.getAbsolutePath(), e);

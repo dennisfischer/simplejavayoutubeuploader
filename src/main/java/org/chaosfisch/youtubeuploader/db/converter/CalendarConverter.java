@@ -21,7 +21,7 @@ public class CalendarConverter implements Converter<Timestamp, GregorianCalendar
 
 	@Override
 	public GregorianCalendar from(final Timestamp databaseObject) {
-		if (databaseObject == null) {
+		if (null == databaseObject) {
 			return null;
 		}
 		final GregorianCalendar calendar = new GregorianCalendar();
@@ -31,7 +31,7 @@ public class CalendarConverter implements Converter<Timestamp, GregorianCalendar
 
 	@Override
 	public Timestamp to(final GregorianCalendar userObject) {
-		return userObject == null ? null : new Timestamp(userObject.getTimeInMillis());
+		return null == userObject ? null : new Timestamp(userObject.getTimeInMillis());
 	}
 
 	@Override

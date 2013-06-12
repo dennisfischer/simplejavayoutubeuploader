@@ -40,7 +40,7 @@ public class UpdateTemplateCommand extends Service<Void> {
 			protected Void call() throws Exception {
 				Preconditions.checkNotNull(template);
 
-				if (account != null) {
+				if (null != account) {
 					template.setAccountId(account.getId());
 				}
 

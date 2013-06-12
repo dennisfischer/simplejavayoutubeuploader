@@ -17,7 +17,7 @@ public enum Videoresponse {
 
 	private final String i18n;
 
-	private Videoresponse(final String i18n) {
+	Videoresponse(final String i18n) {
 		this.i18n = i18n;
 	}
 

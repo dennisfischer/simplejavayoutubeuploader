@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public final class Computer {
 
-	private final static Logger logger = LoggerFactory.getLogger(Computer.class);
+	private static final Logger logger = LoggerFactory.getLogger(Computer.class);
 
 	/** Sends this system to hibernation mode */
 	public static void hibernateComputer() {

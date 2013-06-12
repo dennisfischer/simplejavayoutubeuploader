@@ -34,7 +34,7 @@ public final class SimpleJavaYoutubeUploader {
 	private static void initApplication(final String[] args) {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
-		if (prefs.getInt("version", 0) <= 6) {
+		if (6 >= prefs.getInt("version", 0)) {
 			try {
 				DBConverter.main(args);
 			} catch (SQLException | IOException e) {

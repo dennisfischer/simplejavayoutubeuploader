@@ -17,7 +17,7 @@ public enum Syndication {
 
 	private final String i18n;
 
-	private Syndication(final String i18n) {
+	Syndication(final String i18n) {
 		this.i18n = i18n;
 	}
 

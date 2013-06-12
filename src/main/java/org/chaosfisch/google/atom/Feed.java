@@ -35,9 +35,8 @@ public class Feed {
 
 	@XStreamAlias("media:group")
 	public MediaGroup mediaGroup;
-	public
 	@XStreamAlias("yt:playlistId")
-	String playlistId;
+	public String     playlistId;
 
 	@XStreamAlias("openSearch:startIndex")
 	public Integer startIndex;

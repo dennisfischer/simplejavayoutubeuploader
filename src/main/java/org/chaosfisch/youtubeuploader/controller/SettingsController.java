@@ -54,13 +54,13 @@ public class SettingsController {
 	final                Properties  vmOptions     = new Properties();
 	final                File        vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
 	private static final Logger      logger        = LoggerFactory.getLogger(SettingsController.class);
-	private final static Preferences prefs         = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final Preferences prefs         = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@FXML
 	void openHomeDir(final ActionEvent event) {
 		final DirectoryChooser directoryChooser = new DirectoryChooser();
 		final File file = directoryChooser.showDialog(null);
-		if (file != null && file.isDirectory()) {
+		if (null != file && file.isDirectory()) {
 			homeDirTextField.setText(file.getAbsolutePath());
 			vmOptions.setProperty("user.home", file.getAbsolutePath());
 			writeVMOptions();
@@ -79,8 +79,8 @@ public class SettingsController {
 
 	@FXML
 	void initialize() {
-		assert enddirCheckbox != null : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
-		assert homeDirTextField != null : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
 		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
 		progressCheckbox.setSelected(prefs.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
 

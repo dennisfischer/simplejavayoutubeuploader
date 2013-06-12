@@ -85,7 +85,7 @@ public class QueueCommandController {
 	@FXML
 	void startQueue(final ActionEvent event) {
 		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"));
-		if (dialog.showDialog() == MonologFXButton.Type.YES) {
+		if (MonologFXButton.Type.YES == dialog.showDialog()) {
 			final StartUploadCommand command = commandProvider.get(StartUploadCommand.class);
 			command.start();
 		}
@@ -99,10 +99,10 @@ public class QueueCommandController {
 
 	@FXML
 	void initialize() {
-		assert actionOnFinish != null : "fx:id=\"actionOnFinish\" was not injected: check your FXML file 'Queue.fxml'.";
-		assert startQueue != null : "fx:id=\"startQueue\" was not injected: check your FXML file 'Queue.fxml'.";
-		assert stopQueue != null : "fx:id=\"stopQueue\" was not injected: check your FXML file 'Queue.fxml'.";
-		assert viewElementsHBox != null : "fx:id=\"viewElementsHBox\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert null != actionOnFinish : "fx:id=\"actionOnFinish\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert null != startQueue : "fx:id=\"startQueue\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert null != stopQueue : "fx:id=\"stopQueue\" was not injected: check your FXML file 'Queue.fxml'.";
+		assert null != viewElementsHBox : "fx:id=\"viewElementsHBox\" was not injected: check your FXML file 'Queue.fxml'.";
 
 		viewElementsHBox.getChildren().addAll(numberOfUploads, uploadSpeed);
 

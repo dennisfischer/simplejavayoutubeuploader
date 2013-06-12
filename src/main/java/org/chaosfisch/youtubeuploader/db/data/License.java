@@ -18,7 +18,7 @@ public enum License {
 	private final String i18n;
 	private final String metaIdentifier;
 
-	private License(final String i18n, final String metaIdentifier) {
+	License(final String i18n, final String metaIdentifier) {
 		this.i18n = i18n;
 		this.metaIdentifier = metaIdentifier;
 	}

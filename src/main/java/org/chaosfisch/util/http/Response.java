@@ -32,7 +32,7 @@ public class Response implements AutoCloseable {
 
 	@Override
 	public void close() {
-		if (response != null && response.getEntity() != null) {
+		if (null != response && null != response.getEntity()) {
 			EntityUtils.consumeQuietly(response.getEntity());
 		}
 	}

@@ -19,13 +19,13 @@ public enum ActionOnFinish {
 	private final String i18n;
 	private String command = "";
 
-	private ActionOnFinish(final String i18n) {
+	ActionOnFinish(final String i18n) {
 		this.i18n = i18n;
 	}
 
 	@Override
 	public String toString() {
-		return String.format(TextUtil.getString(this.i18n), this.command);
+		return String.format(TextUtil.getString(i18n), command);
 	}
 
 	public ActionOnFinish set(final String command) {

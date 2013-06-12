@@ -17,6 +17,7 @@ import com.google.inject.name.Names;
 import javafx.stage.FileChooser;
 import org.chaosfisch.google.auth.ClientLogin;
 import org.chaosfisch.google.auth.GDataRequestSigner;
+import org.chaosfisch.google.auth.IClientLogin;
 import org.chaosfisch.google.youtube.MetadataService;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.google.youtube.ResumeableManager;
@@ -52,7 +53,7 @@ import java.util.ResourceBundle;
 
 public class GuiceBindings extends AbstractModule {
 	private final String dbName;
-	private final static Logger logger = LoggerFactory.getLogger(GuiceBindings.class);
+	private static final Logger logger = LoggerFactory.getLogger(GuiceBindings.class);
 
 	@SuppressWarnings("SameParameterValue")
 	public GuiceBindings(final String dbName) {
@@ -98,7 +99,7 @@ public class GuiceBindings extends AbstractModule {
 	private void mapUtil() {
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
-		bind(ClientLogin.class).in(Singleton.class);
+		bind(IClientLogin.class).to(ClientLogin.class).in(Singleton.class);
 		bind(Throttle.class).in(Singleton.class);
 		bind(EventBus.class).in(Singleton.class);
 		requestStaticInjection(EventBusUtil.class);

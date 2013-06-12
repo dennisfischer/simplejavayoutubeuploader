@@ -66,8 +66,8 @@ public class AccountAddController {
 
 	@FXML
 	void initialize() {
-		assert nameTextfield != null : "fx:id=\"nameTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
-		assert passwordTextfield != null : "fx:id=\"passwordTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
+		assert null != nameTextfield : "fx:id=\"nameTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
+		assert null != passwordTextfield : "fx:id=\"passwordTextfield\" was not injected: check your FXML file 'AccountsAdd.fxml'.";
 	}
 
 	private void _reset() {

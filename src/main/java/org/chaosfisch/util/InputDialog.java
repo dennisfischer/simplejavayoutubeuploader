@@ -26,12 +26,11 @@ public class InputDialog extends Stage {
 	private final Button submit = new Button("Okay");
 
 	public InputDialog(final String title, final Object[] data) {
-		super();
 		initOwner(null);
 
 		setTitle(title);
 
-		if (data.length % 2 != 0) {
+		if (0 != data.length % 2) {
 			throw new IllegalArgumentException("Object data must be even!");
 		}
 
@@ -45,7 +44,7 @@ public class InputDialog extends Stage {
 		gridpane.setVgap(5);
 
 		for (int i = 0; i < data.length; i++) {
-			if (i % 2 == 0) {
+			if (0 == i % 2) {
 				final Label label = new Label((String) data[i]);
 				gridpane.add(label, 0, i / 2);
 			} else {

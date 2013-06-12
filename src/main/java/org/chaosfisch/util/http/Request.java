@@ -149,19 +149,19 @@ public class Request {
 	private Request(final Builder builder) {
 		httpRequest = builder.method.get(builder.url);
 
-		if (builder.method == Method.POST || builder.method == Method.PUT) {
+		if (Method.POST == builder.method || Method.PUT == builder.method) {
 			((HttpEntityEnclosingRequestBase) httpRequest).setEntity(builder.entity);
 		}
 
-		if (builder.headers != null) {
+		if (null != builder.headers) {
 			for (final Entry<String, String> entry : builder.headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
 			}
 		}
-		httpRequest.setParams(builder.params != null ? builder.params : httpRequest.getParams());
+		httpRequest.setParams(null != builder.params ? builder.params : httpRequest.getParams());
 
-		if (builder.requestSigner != null) {
-			if (builder.authHeader != null) {
+		if (null != builder.requestSigner) {
+			if (null != builder.authHeader) {
 				builder.requestSigner.signWithAuthorization(httpRequest, builder.authHeader);
 			} else {
 				builder.requestSigner.sign(httpRequest);

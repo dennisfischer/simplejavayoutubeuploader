@@ -17,7 +17,7 @@ public enum ClaimType {
 
 	private final String i18n;
 
-	private ClaimType(final String i18n) {
+	ClaimType(final String i18n) {
 		this.i18n = i18n;
 	}
 

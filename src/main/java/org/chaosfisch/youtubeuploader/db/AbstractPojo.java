@@ -10,20 +10,21 @@
 
 package org.chaosfisch.youtubeuploader.db;
 
-abstract public class AbstractPojo {
+public abstract class AbstractPojo {
 
 	protected abstract Integer getId();
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj == null || !(obj instanceof AbstractPojo)) {
+		if (null == obj || !(obj instanceof AbstractPojo)) {
 			return false;
 		}
 		if (obj == this) {
 			return true;
 		}
 
-		final AbstractPojo that = (AbstractPojo) obj;
-		return that.getId() != null && getId() != null && that.getId().equals(getId());
+		final AbstractPojo abstractPojo = (AbstractPojo) obj;
+		final Integer id = getId();
+		return null != abstractPojo.getId() && null != id && abstractPojo.getId().equals(id);
 	}
 }

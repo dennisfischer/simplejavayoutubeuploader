@@ -17,7 +17,7 @@ public enum Asset {
 
 	private final String i18n;
 
-	private Asset(final String i18n) {
+	Asset(final String i18n) {
 		this.i18n = i18n;
 	}
 

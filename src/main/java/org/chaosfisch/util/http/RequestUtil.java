@@ -50,7 +50,7 @@ public final class RequestUtil {
 				}
 				if (!isRedirect) {
 					final int responseCode = response.getStatusLine().getStatusCode();
-					if (responseCode == 301 || responseCode == 302) {
+					if (301 == responseCode || 302 == responseCode) {
 						return true;
 					}
 				}
@@ -89,7 +89,7 @@ public final class RequestUtil {
 	 */
 	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && (numRead = is.read(buf)) >= 0) {
+		while (!Thread.currentThread().isInterrupted() && 0 <= (numRead = is.read(buf))) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
@@ -112,7 +112,7 @@ public final class RequestUtil {
 	 */
 	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		int numRead;
-		while (!Thread.currentThread().isInterrupted() && (numRead = is.read(buf, off, len)) >= 0) {
+		while (!Thread.currentThread().isInterrupted() && 0 <= (numRead = is.read(buf, off, len))) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
@@ -132,7 +132,7 @@ public final class RequestUtil {
 	@SuppressWarnings("SameParameterValue")
 	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		final int numRead;
-		if ((numRead = is.read(buf, off, len)) >= 0) {
+		if (0 <= (numRead = is.read(buf, off, len))) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();

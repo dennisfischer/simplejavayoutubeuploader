@@ -22,9 +22,9 @@ public class FileSizeValidator implements Validator<String> {
 	}
 
 	@Override
-	public boolean validate(final String fileName) {
-		if (fileName != null && !fileName.isEmpty()) {
-			final File file = new File(fileName);
+	public boolean validate(final String object) {
+		if (null != object && !object.isEmpty()) {
+			final File file = new File(object);
 			return file.exists() && file.length() <= size;
 		}
 		return true;

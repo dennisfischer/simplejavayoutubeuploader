@@ -20,13 +20,13 @@ public enum Category {
 	private final String label;
 	private final String scheme;
 
-	private final static String defaultScheme = "http://gdata.youtube.com/schemas/2007/categories.cat";
+	private static final String DEFAULT_SCHEME = "http://gdata.youtube.com/schemas/2007/categories.cat";
 
-	private Category(final String term, final String label) {
-		this(term, label, defaultScheme);
+	Category(final String term, final String label) {
+		this(term, label, DEFAULT_SCHEME);
 	}
 
-	private Category(final String term, final String label, final String scheme) {
+	Category(final String term, final String label, final String scheme) {
 		this.term = term;
 		this.label = TextUtil.getString(label);
 		this.scheme = scheme;

@@ -47,7 +47,7 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 		@Override
 		protected void updateItem(final Account item, final boolean empty) {
 			super.updateItem(item, empty);
-			if (item == null) {
+			if (null == item) {
 				return;
 			}
 

@@ -50,11 +50,11 @@ public class UploadMonetizationController {
 
 	@FXML
 	void initialize() {
-		assert anchorPane != null : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
-		assert monetizeOverlay != null : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
-		assert monetizeProduct != null : "fx:id=\"monetizeProduct\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
-		assert monetizeSyndication != null : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
-		assert monetizeTrueView != null : "fx:id=\"monetizeTrueView\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != anchorPane : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != monetizeOverlay : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != monetizeProduct : "fx:id=\"monetizeProduct\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != monetizeSyndication : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != monetizeTrueView : "fx:id=\"monetizeTrueView\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
 
 		monetizeSyndication.setItems(syndicationList);
 		syndicationList.addAll(Syndication.values());
@@ -62,16 +62,16 @@ public class UploadMonetizationController {
 	}
 
 	public void fromUpload(final Upload upload) {
-		monetizeOverlay.setSelected(upload.getMonetizeOverlay() != null && upload.getMonetizeOverlay());
-		monetizeTrueView.setSelected(upload.getMonetizeTrueview() != null && upload.getMonetizeTrueview());
-		monetizeProduct.setSelected(upload.getMonetizeProduct() != null && upload.getMonetizeProduct());
+		monetizeOverlay.setSelected(null != upload.getMonetizeOverlay() && upload.getMonetizeOverlay());
+		monetizeTrueView.setSelected(null != upload.getMonetizeTrueview() && upload.getMonetizeTrueview());
+		monetizeProduct.setSelected(null != upload.getMonetizeProduct() && upload.getMonetizeProduct());
 		monetizeSyndication.setValue(upload.getMonetizeSyndication());
 	}
 
 	public void fromTemplate(final Template template) {
-		monetizeOverlay.setSelected(template.getMonetizeOverlay() != null && template.getMonetizeOverlay());
-		monetizeTrueView.setSelected(template.getMonetizeTrueview() != null && template.getMonetizeTrueview());
-		monetizeProduct.setSelected(template.getMonetizeProduct() != null && template.getMonetizeProduct());
+		monetizeOverlay.setSelected(null != template.getMonetizeOverlay() && template.getMonetizeOverlay());
+		monetizeTrueView.setSelected(null != template.getMonetizeTrueview() && template.getMonetizeTrueview());
+		monetizeProduct.setSelected(null != template.getMonetizeProduct() && template.getMonetizeProduct());
 		monetizeSyndication.setValue(template.getMonetizeSyndication());
 	}
 

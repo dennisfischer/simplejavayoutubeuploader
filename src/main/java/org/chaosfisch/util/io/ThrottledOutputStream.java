@@ -65,7 +65,7 @@ public class ThrottledOutputStream extends FilterOutputStream {
 		final long elapsed = Math.max(System.currentTimeMillis() - start, 1);
 
 		final long bps = bytes * 1000L / elapsed;
-		if (throttle.maxBps.get() != 0 && bps > throttle.maxBps.multiply(1000).get()) {
+		if (0 != throttle.maxBps.get() && bps > throttle.maxBps.multiply(1000).get()) {
 
 			// Oops, sending too fast.
 			final long wakeElapsed = bytes * 1000L / throttle.maxBps.multiply(1000).get();

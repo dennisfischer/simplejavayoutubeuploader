@@ -17,7 +17,7 @@ public enum AuthCode implements ErrorCode {
 
 	private final int number;
 
-	private AuthCode(final int number) {
+	AuthCode(final int number) {
 		this.number = number;
 	}
 

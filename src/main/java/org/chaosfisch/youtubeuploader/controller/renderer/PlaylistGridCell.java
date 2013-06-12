@@ -38,7 +38,7 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 			public void changed(final ObservableValue<? extends Playlist> observable, final Playlist oldValue, final Playlist playlist) {
 				getChildren().clear();
 
-				if (playlist == null) {
+				if (null == playlist) {
 					setGraphic(null);
 					return;
 				}
@@ -49,11 +49,11 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 
 				final Pane pane = new Pane();
 				final ImageView imageView;
-				if (playlist.getThumbnail() != null) {
+				if (null != playlist.getThumbnail()) {
 					imageView = new ImageView(playlist.getThumbnail());
 					imageView.setPreserveRatio(true);
-					final double width = imageView.getImage().getWidth() > 0 ? imageView.getImage().getWidth() : 0;
-					final double height = imageView.getImage().getHeight() > 90 ?
+					final double width = 0 < imageView.getImage().getWidth() ? imageView.getImage().getWidth() : 0;
+					final double height = 90 < imageView.getImage().getHeight() ?
 										  imageView.getImage().getHeight() :
 										  180;
 					imageView.setViewport(new Rectangle2D(0, 45, width, height - 90));
@@ -83,9 +83,9 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 			}
 
 			private Image getDefaultThumbnail() {
-				if (defaultThumbnail == null) {
+				if (null == defaultThumbnail) {
 					try (InputStream inputStream = getClass().getResourceAsStream("/org/chaosfisch/youtubeuploader/resources/images/thumbnail-missing.png")) {
-						PlaylistGridCell.this.defaultThumbnail = new Image(inputStream);
+						defaultThumbnail = new Image(inputStream);
 					} catch (IOException e) {
 						logger.warn("Default thumbnail load error", e);
 					}

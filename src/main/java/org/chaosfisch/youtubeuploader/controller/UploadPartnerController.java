@@ -107,27 +107,27 @@ public class UploadPartnerController {
 
 	@FXML
 	void initialize() {
-		assert anchorPane != null : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeAsset != null : "fx:id=\"monetizeAsset\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeClaim != null : "fx:id=\"monetizeClaim\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeClaimOption != null : "fx:id=\"monetizeClaimOption\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeClaimType != null : "fx:id=\"monetizeClaimType\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeDescription != null : "fx:id=\"monetizeDescription\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeEIDR != null : "fx:id=\"monetizeEIDR\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeEpisodeNb != null : "fx:id=\"monetizeEpisodeNb\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeID != null : "fx:id=\"monetizeID\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeISAN != null : "fx:id=\"monetizeISAN\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeInstream != null : "fx:id=\"monetizeInstream\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeInstreamDefaults != null : "fx:id=\"monetizeInstreamDefaults\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeNotes != null : "fx:id=\"monetizeNotes\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeOverlay != null : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeProduct != null : "fx:id=\"monetizeProduct\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeSeasonNb != null : "fx:id=\"monetizeSeasonNb\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeSyndication != null : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeTMSID != null : "fx:id=\"monetizeTMSID\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeTitle != null : "fx:id=\"monetizeTitle\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeTitleEpisode != null : "fx:id=\"monetizeTitleEpisode\" was not injected: check your FXML file 'UploadPartner.fxml'.";
-		assert monetizeTrueview != null : "fx:id=\"monetizeTrueview\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != anchorPane : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeAsset : "fx:id=\"monetizeAsset\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeClaim : "fx:id=\"monetizeClaim\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeClaimOption : "fx:id=\"monetizeClaimOption\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeClaimType : "fx:id=\"monetizeClaimType\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeDescription : "fx:id=\"monetizeDescription\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeEIDR : "fx:id=\"monetizeEIDR\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeEpisodeNb : "fx:id=\"monetizeEpisodeNb\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeID : "fx:id=\"monetizeID\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeISAN : "fx:id=\"monetizeISAN\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeInstream : "fx:id=\"monetizeInstream\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeInstreamDefaults : "fx:id=\"monetizeInstreamDefaults\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeNotes : "fx:id=\"monetizeNotes\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeOverlay : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeProduct : "fx:id=\"monetizeProduct\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeSeasonNb : "fx:id=\"monetizeSeasonNb\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeSyndication : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeTMSID : "fx:id=\"monetizeTMSID\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeTitle : "fx:id=\"monetizeTitle\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeTitleEpisode : "fx:id=\"monetizeTitleEpisode\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != monetizeTrueview : "fx:id=\"monetizeTrueview\" was not injected: check your FXML file 'UploadPartner.fxml'.";
 
 		monetizeClaimOption.getSelectionModel().selectedItemProperty().addListener(new ClaimOptionChangeListener());
 		monetizeAsset.getSelectionModel().selectedItemProperty().addListener(new AssetChangeListener());
@@ -163,12 +163,12 @@ public class UploadPartnerController {
 		monetizeTitle.setText(upload.getMonetizeTitle());
 		monetizeTitleEpisode.setText(upload.getMonetizeTitleepisode());
 
-		monetizeClaim.setSelected(upload.getMonetizeClaim() != null && upload.getMonetizeClaim());
-		monetizeOverlay.setSelected(upload.getMonetizeOverlay() != null && upload.getMonetizeOverlay());
-		monetizeTrueview.setSelected(upload.getMonetizeTrueview() != null && upload.getMonetizeTrueview());
-		monetizeProduct.setSelected(upload.getMonetizeProduct() != null && upload.getMonetizeProduct());
-		monetizeInstream.setSelected(upload.getMonetizeInstream() != null && upload.getMonetizeInstream());
-		monetizeInstreamDefaults.setSelected(upload.getMonetizeInstreamDefaults() != null && upload.getMonetizeInstreamDefaults());
+		monetizeClaim.setSelected(null != upload.getMonetizeClaim() && upload.getMonetizeClaim());
+		monetizeOverlay.setSelected(null != upload.getMonetizeOverlay() && upload.getMonetizeOverlay());
+		monetizeTrueview.setSelected(null != upload.getMonetizeTrueview() && upload.getMonetizeTrueview());
+		monetizeProduct.setSelected(null != upload.getMonetizeProduct() && upload.getMonetizeProduct());
+		monetizeInstream.setSelected(null != upload.getMonetizeInstream() && upload.getMonetizeInstream());
+		monetizeInstreamDefaults.setSelected(null != upload.getMonetizeInstreamDefaults() && upload.getMonetizeInstreamDefaults());
 	}
 
 	public void fromTemplate(final Template template) {
@@ -187,12 +187,12 @@ public class UploadPartnerController {
 		monetizeTitle.setText(template.getMonetizeTitle());
 		monetizeTitleEpisode.setText(template.getMonetizeTitleepisode());
 
-		monetizeClaim.setSelected(template.getMonetizeClaim() != null && template.getMonetizeClaim());
-		monetizeOverlay.setSelected(template.getMonetizeOverlay() != null && template.getMonetizeOverlay());
-		monetizeTrueview.setSelected(template.getMonetizeTrueview() != null && template.getMonetizeTrueview());
-		monetizeProduct.setSelected(template.getMonetizeProduct() != null && template.getMonetizeProduct());
-		monetizeInstream.setSelected(template.getMonetizeInstream() != null && template.getMonetizeInstream());
-		monetizeInstreamDefaults.setSelected(template.getMonetizeInstreamDefaults() != null && template.getMonetizeInstreamDefaults());
+		monetizeClaim.setSelected(null != template.getMonetizeClaim() && template.getMonetizeClaim());
+		monetizeOverlay.setSelected(null != template.getMonetizeOverlay() && template.getMonetizeOverlay());
+		monetizeTrueview.setSelected(null != template.getMonetizeTrueview() && template.getMonetizeTrueview());
+		monetizeProduct.setSelected(null != template.getMonetizeProduct() && template.getMonetizeProduct());
+		monetizeInstream.setSelected(null != template.getMonetizeInstream() && template.getMonetizeInstream());
+		monetizeInstreamDefaults.setSelected(null != template.getMonetizeInstreamDefaults() && template.getMonetizeInstreamDefaults());
 	}
 
 	public Upload toUpload(final Upload upload) {
@@ -248,12 +248,12 @@ public class UploadPartnerController {
 	}
 
 	private final class ClaimOptionChangeListener implements ChangeListener<ClaimOption> {
-		final CheckBox[] controls = new CheckBox[] {monetizeOverlay, monetizeTrueview, monetizeProduct,
-													monetizeInstream, monetizeInstreamDefaults};
+		final CheckBox[] controls = {monetizeOverlay, monetizeTrueview, monetizeProduct, monetizeInstream,
+									 monetizeInstreamDefaults};
 
 		@Override
 		public void changed(final ObservableValue<? extends ClaimOption> observable, final ClaimOption oldValue, final ClaimOption newValue) {
-			if (newValue == null) {
+			if (null == newValue) {
 				return;
 			}
 			switch (newValue) {
@@ -276,7 +276,7 @@ public class UploadPartnerController {
 	private final class AssetChangeListener implements ChangeListener<Asset> {
 		@Override
 		public void changed(final ObservableValue<? extends Asset> observable, final Asset oldValue, final Asset newValue) {
-			if (newValue == null) {
+			if (null == newValue) {
 				return;
 			}
 			switch (newValue) {

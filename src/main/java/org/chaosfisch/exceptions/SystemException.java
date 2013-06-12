@@ -75,7 +75,7 @@ public class SystemException extends Exception {
 	public void printStackTrace(final PrintWriter s) {
 		s.println(this);
 		s.println("\t-------------------------------");
-		if (errorCode != null) {
+		if (null != errorCode) {
 			s.println("\t" + errorCode + ':' + errorCode.getClass().getName());
 		}
 		for (final Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
@@ -88,7 +88,7 @@ public class SystemException extends Exception {
 		}
 
 		final Throwable ourCause = getCause();
-		if (ourCause != null) {
+		if (null != ourCause) {
 			ourCause.printStackTrace(s);
 		}
 		s.flush();
@@ -97,13 +97,16 @@ public class SystemException extends Exception {
 	@Override
 	public String getMessage() {
 		final String message = super.getMessage();
-		String propertyString = errorCode.name() + " [";
+		final StringBuilder propertyString = new StringBuilder(errorCode.name()).append(" [");
 
 		for (final Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
-			propertyString = propertyString.concat(stringObjectEntry.getKey() + '=' + stringObjectEntry.getValue() + ';');
+			propertyString.append(stringObjectEntry.getKey())
+					.append('=')
+					.append(stringObjectEntry.getValue())
+					.append(';');
 		}
-		propertyString += ']';
+		propertyString.append(']');
 
-		return message == null ? propertyString : message.concat(propertyString);
+		return null == message ? propertyString.toString() : message + propertyString;
 	}
 }

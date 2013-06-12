@@ -24,7 +24,7 @@ import javafx.event.EventHandler;
 import org.chaosfisch.exceptions.ErrorCode;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.auth.AuthCode;
-import org.chaosfisch.google.auth.ClientLogin;
+import org.chaosfisch.google.auth.IClientLogin;
 import org.chaosfisch.google.youtube.MetadataService;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.google.youtube.ResumeableManager;
@@ -102,7 +102,7 @@ public class UploadWorker extends Task<Void> {
 	@Inject
 	private Injector             injector;
 	@Inject
-	private ClientLogin          authTokenHelper;
+	private IClientLogin         authTokenHelper;
 	@Inject
 	private Throttle             throttle;
 	@Inject
@@ -133,7 +133,7 @@ public class UploadWorker extends Task<Void> {
 		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
 		 * fehlschlagen und muss wiederholbar sein.
 		 */
-		while (!currentStatus.equals(STATUS.ABORTED) && !currentStatus.equals(STATUS.DONE) && !currentStatus.equals(STATUS.FAILED) && resumeableManager
+		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && resumeableManager
 				.canContinue() && !isCancelled() && !Thread.currentThread().isInterrupted()) {
 			try {
 
@@ -234,13 +234,13 @@ public class UploadWorker extends Task<Void> {
 
 	private void resumeinfo() throws SystemException {
 		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
-		if (resumeInfo == null) {
+		if (null == resumeInfo) {
 			currentStatus = STATUS.FAILED;
 			throw new SystemException(UploadCode.MAX_RETRIES_REACHED).set("url", upload.getUploadurl())
 					.set("time", Calendar.getInstance().getTime().toString());
 		}
 		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
-		if (resumeInfo.videoId != null) { // upload actually completed despite
+		if (null != resumeInfo.videoId) { // upload actually completed despite
 			// the exception
 			final String videoId = resumeInfo.videoId;
 			logger.info("No need to resume video ID {}", videoId);
@@ -262,7 +262,7 @@ public class UploadWorker extends Task<Void> {
 		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
 		long totalRead = 0;
 
-		while (!isCancelled() && currentStatus == STATUS.UPLOAD && totalRead != endByte - startByte + 1) {
+		while (!isCancelled() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
 			// Upload bytes in buffer
 			final int bytesRead = RequestUtil.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
@@ -271,7 +271,7 @@ public class UploadWorker extends Task<Void> {
 
 			// PropertyChangeEvent
 			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
-			if (diffTime > 1000 || totalRead == endByte - startByte + 1) {
+			if (1000 < diffTime || totalRead == endByte - startByte + 1) {
 				uploadProgress.setBytes(totalBytesUploaded);
 				uploadProgress.setTime(diffTime);
 				eventBus.post(uploadProgress);
@@ -281,7 +281,7 @@ public class UploadWorker extends Task<Void> {
 
 	private long generateEndBytes(final long start, final double bytesToUpload) {
 		final long end;
-		if (bytesToUpload - throttle.chunkSize.get() > 0) {
+		if (0 < bytesToUpload - throttle.chunkSize.get()) {
 			end = start + throttle.chunkSize.get() - 1;
 		} else {
 			end = start + (int) bytesToUpload - 1;
@@ -341,7 +341,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void metadata() throws SystemException {
 
-		if (upload.getUploadurl() != null && !upload.getUploadurl().isEmpty()) {
+		if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
 			logger.info("Uploadurl existing: {}", upload.getUploadurl());
 			currentStatus = STATUS.RESUMEINFO;
 			return;
@@ -374,7 +374,7 @@ public class UploadWorker extends Task<Void> {
 	public void onUploadUpdated(final ModelUpdatedEvent modelUpdatedEvent) {
 		if (modelUpdatedEvent.getModel() instanceof Upload && upload.equals(modelUpdatedEvent.getModel())) {
 			upload = (Upload) modelUpdatedEvent.getModel();
-			if (uploadProgress != null) {
+			if (null != uploadProgress) {
 				uploadProgress.setUpload(upload);
 			}
 		}
@@ -430,7 +430,7 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void browserAction() throws SystemException {
-		if (upload.getDateOfRelease() == null && (upload.getThumbnail() == null || upload.getThumbnail()
+		if (null == upload.getDateOfRelease() && (null == upload.getThumbnail() || upload.getThumbnail()
 				.isEmpty()) && !upload.getMonetizeClaim()) {
 			return;
 		}
@@ -492,7 +492,7 @@ public class UploadWorker extends Task<Void> {
 		// Log operation
 		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
 
-		if (uploadProgress == null) {
+		if (null == uploadProgress) {
 			uploadProgress = new UploadProgressEvent(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
@@ -549,7 +549,7 @@ public class UploadWorker extends Task<Void> {
 		} catch (final FileNotFoundException ex) {
 			throw new SystemException(ex, UploadCode.FILE_NOT_FOUND).set("file", fileToUpload);
 		} catch (final IOException ex) {
-			if (currentStatus != STATUS.ABORTED) {
+			if (STATUS.ABORTED != currentStatus) {
 				throw new SystemException(ex, UploadCode.FILE_IO_ERROR);
 			}
 		}

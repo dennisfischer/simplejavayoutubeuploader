@@ -22,8 +22,8 @@ public final class RegexpUtils {
 	private static final LoadingCache<String, Pattern> COMPILED_PATTERNS = CacheBuilder.newBuilder()
 			.build(new CacheLoader<String, Pattern>() {
 				@Override
-				public Pattern load(final String regexp) throws Exception {
-					return Pattern.compile(regexp);
+				public Pattern load(final String key) throws Exception {
+					return Pattern.compile(key);
 				}
 			});
 

@@ -17,7 +17,7 @@ import org.apache.http.entity.StringEntity;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.auth.ClientLogin;
+import org.chaosfisch.google.auth.IClientLogin;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.util.http.Request;
@@ -41,7 +41,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
 	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
 	@Inject
-	private ClientLogin   authTokenHelper;
+	private IClientLogin  authTokenHelper;
 	@Inject
 	private RequestSigner requestSigner;
 	@Inject
@@ -91,7 +91,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
 				.build();
 		try (final Response response = request.execute()) {
-			if (response.getStatusCode() != 200 && response.getStatusCode() != 201) {
+			if (200 != response.getStatusCode() && 201 != response.getStatusCode()) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
 			}
 			logger.info("Added playlist to youtube");
@@ -112,7 +112,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 					.sign(requestSigner, authTokenHelper.getAuthHeader(account))
 					.build();
 			try (final Response response = request.execute()) {
-				if (response.getStatusCode() != 200) {
+				if (200 != response.getStatusCode()) {
 					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
@@ -131,13 +131,13 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		final List<Playlist> list = new ArrayList<>(25);
 
-		if (feed.videoEntries == null) {
+		if (null == feed.videoEntries) {
 			logger.info("No playlists found.");
 			return list;
 		}
 		for (final VideoEntry entry : feed.videoEntries) {
 			final List<Playlist> playlists = playlistDao.fetchByPkey(entry.playlistId);
-			if (playlists.size() == 1) {
+			if (1 == playlists.size()) {
 				list.add(_updateExistingPlaylist(account, entry, playlists.get(0)));
 			} else {
 				list.add(_createNewPlaylist(account, entry));
@@ -163,7 +163,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	private String getThumbnail(final VideoEntry entry) {
 		String thumbnail = null;
-		if (entry.mediaGroup != null && entry.mediaGroup.thumbnails != null && entry.mediaGroup.thumbnails.size() > 2) {
+		if (null != entry.mediaGroup && null != entry.mediaGroup.thumbnails && 2 < entry.mediaGroup.thumbnails.size()) {
 			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 		}
 		return thumbnail;

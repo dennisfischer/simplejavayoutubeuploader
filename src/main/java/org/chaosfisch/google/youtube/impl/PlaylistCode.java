@@ -17,7 +17,7 @@ public enum PlaylistCode implements ErrorCode {
 
 	private final int number;
 
-	private PlaylistCode(final int number) {
+	PlaylistCode(final int number) {
 		this.number = number;
 	}
 

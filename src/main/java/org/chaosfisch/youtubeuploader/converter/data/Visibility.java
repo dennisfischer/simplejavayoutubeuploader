@@ -17,7 +17,7 @@ public enum Visibility {
 
 	private final String i18n;
 
-	private Visibility(final String i18n) {
+	Visibility(final String i18n) {
 		this.i18n = i18n;
 	}
 

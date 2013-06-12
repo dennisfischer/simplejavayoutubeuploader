@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
 
 public class ProgressNodeRenderer extends StackPane {
 
-	private final static Preferences prefs            = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final Preferences prefs            = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 	public static final  String      DISPLAY_PROGRESS = "display_progress";
 
 	private final ProgressBar progressBar    = ProgressBarBuilder.create().scaleY(2).prefWidth(500).progress(0).build();
@@ -35,7 +35,6 @@ public class ProgressNodeRenderer extends StackPane {
 	private final Label       progressBytes  = LabelBuilder.create().build();
 
 	public ProgressNodeRenderer() {
-		super();
 
 		final Label progressInfo = LabelBuilder.create().build();
 		progressInfo.textProperty().bind(progressBar.progressProperty().multiply(100).asString("%.2f%%"));

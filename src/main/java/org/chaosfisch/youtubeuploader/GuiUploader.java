@@ -119,7 +119,7 @@ public class GuiUploader extends GuiceApplication {
 			final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"), resources
 					.getString("dialog.exitapplication.message"));
 
-			if (dialog.showDialog() == MonologFXButton.Type.NO) {
+			if (MonologFXButton.Type.NO == dialog.showDialog()) {
 				event.consume();
 			} else {
 				Platform.exit();

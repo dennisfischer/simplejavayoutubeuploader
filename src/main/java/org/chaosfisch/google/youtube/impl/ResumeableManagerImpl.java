@@ -16,7 +16,7 @@ import org.apache.http.Header;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.auth.ClientLogin;
+import org.chaosfisch.google.auth.IClientLogin;
 import org.chaosfisch.google.youtube.ResumeableManager;
 import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.util.XStreamHelper;
@@ -38,7 +38,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private final        Logger logger      = LoggerFactory.getLogger(getClass());
 
 	@Inject
-	private ClientLogin   authTokenHelper;
+	private IClientLogin  authTokenHelper;
 	@Inject
 	private RequestSigner requestSigner;
 	@Inject
@@ -54,7 +54,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				return null;
 			}
 			resumeInfo = resumeFileUpload(upload);
-		} while (resumeInfo == null);
+		} while (null == resumeInfo);
 		return resumeInfo;
 	}
 
@@ -66,30 +66,30 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 		try (final Response response = request.execute()) {
 
-			if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+			if (200 <= response.getStatusCode() && 300 > response.getStatusCode()) {
 				return new ResumeInfo(parseVideoId(EntityUtils.toString(response.getEntity())));
-			} else if (response.getStatusCode() != 308) {
+			} else if (308 != response.getStatusCode()) {
 				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
 			}
 
 			final long nextByteToUpload;
 
 			final Header range = response.getRaw().getFirstHeader("Range");
-			if (range == null) {
+			if (null == range) {
 				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
 			} else {
 				logger.info("Range header is: {}", range.getValue());
 
 				final String[] parts = RegexpUtils.getPattern("-").split(range.getValue());
-				if (parts.length > 1) {
+				if (1 < parts.length) {
 					nextByteToUpload = Long.parseLong(parts[1]) + 1;
 				} else {
 					nextByteToUpload = 0;
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			if (response.getRaw().getFirstHeader("Location") != null) {
+			if (null != response.getRaw().getFirstHeader("Location")) {
 				final Header location = response.getRaw().getFirstHeader("Location");
 				upload.setUploadurl(location.getValue());
 				uploadDao.update(upload);
@@ -110,7 +110,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 	@Override
 	public boolean canContinue() {
-		return !(numberOfRetries > MAX_RETRIES);
+		return !(MAX_RETRIES < numberOfRetries);
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")

@@ -17,6 +17,7 @@ import org.chaosfisch.youtubeuploader.ApplicationData;
 import java.net.HttpURLConnection;
 
 public class GDataRequestSigner implements RequestSigner {
+
 	@Override
 	public void sign(final HttpRequest request) {
 		request.addHeader("GData-Version", ApplicationData.GDATA_VERSION);

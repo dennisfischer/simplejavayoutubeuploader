@@ -17,7 +17,7 @@ public enum ClaimOption {
 
 	private final String i18n;
 
-	private ClaimOption(final String i18n) {
+	ClaimOption(final String i18n) {
 		this.i18n = i18n;
 	}
 

@@ -29,7 +29,7 @@ public class EnddirServiceImpl implements EnddirService {
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
-		if (upload.getEnddir() == null || !upload.getEnddir().exists()) {
+		if (null == upload.getEnddir() || !upload.getEnddir().exists()) {
 			return;
 		}
 		if (!upload.getEnddir().isDirectory()) {
@@ -39,13 +39,13 @@ public class EnddirServiceImpl implements EnddirService {
 
 		File endFile = null;
 		final String fileName = _getFileName(fileToMove, upload.getEnddir(), upload);
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; 100 > i; i++) {
 			endFile = new File(_getIncrementedFileName(fileName, i));
 			if (!endFile.exists()) {
 				break;
 			}
 		}
-		if (endFile == null) {
+		if (null == endFile) {
 			return;
 		}
 
@@ -57,7 +57,7 @@ public class EnddirServiceImpl implements EnddirService {
 	}
 
 	String _getIncrementedFileName(final String fileName, final int increment) {
-		if (increment == 0) {
+		if (0 == increment) {
 			return fileName;
 		}
 		return fileName.substring(0, fileName.lastIndexOf('.')) + '_' + increment + fileName.substring(fileName.lastIndexOf('.'));

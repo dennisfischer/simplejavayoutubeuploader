@@ -67,52 +67,52 @@ public class ExtendedPlaceholders {
 	 * @return the parsed string
 	 */
 	public String replace(String input) {
-		if (input == null) {
+		if (null == input) {
 			return "";
 		}
 		if (!playlists.isEmpty()) {
-			Matcher m = RegexpUtils.getPattern(TextUtil.getString("autotitle.numberPattern")).matcher(input);
+			Matcher matcher = RegexpUtils.getPattern(TextUtil.getString("autotitle.numberPattern")).matcher(input);
 
 			StringBuffer sb = new StringBuffer(input.length() + 100);
-			while (m.find()) {
-				m.appendReplacement(sb, "");
-				final int playlist = m.group(1) == null ? 0 : Integer.parseInt(m.group(1)) - 1;
-				final int number = m.group(2) == null ? 0 : Integer.parseInt(m.group(2));
-				final int zeros = m.group(3) == null ? 1 : Integer.parseInt(m.group(3));
+			while (matcher.find()) {
+				matcher.appendReplacement(sb, "");
+				final int playlist = null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
+				final int number = null == matcher.group(2) ? 0 : Integer.parseInt(matcher.group(2));
+				final int zeros = null == matcher.group(3) ? 1 : Integer.parseInt(matcher.group(3));
 
-				if (playlist != -1 && playlists.size() > playlist) {
+				if (-1 != playlist && playlists.size() > playlist) {
 					sb.append(zeroFill(playlists.get(playlist).getNumber() + 1 + number, zeros));
 				} else {
 					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
 				}
 			}
-			m.appendTail(sb);
+			matcher.appendTail(sb);
 			input = sb.toString();
 
-			m = RegexpUtils.getPattern(TextUtil.getString("autotitle.playlistPattern")).matcher(input);
+			matcher = RegexpUtils.getPattern(TextUtil.getString("autotitle.playlistPattern")).matcher(input);
 			sb = new StringBuffer(input.length() + 100);
-			while (m.find()) {
-				m.appendReplacement(sb, "");
-				final int playlist = m.group(1) == null ? 0 : Integer.parseInt(m.group(1)) - 1;
+			while (matcher.find()) {
+				matcher.appendReplacement(sb, "");
+				final int playlist = null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
 
-				if (playlist != -1 && playlists.size() > playlist) {
+				if (-1 != playlist && playlists.size() > playlist) {
 					sb.append(playlists.get(playlist).getTitle());
 				} else {
 					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
 				}
 			}
-			m.appendTail(sb);
+			matcher.appendTail(sb);
 			input = sb.toString();
 		}
 
-		if (file != null)
+		if (null != file)
 
 		{
 
 			final String fileName = file.getAbsolutePath();
 
 			int index = fileName.lastIndexOf('.');
-			if (index == -1) {
+			if (-1 == index) {
 				index = fileName.length();
 			}
 			input = input.replaceAll(TextUtil.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));

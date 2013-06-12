@@ -49,7 +49,7 @@ public class QueueOverviewController {
 
 	@FXML
 	void initialize() {
-		assert queueListView != null : "fx:id=\"queueListView\" was not injected: check your FXML file 'QueueOverview.fxml'.";
+		assert null != queueListView : "fx:id=\"queueListView\" was not injected: check your FXML file 'QueueOverview.fxml'.";
 		queueListView.setCellFactory(queueUploadCellRenderer);
 		queueListView.setItems(uploads);
 

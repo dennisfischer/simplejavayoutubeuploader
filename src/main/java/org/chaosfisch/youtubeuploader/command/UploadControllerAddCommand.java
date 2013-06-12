@@ -62,13 +62,13 @@ public class UploadControllerAddCommand extends Service<Void> {
 
 				checkArgument(thumbnailValidator.validate(upload.getThumbnail()), UploadValidationCode.THUMBNAIL_SIZE);
 
-				if (upload.getDescription() == null) {
+				if (null == upload.getDescription()) {
 					upload.setDescription("");
 				} else {
 					checkArgument(!upload.getDescription().contains("<") && !upload.getDescription()
 							.contains(">"), UploadValidationCode.DESCRIPTION_ILLEGAL);
 				}
-				if (upload.getKeywords() == null) {
+				if (null == upload.getKeywords()) {
 					upload.setKeywords("");
 				} else {
 					checkArgument(tagValidator.validate(upload.getKeywords()), UploadValidationCode.TAGS_ILLEGAL);
@@ -77,12 +77,12 @@ public class UploadControllerAddCommand extends Service<Void> {
 				upload.setAccountId(account.getId());
 				upload.setMimetype("application/octet-stream");
 
-				if (upload.getDateOfStart() == null || upload.getDateOfStart()
+				if (null == upload.getDateOfStart() || upload.getDateOfStart()
 						.getTimeInMillis() <= System.currentTimeMillis()) {
 					upload.setDateOfStart(null);
 				}
 
-				if (upload.getDateOfRelease() == null || upload.getDateOfRelease()
+				if (null == upload.getDateOfRelease() || upload.getDateOfRelease()
 						.getTimeInMillis() <= System.currentTimeMillis()) {
 					upload.setDateOfRelease(null);
 				} else {
@@ -90,7 +90,7 @@ public class UploadControllerAddCommand extends Service<Void> {
 					calendar.setTime(upload.getDateOfRelease().getTime());
 					final int unroundedMinutes = calendar.get(Calendar.MINUTE);
 					final int mod = unroundedMinutes % 30;
-					calendar.add(Calendar.MINUTE, mod < 16 ? -mod : 30 - mod);
+					calendar.add(Calendar.MINUTE, 16 > mod ? -mod : 30 - mod);
 					upload.setDateOfRelease(calendar);
 				}
 
@@ -99,7 +99,7 @@ public class UploadControllerAddCommand extends Service<Void> {
 					upload.setMonetizeClaim(true);
 				}
 
-				if (upload.getId() == null || upload.getId().equals(0)) {
+				if (null == upload.getId() || upload.getId().equals(0)) {
 					upload.setId(null);
 					upload.setArchived(false);
 					upload.setFailed(false);

@@ -65,9 +65,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		@Override
 		protected void updateItem(final Upload item, final boolean empty) {
 			super.updateItem(item, empty);
-			if (item == null) {
+			if (null == item) {
 				return;
-			} else if (upload == null) {
+			} else if (null == upload) {
 				eventBus.register(this);
 			}
 			upload = item;
@@ -155,7 +155,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final ProgressNodeRenderer renderer = (ProgressNodeRenderer) progressNode;
 				renderer.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
 				renderer.setEta(calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
-				renderer.setSpeed(humanReadableByteCount(speed).concat("/s"));
+				renderer.setSpeed(humanReadableByteCount(speed) + "/s");
 				renderer.setFinish(calculateFinish(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
 				renderer.setBytes(humanReadableByteCount(uploadProgress.getTotalBytesUploaded()) + " / " + humanReadableByteCount(uploadProgress
 						.getFileSize()));
@@ -186,11 +186,11 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 		private String humanReadableByteCount(final long bytes) {
 			final int unit = 1024;
-			if (bytes < unit) {
+			if (unit > bytes) {
 				return bytes + " B";
 			}
 			final int exp = (int) (Math.log(bytes) / Math.log(unit));
-			final String pre = String.valueOf(("kMGTPE").charAt(exp - 1));
+			final String pre = String.valueOf("kMGTPE".charAt(exp - 1));
 			return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 		}
 
@@ -209,7 +209,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.removeupload.title"), resources
 						.getString("dialog.removeupload.message"));
-				if (dialog.showDialog() == MonologFXButton.Type.YES) {
+				if (MonologFXButton.Type.YES == dialog.showDialog()) {
 					final RemoveUploadCommand command = commandProvider.get(RemoveUploadCommand.class);
 					command.upload = item;
 					command.start();
@@ -247,7 +247,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.abortupload.title"), resources
 						.getString("dialog.abortupload.message"));
 
-				if (dialog.showDialog() == MonologFXButton.Type.YES) {
+				if (MonologFXButton.Type.YES == dialog.showDialog()) {
 					final AbortUploadCommand command = commandProvider.get(AbortUploadCommand.class);
 					command.upload = item;
 					command.start();

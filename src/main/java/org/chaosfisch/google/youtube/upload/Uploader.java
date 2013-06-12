@@ -41,7 +41,7 @@ public class Uploader {
 	public final SimpleBooleanProperty                inProgressProperty = new SimpleBooleanProperty(false);
 	public final SimpleIntegerProperty                maxUploads         = new SimpleIntegerProperty(1);
 
-	private volatile short runningUploads = 0;
+	private volatile short runningUploads;
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(7);
 	private final Logger          logger          = LoggerFactory.getLogger(getClass());
@@ -99,8 +99,8 @@ public class Uploader {
 	private synchronized void sendUpload() {
 		if (!executorService.isShutdown() && inProgressProperty.get() && hasFreeUploadSpace()) {
 			final Upload polled = uploadDao.fetchNextUpload();
-			if (polled != null) {
-				if (accountDao.findById(polled.getAccountId()) == null) {
+			if (null != polled) {
+				if (null == accountDao.findById(polled.getAccountId())) {
 					polled.setLocked(true);
 					uploadDao.update(polled);
 				} else {
@@ -137,7 +137,7 @@ public class Uploader {
 			sendUpload();
 		}
 
-		if (!inProgressProperty.get() || leftUploads == 0 && runningUploads <= 0) {
+		if (!inProgressProperty.get() || 0 == leftUploads && 0 >= runningUploads) {
 			inProgressProperty.set(false);
 			logger.info("All uploads finished");
 			switch (actionOnFinish.get()) {
@@ -170,7 +170,7 @@ public class Uploader {
 			@Override
 			public Boolean call() {
 				while (!Thread.interrupted()) {
-					if (uploadDao.countAvailableStartingUploads() > 0) {
+					if (0 < uploadDao.countAvailableStartingUploads()) {
 						start();
 					}
 					try {

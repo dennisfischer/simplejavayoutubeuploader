@@ -30,16 +30,16 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ClientLogin {
+public class ClientLogin implements IClientLogin {
 
 	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 
 	@Inject
-	RequestSigner requestSigner;
+	private RequestSigner requestSigner;
 
-	String getAuthToken(final Account account) throws SystemException {
+	private String getAuthToken(final Account account) throws SystemException {
 
 		if (!authtokens.containsKey(account.getId())) {
 
@@ -57,22 +57,22 @@ public class ClientLogin {
 
 	private String _receiveToken(final Account account, final String service, final String source) throws SystemException {
 		// STEP 1 CLIENT LOGIN
-		final ArrayList<BasicNameValuePair> clientLoginRequestParams = new ArrayList<>(6);
-		clientLoginRequestParams.add(new BasicNameValuePair("Email", account.getName()));
-		clientLoginRequestParams.add(new BasicNameValuePair("Passwd", account.getPassword()));
-		clientLoginRequestParams.add(new BasicNameValuePair("service", service));
-		clientLoginRequestParams.add(new BasicNameValuePair("PesistentCookie", "0"));
-		clientLoginRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
-		clientLoginRequestParams.add(new BasicNameValuePair("source", source));
+		final ArrayList<BasicNameValuePair> clientRequestParams = new ArrayList<>(6);
+		clientRequestParams.add(new BasicNameValuePair("Email", account.getName()));
+		clientRequestParams.add(new BasicNameValuePair("Passwd", account.getPassword()));
+		clientRequestParams.add(new BasicNameValuePair("service", service));
+		clientRequestParams.add(new BasicNameValuePair("PesistentCookie", "0"));
+		clientRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
+		clientRequestParams.add(new BasicNameValuePair("source", source));
 
-		final Request clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientLoginRequestParams, Charsets.UTF_8))
+		final Request clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientRequestParams, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.sign(requestSigner)
 				.build();
 
 		try (final Response response = clientLoginRequest.execute()) {
 			final HttpEntity clientLoginEntity = response.getEntity();
-			if (response.getStatusCode() != 200) {
+			if (200 != response.getStatusCode()) {
 				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", response.getStatusCode());
 			}
 
@@ -82,6 +82,7 @@ public class ClientLogin {
 		}
 	}
 
+	@Override
 	public String getAuthHeader(final Account account) throws SystemException {
 		if (authtokens.containsKey(account.getId())) {
 			return String.format("GoogleLogin auth=%s", authtokens.get(account.getId()));
@@ -90,20 +91,22 @@ public class ClientLogin {
 		}
 	}
 
+	@Override
 	public void verifyAccount(final Account account) throws SystemException {
 		_receiveToken(account);
 	}
 
+	@Override
 	public String getLoginContent(final Account account, final String redirectUrl) throws SystemException, IOException {
 		return tokenAuthContent(redirectUrl, issueAuthToken(_receiveToken(account, "gaia", "googletalk")));
 
 	}
 
-	private String tokenAuthContent(final String redirectUrl, final String issueAuthTokenContent) throws IOException, SystemException {
+	private String tokenAuthContent(final String redirectUrl, final String issueTokenContent) throws IOException, SystemException {
 		// STEP 3 TOKEN AUTH
 		try {
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder
-					.encode(issueAuthTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
+					.encode(issueTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
 					.name()));
 
 			final Request tokenAuthRequest = new Request.Builder(tokenAuthUrl).get().build();
@@ -121,18 +124,18 @@ public class ClientLogin {
 		final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
 		final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
 
-		final ArrayList<BasicNameValuePair> issueAuthTokenParams = new ArrayList<>(5);
-		issueAuthTokenParams.add(new BasicNameValuePair("SID", sid));
-		issueAuthTokenParams.add(new BasicNameValuePair("LSID", lsid));
-		issueAuthTokenParams.add(new BasicNameValuePair("service", "gaia"));
-		issueAuthTokenParams.add(new BasicNameValuePair("Session", "true"));
-		issueAuthTokenParams.add(new BasicNameValuePair("source", "googletalk"));
+		final ArrayList<BasicNameValuePair> issueTokenParams = new ArrayList<>(5);
+		issueTokenParams.add(new BasicNameValuePair("SID", sid));
+		issueTokenParams.add(new BasicNameValuePair("LSID", lsid));
+		issueTokenParams.add(new BasicNameValuePair("service", "gaia"));
+		issueTokenParams.add(new BasicNameValuePair("Session", "true"));
+		issueTokenParams.add(new BasicNameValuePair("source", "googletalk"));
 
-		final Request issueAuthTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueAuthTokenParams, Charset
+		final Request issueTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueTokenParams, Charset
 				.forName("utf-8")))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.build();
-		try (final Response response = issueAuthTokenRequest.execute()) {
+		try (final Response response = issueTokenRequest.execute()) {
 			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
 		}
 	}

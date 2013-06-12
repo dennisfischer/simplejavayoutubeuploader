@@ -20,7 +20,7 @@ public class FileConverter implements Converter<String, File> {
 
 	@Override
 	public File from(final String databaseObject) {
-		if (databaseObject == null) {
+		if (null == databaseObject) {
 			return null;
 		}
 		return new File(databaseObject);
@@ -28,7 +28,7 @@ public class FileConverter implements Converter<String, File> {
 
 	@Override
 	public String to(final File userObject) {
-		return userObject == null ? null : userObject.getAbsolutePath();
+		return null == userObject ? null : userObject.getAbsolutePath();
 	}
 
 	@Override

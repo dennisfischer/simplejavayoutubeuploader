@@ -158,7 +158,7 @@ public final class DBConverter {
 			stmtPresetInsert.setString(11, Visibility.values()[rsPreset.getInt("VISIBILITY")].name());
 			stmtPresetInsert.setObject(12, rsPreset.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtPresetInsert.setString(13, rsPreset.getString("ENDDIR"));
-			stmtPresetInsert.setString(14, License.values()[rsPreset.getString("LICENSE").equals("youtube") ?
+			stmtPresetInsert.setString(14, License.values()["youtube".equals(rsPreset.getString("LICENSE")) ?
 															0 :
 															1].name());
 			stmtPresetInsert.setString(15, rsPreset.getString("TITLE"));
@@ -226,7 +226,7 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(19, Types.VARCHAR);
 			stmtUploadInsert.setObject(20, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtUploadInsert.setString(21, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(22, License.values()[rsUpload.getString("LICENSE").equals("youtube") ?
+			stmtUploadInsert.setString(22, License.values()["youtube".equals(rsUpload.getString("LICENSE")) ?
 															0 :
 															1].name());
 			stmtUploadInsert.setNull(23, Types.TIMESTAMP);
@@ -310,7 +310,7 @@ public final class DBConverter {
 			stmtUploadInsert.setNull(19, Types.VARCHAR);
 			stmtUploadInsert.setObject(20, rsUpload.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtUploadInsert.setString(21, rsUpload.getString("ENDDIR"));
-			stmtUploadInsert.setString(22, License.values()[rsUpload.getString("LICENSE").equalsIgnoreCase("youtube") ?
+			stmtUploadInsert.setString(22, License.values()["youtube".equalsIgnoreCase(rsUpload.getString("LICENSE")) ?
 															0 :
 															1].name());
 			stmtUploadInsert.setNull(23, Types.TIMESTAMP);
@@ -372,8 +372,9 @@ public final class DBConverter {
 			stmtPresetInsert.setString(11, Visibility.values()[rsTemplate.getInt("VISIBILITY")].name());
 			stmtPresetInsert.setObject(12, rsTemplate.getObject("ACCOUNT_ID"), Types.INTEGER);
 			stmtPresetInsert.setString(13, rsTemplate.getString("ENDDIR"));
-			stmtPresetInsert.setString(14, License.values()[rsTemplate.getString("LICENSE")
-																	.equalsIgnoreCase("youtube") ? 0 : 1].name());
+			stmtPresetInsert.setString(14, License.values()["youtube".equalsIgnoreCase(rsTemplate.getString("LICENSE")) ?
+															0 :
+															1].name());
 			stmtPresetInsert.setString(15, rsTemplate.getString("TITLE"));
 			stmtPresetInsert.setString(16, rsTemplate.getString("THUMBNAIL"));
 			stmtPresetInsert.setBoolean(17, rsTemplate.getBoolean("FACEBOOK"));
@@ -450,7 +451,7 @@ public final class DBConverter {
 
 				int length;
 				//copy the file content in bytes
-				while ((length = in.read(buffer)) > 0) {
+				while (0 < (length = in.read(buffer))) {
 					out.write(buffer, 0, length);
 				}
 
@@ -467,9 +468,9 @@ public final class DBConverter {
 		}
 		if (path.isDirectory()) {
 			final File[] files = path.listFiles();
-			if (files != null) {
-				for (final File f : files) {
-					deleteRecursive(f);
+			if (null != files) {
+				for (final File file : files) {
+					deleteRecursive(file);
 				}
 			}
 		}

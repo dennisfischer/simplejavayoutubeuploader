@@ -17,7 +17,7 @@ public enum MetadataCode implements ErrorCode {
 
 	private final int number;
 
-	private MetadataCode(final int number) {
+	MetadataCode(final int number) {
 		this.number = number;
 	}
 

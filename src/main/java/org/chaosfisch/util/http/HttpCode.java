@@ -16,7 +16,7 @@ public enum HttpCode implements ErrorCode {
 	IO_ERROR(801);
 	private final int number;
 
-	private HttpCode(final int number) {
+	HttpCode(final int number) {
 		this.number = number;
 	}
 

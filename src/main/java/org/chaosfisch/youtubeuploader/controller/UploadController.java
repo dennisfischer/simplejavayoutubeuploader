@@ -248,7 +248,7 @@ public class UploadController {
 	private final SimpleObjectProperty<File>    enddirProperty     = new SimpleObjectProperty<>();
 	private UploadMonetizationController uploadMonetizationController;
 	private UploadPartnerController      uploadPartnerController;
-	private Upload uploadStore = null;
+	private Upload                       uploadStore;
 
 	public UploadController() {
 		idProperty.setValue(null);
@@ -256,10 +256,10 @@ public class UploadController {
 
 	@FXML
 	void addUpload(final ActionEvent event) {
-		final Upload upload = uploadStore == null ? new Upload() : uploadStore;
+		final Upload upload = null == uploadStore ? new Upload() : uploadStore;
 		toUpload(upload);
 
-		if (uploadEnddir.getText() == null || uploadEnddir.getText().isEmpty()) {
+		if (null == uploadEnddir.getText() || uploadEnddir.getText().isEmpty()) {
 			upload.setEnddir(null);
 		}
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
@@ -375,8 +375,8 @@ public class UploadController {
 	}
 
 	private void resetControlls() {
-		final Control[] nodes = new Control[] {uploadAccount, uploadCategory, uploadDescription, uploadFile, uploadTags,
-											   uploadThumbnail, uploadTitle};
+		final Control[] nodes = {uploadAccount, uploadCategory, uploadDescription, uploadFile, uploadTags,
+								 uploadThumbnail, uploadTitle};
 		for (final Control node : nodes) {
 			node.getStyleClass().remove("input-invalid");
 			node.setTooltip(null);
@@ -397,7 +397,7 @@ public class UploadController {
 	@FXML
 	void openDefaultdir(final ActionEvent event) {
 		final File directory = directoryChooser.showDialog(null);
-		if (directory != null) {
+		if (null != directory) {
 			directoryChooser.setInitialDirectory(directory);
 			fileChooser.setInitialDirectory(directory);
 			uploadDefaultdir.setText(directory.getAbsolutePath());
@@ -407,7 +407,7 @@ public class UploadController {
 	@FXML
 	void openEnddir(final ActionEvent event) {
 		final File directory = directoryChooser.showDialog(null);
-		if (directory != null) {
+		if (null != directory) {
 			uploadEnddir.setText(directory.getAbsolutePath());
 		}
 	}
@@ -415,7 +415,7 @@ public class UploadController {
 	@FXML
 	void openFiles(final ActionEvent event) {
 		final List<File> files = fileChooser.showOpenMultipleDialog(null);
-		if (files != null && files.size() > 0) {
+		if (null != files && !files.isEmpty()) {
 			addUploadFiles(files);
 		}
 	}
@@ -423,7 +423,7 @@ public class UploadController {
 	@FXML
 	void openThumbnail(final ActionEvent event) {
 		final File file = fileChooser.showOpenDialog(null);
-		if (file != null) {
+		if (null != file) {
 			uploadThumbnail.setText(file.getAbsolutePath());
 		}
 	}
@@ -439,7 +439,7 @@ public class UploadController {
 	@FXML
 	void removeTemplate(final ActionEvent event) {
 		final Template template;
-		if ((template = templates.getSelectionModel().getSelectedItem()) != null) {
+		if (null != (template = templates.getSelectionModel().getSelectedItem())) {
 			final RemoveTemplateCommand command = commandProvider.get(RemoveTemplateCommand.class);
 			command.template = template;
 			command.start();
@@ -452,12 +452,12 @@ public class UploadController {
 	}
 
 	private void _reset() {
-		fromTemplate(templates.getValue() == null ? ViewController.standardTemplate : templates.getValue());
+		fromTemplate(null == templates.getValue() ? ViewController.standardTemplate : templates.getValue());
 	}
 
 	@FXML
 	void saveTemplate(final ActionEvent event) {
-		if (templates.getValue() == null) {
+		if (null == templates.getValue()) {
 			return;
 		}
 		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
@@ -481,46 +481,46 @@ public class UploadController {
 
 	@FXML
 	void initialize() {
-		assert addUpload != null : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert extendedSettingsGrid != null : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert gridWidthSlider != null : "fx:id=\"gridWidthSlider\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert monetizePartner != null : "fx:id=\"monetizePartner\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert openDefaultdir != null : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert openEnddir != null : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert openFiles != null : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert openThumbnail != null : "fx:id=\"openThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert partnerPane != null : "fx:id=\"partnerPane\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistDropScrollpane != null : "fx:id=\"playlistDropScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistGrid != null : "fx:id=\"playlistGrid\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert playlistSourceScrollpane != null : "fx:id=\"playlistSourceScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert previewTitle != null : "fx:id=\"previewTitle\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert refreshPlaylists != null : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert removeTemplate != null : "fx:id=\"removeTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert resetUpload != null : "fx:id=\"resetUpload\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert saveTemplate != null : "fx:id=\"saveTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert templates != null : "fx:id=\"templates\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadAccount != null : "fx:id=\"uploadAccount\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadCategory != null : "fx:id=\"uploadCategory\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadComment != null : "fx:id=\"uploadComment\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadCommentvote != null : "fx:id=\"uploadCommentvote\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadDefaultdir != null : "fx:id=\"uploadDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadDescription != null : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadEmbed != null : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadEnddir != null : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadFacebook != null : "fx:id=\"uploadFacebook\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadFile != null : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadGrid != null : "fx:id=\"uploadGrid\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadLicense != null : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadMessage != null : "fx:id=\"uploadMessage\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadRate != null : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadTags != null : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadThumbnail != null : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadTitle != null : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadTwitter != null : "fx:id=\"uploadTwitter\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadVideoresponse != null : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert uploadVisibility != null : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert x2 != null : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert x5 != null : "fx:id=\"x5\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != addUpload : "fx:id=\"addUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != extendedSettingsGrid : "fx:id=\"extendedSettingsGrid\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != gridWidthSlider : "fx:id=\"gridWidthSlider\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != monetizePartner : "fx:id=\"monetizePartner\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != openDefaultdir : "fx:id=\"openDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != openEnddir : "fx:id=\"openEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != openFiles : "fx:id=\"openFiles\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != openThumbnail : "fx:id=\"openThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != partnerPane : "fx:id=\"partnerPane\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != playlistDropScrollpane : "fx:id=\"playlistDropScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != playlistGrid : "fx:id=\"playlistGrid\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != playlistSourceScrollpane : "fx:id=\"playlistSourceScrollpane\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != previewTitle : "fx:id=\"previewTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != refreshPlaylists : "fx:id=\"refreshPlaylists\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != removeTemplate : "fx:id=\"removeTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != resetUpload : "fx:id=\"resetUpload\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != saveTemplate : "fx:id=\"saveTemplate\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != templates : "fx:id=\"templates\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadAccount : "fx:id=\"uploadAccount\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadCategory : "fx:id=\"uploadCategory\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadComment : "fx:id=\"uploadComment\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadCommentvote : "fx:id=\"uploadCommentvote\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadDefaultdir : "fx:id=\"uploadDefaultdir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadDescription : "fx:id=\"uploadDescription\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadEmbed : "fx:id=\"uploadEmbed\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadEnddir : "fx:id=\"uploadEnddir\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadFacebook : "fx:id=\"uploadFacebook\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadFile : "fx:id=\"uploadFile\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadGrid : "fx:id=\"uploadGrid\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadLicense : "fx:id=\"uploadLicense\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadMessage : "fx:id=\"uploadMessage\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadRate : "fx:id=\"uploadRate\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadTags : "fx:id=\"uploadTags\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadThumbnail : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadTitle : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadTwitter : "fx:id=\"uploadTwitter\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadVideoresponse : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadVisibility : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != x2 : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != x5 : "fx:id=\"x5\" was not injected: check your FXML file 'Upload.fxml'.";
 		initControls();
 		initCustomFactories();
 		initDragEventHandlers();
@@ -534,55 +534,53 @@ public class UploadController {
 	}
 
 	@Subscribe
-	public void onModelAdded(final ModelAddedEvent modelAddedEvent) {
+	public void onModelAdded(final ModelAddedEvent event) {
 		Platform.runLater(new Runnable() {
 
 			@Override
 			public void run() {
-				if (modelAddedEvent.getModel() instanceof Account) {
-					accountsList.add((Account) modelAddedEvent.getModel());
-					if (uploadAccount.getValue() == null && accountsList.size() > 0) {
+				if (event.getModel() instanceof Account) {
+					accountsList.add((Account) event.getModel());
+					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
 						uploadAccount.getSelectionModel().selectFirst();
 					}
 					refreshPlaylists(null);
-				} else if (modelAddedEvent.getModel() instanceof Template) {
+				} else if (event.getModel() instanceof Template) {
 
-					templatesList.add((Template) modelAddedEvent.getModel());
-					if (templates.getValue() == null && templatesList.size() > 0) {
+					templatesList.add((Template) event.getModel());
+					if (null == templates.getValue() && !templatesList.isEmpty()) {
 						templates.getSelectionModel().selectFirst();
 					}
 
-				} else if (modelAddedEvent.getModel() instanceof Playlist && playlistDao.fetchOneAccountByPlaylist((Playlist) modelAddedEvent
+				} else if (event.getModel() instanceof Playlist && playlistDao.fetchOneAccountByPlaylist((Playlist) event
 						.getModel()).equals(uploadAccount.getValue())) {
-					playlistSourceList.add((Playlist) modelAddedEvent.getModel());
+					playlistSourceList.add((Playlist) event.getModel());
 				}
 			}
 		});
 	}
 
 	@Subscribe
-	public void onModelUpdated(final ModelUpdatedEvent modelUpdatedEvent) {
+	public void onModelUpdated(final ModelUpdatedEvent event) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (modelUpdatedEvent.getModel() instanceof Account) {
-					accountsList.set(accountsList.indexOf(modelUpdatedEvent.getModel()), (Account) modelUpdatedEvent.getModel());
-				} else if (modelUpdatedEvent.getModel() instanceof Template) {
-					templatesList.set(templatesList.indexOf(modelUpdatedEvent.getModel()), (Template) modelUpdatedEvent.getModel());
-					templates.getSelectionModel().select((Template) modelUpdatedEvent.getModel());
-				} else if (modelUpdatedEvent.getModel() instanceof Playlist && playlistDao.fetchOneAccountByPlaylist((Playlist) modelUpdatedEvent
+				if (event.getModel() instanceof Account) {
+					accountsList.set(accountsList.indexOf(event.getModel()), (Account) event.getModel());
+				} else if (event.getModel() instanceof Template) {
+					templatesList.set(templatesList.indexOf(event.getModel()), (Template) event.getModel());
+					templates.getSelectionModel().select((Template) event.getModel());
+				} else if (event.getModel() instanceof Playlist && playlistDao.fetchOneAccountByPlaylist((Playlist) event
 						.getModel()).equals(uploadAccount.getValue())) {
-					if (((Playlist) modelUpdatedEvent.getModel()).getHidden()) {
-						playlistSourceList.remove(modelUpdatedEvent.getModel());
-						playlistTargetList.remove(modelUpdatedEvent.getModel());
-					} else if (playlistSourceList.contains(modelUpdatedEvent.getModel())) {
-						playlistSourceList.set(playlistSourceList.indexOf(modelUpdatedEvent.getModel()), (Playlist) modelUpdatedEvent
-								.getModel());
-					} else if (playlistTargetList.contains(modelUpdatedEvent.getModel())) {
-						playlistTargetList.set(playlistTargetList.indexOf(modelUpdatedEvent.getModel()), (Playlist) modelUpdatedEvent
-								.getModel());
+					if (((Playlist) event.getModel()).getHidden()) {
+						playlistSourceList.remove(event.getModel());
+						playlistTargetList.remove(event.getModel());
+					} else if (playlistSourceList.contains(event.getModel())) {
+						playlistSourceList.set(playlistSourceList.indexOf(event.getModel()), (Playlist) event.getModel());
+					} else if (playlistTargetList.contains(event.getModel())) {
+						playlistTargetList.set(playlistTargetList.indexOf(event.getModel()), (Playlist) event.getModel());
 					} else {
-						playlistSourceList.add((Playlist) modelUpdatedEvent.getModel());
+						playlistSourceList.add((Playlist) event.getModel());
 					}
 				}
 			}
@@ -590,23 +588,23 @@ public class UploadController {
 	}
 
 	@Subscribe
-	public void onModelRemoved(final ModelRemovedEvent modelPostRemovedEvent) {
+	public void onModelRemoved(final ModelRemovedEvent event) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (modelPostRemovedEvent.getModel() instanceof Account) {
-					accountsList.remove(modelPostRemovedEvent.getModel());
-					if (uploadAccount.getValue() == null && accountsList.size() > 0) {
+				if (event.getModel() instanceof Account) {
+					accountsList.remove(event.getModel());
+					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
 						uploadAccount.getSelectionModel().selectFirst();
 					}
-				} else if (modelPostRemovedEvent.getModel() instanceof Template) {
-					templatesList.remove(modelPostRemovedEvent.getModel());
-					if (templates.getValue() == null && templatesList.size() > 0) {
+				} else if (event.getModel() instanceof Template) {
+					templatesList.remove(event.getModel());
+					if (null == templates.getValue() && !templatesList.isEmpty()) {
 						templates.getSelectionModel().selectFirst();
 					}
-				} else if (modelPostRemovedEvent.getModel() instanceof Playlist) {
-					playlistSourceList.remove(modelPostRemovedEvent.getModel());
-					playlistTargetList.remove(modelPostRemovedEvent.getModel());
+				} else if (event.getModel() instanceof Playlist) {
+					playlistSourceList.remove(event.getModel());
+					playlistTargetList.remove(event.getModel());
 				}
 			}
 		});
@@ -660,9 +658,9 @@ public class UploadController {
 			}
 		});
 
-		final PreviewTitleChangeListener previewTitleChangeListener = new PreviewTitleChangeListener();
-		uploadFile.getSelectionModel().selectedItemProperty().addListener(previewTitleChangeListener);
-		playlistTargetList.addListener(previewTitleChangeListener);
+		final PreviewTitleChangeListener titleChangeListener = new PreviewTitleChangeListener();
+		uploadFile.getSelectionModel().selectedItemProperty().addListener(titleChangeListener);
+		playlistTargetList.addListener(titleChangeListener);
 
 		uploadFile.setItems(filesList);
 		uploadCategory.setItems(categoriesList);
@@ -731,12 +729,12 @@ public class UploadController {
 		upload.setCommentvote(uploadCommentvote.isSelected());
 		upload.setComment(uploadComment.getValue());
 
-		if (started.getValue() != null) {
+		if (null != started.getValue()) {
 			final GregorianCalendar cal = new GregorianCalendar();
 			cal.setTimeInMillis(started.getValue().getTimeInMillis());
 			upload.setDateOfStart(cal);
 		}
-		if (release.getValue() != null) {
+		if (null != release.getValue()) {
 			final GregorianCalendar cal = new GregorianCalendar();
 			cal.setTimeInMillis(release.getValue().getTimeInMillis());
 			upload.setDateOfRelease(cal);
@@ -842,10 +840,10 @@ public class UploadController {
 
 		uploadAccount.getSelectionModel().select(accountDao.findById(upload.getAccountId()));
 
-		if (uploadAccount.getValue() == null) {
+		if (null == uploadAccount.getValue()) {
 			uploadAccount.getSelectionModel().selectFirst();
 		}
-		if (uploadCategory.getValue() == null) {
+		if (null == uploadCategory.getValue()) {
 			uploadCategory.getSelectionModel().selectFirst();
 		}
 
@@ -864,7 +862,7 @@ public class UploadController {
 
 	private void fromTemplate(final Template template) {
 		resetControlls();
-		if (template.getDefaultdir() != null && template.getDefaultdir().isDirectory()) {
+		if (null != template.getDefaultdir() && template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
 			directoryChooser.setInitialDirectory(template.getDefaultdir());
 		}
@@ -899,10 +897,10 @@ public class UploadController {
 		}
 
 		uploadAccount.getSelectionModel().select(accountDao.findById(template.getAccountId()));
-		if (uploadAccount.getValue() == null) {
+		if (null == uploadAccount.getValue()) {
 			uploadAccount.getSelectionModel().selectFirst();
 		}
-		if (uploadCategory.getValue() == null) {
+		if (null == uploadCategory.getValue()) {
 			uploadCategory.getSelectionModel().selectFirst();
 		}
 
@@ -913,7 +911,7 @@ public class UploadController {
 			playlistIterator.remove();
 		}
 
-		if (templates.getValue() != null) {
+		if (null != templates.getValue()) {
 			for (final Playlist playlist : playlistDao.fetchByTemplate(templates.getValue())) {
 				playlistTargetList.add(playlist);
 				playlistSourceList.remove(playlist);
@@ -946,7 +944,7 @@ public class UploadController {
 	}
 
 	private void movePlaylist(final int model, final List<Playlist> from, final List<Playlist> to) {
-		if (model >= 0) {
+		if (0 <= model) {
 			to.add(from.get(model));
 			from.remove(model);
 		}
@@ -956,10 +954,10 @@ public class UploadController {
 		filesList.clear();
 		filesList.addAll(files);
 		uploadFile.getSelectionModel().selectFirst();
-		if (uploadTitle.getText() == null || uploadTitle.getText().isEmpty()) {
+		if (null == uploadTitle.getText() || uploadTitle.getText().isEmpty()) {
 			final String file = files.get(0).getAbsolutePath();
 			int index = file.lastIndexOf('.');
-			if (index == -1) {
+			if (-1 == index) {
 				index = file.length();
 			}
 			uploadTitle.setText(file.substring(file.lastIndexOf(File.separator) + 1, index));
@@ -985,7 +983,7 @@ public class UploadController {
 		public void changed(final ObservableValue<? extends Account> observable, final Account oldValue, final Account newValue) {
 			playlistSourceList.clear();
 			playlistTargetList.clear();
-			if (newValue != null) {
+			if (null != newValue) {
 				playlistSourceList.addAll(playlistDao.fetchUnhidden(newValue.getId()));
 			}
 			_triggerPlaylist();
@@ -993,16 +991,16 @@ public class UploadController {
 		}
 	}
 
-	private final static class DefaultDirStringConverter extends StringConverter<File> {
+	private static final class DefaultDirStringConverter extends StringConverter<File> {
 
 		@Override
 		public String toString(final File file) {
-			return file == null ? null : file.getAbsolutePath();
+			return null == file ? null : file.getAbsolutePath();
 		}
 
 		@Override
 		public File fromString(final String path) {
-			return path == null ? null : new File(path);
+			return null == path ? null : new File(path);
 		}
 	}
 
@@ -1011,7 +1009,7 @@ public class UploadController {
 
 		@Override
 		public String toString(final String value) {
-			extendedPlaceholders.setFile(uploadFile.getValue() == null ? null : uploadFile.getValue());
+			extendedPlaceholders.setFile(null == uploadFile.getValue() ? null : uploadFile.getValue());
 			extendedPlaceholders.setPlaylists(playlistTargetList);
 			return extendedPlaceholders.replace(value);
 		}
@@ -1039,7 +1037,7 @@ public class UploadController {
 	private final class LicenseChangeListener implements ChangeListener<License> {
 		@Override
 		public void changed(final ObservableValue<? extends License> observable, final License oldValue, final License newValue) {
-			if (newValue == null) {
+			if (null == newValue) {
 				return;
 			}
 			switch (newValue) {
@@ -1065,7 +1063,7 @@ public class UploadController {
 	private final class UploadIdInvalidationListener implements InvalidationListener {
 		@Override
 		public void invalidated(final Observable arg0) {
-			if (idProperty.getValue() == null || idProperty.getValue() == 0) {
+			if (null == idProperty.getValue() || 0 == idProperty.getValue()) {
 				addUpload.setText(resources.getString("button.addUpload"));
 				addUpload.setId("addUpload");
 			} else {
@@ -1075,15 +1073,13 @@ public class UploadController {
 		}
 	}
 
-	private final static class UploadFileListViewConverter extends StringConverter<File> {
+	private static final class UploadFileListViewConverter extends StringConverter<File> {
 		@Override
 		public String toString(final File object) {
-			if (object.getPath().length() > 50) {
+			if (50 < object.getPath().length()) {
 				final String fileName = object.getPath();
-				return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar)))
-						.concat(File.separator)
-						.concat("...")
-						.concat(fileName.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
+				return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar))) + File.separator + "..." + fileName
+						.substring(fileName.lastIndexOf(File.separatorChar, fileName.length()));
 			}
 			return object.getPath();
 		}
@@ -1146,7 +1142,7 @@ public class UploadController {
 
 		@Override
 		public void handle(final MouseEvent event) {
-			if (event.getClickCount() == 2) {
+			if (2 == event.getClickCount()) {
 
 				if (playlists.equals(playlistTargetList)) {
 					removePlaylistFromDropzone(playlists.indexOf(cell.itemProperty().get()));
@@ -1157,7 +1153,7 @@ public class UploadController {
 		}
 	}
 
-	private final static class DragExitedCallback implements EventHandler<DragEvent> {
+	private static final class DragExitedCallback implements EventHandler<DragEvent> {
 		@Override
 		public void handle(final DragEvent event) {
 			((Node) event.getTarget()).getParent().getParent().getParent().getStyleClass().clear();
@@ -1198,7 +1194,7 @@ public class UploadController {
 		}
 	}
 
-	private final static class DragOverCallback implements EventHandler<DragEvent> {
+	private static final class DragOverCallback implements EventHandler<DragEvent> {
 		@Override
 		public void handle(final DragEvent event) {
 			if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasString()) {

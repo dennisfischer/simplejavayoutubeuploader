@@ -36,14 +36,14 @@ public class AccountTrigger extends TriggerAdapter {
 		firstId = null;
 		lastId = null;
 		final DSLContext create = DSL.using(conn, SQLDialect.H2);
-		if (newRow != null) {
+		if (null != newRow) {
 			final Cursor<Record> result = create.fetchLazy(newRow, Tables.ACCOUNT.fields());
 			while (result.hasNext()) {
 				final Account record = getAccount(result);
-				if (record == null) {
+				if (null == record) {
 					return;
 				}
-				if (oldRow == null) {
+				if (null == oldRow) {
 					EventBusUtil.getInstance().post(new ModelAddedEvent(record));
 				} else {
 					EventBusUtil.getInstance().post(new ModelUpdatedEvent(record));
@@ -53,7 +53,7 @@ public class AccountTrigger extends TriggerAdapter {
 			final Cursor<Record> result = create.fetchLazy(oldRow, Tables.ACCOUNT.fields());
 			while (result.hasNext()) {
 				final Account record = getAccount(result);
-				if (record == null) {
+				if (null == record) {
 					return;
 				}
 				EventBusUtil.getInstance().post(new ModelRemovedEvent(record));
@@ -67,7 +67,7 @@ public class AccountTrigger extends TriggerAdapter {
 		if (lastId.equals(firstId)) {
 			return null;
 		}
-		if (firstId == null) {
+		if (null == firstId) {
 			firstId = record.getId();
 		}
 		return record;

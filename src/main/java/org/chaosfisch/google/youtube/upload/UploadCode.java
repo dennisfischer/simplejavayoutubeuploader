@@ -17,7 +17,7 @@ public enum UploadCode implements ErrorCode {
 
 	private final int number;
 
-	private UploadCode(final int number) {
+	UploadCode(final int number) {
 		this.number = number;
 	}
 
