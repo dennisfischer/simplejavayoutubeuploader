@@ -13,9 +13,7 @@ package org.chaosfisch.google.auth;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 
-import java.io.IOException;
-
-public interface IClientLogin {
+public interface IGoogleLogin {
 
 	/**
 	 * Returns a valid AuthHeader
@@ -52,9 +50,7 @@ public interface IClientLogin {
 	 * @return String received server response
 	 *
 	 * @throws SystemException
-	 * 		(HttpCode) if fails request
-	 * @throws IOException
-	 * 		if fails I/O
+	 * 		if fails request
 	 */
-	String getLoginContent(Account account, String redirectUrl) throws SystemException, IOException;
+	String getLoginContent(Account account, String redirectUrl) throws SystemException;
 }

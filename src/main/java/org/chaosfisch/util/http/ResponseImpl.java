@@ -11,22 +11,19 @@
 package org.chaosfisch.util.http;
 
 import com.google.common.base.Charsets;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
+import com.google.common.base.Preconditions;
+import org.apache.http.*;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.util.EntityUtils;
-import org.chaosfisch.exceptions.SystemException;
 
 import java.io.IOException;
 
-public class Response implements AutoCloseable {
+class ResponseImpl implements IResponse {
 
 	private final HttpResponse response;
 
-	public Response(final HttpResponse response) {
+	public ResponseImpl(final HttpResponse response) {
 		this.response = response;
 	}
 
@@ -37,26 +34,32 @@ public class Response implements AutoCloseable {
 		}
 	}
 
+	@Override
 	public HttpEntity getEntity() {
 		return response.getEntity();
 	}
 
+	@Override
 	public int getStatusCode() {
 		return response.getStatusLine().getStatusCode();
 	}
 
-	public HttpResponse getRaw() {
-		return response;
+	@Override
+	public Header getHeader(final String header) {
+		Preconditions.checkArgument(response.containsHeader(header), "Header doesn't exist: %s", header);
+		return response.getFirstHeader(header);
 	}
 
-	public String getContent() throws SystemException {
+	@Override
+	public String getContent() throws HttpIOException {
 		try {
 			return EntityUtils.toString(getEntity(), Charsets.UTF_8);
 		} catch (ParseException | IOException e) {
-			throw new SystemException(e, HttpCode.IO_ERROR);
+			throw new HttpIOException(getStatusCode(), getCurrentUrl(), response.getStatusLine().toString());
 		}
 	}
 
+	@Override
 	public String getCurrentUrl() {
 		final HttpUriRequest currentReq = (HttpUriRequest) RequestUtil.context
 				.getAttribute(ExecutionContext.HTTP_REQUEST);

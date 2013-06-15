@@ -24,7 +24,8 @@ import javafx.event.EventHandler;
 import org.chaosfisch.exceptions.ErrorCode;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.auth.AuthCode;
-import org.chaosfisch.google.auth.IClientLogin;
+import org.chaosfisch.google.auth.GDataRequestSigner;
+import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.MetadataService;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.google.youtube.ResumeableManager;
@@ -34,7 +35,6 @@ import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.util.*;
-import org.chaosfisch.util.http.RequestSigner;
 import org.chaosfisch.util.http.RequestUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.util.io.ThrottledOutputStream;
@@ -94,7 +94,7 @@ public class UploadWorker extends Task<Void> {
 	@Inject
 	private PlaylistService      playlistService;
 	@Inject
-	private RequestSigner        requestSigner;
+	private GDataRequestSigner   requestSigner;
 	@Inject
 	private MetadataService      metadataService;
 	@Inject
@@ -102,7 +102,7 @@ public class UploadWorker extends Task<Void> {
 	@Inject
 	private Injector             injector;
 	@Inject
-	private IClientLogin         authTokenHelper;
+	private IGoogleLogin         authTokenHelper;
 	@Inject
 	private Throttle             throttle;
 	@Inject
@@ -502,7 +502,7 @@ public class UploadWorker extends Task<Void> {
 		final int chunk = (int) (end - start + 1);
 
 		try {
-			// Building PUT Request for chunk data
+			// Building PUT RequestImpl for chunk data
 			final URL url = URI.create(upload.getUploadurl()).toURL();
 			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 			request.setRequestMethod("POST");
@@ -511,7 +511,8 @@ public class UploadWorker extends Task<Void> {
 			//Properties
 			request.setRequestProperty("Content-Type", upload.getMimetype());
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-			requestSigner.signWithAuthorization(request, authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
+			requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
+			requestSigner.sign(request);
 			request.connect();
 
 			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));

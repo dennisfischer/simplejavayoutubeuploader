@@ -18,27 +18,27 @@ import java.net.HttpURLConnection;
 
 public class GDataRequestSigner implements RequestSigner {
 
+	private String authHeader;
+
 	@Override
 	public void sign(final HttpRequest request) {
 		request.addHeader("GData-Version", ApplicationData.GDATA_VERSION);
 		request.addHeader("X-GData-Key", String.format("key=%s", ApplicationData.DEVELOPER_KEY));
+		if (null != authHeader) {
+			request.addHeader("Authorization", authHeader);
+		}
 	}
 
-	@Override
-	public void signWithAuthorization(final HttpRequest request, final String authHeader) {
-		request.addHeader("Authorization", authHeader);
-		sign(request);
-	}
-
-	@Override
-	public void signWithAuthorization(final HttpURLConnection request, final String authHeader) {
-		request.setRequestProperty("Authorization", authHeader);
-		sign(request);
+	public void setAuthHeader(final String authHeader) {
+		this.authHeader = authHeader;
 	}
 
 	@Override
 	public void sign(final HttpURLConnection request) {
 		request.setRequestProperty("GData-Version", ApplicationData.GDATA_VERSION);
 		request.setRequestProperty("X-GData-Key", String.format("key=%s", ApplicationData.DEVELOPER_KEY));
+		if (null != authHeader) {
+			request.setRequestProperty("Authorization", authHeader);
+		}
 	}
 }

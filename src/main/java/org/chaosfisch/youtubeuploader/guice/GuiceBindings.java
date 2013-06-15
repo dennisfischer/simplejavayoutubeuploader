@@ -13,11 +13,16 @@ package org.chaosfisch.youtubeuploader.guice;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
 import javafx.stage.FileChooser;
 import org.chaosfisch.google.auth.ClientLogin;
 import org.chaosfisch.google.auth.GDataRequestSigner;
-import org.chaosfisch.google.auth.IClientLogin;
+import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.MetadataService;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.google.youtube.ResumeableManager;
@@ -99,9 +104,23 @@ public class GuiceBindings extends AbstractModule {
 	private void mapUtil() {
 		bind(FileChooser.class).in(Singleton.class);
 		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
-		bind(IClientLogin.class).to(ClientLogin.class).in(Singleton.class);
+		bind(IGoogleLogin.class).to(ClientLogin.class).in(Singleton.class);
 		bind(Throttle.class).in(Singleton.class);
-		bind(EventBus.class).in(Singleton.class);
+
+		final EventBus eventBus = new EventBus();
+		bind(EventBus.class).toInstance(eventBus);
+		bindListener(Matchers.any(), new TypeListener() {
+			@Override
+			public <I> void hear(@SuppressWarnings("unused") final TypeLiteral<I> type, final TypeEncounter<I> encounter) {
+				encounter.register(new InjectionListener<I>() {
+					@Override
+					public void afterInjection(final I injectee) {
+						eventBus.register(injectee);
+					}
+				});
+			}
+		});
+
 		requestStaticInjection(EventBusUtil.class);
 		requestStaticInjection(TextUtil.class);
 	}

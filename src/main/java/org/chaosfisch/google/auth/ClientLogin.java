@@ -13,31 +13,30 @@ package org.chaosfisch.google.auth;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.util.http.Request;
-import org.chaosfisch.util.http.RequestSigner;
-import org.chaosfisch.util.http.Response;
+import org.chaosfisch.util.http.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ClientLogin implements IClientLogin {
+public class ClientLogin implements IGoogleLogin {
 
 	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 
+	private final RequestSigner requestSigner;
+
 	@Inject
-	private RequestSigner requestSigner;
+	public ClientLogin(final RequestSigner requestSigner) {
+		this.requestSigner = requestSigner;
+	}
 
 	private String getAuthToken(final Account account) throws SystemException {
 
@@ -65,19 +64,18 @@ public class ClientLogin implements IClientLogin {
 		clientRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
 		clientRequestParams.add(new BasicNameValuePair("source", source));
 
-		final Request clientLoginRequest = new Request.Builder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientRequestParams, Charsets.UTF_8))
+		final IRequest clientLoginRequest = new RequestBuilder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientRequestParams, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.sign(requestSigner)
 				.build();
 
-		try (final Response response = clientLoginRequest.execute()) {
-			final HttpEntity clientLoginEntity = response.getEntity();
-			if (200 != response.getStatusCode()) {
-				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", response.getStatusCode());
+		try (final IResponse IResponse = clientLoginRequest.execute()) {
+			if (200 != IResponse.getStatusCode()) {
+				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", IResponse.getStatusCode());
 			}
 
-			return EntityUtils.toString(clientLoginEntity, Charsets.UTF_8);
-		} catch (final IOException e) {
+			return IResponse.getContent();
+		} catch (final HttpIOException e) {
 			throw new SystemException(e, AuthCode.AUTH_IO_ERROR);
 		}
 	}
@@ -97,29 +95,29 @@ public class ClientLogin implements IClientLogin {
 	}
 
 	@Override
-	public String getLoginContent(final Account account, final String redirectUrl) throws SystemException, IOException {
+	public String getLoginContent(final Account account, final String redirectUrl) throws SystemException {
 		return tokenAuthContent(redirectUrl, issueAuthToken(_receiveToken(account, "gaia", "googletalk")));
 
 	}
 
-	private String tokenAuthContent(final String redirectUrl, final String issueTokenContent) throws IOException, SystemException {
+	private String tokenAuthContent(final String redirectUrl, final String issueTokenContent) throws SystemException {
 		// STEP 3 TOKEN AUTH
 		try {
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder
 					.encode(issueTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
 					.name()));
 
-			final Request tokenAuthRequest = new Request.Builder(tokenAuthUrl).get().build();
+			final IRequest tokenAuthRequest = new RequestBuilder(tokenAuthUrl).get().build();
 
-			try (final Response response = tokenAuthRequest.execute()) {
-				return response.getContent();
+			try (final IResponse IResponse = tokenAuthRequest.execute()) {
+				return IResponse.getContent();
 			}
-		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+		} catch (UnsupportedEncodingException | HttpIOException e) {
+			throw new SystemException(e, AuthCode.AUTH_IO_ERROR);
 		}
 	}
 
-	private String issueAuthToken(final String clientLoginContent) throws IOException {
+	private String issueAuthToken(final String clientLoginContent) throws SystemException {
 		// STEP 2 ISSUE AUTH TOKEN
 		final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
 		final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
@@ -131,12 +129,14 @@ public class ClientLogin implements IClientLogin {
 		issueTokenParams.add(new BasicNameValuePair("Session", "true"));
 		issueTokenParams.add(new BasicNameValuePair("source", "googletalk"));
 
-		final Request issueTokenRequest = new Request.Builder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueTokenParams, Charset
+		final IRequest issueTokenRequest = new RequestBuilder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueTokenParams, Charset
 				.forName("utf-8")))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.build();
-		try (final Response response = issueTokenRequest.execute()) {
-			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
+		try (final IResponse IResponse = issueTokenRequest.execute()) {
+			return IResponse.getContent();
+		} catch (HttpIOException e) {
+			throw new SystemException(e, AuthCode.AUTH_IO_ERROR);
 		}
 	}
 }

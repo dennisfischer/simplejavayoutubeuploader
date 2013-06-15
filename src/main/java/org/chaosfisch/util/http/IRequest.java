@@ -10,18 +10,6 @@
 
 package org.chaosfisch.util.http;
 
-import org.chaosfisch.exceptions.ErrorCode;
-
-public enum HttpCode implements ErrorCode {
-	IO_ERROR(801);
-	private final int number;
-
-	HttpCode(final int number) {
-		this.number = number;
-	}
-
-	@Override
-	public int getNumber() {
-		return number;
-	}
+public interface IRequest {
+	IResponse execute() throws HttpIOException;
 }

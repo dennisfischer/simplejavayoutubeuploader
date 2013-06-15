@@ -16,13 +16,14 @@ import org.apache.http.Header;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.auth.IClientLogin;
+import org.chaosfisch.google.auth.GDataRequestSigner;
+import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.ResumeableManager;
 import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.util.http.Request;
-import org.chaosfisch.util.http.RequestSigner;
-import org.chaosfisch.util.http.Response;
+import org.chaosfisch.util.http.IRequest;
+import org.chaosfisch.util.http.IResponse;
+import org.chaosfisch.util.http.RequestBuilder;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
@@ -38,13 +39,13 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private final        Logger logger      = LoggerFactory.getLogger(getClass());
 
 	@Inject
-	private IClientLogin  authTokenHelper;
+	private IGoogleLogin       authTokenHelper;
 	@Inject
-	private RequestSigner requestSigner;
+	private GDataRequestSigner requestSigner;
 	@Inject
-	private UploadDao     uploadDao;
+	private UploadDao          uploadDao;
 	@Inject
-	private AccountDao    accountDao;
+	private AccountDao         accountDao;
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -59,22 +60,23 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	}
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
-		final Request request = new Request.Builder(upload.getUploadurl()).put(null)
+		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
+		final IRequest request = new RequestBuilder(upload.getUploadurl()).put(null)
 				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())))
+				.sign(requestSigner)
 				.build();
 
-		try (final Response response = request.execute()) {
+		try (final IResponse IResponse = request.execute()) {
 
-			if (200 <= response.getStatusCode() && 300 > response.getStatusCode()) {
-				return new ResumeInfo(parseVideoId(EntityUtils.toString(response.getEntity())));
-			} else if (308 != response.getStatusCode()) {
-				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+			if (200 <= IResponse.getStatusCode() && 300 > IResponse.getStatusCode()) {
+				return new ResumeInfo(parseVideoId(EntityUtils.toString(IResponse.getEntity())));
+			} else if (308 != IResponse.getStatusCode()) {
+				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", IResponse.getStatusCode());
 			}
 
 			final long nextByteToUpload;
 
-			final Header range = response.getRaw().getFirstHeader("Range");
+			final Header range = IResponse.getHeader("Range");
 			if (null == range) {
 				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
@@ -89,8 +91,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			if (null != response.getRaw().getFirstHeader("Location")) {
-				final Header location = response.getRaw().getFirstHeader("Location");
+			if (null != IResponse.getHeader("Location")) {
+				final Header location = IResponse.getHeader("Location");
 				upload.setUploadurl(location.getValue());
 				uploadDao.update(upload);
 			}

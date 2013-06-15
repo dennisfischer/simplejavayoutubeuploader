@@ -25,13 +25,15 @@ import org.apache.http.message.BasicNameValuePair;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
-import org.chaosfisch.google.auth.IClientLogin;
+import org.chaosfisch.google.auth.GDataRequestSigner;
+import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.MetadataService;
 import org.chaosfisch.google.youtube.ThumbnailService;
 import org.chaosfisch.util.PermissionStringConverter;
-import org.chaosfisch.util.http.Request;
-import org.chaosfisch.util.http.RequestSigner;
-import org.chaosfisch.util.http.Response;
+import org.chaosfisch.util.http.HttpIOException;
+import org.chaosfisch.util.http.IRequest;
+import org.chaosfisch.util.http.IResponse;
+import org.chaosfisch.util.http.RequestBuilder;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -55,13 +57,13 @@ public class MetadataServiceImpl implements MetadataService {
 	private final        Logger logger                         = LoggerFactory.getLogger(MetadataServiceImpl.class);
 
 	@Inject
-	private RequestSigner    requestSigner;
+	private GDataRequestSigner requestSigner;
 	@Inject
-	private IClientLogin     authTokenHelper;
+	private IGoogleLogin       authTokenHelper;
 	@Inject
-	private ThumbnailService thumbnailService;
+	private ThumbnailService   thumbnailService;
 	@Inject
-	private AccountDao       accountDao;
+	private AccountDao         accountDao;
 
 	private final String[] deadEnds = {"https://accounts.google.com/b/0/SmsAuthInterstitial"};
 
@@ -139,22 +141,22 @@ public class MetadataServiceImpl implements MetadataService {
 	@Override
 	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
-		final Request request = new Request.Builder(METADATA_CREATE_RESUMEABLE_URL).post(new StringEntity(atomData, Charsets.UTF_8))
+		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
+		final IRequest request = new RequestBuilder(METADATA_CREATE_RESUMEABLE_URL).post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+				.sign(requestSigner)
 				.build();
 		// Write the atomData to GOOGLE
-		try (final Response response = request.execute()) {
+		try (final IResponse IResponse = request.execute()) {
 			// Check the response code for any problematic codes.
-			if (400 == response.getStatusCode()) {
+			if (400 == IResponse.getStatusCode()) {
 				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
 			}
 			// Check if uploadurl is available
-			if (null != response.getRaw().getFirstHeader("Location")) {
-				return response.getRaw().getFirstHeader("Location").getValue();
+			if (null != IResponse.getHeader("Location")) {
+				return IResponse.getHeader("Location").getValue();
 			} else {
-				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getRaw()
-						.getStatusLine());
+				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", IResponse.getStatusCode());
 			}
 		} catch (final IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
@@ -163,15 +165,16 @@ public class MetadataServiceImpl implements MetadataService {
 
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws SystemException {
-		final Request request = new Request.Builder(METADATA_UPDATE_URL + '/' + videoId).put(new StringEntity(atomData, Charsets.UTF_8))
+		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
+		final IRequest request = new RequestBuilder(METADATA_UPDATE_URL + '/' + videoId).put(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;"))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+				.sign(requestSigner)
 				.build();
 
-		try (final Response response = request.execute()) {
-			if (200 != response.getStatusCode()) {
+		try (final IResponse IResponse = request.execute()) {
+			if (200 != IResponse.getStatusCode()) {
 				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData)
-						.set("code", response.getStatusCode());
+						.set("code", IResponse.getStatusCode());
 			}
 		} catch (IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
@@ -198,13 +201,13 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	private String redirectToYoutube(final String content) throws IOException, SystemException {
-		final Request request = new Request.Builder(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
+		final IRequest request = new RequestBuilder(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
 				.replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
-		try (final Response response = request.execute()) {
-			if (Arrays.asList(deadEnds).contains(response.getCurrentUrl())) {
+		try (final IResponse IResponse = request.execute()) {
+			if (Arrays.asList(deadEnds).contains(IResponse.getCurrentUrl())) {
 				throw new SystemException(MetadataCode.DEAD_END);
 			}
-			return response.getContent();
+			return IResponse.getContent();
 		}
 	}
 
@@ -329,12 +332,12 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
 
-		final Request request = new Request.Builder(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
+		final IRequest request = new RequestBuilder(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
-		//noinspection EmptyTryBlock
-		try (Response response = request.execute()) {
-			logger.info(response.getContent());
-		} catch (SystemException e) {
+
+		try (final IResponse IResponse = request.execute()) {
+			logger.info(IResponse.getContent());
+		} catch (HttpIOException e) {
 			logger.warn("Metadata not set", e);
 		}
 	}

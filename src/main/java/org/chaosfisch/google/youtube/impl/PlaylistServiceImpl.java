@@ -17,12 +17,14 @@ import org.apache.http.entity.StringEntity;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.google.atom.VideoEntry;
-import org.chaosfisch.google.auth.IClientLogin;
+import org.chaosfisch.google.auth.GDataRequestSigner;
+import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.util.http.Request;
-import org.chaosfisch.util.http.RequestSigner;
-import org.chaosfisch.util.http.Response;
+import org.chaosfisch.util.http.HttpIOException;
+import org.chaosfisch.util.http.IRequest;
+import org.chaosfisch.util.http.IResponse;
+import org.chaosfisch.util.http.RequestBuilder;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -30,7 +32,6 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,16 +41,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
 	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
 	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
-	@Inject
-	private IClientLogin  authTokenHelper;
-	@Inject
-	private RequestSigner requestSigner;
-	@Inject
-	private PlaylistDao   playlistDao;
-	@Inject
-	private AccountDao    accountDao;
+	private static final Logger logger                           = LoggerFactory.getLogger(PlaylistServiceImpl.class);
 
-	private final Logger logger = LoggerFactory.getLogger(PlaylistServiceImpl.class);
+	private final IGoogleLogin       clientLogin;
+	private final GDataRequestSigner requestSigner;
+	private final PlaylistDao        playlistDao;
+	private final AccountDao         accountDao;
+
+	@Inject
+	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin) {
+		this.playlistDao = playlistDao;
+		this.accountDao = accountDao;
+		this.requestSigner = requestSigner;
+		this.clientLogin = clientLogin;
+	}
 
 	@Override
 	public String addLatestVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
@@ -58,15 +63,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 		submitFeed.mediaGroup = null;
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
-		final Request request = new Request.Builder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(new StringEntity(atomData, Charsets.UTF_8))
+		requestSigner.setAuthHeader(clientLogin.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())));
+		final IRequest request = new RequestBuilder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
+				.sign(requestSigner)
 				.build();
 
-		try (final Response response = request.execute()) {
+		try (final IResponse IResponse = request.execute()) {
 			logger.debug("Video added to playlist!");
-			return response.getContent();
-		} catch (final IOException e) {
+			return IResponse.getContent();
+		} catch (final HttpIOException e) {
 			throw new SystemException(e, PlaylistCode.ADD_VIDEO_IO_ERROR);
 		}
 	}
@@ -86,17 +92,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		logger.debug("Playlist atomdata: {}", atomData);
 
-		final Request request = new Request.Builder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData, Charsets.UTF_8))
+		requestSigner.setAuthHeader(clientLogin.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())));
+		final IRequest request = new RequestBuilder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-				.sign(requestSigner, authTokenHelper.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())))
+				.sign(requestSigner)
 				.build();
-		try (final Response response = request.execute()) {
-			if (200 != response.getStatusCode() && 201 != response.getStatusCode()) {
+		try (final IResponse IResponse = request.execute()) {
+			if (200 != IResponse.getStatusCode() && 201 != IResponse.getStatusCode()) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
 			}
 			logger.info("Added playlist to youtube");
-			return response.getContent();
-		} catch (final IOException e) {
+			return IResponse.getContent();
+		} catch (final HttpIOException e) {
 			throw new SystemException(e, PlaylistCode.ADD_PLAYLIST_IO_ERROR);
 		}
 	}
@@ -108,17 +115,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final Map<Account, List<Playlist>> data = new HashMap<>(accounts.length);
 
 		for (final Account account : accounts) {
-			final Request request = new Request.Builder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
-					.sign(requestSigner, authTokenHelper.getAuthHeader(account))
+			requestSigner.setAuthHeader(clientLogin.getAuthHeader(account));
+			final IRequest request = new RequestBuilder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
+					.sign(requestSigner)
 					.build();
-			try (final Response response = request.execute()) {
-				if (200 != response.getStatusCode()) {
-					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+			try (final IResponse IResponse = request.execute()) {
+				if (200 != IResponse.getStatusCode()) {
+					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", IResponse.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
-				data.put(account, _parsePlaylistsFeed(account, response.getContent()));
+				data.put(account, _parsePlaylistsFeed(account, IResponse.getContent()));
 				_cleanPlaylists(account);
-			} catch (final IOException e) {
+			} catch (final HttpIOException e) {
 				throw new SystemException(e, PlaylistCode.SYNCH_IO_ERROR);
 			}
 		}

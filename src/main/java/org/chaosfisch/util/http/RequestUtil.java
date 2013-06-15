@@ -31,8 +31,10 @@ import java.net.URI;
 
 public final class RequestUtil {
 
-	private static final DefaultHttpClient httpClient;
 	public static final HttpContext context = new BasicHttpContext();
+
+	private static final DefaultHttpClient httpClient;
+	private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
 
 	static {
 		final PoolingClientConnectionManager cxMgr = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault());
@@ -61,11 +63,10 @@ public final class RequestUtil {
 			public URI getLocationURI(final HttpRequest request, final HttpResponse response, final HttpContext context) throws ProtocolException {
 
 				final URI lastRedirectedUri = super.getLocationURI(request, response, context);
-				final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
 				try {
-					logger.info("Redirecting to: {}", lastRedirectedUri.toURL().toExternalForm());
+					logger.debug("Redirecting to: {}", lastRedirectedUri.toURL().toExternalForm());
 				} catch (final MalformedURLException e) {
-					e.printStackTrace();
+					logger.warn("Malfromed URL!", e);
 				}
 				return lastRedirectedUri;
 			}
@@ -129,7 +130,6 @@ public final class RequestUtil {
 	 * @param buf
 	 * 		the byte array to use as a buffer
 	 */
-	@SuppressWarnings("SameParameterValue")
 	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		final int numRead;
 		if (0 <= (numRead = is.read(buf, off, len))) {
