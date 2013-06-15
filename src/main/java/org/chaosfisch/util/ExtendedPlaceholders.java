@@ -37,7 +37,6 @@ public class ExtendedPlaceholders {
 	 * @param playlists
 	 * 		for {playlist(i)} and {number(i)(j)}
 	 */
-	@SuppressWarnings("SameParameterValue")
 	public ExtendedPlaceholders(final File file, final List<Playlist> playlists) {
 		this.file = file;
 		this.playlists = playlists;
@@ -71,7 +70,7 @@ public class ExtendedPlaceholders {
 			return "";
 		}
 		if (!playlists.isEmpty()) {
-			Matcher matcher = RegexpUtils.getPattern(TextUtil.getString("autotitle.numberPattern")).matcher(input);
+			Matcher matcher = RegexpUtils.getMatcher(input, TextUtil.getString("autotitle.numberPattern"));
 
 			StringBuffer sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
@@ -89,7 +88,7 @@ public class ExtendedPlaceholders {
 			matcher.appendTail(sb);
 			input = sb.toString();
 
-			matcher = RegexpUtils.getPattern(TextUtil.getString("autotitle.playlistPattern")).matcher(input);
+			matcher = RegexpUtils.getMatcher(input, TextUtil.getString("autotitle.playlistPattern"));
 			sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
 				matcher.appendReplacement(sb, "");

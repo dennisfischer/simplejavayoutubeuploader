@@ -20,7 +20,7 @@ import java.net.URI;
 
 public final class DesktopUtil {
 
-	static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
 
 	public static boolean openBrowser(final String url) {
 		final Desktop desktop = Desktop.getDesktop();

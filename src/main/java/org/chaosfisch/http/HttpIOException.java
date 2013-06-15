@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util.http;
+package org.chaosfisch.http;
 
 import java.io.IOException;
 

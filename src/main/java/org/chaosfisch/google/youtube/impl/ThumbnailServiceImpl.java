@@ -21,7 +21,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.youtube.ThumbnailService;
-import org.chaosfisch.util.http.RequestUtil;
+import org.chaosfisch.http.RequestUtil;
 import org.chaosfisch.youtubeuploader.db.data.Thumbnail;
 
 import java.io.File;

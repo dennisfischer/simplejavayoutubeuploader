@@ -11,7 +11,7 @@
 package org.chaosfisch.google.auth;
 
 import org.apache.http.HttpRequest;
-import org.chaosfisch.util.http.RequestSigner;
+import org.chaosfisch.http.RequestSigner;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 
 import java.net.HttpURLConnection;

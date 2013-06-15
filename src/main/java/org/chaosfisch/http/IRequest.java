@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util.http;
+package org.chaosfisch.http;
 
 public interface IRequest {
 	IResponse execute() throws HttpIOException;

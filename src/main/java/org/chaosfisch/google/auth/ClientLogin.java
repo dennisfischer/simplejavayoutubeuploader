@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.util.http.*;
+import org.chaosfisch.http.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 
 import java.io.UnsupportedEncodingException;

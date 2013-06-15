@@ -11,6 +11,7 @@
 package org.chaosfisch.youtubeuploader.command;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -19,10 +20,7 @@ import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
-import java.util.List;
-import java.util.Map;
-
-public class RefreshPlaylistsCommand extends Service<Map<Account, List<Playlist>>> {
+public class RefreshPlaylistsCommand extends Service<Multimap<Account, Playlist>> {
 
 	@Inject
 	private PlaylistDao     playlistDao;
@@ -32,10 +30,10 @@ public class RefreshPlaylistsCommand extends Service<Map<Account, List<Playlist>
 	public Account[] accounts;
 
 	@Override
-	protected Task<Map<Account, List<Playlist>>> createTask() {
-		return new Task<Map<Account, List<Playlist>>>() {
+	protected Task<Multimap<Account, Playlist>> createTask() {
+		return new Task<Multimap<Account, Playlist>>() {
 			@Override
-			protected Map<Account, List<Playlist>> call() throws Exception {
+			protected Multimap<Account, Playlist> call() throws Exception {
 				Preconditions.checkNotNull(accounts);
 				return playlistService.synchronizePlaylists(accounts);
 			}

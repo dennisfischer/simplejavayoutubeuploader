@@ -11,7 +11,9 @@
 package org.chaosfisch.google.youtube.impl;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import org.apache.http.entity.StringEntity;
 import org.chaosfisch.exceptions.SystemException;
@@ -20,11 +22,11 @@ import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.PlaylistService;
+import org.chaosfisch.http.HttpIOException;
+import org.chaosfisch.http.IRequest;
+import org.chaosfisch.http.IResponse;
+import org.chaosfisch.http.RequestBuilder;
 import org.chaosfisch.util.XStreamHelper;
-import org.chaosfisch.util.http.HttpIOException;
-import org.chaosfisch.util.http.IRequest;
-import org.chaosfisch.util.http.IResponse;
-import org.chaosfisch.util.http.RequestBuilder;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -33,9 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PlaylistServiceImpl implements PlaylistService {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
@@ -109,10 +109,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public Map<Account, List<Playlist>> synchronizePlaylists(final Account[] accounts) throws SystemException {
+	public Multimap<Account, Playlist> synchronizePlaylists(final Account[] accounts) throws SystemException {
 		logger.info("Synchronizing playlists.");
 
-		final Map<Account, List<Playlist>> data = new HashMap<>(accounts.length);
+		final Multimap<Account, Playlist> data = ArrayListMultimap.create();
 
 		for (final Account account : accounts) {
 			requestSigner.setAuthHeader(clientLogin.getAuthHeader(account));
@@ -124,7 +124,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", IResponse.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
-				data.put(account, _parsePlaylistsFeed(account, IResponse.getContent()));
+				data.putAll(account, _parsePlaylistsFeed(account, IResponse.getContent()));
 				_cleanPlaylists(account);
 			} catch (final HttpIOException e) {
 				throw new SystemException(e, PlaylistCode.SYNCH_IO_ERROR);
