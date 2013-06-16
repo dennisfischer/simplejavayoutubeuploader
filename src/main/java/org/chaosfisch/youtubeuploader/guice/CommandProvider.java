@@ -16,8 +16,12 @@ import javafx.concurrent.Service;
 
 public class CommandProvider implements ICommandProvider {
 
+	public final Injector injector;
+
 	@Inject
-	public Injector injector;
+	public CommandProvider(final Injector injector) {
+		this.injector = injector;
+	}
 
 	@Override
 	public <T extends Service<?>> T get(final Class<T> type) {

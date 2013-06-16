@@ -35,7 +35,9 @@ import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.http.RequestUtil;
 import org.chaosfisch.services.EnddirService;
-import org.chaosfisch.util.*;
+import org.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.util.ExtendedPlaceholders;
+import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.util.io.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.ApplicationData;
@@ -467,8 +469,6 @@ public class UploadWorker extends Task<Void> {
 		upload.setTitle(extendedPlaceholders.replace(upload.getTitle()));
 		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
 		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));
-		upload.setKeywords(TagParser.parseAll(upload.getKeywords()));
-		upload.setKeywords(RegexpUtils.getMatcher(upload.getKeywords(), "\"").replaceAll(""));
 	}
 
 	public void run(final Upload upload) {

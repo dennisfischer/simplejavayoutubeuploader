@@ -34,7 +34,7 @@ public class RequestBuilder {
 
 	public RequestBuilder get() {
 		method = RequestMethod.GET;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder post(final HttpEntity entity) {
@@ -42,7 +42,7 @@ public class RequestBuilder {
 
 		method = RequestMethod.POST;
 		this.entity = entity;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder put(final HttpEntity entity) {
@@ -50,38 +50,38 @@ public class RequestBuilder {
 
 		method = RequestMethod.PUT;
 		this.entity = entity;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder delete() {
 		method = RequestMethod.DELETE;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder head() {
 		method = RequestMethod.HEAD;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder options() {
 		method = RequestMethod.OPTIONS;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder trace() {
 		method = RequestMethod.TRACE;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder params(final HttpParams params) {
 		Preconditions.checkNotNull(params);
 		this.params = params;
-		return null;
+		return this;
 	}
 
 	public RequestBuilder headers(final Map<String, String> headers) {
 		this.headers = headers;
-		return null;
+		return this;
 	}
 
 	public IRequest build() {
@@ -91,7 +91,7 @@ public class RequestBuilder {
 
 	public RequestBuilder sign(final RequestSigner requestSigner) {
 		signerList.add(requestSigner);
-		return null;
+		return this;
 	}
 
 	public String getUrl() {

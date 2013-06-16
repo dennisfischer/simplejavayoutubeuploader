@@ -60,7 +60,6 @@ public class GuiceBindings extends AbstractModule {
 	private final String dbName;
 	private static final Logger logger = LoggerFactory.getLogger(GuiceBindings.class);
 
-	@SuppressWarnings("SameParameterValue")
 	public GuiceBindings(final String dbName) {
 		this.dbName = dbName;
 	}
@@ -131,6 +130,7 @@ public class GuiceBindings extends AbstractModule {
 		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(ThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
 		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
+		bind(IGoogleLogin.class).to(ClientLogin.class).in(Singleton.class);
 	}
 
 	private void mapCommands() {

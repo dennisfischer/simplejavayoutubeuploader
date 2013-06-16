@@ -34,6 +34,8 @@ import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilder;
 import org.chaosfisch.util.PermissionStringConverter;
+import org.chaosfisch.util.RegexpUtils;
+import org.chaosfisch.util.TagParser;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
@@ -101,7 +103,8 @@ public class MetadataServiceImpl implements MetadataService {
 
 		videoEntry.mediaGroup.title = upload.getTitle();
 		videoEntry.mediaGroup.description = upload.getDescription();
-		videoEntry.mediaGroup.keywords = upload.getKeywords();
+		videoEntry.mediaGroup.keywords = RegexpUtils.getMatcher(TagParser.parseAll(upload.getKeywords()), "\"")
+				.replaceAll("");
 
 		// convert metadata with xstream
 		final XStream xStream = new XStream(new XppDriver() {
@@ -306,8 +309,8 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("modified_fields", modified.toString()));
 		postMetaDataParams.add(new BasicNameValuePair("title", upload.getTitle()));
 		postMetaDataParams.add(new BasicNameValuePair("description", Strings.nullToEmpty(upload.getDescription())));
-		postMetaDataParams.add(new BasicNameValuePair("keywords", Strings.nullToEmpty(upload.getKeywords())
-				.replace(",", " ")));
+		postMetaDataParams.add(new BasicNameValuePair("keywords", Strings.nullToEmpty(RegexpUtils.getMatcher(TagParser.parseAll(upload
+				.getKeywords()), "\"").replaceAll(""))));
 
 		postMetaDataParams.add(new BasicNameValuePair("allow_comments", Comment.DENIED == upload.getComment() ?
 																		"no" :
