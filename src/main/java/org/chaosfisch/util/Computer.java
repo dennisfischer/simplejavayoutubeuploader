@@ -10,18 +10,26 @@
 
 package org.chaosfisch.util;
 
+import com.google.inject.Inject;
 import com.sun.javafx.PlatformUtil;
+import org.chaosfisch.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public final class Computer {
 
-	private static final Logger logger = LoggerFactory.getLogger(Computer.class);
+	private final Runtime runtime;
+	@Log
+	private       Logger  logger;
+
+	@Inject
+	public Computer() {
+		runtime = Runtime.getRuntime();
+	}
 
 	/** Sends this system to hibernation mode */
-	public static void hibernateComputer() {
+	public void hibernateComputer() {
 		String command = "";
 		if (PlatformUtil.isWindows()) {
 			command = "rundll32 powrprof.dll,SetSuspendState";
@@ -32,7 +40,7 @@ public final class Computer {
 		}
 
 		try {
-			Runtime.getRuntime().exec(command);
+			runtime.exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -40,7 +48,7 @@ public final class Computer {
 	}
 
 	/** Sends this system to shutdown mode */
-	public static void shutdownComputer() {
+	public void shutdownComputer() {
 		String command = "";
 		if (PlatformUtil.isWindows()) {
 			command = "shutdown -t 60 -s -f";
@@ -51,16 +59,16 @@ public final class Computer {
 		}
 
 		try {
-			Runtime.getRuntime().exec(command);
+			runtime.exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}
 		System.exit(0);
 	}
 
-	public static void customCommand(final String command) {
+	public void customCommand(final String command) {
 		try {
-			Runtime.getRuntime().exec(command);
+			runtime.exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}

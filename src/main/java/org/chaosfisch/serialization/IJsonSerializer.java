@@ -8,9 +8,10 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.http;
+package org.chaosfisch.serialization;
 
-interface RequestFactory {
+public interface IJsonSerializer {
+	String toJSON(Object object);
 
-	IRequest create(RequestBuilder requestBuilder);
+	<T> T fromJSON(String json, Class<T> clazz);
 }

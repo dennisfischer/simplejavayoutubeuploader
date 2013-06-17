@@ -12,6 +12,6 @@ package org.chaosfisch.http;
 
 import org.apache.http.HttpResponse;
 
-public interface ResponseFactory {
+interface ResponseFactory {
 	IResponse create(HttpResponse response);
 }

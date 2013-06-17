@@ -25,8 +25,9 @@ import javafx.scene.input.TransferMode;
 import jfxtras.labs.dialogs.MonologFX;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.youtube.PlaylistService;
+import org.chaosfisch.serialization.IJsonSerializer;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.util.DesktopUtil;
-import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
@@ -39,7 +40,6 @@ import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -81,8 +81,13 @@ public class ViewController {
 
 	@FXML
 	private MenuItem openLogs;
+
 	@Log
-	private Logger   logger;
+	private Logger          logger;
+	@Inject
+	private DesktopUtil     desktopUtil;
+	@Inject
+	private IJsonSerializer jsonSerializer;
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {
@@ -160,7 +165,7 @@ public class ViewController {
 	@FXML
 	void openDocumentation(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/documentation.html";
-		if (!DesktopUtil.openBrowser(url)) {
+		if (!desktopUtil.openBrowser(url)) {
 			new URLOpenErrorDialog(url);
 		}
 	}
@@ -168,7 +173,7 @@ public class ViewController {
 	@FXML
 	void openFAQ(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/faq.html";
-		if (!DesktopUtil.openBrowser(url)) {
+		if (!desktopUtil.openBrowser(url)) {
 			new URLOpenErrorDialog(url);
 		}
 	}
@@ -176,7 +181,7 @@ public class ViewController {
 	@FXML
 	void openLogs(final ActionEvent event) {
 		final String directory = ApplicationData.DATA_DIR;
-		if (!DesktopUtil.openDirectory(directory)) {
+		if (!desktopUtil.openDirectory(directory)) {
 			new DirectoryOpenErrorDialog(directory);
 		}
 	}
@@ -268,7 +273,7 @@ public class ViewController {
 		public void handle(final ActionEvent event) {
 			if (!textfield.getText().isEmpty()) {
 
-				final Template template = GsonHelper.fromJSON(GsonHelper.toJSON(standardTemplate), Template.class);
+				final Template template = jsonSerializer.fromJSON(jsonSerializer.toJSON(standardTemplate), Template.class);
 				template.setName(textfield.getText());
 				template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 				templateDao.insert(template);

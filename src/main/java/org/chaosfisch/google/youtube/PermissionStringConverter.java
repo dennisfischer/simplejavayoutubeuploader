@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util;
+package org.chaosfisch.google.youtube;
 
 public final class PermissionStringConverter {
 	private static final String ALLOWED   = "allowed";

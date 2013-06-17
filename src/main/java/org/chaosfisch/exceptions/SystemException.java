@@ -97,7 +97,7 @@ public class SystemException extends Exception {
 	@Override
 	public String getMessage() {
 		final String message = super.getMessage();
-		final StringBuilder propertyString = new StringBuilder(errorCode.name()).append(" [");
+		final StringBuilder propertyString = new StringBuilder(" ").append(errorCode.name()).append(" [");
 
 		for (final Map.Entry<String, Object> stringObjectEntry : properties.entrySet()) {
 			propertyString.append(stringObjectEntry.getKey())

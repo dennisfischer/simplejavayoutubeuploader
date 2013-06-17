@@ -11,13 +11,10 @@
 package org.chaosfisch.http;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 
 public interface IResponse extends AutoCloseable {
 	@Override
 	void close();
-
-	HttpEntity getEntity();
 
 	int getStatusCode();
 

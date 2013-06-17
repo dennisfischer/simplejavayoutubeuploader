@@ -13,7 +13,6 @@ package org.chaosfisch.google.youtube.impl;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.http.Header;
-import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.atom.VideoEntry;
 import org.chaosfisch.google.auth.GDataRequestSigner;
@@ -22,12 +21,12 @@ import org.chaosfisch.google.youtube.ResumeableManager;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilderFactory;
+import org.chaosfisch.serialization.IXmlSerializer;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.util.RegexpUtils;
-import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -48,6 +47,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	private AccountDao            accountDao;
 	@Inject
 	private RequestBuilderFactory requestBuilderFactory;
+	@Inject
+	private IXmlSerializer        xmlSerializer;
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -69,17 +70,17 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				.sign(requestSigner)
 				.build();
 
-		try (final IResponse IResponse = request.execute()) {
+		try (final IResponse response = request.execute()) {
 
-			if (200 <= IResponse.getStatusCode() && 300 > IResponse.getStatusCode()) {
-				return new ResumeInfo(parseVideoId(EntityUtils.toString(IResponse.getEntity())));
-			} else if (308 != IResponse.getStatusCode()) {
-				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", IResponse.getStatusCode());
+			if (200 <= response.getStatusCode() && 300 > response.getStatusCode()) {
+				return new ResumeInfo(parseVideoId(response.getContent()));
+			} else if (308 != response.getStatusCode()) {
+				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
 			}
 
 			final long nextByteToUpload;
 
-			final Header range = IResponse.getHeader("Range");
+			final Header range = response.getHeader("Range");
 			if (null == range) {
 				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
@@ -94,8 +95,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			if (null != IResponse.getHeader("Location")) {
-				final Header location = IResponse.getHeader("Location");
+			if (null != response.getHeader("Location")) {
+				final Header location = response.getHeader("Location");
 				upload.setUploadurl(location.getValue());
 				uploadDao.update(upload);
 			}
@@ -109,7 +110,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	@Override
 	public String parseVideoId(final String atomData) {
 		logger.info(atomData);
-		final VideoEntry videoEntry = XStreamHelper.parseFeed(atomData, VideoEntry.class);
+		final VideoEntry videoEntry = xmlSerializer.fromXML(atomData, VideoEntry.class);
 		return videoEntry.mediaGroup.videoID;
 	}
 

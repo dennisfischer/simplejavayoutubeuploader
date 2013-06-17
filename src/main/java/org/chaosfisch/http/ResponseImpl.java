@@ -14,7 +14,10 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.util.EntityUtils;
@@ -40,11 +43,6 @@ class ResponseImpl implements IResponse {
 	}
 
 	@Override
-	public HttpEntity getEntity() {
-		return response.getEntity();
-	}
-
-	@Override
 	public int getStatusCode() {
 		return response.getStatusLine().getStatusCode();
 	}
@@ -58,7 +56,7 @@ class ResponseImpl implements IResponse {
 	@Override
 	public String getContent() throws HttpIOException {
 		try {
-			return EntityUtils.toString(getEntity(), Charsets.UTF_8);
+			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
 		} catch (ParseException | IOException e) {
 			throw new HttpIOException(getStatusCode(), getCurrentUrl(), response.getStatusLine().toString());
 		}

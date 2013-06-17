@@ -28,19 +28,19 @@ import org.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import org.chaosfisch.google.auth.GDataRequestSigner;
 import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.MetadataService;
+import org.chaosfisch.google.youtube.PermissionStringConverter;
+import org.chaosfisch.google.youtube.TagParser;
 import org.chaosfisch.google.youtube.ThumbnailService;
 import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilderFactory;
-import org.chaosfisch.util.PermissionStringConverter;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.util.RegexpUtils;
-import org.chaosfisch.util.TagParser;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -223,7 +223,7 @@ public class MetadataServiceImpl implements MetadataService {
 		return flag ? "yes" : "no";
 	}
 
-	private void changeMetadata(final String content) throws IOException {
+	private void changeMetadata(final String content) {
 
 		final List<BasicNameValuePair> postMetaDataParams = new ArrayList<>(40);
 

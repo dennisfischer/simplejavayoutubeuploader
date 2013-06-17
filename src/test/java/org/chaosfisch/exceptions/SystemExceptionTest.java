@@ -28,7 +28,7 @@ public class SystemExceptionTest extends SystemException {
 		Assert.assertEquals(code, e1.getErrorCode());
 
 		final SystemException e2 = new SystemException(message, code);
-		Assert.assertEquals(message, e2.getMessage());
+		Assert.assertEquals(message + " TEST []", e2.getMessage());
 		Assert.assertEquals(code, e2.getErrorCode());
 
 		final SystemException e3 = new SystemException(exception, code);

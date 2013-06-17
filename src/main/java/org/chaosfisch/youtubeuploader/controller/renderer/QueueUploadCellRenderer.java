@@ -51,6 +51,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	@Inject
 	@Named("i18n-resources")
 	private ResourceBundle   resources;
+	@Inject
+	private DesktopUtil      desktopUtil;
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -284,7 +286,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			public void handle(final ActionEvent event) {
 				final String url = "http://youtu.be/" + item.getVideoid();
 
-				if (!DesktopUtil.openBrowser(url)) {
+				if (!desktopUtil.openBrowser(url)) {
 					new URLOpenErrorDialog(url);
 				}
 			}

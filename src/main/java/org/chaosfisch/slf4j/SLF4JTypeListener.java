@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.youtubeuploader.guice.slf4j;
+package org.chaosfisch.slf4j;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;

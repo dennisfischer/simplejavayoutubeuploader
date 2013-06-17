@@ -19,9 +19,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import org.chaosfisch.services.impl.EnddirServiceImpl;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.ProgressNodeRenderer;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.File;

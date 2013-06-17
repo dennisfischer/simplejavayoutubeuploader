@@ -34,15 +34,16 @@ import org.chaosfisch.google.youtube.impl.ThumbnailServiceImpl;
 import org.chaosfisch.google.youtube.upload.Uploader;
 import org.chaosfisch.http.RequestModule;
 import org.chaosfisch.http.RequestSigner;
+import org.chaosfisch.serialization.SerializationModule;
 import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.services.impl.EnddirServiceImpl;
+import org.chaosfisch.slf4j.Log;
+import org.chaosfisch.slf4j.SLF4JModule;
 import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
-import org.chaosfisch.youtubeuploader.guice.slf4j.SLF4JTypeListener;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -69,7 +70,9 @@ public class GuiceBindings extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		install(new SLF4JModule());
 		install(new RequestModule());
+		install(new SerializationModule());
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"));
 
@@ -79,7 +82,6 @@ public class GuiceBindings extends AbstractModule {
 
 		bind(Uploader.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
-		bindListener(Matchers.any(), new SLF4JTypeListener());
 
 		mapDatabase();
 	}

@@ -10,8 +10,9 @@
 
 package org.chaosfisch.util;
 
+import com.google.inject.Inject;
+import org.chaosfisch.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -20,10 +21,16 @@ import java.net.URI;
 
 public final class DesktopUtil {
 
-	private static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
+	@Log
+	private Logger  logger;
+	final   Desktop desktop;
 
-	public static boolean openBrowser(final String url) {
-		final Desktop desktop = Desktop.getDesktop();
+	@Inject
+	public DesktopUtil() {
+		desktop = Desktop.getDesktop();
+	}
+
+	public boolean openBrowser(final String url) {
 		if (!desktop.isSupported(Desktop.Action.BROWSE)) {
 			return false;
 		}
@@ -37,14 +44,13 @@ public final class DesktopUtil {
 		}
 	}
 
-	public static boolean openDirectory(final String dirString) {
+	public boolean openDirectory(final String dirString) {
 		final File dir = new File(dirString);
 
 		if (!dir.isDirectory()) {
 			return false;
 		}
 
-		final Desktop desktop = Desktop.getDesktop();
 		if (!desktop.isSupported(Desktop.Action.OPEN)) {
 			return false;
 		}

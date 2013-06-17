@@ -16,7 +16,6 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -34,9 +33,10 @@ import org.chaosfisch.google.youtube.impl.ResumeInfo;
 import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.http.IRequestUtil;
+import org.chaosfisch.serialization.IJsonSerializer;
 import org.chaosfisch.services.EnddirService;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.util.io.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.ApplicationData;
@@ -50,7 +50,6 @@ import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -91,7 +90,6 @@ public class UploadWorker extends Task<Void> {
 	private File   fileToUpload;
 	private Upload upload;
 
-	private final Logger logger = LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
 	@Inject
 	private       PlaylistService      playlistService;
 	@Inject
@@ -100,8 +98,6 @@ public class UploadWorker extends Task<Void> {
 	private       MetadataService      metadataService;
 	@Inject
 	private       EnddirService        enddirService;
-	@Inject
-	private       Injector             injector;
 	@Inject
 	private       IGoogleLogin         authTokenHelper;
 	@Inject
@@ -121,6 +117,10 @@ public class UploadWorker extends Task<Void> {
 	private       ICommandProvider     commandProvider;
 	@Inject
 	private       IRequestUtil         requestUtil;
+	@Inject
+	private       IJsonSerializer      jsonSerializer;
+	@Log
+	private       Logger               logger;
 
 	private UploadProgressEvent uploadProgress;
 
@@ -199,7 +199,7 @@ public class UploadWorker extends Task<Void> {
 				}
 			}
 		}
-		this.eventBus.unregister(this);
+		eventBus.unregister(this);
 		return null;
 	}
 
@@ -427,7 +427,8 @@ public class UploadWorker extends Task<Void> {
 	private void logfileAction() throws SystemException {
 		try {
 			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
-			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), GsonHelper.toJSON(upload)
+			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), jsonSerializer
+					.toJSON(upload)
 					.getBytes(Charsets.UTF_8));
 		} catch (IOException e) {
 			throw new SystemException(e, UploadCode.LOGFILE_IO_ERROR);

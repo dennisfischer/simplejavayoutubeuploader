@@ -8,9 +8,10 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.http;
+package org.chaosfisch.serialization;
 
-interface RequestFactory {
+public interface IXmlSerializer {
+	String toXML(Object o);
 
-	IRequest create(RequestBuilder requestBuilder);
+	<T> T fromXML(String xml, Class<T> clazz);
 }

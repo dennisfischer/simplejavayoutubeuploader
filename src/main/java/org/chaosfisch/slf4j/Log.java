@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.youtubeuploader.guice.slf4j;
+package org.chaosfisch.slf4j;
 
 import javax.inject.Scope;
 import java.lang.annotation.Documented;

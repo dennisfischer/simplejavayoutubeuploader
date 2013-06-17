@@ -23,8 +23,8 @@ import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilderFactory;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.youtubeuploader.db.data.Thumbnail;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.File;

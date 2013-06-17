@@ -20,7 +20,7 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
+import org.chaosfisch.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.IOException;

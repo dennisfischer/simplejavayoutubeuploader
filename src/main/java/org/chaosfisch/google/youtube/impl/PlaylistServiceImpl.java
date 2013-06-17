@@ -26,12 +26,12 @@ import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilderFactory;
-import org.chaosfisch.util.XStreamHelper;
+import org.chaosfisch.serialization.IXmlSerializer;
+import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -50,6 +50,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private final RequestBuilderFactory requestBuilderFactory;
 
 	@Inject
+	private IXmlSerializer xmlSerializer;
+
+	@Inject
 	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin, final RequestBuilderFactory requestBuilderFactory) {
 		this.playlistDao = playlistDao;
 		this.accountDao = accountDao;
@@ -63,7 +66,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final VideoEntry submitFeed = new VideoEntry();
 		submitFeed.id = videoId;
 		submitFeed.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(submitFeed));
 
 		requestSigner.setAuthHeader(clientLogin.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())));
 		final IRequest request = requestBuilderFactory.create(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
@@ -91,7 +94,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			entry.ytPrivate = new Object();
 		}
 		entry.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(entry));
+		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(entry));
 
 		logger.debug("Playlist atomdata: {}", atomData);
 
@@ -140,7 +143,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
-		final Feed feed = XStreamHelper.parseFeed(content, Feed.class);
+		final Feed feed = xmlSerializer.fromXML(content, Feed.class);
 
 		final List<Playlist> list = new ArrayList<>(25);
 
