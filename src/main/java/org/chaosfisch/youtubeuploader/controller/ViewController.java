@@ -39,8 +39,8 @@ import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +81,8 @@ public class ViewController {
 
 	@FXML
 	private MenuItem openLogs;
-	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
+	@Log
+	private Logger   logger;
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {

@@ -15,17 +15,18 @@ import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class EnddirServiceImpl implements EnddirService {
-	private static final String      SETTING_ENDDIR_TITLE = "general.enddir.title";
-	private final        Logger      logger               = LoggerFactory.getLogger(EnddirServiceImpl.class);
-	private final        Preferences prefs                = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final String SETTING_ENDDIR_TITLE = "general.enddir.title";
+	@Log
+	private Logger logger;
+	private final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {

@@ -21,31 +21,33 @@ import org.chaosfisch.google.auth.IGoogleLogin;
 import org.chaosfisch.google.youtube.ResumeableManager;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
-import org.chaosfisch.http.RequestBuilder;
+import org.chaosfisch.http.RequestBuilderFactory;
 import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class ResumeableManagerImpl implements ResumeableManager {
 	private static final double BACKOFF = 3.13;
 	private int numberOfRetries;
-	private static final int    MAX_RETRIES = 5;
-	private final        Logger logger      = LoggerFactory.getLogger(getClass());
-
+	private static final int MAX_RETRIES = 5;
+	@Log
+	private Logger                logger;
 	@Inject
-	private IGoogleLogin       authTokenHelper;
+	private IGoogleLogin          authTokenHelper;
 	@Inject
-	private GDataRequestSigner requestSigner;
+	private GDataRequestSigner    requestSigner;
 	@Inject
-	private UploadDao          uploadDao;
+	private UploadDao             uploadDao;
 	@Inject
-	private AccountDao         accountDao;
+	private AccountDao            accountDao;
+	@Inject
+	private RequestBuilderFactory requestBuilderFactory;
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -61,7 +63,8 @@ public class ResumeableManagerImpl implements ResumeableManager {
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
 		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
-		final IRequest request = new RequestBuilder(upload.getUploadurl()).put(null)
+		final IRequest request = requestBuilderFactory.create(upload.getUploadurl())
+				.put(null)
 				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
 				.sign(requestSigner)
 				.build();

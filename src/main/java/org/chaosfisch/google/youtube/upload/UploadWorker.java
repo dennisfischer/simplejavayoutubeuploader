@@ -33,9 +33,8 @@ import org.chaosfisch.google.youtube.impl.MetadataCode;
 import org.chaosfisch.google.youtube.impl.ResumeInfo;
 import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
-import org.chaosfisch.http.RequestUtil;
+import org.chaosfisch.http.IRequestUtil;
 import org.chaosfisch.services.EnddirService;
-import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.util.ExtendedPlaceholders;
 import org.chaosfisch.util.GsonHelper;
 import org.chaosfisch.util.io.Throttle;
@@ -94,38 +93,41 @@ public class UploadWorker extends Task<Void> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass() + " -> " + Thread.currentThread().getName());
 	@Inject
-	private PlaylistService      playlistService;
+	private       PlaylistService      playlistService;
 	@Inject
-	private GDataRequestSigner   requestSigner;
+	private       GDataRequestSigner   requestSigner;
 	@Inject
-	private MetadataService      metadataService;
+	private       MetadataService      metadataService;
 	@Inject
-	private EnddirService        enddirService;
+	private       EnddirService        enddirService;
 	@Inject
-	private Injector             injector;
+	private       Injector             injector;
 	@Inject
-	private IGoogleLogin         authTokenHelper;
+	private       IGoogleLogin         authTokenHelper;
 	@Inject
-	private Throttle             throttle;
+	private       Throttle             throttle;
 	@Inject
-	private ResumeableManager    resumeableManager;
+	private       ResumeableManager    resumeableManager;
 	@Inject
-	private ExtendedPlaceholders extendedPlacerholders;
+	private       ExtendedPlaceholders extendedPlacerholders;
+	private final EventBus             eventBus;
 	@Inject
-	private EventBus             eventBus;
+	private       PlaylistDao          playlistDao;
 	@Inject
-	private PlaylistDao          playlistDao;
+	private       UploadDao            uploadDao;
 	@Inject
-	private UploadDao            uploadDao;
+	private       AccountDao           accountDao;
 	@Inject
-	private AccountDao           accountDao;
+	private       ICommandProvider     commandProvider;
 	@Inject
-	private ICommandProvider     commandProvider;
+	private       IRequestUtil         requestUtil;
 
 	private UploadProgressEvent uploadProgress;
 
-	public UploadWorker() {
-		EventBusUtil.getInstance().register(this);
+	@Inject
+	public UploadWorker(final EventBus eventBus) {
+		this.eventBus = eventBus;
+		this.eventBus.register(this);
 	}
 
 	@Override
@@ -197,6 +199,7 @@ public class UploadWorker extends Task<Void> {
 				}
 			}
 		}
+		this.eventBus.unregister(this);
 		return null;
 	}
 
@@ -266,7 +269,7 @@ public class UploadWorker extends Task<Void> {
 
 		while (!isCancelled() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
 			// Upload bytes in buffer
-			final int bytesRead = RequestUtil.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
+			final int bytesRead = requestUtil.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
 			totalRead += bytesRead;
 			totalBytesUploaded += bytesRead;

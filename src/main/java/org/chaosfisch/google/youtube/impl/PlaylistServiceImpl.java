@@ -25,14 +25,14 @@ import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
-import org.chaosfisch.http.RequestBuilder;
+import org.chaosfisch.http.RequestBuilderFactory;
 import org.chaosfisch.util.XStreamHelper;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +41,21 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
 	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
 	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
-	private static final Logger logger                           = LoggerFactory.getLogger(PlaylistServiceImpl.class);
-
-	private final IGoogleLogin       clientLogin;
-	private final GDataRequestSigner requestSigner;
-	private final PlaylistDao        playlistDao;
-	private final AccountDao         accountDao;
+	@Log
+	private       Logger                logger;
+	private final IGoogleLogin          clientLogin;
+	private final GDataRequestSigner    requestSigner;
+	private final PlaylistDao           playlistDao;
+	private final AccountDao            accountDao;
+	private final RequestBuilderFactory requestBuilderFactory;
 
 	@Inject
-	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin) {
+	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin, final RequestBuilderFactory requestBuilderFactory) {
 		this.playlistDao = playlistDao;
 		this.accountDao = accountDao;
 		this.requestSigner = requestSigner;
 		this.clientLogin = clientLogin;
+		this.requestBuilderFactory = requestBuilderFactory;
 	}
 
 	@Override
@@ -64,7 +66,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", XStreamHelper.parseObjectToFeed(submitFeed));
 
 		requestSigner.setAuthHeader(clientLogin.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())));
-		final IRequest request = new RequestBuilder(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey())).post(new StringEntity(atomData, Charsets.UTF_8))
+		final IRequest request = requestBuilderFactory.create(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
+				.post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 				.sign(requestSigner)
 				.build();
@@ -93,7 +96,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 		logger.debug("Playlist atomdata: {}", atomData);
 
 		requestSigner.setAuthHeader(clientLogin.getAuthHeader(accountDao.fetchOneById(playlist.getAccountId())));
-		final IRequest request = new RequestBuilder(YOUTUBE_PLAYLIST_ADD_FEED).post(new StringEntity(atomData, Charsets.UTF_8))
+		final IRequest request = requestBuilderFactory.create(YOUTUBE_PLAYLIST_ADD_FEED)
+				.post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 				.sign(requestSigner)
 				.build();
@@ -116,7 +120,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		for (final Account account : accounts) {
 			requestSigner.setAuthHeader(clientLogin.getAuthHeader(account));
-			final IRequest request = new RequestBuilder(YOUTUBE_PLAYLIST_FEED_50_RESULTS).get()
+			final IRequest request = requestBuilderFactory.create(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
+					.get()
 					.sign(requestSigner)
 					.build();
 			try (final IResponse IResponse = request.execute()) {

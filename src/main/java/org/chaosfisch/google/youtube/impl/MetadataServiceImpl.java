@@ -32,7 +32,7 @@ import org.chaosfisch.google.youtube.ThumbnailService;
 import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
-import org.chaosfisch.http.RequestBuilder;
+import org.chaosfisch.http.RequestBuilderFactory;
 import org.chaosfisch.util.PermissionStringConverter;
 import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.util.TagParser;
@@ -40,8 +40,8 @@ import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.data.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,16 +56,19 @@ public class MetadataServiceImpl implements MetadataService {
 	private static final String METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	private final        Logger logger                         = LoggerFactory.getLogger(MetadataServiceImpl.class);
+	@Log
+	private Logger logger;
 
 	@Inject
-	private GDataRequestSigner requestSigner;
+	private GDataRequestSigner    requestSigner;
 	@Inject
-	private IGoogleLogin       authTokenHelper;
+	private IGoogleLogin          authTokenHelper;
 	@Inject
-	private ThumbnailService   thumbnailService;
+	private ThumbnailService      thumbnailService;
 	@Inject
-	private AccountDao         accountDao;
+	private AccountDao            accountDao;
+	@Inject
+	private RequestBuilderFactory requestBuilderFactory;
 
 	private final String[] deadEnds = {"https://accounts.google.com/b/0/SmsAuthInterstitial"};
 
@@ -145,7 +148,8 @@ public class MetadataServiceImpl implements MetadataService {
 	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
 		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
-		final IRequest request = new RequestBuilder(METADATA_CREATE_RESUMEABLE_URL).post(new StringEntity(atomData, Charsets.UTF_8))
+		final IRequest request = requestBuilderFactory.create(METADATA_CREATE_RESUMEABLE_URL)
+				.post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
 				.sign(requestSigner)
 				.build();
@@ -169,7 +173,8 @@ public class MetadataServiceImpl implements MetadataService {
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws SystemException {
 		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
-		final IRequest request = new RequestBuilder(METADATA_UPDATE_URL + '/' + videoId).put(new StringEntity(atomData, Charsets.UTF_8))
+		final IRequest request = requestBuilderFactory.create(METADATA_UPDATE_URL + '/' + videoId)
+				.put(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;"))
 				.sign(requestSigner)
 				.build();
@@ -204,8 +209,8 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	private String redirectToYoutube(final String content) throws IOException, SystemException {
-		final IRequest request = new RequestBuilder(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
-				.replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
+		final IRequest request = requestBuilderFactory.create(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern
+				.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
 		try (final IResponse IResponse = request.execute()) {
 			if (Arrays.asList(deadEnds).contains(IResponse.getCurrentUrl())) {
 				throw new SystemException(MetadataCode.DEAD_END);
@@ -335,7 +340,7 @@ public class MetadataServiceImpl implements MetadataService {
 		postMetaDataParams.add(new BasicNameValuePair("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\"")));
 		postMetaDataParams.add(new BasicNameValuePair("action_edit_video", "1"));
 
-		final IRequest request = new RequestBuilder(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
+		final IRequest request = requestBuilderFactory.create(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
 
 		try (final IResponse IResponse = request.execute()) {

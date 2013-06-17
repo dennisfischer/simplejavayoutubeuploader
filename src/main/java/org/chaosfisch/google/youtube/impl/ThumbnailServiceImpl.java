@@ -13,22 +13,30 @@ package org.chaosfisch.google.youtube.impl;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
+import com.google.inject.Inject;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.util.EntityUtils;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.google.youtube.ThumbnailService;
-import org.chaosfisch.http.RequestUtil;
+import org.chaosfisch.http.HttpIOException;
+import org.chaosfisch.http.IRequest;
+import org.chaosfisch.http.IResponse;
+import org.chaosfisch.http.RequestBuilderFactory;
 import org.chaosfisch.youtubeuploader.db.data.Thumbnail;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
+import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class ThumbnailServiceImpl implements ThumbnailService {
+
+	@Log
+	private Logger logger;
+
+	@Inject
+	private RequestBuilderFactory requestBuilderFactory;
 
 	@Override
 	public Integer upload(final String content, final String thumbnail, final String videoid) throws SystemException {
@@ -38,34 +46,38 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 			throw new SystemException(ThumbnailCode.FILE_NOT_FOUND).set("filename", thumbnailFile.getName());
 		}
 
-		final HttpPost thumbnailPost = new HttpPost("http://www.youtube.com/my_thumbnail_post");
+		final IRequest thumbnailPost = requestBuilderFactory.create("http://www.youtube.com/my_thumbnail_post")
+				.post(buildEntity(content, videoid, thumbnailFile))
+				.build();
 
-		try {
-			thumbnailPost.setEntity(buildEntity(content, videoid, thumbnailFile));
-			final HttpResponse response = RequestUtil.execute(thumbnailPost);
-			final String json = EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
-
+		try (IResponse response = thumbnailPost.execute()) {
+			final String json = response.getContent();
 			try {
 				return parseResponse(json);
 			} catch (final JsonSyntaxException e) {
 				throw new SystemException(e, ThumbnailCode.UPLOAD_JSON).set("json", json);
 			}
-		} catch (final IOException e) {
+		} catch (final HttpIOException e) {
 			throw new SystemException(e, ThumbnailCode.UPLOAD_RESPONSE);
 		}
 	}
 
-	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile) throws UnsupportedEncodingException {
+	private MultipartEntity buildEntity(final String content, final String videoid, final File thumbnailFile) {
 		final MultipartEntity reqEntity = new MultipartEntity();
 
-		reqEntity.addPart("video_id", new StringBody(videoid, Charsets.UTF_8));
-		reqEntity.addPart("is_ajax", new StringBody("1", Charsets.UTF_8));
+		try {
+			reqEntity.addPart("video_id", new StringBody(videoid, Charsets.UTF_8));
 
-		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
-				.indexOf(search) + search.length()));
-		reqEntity.addPart("session_token", new StringBody(sessiontoken, Charsets.UTF_8));
-		reqEntity.addPart("imagefile", new FileBody(thumbnailFile));
+			reqEntity.addPart("is_ajax", new StringBody("1", Charsets.UTF_8));
+
+			final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
+			final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
+					.indexOf(search) + search.length()));
+			reqEntity.addPart("session_token", new StringBody(sessiontoken, Charsets.UTF_8));
+			reqEntity.addPart("imagefile", new FileBody(thumbnailFile));
+		} catch (UnsupportedEncodingException e) {
+			logger.warn("Unsupported charset", e);
+		}
 		return reqEntity;
 	}
 

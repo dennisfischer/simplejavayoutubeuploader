@@ -32,6 +32,7 @@ import org.chaosfisch.google.youtube.impl.PlaylistServiceImpl;
 import org.chaosfisch.google.youtube.impl.ResumeableManagerImpl;
 import org.chaosfisch.google.youtube.impl.ThumbnailServiceImpl;
 import org.chaosfisch.google.youtube.upload.Uploader;
+import org.chaosfisch.http.RequestModule;
 import org.chaosfisch.http.RequestSigner;
 import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.services.impl.EnddirServiceImpl;
@@ -40,13 +41,14 @@ import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.util.io.Throttle;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.controller.UploadController;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
+import org.chaosfisch.youtubeuploader.guice.slf4j.SLF4JTypeListener;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultConnectionProvider;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -58,7 +60,8 @@ import java.util.ResourceBundle;
 
 public class GuiceBindings extends AbstractModule {
 	private final String dbName;
-	private static final Logger logger = LoggerFactory.getLogger(GuiceBindings.class);
+	@Log
+	private       Logger logger;
 
 	public GuiceBindings(final String dbName) {
 		this.dbName = dbName;
@@ -66,6 +69,7 @@ public class GuiceBindings extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		install(new RequestModule());
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"));
 
@@ -75,6 +79,7 @@ public class GuiceBindings extends AbstractModule {
 
 		bind(Uploader.class).in(Singleton.class);
 		bind(UploadController.class).in(Singleton.class);
+		bindListener(Matchers.any(), new SLF4JTypeListener());
 
 		mapDatabase();
 	}

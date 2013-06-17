@@ -31,11 +31,13 @@ public class ClientLogin implements IGoogleLogin {
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 
-	private final RequestSigner requestSigner;
+	private final RequestSigner         requestSigner;
+	private final RequestBuilderFactory requestBuilderFactory;
 
 	@Inject
-	public ClientLogin(final RequestSigner requestSigner) {
+	public ClientLogin(final RequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory) {
 		this.requestSigner = requestSigner;
+		this.requestBuilderFactory = requestBuilderFactory;
 	}
 
 	private String getAuthToken(final Account account) throws SystemException {
@@ -64,7 +66,8 @@ public class ClientLogin implements IGoogleLogin {
 		clientRequestParams.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
 		clientRequestParams.add(new BasicNameValuePair("source", source));
 
-		final IRequest clientLoginRequest = new RequestBuilder(CLIENT_LOGIN_URL).post(new UrlEncodedFormEntity(clientRequestParams, Charsets.UTF_8))
+		final IRequest clientLoginRequest = requestBuilderFactory.create(CLIENT_LOGIN_URL)
+				.post(new UrlEncodedFormEntity(clientRequestParams, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.sign(requestSigner)
 				.build();
@@ -107,7 +110,7 @@ public class ClientLogin implements IGoogleLogin {
 					.encode(issueTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
 					.name()));
 
-			final IRequest tokenAuthRequest = new RequestBuilder(tokenAuthUrl).get().build();
+			final IRequest tokenAuthRequest = requestBuilderFactory.create(tokenAuthUrl).get().build();
 
 			try (final IResponse IResponse = tokenAuthRequest.execute()) {
 				return IResponse.getContent();
@@ -129,8 +132,8 @@ public class ClientLogin implements IGoogleLogin {
 		issueTokenParams.add(new BasicNameValuePair("Session", "true"));
 		issueTokenParams.add(new BasicNameValuePair("source", "googletalk"));
 
-		final IRequest issueTokenRequest = new RequestBuilder(ISSUE_AUTH_TOKEN_URL).post(new UrlEncodedFormEntity(issueTokenParams, Charset
-				.forName("utf-8")))
+		final IRequest issueTokenRequest = requestBuilderFactory.create(ISSUE_AUTH_TOKEN_URL)
+				.post(new UrlEncodedFormEntity(issueTokenParams, Charset.forName("utf-8")))
 				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
 				.build();
 		try (final IResponse IResponse = issueTokenRequest.execute()) {

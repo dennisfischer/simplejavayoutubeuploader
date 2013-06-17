@@ -21,8 +21,8 @@ import javafx.stage.DirectoryChooser;
 import org.chaosfisch.services.impl.EnddirServiceImpl;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.ProgressNodeRenderer;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,10 +51,11 @@ public class SettingsController {
 	@Inject
 	private EnddirServiceImpl enddirService;
 
-	final                Properties  vmOptions     = new Properties();
-	final                File        vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
-	private static final Logger      logger        = LoggerFactory.getLogger(SettingsController.class);
-	private static final Preferences prefs         = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	final Properties vmOptions     = new Properties();
+	final File       vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
+	@Log
+	private Logger logger;
+	private static final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@FXML
 	void openHomeDir(final ActionEvent event) {

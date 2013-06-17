@@ -23,14 +23,13 @@ import javafx.beans.value.ObservableValue;
 import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.util.Computer;
-import org.chaosfisch.util.EventBusUtil;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -44,18 +43,22 @@ public class Uploader {
 	private volatile short runningUploads;
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(7);
-	private final Logger          logger          = LoggerFactory.getLogger(getClass());
+	@Log
+	private       Logger     logger;
 	@Inject
-	private Injector   injector;
-	@Inject
-	private EventBus   eventBus;
-	@Inject
-	private UploadDao  uploadDao;
-	@Inject
-	private AccountDao accountDao;
+	private final Injector   injector;
+	private final EventBus   eventBus;
+	private final UploadDao  uploadDao;
+	private final AccountDao accountDao;
 
-	public Uploader() {
-		EventBusUtil.getInstance().register(this);
+	@Inject
+	public Uploader(final EventBus eventBus, final UploadDao uploadDao, final AccountDao accountDao, final Injector injector) {
+
+		this.eventBus = eventBus;
+		this.uploadDao = uploadDao;
+		this.accountDao = accountDao;
+		this.injector = injector;
+		this.eventBus.register(this);
 		maxUploads.addListener(new ChangeListener<Number>() {
 
 			@Override

@@ -31,10 +31,10 @@ import org.chaosfisch.google.youtube.upload.Uploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
 import org.chaosfisch.youtubeuploader.guice.GuiceBindings;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.jooq.Configuration;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class GuiUploader extends GuiceApplication {
-	private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
-
+	@Log
+	private Logger          logger;
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
 	@Inject

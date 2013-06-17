@@ -21,15 +21,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.grid.GridCell;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class PlaylistGridCell extends GridCell<Playlist> {
-	private Image defaultThumbnail;
-	private final Logger logger = LoggerFactory.getLogger(PlaylistGridCell.class);
+	private Image  defaultThumbnail;
+	@Log
+	private Logger logger;
 
 	public PlaylistGridCell() {
 		itemProperty().addListener(new ChangeListener<Playlist>() {

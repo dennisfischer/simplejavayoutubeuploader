@@ -20,8 +20,8 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.chaosfisch.youtubeuploader.guice.slf4j.Log;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,14 +29,14 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-public final class RequestUtil {
+public final class RequestUtil implements IRequestUtil {
 
-	public static final HttpContext context = new BasicHttpContext();
+	@Log
+	private       Logger            logger;
+	private final DefaultHttpClient httpClient;
+	private final HttpContext context = new BasicHttpContext();
 
-	private static final DefaultHttpClient httpClient;
-	private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
-
-	static {
+	public RequestUtil() {
 		final PoolingClientConnectionManager cxMgr = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault());
 		cxMgr.setMaxTotal(10);
 		cxMgr.setDefaultMaxPerRoute(10);
@@ -73,22 +73,13 @@ public final class RequestUtil {
 		});
 	}
 
-	public static HttpResponse execute(final HttpUriRequest request) throws IOException {
+	@Override
+	public HttpResponse execute(final HttpUriRequest request) throws IOException {
 		return httpClient.execute(request, context);
 	}
 
-	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
-	 *
-	 * @param is
-	 * 		input stream the input stream to read from.
-	 * @param os
-	 * 		output stream the output stream to write to.
-	 * @param buf
-	 * 		the byte array to use as a buffer
-	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException {
+	@Override
+	public void flow(final InputStream is, final OutputStream os, final byte[] buf) throws IOException {
 		int numRead;
 		while (!Thread.currentThread().isInterrupted() && 0 <= (numRead = is.read(buf))) {
 			os.write(buf, 0, numRead);
@@ -96,22 +87,8 @@ public final class RequestUtil {
 		os.flush();
 	}
 
-	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
-	 *
-	 * @param is
-	 * 		input stream the input stream to read from.
-	 * @param os
-	 * 		output stream the output stream to write to.
-	 * @param buf
-	 * 		the byte array to use as a buffer
-	 * @param off
-	 * 		the offset to start reading
-	 * @param len
-	 * 		the length of bytes to read
-	 */
-	public static void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+	@Override
+	public void flow(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		int numRead;
 		while (!Thread.currentThread().isInterrupted() && 0 <= (numRead = is.read(buf, off, len))) {
 			os.write(buf, 0, numRead);
@@ -119,23 +96,18 @@ public final class RequestUtil {
 		os.flush();
 	}
 
-	/**
-	 * Read input from input stream and write it to output stream until there is
-	 * no more input from input stream.
-	 *
-	 * @param is
-	 * 		input stream the input stream to read from.
-	 * @param os
-	 * 		output stream the output stream to write to.
-	 * @param buf
-	 * 		the byte array to use as a buffer
-	 */
-	public static int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+	@Override
+	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		final int numRead;
 		if (0 <= (numRead = is.read(buf, off, len))) {
 			os.write(buf, 0, numRead);
 		}
 		os.flush();
 		return numRead;
+	}
+
+	@Override
+	public HttpContext getContext() {
+		return context;
 	}
 }

@@ -10,6 +10,8 @@
 
 package org.chaosfisch.http;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 
@@ -18,9 +20,14 @@ import java.util.Map.Entry;
 
 class RequestImpl implements IRequest {
 
-	private final HttpUriRequest httpRequest;
+	private final HttpUriRequest  httpRequest;
+	private final IRequestUtil    requestUtil;
+	private final ResponseFactory responseFactory;
 
-	public RequestImpl(final RequestBuilder builder) {
+	@Inject
+	public RequestImpl(final IRequestUtil requestUtil, final ResponseFactory responseFactory, @Assisted final RequestBuilder builder) {
+		this.requestUtil = requestUtil;
+		this.responseFactory = responseFactory;
 		httpRequest = builder.getMethod().get(builder.getUrl());
 
 		if (RequestMethod.POST == builder.getMethod() || RequestMethod.PUT == builder.getMethod()) {
@@ -42,7 +49,7 @@ class RequestImpl implements IRequest {
 	@Override
 	public IResponse execute() throws HttpIOException {
 		try {
-			return new ResponseImpl(RequestUtil.execute(httpRequest));
+			return responseFactory.create(requestUtil.execute(httpRequest));
 		} catch (IOException e) {
 			if (!httpRequest.isAborted()) {
 				httpRequest.abort();

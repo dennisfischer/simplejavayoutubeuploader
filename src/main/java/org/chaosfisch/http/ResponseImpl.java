@@ -12,6 +12,8 @@ package org.chaosfisch.http;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.http.*;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.ExecutionContext;
@@ -22,8 +24,11 @@ import java.io.IOException;
 class ResponseImpl implements IResponse {
 
 	private final HttpResponse response;
+	private final IRequestUtil requestUtil;
 
-	public ResponseImpl(final HttpResponse response) {
+	@Inject
+	public ResponseImpl(final IRequestUtil requestUtil, @Assisted final HttpResponse response) {
+		this.requestUtil = requestUtil;
 		this.response = response;
 	}
 
@@ -61,9 +66,10 @@ class ResponseImpl implements IResponse {
 
 	@Override
 	public String getCurrentUrl() {
-		final HttpUriRequest currentReq = (HttpUriRequest) RequestUtil.context
+		final HttpUriRequest currentReq = (HttpUriRequest) requestUtil.getContext()
 				.getAttribute(ExecutionContext.HTTP_REQUEST);
-		final HttpHost currentHost = (HttpHost) RequestUtil.context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		final HttpHost currentHost = (HttpHost) requestUtil.getContext()
+				.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 		return currentReq.getURI().isAbsolute() ?
 			   currentReq.getURI().toString() :
 			   currentHost.toURI() + currentReq.getURI();

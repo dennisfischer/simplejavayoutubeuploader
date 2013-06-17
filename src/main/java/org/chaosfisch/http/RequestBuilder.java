@@ -11,6 +11,8 @@
 package org.chaosfisch.http;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.http.HttpEntity;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -20,15 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RequestBuilder {
-	private final String        url;
-	private       RequestMethod method;
-	private       HttpEntity    entity;
+	private final String         url;
+	private final RequestFactory requestFactory;
+	private       RequestMethod  method;
+	private       HttpEntity     entity;
 
 	private       HttpParams               params     = new BasicHttpParams();
 	private       Map<String, String>      headers    = new HashMap<>(0);
 	private final ArrayList<RequestSigner> signerList = new ArrayList<>(3);
 
-	public RequestBuilder(final String url) {
+	@Inject
+	public RequestBuilder(final RequestFactory requestFactory, @Assisted final String url) {
+		this.requestFactory = requestFactory;
 		this.url = url;
 	}
 
@@ -86,7 +91,7 @@ public class RequestBuilder {
 
 	public IRequest build() {
 		Preconditions.checkNotNull(method);
-		return new RequestImpl(this);
+		return requestFactory.create(this);
 	}
 
 	public RequestBuilder sign(final RequestSigner requestSigner) {
