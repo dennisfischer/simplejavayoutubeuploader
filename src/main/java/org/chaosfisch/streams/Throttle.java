@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util.io;
+package org.chaosfisch.streams;
 
 import javafx.beans.property.SimpleIntegerProperty;
 

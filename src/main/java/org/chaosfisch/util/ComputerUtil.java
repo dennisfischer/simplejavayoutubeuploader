@@ -10,37 +10,36 @@
 
 package org.chaosfisch.util;
 
-import com.google.inject.Inject;
 import com.sun.javafx.PlatformUtil;
 import org.chaosfisch.slf4j.Log;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 
-public final class Computer {
+public final class ComputerUtil {
 
-	private final Runtime runtime;
 	@Log
-	private       Logger  logger;
-
-	@Inject
-	public Computer() {
-		runtime = Runtime.getRuntime();
-	}
+	private Logger logger;
 
 	/** Sends this system to hibernation mode */
 	public void hibernateComputer() {
-		String command = "";
+		final String command;
 		if (PlatformUtil.isWindows()) {
 			command = "rundll32 powrprof.dll,SetSuspendState";
 		} else if (PlatformUtil.isLinux()) {
 			command = "pm-hibernate";
 		} else if (PlatformUtil.isMac()) {
 			command = "osascript -e 'tell application \"Finder\" to sleep'";
+		} else {
+			return;
 		}
 
+		execute(command);
+	}
+
+	private void execute(final String command) {
 		try {
-			runtime.exec(command);
+			Runtime.getRuntime().exec(command);
 		} catch (final IOException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -49,28 +48,21 @@ public final class Computer {
 
 	/** Sends this system to shutdown mode */
 	public void shutdownComputer() {
-		String command = "";
+		final String command;
 		if (PlatformUtil.isWindows()) {
 			command = "shutdown -t 60 -s -f";
 		} else if (PlatformUtil.isLinux()) {
 			command = "shutdown -t 60 -h -f";
 		} else if (PlatformUtil.isMac()) {
 			command = "osascript -e 'tell application\"Finder\" to shut down'";
+		} else {
+			return;
 		}
 
-		try {
-			runtime.exec(command);
-		} catch (final IOException e) {
-			logger.error(e.getMessage(), e);
-		}
-		System.exit(0);
+		execute(command);
 	}
 
 	public void customCommand(final String command) {
-		try {
-			runtime.exec(command);
-		} catch (final IOException e) {
-			logger.error(e.getMessage(), e);
-		}
+		execute(command);
 	}
 }

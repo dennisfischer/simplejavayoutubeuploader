@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util.io;
+package org.chaosfisch.streams;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

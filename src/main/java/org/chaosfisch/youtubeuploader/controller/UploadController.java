@@ -45,7 +45,7 @@ import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.GridViewBuilder;
-import org.chaosfisch.util.ExtendedPlaceholders;
+import org.chaosfisch.services.ExtendedPlaceholders;
 import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveTemplateCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateTemplateCommand;
@@ -630,8 +630,8 @@ public class UploadController {
 	}
 
 	private void initCustomFactories() {
-		playlistSourcezone.setCellFactory(new PlaylistSourceCellFactory());
-		playlistTargetzone.setCellFactory(new PlaylistTargetCellFactory());
+		playlistSourcezone.setCellFactory(new PlaylistCellFactory(playlistSourceList));
+		playlistTargetzone.setCellFactory(new PlaylistCellFactory(playlistTargetList));
 		uploadAccount.setConverter(new AccountStringConverter());
 		uploadFile.setConverter(new UploadFileListViewConverter());
 		idProperty.addListener(new UploadIdInvalidationListener());
@@ -1005,7 +1005,7 @@ public class UploadController {
 	}
 
 	private final class PreviewTitleStringConverter extends DefaultStringConverter {
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders();
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(resources);
 
 		@Override
 		public String toString(final String value) {
@@ -1090,22 +1090,19 @@ public class UploadController {
 		}
 	}
 
-	private final class PlaylistTargetCellFactory implements Callback<GridView<Playlist>, GridCell<Playlist>> {
-		@Override
-		public PlaylistGridCell call(final GridView<Playlist> arg0) {
-			final PlaylistGridCell cell = new PlaylistGridCell();
-			cell.setOnDragDetected(new PlaylistDragDetected(playlistTargetzone, playlistTargetList, cell));
-			cell.setOnMouseClicked(new PlaylistMouseClicked(playlistTargetList, cell));
-			return cell;
-		}
-	}
+	private final class PlaylistCellFactory implements Callback<GridView<Playlist>, GridCell<Playlist>> {
 
-	private final class PlaylistSourceCellFactory implements Callback<GridView<Playlist>, GridCell<Playlist>> {
+		private final ObservableList<Playlist> list;
+
+		public PlaylistCellFactory(final ObservableList<Playlist> list) {
+			this.list = list;
+		}
+
 		@Override
-		public PlaylistGridCell call(final GridView<Playlist> arg0) {
+		public GridCell<Playlist> call(final GridView<Playlist> playlistGridView) {
 			final PlaylistGridCell cell = new PlaylistGridCell();
-			cell.setOnDragDetected(new PlaylistDragDetected(playlistSourcezone, playlistSourceList, cell));
-			cell.setOnMouseClicked(new PlaylistMouseClicked(playlistSourceList, cell));
+			cell.setOnDragDetected(new PlaylistDragDetected(playlistGridView, list, cell));
+			cell.setOnMouseClicked(new PlaylistMouseClicked(list, cell));
 			return cell;
 		}
 	}

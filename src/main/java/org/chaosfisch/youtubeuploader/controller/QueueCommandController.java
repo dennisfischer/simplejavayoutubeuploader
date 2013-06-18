@@ -24,7 +24,7 @@ import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 import org.chaosfisch.google.youtube.upload.Uploader;
-import org.chaosfisch.util.io.Throttle;
+import org.chaosfisch.streams.Throttle;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
@@ -84,7 +84,7 @@ public class QueueCommandController {
 
 	@FXML
 	void startQueue(final ActionEvent event) {
-		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"));
+		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"), resources);
 		if (MonologFXButton.Type.YES == dialog.showDialog()) {
 			final StartUploadCommand command = commandProvider.get(StartUploadCommand.class);
 			command.start();

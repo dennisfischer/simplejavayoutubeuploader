@@ -27,7 +27,6 @@ import javafx.util.Callback;
 import jfxtras.labs.dialogs.MonologFXButton;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.util.DesktopUtil;
-import org.chaosfisch.util.TextUtil;
 import org.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import org.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
 import org.chaosfisch.youtubeuploader.command.UpdateUploadCommand;
@@ -109,7 +108,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.onAction(new QueueCellHyperlinkHandler(item))
 						.build();
 			} else if (item.getFailed()) {
-				final String status = TextUtil.getString(item.getStatus().toLowerCase(Locale.getDefault()));
+				final String status = resources.getString(item.getStatus().toLowerCase(Locale.getDefault()));
 
 				progressNode = LabelBuilder.create()
 						.text(status)
@@ -210,7 +209,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				}
 
 				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.removeupload.title"), resources
-						.getString("dialog.removeupload.message"));
+						.getString("dialog.removeupload.message"), resources);
 				if (MonologFXButton.Type.YES == dialog.showDialog()) {
 					final RemoveUploadCommand command = commandProvider.get(RemoveUploadCommand.class);
 					command.upload = item;
@@ -247,7 +246,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				}
 
 				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.abortupload.title"), resources
-						.getString("dialog.abortupload.message"));
+						.getString("dialog.abortupload.message"), resources);
 
 				if (MonologFXButton.Type.YES == dialog.showDialog()) {
 					final AbortUploadCommand command = commandProvider.get(AbortUploadCommand.class);
@@ -287,7 +286,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final String url = "http://youtu.be/" + item.getVideoid();
 
 				if (!desktopUtil.openBrowser(url)) {
-					new URLOpenErrorDialog(url);
+					new URLOpenErrorDialog(url, resources);
 				}
 			}
 		}

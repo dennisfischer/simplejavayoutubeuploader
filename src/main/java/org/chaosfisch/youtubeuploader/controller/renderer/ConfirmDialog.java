@@ -15,19 +15,20 @@ import jfxtras.labs.dialogs.MonologFX.ButtonAlignment;
 import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.dialogs.MonologFXButton.Type;
 import jfxtras.labs.dialogs.MonologFXButtonBuilder;
-import org.chaosfisch.util.TextUtil;
+
+import java.util.ResourceBundle;
 
 public class ConfirmDialog {
 	private final MonologFX dialog;
 
-	public ConfirmDialog(final String title, final String message) {
+	public ConfirmDialog(final String title, final String message, final ResourceBundle resourceBundle) {
 		final MonologFXButton yesButton = MonologFXButtonBuilder.create()
 				.type(MonologFXButton.Type.YES)
-				.label(TextUtil.getString("button.yes"))
+				.label(resourceBundle.getString("button.yes"))
 				.build();
 		final MonologFXButton noButton = MonologFXButtonBuilder.create()
 				.type(MonologFXButton.Type.NO)
-				.label(TextUtil.getString("button.no"))
+				.label(resourceBundle.getString("button.no"))
 				.build();
 
 		dialog = new MonologFX(MonologFX.Type.QUESTION);

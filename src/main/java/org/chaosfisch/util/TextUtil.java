@@ -19,6 +19,7 @@ public final class TextUtil {
 
 	@Inject
 	@Named("i18n-resources")
+
 	static ResourceBundle resources;
 
 	public static String getString(final String key) {

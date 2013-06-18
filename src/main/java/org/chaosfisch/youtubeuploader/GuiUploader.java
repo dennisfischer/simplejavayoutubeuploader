@@ -117,7 +117,7 @@ public class GuiUploader extends GuiceApplication {
 		@Override
 		public void handle(final WindowEvent event) {
 			final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"), resources
-					.getString("dialog.exitapplication.message"));
+					.getString("dialog.exitapplication.message"), resources);
 
 			if (MonologFXButton.Type.NO == dialog.showDialog()) {
 				event.consume();

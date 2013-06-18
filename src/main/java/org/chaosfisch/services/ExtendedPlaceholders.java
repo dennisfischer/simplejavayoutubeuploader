@@ -8,20 +8,23 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util;
+package org.chaosfisch.services;
 
+import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
+	private final ResourceBundle resourceBundle;
 	/** The file for the {file} placeholder */
-	private File file;
+	private       File           file;
 
 	/** Custom user defined placeholders */
 	private final HashMap<String, String> map = new HashMap<>(10);
@@ -37,12 +40,14 @@ public class ExtendedPlaceholders {
 	 * @param playlists
 	 * 		for {playlist(i)} and {number(i)(j)}
 	 */
-	public ExtendedPlaceholders(final File file, final List<Playlist> playlists) {
+	public ExtendedPlaceholders(final File file, final List<Playlist> playlists, final ResourceBundle resourceBundle) {
 		this.file = file;
 		this.playlists = playlists;
+		this.resourceBundle = resourceBundle;
 	}
 
-	public ExtendedPlaceholders() {
+	public ExtendedPlaceholders(final ResourceBundle resourceBundle) {
+		this.resourceBundle = resourceBundle;
 	}
 
 	/**
@@ -70,34 +75,32 @@ public class ExtendedPlaceholders {
 			return "";
 		}
 		if (!playlists.isEmpty()) {
-			Matcher matcher = RegexpUtils.getMatcher(input, TextUtil.getString("autotitle.numberPattern"));
+			Matcher matcher = RegexpUtils.getMatcher(input, resourceBundle.getString("autotitle.numberPattern"));
 
 			StringBuffer sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
-				matcher.appendReplacement(sb, "");
-				final int playlist = null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
+				final int playlist = getPlaylist(matcher, sb);
 				final int number = null == matcher.group(2) ? 0 : Integer.parseInt(matcher.group(2));
 				final int zeros = null == matcher.group(3) ? 1 : Integer.parseInt(matcher.group(3));
 
-				if (-1 != playlist && playlists.size() > playlist) {
+				if (containsPlaylist(playlist)) {
 					sb.append(zeroFill(playlists.get(playlist).getNumber() + 1 + number, zeros));
 				} else {
-					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+					appendMissingPlaylist(sb, playlist);
 				}
 			}
 			matcher.appendTail(sb);
 			input = sb.toString();
 
-			matcher = RegexpUtils.getMatcher(input, TextUtil.getString("autotitle.playlistPattern"));
+			matcher = RegexpUtils.getMatcher(input, resourceBundle.getString("autotitle.playlistPattern"));
 			sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
-				matcher.appendReplacement(sb, "");
-				final int playlist = null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
+				final int playlist = getPlaylist(matcher, sb);
 
-				if (-1 != playlist && playlists.size() > playlist) {
+				if (containsPlaylist(playlist)) {
 					sb.append(playlists.get(playlist).getTitle());
 				} else {
-					sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+					appendMissingPlaylist(sb, playlist);
 				}
 			}
 			matcher.appendTail(sb);
@@ -114,7 +117,7 @@ public class ExtendedPlaceholders {
 			if (-1 == index) {
 				index = fileName.length();
 			}
-			input = input.replaceAll(TextUtil.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
+			input = input.replaceAll(resourceBundle.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
 		}
 
 		for (final Map.Entry<String, String> vars : map.entrySet())
@@ -124,6 +127,19 @@ public class ExtendedPlaceholders {
 		}
 
 		return input;
+	}
+
+	private int getPlaylist(final Matcher matcher, final StringBuffer sb) {
+		matcher.appendReplacement(sb, "");
+		return null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
+	}
+
+	private void appendMissingPlaylist(final StringBuffer sb, final int playlist) {
+		sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+	}
+
+	private boolean containsPlaylist(final int playlist) {
+		return -1 != playlist && playlists.size() > playlist;
 	}
 
 	/**

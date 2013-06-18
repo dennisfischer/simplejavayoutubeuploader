@@ -28,11 +28,11 @@ import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.serialization.IJsonSerializer;
 import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.util.DesktopUtil;
-import org.chaosfisch.util.InputDialog;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
 import org.chaosfisch.youtubeuploader.controller.renderer.DirectoryOpenErrorDialog;
+import org.chaosfisch.youtubeuploader.controller.renderer.InputDialog;
 import org.chaosfisch.youtubeuploader.controller.renderer.URLOpenErrorDialog;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
@@ -166,7 +166,7 @@ public class ViewController {
 	void openDocumentation(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/documentation.html";
 		if (!desktopUtil.openBrowser(url)) {
-			new URLOpenErrorDialog(url);
+			new URLOpenErrorDialog(url, resources);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class ViewController {
 	void openFAQ(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/faq.html";
 		if (!desktopUtil.openBrowser(url)) {
-			new URLOpenErrorDialog(url);
+			new URLOpenErrorDialog(url, resources);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class ViewController {
 	void openLogs(final ActionEvent event) {
 		final String directory = ApplicationData.DATA_DIR;
 		if (!desktopUtil.openDirectory(directory)) {
-			new DirectoryOpenErrorDialog(directory);
+			new DirectoryOpenErrorDialog(directory, resources);
 		}
 	}
 

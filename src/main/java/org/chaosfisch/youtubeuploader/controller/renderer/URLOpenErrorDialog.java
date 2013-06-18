@@ -11,14 +11,15 @@
 package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import jfxtras.labs.dialogs.MonologFX;
-import org.chaosfisch.util.TextUtil;
+
+import java.util.ResourceBundle;
 
 public class URLOpenErrorDialog {
 
-	public URLOpenErrorDialog(final String url) {
+	public URLOpenErrorDialog(final String url, final ResourceBundle resourceBundle) {
 		final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
-		monologFX.setTitleText(TextUtil.getString("dialog.browser_unsupported.title"));
-		monologFX.setMessage(String.format(TextUtil.getString("dialog.browser_unsupported.text"), url));
+		monologFX.setTitleText(resourceBundle.getString("dialog.browser_unsupported.title"));
+		monologFX.setMessage(String.format(resourceBundle.getString("dialog.browser_unsupported.text"), url));
 		monologFX.showDialog();
 	}
 }

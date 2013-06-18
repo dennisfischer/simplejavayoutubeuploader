@@ -23,7 +23,7 @@ import javafx.beans.value.ObservableValue;
 import org.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.slf4j.Log;
-import org.chaosfisch.util.Computer;
+import org.chaosfisch.util.ComputerUtil;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
@@ -44,14 +44,14 @@ public class Uploader {
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(7);
 	@Log
-	private       Logger     logger;
+	private       Logger       logger;
 	@Inject
-	private final Injector   injector;
+	private final Injector     injector;
 	@Inject
-	private       Computer   computer;
-	private final EventBus   eventBus;
-	private final UploadDao  uploadDao;
-	private final AccountDao accountDao;
+	private       ComputerUtil computerUtil;
+	private final EventBus     eventBus;
+	private final UploadDao    uploadDao;
+	private final AccountDao   accountDao;
 
 	@Inject
 	public Uploader(final EventBus eventBus, final UploadDao uploadDao, final AccountDao accountDao, final Injector injector) {
@@ -155,15 +155,15 @@ public class Uploader {
 					break;
 				case SHUTDOWN:
 					logger.info("SHUTDOWN COMPUTER");
-					computer.shutdownComputer();
+					computerUtil.shutdownComputer();
 					break;
 				case SLEEP:
 					logger.info("HIBERNATE COMPUTER");
-					computer.hibernateComputer();
+					computerUtil.hibernateComputer();
 					break;
 				case CUSTOM:
 					logger.info("Custom command: {}", actionOnFinish.get().getCommand());
-					computer.customCommand(actionOnFinish.get().getCommand());
+					computerUtil.customCommand(actionOnFinish.get().getCommand());
 					break;
 			}
 		}

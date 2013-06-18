@@ -56,19 +56,19 @@ public class ProgressNodeRenderer extends StackPane {
 
 		setOnMouseEntered(new EventHandler<MouseEvent>() {
 			public void handle(final MouseEvent me) {
-				progressSpeed.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
-				progressEta.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
 				progressFinish.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
 				progressBytes.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressSpeed.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressEta.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
 			}
 		});
 
 		setOnMouseExited(new EventHandler<MouseEvent>() {
 			public void handle(final MouseEvent me) {
-				progressSpeed.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
-				progressEta.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
 				progressFinish.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
 				progressBytes.setVisible(prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressSpeed.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
+				progressEta.setVisible(!prefs.getBoolean(DISPLAY_PROGRESS, false));
 			}
 		});
 

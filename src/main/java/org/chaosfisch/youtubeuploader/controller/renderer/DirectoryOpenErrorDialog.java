@@ -11,13 +11,14 @@
 package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import jfxtras.labs.dialogs.MonologFX;
-import org.chaosfisch.util.TextUtil;
+
+import java.util.ResourceBundle;
 
 public class DirectoryOpenErrorDialog {
-	public DirectoryOpenErrorDialog(final String directory) {
+	public DirectoryOpenErrorDialog(final String directory, final ResourceBundle resourceBundle) {
 		final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
-		monologFX.setTitleText(TextUtil.getString("dialog.directory_unsupported.title"));
-		monologFX.setMessage(String.format(TextUtil.getString("dialog.directory_unsupported.text"), directory));
+		monologFX.setTitleText(resourceBundle.getString("dialog.directory_unsupported.title"));
+		monologFX.setMessage(String.format(resourceBundle.getString("dialog.directory_unsupported.text"), directory));
 		monologFX.showDialog();
 	}
 }

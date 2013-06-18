@@ -16,6 +16,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -35,10 +36,10 @@ import org.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import org.chaosfisch.http.IRequestUtil;
 import org.chaosfisch.serialization.IJsonSerializer;
 import org.chaosfisch.services.EnddirService;
+import org.chaosfisch.services.ExtendedPlaceholders;
 import org.chaosfisch.slf4j.Log;
-import org.chaosfisch.util.ExtendedPlaceholders;
-import org.chaosfisch.util.io.Throttle;
-import org.chaosfisch.util.io.ThrottledOutputStream;
+import org.chaosfisch.streams.Throttle;
+import org.chaosfisch.streams.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
@@ -60,6 +61,7 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class UploadWorker extends Task<Void> {
 
@@ -121,6 +123,9 @@ public class UploadWorker extends Task<Void> {
 	private       IJsonSerializer      jsonSerializer;
 	@Log
 	private       Logger               logger;
+	@Inject
+	@Named("i18-resources")
+	private       ResourceBundle       resourceBundle;
 
 	private UploadProgressEvent uploadProgress;
 
@@ -469,7 +474,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void replacePlaceholders() {
 		final List<Playlist> playlists = playlistDao.fetchByUpload(upload);
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists);
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists, resourceBundle);
 		upload.setTitle(extendedPlaceholders.replace(upload.getTitle()));
 		upload.setDescription(extendedPlaceholders.replace(upload.getDescription()));
 		upload.setKeywords(extendedPlaceholders.replace(upload.getKeywords()));

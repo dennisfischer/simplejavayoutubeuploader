@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package org.chaosfisch.util;
+package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
