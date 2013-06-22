@@ -11,7 +11,6 @@
 package org.chaosfisch.google.youtube.impl;
 
 import com.google.common.base.Charsets;
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -23,6 +22,7 @@ import org.chaosfisch.http.HttpIOException;
 import org.chaosfisch.http.IRequest;
 import org.chaosfisch.http.IResponse;
 import org.chaosfisch.http.RequestBuilderFactory;
+import org.chaosfisch.serialization.IJsonSerializer;
 import org.chaosfisch.slf4j.Log;
 import org.chaosfisch.youtubeuploader.db.data.Thumbnail;
 import org.slf4j.Logger;
@@ -35,19 +35,24 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 	@Log
 	private Logger logger;
 
+	private final RequestBuilderFactory requestBuilderFactory;
+	private final IJsonSerializer       jsonSerializer;
+
 	@Inject
-	private RequestBuilderFactory requestBuilderFactory;
+	public ThumbnailServiceImpl(final RequestBuilderFactory requestBuilderFactory, final IJsonSerializer jsonSerializer) {
+		this.requestBuilderFactory = requestBuilderFactory;
+		this.jsonSerializer = jsonSerializer;
+	}
 
 	@Override
-	public Integer upload(final String content, final String thumbnail, final String videoid) throws SystemException {
+	public Integer upload(final String content, final File thumbnail, final String videoid) throws SystemException {
 
-		final File thumbnailFile = new File(thumbnail);
-		if (!thumbnailFile.exists()) {
-			throw new SystemException(ThumbnailCode.FILE_NOT_FOUND).set("filename", thumbnailFile.getName());
+		if (!thumbnail.exists()) {
+			throw new SystemException(ThumbnailCode.FILE_NOT_FOUND).set("filename", thumbnail.getName());
 		}
 
 		final IRequest thumbnailPost = requestBuilderFactory.create("http://www.youtube.com/my_thumbnail_post")
-				.post(buildEntity(content, videoid, thumbnailFile))
+				.post(buildEntity(content, videoid, thumbnail))
 				.build();
 
 		try (IResponse response = thumbnailPost.execute()) {
@@ -67,7 +72,6 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 
 		try {
 			reqEntity.addPart("video_id", new StringBody(videoid, Charsets.UTF_8));
-
 			reqEntity.addPart("is_ajax", new StringBody("1", Charsets.UTF_8));
 
 			final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
@@ -82,8 +86,6 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 	}
 
 	private Integer parseResponse(final String json) {
-		final Gson gson = new Gson();
-		final Thumbnail obj = gson.fromJson(json, Thumbnail.class);
-		return obj.version;
+		return jsonSerializer.fromJSON(json, Thumbnail.class).version;
 	}
 }

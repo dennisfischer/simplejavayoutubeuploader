@@ -12,6 +12,23 @@ package org.chaosfisch.google.youtube;
 
 import org.chaosfisch.exceptions.SystemException;
 
+import java.io.File;
+
 public interface ThumbnailService {
-	Integer upload(final String content, final String thumbnail, final String videoid) throws SystemException;
+	/**
+	 * Uploads a thumbnail via the YouTube webpage. This may fail!
+	 *
+	 * @param content
+	 * 		the HTML content of the video edit page
+	 * @param thumbnail
+	 * 		the thumbnail file
+	 * @param videoid
+	 * 		the matching videoid
+	 *
+	 * @return Integer containing the "thumbnail_id"
+	 *
+	 * @throws SystemException
+	 * 		if thumbnail upload fails. This may be due to failure during request or incorrect response.
+	 */
+	Integer upload(String content, File thumbnail, String videoid) throws SystemException;
 }

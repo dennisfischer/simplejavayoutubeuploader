@@ -23,6 +23,9 @@ public final class TextUtil {
 	static ResourceBundle resources;
 
 	public static String getString(final String key) {
+		if (null == resources) {
+			return "resourceBundle not bound!";
+		}
 		return resources.getString(key);
 	}
 

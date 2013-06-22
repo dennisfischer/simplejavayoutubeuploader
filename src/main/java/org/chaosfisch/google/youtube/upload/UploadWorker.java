@@ -394,7 +394,7 @@ public class UploadWorker extends Task<Void> {
 		// Add video to playlist
 		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
 			try {
-				playlistService.addLatestVideoToPlaylist(playlist, upload.getVideoid());
+				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
 			} catch (final SystemException e) {
 				throw new SystemException(e, UploadCode.PLAYLIST_IO_ERROR);
 			}

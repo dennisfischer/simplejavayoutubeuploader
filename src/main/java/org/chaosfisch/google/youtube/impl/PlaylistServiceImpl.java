@@ -41,6 +41,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
 	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
 	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
+
 	@Log
 	private       Logger                logger;
 	private final IGoogleLogin          clientLogin;
@@ -48,21 +49,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private final PlaylistDao           playlistDao;
 	private final AccountDao            accountDao;
 	private final RequestBuilderFactory requestBuilderFactory;
+	private final IXmlSerializer        xmlSerializer;
 
 	@Inject
-	private IXmlSerializer xmlSerializer;
-
-	@Inject
-	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin, final RequestBuilderFactory requestBuilderFactory) {
+	public PlaylistServiceImpl(final PlaylistDao playlistDao, final AccountDao accountDao, final GDataRequestSigner requestSigner, final IGoogleLogin clientLogin, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer) {
 		this.playlistDao = playlistDao;
 		this.accountDao = accountDao;
 		this.requestSigner = requestSigner;
 		this.clientLogin = clientLogin;
 		this.requestBuilderFactory = requestBuilderFactory;
+		this.xmlSerializer = xmlSerializer;
 	}
 
 	@Override
-	public String addLatestVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
+	public Feed addVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
 		final VideoEntry submitFeed = new VideoEntry();
 		submitFeed.id = videoId;
 		submitFeed.mediaGroup = null;
@@ -75,16 +75,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.sign(requestSigner)
 				.build();
 
-		try (final IResponse IResponse = request.execute()) {
+		try (final IResponse response = request.execute()) {
 			logger.debug("Video added to playlist!");
-			return IResponse.getContent();
+			return xmlSerializer.fromXML(response.getContent(), Feed.class);
 		} catch (final HttpIOException e) {
 			throw new SystemException(e, PlaylistCode.ADD_VIDEO_IO_ERROR);
 		}
 	}
 
 	@Override
-	public String addYoutubePlaylist(final Playlist playlist) throws SystemException {
+	public Feed addYoutubePlaylist(final Playlist playlist) throws SystemException {
 		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
 
 		final VideoEntry entry = new VideoEntry();
@@ -104,12 +104,12 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
 				.sign(requestSigner)
 				.build();
-		try (final IResponse IResponse = request.execute()) {
-			if (200 != IResponse.getStatusCode() && 201 != IResponse.getStatusCode()) {
+		try (final IResponse response = request.execute()) {
+			if (200 != response.getStatusCode() && 201 != response.getStatusCode()) {
 				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
 			}
 			logger.info("Added playlist to youtube");
-			return IResponse.getContent();
+			return xmlSerializer.fromXML(response.getContent(), Feed.class);
 		} catch (final HttpIOException e) {
 			throw new SystemException(e, PlaylistCode.ADD_PLAYLIST_IO_ERROR);
 		}

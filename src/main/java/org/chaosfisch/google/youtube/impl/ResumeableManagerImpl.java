@@ -32,23 +32,29 @@ import org.slf4j.Logger;
 import java.io.IOException;
 
 public class ResumeableManagerImpl implements ResumeableManager {
-	private static final double BACKOFF = 3.13;
+	private static final double BACKOFF     = 4;
+	private static final int    MAX_RETRIES = 5;
+
 	private int numberOfRetries;
-	private static final int MAX_RETRIES = 5;
+
 	@Log
-	private Logger                logger;
+	private       Logger                logger;
+	private final IGoogleLogin          googleLogin;
+	private final GDataRequestSigner    requestSigner;
+	private final UploadDao             uploadDao;
+	private final AccountDao            accountDao;
+	private final RequestBuilderFactory requestBuilderFactory;
+	private final IXmlSerializer        xmlSerializer;
+
 	@Inject
-	private IGoogleLogin          authTokenHelper;
-	@Inject
-	private GDataRequestSigner    requestSigner;
-	@Inject
-	private UploadDao             uploadDao;
-	@Inject
-	private AccountDao            accountDao;
-	@Inject
-	private RequestBuilderFactory requestBuilderFactory;
-	@Inject
-	private IXmlSerializer        xmlSerializer;
+	public ResumeableManagerImpl(final IGoogleLogin googleLogin, final GDataRequestSigner requestSigner, final UploadDao uploadDao, final AccountDao accountDao, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer) {
+		this.googleLogin = googleLogin;
+		this.requestSigner = requestSigner;
+		this.uploadDao = uploadDao;
+		this.accountDao = accountDao;
+		this.requestBuilderFactory = requestBuilderFactory;
+		this.xmlSerializer = xmlSerializer;
+	}
 
 	@Override
 	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
@@ -63,7 +69,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	}
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
-		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(accountDao.findById(upload.getAccountId())));
+		requestSigner.setAuthHeader(googleLogin.getAuthHeader(accountDao.findById(upload.getAccountId())));
 		final IRequest request = requestBuilderFactory.create(upload.getUploadurl())
 				.put(null)
 				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
@@ -110,8 +116,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 	@Override
 	public String parseVideoId(final String atomData) {
 		logger.info(atomData);
-		final VideoEntry videoEntry = xmlSerializer.fromXML(atomData, VideoEntry.class);
-		return videoEntry.mediaGroup.videoID;
+		return xmlSerializer.fromXML(atomData, VideoEntry.class).mediaGroup.videoID;
 	}
 
 	@Override
@@ -146,8 +151,7 @@ public class ResumeableManagerImpl implements ResumeableManager {
 			logger.info(String.format("Zzzzz for : %d sec.", sleepSeconds));
 			Thread.sleep(sleepSeconds * 1000L);
 			logger.info(String.format("Zzzzz for : %d sec done.", sleepSeconds));
-		} catch (final InterruptedException e) { // $codepro.audit.disable
-			// logExceptions
+		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
 	}

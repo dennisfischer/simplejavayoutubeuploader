@@ -12,13 +12,51 @@ package org.chaosfisch.google.youtube;
 
 import com.google.common.collect.Multimap;
 import org.chaosfisch.exceptions.SystemException;
+import org.chaosfisch.google.atom.Feed;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 public interface PlaylistService {
-	String addLatestVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;
+	/**
+	 * Adds the specified video to the playlist.
+	 * This change will be published on YouTube.
+	 *
+	 * @param playlist
+	 * 		the playlist used
+	 * @param videoId
+	 * 		for the added video
+	 *
+	 * @return the received response feed from YouTube
+	 *
+	 * @throws SystemException
+	 * 		if request fails
+	 */
+	Feed addVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;
 
-	String addYoutubePlaylist(Playlist playlist) throws SystemException;
+	/**
+	 * Adds this playlist to the account specified inside the playlist object.
+	 * This change will be published on YouTube.
+	 *
+	 * @param playlist
+	 * 		the playlist to be added
+	 *
+	 * @return the received response feed from YouTube
+	 *
+	 * @throws SystemException
+	 * 		if request fails
+	 */
+	Feed addYoutubePlaylist(Playlist playlist) throws SystemException;
 
+	/**
+	 * Synchronizes given accounts and playlists with YouTube.
+	 *
+	 * @param accounts
+	 * 		to be synced
+	 *
+	 * @return Multimap containing all done changes
+	 *
+	 * @throws SystemException
+	 * 		if request fails
+	 */
 	Multimap<Account, Playlist> synchronizePlaylists(Account[] accounts) throws SystemException;
 }

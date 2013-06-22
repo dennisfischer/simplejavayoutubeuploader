@@ -56,23 +56,27 @@ public class MetadataServiceImpl implements MetadataService {
 	private static final String METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	@Log
-	private Logger logger;
 
-	@Inject
-	private GDataRequestSigner    requestSigner;
-	@Inject
-	private IGoogleLogin          authTokenHelper;
-	@Inject
-	private ThumbnailService      thumbnailService;
-	@Inject
-	private AccountDao            accountDao;
-	@Inject
-	private RequestBuilderFactory requestBuilderFactory;
+	@Log
+	private       Logger                logger;
+	private final GDataRequestSigner    requestSigner;
+	private final IGoogleLogin          googleLogin;
+	private final ThumbnailService      thumbnailService;
+	private final AccountDao            accountDao;
+	private final RequestBuilderFactory requestBuilderFactory;
 
 	private final String[] deadEnds = {"https://accounts.google.com/b/0/SmsAuthInterstitial"};
 
 	private Upload upload;
+
+	@Inject
+	public MetadataServiceImpl(final GDataRequestSigner requestSigner, final IGoogleLogin googleLogin, final ThumbnailService thumbnailService, final AccountDao accountDao, final RequestBuilderFactory requestBuilderFactory) {
+		this.requestSigner = requestSigner;
+		this.googleLogin = googleLogin;
+		this.thumbnailService = thumbnailService;
+		this.accountDao = accountDao;
+		this.requestBuilderFactory = requestBuilderFactory;
+	}
 
 	@Override
 	public String atomBuilder(final Upload upload) {
@@ -147,23 +151,23 @@ public class MetadataServiceImpl implements MetadataService {
 	@Override
 	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws SystemException {
 		// Upload atomData and fetch uploadUrl
-		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
+		requestSigner.setAuthHeader(googleLogin.getAuthHeader(account));
 		final IRequest request = requestBuilderFactory.create(METADATA_CREATE_RESUMEABLE_URL)
 				.post(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
 				.sign(requestSigner)
 				.build();
 		// Write the atomData to GOOGLE
-		try (final IResponse IResponse = request.execute()) {
+		try (final IResponse response = request.execute()) {
 			// Check the response code for any problematic codes.
-			if (400 == IResponse.getStatusCode()) {
+			if (400 == response.getStatusCode()) {
 				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
 			}
 			// Check if uploadurl is available
-			if (null != IResponse.getHeader("Location")) {
-				return IResponse.getHeader("Location").getValue();
+			if (null != response.getHeader("Location")) {
+				return response.getHeader("Location").getValue();
 			} else {
-				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", IResponse.getStatusCode());
+				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getStatusCode());
 			}
 		} catch (final IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
@@ -172,17 +176,17 @@ public class MetadataServiceImpl implements MetadataService {
 
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws SystemException {
-		requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(account));
+		requestSigner.setAuthHeader(googleLogin.getAuthHeader(account));
 		final IRequest request = requestBuilderFactory.create(METADATA_UPDATE_URL + '/' + videoId)
 				.put(new StringEntity(atomData, Charsets.UTF_8))
 				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;"))
 				.sign(requestSigner)
 				.build();
 
-		try (final IResponse IResponse = request.execute()) {
-			if (200 != IResponse.getStatusCode()) {
+		try (final IResponse response = request.execute()) {
+			if (200 != response.getStatusCode()) {
 				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData)
-						.set("code", IResponse.getStatusCode());
+						.set("code", response.getStatusCode());
 			}
 		} catch (IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
@@ -193,8 +197,8 @@ public class MetadataServiceImpl implements MetadataService {
 	public void activateBrowserfeatures(final Upload upload) throws SystemException {
 		this.upload = upload;
 		try {
-			final String googleContent = authTokenHelper.getLoginContent(accountDao.findById(upload.getAccountId()), String
-					.format(REDIRECT_URL, upload.getVideoid()));
+			final String googleContent = googleLogin.getLoginContent(accountDao.findById(upload.getAccountId()), String.format(REDIRECT_URL, upload
+					.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent));
 		} catch (final IOException e) {
@@ -343,8 +347,8 @@ public class MetadataServiceImpl implements MetadataService {
 		final IRequest request = requestBuilderFactory.create(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 				.getVideoid())).post(new UrlEncodedFormEntity(postMetaDataParams, Charsets.UTF_8)).build();
 
-		try (final IResponse IResponse = request.execute()) {
-			logger.info(IResponse.getContent());
+		try (final IResponse response = request.execute()) {
+			logger.info(response.getContent());
 		} catch (HttpIOException e) {
 			logger.warn("Metadata not set", e);
 		}
@@ -370,7 +374,7 @@ public class MetadataServiceImpl implements MetadataService {
 		Integer thumbnailId = null;
 		try {
 			if (null != upload.getThumbnail() && !upload.getThumbnail().isEmpty()) {
-				thumbnailId = thumbnailService.upload(content, upload.getThumbnail(), upload.getVideoid());
+				thumbnailId = thumbnailService.upload(content, new File(upload.getThumbnail()), upload.getVideoid());
 			}
 		} catch (final SystemException ex) {
 			if (ex.getErrorCode() instanceof ThumbnailCode) {
