@@ -10,6 +10,8 @@
 
 package org.chaosfisch.exceptions;
 
+import de.chaosfisch.exceptions.ErrorCode;
+import de.chaosfisch.exceptions.SystemException;
 import junit.framework.Assert;
 import org.junit.Test;
 

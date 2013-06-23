@@ -20,12 +20,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import org.chaosfisch.youtubeuploader.db.data.Asset;
-import org.chaosfisch.youtubeuploader.db.data.ClaimOption;
-import org.chaosfisch.youtubeuploader.db.data.ClaimType;
-import org.chaosfisch.youtubeuploader.db.data.Syndication;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.google.youtube.Asset;
+import org.chaosfisch.google.youtube.ClaimOption;
+import org.chaosfisch.google.youtube.ClaimType;
+import org.chaosfisch.google.youtube.Syndication;
+import org.chaosfisch.google.youtube.upload.Upload;
+import org.chaosfisch.youtubeuploader.db.Template;
 
 import java.net.URL;
 import java.util.ResourceBundle;

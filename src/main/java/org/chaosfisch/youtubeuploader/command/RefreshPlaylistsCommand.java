@@ -15,10 +15,10 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.chaosfisch.google.account.Account;
+import org.chaosfisch.google.youtube.Playlist;
 import org.chaosfisch.google.youtube.PlaylistService;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 public class RefreshPlaylistsCommand extends Service<Multimap<Account, Playlist>> {
 

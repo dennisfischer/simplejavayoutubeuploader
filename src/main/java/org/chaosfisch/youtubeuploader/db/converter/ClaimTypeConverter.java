@@ -10,7 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.db.converter;
 
-import org.chaosfisch.youtubeuploader.db.data.ClaimType;
+import org.chaosfisch.google.youtube.ClaimType;
 import org.jooq.impl.EnumConverter;
 
 public class ClaimTypeConverter extends EnumConverter<String, ClaimType> {

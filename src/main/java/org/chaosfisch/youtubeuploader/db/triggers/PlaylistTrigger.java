@@ -10,12 +10,12 @@
 
 package org.chaosfisch.youtubeuploader.db.triggers;
 
-import org.chaosfisch.util.EventBusUtil;
+import de.chaosfisch.util.EventBusUtil;
+import org.chaosfisch.google.youtube.Playlist;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.h2.tools.TriggerAdapter;
 import org.jooq.Cursor;
 import org.jooq.DSLContext;

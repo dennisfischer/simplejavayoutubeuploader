@@ -20,10 +20,9 @@ import javafx.scene.layout.PaneBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
-import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
+import org.chaosfisch.google.account.Account;
+import org.chaosfisch.google.youtube.Playlist;
 import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 
 import java.util.ArrayList;
 import java.util.ResourceBundle;

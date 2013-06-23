@@ -10,7 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.db.converter;
 
-import org.chaosfisch.youtubeuploader.db.data.Category;
+import org.chaosfisch.google.youtube.Category;
 import org.jooq.impl.EnumConverter;
 
 public class CategoryConverter extends EnumConverter<String, Category> {

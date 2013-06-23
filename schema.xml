@@ -30,39 +30,39 @@
                     <converter>org.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Category</name>
+                    <name>org.chaosfisch.google.youtube.Category</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.CategoryConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.ClaimOption</name>
+                    <name>org.chaosfisch.google.youtube.ClaimOption</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.ClaimOptionConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.ClaimType</name>
+                    <name>org.chaosfisch.google.youtube.ClaimType</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.ClaimTypeConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Comment</name>
+                    <name>org.chaosfisch.google.youtube.Comment</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.CommentConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.License</name>
+                    <name>org.chaosfisch.google.youtube.License</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.LicenseConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Videoresponse</name>
+                    <name>org.chaosfisch.google.youtube.Videoresponse</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.VideoresponseConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Visibility</name>
+                    <name>org.chaosfisch.google.youtube.Visibility</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.VisibilityConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Asset</name>
+                    <name>org.chaosfisch.google.youtube.Asset</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.AssetConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Syndication</name>
+                    <name>org.chaosfisch.google.youtube.Syndication</name>
                     <converter>org.chaosfisch.youtubeuploader.db.converter.SyndicationConverter</converter>
                 </customType>
                 <customType>
@@ -76,39 +76,39 @@
                     <expressions>.*\.DATE_OF_.*</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Category</name>
+                    <name>org.chaosfisch.google.youtube.Category</name>
                     <expressions>.*\.CATEGORY</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.ClaimOption</name>
+                    <name>org.chaosfisch.google.youtube.ClaimOption</name>
                     <expressions>.*\.*CLAIMOPTION</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.ClaimType</name>
+                    <name>org.chaosfisch.google.youtube.ClaimType</name>
                     <expressions>.*\.*CLAIMTYPE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Comment</name>
+                    <name>org.chaosfisch.google.youtube.Comment</name>
                     <expressions>.*\.COMMENT</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.License</name>
+                    <name>org.chaosfisch.google.youtube.License</name>
                     <expressions>.*\.LICENSE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Videoresponse</name>
+                    <name>org.chaosfisch.google.youtube.Videoresponse</name>
                     <expressions>.*\.VIDEORESPONSE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Visibility</name>
+                    <name>org.chaosfisch.google.youtube.Visibility</name>
                     <expressions>.*\.VISIBILITY</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Asset</name>
+                    <name>org.chaosfisch.google.youtube.Asset</name>
                     <expressions>.*\.*ASSET</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.youtubeuploader.db.data.Syndication</name>
+                    <name>org.chaosfisch.google.youtube.Syndication</name>
                     <expressions>.*\.*SYNDICATION</expressions>
                 </forcedType>
                 <forcedType>

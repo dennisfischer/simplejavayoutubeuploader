@@ -10,15 +10,12 @@
 
 package org.chaosfisch.youtubeuploader.db.dao;
 
-import com.google.inject.Inject;
+import org.chaosfisch.google.account.Account;
+import org.chaosfisch.google.youtube.Playlist;
+import org.chaosfisch.google.youtube.upload.Upload;
+import org.chaosfisch.youtubeuploader.db.Template;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.jooq.Configuration;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -27,12 +24,6 @@ import java.util.List;
 public class PlaylistDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.PlaylistDao {
 
 	private final DSLContext context;
-
-	@Inject
-	public PlaylistDao(final Configuration configuration) {
-		super(configuration);
-		context = DSL.using(configuration);
-	}
 
 	public Account fetchOneAccountByPlaylist(final Playlist playlist) {
 		return context.select(Tables.ACCOUNT.fields())

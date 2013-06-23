@@ -25,11 +25,11 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 import org.chaosfisch.google.youtube.upload.Uploader;
 import org.chaosfisch.streams.Throttle;
+import org.chaosfisch.youtubeuploader.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import org.chaosfisch.youtubeuploader.command.StopUploadCommand;
 import org.chaosfisch.youtubeuploader.controller.renderer.ConfirmDialog;
 import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
-import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 
 import java.net.URL;

@@ -11,6 +11,8 @@
 package org.chaosfisch.youtubeuploader.controller;
 
 import com.google.inject.Inject;
+import de.chaosfisch.exceptions.SystemException;
+import de.chaosfisch.util.DesktopUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,23 +25,17 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import jfxtras.labs.dialogs.MonologFX;
-import org.chaosfisch.exceptions.SystemException;
-import org.chaosfisch.google.youtube.PlaylistService;
+import org.chaosfisch.google.account.Account;
+import org.chaosfisch.google.youtube.*;
 import org.chaosfisch.serialization.IJsonSerializer;
 import org.chaosfisch.slf4j.Log;
-import org.chaosfisch.util.DesktopUtil;
 import org.chaosfisch.youtubeuploader.ApplicationData;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.chaosfisch.youtubeuploader.controller.renderer.AccountStringConverter;
 import org.chaosfisch.youtubeuploader.controller.renderer.DirectoryOpenErrorDialog;
 import org.chaosfisch.youtubeuploader.controller.renderer.InputDialog;
 import org.chaosfisch.youtubeuploader.controller.renderer.URLOpenErrorDialog;
-import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
-import org.chaosfisch.youtubeuploader.db.dao.TemplateDao;
-import org.chaosfisch.youtubeuploader.db.data.*;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Template;
+import org.chaosfisch.youtubeuploader.db.Template;
 import org.slf4j.Logger;
 
 import java.io.File;

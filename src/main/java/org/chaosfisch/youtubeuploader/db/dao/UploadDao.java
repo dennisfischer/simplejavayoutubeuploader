@@ -10,23 +10,12 @@
 
 package org.chaosfisch.youtubeuploader.db.dao;
 
-import com.google.inject.Inject;
+import org.chaosfisch.google.youtube.upload.Upload;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
-import org.jooq.Configuration;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import java.util.GregorianCalendar;
 
 public class UploadDao extends org.chaosfisch.youtubeuploader.db.generated.tables.daos.UploadDao {
-	private final DSLContext context;
-
-	@Inject
-	public UploadDao(final Configuration configuration) {
-		super(configuration);
-		context = DSL.using(configuration);
-	}
 
 	public Upload insertReturning(final Upload upload) {
 		return context.insertInto(Tables.UPLOAD)

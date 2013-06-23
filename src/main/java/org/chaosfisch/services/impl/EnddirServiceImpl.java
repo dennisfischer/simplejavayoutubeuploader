@@ -11,11 +11,11 @@
 package org.chaosfisch.services.impl;
 
 import com.google.common.io.Files;
+import de.chaosfisch.util.RegexpUtils;
+import org.chaosfisch.google.youtube.upload.Upload;
 import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.slf4j.Log;
-import org.chaosfisch.util.RegexpUtils;
 import org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
 import org.slf4j.Logger;
 
 import java.io.File;

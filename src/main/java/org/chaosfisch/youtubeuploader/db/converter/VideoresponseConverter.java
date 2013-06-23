@@ -10,7 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.db.converter;
 
-import org.chaosfisch.youtubeuploader.db.data.Videoresponse;
+import org.chaosfisch.google.youtube.Videoresponse;
 import org.jooq.impl.EnumConverter;
 
 public class VideoresponseConverter extends EnumConverter<String, Videoresponse> {

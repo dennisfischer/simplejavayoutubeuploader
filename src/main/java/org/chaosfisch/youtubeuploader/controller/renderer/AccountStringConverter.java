@@ -11,7 +11,7 @@
 package org.chaosfisch.youtubeuploader.controller.renderer;
 
 import javafx.util.StringConverter;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.chaosfisch.google.account.Account;
 
 public final class AccountStringConverter extends StringConverter<Account> {
 

@@ -18,13 +18,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import org.chaosfisch.google.account.Account;
+import org.chaosfisch.google.youtube.Playlist;
 import org.chaosfisch.youtubeuploader.controller.renderer.AccountListCellRenderer;
-import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.chaosfisch.youtubeuploader.guice.CommandProvider;
 
 import java.net.URL;

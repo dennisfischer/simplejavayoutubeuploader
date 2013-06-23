@@ -10,7 +10,7 @@
 
 package org.chaosfisch.services;
 
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Upload;
+import org.chaosfisch.google.youtube.upload.Upload;
 
 import java.io.File;
 

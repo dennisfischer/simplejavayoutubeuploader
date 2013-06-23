@@ -10,7 +10,7 @@
 
 package org.chaosfisch.youtubeuploader.db.converter;
 
-import org.chaosfisch.youtubeuploader.db.data.Comment;
+import org.chaosfisch.google.youtube.Comment;
 import org.jooq.impl.EnumConverter;
 
 public class CommentConverter extends EnumConverter<String, Comment> {

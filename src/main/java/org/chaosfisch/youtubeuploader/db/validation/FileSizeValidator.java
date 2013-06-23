@@ -16,8 +16,7 @@ public class FileSizeValidator implements Validator<String> {
 
 	private final int size;
 
-	@SuppressWarnings("SameParameterValue")
-	public FileSizeValidator(@SuppressWarnings("SameParameterValue") final int size) {
+	public FileSizeValidator(final int size) {
 		this.size = size;
 	}
 

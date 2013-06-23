@@ -10,8 +10,8 @@
 
 package org.chaosfisch.services;
 
-import org.chaosfisch.util.RegexpUtils;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
+import de.chaosfisch.util.RegexpUtils;
+import org.chaosfisch.google.youtube.Playlist;
 
 import java.io.File;
 import java.util.HashMap;

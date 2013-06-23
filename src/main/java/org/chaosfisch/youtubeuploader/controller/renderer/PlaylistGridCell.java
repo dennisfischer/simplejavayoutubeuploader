@@ -20,8 +20,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.grid.GridCell;
+import org.chaosfisch.google.youtube.Playlist;
 import org.chaosfisch.slf4j.Log;
-import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Playlist;
 import org.slf4j.Logger;
 
 import java.io.IOException;
