@@ -13,7 +13,7 @@ package de.chaosfisch.http;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import org.apache.http.HttpEntity;
+import de.chaosfisch.http.entity.Entity;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
@@ -25,7 +25,7 @@ public class RequestBuilder {
 	private final String         url;
 	private final RequestFactory requestFactory;
 	private       RequestMethod  method;
-	private       HttpEntity     entity;
+	private       Entity         entity;
 
 	private       HttpParams               params     = new BasicHttpParams();
 	private       Map<String, String>      headers    = new HashMap<>(0);
@@ -42,7 +42,7 @@ public class RequestBuilder {
 		return this;
 	}
 
-	public RequestBuilder post(final HttpEntity entity) {
+	public RequestBuilder post(final Entity entity) {
 		Preconditions.checkNotNull(entity);
 
 		method = RequestMethod.POST;
@@ -50,7 +50,7 @@ public class RequestBuilder {
 		return this;
 	}
 
-	public RequestBuilder put(final HttpEntity entity) {
+	public RequestBuilder put(final Entity entity) {
 		Preconditions.checkNotNull(entity);
 
 		method = RequestMethod.PUT;
@@ -119,7 +119,7 @@ public class RequestBuilder {
 		return headers;
 	}
 
-	public HttpEntity getEntity() {
+	public Entity getEntity() {
 		return entity;
 	}
 }

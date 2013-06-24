@@ -12,6 +12,7 @@ package de.chaosfisch.http;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -51,7 +52,7 @@ public final class RequestUtil implements IRequestUtil {
 				}
 				if (!isRedirect) {
 					final int responseCode = response.getStatusLine().getStatusCode();
-					if (301 == responseCode || 302 == responseCode) {
+					if (HttpStatus.SC_MOVED_PERMANENTLY == responseCode || HttpStatus.SC_MOVED_TEMPORARILY == responseCode) {
 						return true;
 					}
 				}

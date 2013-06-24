@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2013 Dennis Fischer.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Public License v3.0+
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.gnu.org/licenses/gpl.html
+  ~
+  ~ Contributors: Dennis Fischer
+  -->
+
+<?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
+<?scenebuilder-stylesheet ../resources/style.css?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="anchorPane" maxWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="de.chaosfisch.youtubeuploader.controller.UploadMonetizationController">
+    <GridPane id="GridPane" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="grid">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0"/>
+        </columnConstraints>
+        <CheckBox fx:id="monetizeOverlay" allowIndeterminate="false" indeterminate="false" mnemonicParsing="false"
+                  prefWidth="-1.0" text="%label.monetizeOverlay" GridPane.columnIndex="0"
+                  GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
+        <CheckBox fx:id="monetizeTrueView" mnemonicParsing="false" prefWidth="-1.0" text="%label.monetizeTrueview"
+                  GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+        <CheckBox fx:id="monetizeProduct" mnemonicParsing="false" prefWidth="-1.0" text="%label.monetizeProduct"
+                  GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
+        <Label text="%label.monetizeContentSyndication" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ChoiceBox fx:id="monetizeSyndication" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0"
+                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT"
+                   GridPane.rowIndex="3"/>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+    </GridPane>
+</AnchorPane>

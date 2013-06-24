@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="EclipseLink" />
+        <datasource-mapping />
+        <deploymentDescriptor name="orm.xml" url="file://$MODULE_DIR$/META-INF/orm.xml" />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/META-INF/persistence.xml" />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -12,6 +23,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="guice-assistedinject-3.0" level="project" />
+    <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
+    <orderEntry type="library" exported="" name="guice-3.0" level="project" />
+    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="module" module-name="google" exported="" />
+    <orderEntry type="library" exported="" name="eclipselink-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="javax.persistence-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="commonj.sdo-2.1.1" level="project" />
   </component>
 </module>
 

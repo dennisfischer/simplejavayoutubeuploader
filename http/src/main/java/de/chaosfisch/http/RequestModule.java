@@ -21,6 +21,7 @@ import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class RequestModule extends AbstractModule {
+	@Override
 	protected void configure() {
 		install(new FactoryModuleBuilder().build(RequestBuilderFactory.class));
 		install(new FactoryModuleBuilder().implement(IRequest.class, RequestImpl.class).build(RequestFactory.class));

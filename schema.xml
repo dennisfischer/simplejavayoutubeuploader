@@ -27,47 +27,47 @@
             <customTypes>
                 <customType>
                     <name>java.util.GregorianCalendar</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Category</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.CategoryConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Category</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.CategoryConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.ClaimOption</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.ClaimOptionConverter</converter>
+                    <name>de.chaosfisch.google.youtube.ClaimOption</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.ClaimOptionConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.ClaimType</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.ClaimTypeConverter</converter>
+                    <name>de.chaosfisch.google.youtube.ClaimType</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.ClaimTypeConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Comment</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.CommentConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Comment</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.CommentConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.License</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.LicenseConverter</converter>
+                    <name>de.chaosfisch.google.youtube.License</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.LicenseConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Videoresponse</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.VideoresponseConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Videoresponse</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.VideoresponseConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Visibility</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.VisibilityConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Visibility</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.VisibilityConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Asset</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.AssetConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Asset</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.AssetConverter</converter>
                 </customType>
                 <customType>
-                    <name>org.chaosfisch.google.youtube.Syndication</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.SyndicationConverter</converter>
+                    <name>de.chaosfisch.google.youtube.Syndication</name>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.SyndicationConverter</converter>
                 </customType>
                 <customType>
                     <name>java.io.File</name>
-                    <converter>org.chaosfisch.youtubeuploader.db.converter.FileConverter</converter>
+                    <converter>de.chaosfisch.youtubeuploader.db.converter.FileConverter</converter>
                 </customType>
             </customTypes>
             <forcedTypes>
@@ -76,39 +76,39 @@
                     <expressions>.*\.DATE_OF_.*</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Category</name>
+                    <name>de.chaosfisch.google.youtube.Category</name>
                     <expressions>.*\.CATEGORY</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.ClaimOption</name>
+                    <name>de.chaosfisch.google.youtube.ClaimOption</name>
                     <expressions>.*\.*CLAIMOPTION</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.ClaimType</name>
+                    <name>de.chaosfisch.google.youtube.ClaimType</name>
                     <expressions>.*\.*CLAIMTYPE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Comment</name>
+                    <name>de.chaosfisch.google.youtube.Comment</name>
                     <expressions>.*\.COMMENT</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.License</name>
+                    <name>de.chaosfisch.google.youtube.License</name>
                     <expressions>.*\.LICENSE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Videoresponse</name>
+                    <name>de.chaosfisch.google.youtube.Videoresponse</name>
                     <expressions>.*\.VIDEORESPONSE</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Visibility</name>
+                    <name>de.chaosfisch.google.youtube.Visibility</name>
                     <expressions>.*\.VISIBILITY</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Asset</name>
+                    <name>de.chaosfisch.google.youtube.Asset</name>
                     <expressions>.*\.*ASSET</expressions>
                 </forcedType>
                 <forcedType>
-                    <name>org.chaosfisch.google.youtube.Syndication</name>
+                    <name>de.chaosfisch.google.youtube.Syndication</name>
                     <expressions>.*\.*SYNDICATION</expressions>
                 </forcedType>
                 <forcedType>
@@ -194,7 +194,7 @@
             <directory>D:/Development/temp</directory>
         </target>
         <strategy>
-            <name>org.chaosfisch.youtubeuploader.CustomGeneratorStrategy</name>
+            <name>org.chaosfisch.youtubeuploader.youtubeuploader.CustomGeneratorStrategy</name>
         </strategy>
     </generator>
 </configuration>

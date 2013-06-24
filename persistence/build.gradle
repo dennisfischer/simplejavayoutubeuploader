@@ -8,6 +8,8 @@
  * Contributors: Dennis Fischer
  */
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -20,5 +22,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.inject:guice:+', 'com.google.inject.extensions:guice-assistedinject:+', 'org.eclipse.persistence:eclipselink:+'
+    compile project(':google')
 }
 

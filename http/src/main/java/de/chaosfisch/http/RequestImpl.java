@@ -31,7 +31,7 @@ class RequestImpl implements IRequest {
 		httpRequest = builder.getMethod().get(builder.getUrl());
 
 		if (RequestMethod.POST == builder.getMethod() || RequestMethod.PUT == builder.getMethod()) {
-			((HttpEntityEnclosingRequestBase) httpRequest).setEntity(builder.getEntity());
+			((HttpEntityEnclosingRequestBase) httpRequest).setEntity(builder.getEntity().get());
 		}
 
 		for (final Entry<String, String> entry : builder.getHeaders().entrySet()) {

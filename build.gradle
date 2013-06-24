@@ -8,6 +8,8 @@
  * Contributors: Dennis Fischer
  */
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -20,7 +22,7 @@ buildscript {
 allprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
-    mainClassName = 'org.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader'
+    mainClassName = 'SimpleJavaYoutubeUploader'
 }
 
 configurations {

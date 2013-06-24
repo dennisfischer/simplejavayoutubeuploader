@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commonj.sdo-2.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.eclipse.persistence/commonj.sdo/2.1.1/jar/90d4c89ce0a69f58619f1a247bbf420122139ff5/commonj.sdo-2.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.eclipse.persistence/commonj.sdo/2.1.1/source/6de70daec63068c07df2a87507cafb2cc34ef2b1/commonj.sdo-2.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
