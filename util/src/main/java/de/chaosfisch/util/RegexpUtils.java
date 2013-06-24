@@ -27,6 +27,9 @@ public final class RegexpUtils {
 				}
 			});
 
+	private RegexpUtils() {
+	}
+
 	public static Pattern getPattern(final String regexp) {
 		try {
 			return COMPILED_PATTERNS.get(regexp);

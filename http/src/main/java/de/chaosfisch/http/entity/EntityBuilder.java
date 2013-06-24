@@ -39,7 +39,7 @@ public class EntityBuilder {
 	}
 
 	public EntityBuilder addAll(final Map<String, Object> params) {
-		this.parameters.putAll(params);
+		parameters.putAll(params);
 		return this;
 	}
 

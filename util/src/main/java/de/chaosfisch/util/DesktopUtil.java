@@ -21,8 +21,8 @@ import java.net.URI;
 
 public final class DesktopUtil {
 
-	private Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
-	final Desktop desktop;
+	private static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
+	private final Desktop desktop;
 
 	@Inject
 	public DesktopUtil() {

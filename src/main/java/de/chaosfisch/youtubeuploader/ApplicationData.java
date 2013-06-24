@@ -30,4 +30,7 @@ public final class ApplicationData {
 		HOME = System.getProperty("user.home");
 		DATA_DIR = HOME + "/SimpleJavaYoutubeUploader";
 	}
+
+	private ApplicationData() {
+	}
 }

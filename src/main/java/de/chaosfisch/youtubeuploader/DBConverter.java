@@ -24,6 +24,9 @@ public final class DBConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBConverter.class);
 
+	private DBConverter() {
+	}
+
 	public static void main(final String[] args) throws SQLException, IOException {
 
 		try {

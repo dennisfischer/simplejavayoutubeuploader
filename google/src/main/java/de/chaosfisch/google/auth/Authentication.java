@@ -15,8 +15,8 @@ public class Authentication {
 	private final boolean valid;
 	private final String  header;
 
-	public Authentication(final boolean valid) {
-		this.valid = valid;
+	public Authentication() {
+		valid = false;
 		header = null;
 	}
 

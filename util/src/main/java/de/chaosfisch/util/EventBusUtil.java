@@ -17,6 +17,9 @@ public final class EventBusUtil {
 	@Inject
 	private static EventBus instance;
 
+	private EventBusUtil() {
+	}
+
 	public static EventBus getInstance() {
 		return instance;
 	}

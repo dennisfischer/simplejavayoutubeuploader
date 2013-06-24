@@ -62,6 +62,10 @@ import java.util.ResourceBundle;
 
 public class UploadWorker extends Task<Void> {
 
+	private static final int SC_OK                = 200;
+	private static final int SC_CREATED           = 201;
+	private static final int SC_RESUME_INCOMPLETE = 308;
+
 	/** Status enum for handling control flow */
 	protected enum STATUS {
 		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD, POSTPROCESS_BROWSER;
@@ -529,9 +533,9 @@ public class UploadWorker extends Task<Void> {
 				flowChunk(bufferedInputStream, throttledOutputStream, start, end);
 
 				switch (request.getResponseCode()) {
-					case 200:
+					case SC_OK:
 						throw new SystemException(UploadCode.UPLOAD_REPONSE_200);
-					case 201:
+					case SC_CREATED:
 						final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
 							@Override
 							public InputStream getInput() throws IOException {
@@ -542,7 +546,7 @@ public class UploadWorker extends Task<Void> {
 						uploadService.update(upload);
 						currentStatus = STATUS.POSTPROCESS;
 						break;
-					case 308:
+					case SC_RESUME_INCOMPLETE:
 						// OK, the chunk completed succesfully
 						logger.debug("responseMessage={}", request.getResponseMessage());
 						break;

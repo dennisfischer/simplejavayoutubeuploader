@@ -16,7 +16,10 @@ package de.chaosfisch.youtubeuploader.db;
 import de.chaosfisch.google.youtube.upload.metadata.License;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 
-public class Template extends AbstractTemplate implements java.io.Serializable {
+import java.io.File;
+import java.io.Serializable;
+
+public class Template extends AbstractTemplate implements Serializable {
 
 	private static final long serialVersionUID = -261086693;
 
@@ -24,7 +27,7 @@ public class Template extends AbstractTemplate implements java.io.Serializable {
 	private Category      category;
 	private Comment       comment;
 	private Boolean       commentvote;
-	private java.io.File  defaultdir;
+	private File          defaultdir;
 	private String        description;
 	private Boolean       embed;
 	private String        keywords;
@@ -33,7 +36,7 @@ public class Template extends AbstractTemplate implements java.io.Serializable {
 	private Videoresponse videoresponse;
 	private Visibility    visibility;
 	private Integer       accountId;
-	private java.io.File  enddir;
+	private File          enddir;
 	private License       license;
 	private String        title;
 	private String        thumbnail;
@@ -62,331 +65,333 @@ public class Template extends AbstractTemplate implements java.io.Serializable {
 	private Asset         monetizeAsset;
 	private Boolean       monetizePartner;
 
+	@Override
 	public Integer getId() {
-		return this.id;
+		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
 	public Category getCategory() {
-		return this.category;
+		return category;
 	}
 
-	public void setCategory(Category category) {
+	public void setCategory(final Category category) {
 		this.category = category;
 	}
 
 	public Comment getComment() {
-		return this.comment;
+		return comment;
 	}
 
-	public void setComment(Comment comment) {
+	public void setComment(final Comment comment) {
 		this.comment = comment;
 	}
 
 	public Boolean getCommentvote() {
-		return this.commentvote;
+		return commentvote;
 	}
 
-	public void setCommentvote(Boolean commentvote) {
+	public void setCommentvote(final Boolean commentvote) {
 		this.commentvote = commentvote;
 	}
 
-	public java.io.File getDefaultdir() {
-		return this.defaultdir;
+	public File getDefaultdir() {
+		return defaultdir;
 	}
 
-	public void setDefaultdir(java.io.File defaultdir) {
+	public void setDefaultdir(final File defaultdir) {
 		this.defaultdir = defaultdir;
 	}
 
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
 	public Boolean getEmbed() {
-		return this.embed;
+		return embed;
 	}
 
-	public void setEmbed(Boolean embed) {
+	public void setEmbed(final Boolean embed) {
 		this.embed = embed;
 	}
 
 	public String getKeywords() {
-		return this.keywords;
+		return keywords;
 	}
 
-	public void setKeywords(String keywords) {
+	public void setKeywords(final String keywords) {
 		this.keywords = keywords;
 	}
 
+	@Override
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
 	public Boolean getRate() {
-		return this.rate;
+		return rate;
 	}
 
-	public void setRate(Boolean rate) {
+	public void setRate(final Boolean rate) {
 		this.rate = rate;
 	}
 
 	public Videoresponse getVideoresponse() {
-		return this.videoresponse;
+		return videoresponse;
 	}
 
-	public void setVideoresponse(Videoresponse videoresponse) {
+	public void setVideoresponse(final Videoresponse videoresponse) {
 		this.videoresponse = videoresponse;
 	}
 
 	public Visibility getVisibility() {
-		return this.visibility;
+		return visibility;
 	}
 
-	public void setVisibility(Visibility visibility) {
+	public void setVisibility(final Visibility visibility) {
 		this.visibility = visibility;
 	}
 
 	public Integer getAccountId() {
-		return this.accountId;
+		return accountId;
 	}
 
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(final Integer accountId) {
 		this.accountId = accountId;
 	}
 
-	public java.io.File getEnddir() {
-		return this.enddir;
+	public File getEnddir() {
+		return enddir;
 	}
 
-	public void setEnddir(java.io.File enddir) {
+	public void setEnddir(final File enddir) {
 		this.enddir = enddir;
 	}
 
 	public License getLicense() {
-		return this.license;
+		return license;
 	}
 
-	public void setLicense(License license) {
+	public void setLicense(final License license) {
 		this.license = license;
 	}
 
 	public String getTitle() {
-		return this.title;
+		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
 	public String getThumbnail() {
-		return this.thumbnail;
+		return thumbnail;
 	}
 
-	public void setThumbnail(String thumbnail) {
+	public void setThumbnail(final String thumbnail) {
 		this.thumbnail = thumbnail;
 	}
 
 	public Boolean getFacebook() {
-		return this.facebook;
+		return facebook;
 	}
 
-	public void setFacebook(Boolean facebook) {
+	public void setFacebook(final Boolean facebook) {
 		this.facebook = facebook;
 	}
 
 	public Boolean getTwitter() {
-		return this.twitter;
+		return twitter;
 	}
 
-	public void setTwitter(Boolean twitter) {
+	public void setTwitter(final Boolean twitter) {
 		this.twitter = twitter;
 	}
 
 	public String getMessage() {
-		return this.message;
+		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
 	public Boolean getMonetizeInstreamDefaults() {
-		return this.monetizeInstreamDefaults;
+		return monetizeInstreamDefaults;
 	}
 
-	public void setMonetizeInstreamDefaults(Boolean monetizeInstreamDefaults) {
+	public void setMonetizeInstreamDefaults(final Boolean monetizeInstreamDefaults) {
 		this.monetizeInstreamDefaults = monetizeInstreamDefaults;
 	}
 
 	public Boolean getMonetizeClaim() {
-		return this.monetizeClaim;
+		return monetizeClaim;
 	}
 
-	public void setMonetizeClaim(Boolean monetizeClaim) {
+	public void setMonetizeClaim(final Boolean monetizeClaim) {
 		this.monetizeClaim = monetizeClaim;
 	}
 
 	public Boolean getMonetizeOverlay() {
-		return this.monetizeOverlay;
+		return monetizeOverlay;
 	}
 
-	public void setMonetizeOverlay(Boolean monetizeOverlay) {
+	public void setMonetizeOverlay(final Boolean monetizeOverlay) {
 		this.monetizeOverlay = monetizeOverlay;
 	}
 
 	public Boolean getMonetizeTrueview() {
-		return this.monetizeTrueview;
+		return monetizeTrueview;
 	}
 
-	public void setMonetizeTrueview(Boolean monetizeTrueview) {
+	public void setMonetizeTrueview(final Boolean monetizeTrueview) {
 		this.monetizeTrueview = monetizeTrueview;
 	}
 
 	public Boolean getMonetizeInstream() {
-		return this.monetizeInstream;
+		return monetizeInstream;
 	}
 
-	public void setMonetizeInstream(Boolean monetizeInstream) {
+	public void setMonetizeInstream(final Boolean monetizeInstream) {
 		this.monetizeInstream = monetizeInstream;
 	}
 
 	public Boolean getMonetizeProduct() {
-		return this.monetizeProduct;
+		return monetizeProduct;
 	}
 
-	public void setMonetizeProduct(Boolean monetizeProduct) {
+	public void setMonetizeProduct(final Boolean monetizeProduct) {
 		this.monetizeProduct = monetizeProduct;
 	}
 
 	public Syndication getMonetizeSyndication() {
-		return this.monetizeSyndication;
+		return monetizeSyndication;
 	}
 
-	public void setMonetizeSyndication(Syndication monetizeSyndication) {
+	public void setMonetizeSyndication(final Syndication monetizeSyndication) {
 		this.monetizeSyndication = monetizeSyndication;
 	}
 
 	public String getMonetizeTitle() {
-		return this.monetizeTitle;
+		return monetizeTitle;
 	}
 
-	public void setMonetizeTitle(String monetizeTitle) {
+	public void setMonetizeTitle(final String monetizeTitle) {
 		this.monetizeTitle = monetizeTitle;
 	}
 
 	public String getMonetizeDescription() {
-		return this.monetizeDescription;
+		return monetizeDescription;
 	}
 
-	public void setMonetizeDescription(String monetizeDescription) {
+	public void setMonetizeDescription(final String monetizeDescription) {
 		this.monetizeDescription = monetizeDescription;
 	}
 
 	public String getMonetizeId() {
-		return this.monetizeId;
+		return monetizeId;
 	}
 
-	public void setMonetizeId(String monetizeId) {
+	public void setMonetizeId(final String monetizeId) {
 		this.monetizeId = monetizeId;
 	}
 
 	public String getMonetizeNotes() {
-		return this.monetizeNotes;
+		return monetizeNotes;
 	}
 
-	public void setMonetizeNotes(String monetizeNotes) {
+	public void setMonetizeNotes(final String monetizeNotes) {
 		this.monetizeNotes = monetizeNotes;
 	}
 
 	public String getMonetizeTmsid() {
-		return this.monetizeTmsid;
+		return monetizeTmsid;
 	}
 
-	public void setMonetizeTmsid(String monetizeTmsid) {
+	public void setMonetizeTmsid(final String monetizeTmsid) {
 		this.monetizeTmsid = monetizeTmsid;
 	}
 
 	public String getMonetizeIsan() {
-		return this.monetizeIsan;
+		return monetizeIsan;
 	}
 
-	public void setMonetizeIsan(String monetizeIsan) {
+	public void setMonetizeIsan(final String monetizeIsan) {
 		this.monetizeIsan = monetizeIsan;
 	}
 
 	public String getMonetizeEidr() {
-		return this.monetizeEidr;
+		return monetizeEidr;
 	}
 
-	public void setMonetizeEidr(String monetizeEidr) {
+	public void setMonetizeEidr(final String monetizeEidr) {
 		this.monetizeEidr = monetizeEidr;
 	}
 
 	public String getMonetizeTitleepisode() {
-		return this.monetizeTitleepisode;
+		return monetizeTitleepisode;
 	}
 
-	public void setMonetizeTitleepisode(String monetizeTitleepisode) {
+	public void setMonetizeTitleepisode(final String monetizeTitleepisode) {
 		this.monetizeTitleepisode = monetizeTitleepisode;
 	}
 
 	public String getMonetizeSeasonNb() {
-		return this.monetizeSeasonNb;
+		return monetizeSeasonNb;
 	}
 
-	public void setMonetizeSeasonNb(String monetizeSeasonNb) {
+	public void setMonetizeSeasonNb(final String monetizeSeasonNb) {
 		this.monetizeSeasonNb = monetizeSeasonNb;
 	}
 
 	public String getMonetizeEpisodeNb() {
-		return this.monetizeEpisodeNb;
+		return monetizeEpisodeNb;
 	}
 
-	public void setMonetizeEpisodeNb(String monetizeEpisodeNb) {
+	public void setMonetizeEpisodeNb(final String monetizeEpisodeNb) {
 		this.monetizeEpisodeNb = monetizeEpisodeNb;
 	}
 
 	public ClaimType getMonetizeClaimtype() {
-		return this.monetizeClaimtype;
+		return monetizeClaimtype;
 	}
 
-	public void setMonetizeClaimtype(ClaimType monetizeClaimtype) {
+	public void setMonetizeClaimtype(final ClaimType monetizeClaimtype) {
 		this.monetizeClaimtype = monetizeClaimtype;
 	}
 
 	public ClaimOption getMonetizeClaimoption() {
-		return this.monetizeClaimoption;
+		return monetizeClaimoption;
 	}
 
-	public void setMonetizeClaimoption(ClaimOption monetizeClaimoption) {
+	public void setMonetizeClaimoption(final ClaimOption monetizeClaimoption) {
 		this.monetizeClaimoption = monetizeClaimoption;
 	}
 
 	public Asset getMonetizeAsset() {
-		return this.monetizeAsset;
+		return monetizeAsset;
 	}
 
-	public void setMonetizeAsset(Asset monetizeAsset) {
+	public void setMonetizeAsset(final Asset monetizeAsset) {
 		this.monetizeAsset = monetizeAsset;
 	}
 
 	public Boolean getMonetizePartner() {
-		return this.monetizePartner;
+		return monetizePartner;
 	}
 
-	public void setMonetizePartner(Boolean monetizePartner) {
+	public void setMonetizePartner(final Boolean monetizePartner) {
 		this.monetizePartner = monetizePartner;
 	}
 }

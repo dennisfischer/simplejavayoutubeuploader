@@ -19,6 +19,7 @@ package de.chaosfisch.util;
 import com.google.inject.AbstractModule;
 
 public class UtilModule extends AbstractModule {
+	@Override
 	protected void configure() {
 		//add configuration logic here
 	}

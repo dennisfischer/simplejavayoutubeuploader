@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 public abstract class AccountServiceImpl implements IAccountService {
 
+	private static final int                      SC_OK                = 200;
 	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
@@ -73,7 +74,7 @@ public abstract class AccountServiceImpl implements IAccountService {
 				.build();
 
 		try (final IResponse response = clientLoginRequest.execute()) {
-			if (200 != response.getStatusCode()) {
+			if (SC_OK != response.getStatusCode()) {
 				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", response.getStatusCode());
 			}
 
@@ -94,7 +95,7 @@ public abstract class AccountServiceImpl implements IAccountService {
 			}
 			return new Authentication(header);
 		} catch (Exception e) {
-			return new Authentication(false);
+			return new Authentication();
 		}
 	}
 
