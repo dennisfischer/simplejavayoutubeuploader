@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.converter;
 
-import de.chaosfisch.google.youtube.Asset;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Asset;
 import org.jooq.impl.EnumConverter;
 
 public class AssetConverter extends EnumConverter<String, Asset> {

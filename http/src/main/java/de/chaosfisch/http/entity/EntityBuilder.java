@@ -10,13 +10,14 @@
 
 package de.chaosfisch.http.entity;
 
+import com.google.common.collect.Maps;
+
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 
 public class EntityBuilder {
 
-	private final Map<String, Object> parameters = new HashMap<>();
+	private final Map<String, Object> parameters = Maps.newHashMapWithExpectedSize(50);
 	private Charset charset;
 	private boolean multipart;
 	private boolean stringEntity;

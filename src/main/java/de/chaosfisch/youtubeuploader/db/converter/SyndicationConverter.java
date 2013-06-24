@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.converter;
 
-import de.chaosfisch.google.youtube.Syndication;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import org.jooq.impl.EnumConverter;
 
 public class SyndicationConverter extends EnumConverter<String, Syndication> {

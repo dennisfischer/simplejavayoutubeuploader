@@ -66,8 +66,8 @@ public class EnddirServiceImpl implements EnddirService {
 	String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
 		final String fileName;
 		if (getEnddirSetting()) {
-			fileName = enddir.getAbsolutePath() + '/' + RegexpUtils.getMatcher(upload.getTitle(), "[\\?\\*:\\\\<>\"/]")
-					.replaceAll("") + upload.getFile()
+			fileName = enddir.getAbsolutePath() + '/' + RegexpUtils.getMatcher(upload.getMetadata()
+					.getTitle(), "[\\?\\*:\\\\<>\"/]").replaceAll("") + upload.getFile()
 					.getAbsolutePath()
 					.substring(upload.getFile().getAbsolutePath().lastIndexOf('.'));
 		} else {

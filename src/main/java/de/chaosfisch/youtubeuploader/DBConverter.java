@@ -10,7 +10,8 @@
 
 package de.chaosfisch.youtubeuploader;
 
-import de.chaosfisch.google.youtube.*;
+import de.chaosfisch.google.youtube.upload.metadata.License;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,9 +27,9 @@ public class RequestBuilder {
 	private       RequestMethod  method;
 	private       Entity         entity;
 
-	private       HttpParams               params     = new BasicHttpParams();
-	private       Map<String, String>      headers    = new HashMap<>(0);
-	private final ArrayList<RequestSigner> signerList = new ArrayList<>(3);
+	private       HttpParams                params     = new BasicHttpParams();
+	private       Map<String, String>       headers    = new HashMap<>(0);
+	private final ArrayList<IRequestSigner> signerList = new ArrayList<>(3);
 
 	@Inject
 	public RequestBuilder(final RequestFactory requestFactory, @Assisted final String url) {
@@ -94,7 +94,7 @@ public class RequestBuilder {
 		return requestFactory.create(this);
 	}
 
-	public RequestBuilder sign(final RequestSigner requestSigner) {
+	public RequestBuilder sign(final IRequestSigner requestSigner) {
 		signerList.add(requestSigner);
 		return this;
 	}
@@ -103,7 +103,7 @@ public class RequestBuilder {
 		return url;
 	}
 
-	public ArrayList<RequestSigner> getSignerList() {
+	public ArrayList<IRequestSigner> getSignerList() {
 		return signerList;
 	}
 

@@ -13,7 +13,8 @@
  */
 package de.chaosfisch.youtubeuploader.db;
 
-import de.chaosfisch.google.youtube.*;
+import de.chaosfisch.google.youtube.upload.metadata.License;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 
 public class Template extends AbstractTemplate implements java.io.Serializable {
 

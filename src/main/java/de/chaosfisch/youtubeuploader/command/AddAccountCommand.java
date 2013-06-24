@@ -12,7 +12,6 @@ package de.chaosfisch.youtubeuploader.command;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.auth.IGoogleLogin;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 

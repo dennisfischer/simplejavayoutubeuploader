@@ -10,11 +10,11 @@
 
 package de.chaosfisch.youtubeuploader.controller;
 
-import de.chaosfisch.google.youtube.Asset;
-import de.chaosfisch.google.youtube.ClaimOption;
-import de.chaosfisch.google.youtube.ClaimType;
-import de.chaosfisch.google.youtube.Syndication;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Asset;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimOption;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimType;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import de.chaosfisch.youtubeuploader.db.Template;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.validation;
 
-import de.chaosfisch.google.youtube.TagParser;
+import de.chaosfisch.google.youtube.upload.metadata.TagParser;
 
 public class TagValidator implements Validator<String> {
 

@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.controller.renderer;
 
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;

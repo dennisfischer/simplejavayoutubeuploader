@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.converter;
 
-import de.chaosfisch.google.youtube.License;
+import de.chaosfisch.google.youtube.upload.metadata.License;
 import org.jooq.impl.EnumConverter;
 
 public class LicenseConverter extends EnumConverter<String, License> {

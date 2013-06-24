@@ -20,30 +20,29 @@ import com.google.inject.name.Named;
 import de.chaosfisch.exceptions.ErrorCode;
 import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.auth.AuthCode;
-import de.chaosfisch.google.auth.GDataRequestSigner;
-import de.chaosfisch.google.auth.IGoogleLogin;
-import de.chaosfisch.google.youtube.MetadataService;
-import de.chaosfisch.google.youtube.Playlist;
-import de.chaosfisch.google.youtube.PlaylistService;
-import de.chaosfisch.google.youtube.ResumeableManager;
-import de.chaosfisch.google.youtube.impl.MetadataCode;
-import de.chaosfisch.google.youtube.impl.ResumeInfo;
+import de.chaosfisch.google.auth.IGoogleRequestSigner;
+import de.chaosfisch.google.youtube.playlist.IPlaylistService;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
+import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
+import de.chaosfisch.google.youtube.upload.metadata.MetadataCode;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
+import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 import de.chaosfisch.http.IRequestUtil;
 import de.chaosfisch.serialization.IJsonSerializer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-import org.chaosfisch.services.EnddirService;
 import org.chaosfisch.services.ExtendedPlaceholders;
 import org.chaosfisch.streams.Throttle;
 import org.chaosfisch.streams.ThrottledOutputStream;
 import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
-import org.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
-import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
 import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
 import org.chaosfisch.youtubeuploader.youtubeuploader.ApplicationData;
@@ -91,34 +90,31 @@ public class UploadWorker extends Task<Void> {
 	private Upload upload;
 
 	@Inject
-	private       PlaylistService      playlistService;
+	private       IPlaylistService     playlistService;
 	@Inject
-	private       GDataRequestSigner   requestSigner;
+	private       IMetadataService     metadataService;
 	@Inject
-	private       MetadataService      metadataService;
+	private       IUploadService       uploadService;
 	@Inject
-	private       EnddirService        enddirService;
+	private       IAccountService      accountService;
 	@Inject
-	private       IGoogleLogin         authTokenHelper;
+	private       IGoogleRequestSigner requestSigner;
 	@Inject
 	private       Throttle             throttle;
 	@Inject
-	private       ResumeableManager    resumeableManager;
+	private       IResumeableManager   resumeableManager;
 	@Inject
 	private       ExtendedPlaceholders extendedPlacerholders;
 	private final EventBus             eventBus;
+
 	@Inject
-	private       PlaylistDao          playlistDao;
+	private EnddirService    enddirService;
 	@Inject
-	private       UploadDao            uploadDao;
+	private ICommandProvider commandProvider;
 	@Inject
-	private       AccountDao           accountDao;
+	private IRequestUtil     requestUtil;
 	@Inject
-	private       ICommandProvider     commandProvider;
-	@Inject
-	private       IRequestUtil         requestUtil;
-	@Inject
-	private       IJsonSerializer      jsonSerializer;
+	private IJsonSerializer  jsonSerializer;
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
 	@Inject
@@ -222,7 +218,7 @@ public class UploadWorker extends Task<Void> {
 		switch (currentStatus) {
 			case DONE:
 				upload.getStatus().setArchived(true);
-				uploadDao.update(upload);
+				uploadService.update(upload);
 				uploadProgress.done = true;
 				break;
 			case FAILED:
@@ -301,7 +297,7 @@ public class UploadWorker extends Task<Void> {
 		// Set the time uploaded started
 		final GregorianCalendar calendar = new GregorianCalendar();
 		upload.setDateOfStart(calendar);
-		uploadDao.update(upload);
+		uploadService.update(upload);
 
 		// Get File and Check if existing
 		fileToUpload = upload.getFile();
@@ -358,7 +354,7 @@ public class UploadWorker extends Task<Void> {
 		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
 		upload.setUploadurl(metadataService.createMetaData(atomData, fileToUpload, upload.getAccount()));
-		uploadDao.update(upload);
+		uploadService.update(upload);
 
 		// Log operation
 		logger.info("Uploadurl received: {}", upload.getUploadurl());
@@ -390,7 +386,7 @@ public class UploadWorker extends Task<Void> {
 
 	private void playlistAction() throws SystemException {
 		// Add video to playlist
-		for (final Playlist playlist : playlistDao.fetchByUpload(upload)) {
+		for (final Playlist playlist : upload.getPlaylists()) {
 			try {
 				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
 			} catch (final SystemException e) {
@@ -446,7 +442,7 @@ public class UploadWorker extends Task<Void> {
 		logger.info("Monetizing, Releasing, Partner-features, Saving...");
 
 		extendedPlacerholders.setFile(upload.getFile());
-		extendedPlacerholders.setPlaylists(playlistDao.fetchByUpload(upload));
+		extendedPlacerholders.setPlaylists(upload.getPlaylists());
 		extendedPlacerholders.register("{title}", upload.getMetadata().getTitle());
 		extendedPlacerholders.register("{description}", upload.getMetadata().getDescription());
 
@@ -471,7 +467,7 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	private void replacePlaceholders() {
-		final List<Playlist> playlists = playlistDao.fetchByUpload(upload);
+		final List<Playlist> playlists = upload.getPlaylists();
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists, resourceBundle);
 		final Metadata metadata = upload.getMetadata();
 		metadata.setTitle(extendedPlaceholders.replace(metadata.getTitle()));
@@ -487,7 +483,7 @@ public class UploadWorker extends Task<Void> {
 		upload.getStatus().setFailed(true);
 		upload.getStatus().setStatus(errorCode.getClass().getName() + '.' + errorCode.name());
 		upload.setDateOfStart(null);
-		uploadDao.update(upload);
+		uploadService.update(upload);
 		uploadProgress.failed = true;
 	}
 
@@ -519,7 +515,7 @@ public class UploadWorker extends Task<Void> {
 			//Properties
 			request.setRequestProperty("Content-Type", upload.getMimetype());
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-			requestSigner.setAuthHeader(authTokenHelper.getAuthHeader(upload.getAccount()));
+			requestSigner.setAccount(upload.getAccount());
 			requestSigner.sign(request);
 			request.connect();
 
@@ -543,7 +539,7 @@ public class UploadWorker extends Task<Void> {
 							}
 						};
 						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
-						uploadDao.update(upload);
+						uploadService.update(upload);
 						currentStatus = STATUS.POSTPROCESS;
 						break;
 					case 308:

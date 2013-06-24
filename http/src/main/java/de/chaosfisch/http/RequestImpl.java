@@ -40,7 +40,7 @@ class RequestImpl implements IRequest {
 
 		httpRequest.setParams(builder.getParams());
 
-		for (final RequestSigner signer : builder.getSignerList()) {
+		for (final IRequestSigner signer : builder.getSignerList()) {
 			signer.sign(httpRequest);
 		}
 

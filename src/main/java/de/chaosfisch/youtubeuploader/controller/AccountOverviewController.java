@@ -14,7 +14,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.youtubeuploader.controller.renderer.AccountListCellRenderer;
 import de.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import de.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;

@@ -22,8 +22,6 @@
     <orderEntry type="library" exported="" name="xpp3_min-1.1.4c" level="project" />
     <orderEntry type="library" exported="" name="xstream-1.4.3" level="project" />
     <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
-    <orderEntry type="library" exported="" name="httpcore-4.2.2" level="project" />
-    <orderEntry type="library" exported="" name="httpmime-4.2.2" level="project" />
     <orderEntry type="module" module-name="util" exported="" />
     <orderEntry type="module" module-name="http" exported="" />
     <orderEntry type="module" module-name="serialization" exported="" />

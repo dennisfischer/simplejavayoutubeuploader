@@ -8,6 +8,8 @@
  * Contributors: Dennis Fischer
  */
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -21,6 +23,6 @@ repositories {
 
 dependencies {
     compile 'org.apache.httpcomponents:httpclient:4.2.2', 'com.google.guava:guava:14+', 'com.google.inject:guice:+',
-            'com.google.inject.extensions:guice-assistedinject:+', 'org.slf4j:slf4j-api:+'
+            'com.google.inject.extensions:guice-assistedinject:+', 'org.slf4j:slf4j-api:+', 'org.apache.httpcomponents:httpmime:4.2.2'
 }
 

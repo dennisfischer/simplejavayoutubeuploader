@@ -11,7 +11,7 @@
 package de.chaosfisch.youtubeuploader.db.dao;
 
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.youtubeuploader.db.Template;
 import org.chaosfisch.youtubeuploader.db.generated.Tables;

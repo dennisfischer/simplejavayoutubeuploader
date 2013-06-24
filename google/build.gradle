@@ -8,6 +8,8 @@
  * Contributors: Dennis Fischer
  */
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -21,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.inject:guice:+', 'com.google.inject.extensions:guice-assistedinject:+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.guava:guava:14+', 'org.apache.httpcomponents:httpmime:4.2.2'
+    compile 'com.google.inject:guice:+', 'com.google.inject.extensions:guice-assistedinject:+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.guava:guava:14+'
     compile project(':util'), project(':http'), project(':serialization')
 }
 

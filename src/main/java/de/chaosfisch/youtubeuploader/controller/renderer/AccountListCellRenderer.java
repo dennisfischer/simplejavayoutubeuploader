@@ -13,7 +13,7 @@ package de.chaosfisch.youtubeuploader.controller.renderer;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.youtubeuploader.db.dao.PlaylistDao;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

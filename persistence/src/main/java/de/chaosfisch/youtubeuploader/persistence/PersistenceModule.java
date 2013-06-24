@@ -19,6 +19,7 @@ package de.chaosfisch.youtubeuploader.persistence;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.youtubeuploader.persistence.dao.DaoModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class PersistenceModule extends AbstractModule {
 	protected void configure() {
 		install(new DaoModule());
 		bind(IAccountService.class).to(AccountServiceImpl.class).in(Singleton.class);
+		bind(IUploadService.class).to(UploadServiceImpl.class).in(Singleton.class);
 
 		final File schema = new File(ApplicationData.HOME + "/SimpleJavaYoutubeUploader/schema.sql");
 		try (final InputStream inputStream = getClass().getResourceAsStream("/schema.sql")) {

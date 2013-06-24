@@ -10,8 +10,8 @@
 
 package de.chaosfisch.youtubeuploader.controller;
 
-import de.chaosfisch.google.youtube.Syndication;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import de.chaosfisch.youtubeuploader.db.Template;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

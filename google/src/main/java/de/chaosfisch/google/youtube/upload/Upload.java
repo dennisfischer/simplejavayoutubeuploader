@@ -14,7 +14,11 @@
 package de.chaosfisch.google.youtube.upload;
 
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.google.youtube.upload.metadata.Social;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
 import java.io.Serializable;

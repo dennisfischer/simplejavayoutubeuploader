@@ -13,7 +13,6 @@ package de.chaosfisch.google.youtube.upload;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import de.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
 import de.chaosfisch.util.ComputerUtil;
@@ -23,7 +22,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import org.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import org.chaosfisch.youtubeuploader.db.data.ActionOnFinish;
 import org.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import org.slf4j.Logger;
@@ -43,21 +41,16 @@ public class Uploader {
 	private final ExecutorService executorService = Executors.newFixedThreadPool(7);
 
 	private static final Logger logger = LoggerFactory.getLogger(Upload.class);
-	@Inject
-	private final Injector     injector;
-	@Inject
-	private       ComputerUtil computerUtil;
-	private final EventBus     eventBus;
-	private final UploadDao    uploadDao;
-	private final AccountDao   accountDao;
+
+	private       ComputerUtil   computerUtil;
+	private final EventBus       eventBus;
+	private final IUploadService uploadService;
 
 	@Inject
-	public Uploader(final EventBus eventBus, final UploadDao uploadDao, final AccountDao accountDao, final Injector injector) {
+	public Uploader(final EventBus eventBus, final IUploadService uploadService) {
 
 		this.eventBus = eventBus;
-		this.uploadDao = uploadDao;
-		this.accountDao = accountDao;
-		this.injector = injector;
+		this.uploadService = uploadService;
 		this.eventBus.register(this);
 		maxUploads.addListener(new ChangeListener<Number>() {
 
@@ -101,14 +94,14 @@ public class Uploader {
 
 	private synchronized void sendUpload() {
 		if (!executorService.isShutdown() && inProgressProperty.get() && hasFreeUploadSpace()) {
-			final Upload polled = uploadDao.fetchNextUpload();
+			final Upload polled = uploadService.findNextUpload();
 			if (null != polled) {
 				if (null == polled.getAccount()) {
 					polled.getStatus().setLocked(true);
-					uploadDao.update(polled);
+					uploadService.update(polled);
 				} else {
 					polled.getStatus().setRunning(true);
-					uploadDao.update(polled);
+					uploadService.update(polled);
 					final UploadWorker uploadWorker = injector.getInstance(UploadWorker.class);
 					uploadWorker.run(polled);
 					executorService.submit(uploadWorker);
@@ -129,7 +122,7 @@ public class Uploader {
 	private void uploadFinished(final Upload queue) {
 		runningUploads--;
 
-		final long leftUploads = uploadDao.countLeftUploads();
+		final long leftUploads = uploadService.countUnprocessed();
 		logger.info("Upload finished: {}; {}", queue.getMetadata().getTitle(), queue.getVideoid());
 		logger.info("Running uploads: {}", runningUploads);
 		logger.info("Left uploads: {}", leftUploads);
@@ -173,7 +166,7 @@ public class Uploader {
 			@Override
 			public Boolean call() {
 				while (!Thread.interrupted()) {
-					if (0 < uploadDao.countAvailableStartingUploads()) {
+					if (0 < uploadService.countReadyStarttime()) {
 						start();
 					}
 					try {

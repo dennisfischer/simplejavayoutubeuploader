@@ -19,20 +19,16 @@ import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import de.chaosfisch.google.auth.ClientLogin;
 import de.chaosfisch.google.auth.GDataRequestSigner;
-import de.chaosfisch.google.auth.IGoogleLogin;
-import de.chaosfisch.google.youtube.MetadataService;
-import de.chaosfisch.google.youtube.PlaylistService;
-import de.chaosfisch.google.youtube.ResumeableManager;
-import de.chaosfisch.google.youtube.ThumbnailService;
-import de.chaosfisch.google.youtube.impl.MetadataServiceImpl;
-import de.chaosfisch.google.youtube.impl.PlaylistServiceImpl;
-import de.chaosfisch.google.youtube.impl.ResumeableManagerImpl;
-import de.chaosfisch.google.youtube.impl.ThumbnailServiceImpl;
+import de.chaosfisch.google.auth.IGoogleRequestSigner;
+import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
+import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
 import de.chaosfisch.google.youtube.upload.Uploader;
+import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.google.youtube.upload.metadata.MetadataServiceImpl;
+import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
+import de.chaosfisch.google.youtube.upload.resume.ResumeableManagerImpl;
 import de.chaosfisch.http.RequestModule;
-import de.chaosfisch.http.RequestSigner;
 import de.chaosfisch.serialization.SerializationModule;
 import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
@@ -53,6 +49,8 @@ public class GuiceBindings extends AbstractModule {
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("org.chaosfisch.youtubeuploader.resources.application"));
 
+		bind(IGoogleRequestSigner.class).to(GDataRequestSigner.class);
+
 		mapCommands();
 		mapServices();
 		mapUtil();
@@ -63,8 +61,6 @@ public class GuiceBindings extends AbstractModule {
 
 	private void mapUtil() {
 		bind(FileChooser.class).in(Singleton.class);
-		bind(RequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
-		bind(IGoogleLogin.class).to(ClientLogin.class).in(Singleton.class);
 		bind(Throttle.class).in(Singleton.class);
 
 		final EventBus eventBus = new EventBus();
@@ -86,12 +82,10 @@ public class GuiceBindings extends AbstractModule {
 	}
 
 	private void mapServices() {
-		bind(PlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
-		bind(MetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
+		bind(IMetadataService.class).to(MetadataServiceImpl.class).in(Singleton.class);
 		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
-		bind(ThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
-		bind(ResumeableManager.class).to(ResumeableManagerImpl.class);
-		bind(IGoogleLogin.class).to(ClientLogin.class).in(Singleton.class);
+		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
+		bind(IResumeableManager.class).to(ResumeableManagerImpl.class);
 	}
 
 	private void mapCommands() {

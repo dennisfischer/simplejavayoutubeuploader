@@ -12,7 +12,7 @@ package de.chaosfisch.youtubeuploader.command;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.youtubeuploader.db.dao.UploadDao;
 import de.chaosfisch.youtubeuploader.db.validation.ByteLengthValidator;

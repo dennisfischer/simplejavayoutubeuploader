@@ -10,7 +10,7 @@
 
 package de.chaosfisch.services;
 
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.util.RegexpUtils;
 
 import java.io.File;

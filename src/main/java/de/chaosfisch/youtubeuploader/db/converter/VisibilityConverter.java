@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.converter;
 
-import de.chaosfisch.google.youtube.Visibility;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import org.jooq.impl.EnumConverter;
 
 public class VisibilityConverter extends EnumConverter<String, Visibility> {

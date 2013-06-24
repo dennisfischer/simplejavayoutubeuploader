@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtubeuploader.db.triggers;
 
-import de.chaosfisch.google.youtube.Playlist;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.util.EventBusUtil;
 import de.chaosfisch.youtubeuploader.db.events.ModelAddedEvent;
 import de.chaosfisch.youtubeuploader.db.events.ModelRemovedEvent;
