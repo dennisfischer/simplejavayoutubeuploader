@@ -15,7 +15,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
+import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.util.DesktopUtil;
 import de.chaosfisch.youtubeuploader.command.AbortUploadCommand;
 import de.chaosfisch.youtubeuploader.command.RemoveUploadCommand;
@@ -145,7 +145,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		}
 
 		@Subscribe
-		public void onUploadProgress(final UploadProgressEvent uploadProgress) {
+		public void onUploadProgress(final UploadJobProgressEvent uploadProgress) {
 
 			if (!uploadProgress.getUpload().equals(upload)) {
 				return;

@@ -10,12 +10,19 @@
 
 package de.chaosfisch.youtubeuploader.persistence;
 
+import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.http.IRequestSigner;
+import de.chaosfisch.http.RequestBuilderFactory;
 
 import java.util.List;
 
-class AccountServiceImpl implements IAccountService {
+class AccountServiceImpl extends de.chaosfisch.google.account.AccountServiceImpl {
+
+	@Inject
+	public AccountServiceImpl(final IRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory) {
+		super(requestSigner, requestBuilderFactory);
+	}
 
 	@Override
 	public List<Account> getAll() {

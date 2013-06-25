@@ -12,7 +12,7 @@ package de.chaosfisch.google.youtube.upload.events;
 
 import de.chaosfisch.google.youtube.upload.Upload;
 
-public class UploadProgressEvent {
+public class UploadJobProgressEvent {
 	private       long    diffBytes;
 	private       long    diffTime;
 	private final long    fileSize;
@@ -22,7 +22,7 @@ public class UploadProgressEvent {
 	public        boolean failed;
 	public        boolean done;
 
-	public UploadProgressEvent(final Upload upload, final long fileSize) {
+	public UploadJobProgressEvent(final Upload upload, final long fileSize) {
 		this.upload = upload;
 		this.fileSize = fileSize;
 	}

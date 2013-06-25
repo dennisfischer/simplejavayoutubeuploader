@@ -25,8 +25,8 @@ import de.chaosfisch.google.auth.AuthCode;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.upload.events.UploadAbortEvent;
-import de.chaosfisch.google.youtube.upload.events.UploadProgressEvent;
+import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
+import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.MetadataCode;
@@ -125,7 +125,7 @@ public class UploadWorker extends Task<Void> {
 	@Named("i18-resources")
 	private ResourceBundle resourceBundle;
 
-	private UploadProgressEvent uploadProgress;
+	private UploadJobProgressEvent uploadProgress;
 
 	@Inject
 	public UploadWorker(final EventBus eventBus) {
@@ -372,7 +372,7 @@ public class UploadWorker extends Task<Void> {
 	}
 
 	@Subscribe
-	public void onAbortUpload(final UploadAbortEvent uploadAbortEvent) {
+	public void onAbortUpload(final UploadJobAbortEvent uploadAbortEvent) {
 		if (uploadAbortEvent.getUpload().equals(upload)) {
 			currentStatus = STATUS.ABORTED;
 		}
@@ -502,7 +502,7 @@ public class UploadWorker extends Task<Void> {
 		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
 
 		if (null == uploadProgress) {
-			uploadProgress = new UploadProgressEvent(upload, fileSize);
+			uploadProgress = new UploadJobProgressEvent(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 
