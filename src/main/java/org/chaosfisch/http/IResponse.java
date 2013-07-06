@@ -23,4 +23,6 @@ public interface IResponse extends AutoCloseable {
 	String getContent() throws HttpIOException;
 
 	String getCurrentUrl();
+
+	void logDebug();
 }

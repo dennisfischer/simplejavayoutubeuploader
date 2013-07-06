@@ -13,7 +13,7 @@ package org.chaosfisch.youtubeuploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-	public static final String DEVELOPER_KEY = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
+	public static final String DEVELOPER_KEY = "AI39si7Yn_-4JxFU4cQhyS3dGovykXbfcT0EmLvzI4-xK90zNwdZu26e-neZ2_VCq0I0MikjHBV-g9VAcZUq2bg8Q9HXLfvcKw";
 	public static final String GDATA_VERSION = "2";
 	public static final String VERSION       = "3.0.1.1";
 	public static final int    RELEASE       = 11;

@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+
 package org.chaosfisch.youtubeuploader.db.events;
 
 public class ModelAddedEvent extends ModelEvent {

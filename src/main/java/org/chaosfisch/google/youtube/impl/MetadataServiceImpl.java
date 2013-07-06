@@ -161,13 +161,15 @@ public class MetadataServiceImpl implements MetadataService {
 		try (final IResponse response = request.execute()) {
 			// Check the response code for any problematic codes.
 			if (400 == response.getStatusCode()) {
-				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
+				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData)
+						.set("content", response.getContent());
 			}
 			// Check if uploadurl is available
 			if (null != response.getHeader("Location")) {
 				return response.getHeader("Location").getValue();
 			} else {
-				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getStatusCode());
+				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getStatusCode())
+						.set("content", response.getContent());
 			}
 		} catch (final IOException e) {
 			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);

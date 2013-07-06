@@ -21,6 +21,8 @@ import javafx.scene.layout.HBox;
 import org.chaosfisch.youtubeuploader.command.AddAccountCommand;
 import org.chaosfisch.youtubeuploader.db.dao.AccountDao;
 import org.chaosfisch.youtubeuploader.guice.CommandProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -47,6 +49,8 @@ public class AccountAddController {
 
 	@Inject
 	private AccountDao accountDao;
+
+	Logger logger = LoggerFactory.getLogger(AccountAddController.class);
 
 	@FXML
 	void addAccount(final ActionEvent event) {
@@ -97,6 +101,7 @@ public class AccountAddController {
 	private final class AcccountAddFailed implements EventHandler<WorkerStateEvent> {
 		@Override
 		public void handle(final WorkerStateEvent event) {
+			logger.error("FAILED", event.getSource().getException());
 			progressPane.setVisible(false);
 			nameTextfield.getStyleClass().add("input-invalid");
 			passwordTextfield.getStyleClass().add("input-invalid");

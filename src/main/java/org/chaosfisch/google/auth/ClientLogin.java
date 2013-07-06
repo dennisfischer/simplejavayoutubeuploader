@@ -18,6 +18,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.chaosfisch.exceptions.SystemException;
 import org.chaosfisch.http.*;
 import org.chaosfisch.youtubeuploader.db.generated.tables.pojos.Account;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,8 +30,9 @@ import java.util.HashMap;
 public class ClientLogin implements IGoogleLogin {
 
 	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
-	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
+	private static final String                   CLIENT_LOGIN_URL     = "https://www.google.com/accounts/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
+	private static final Logger                   logger               = LoggerFactory.getLogger(ClientLogin.class);
 
 	private final RequestSigner         requestSigner;
 	private final RequestBuilderFactory requestBuilderFactory;
@@ -72,12 +75,16 @@ public class ClientLogin implements IGoogleLogin {
 				.sign(requestSigner)
 				.build();
 
-		try (final IResponse IResponse = clientLoginRequest.execute()) {
-			if (200 != IResponse.getStatusCode()) {
-				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", IResponse.getStatusCode());
+		try (final IResponse response = clientLoginRequest.execute()) {
+			response.logDebug();
+			logger.info(response.getContent());
+
+			if (200 != response.getStatusCode()) {
+				throw new SystemException(AuthCode.RESPONSE_NOT_200).set("respons-code", response.getStatusCode())
+						.set("content", response.getContent());
 			}
 
-			return IResponse.getContent();
+			return response.getContent();
 		} catch (final HttpIOException e) {
 			throw new SystemException(e, AuthCode.AUTH_IO_ERROR);
 		}

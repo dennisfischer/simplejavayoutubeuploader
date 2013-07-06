@@ -9,6 +9,7 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
+
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" target="System.err">
         <encoder>
