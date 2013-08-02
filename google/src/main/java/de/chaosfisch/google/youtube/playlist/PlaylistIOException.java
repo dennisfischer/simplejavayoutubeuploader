@@ -8,10 +8,10 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.exceptions;
+package de.chaosfisch.google.youtube.playlist;
 
-public interface ErrorCode {
-	int getNumber();
-
-	String name();
+public class PlaylistIOException extends Exception {
+	public PlaylistIOException(final Exception e) {
+		super(e);
+	}
 }

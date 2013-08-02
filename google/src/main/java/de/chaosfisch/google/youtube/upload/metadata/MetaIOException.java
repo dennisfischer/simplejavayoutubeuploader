@@ -8,21 +8,10 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.auth;
+package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.exceptions.ErrorCode;
-
-public enum AuthCode implements ErrorCode {
-	AUTH_IO_ERROR(301), RESPONSE_NOT_200(302),;
-
-	private final int number;
-
-	AuthCode(final int number) {
-		this.number = number;
-	}
-
-	@Override
-	public int getNumber() {
-		return number;
+public class MetaIOException extends Exception {
+	public MetaIOException(final Exception e) {
+		super(e);
 	}
 }

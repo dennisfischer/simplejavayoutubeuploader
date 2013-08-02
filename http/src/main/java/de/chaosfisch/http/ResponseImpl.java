@@ -28,6 +28,7 @@ class ResponseImpl implements IResponse {
 
 	private final HttpResponse response;
 	private final IRequestUtil requestUtil;
+	private       String       content;
 
 	@Inject
 	public ResponseImpl(final IRequestUtil requestUtil, @Assisted final HttpResponse response) {
@@ -55,11 +56,15 @@ class ResponseImpl implements IResponse {
 
 	@Override
 	public String getContent() throws HttpIOException {
-		try {
-			return EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
-		} catch (ParseException | IOException e) {
-			throw new HttpIOException(getStatusCode(), getCurrentUrl(), response.getStatusLine().toString());
+		if (null == content) {
+			try {
+				content = EntityUtils.toString(response.getEntity(), Charsets.UTF_8);
+			} catch (ParseException | IOException e) {
+				throw new HttpIOException(getStatusCode(), getCurrentUrl(), response.getStatusLine().toString());
+			}
 		}
+
+		return content;
 	}
 
 	@Override

@@ -12,7 +12,6 @@ package de.chaosfisch.youtubeuploader.controller;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.Uploader;
-import de.chaosfisch.streams.Throttle;
 import de.chaosfisch.youtubeuploader.ActionOnFinish;
 import de.chaosfisch.youtubeuploader.command.StartUploadCommand;
 import de.chaosfisch.youtubeuploader.command.StopUploadCommand;

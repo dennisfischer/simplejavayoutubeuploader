@@ -8,21 +8,16 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.youtube.upload.resume;
+package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.google.youtube.upload.Upload;
+public class MetaDeadEndException extends Exception {
+	private final String currentUrl;
 
-public interface IResumeableManager {
-	String parseVideoId(String atomData);
+	public MetaDeadEndException(final String currentUrl) {
+		this.currentUrl = currentUrl;
+	}
 
-	boolean canContinue();
-
-	ResumeInfo fetchResumeInfo(Upload upload);
-
-	void setRetries(int i);
-
-	int getRetries();
-
-	void delay();
-
+	public String getCurrentUrl() {
+		return currentUrl;
+	}
 }

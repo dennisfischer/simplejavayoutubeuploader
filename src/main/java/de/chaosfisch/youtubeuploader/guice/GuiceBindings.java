@@ -32,7 +32,6 @@ import de.chaosfisch.http.RequestModule;
 import de.chaosfisch.serialization.SerializationModule;
 import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
-import de.chaosfisch.streams.Throttle;
 import de.chaosfisch.util.EventBusUtil;
 import de.chaosfisch.util.TextUtil;
 import de.chaosfisch.youtubeuploader.controller.UploadController;

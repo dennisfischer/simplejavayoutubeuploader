@@ -10,20 +10,20 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.exceptions.ErrorCode;
+public class MetaBadRequestException extends Exception {
+	private final String atomData;
+	private final int    statusCode;
 
-public enum MetadataCode implements ErrorCode {
-	BAD_REQUEST(201), LOCATION_MISSING(202), REQUEST_IO_ERROR(203), DEAD_END(204), BROWSER_IO_ERROR(205);
-
-	private final int number;
-
-	MetadataCode(final int number) {
-		this.number = number;
+	public MetaBadRequestException(final String atomData, final int statusCode) {
+		this.atomData = atomData;
+		this.statusCode = statusCode;
 	}
 
-	@Override
-	public int getNumber() {
-		return number;
+	public String getAtomData() {
+		return atomData;
 	}
 
+	public int getStatusCode() {
+		return statusCode;
+	}
 }

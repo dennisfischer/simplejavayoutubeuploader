@@ -11,7 +11,6 @@
 package de.chaosfisch.google.youtube.playlist;
 
 import com.google.common.collect.Multimap;
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.atom.Feed;
 
@@ -45,11 +44,8 @@ public interface IPlaylistService {
 	 * 		for the added video
 	 *
 	 * @return the received response feed from YouTube
-	 *
-	 * @throws SystemException
-	 * 		if request fails
 	 */
-	Feed addVideoToPlaylist(Playlist playlist, String videoId) throws SystemException;
+	Feed addVideoToPlaylist(Playlist playlist, String videoId) throws PlaylistIOException;
 
 	/**
 	 * Adds this playlist to the account specified inside the playlist object.
@@ -59,11 +55,8 @@ public interface IPlaylistService {
 	 * 		the playlist to be added
 	 *
 	 * @return the received response feed from YouTube
-	 *
-	 * @throws SystemException
-	 * 		if request fails
 	 */
-	Feed addYoutubePlaylist(Playlist playlist) throws SystemException;
+	Feed addYoutubePlaylist(Playlist playlist) throws PlaylistIOException, PlaylistInvalidResponseException;
 
 	/**
 	 * Synchronizes given accounts and playlists with YouTube.
@@ -72,9 +65,6 @@ public interface IPlaylistService {
 	 * 		to be synced
 	 *
 	 * @return Multimap containing all done changes
-	 *
-	 * @throws SystemException
-	 * 		if request fails
 	 */
-	Multimap<Account, Playlist> synchronizePlaylists(List<Account> accounts) throws SystemException;
+	Multimap<Account, Playlist> synchronizePlaylists(List<Account> accounts) throws PlaylistSynchException, PlaylistIOException;
 }

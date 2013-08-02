@@ -16,36 +16,15 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import de.chaosfisch.exceptions.ErrorCode;
-import de.chaosfisch.exceptions.SystemException;
-import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.auth.AuthCode;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
-import de.chaosfisch.google.youtube.playlist.IPlaylistService;
-import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.google.youtube.upload.metadata.Metadata;
-import de.chaosfisch.google.youtube.upload.metadata.MetadataCode;
-import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 import de.chaosfisch.http.IRequestUtil;
-import de.chaosfisch.serialization.IJsonSerializer;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import org.chaosfisch.services.ExtendedPlaceholders;
-import org.chaosfisch.streams.Throttle;
-import org.chaosfisch.streams.ThrottledOutputStream;
-import org.chaosfisch.youtubeuploader.command.RefreshPlaylistsCommand;
-import org.chaosfisch.youtubeuploader.db.events.ModelUpdatedEvent;
-import org.chaosfisch.youtubeuploader.guice.ICommandProvider;
-import org.chaosfisch.youtubeuploader.youtubeuploader.ApplicationData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,22 +32,19 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ResourceBundle;
 
 public class UploadWorker extends Task<Void> {
 
-	private static final int SC_OK                = 200;
-	private static final int SC_CREATED           = 201;
-	private static final int SC_RESUME_INCOMPLETE = 308;
+	private static final int  SC_OK                = 200;
+	private static final int  SC_CREATED           = 201;
+	private static final int  SC_RESUME_INCOMPLETE = 308;
+	private static final long chunkSize            = 10485760;
 
 	/** Status enum for handling control flow */
 	protected enum STATUS {
-		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD, POSTPROCESS_BROWSER;
+		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD;
 		private ErrorCode errorCode;
 
 		private ErrorCode getErrorCode() {
@@ -94,8 +70,6 @@ public class UploadWorker extends Task<Void> {
 	private Upload upload;
 
 	@Inject
-	private       IPlaylistService     playlistService;
-	@Inject
 	private       IMetadataService     metadataService;
 	@Inject
 	private       IUploadService       uploadService;
@@ -104,26 +78,12 @@ public class UploadWorker extends Task<Void> {
 	@Inject
 	private       IGoogleRequestSigner requestSigner;
 	@Inject
-	private       Throttle             throttle;
-	@Inject
 	private       IResumeableManager   resumeableManager;
-	@Inject
-	private       ExtendedPlaceholders extendedPlacerholders;
 	private final EventBus             eventBus;
-
 	@Inject
-	private EnddirService    enddirService;
-	@Inject
-	private ICommandProvider commandProvider;
-	@Inject
-	private IRequestUtil     requestUtil;
-	@Inject
-	private IJsonSerializer  jsonSerializer;
+	private       IRequestUtil         requestUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
-	@Inject
-	@Named("i18-resources")
-	private ResourceBundle resourceBundle;
 
 	private UploadJobProgressEvent uploadProgress;
 
@@ -162,10 +122,6 @@ public class UploadWorker extends Task<Void> {
 						break;
 					case POSTPROCESS:
 						// Schritt 4: Postprocessing
-						postprocess();
-						break;
-					case POSTPROCESS_BROWSER:
-						postprocessBrowser();
 						break;
 					default:
 						break;
@@ -237,7 +193,6 @@ public class UploadWorker extends Task<Void> {
 				break;
 		}
 		eventBus.post(uploadProgress);
-		updatePlaylists();
 	}
 
 	private void resumeinfo() throws SystemException {
@@ -289,8 +244,8 @@ public class UploadWorker extends Task<Void> {
 
 	private long generateEndBytes(final long start, final double bytesToUpload) {
 		final long end;
-		if (0 < bytesToUpload - throttle.chunkSize.get()) {
-			end = start + throttle.chunkSize.get() - 1;
+		if (0 < bytesToUpload - chunkSize) {
+			end = start + chunkSize - 1;
 		} else {
 			end = start + (int) bytesToUpload - 1;
 		}
@@ -309,43 +264,41 @@ public class UploadWorker extends Task<Void> {
 		if (!fileToUpload.exists()) {
 			throw new FileNotFoundException("Datei existiert nicht.");
 		}
-
-		updatePlaylists();
 	}
 
-	private void updatePlaylists() {
-		final Object monitor = new Object();
-
-		final EventHandler<WorkerStateEvent> eventHandler = new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(final WorkerStateEvent workerStateEvent) {
-				currentStatus = STATUS.METADATA;
-				synchronized (monitor) {
-					monitor.notifyAll();
-				}
-			}
-		};
-
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				final RefreshPlaylistsCommand command = commandProvider.get(RefreshPlaylistsCommand.class);
-				command.accounts = new Account[] {upload.getAccount()};
-				command.setOnFailed(eventHandler);
-				command.setOnSucceeded(eventHandler);
-				command.start();
-			}
-		});
-
-		//noinspection SynchronizationOnLocalVariableOrMethodParameter
-		synchronized (monitor) {
-			try {
-				monitor.wait();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
+	//	private void updatePlaylists() {
+	//		final Object monitor = new Object();
+	//
+	//		final EventHandler<WorkerStateEvent> eventHandler = new EventHandler<WorkerStateEvent>() {
+	//			@Override
+	//			public void handle(final WorkerStateEvent workerStateEvent) {
+	//				currentStatus = STATUS.METADATA;
+	//				synchronized (monitor) {
+	//					monitor.notifyAll();
+	//				}
+	//			}
+	//		};
+	//
+	//		Platform.runLater(new Runnable() {
+	//			@Override
+	//			public void run() {
+	//				final RefreshPlaylistsCommand command = commandProvider.get(RefreshPlaylistsCommand.class);
+	//				command.accounts = new Account[] {upload.getAccount()};
+	//				command.setOnFailed(eventHandler);
+	//				command.setOnSucceeded(eventHandler);
+	//				command.start();
+	//			}
+	//		});
+	//
+	//		//noinspection SynchronizationOnLocalVariableOrMethodParameter
+	//		synchronized (monitor) {
+	//			try {
+	//				monitor.wait();
+	//			} catch (InterruptedException e) {
+	//				Thread.currentThread().interrupt();
+	//			}
+	//		}
+	//	}
 
 	private void metadata() throws SystemException {
 
@@ -355,7 +308,6 @@ public class UploadWorker extends Task<Void> {
 			return;
 		}
 
-		replacePlaceholders();
 		final String atomData = metadataService.atomBuilder(upload);
 		upload.setUploadurl(metadataService.createMetaData(atomData, fileToUpload, upload.getAccount()));
 		uploadService.update(upload);
@@ -378,45 +330,44 @@ public class UploadWorker extends Task<Void> {
 		}
 	}
 
-	@Subscribe
-	public void onUploadUpdated(final ModelUpdatedEvent modelUpdatedEvent) {
-		if (modelUpdatedEvent.getModel() instanceof Upload && upload.equals(modelUpdatedEvent.getModel())) {
-			upload = (Upload) modelUpdatedEvent.getModel();
+	public void updateUpload(final Upload received) {
+		if (upload.equals(received)) {
+			upload = received;
 			if (null != uploadProgress) {
 				uploadProgress.setUpload(upload);
 			}
 		}
 	}
 
-	private void playlistAction() throws SystemException {
-		// Add video to playlist
-		for (final Playlist playlist : upload.getPlaylists()) {
-			try {
-				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
-			} catch (final SystemException e) {
-				throw new SystemException(e, UploadCode.PLAYLIST_IO_ERROR);
-			}
-		}
-	}
+	//	private void playlistAction() throws SystemException {
+	//		// Add video to playlist
+	//		for (final Playlist playlist : upload.getPlaylists()) {
+	//			try {
+	//				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
+	//			} catch (final SystemException e) {
+	//				throw new SystemException(e, UploadCode.PLAYLIST_IO_ERROR);
+	//			}
+	//		}
+	//	}
 
-	private void postprocessBrowser() throws SystemException {
-		try {
-			browserAction();
-		} finally {
-			currentStatus = STATUS.DONE;
-		}
-	}
+	//	private void postprocessBrowser() throws SystemException {
+	//		try {
+	//			browserAction();
+	//		} finally {
+	//			currentStatus = STATUS.DONE;
+	//		}
+	//	}
 
-	private void postprocess() throws SystemException {
-		try {
-			playlistAction();
-			updateUploadAction();
-			logfileAction();
-			enddirAction();
-		} finally {
-			currentStatus = STATUS.POSTPROCESS_BROWSER;
-		}
-	}
+	//	private void postprocess() throws SystemException {
+	//		try {
+	//			playlistAction();
+	//			updateUploadAction();
+	//			logfileAction();
+	//			enddirAction();
+	//		} finally {
+	//			currentStatus = STATUS.POSTPROCESS_BROWSER;
+	//		}
+	//	}
 
 	private void updateUploadAction() throws SystemException {
 		final String atomData = metadataService.atomBuilder(upload);
@@ -427,57 +378,57 @@ public class UploadWorker extends Task<Void> {
 		}
 	}
 
-	private void logfileAction() throws SystemException {
-		try {
-			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
-			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), jsonSerializer
-					.toJSON(upload)
-					.getBytes(Charsets.UTF_8));
-		} catch (IOException e) {
-			throw new SystemException(e, UploadCode.LOGFILE_IO_ERROR);
-		}
-	}
-
-	private void browserAction() throws SystemException {
-		if (null == upload.getDateOfRelease() && (null == upload.getThumbnail() || !upload.getThumbnail()
-				.exists()) && !upload.getMonetization().getClaim()) {
-			return;
-		}
-		logger.info("Monetizing, Releasing, Partner-features, Saving...");
-
-		extendedPlacerholders.setFile(upload.getFile());
-		extendedPlacerholders.setPlaylists(upload.getPlaylists());
-		extendedPlacerholders.register("{title}", upload.getMetadata().getTitle());
-		extendedPlacerholders.register("{description}", upload.getMetadata().getDescription());
-
-		final Monetization monetization = upload.getMonetization();
-		monetization.setTitle(extendedPlacerholders.replace(monetization.getTitle()));
-		monetization.setDescription(extendedPlacerholders.replace(monetization.getDescription()));
-		monetization.setCustomId(extendedPlacerholders.replace(monetization.getCustomId()));
-		monetization.setNotes(extendedPlacerholders.replace(monetization.getNotes()));
-
-		monetization.setTmsid(extendedPlacerholders.replace(monetization.getTmsid()));
-		monetization.setIsan(extendedPlacerholders.replace(monetization.getEidr()));
-		monetization.setTitleepisode(extendedPlacerholders.replace(monetization.getTitleepisode()));
-		monetization.setSeasonNb(extendedPlacerholders.replace(monetization.getSeasonNb()));
-		monetization.setEpisodeNb(extendedPlacerholders.replace(monetization.getEpisodeNb()));
-		upload.setThumbnail(extendedPlacerholders.replace(upload.getThumbnail()));
-
-		metadataService.activateBrowserfeatures(upload);
-	}
-
-	private void enddirAction() {
-		enddirService.moveFileByUpload(fileToUpload, upload);
-	}
-
-	private void replacePlaceholders() {
-		final List<Playlist> playlists = upload.getPlaylists();
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists, resourceBundle);
-		final Metadata metadata = upload.getMetadata();
-		metadata.setTitle(extendedPlaceholders.replace(metadata.getTitle()));
-		metadata.setDescription(extendedPlaceholders.replace(metadata.getDescription()));
-		metadata.setKeywords(extendedPlaceholders.replace(metadata.getKeywords()));
-	}
+	//	private void logfileAction() throws SystemException {
+	//		try {
+	//			Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
+	//			Files.write(Paths.get(ApplicationData.DATA_DIR + "/uploads/" + upload.getVideoid() + ".json"), jsonSerializer
+	//					.toJSON(upload)
+	//					.getBytes(Charsets.UTF_8));
+	//		} catch (IOException e) {
+	//			throw new SystemException(e, UploadCode.LOGFILE_IO_ERROR);
+	//		}
+	//	}
+	//
+	//	private void browserAction() throws SystemException {
+	//		if (null == upload.getDateOfRelease() && (null == upload.getThumbnail() || !upload.getThumbnail()
+	//				.exists()) && !upload.getMonetization().getClaim()) {
+	//			return;
+	//		}
+	//		logger.info("Monetizing, Releasing, Partner-features, Saving...");
+	//
+	//		extendedPlacerholders.setFile(upload.getFile());
+	//		extendedPlacerholders.setPlaylists(upload.getPlaylists());
+	//		extendedPlacerholders.register("{title}", upload.getMetadata().getTitle());
+	//		extendedPlacerholders.register("{description}", upload.getMetadata().getDescription());
+	//
+	//		final Monetization monetization = upload.getMonetization();
+	//		monetization.setTitle(extendedPlacerholders.replace(monetization.getTitle()));
+	//		monetization.setDescription(extendedPlacerholders.replace(monetization.getDescription()));
+	//		monetization.setCustomId(extendedPlacerholders.replace(monetization.getCustomId()));
+	//		monetization.setNotes(extendedPlacerholders.replace(monetization.getNotes()));
+	//
+	//		monetization.setTmsid(extendedPlacerholders.replace(monetization.getTmsid()));
+	//		monetization.setIsan(extendedPlacerholders.replace(monetization.getEidr()));
+	//		monetization.setTitleepisode(extendedPlacerholders.replace(monetization.getTitleepisode()));
+	//		monetization.setSeasonNb(extendedPlacerholders.replace(monetization.getSeasonNb()));
+	//		monetization.setEpisodeNb(extendedPlacerholders.replace(monetization.getEpisodeNb()));
+	//		upload.setThumbnail(extendedPlacerholders.replace(upload.getThumbnail()));
+	//
+	//		metadataService.activateBrowserfeatures(upload);
+	//	}
+	//
+	//	private void enddirAction() {
+	//		enddirService.moveFileByUpload(fileToUpload, upload);
+	//	}
+	//
+	//	private void replacePlaceholders() {
+	//		final List<Playlist> playlists = upload.getPlaylists();
+	//		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), playlists, resourceBundle);
+	//		final Metadata metadata = upload.getMetadata();
+	//		metadata.setTitle(extendedPlaceholders.replace(metadata.getTitle()));
+	//		metadata.setDescription(extendedPlaceholders.replace(metadata.getDescription()));
+	//		metadata.setKeywords(extendedPlaceholders.replace(metadata.getKeywords()));
+	//	}
 
 	public void run(final Upload upload) {
 		this.upload = upload;
@@ -524,8 +475,7 @@ public class UploadWorker extends Task<Void> {
 			request.connect();
 
 			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
-				 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(new ThrottledOutputStream(request
-						 .getOutputStream(), throttle))) {
+				 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
 				final long skipped = bufferedInputStream.skip(start);
 				if (start != skipped) {
 					throw new SystemException(UploadCode.FILE_IO_ERROR);
@@ -553,7 +503,8 @@ public class UploadWorker extends Task<Void> {
 					default:
 						throw new SystemException(UploadCode.UPLOAD_RESPONSE_UNKNOWN).set("code", request.getResponseCode());
 				}
-				bytesToUpload -= throttle.chunkSize.get();
+
+				bytesToUpload -= chunkSize;
 				start = end + 1;
 			}
 		} catch (final FileNotFoundException ex) {

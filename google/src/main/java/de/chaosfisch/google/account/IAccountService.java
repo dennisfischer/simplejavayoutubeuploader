@@ -10,7 +10,6 @@
 
 package de.chaosfisch.google.account;
 
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.auth.Authentication;
 
 import java.util.List;
@@ -42,11 +41,8 @@ public interface IAccountService {
 	 *
 	 * @param account
 	 * 		Account to check
-	 *
-	 * @throws SystemException
-	 * 		(AuthCode) if authentication fails
 	 */
-	void verifyAccount(Account account) throws SystemException;
+	void verifyAccount(Account account);
 
 	/**
 	 * Fetches HTML Content of the clientLogin resultpage
@@ -57,9 +53,6 @@ public interface IAccountService {
 	 * 		URL to redirect to
 	 *
 	 * @return String received server response
-	 *
-	 * @throws SystemException
-	 * 		if fails request
 	 */
-	String getLoginContent(Account account, String redirectUrl) throws SystemException;
+	String getLoginContent(Account account, String redirectUrl);
 }

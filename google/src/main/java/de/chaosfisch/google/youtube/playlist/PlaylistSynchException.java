@@ -8,21 +8,16 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.youtube.upload.resume;
+package de.chaosfisch.google.youtube.playlist;
 
-import de.chaosfisch.google.youtube.upload.Upload;
+public class PlaylistSynchException extends Exception {
+	private final int statusCode;
 
-public interface IResumeableManager {
-	String parseVideoId(String atomData);
+	public PlaylistSynchException(final int statusCode) {
+		this.statusCode = statusCode;
+	}
 
-	boolean canContinue();
-
-	ResumeInfo fetchResumeInfo(Upload upload);
-
-	void setRetries(int i);
-
-	int getRetries();
-
-	void delay();
-
+	public int getStatusCode() {
+		return statusCode;
+	}
 }

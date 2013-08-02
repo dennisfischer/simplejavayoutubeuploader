@@ -10,18 +10,15 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-import de.chaosfisch.exceptions.ErrorCode;
+public class ThumbnailJsonException extends Exception {
+	private final String json;
 
-public enum ThumbnailCode implements ErrorCode {
-	FILE_NOT_FOUND(101), UPLOAD_RESPONSE(102), UPLOAD_JSON(103);
-	private final int number;
-
-	ThumbnailCode(final int number) {
-		this.number = number;
+	public ThumbnailJsonException(final String json, final Exception e) {
+		super(e);
+		this.json = json;
 	}
 
-	@Override
-	public int getNumber() {
-		return number;
+	public String getJson() {
+		return json;
 	}
 }

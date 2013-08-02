@@ -8,20 +8,16 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.youtube.upload.resume;
+package de.chaosfisch.google.youtube.playlist;
 
-import de.chaosfisch.exceptions.ErrorCode;
+public class PlaylistInvalidResponseException extends Exception {
+	private final int statusCode;
 
-public enum ResumeCode implements ErrorCode {
-	IO_ERROR(401), UNEXPECTED_RESPONSE_CODE(402);
-	private final int number;
-
-	ResumeCode(final int number) {
-		this.number = number;
+	public PlaylistInvalidResponseException(final int statusCode) {
+		this.statusCode = statusCode;
 	}
 
-	@Override
-	public int getNumber() {
-		return number;
+	public int getStatusCode() {
+		return statusCode;
 	}
 }

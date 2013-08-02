@@ -10,6 +10,8 @@
 
 package de.chaosfisch.google.youtube.upload;
 
+import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
+
 import java.util.List;
 
 public interface IUploadService {
@@ -31,4 +33,10 @@ public interface IUploadService {
 	int countUnprocessed();
 
 	int countReadyStarttime();
+
+	String fetchUploadUrl(Upload upload);
+
+	boolean uploadChunk(Upload upload);
+
+	ResumeInfo fetchResumeInfo(Upload upload);
 }

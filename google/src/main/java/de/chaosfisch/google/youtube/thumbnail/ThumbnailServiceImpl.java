@@ -12,7 +12,6 @@ package de.chaosfisch.google.youtube.thumbnail;
 
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.http.HttpIOException;
 import de.chaosfisch.http.IRequest;
 import de.chaosfisch.http.IResponse;
@@ -22,6 +21,7 @@ import de.chaosfisch.http.entity.EntityBuilder;
 import de.chaosfisch.serialization.IJsonSerializer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class ThumbnailServiceImpl implements IThumbnailService {
 
@@ -35,10 +35,10 @@ public class ThumbnailServiceImpl implements IThumbnailService {
 	}
 
 	@Override
-	public Integer upload(final String content, final File thumbnail, final String videoid) throws SystemException {
+	public Integer upload(final String content, final File thumbnail, final String videoid) throws FileNotFoundException, ThumbnailResponseException, ThumbnailJsonException {
 
 		if (!thumbnail.exists()) {
-			throw new SystemException(ThumbnailCode.FILE_NOT_FOUND).set("filename", thumbnail.getName());
+			throw new FileNotFoundException(thumbnail.getName());
 		}
 
 		final IRequest thumbnailPost = requestBuilderFactory.create("http://www.youtube.com/my_thumbnail_post")
@@ -50,10 +50,10 @@ public class ThumbnailServiceImpl implements IThumbnailService {
 			try {
 				return parseResponse(json);
 			} catch (final Exception e) {
-				throw new SystemException(e, ThumbnailCode.UPLOAD_JSON).set("json", json);
+				throw new ThumbnailJsonException(json, e);
 			}
 		} catch (final HttpIOException e) {
-			throw new SystemException(e, ThumbnailCode.UPLOAD_RESPONSE);
+			throw new ThumbnailResponseException(e);
 		}
 	}
 

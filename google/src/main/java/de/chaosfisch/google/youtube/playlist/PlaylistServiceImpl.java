@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.atom.Feed;
 import de.chaosfisch.google.atom.VideoEntry;
@@ -53,7 +52,7 @@ public abstract class PlaylistServiceImpl implements IPlaylistService {
 	}
 
 	@Override
-	public Feed addVideoToPlaylist(final Playlist playlist, final String videoId) throws SystemException {
+	public Feed addVideoToPlaylist(final Playlist playlist, final String videoId) throws PlaylistIOException {
 		final VideoEntry submitFeed = new VideoEntry();
 		submitFeed.id = videoId;
 		submitFeed.mediaGroup = null;
@@ -70,12 +69,12 @@ public abstract class PlaylistServiceImpl implements IPlaylistService {
 			logger.debug("Video added to playlist!");
 			return xmlSerializer.fromXML(response.getContent(), Feed.class);
 		} catch (final HttpIOException e) {
-			throw new SystemException(e, PlaylistCode.ADD_VIDEO_IO_ERROR);
+			throw new PlaylistIOException(e);
 		}
 	}
 
 	@Override
-	public Feed addYoutubePlaylist(final Playlist playlist) throws SystemException {
+	public Feed addYoutubePlaylist(final Playlist playlist) throws PlaylistIOException, PlaylistInvalidResponseException {
 		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
 
 		final VideoEntry entry = new VideoEntry();
@@ -97,17 +96,17 @@ public abstract class PlaylistServiceImpl implements IPlaylistService {
 				.build();
 		try (final IResponse response = request.execute()) {
 			if (SC_OK != response.getStatusCode() && SC_CREATED != response.getStatusCode()) {
-				throw new SystemException(PlaylistCode.ADD_PLAYLIST_UNEXPECTED_RESPONSE_CODE);
+				throw new PlaylistInvalidResponseException(response.getStatusCode());
 			}
 			logger.info("Added playlist to youtube");
 			return xmlSerializer.fromXML(response.getContent(), Feed.class);
 		} catch (final HttpIOException e) {
-			throw new SystemException(e, PlaylistCode.ADD_PLAYLIST_IO_ERROR);
+			throw new PlaylistIOException(e);
 		}
 	}
 
 	@Override
-	public Multimap<Account, Playlist> synchronizePlaylists(final List<Account> accounts) throws SystemException {
+	public Multimap<Account, Playlist> synchronizePlaylists(final List<Account> accounts) throws PlaylistSynchException, PlaylistIOException {
 		logger.info("Synchronizing playlists.");
 
 		final Multimap<Account, Playlist> data = ArrayListMultimap.create();
@@ -120,13 +119,13 @@ public abstract class PlaylistServiceImpl implements IPlaylistService {
 					.build();
 			try (final IResponse response = request.execute()) {
 				if (SC_OK != response.getStatusCode()) {
-					throw new SystemException(PlaylistCode.SYNCH_UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+					throw new PlaylistSynchException(response.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
 				data.putAll(account, _parsePlaylistsFeed(account, response.getContent()));
 				cleanByAccount(account);
 			} catch (final HttpIOException e) {
-				throw new SystemException(e, PlaylistCode.SYNCH_IO_ERROR);
+				throw new PlaylistIOException(e);
 			}
 		}
 		logger.info("Playlists synchronized");

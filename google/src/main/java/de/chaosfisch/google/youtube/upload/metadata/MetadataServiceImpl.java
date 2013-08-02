@@ -20,14 +20,14 @@ import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
-import de.chaosfisch.google.youtube.thumbnail.ThumbnailCode;
+import de.chaosfisch.google.youtube.thumbnail.ThumbnailJsonException;
+import de.chaosfisch.google.youtube.thumbnail.ThumbnailResponseException;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.http.HttpIOException;
@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -144,7 +145,7 @@ public class MetadataServiceImpl implements IMetadataService {
 	}
 
 	@Override
-	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws SystemException {
+	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException, MetaIOException {
 		// Upload atomData and fetch uploadUrl
 		requestSigner.setAccount(account);
 		final IRequest request = requestBuilderFactory.create(METADATA_CREATE_RESUMEABLE_URL)
@@ -156,21 +157,21 @@ public class MetadataServiceImpl implements IMetadataService {
 		try (final IResponse response = request.execute()) {
 			// Check the response code for any problematic codes.
 			if (SC_BAD_REQUEST == response.getStatusCode()) {
-				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData);
+				throw new MetaBadRequestException(atomData, response.getStatusCode());
 			}
 			// Check if uploadurl is available
 			if (null != response.getHeader("Location")) {
 				return response.getHeader("Location").getValue();
 			} else {
-				throw new SystemException(MetadataCode.LOCATION_MISSING).set("status", response.getStatusCode());
+				throw new MetaLocationMissingException(response.getStatusCode());
 			}
 		} catch (final IOException e) {
-			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
+			throw new MetaIOException(e);
 		}
 	}
 
 	@Override
-	public void updateMetaData(final String atomData, final String videoId, final Account account) throws SystemException {
+	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
 		requestSigner.setAccount(account);
 		final IRequest request = requestBuilderFactory.create(METADATA_UPDATE_URL + '/' + videoId)
 				.put(new EntityBuilder().charset(Charsets.UTF_8).stringEntity(atomData).build())
@@ -180,23 +181,22 @@ public class MetadataServiceImpl implements IMetadataService {
 
 		try (final IResponse response = request.execute()) {
 			if (SC_OK != response.getStatusCode()) {
-				throw new SystemException(MetadataCode.BAD_REQUEST).set("atomdata", atomData)
-						.set("code", response.getStatusCode());
+				throw new MetaBadRequestException(atomData, response.getStatusCode());
 			}
 		} catch (IOException e) {
-			throw new SystemException(e, MetadataCode.REQUEST_IO_ERROR);
+			throw new MetaIOException(e);
 		}
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) throws SystemException {
+	public void activateBrowserfeatures(final Upload upload) throws MetaIOException, MetaDeadEndException {
 		try {
 			final String googleContent = accountService.getLoginContent(upload.getAccount(), String.
 					format(REDIRECT_URL, upload.getVideoid()));
 
 			changeMetadata(redirectToYoutube(googleContent), upload);
 		} catch (final IOException e) {
-			throw new SystemException(e, MetadataCode.BROWSER_IO_ERROR);
+			throw new MetaIOException(e);
 		}
 	}
 
@@ -205,12 +205,12 @@ public class MetadataServiceImpl implements IMetadataService {
 				.length()));
 	}
 
-	private String redirectToYoutube(final String content) throws IOException, SystemException {
+	private String redirectToYoutube(final String content) throws IOException, MetaDeadEndException {
 		final IRequest request = requestBuilderFactory.create(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern
 				.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
 		try (final IResponse response = request.execute()) {
 			if (Arrays.asList(deadEnds).contains(response.getCurrentUrl())) {
-				throw new SystemException(MetadataCode.DEAD_END);
+				throw new MetaDeadEndException(response.getCurrentUrl());
 			}
 			return response.getContent();
 		}
@@ -393,12 +393,10 @@ public class MetadataServiceImpl implements IMetadataService {
 			if (null != upload.getThumbnail() && upload.getThumbnail().exists()) {
 				thumbnailId = thumbnailService.upload(content, upload.getThumbnail(), upload.getVideoid());
 			}
-		} catch (final SystemException ex) {
-			if (ex.getErrorCode() instanceof ThumbnailCode) {
-				logger.warn("Thumbnail not set", ex);
-			} else {
-				logger.warn("Unknown exception", ex);
-			}
+		} catch (final ThumbnailJsonException | ThumbnailResponseException e) {
+			logger.warn("Thumbnail not set", e);
+		} catch (final FileNotFoundException e) {
+			logger.warn("Thumbnail not found {}", upload.getThumbnail().getAbsolutePath(), e);
 		}
 
 		if (null != thumbnailId) {

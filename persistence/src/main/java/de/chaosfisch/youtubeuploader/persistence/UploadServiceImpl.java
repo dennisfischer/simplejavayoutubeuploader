@@ -10,12 +10,11 @@
 
 package de.chaosfisch.youtubeuploader.persistence;
 
-import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 
 import java.util.List;
 
-public class UploadServiceImpl implements IUploadService {
+public class UploadServiceImpl extends de.chaosfisch.google.youtube.upload.UploadServiceImpl {
 	@Override
 	public List<Upload> getAll() {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.

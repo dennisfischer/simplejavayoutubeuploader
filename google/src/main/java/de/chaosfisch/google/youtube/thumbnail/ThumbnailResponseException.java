@@ -8,21 +8,12 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.youtube.upload.resume;
+package de.chaosfisch.google.youtube.thumbnail;
 
-import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.http.HttpIOException;
 
-public interface IResumeableManager {
-	String parseVideoId(String atomData);
-
-	boolean canContinue();
-
-	ResumeInfo fetchResumeInfo(Upload upload);
-
-	void setRetries(int i);
-
-	int getRetries();
-
-	void delay();
-
+public class ThumbnailResponseException extends Exception {
+	public ThumbnailResponseException(final HttpIOException e) {
+		super(e);
+	}
 }

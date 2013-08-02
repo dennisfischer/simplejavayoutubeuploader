@@ -10,7 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.upload.Upload;
 
@@ -19,9 +18,9 @@ import java.io.File;
 public interface IMetadataService {
 	String atomBuilder(Upload upload);
 
-	String createMetaData(String atomData, File fileToUpload, Account account) throws SystemException;
+	String createMetaData(String atomData, File fileToUpload, Account account) throws MetaBadRequestException, MetaLocationMissingException, MetaIOException;
 
-	void updateMetaData(String atomData, String videoId, Account account) throws SystemException;
+	void updateMetaData(String atomData, String videoId, Account account) throws MetaBadRequestException, MetaIOException;
 
-	void activateBrowserfeatures(Upload upload) throws SystemException;
+	void activateBrowserfeatures(Upload upload) throws MetaIOException, MetaDeadEndException;
 }

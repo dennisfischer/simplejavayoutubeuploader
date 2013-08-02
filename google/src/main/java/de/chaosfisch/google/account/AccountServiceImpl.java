@@ -14,7 +14,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import de.chaosfisch.exceptions.SystemException;
-import de.chaosfisch.google.auth.AuthCode;
 import de.chaosfisch.google.auth.Authentication;
 import de.chaosfisch.http.*;
 import de.chaosfisch.http.entity.Entity;

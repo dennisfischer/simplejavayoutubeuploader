@@ -10,9 +10,8 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-import de.chaosfisch.exceptions.SystemException;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public interface IThumbnailService {
 	/**
@@ -26,9 +25,6 @@ public interface IThumbnailService {
 	 * 		the matching videoid
 	 *
 	 * @return Integer containing the "thumbnail_id"
-	 *
-	 * @throws SystemException
-	 * 		if thumbnail upload fails. This may be due to failure during request or incorrect response.
 	 */
-	Integer upload(String content, File thumbnail, String videoid) throws SystemException;
+	Integer upload(String content, File thumbnail, String videoid) throws FileNotFoundException, ThumbnailResponseException, ThumbnailJsonException;
 }
