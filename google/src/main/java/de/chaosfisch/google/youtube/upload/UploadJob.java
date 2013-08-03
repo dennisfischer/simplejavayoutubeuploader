@@ -44,7 +44,7 @@ public class UploadJob implements Callable<Upload> {
 
 	/** Status enum for handling control flow */
 	protected enum STATUS {
-		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD;
+		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
 
 	private static final int  SC_OK                = 200;

@@ -8,17 +8,9 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.db.events;
+package de.chaosfisch.uploader.validation;
 
-public class ModelEvent {
-	private final Object model;
+public interface Validator<T> {
 
-	public ModelEvent(final Object model) {
-		this.model = model;
-	}
-
-	public Object getModel() {
-		return model;
-	}
-
+	boolean validate(T object);
 }

@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.db.validation;
+package de.chaosfisch.uploader.validation;
 
 public enum UploadValidationCode {
 	UPLOAD_NULL, ACCOUNT_NULL, FILE_NULL, TITLE_NULL, CATEGORY_NULL, TITLE_ILLEGAL, DESCRIPTION_LENGTH, DESCRIPTION_ILLEGAL, TAGS_ILLEGAL, THUMBNAIL_SIZE

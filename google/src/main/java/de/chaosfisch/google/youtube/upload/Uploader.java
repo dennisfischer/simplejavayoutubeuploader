@@ -35,13 +35,12 @@ public class Uploader {
 	private final Thread consumer = new UploadFinishProcessor();
 
 	private final EventBus          eventBus;
-	private final IUploadService    uploadService;
+	private       IUploadService    uploadService;
 	private final IUploadJobFactory uploadJobFactory;
 
 	@Inject
-	public Uploader(final EventBus eventBus, final IUploadService uploadService, final IUploadJobFactory uploadJobFactory) {
+	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory) {
 		this.eventBus = eventBus;
-		this.uploadService = uploadService;
 		this.uploadJobFactory = uploadJobFactory;
 	}
 
@@ -106,6 +105,10 @@ public class Uploader {
 				}
 			}
 		}
+	}
+
+	public void setUploadService(final IUploadService uploadService) {
+		this.uploadService = uploadService;
 	}
 
 	private class UploadFinishProcessor extends Thread {

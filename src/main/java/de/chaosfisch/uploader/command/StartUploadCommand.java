@@ -11,21 +11,21 @@
 package de.chaosfisch.uploader.command;
 
 import com.google.inject.Inject;
-import de.chaosfisch.google.youtube.upload.Uploader;
+import de.chaosfisch.google.youtube.upload.IUploadService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 public class StartUploadCommand extends Service<Void> {
 
 	@Inject
-	private Uploader uploader;
+	private IUploadService uploadService;
 
 	@Override
 	protected Task<Void> createTask() {
 		return new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				uploader.start();
+				uploadService.startUploading();
 				return null;
 			}
 		};

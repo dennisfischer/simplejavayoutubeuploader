@@ -12,6 +12,8 @@
 
 
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -25,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.inject:guice:+', 'com.google.inject.extensions:guice-assistedinject:+', 'com.thoughtworks.xstream:xstream:1.4.3',
+    compile 'com.google.inject:guice:3+', 'com.google.inject.extensions:guice-assistedinject:3+', 'com.thoughtworks.xstream:xstream:1.4.3',
             'com.google.guava:guava:14+'
     compile files('/lib/asyncretry.jar')
     compile project(':util'), project(':http'), project(':serialization')

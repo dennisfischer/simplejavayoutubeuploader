@@ -12,7 +12,6 @@ package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -21,10 +20,10 @@ import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.License;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Category;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.google.youtube.upload.metadata.Social;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.command.RefreshPlaylistsCommand;
 import de.chaosfisch.uploader.command.RemoveTemplateCommand;
@@ -32,13 +31,10 @@ import de.chaosfisch.uploader.command.UpdateTemplateCommand;
 import de.chaosfisch.uploader.command.UploadControllerAddCommand;
 import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.controller.renderer.PlaylistGridCell;
-import de.chaosfisch.uploader.db.events.ModelAddedEvent;
-import de.chaosfisch.uploader.db.events.ModelRemovedEvent;
-import de.chaosfisch.uploader.db.events.ModelUpdatedEvent;
-import de.chaosfisch.uploader.db.validation.UploadValidationCode;
 import de.chaosfisch.uploader.guice.ICommandProvider;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
+import de.chaosfisch.uploader.validation.UploadValidationCode;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -266,8 +262,7 @@ public class UploadController {
 		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
 		command.upload = upload;
 		command.account = uploadAccount.getValue();
-		command.playlists = new Playlist[playlistTargetList.size()];
-		playlistTargetList.toArray(command.playlists);
+		command.playlists = playlistTargetList;
 		command.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
@@ -463,8 +458,7 @@ public class UploadController {
 		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
 		command.template = toTemplate(templates.getValue());
 		command.account = uploadAccount.getValue();
-		command.playlists = new Playlist[playlistTargetList.size()];
-		playlistTargetList.toArray(command.playlists);
+		command.playlists = playlistTargetList;
 		command.start();
 	}
 
@@ -531,6 +525,8 @@ public class UploadController {
 		refreshPlaylists(null);
 	}
 
+
+	/* CHECK ME FIXME
 	@Subscribe
 	public void onModelAdded(final ModelAddedEvent event) {
 		Platform.runLater(new Runnable() {
@@ -550,8 +546,8 @@ public class UploadController {
 						templates.getSelectionModel().selectFirst();
 					}
 
-				} else if (event.getModel() instanceof Playlist && playlistService.fetchOneAccountByPlaylist((Playlist) event
-						.getModel()).equals(uploadAccount.getValue())) {
+				} else if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount()
+						.equals(uploadAccount.getValue())) {
 					playlistSourceList.add((Playlist) event.getModel());
 				}
 			}
@@ -568,8 +564,8 @@ public class UploadController {
 				} else if (event.getModel() instanceof Template) {
 					templatesList.set(templatesList.indexOf(event.getModel()), (Template) event.getModel());
 					templates.getSelectionModel().select((Template) event.getModel());
-				} else if (event.getModel() instanceof Playlist && playlistService.fetchOneAccountByPlaylist((Playlist) event
-						.getModel()).equals(uploadAccount.getValue())) {
+				} else if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount().
+						equals(uploadAccount.getValue())) {
 					if (((Playlist) event.getModel()).getHidden()) {
 						playlistSourceList.remove(event.getModel());
 						playlistTargetList.remove(event.getModel());
@@ -609,6 +605,8 @@ public class UploadController {
 
 	}
 
+	*/
+
 	private void initData() {
 		visibilityList.addAll(Visibility.values());
 		videoresponsesList.addAll(Videoresponse.values());
@@ -634,9 +632,9 @@ public class UploadController {
 		uploadFile.setConverter(new UploadFileListViewConverter());
 		idProperty.addListener(new UploadIdInvalidationListener());
 		try {
-			uploadPartnerController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/uploader/view/UploadPartner.fxml"), resources)
+			uploadPartnerController = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/UploadPartner.fxml"), resources)
 					.getController();
-			uploadMonetizationController = fxmlLoader.load(getClass().getResource("/org/chaosfisch/uploader/view/UploadMonetization.fxml"), resources)
+			uploadMonetizationController = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/UploadMonetization.fxml"), resources)
 					.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -723,9 +721,9 @@ public class UploadController {
 
 	private Upload toUpload(final Upload upload) {
 		upload.setId(idProperty.getValue());
-		upload.setCategory(uploadCategory.getValue());
-		upload.setCommentvote(uploadCommentvote.isSelected());
-		upload.setComment(uploadComment.getValue());
+		upload.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
+		upload.setFile(uploadFile.getValue());
+		upload.setThumbnail(new File(uploadThumbnail.getText()));
 
 		if (null != started.getValue()) {
 			final GregorianCalendar cal = new GregorianCalendar();
@@ -737,24 +735,36 @@ public class UploadController {
 			cal.setTimeInMillis(release.getValue().getTimeInMillis());
 			upload.setDateOfRelease(cal);
 		}
-		upload.setDescription(uploadDescription.getText());
-		upload.setEmbed(uploadEmbed.isSelected());
-		upload.setEnddir(enddirProperty.getValue());
-		upload.setFile(uploadFile.getValue());
-		upload.setKeywords(uploadTags.getText());
-		upload.setLicense(uploadLicense.getValue());
-		upload.setRate(uploadRate.isSelected());
 
-		upload.setThumbnail(uploadThumbnail.getText());
-		upload.setTitle(uploadTitle.getText());
+		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
+		metadata.setCategory(uploadCategory.getValue());
+		metadata.setDescription(uploadDescription.getText());
+		metadata.setKeywords(uploadTags.getText());
+		metadata.setLicense(uploadLicense.getValue());
+		metadata.setTitle(uploadTitle.getText());
 
-		upload.setVisibility(uploadVisibility.getValue());
-		upload.setVideoresponse(uploadVideoresponse.getValue());
+		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
+		permissions.setCommentvote(uploadCommentvote.isSelected());
+		permissions.setComment(uploadComment.getValue());
+		permissions.setEmbed(uploadEmbed.isSelected());
+		permissions.setRate(uploadRate.isSelected());
+		permissions.setVisibility(uploadVisibility.getValue());
+		permissions.setVideoresponse(uploadVideoresponse.getValue());
 
-		upload.setFacebook(uploadFacebook.isSelected());
-		upload.setTwitter(uploadTwitter.isSelected());
-		upload.setMessage(uploadMessage.getText());
-		upload.setMonetizePartner(monetizePartner.isSelected());
+		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
+		social.setFacebook(uploadFacebook.isSelected());
+		social.setTwitter(uploadTwitter.isSelected());
+		social.setMessage(uploadMessage.getText());
+
+		final Monetization monetization = null == upload.getMonetization() ?
+										  new Monetization() :
+										  upload.getMonetization();
+		monetization.setPartner(monetizePartner.isSelected());
+
+		upload.setMetadata(metadata);
+		upload.setPermissions(permissions);
+		upload.setSocial(social);
+		upload.setMonetization(monetization);
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.toUpload(upload);
@@ -766,30 +776,45 @@ public class UploadController {
 	}
 
 	private Template toTemplate(final Template template) {
-		template.setCategory(uploadCategory.getValue());
-		template.setCommentvote(uploadCommentvote.isSelected());
-		template.setComment(uploadComment.getValue());
-		template.setDescription(uploadDescription.getText());
+
 		template.setDefaultdir(Strings.isNullOrEmpty(uploadDefaultdir.getText()) ?
 							   null :
 							   defaultDirProperty.getValue());
-		template.setEmbed(uploadEmbed.isSelected());
 
 		template.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
-		template.setKeywords(uploadTags.getText());
-		template.setLicense(uploadLicense.getValue());
-		template.setRate(uploadRate.isSelected());
+		template.setThumbnail(new File(uploadThumbnail.getText()));
 
-		template.setThumbnail(uploadThumbnail.getText());
-		template.setTitle(uploadTitle.getText());
+		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
+		metadata.setCategory(uploadCategory.getValue());
+		metadata.setDescription(uploadDescription.getText());
+		metadata.setKeywords(uploadTags.getText());
+		metadata.setLicense(uploadLicense.getValue());
+		metadata.setTitle(uploadTitle.getText());
 
-		template.setVisibility(uploadVisibility.getValue());
-		template.setVideoresponse(uploadVideoresponse.getValue());
+		final Permissions permissions = null == template.getPermissions() ?
+										new Permissions() :
+										template.getPermissions();
+		permissions.setCommentvote(uploadCommentvote.isSelected());
+		permissions.setComment(uploadComment.getValue());
+		permissions.setEmbed(uploadEmbed.isSelected());
+		permissions.setRate(uploadRate.isSelected());
+		permissions.setVisibility(uploadVisibility.getValue());
+		permissions.setVideoresponse(uploadVideoresponse.getValue());
 
-		template.setFacebook(uploadFacebook.isSelected());
-		template.setTwitter(uploadTwitter.isSelected());
-		template.setMessage(uploadMessage.getText());
-		template.setMonetizePartner(monetizePartner.isSelected());
+		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
+		social.setFacebook(uploadFacebook.isSelected());
+		social.setTwitter(uploadTwitter.isSelected());
+		social.setMessage(uploadMessage.getText());
+
+		final Monetization monetization = null == template.getMonetization() ?
+										  new Monetization() :
+										  template.getMonetization();
+		monetization.setPartner(monetizePartner.isSelected());
+
+		template.setMetadata(metadata);
+		template.setPermissions(permissions);
+		template.setSocial(social);
+		template.setMonetization(monetization);
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.toTemplate(template);
@@ -805,30 +830,33 @@ public class UploadController {
 
 		uploadStore = upload;
 		idProperty.setValue(upload.getId());
-		uploadCategory.setValue(upload.getCategory());
-		uploadCommentvote.setSelected(upload.getCommentvote());
-		uploadComment.setValue(upload.getComment());
-
 		started.setValue(upload.getDateOfStart());
 		release.setValue(upload.getDateOfRelease());
-
-		uploadDescription.setText(upload.getDescription());
-		uploadEmbed.setSelected(upload.getEmbed());
 		enddirProperty.setValue(upload.getEnddir());
 		uploadFile.setValue(upload.getFile());
-		uploadTags.setText(upload.getKeywords());
-		uploadLicense.setValue(upload.getLicense());
-		uploadRate.setSelected(upload.getRate());
+		uploadThumbnail.setText(upload.getThumbnail().getAbsolutePath());
 
-		uploadThumbnail.setText(upload.getThumbnail());
-		uploadTitle.setText(upload.getTitle());
-		uploadVisibility.setValue(upload.getVisibility());
-		uploadVideoresponse.setValue(upload.getVideoresponse());
-		uploadFacebook.setSelected(upload.getFacebook());
-		uploadTwitter.setSelected(upload.getTwitter());
-		uploadMessage.setText(upload.getMessage());
+		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
+		uploadCategory.setValue(metadata.getCategory());
+		uploadDescription.setText(metadata.getDescription());
+		uploadTags.setText(metadata.getKeywords());
+		uploadLicense.setValue(metadata.getLicense());
+		uploadTitle.setText(metadata.getTitle());
 
-		monetizePartner.setSelected(upload.getMonetizePartner());
+		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
+		uploadCommentvote.setSelected(permissions.getCommentvote());
+		uploadComment.setValue(permissions.getComment());
+		uploadEmbed.setSelected(permissions.getEmbed());
+		uploadRate.setSelected(permissions.getRate());
+		uploadVisibility.setValue(permissions.getVisibility());
+		uploadVideoresponse.setValue(permissions.getVideoresponse());
+
+		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
+		uploadFacebook.setSelected(social.getFacebook());
+		uploadTwitter.setSelected(social.getTwitter());
+		uploadMessage.setText(social.getMessage());
+
+		monetizePartner.setSelected(null == upload.getMonetization() ? false : upload.getMonetization().getPartner());
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.fromUpload(upload);
@@ -867,26 +895,36 @@ public class UploadController {
 
 		idProperty.setValue(null);
 		uploadStore = null;
-		uploadCategory.setValue(template.getCategory());
-		uploadCommentvote.setSelected(template.getCommentvote());
-		uploadComment.setValue(template.getComment());
-		uploadDescription.setText(template.getDescription());
-		uploadEmbed.setSelected(template.getEmbed());
 		enddirProperty.setValue(template.getEnddir());
-		uploadTags.setText(template.getKeywords());
-		uploadLicense.setValue(template.getLicense());
-		uploadRate.setSelected(template.getRate());
-		uploadThumbnail.setText(template.getThumbnail());
-		uploadTitle.setText(template.getTitle());
-		uploadVisibility.setValue(template.getVisibility());
-		uploadVideoresponse.setValue(template.getVideoresponse());
-		uploadFacebook.setSelected(template.getFacebook());
-		uploadTwitter.setSelected(template.getTwitter());
-		uploadMessage.setText(template.getMessage());
+		uploadThumbnail.setText(template.getThumbnail().getAbsolutePath());
 		defaultDirProperty.setValue(template.getDefaultdir());
 		enddirProperty.setValue(template.getEnddir());
 
-		monetizePartner.setSelected(template.getMonetizePartner());
+		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
+		uploadCategory.setValue(metadata.getCategory());
+		uploadDescription.setText(metadata.getDescription());
+		uploadTags.setText(metadata.getKeywords());
+		uploadLicense.setValue(metadata.getLicense());
+		uploadTitle.setText(metadata.getTitle());
+
+		final Permissions permissions = null == template.getPermissions() ?
+										new Permissions() :
+										template.getPermissions();
+		uploadCommentvote.setSelected(permissions.getCommentvote());
+		uploadComment.setValue(permissions.getComment());
+		uploadEmbed.setSelected(permissions.getEmbed());
+		uploadRate.setSelected(permissions.getRate());
+		uploadVisibility.setValue(permissions.getVisibility());
+		uploadVideoresponse.setValue(permissions.getVideoresponse());
+
+		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
+		uploadFacebook.setSelected(social.getFacebook());
+		uploadTwitter.setSelected(social.getTwitter());
+		uploadMessage.setText(social.getMessage());
+
+		monetizePartner.setSelected(null == template.getMonetization() ?
+									false :
+									template.getMonetization().getPartner());
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.fromTemplate(template);
@@ -894,7 +932,7 @@ public class UploadController {
 			uploadMonetizationController.fromTemplate(template);
 		}
 
-		uploadAccount.getSelectionModel().select(accountService.get(template.getAccountId()));
+		uploadAccount.getSelectionModel().select(template.getAccount());
 		if (null == uploadAccount.getValue()) {
 			uploadAccount.getSelectionModel().selectFirst();
 		}
@@ -982,7 +1020,7 @@ public class UploadController {
 			playlistSourceList.clear();
 			playlistTargetList.clear();
 			if (null != newValue) {
-				playlistSourceList.addAll(playlistService.fetchUnhidden(newValue.getId()));
+				playlistSourceList.addAll(playlistService.fetchUnhiddenByAccount(newValue));
 			}
 			_triggerPlaylist();
 

@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.controller;
 
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import de.chaosfisch.uploader.template.Template;
 import javafx.collections.FXCollections;
@@ -62,33 +63,47 @@ public class UploadMonetizationController {
 	}
 
 	public void fromUpload(final Upload upload) {
-		monetizeOverlay.setSelected(null != upload.getMonetizeOverlay() && upload.getMonetizeOverlay());
-		monetizeTrueView.setSelected(null != upload.getMonetizeTrueview() && upload.getMonetizeTrueview());
-		monetizeProduct.setSelected(null != upload.getMonetizeProduct() && upload.getMonetizeProduct());
-		monetizeSyndication.setValue(upload.getMonetizeSyndication());
+		final Monetization monetization = null == upload.getMonetization() ?
+										  new Monetization() :
+										  upload.getMonetization();
+		fromMonetization(monetization);
 	}
 
 	public void fromTemplate(final Template template) {
-		monetizeOverlay.setSelected(null != template.getMonetizeOverlay() && template.getMonetizeOverlay());
-		monetizeTrueView.setSelected(null != template.getMonetizeTrueview() && template.getMonetizeTrueview());
-		monetizeProduct.setSelected(null != template.getMonetizeProduct() && template.getMonetizeProduct());
-		monetizeSyndication.setValue(template.getMonetizeSyndication());
+		final Monetization monetization = null == template.getMonetization() ?
+										  new Monetization() :
+										  template.getMonetization();
+		fromMonetization(monetization);
+	}
+
+	private void fromMonetization(final Monetization monetization) {
+		monetizeOverlay.setSelected(null != monetization.getOverlay() && monetization.getOverlay());
+		monetizeTrueView.setSelected(null != monetization.getTrueview() && monetization.getTrueview());
+		monetizeProduct.setSelected(null != monetization.getProduct() && monetization.getProduct());
+		monetizeSyndication.setValue(monetization.getSyndication());
 	}
 
 	public Upload toUpload(final Upload upload) {
-		upload.setMonetizeOverlay(monetizeOverlay.isSelected());
-		upload.setMonetizeTrueview(monetizeTrueView.isSelected());
-		upload.setMonetizeProduct(monetizeProduct.isSelected());
-		upload.setMonetizeSyndication(monetizeSyndication.getValue());
+		final Monetization monetization = null == upload.getMonetization() ?
+										  new Monetization() :
+										  upload.getMonetization();
+		toMonetization(monetization);
 		return upload;
 	}
 
 	public Template toTemplate(final Template template) {
-		template.setMonetizeOverlay(monetizeOverlay.isSelected());
-		template.setMonetizeTrueview(monetizeTrueView.isSelected());
-		template.setMonetizeProduct(monetizeProduct.isSelected());
-		template.setMonetizeSyndication(monetizeSyndication.getValue());
+		final Monetization monetization = null == template.getMonetization() ?
+										  new Monetization() :
+										  template.getMonetization();
+		toMonetization(monetization);
 		return template;
+	}
+
+	private void toMonetization(final Monetization monetization) {
+		monetization.setOverlay(monetizeOverlay.isSelected());
+		monetization.setTrueview(monetizeTrueView.isSelected());
+		monetization.setProduct(monetizeProduct.isSelected());
+		monetization.setSyndication(monetizeSyndication.getValue());
 	}
 
 	public Node getNode() {

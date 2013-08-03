@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.controller;
 
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Asset;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimOption;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimType;
@@ -148,99 +149,86 @@ public class UploadPartnerController {
 	}
 
 	public void fromUpload(final Upload upload) {
-		monetizeAsset.setValue(upload.getMonetizeAsset());
-		monetizeClaimType.setValue(upload.getMonetizeClaimtype());
-		monetizeClaimOption.setValue(upload.getMonetizeClaimoption());
-		monetizeDescription.setText(upload.getMonetizeDescription());
-		monetizeEIDR.setText(upload.getMonetizeEidr());
-		monetizeEpisodeNb.setText(upload.getMonetizeEpisodeNb());
-		monetizeID.setText(upload.getMonetizeId());
-		monetizeISAN.setText(upload.getMonetizeIsan());
-		monetizeNotes.setText(upload.getMonetizeNotes());
-		monetizeSeasonNb.setText(upload.getMonetizeSeasonNb());
-		monetizeSyndication.setValue(upload.getMonetizeSyndication());
-		monetizeTMSID.setText(upload.getMonetizeTmsid());
-		monetizeTitle.setText(upload.getMonetizeTitle());
-		monetizeTitleEpisode.setText(upload.getMonetizeTitleepisode());
-
-		monetizeClaim.setSelected(null != upload.getMonetizeClaim() && upload.getMonetizeClaim());
-		monetizeOverlay.setSelected(null != upload.getMonetizeOverlay() && upload.getMonetizeOverlay());
-		monetizeTrueview.setSelected(null != upload.getMonetizeTrueview() && upload.getMonetizeTrueview());
-		monetizeProduct.setSelected(null != upload.getMonetizeProduct() && upload.getMonetizeProduct());
-		monetizeInstream.setSelected(null != upload.getMonetizeInstream() && upload.getMonetizeInstream());
-		monetizeInstreamDefaults.setSelected(null != upload.getMonetizeInstreamDefaults() && upload.getMonetizeInstreamDefaults());
+		final Monetization monetization = null == upload.getMonetization() ?
+										  new Monetization() :
+										  upload.getMonetization();
+		fromMonetization(monetization);
 	}
 
 	public void fromTemplate(final Template template) {
-		monetizeAsset.setValue(template.getMonetizeAsset());
-		monetizeClaimType.setValue(template.getMonetizeClaimtype());
-		monetizeClaimOption.setValue(template.getMonetizeClaimoption());
-		monetizeDescription.setText(template.getMonetizeDescription());
-		monetizeEIDR.setText(template.getMonetizeEidr());
-		monetizeEpisodeNb.setText(template.getMonetizeEpisodeNb());
-		monetizeID.setText(template.getMonetizeId());
-		monetizeISAN.setText(template.getMonetizeIsan());
-		monetizeNotes.setText(template.getMonetizeNotes());
-		monetizeSeasonNb.setText(template.getMonetizeSeasonNb());
-		monetizeSyndication.setValue(template.getMonetizeSyndication());
-		monetizeTMSID.setText(template.getMonetizeTmsid());
-		monetizeTitle.setText(template.getMonetizeTitle());
-		monetizeTitleEpisode.setText(template.getMonetizeTitleepisode());
+		final Monetization monetization = null == template.getMonetization() ?
+										  new Monetization() :
+										  template.getMonetization();
+		fromMonetization(monetization);
+	}
 
-		monetizeClaim.setSelected(null != template.getMonetizeClaim() && template.getMonetizeClaim());
-		monetizeOverlay.setSelected(null != template.getMonetizeOverlay() && template.getMonetizeOverlay());
-		monetizeTrueview.setSelected(null != template.getMonetizeTrueview() && template.getMonetizeTrueview());
-		monetizeProduct.setSelected(null != template.getMonetizeProduct() && template.getMonetizeProduct());
-		monetizeInstream.setSelected(null != template.getMonetizeInstream() && template.getMonetizeInstream());
-		monetizeInstreamDefaults.setSelected(null != template.getMonetizeInstreamDefaults() && template.getMonetizeInstreamDefaults());
+	private void fromMonetization(final Monetization monetization) {
+		monetizeAsset.setValue(monetization.getAsset());
+		monetizeClaimType.setValue(monetization.getClaimtype());
+		monetizeClaimOption.setValue(monetization.getClaimoption());
+		monetizeDescription.setText(monetization.getDescription());
+		monetizeEIDR.setText(monetization.getEidr());
+		monetizeEpisodeNb.setText(monetization.getEpisodeNb());
+		monetizeID.setText(monetization.getCustomId());
+		monetizeISAN.setText(monetization.getIsan());
+		monetizeNotes.setText(monetization.getNotes());
+		monetizeSeasonNb.setText(monetization.getSeasonNb());
+		monetizeSyndication.setValue(monetization.getSyndication());
+		monetizeTMSID.setText(monetization.getTmsid());
+		monetizeTitle.setText(monetization.getTitle());
+		monetizeTitleEpisode.setText(monetization.getTitleepisode());
+
+		monetizeClaim.setSelected(null != monetization.getClaim() && monetization.getClaim());
+		monetizeOverlay.setSelected(null != monetization.getOverlay() && monetization.getOverlay());
+		monetizeTrueview.setSelected(null != monetization.getTrueview() && monetization.getTrueview());
+		monetizeProduct.setSelected(null != monetization.getProduct() && monetization.getProduct());
+		monetizeInstream.setSelected(null != monetization.getInstream() && monetization.getInstream());
+		monetizeInstreamDefaults.setSelected(null != monetization.getInstreamDefaults() && monetization.getInstreamDefaults());
 	}
 
 	public Upload toUpload(final Upload upload) {
-		upload.setMonetizeAsset(monetizeAsset.getValue());
-		upload.setMonetizeClaim(monetizeClaim.isSelected());
-		upload.setMonetizeClaimoption(monetizeClaimOption.getValue());
-		upload.setMonetizeClaimtype(monetizeClaimType.getValue());
-		upload.setMonetizeDescription(monetizeDescription.getText());
-		upload.setMonetizeEidr(monetizeEIDR.getText());
-		upload.setMonetizeEpisodeNb(monetizeEpisodeNb.getText());
-		upload.setMonetizeId(monetizeID.getText());
-		upload.setMonetizeIsan(monetizeISAN.getText());
-		upload.setMonetizeInstream(monetizeInstream.isSelected());
-		upload.setMonetizeInstreamDefaults(monetizeInstreamDefaults.isSelected());
-		upload.setMonetizeNotes(monetizeNotes.getText());
-		upload.setMonetizeOverlay(monetizeOverlay.isSelected());
-		upload.setMonetizeProduct(monetizeProduct.isSelected());
-		upload.setMonetizeTrueview(monetizeTrueview.isSelected());
-		upload.setMonetizeSeasonNb(monetizeSeasonNb.getText());
-		upload.setMonetizeSyndication(monetizeSyndication.getValue());
-		upload.setMonetizeTmsid(monetizeTMSID.getText());
-		upload.setMonetizeTitle(monetizeTitle.getText());
-		upload.setMonetizeTitleepisode(monetizeTitleEpisode.getText());
+		final Monetization monetization = null == upload.getMonetization() ?
+										  new Monetization() :
+										  upload.getMonetization();
+
+		toMonetization(monetization);
+
+		upload.setMonetization(monetization);
 		return upload;
 	}
 
 	public Template toTemplate(final Template template) {
-		template.setMonetizeAsset(monetizeAsset.getValue());
-		template.setMonetizeClaim(monetizeClaim.isSelected());
-		template.setMonetizeClaimoption(monetizeClaimOption.getValue());
-		template.setMonetizeClaimtype(monetizeClaimType.getValue());
-		template.setMonetizeDescription(monetizeDescription.getText());
-		template.setMonetizeEidr(monetizeEIDR.getText());
-		template.setMonetizeEpisodeNb(monetizeEpisodeNb.getText());
-		template.setMonetizeId(monetizeID.getText());
-		template.setMonetizeIsan(monetizeISAN.getText());
-		template.setMonetizeInstream(monetizeInstream.isSelected());
-		template.setMonetizeInstreamDefaults(monetizeInstreamDefaults.isSelected());
-		template.setMonetizeNotes(monetizeNotes.getText());
-		template.setMonetizeOverlay(monetizeOverlay.isSelected());
-		template.setMonetizeProduct(monetizeProduct.isSelected());
-		template.setMonetizeTrueview(monetizeTrueview.isSelected());
-		template.setMonetizeSeasonNb(monetizeSeasonNb.getText());
-		template.setMonetizeSyndication(monetizeSyndication.getValue());
-		template.setMonetizeTmsid(monetizeTMSID.getText());
-		template.setMonetizeTitle(monetizeTitle.getText());
-		template.setMonetizeTitleepisode(monetizeTitleEpisode.getText());
+		final Monetization monetization = null == template.getMonetization() ?
+										  new Monetization() :
+										  template.getMonetization();
+
+		toMonetization(monetization);
+		template.setMonetization(monetization);
+
 		return template;
+	}
+
+	private void toMonetization(final Monetization monetization) {
+		monetization.setAsset(monetizeAsset.getValue());
+		monetization.setClaim(monetizeClaim.isSelected());
+		monetization.setClaimoption(monetizeClaimOption.getValue());
+		monetization.setClaimtype(monetizeClaimType.getValue());
+		monetization.setDescription(monetizeDescription.getText());
+		monetization.setEidr(monetizeEIDR.getText());
+		monetization.setEpisodeNb(monetizeEpisodeNb.getText());
+		monetization.setCustomId(monetizeID.getText());
+		monetization.setIsan(monetizeISAN.getText());
+		monetization.setInstream(monetizeInstream.isSelected());
+		monetization.setInstreamDefaults(monetizeInstreamDefaults.isSelected());
+		monetization.setNotes(monetizeNotes.getText());
+		monetization.setOverlay(monetizeOverlay.isSelected());
+		monetization.setProduct(monetizeProduct.isSelected());
+		monetization.setTrueview(monetizeTrueview.isSelected());
+		monetization.setSeasonNb(monetizeSeasonNb.getText());
+		monetization.setSyndication(monetizeSyndication.getValue());
+		monetization.setTmsid(monetizeTMSID.getText());
+		monetization.setTitle(monetizeTitle.getText());
+		monetization.setTitleepisode(monetizeTitleEpisode.getText());
 	}
 
 	public Node getNode() {

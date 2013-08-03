@@ -29,14 +29,11 @@
     <orderEntry type="library" exported="" name="eclipselink-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="javax.persistence-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="commonj.sdo-2.1.1" level="project" />
-    <orderEntry type="library" exported="" name="asm-4.0" level="project" />
-    <orderEntry type="library" exported="" name="asm-util-4.0" level="project" />
-    <orderEntry type="library" exported="" name="cglib-3.0" level="project" />
-    <orderEntry type="library" exported="" name="asm-tree-4.0" level="project" />
-    <orderEntry type="library" exported="" name="guice-4.0-beta" level="project" />
-    <orderEntry type="library" exported="" name="guice-assistedinject-4.0-beta" level="project" />
-    <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
     <orderEntry type="module" module-name="template" exported="" />
+    <orderEntry type="library" exported="" name="guice-3.0" level="project" />
+    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
+    <orderEntry type="library" exported="" name="guice-assistedinject-3.0" level="project" />
   </component>
 </module>
 

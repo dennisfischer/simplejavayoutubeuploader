@@ -109,11 +109,14 @@ public class QueueCommandController {
 	}
 
 	private void initBindindings() {
+		/*
+		FIXME BINDINGS
 		startQueue.disableProperty().bind(uploader.inProgressProperty);
 		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
 		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedItemProperty());
 		uploader.maxUploads.bind(numberOfUploads.valueProperty());
 		throttle.maxBps.bind(uploadSpeed.valueProperty());
+		*/
 		actionOnFinish.setConverter(new StringConverter<ActionOnFinish>() {
 			@Override
 			public String toString(final ActionOnFinish actionOnFinish) {

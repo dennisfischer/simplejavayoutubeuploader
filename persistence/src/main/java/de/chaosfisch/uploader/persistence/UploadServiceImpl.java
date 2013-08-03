@@ -23,6 +23,7 @@ public class UploadServiceImpl extends AbstractUploadService {
 	@Inject
 	public UploadServiceImpl(final IMetadataService metadataService, final Uploader uploader) {
 		super(metadataService, uploader);
+		uploader.setUploadService(this);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class UploadServiceImpl extends AbstractUploadService {
 	}
 
 	@Override
-	public void insert(final Upload account) {
+	public void insert(final Upload upload) {
 		/*
 		NEEDED ? FIXME
 			return context.insertInto(Tables.UPLOAD)
@@ -50,12 +51,12 @@ public class UploadServiceImpl extends AbstractUploadService {
 	}
 
 	@Override
-	public void update(final Upload account) {
+	public void update(final Upload upload) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public void delete(final Upload account) {
+	public void delete(final Upload upload) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 

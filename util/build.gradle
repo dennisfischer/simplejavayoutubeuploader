@@ -10,6 +10,8 @@
 
 
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -22,6 +24,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.inject:guice:+', 'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+'
+    compile 'com.google.inject:guice:3+', 'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+'
 }
 

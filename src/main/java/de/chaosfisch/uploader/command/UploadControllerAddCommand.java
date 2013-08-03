@@ -14,16 +14,20 @@ import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.uploader.db.validation.ByteLengthValidator;
-import de.chaosfisch.uploader.db.validation.FileSizeValidator;
-import de.chaosfisch.uploader.db.validation.TagValidator;
-import de.chaosfisch.uploader.db.validation.UploadValidationCode;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.uploader.validation.ByteLengthValidator;
+import de.chaosfisch.uploader.validation.FileSizeValidator;
+import de.chaosfisch.uploader.validation.TagValidator;
+import de.chaosfisch.uploader.validation.UploadValidationCode;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,12 +37,9 @@ public class UploadControllerAddCommand extends Service<Void> {
 	@Inject
 	private IUploadService uploadService;
 
-	@Inject
-	private UploadPlaylistDao uploadPlaylistDao;
-
-	public Upload     upload;
-	public Playlist[] playlists;
-	public Account    account;
+	public Upload         upload;
+	public List<Playlist> playlists;
+	public Account        account;
 
 	@Override
 	protected Task<Void> createTask() {
@@ -53,23 +54,25 @@ public class UploadControllerAddCommand extends Service<Void> {
 				checkNotNull(upload, UploadValidationCode.UPLOAD_NULL);
 				checkNotNull(account, UploadValidationCode.ACCOUNT_NULL);
 				checkNotNull(upload.getFile(), UploadValidationCode.FILE_NULL);
-				checkNotNull(upload.getTitle(), UploadValidationCode.TITLE_NULL);
-				checkNotNull(upload.getCategory(), UploadValidationCode.CATEGORY_NULL);
-				checkArgument(titleValidator.validate(upload.getTitle()), UploadValidationCode.TITLE_ILLEGAL);
-				checkArgument(descriptionValidator.validate(upload.getDescription()), UploadValidationCode.DESCRIPTION_LENGTH);
+
+				final Metadata metadata = upload.getMetadata();
+				checkNotNull(metadata.getTitle(), UploadValidationCode.TITLE_NULL);
+				checkNotNull(metadata.getCategory(), UploadValidationCode.CATEGORY_NULL);
+				checkArgument(titleValidator.validate(metadata.getTitle()), UploadValidationCode.TITLE_ILLEGAL);
+				checkArgument(descriptionValidator.validate(metadata.getDescription()), UploadValidationCode.DESCRIPTION_LENGTH);
 
 				checkArgument(thumbnailValidator.validate(upload.getThumbnail()), UploadValidationCode.THUMBNAIL_SIZE);
 
-				if (null == upload.getDescription()) {
-					upload.setDescription("");
+				if (null == metadata.getDescription()) {
+					metadata.setDescription("");
 				} else {
-					checkArgument(!upload.getDescription().contains("<") && !upload.getDescription()
+					checkArgument(!metadata.getDescription().contains("<") && !metadata.getDescription()
 							.contains(">"), UploadValidationCode.DESCRIPTION_ILLEGAL);
 				}
-				if (null == upload.getKeywords()) {
-					upload.setKeywords("");
+				if (null == metadata.getKeywords()) {
+					metadata.setKeywords("");
 				} else {
-					checkArgument(tagValidator.validate(upload.getKeywords()), UploadValidationCode.TAGS_ILLEGAL);
+					checkArgument(tagValidator.validate(metadata.getKeywords()), UploadValidationCode.TAGS_ILLEGAL);
 				}
 
 				upload.setAccount(account);
@@ -92,32 +95,32 @@ public class UploadControllerAddCommand extends Service<Void> {
 					upload.setDateOfRelease(calendar);
 				}
 
-				if (!upload.getMonetizePartner() && (upload.getMonetizeOverlay() || upload.getMonetizeTrueview() || upload
-						.getMonetizeProduct())) {
-					upload.setMonetizeClaim(true);
+				final Monetization monetization = upload.getMonetization();
+				if (!monetization.getPartner() && (monetization.getOverlay() || monetization.getTrueview() || monetization
+						.getProduct())) {
+					monetization.setClaim(true);
 				}
+
+				upload.setPlaylists(playlists);
 
 				if (null == upload.getId() || upload.getId().equals(0)) {
 					upload.setId(null);
-					upload.setArchived(false);
-					upload.setFailed(false);
-					upload.setInprogress(false);
-					upload.setLocked(false);
-					upload.setPauseonfinish(false);
-					upload = uploadService.insertReturning(upload);
+					final Status status = new Status();
+					status.setArchived(false);
+					status.setFailed(false);
+					status.setRunning(false);
+					status.setLocked(false);
+					upload.setPauseOnFinish(false);
+					upload.setStatus(status);
+					uploadService.insert(upload);
 				} else {
-					upload.setArchived(false);
-					upload.setFailed(false);
-					upload.setLocked(false);
-					uploadService.update(upload);
-				}
+					final Status status = upload.getStatus();
+					status.setArchived(false);
+					status.setFailed(false);
+					status.setLocked(false);
 
-				uploadPlaylistDao.delete(uploadPlaylistDao.fetchByUploadId(upload.getId()));
-				for (final Playlist playlist : playlists) {
-					final UploadPlaylist relation = new UploadPlaylist();
-					relation.setPlaylistId(playlist.getId());
-					relation.setUploadId(upload.getId());
-					uploadPlaylistDao.insert(relation);
+					upload.setStatus(status);
+					uploadService.update(upload);
 				}
 
 				return null;

@@ -16,7 +16,6 @@ import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.uploader.db.dao.PlaylistDao;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -24,8 +23,6 @@ import java.util.List;
 
 public class RefreshPlaylistsCommand extends Service<Multimap<Account, Playlist>> {
 
-	@Inject
-	private PlaylistDao      playlistDao;
 	@Inject
 	private IPlaylistService playlistService;
 

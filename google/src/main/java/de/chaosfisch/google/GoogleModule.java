@@ -8,19 +8,15 @@
  * Contributors: Dennis Fischer
  */
 
-/*
- * Created by IntelliJ IDEA.
- * User: Dennis
- * Date: 23.06.13
- * Time: 21:36
- */
-package de.chaosfisch.uploader.persistence.dao;
+package de.chaosfisch.google;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import de.chaosfisch.google.youtube.upload.IUploadJobFactory;
 
-public class DaoModule extends AbstractModule {
+public class GoogleModule extends AbstractModule {
 	@Override
 	protected void configure() {
-		//add configuration logic here
+		install(new FactoryModuleBuilder().build(IUploadJobFactory.class));
 	}
 }

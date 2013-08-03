@@ -54,6 +54,14 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 
 	@Override
 	public void cleanByAccount(final Account account) {
+		/*
+				final GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(System.currentTimeMillis());
+		cal.add(Calendar.MINUTE, -5);
+		context.delete(Tables.PLAYLIST)
+				.where(Tables.PLAYLIST.DATE_OF_MODIFIED.le(cal), Tables.PLAYLIST.ACCOUNT_ID.eq(account.getId()))
+				.execute();
+		 */
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
@@ -64,6 +72,22 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 
 	@Override
 	public List<Playlist> findByPkey(final String playlistKey) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public List<Playlist> fetchByAccount(final Account item) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public List<Playlist> fetchUnhiddenByAccount(final Account newValue) {
+		/*
+				return context.select()
+				.from(Tables.PLAYLIST)
+				.where(Tables.PLAYLIST.ACCOUNT_ID.eq(id).and(Tables.PLAYLIST.HIDDEN.eq(false)))
+				.fetchInto(Playlist.class);
+		 */
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 }

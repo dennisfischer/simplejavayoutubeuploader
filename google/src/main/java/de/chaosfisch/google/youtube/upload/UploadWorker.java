@@ -49,7 +49,7 @@ public class UploadWorker extends Task<Void> {
 
 	/** Status enum for handling control flow */
 	protected enum STATUS {
-		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD;
+		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
 
 	private static final int    DEFAULT_BUFFER_SIZE = 65536;

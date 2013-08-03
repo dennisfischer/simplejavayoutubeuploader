@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.db.validation;
+package de.chaosfisch.uploader.validation;
 
 import com.google.common.base.Charsets;
 

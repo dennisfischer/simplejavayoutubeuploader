@@ -14,6 +14,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.uploader.command.AbortUploadCommand;
@@ -34,7 +35,6 @@ import javafx.scene.layout.VBoxBuilder;
 import javafx.util.Callback;
 import jfxtras.labs.dialogs.MonologFXButton;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -72,34 +72,35 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				eventBus.register(this);
 			}
 			upload = item;
+			final Status status = upload.getStatus();
 
 			final Button btnRemove = ButtonBuilder.create()
 					.styleClass("queueCellRemoveButton")
-					.disable(item.getInprogress())
+					.disable(status.isRunning())
 					.onAction(new QueueCellRemoveButtonHandler(item))
 					.build();
 			final Button btnEdit = ButtonBuilder.create()
 					.styleClass("queueCellEditButton")
-					.disable(item.getArchived())
+					.disable(status.isArchived())
 					.onAction(new QueueCellEditButtonHandler(item))
 					.build();
 			final Button btnAbort = ButtonBuilder.create()
 					.text(resources.getString("button.abort"))
 					.styleClass("queueCellAbortButton")
-					.disable(!item.getInprogress() || item.getArchived())
+					.disable(!status.isRunning() || status.isArchived())
 					.onAction(new QueueCellAbortButtonHandler(item))
 					.build();
 			final ToggleButton btnPauseOnFinish = ToggleButtonBuilder.create()
 					.styleClass("queueCellPauseButton")
 					.onAction(new QueueCellPauseButtonHandler(item))
-					.selected(item.getPauseonfinish())
+					.selected(item.getPauseOnFinish())
 					.tooltip(TooltipBuilder.create()
 							.autoHide(true)
 							.text(resources.getString("tooltip.queuecellpause"))
 							.build())
 					.build();
 
-			if (item.getArchived()) {
+			if (status.isArchived()) {
 				progressNode = HyperlinkBuilder.create()
 						.id("queue-text-" + item.getId())
 						.styleClass("queueCellHyperlink")
@@ -107,11 +108,12 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.prefWidth(500)
 						.onAction(new QueueCellHyperlinkHandler(item))
 						.build();
-			} else if (item.getFailed()) {
-				final String status = resources.getString(item.getStatus().toLowerCase(Locale.getDefault()));
+			} else if (status.isFailed()) {
+				//FIXME STATUS MESSAGE MISSING
+				final String statusMessage = ""; // resources.getString(item.getStatus().toLowerCase(Locale.getDefault()));
 
 				progressNode = LabelBuilder.create()
-						.text(status)
+						.text(statusMessage)
 						.styleClass("queueCellFailedLabel")
 						.prefWidth(500)
 						.build();
@@ -120,7 +122,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			}
 
 			final Label uploadTitle = LabelBuilder.create()
-					.text(item.getTitle())
+					.text(item.getMetadata().getTitle())
 					.styleClass("queueCellTitleLabel")
 					.prefWidth(500)
 					.build();
@@ -204,7 +206,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 			@Override
 			public void handle(final ActionEvent event) {
-				if (item.getInprogress()) {
+				if (item.getStatus().isRunning()) {
 					return;
 				}
 
@@ -241,7 +243,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 			@Override
 			public void handle(final ActionEvent arg0) {
-				if (!item.getInprogress()) {
+				if (!item.getStatus().isRunning()) {
 					return;
 				}
 
@@ -266,7 +268,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			@Override
 			public void handle(final ActionEvent event) {
 				final ToggleButton source = (ToggleButton) event.getSource();
-				item.setPauseonfinish(source.isSelected());
+				item.setPauseOnFinish(source.isSelected());
 
 				final UpdateUploadCommand command = commandProvider.get(UpdateUploadCommand.class);
 				command.upload = item;

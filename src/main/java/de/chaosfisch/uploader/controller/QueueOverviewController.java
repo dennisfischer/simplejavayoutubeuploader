@@ -10,15 +10,10 @@
 
 package de.chaosfisch.uploader.controller;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.controller.renderer.QueueUploadCellRenderer;
-import de.chaosfisch.uploader.db.events.ModelAddedEvent;
-import de.chaosfisch.uploader.db.events.ModelRemovedEvent;
-import de.chaosfisch.uploader.db.events.ModelUpdatedEvent;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -52,6 +47,8 @@ public class QueueOverviewController {
 
 		uploads.addAll(uploadService.getAll());
 	}
+
+	/* FIXME CHECK ME
 
 	private void onUploadAdded(final Upload upload) {
 		Platform.runLater(new Runnable() {
@@ -107,4 +104,5 @@ public class QueueOverviewController {
 			onUploadRemoved((Upload) modelRemovedEvent.getModel());
 		}
 	}
+	*/
 }

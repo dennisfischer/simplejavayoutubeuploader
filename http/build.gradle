@@ -10,6 +10,8 @@
 
 
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -22,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.httpcomponents:httpclient:4.2.2', 'com.google.guava:guava:14+', 'com.google.inject:guice:+',
-            'com.google.inject.extensions:guice-assistedinject:+', 'org.slf4j:slf4j-api:+', 'org.apache.httpcomponents:httpmime:4.2.2'
+    compile 'org.apache.httpcomponents:httpclient:4.2.2', 'com.google.guava:guava:14+', 'com.google.inject:guice:3+',
+            'com.google.inject.extensions:guice-assistedinject:3+', 'org.slf4j:slf4j-api:+', 'org.apache.httpcomponents:httpmime:4.2.2'
 }
 

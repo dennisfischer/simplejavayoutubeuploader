@@ -27,7 +27,7 @@ public final class ApplicationData {
 			userHome += "/Library/Application Support/";
 		}
 		System.setProperty("user.home", userHome);
-		HOME = System.getProperty("user.home");
+		HOME = System.getProperty("user.home") + "/";
 		DATA_DIR = HOME + "/SimpleJavaYoutubeUploader";
 	}
 

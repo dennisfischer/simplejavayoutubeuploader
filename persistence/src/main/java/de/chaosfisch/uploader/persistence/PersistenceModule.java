@@ -19,8 +19,10 @@ package de.chaosfisch.uploader.persistence;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.uploader.persistence.dao.DaoModule;
+import de.chaosfisch.uploader.template.ITemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +42,13 @@ public class PersistenceModule extends AbstractModule {
 		this.config = config;
 	}
 
+	@Override
 	protected void configure() {
 		install(new DaoModule());
 		bind(IAccountService.class).to(AccountServiceImpl.class).in(Singleton.class);
 		bind(IUploadService.class).to(UploadServiceImpl.class).in(Singleton.class);
+		bind(IPlaylistService.class).to(PlaylistServiceImpl.class).in(Singleton.class);
+		bind(ITemplateService.class).to(TemplateServiceImpl.class).in(Singleton.class);
 
 		final File schema = new File(config.getTempDir() + config.getSchemaName());
 		try (final InputStream inputStream = getClass().getResourceAsStream(config.getSchemaLocation() + config.getSchemaName())) {

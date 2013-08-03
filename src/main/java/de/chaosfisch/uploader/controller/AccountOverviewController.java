@@ -10,16 +10,10 @@
 
 package de.chaosfisch.uploader.controller;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.uploader.controller.renderer.AccountListCellRenderer;
-import de.chaosfisch.uploader.db.events.ModelAddedEvent;
-import de.chaosfisch.uploader.db.events.ModelRemovedEvent;
-import de.chaosfisch.uploader.db.events.ModelUpdatedEvent;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -51,6 +45,9 @@ public class AccountOverviewController {
 		accountListView.setCellFactory(accountListCellRenderer);
 		accountItems.addAll(accountService.getAll());
 	}
+
+	/*
+		FIXME CHECK ME
 
 	private void onAccountAdded(final Account account) {
 		Platform.runLater(new Runnable() {
@@ -84,6 +81,9 @@ public class AccountOverviewController {
 		});
 	}
 
+
+
+
 	@Subscribe
 	public void onModelUpdated(final ModelUpdatedEvent event) {
 		if (event.getModel() instanceof Account) {
@@ -111,6 +111,7 @@ public class AccountOverviewController {
 		}
 	}
 
+
 	private void _triggerPlaylist() {
 		Platform.runLater(new Runnable() {
 
@@ -123,4 +124,5 @@ public class AccountOverviewController {
 			}
 		});
 	}
+	*/
 }

@@ -18,20 +18,17 @@ import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.chaosfisch.youtubeuploader.db.TemplatePlaylist;
-import org.chaosfisch.youtubeuploader.db.dao.TemplatePlaylistDao;
+
+import java.util.List;
 
 public class UpdateTemplateCommand extends Service<Void> {
 
 	@Inject
 	private ITemplateService templateService;
 
-	@Inject
-	private TemplatePlaylistDao templatePlaylistDao;
-
-	public Template   template;
-	public Account    account;
-	public Playlist[] playlists;
+	public Template       template;
+	public Account        account;
+	public List<Playlist> playlists;
 
 	@Override
 	protected Task<Void> createTask() {
@@ -41,17 +38,10 @@ public class UpdateTemplateCommand extends Service<Void> {
 				Preconditions.checkNotNull(template);
 
 				if (null != account) {
-					template.setAccountId(account.getId());
+					template.setAccount(account);
 				}
 
-				templatePlaylistDao.delete(templatePlaylistDao.fetchByTemplateId(template.getId()));
-				for (final Playlist playlist : playlists) {
-					final TemplatePlaylist relation = new TemplatePlaylist();
-					relation.setPlaylistId(playlist.getId());
-					relation.setTemplateId(template.getId());
-					templatePlaylistDao.insert(relation);
-				}
-
+				template.setPlaylists(playlists);
 				templateService.update(template);
 				return null;
 			}

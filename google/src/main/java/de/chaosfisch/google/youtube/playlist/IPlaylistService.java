@@ -67,4 +67,8 @@ public interface IPlaylistService {
 	 * @return Multimap containing all done changes
 	 */
 	Multimap<Account, Playlist> synchronizePlaylists(List<Account> accounts) throws PlaylistSynchException, PlaylistIOException;
+
+	List<Playlist> fetchByAccount(Account item);
+
+	List<Playlist> fetchUnhiddenByAccount(Account newValue);
 }

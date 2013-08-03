@@ -8,14 +8,20 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.db.validation;
+package de.chaosfisch.uploader.validation;
 
-import de.chaosfisch.google.youtube.upload.metadata.TagParser;
+import java.io.File;
 
-public class TagValidator implements Validator<String> {
+public class FileSizeValidator implements Validator<File> {
+
+	private final int size;
+
+	public FileSizeValidator(final int size) {
+		this.size = size;
+	}
 
 	@Override
-	public boolean validate(final String object) {
-		return null == object || TagParser.isValid(object);
+	public boolean validate(final File object) {
+		return null == object || object.exists() && object.length() <= size;
 	}
 }

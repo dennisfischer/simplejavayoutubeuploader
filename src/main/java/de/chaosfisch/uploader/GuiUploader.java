@@ -74,13 +74,13 @@ public class GuiUploader extends GuiceApplication {
 
 	private void initApplication(final Stage primaryStage) {
 		try {
-			StyleManager.getInstance().addUserAgentStylesheet("/org/chaosfisch/uploader/resources/style.css");
-			final Parent parent = fxmlLoader.load(getClass().getResource("/org/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
+			StyleManager.getInstance().addUserAgentStylesheet("/de/chaosfisch/uploader/resources/style.css");
+			final Parent parent = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
 					.getRoot();
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
 
-			try (InputStream iconInputStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/film.png")) {
+			try (InputStream iconInputStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/film.png")) {
 				StageBuilder.create()
 						.title(resources.getString("application.title") + ' ' + ApplicationData.VERSION)
 						.icons(new Image(iconInputStream))
