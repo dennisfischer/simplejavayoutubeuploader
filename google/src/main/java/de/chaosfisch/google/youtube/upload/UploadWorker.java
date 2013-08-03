@@ -21,8 +21,13 @@ import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
+import de.chaosfisch.google.youtube.upload.resume.ResumeIOException;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
+import de.chaosfisch.google.youtube.upload.resume.ResumeInvalidResponseException;
 import de.chaosfisch.http.IRequestUtil;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
@@ -45,16 +50,6 @@ public class UploadWorker extends Task<Void> {
 	/** Status enum for handling control flow */
 	protected enum STATUS {
 		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD;
-		private ErrorCode errorCode;
-
-		private ErrorCode getErrorCode() {
-			return errorCode;
-		}
-
-		private STATUS setErrorCode(final ErrorCode errorCode) {
-			this.errorCode = errorCode;
-			return this;
-		}
 	}
 
 	private static final int    DEFAULT_BUFFER_SIZE = 65536;
@@ -102,61 +97,30 @@ public class UploadWorker extends Task<Void> {
 		 */
 		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && resumeableManager
 				.canContinue() && !isCancelled() && !Thread.currentThread().isInterrupted()) {
-			try {
 
-				switch (currentStatus) {
-					case INITIALIZE:
-						initialize();
-						break;
-					case METADATA:
-						// Schritt 1: MetadataUpload + UrlFetch
-						metadata();
-						break;
-					case UPLOAD:
-						// Schritt 2: Chunkupload
-						upload();
-						break;
-					case RESUMEINFO:
-						// Schritt 3: Fetchen des Resumeinfo
-						resumeinfo();
-						break;
-					case POSTPROCESS:
-						// Schritt 4: Postprocessing
-						break;
-					default:
-						break;
-				}
-				resumeableManager.setRetries(0);
-			} catch (final SystemException e) {
-				if (e.getErrorCode() instanceof MetadataCode) {
-					if (e.getErrorCode().equals(MetadataCode.BAD_REQUEST)) {
-						logger.warn("Bad request", e);
-						currentStatus = STATUS.FAILED.setErrorCode(MetadataCode.BAD_REQUEST);
-					} else {
-						logger.warn("Metadata IO error", e);
-						resumeableManager.setRetries(resumeableManager.getRetries() + 1);
-						resumeableManager.delay();
-					}
-				} else if (e.getErrorCode() instanceof AuthCode) {
-					logger.warn("AuthException", e);
-					resumeableManager.setRetries(resumeableManager.getRetries() + 1);
-					resumeableManager.delay();
-				} else if (e.getErrorCode() instanceof UploadCode) {
-					if (e.getErrorCode().equals(UploadCode.FILE_NOT_FOUND)) {
-						logger.warn("File not found - upload failed", e);
-						currentStatus = STATUS.FAILED.setErrorCode(UploadCode.FILE_NOT_FOUND);
-					} else if (e.getErrorCode().equals(UploadCode.LOGFILE_IO_ERROR)) {
-						logger.warn("Logfile IO Error", e);
-					} else if (e.getErrorCode().equals(UploadCode.PLAYLIST_IO_ERROR)) {
-						logger.warn("Playlist IO Error", e);
-					} else if (e.getErrorCode().equals(UploadCode.UPDATE_METADATA_IO_ERROR)) {
-						logger.warn("Update Metadata IO Error", e);
-					} else {
-						logger.warn("UploadException", e);
-						currentStatus = STATUS.RESUMEINFO;
-					}
-				}
+			switch (currentStatus) {
+				case INITIALIZE:
+					initialize();
+					break;
+				case METADATA:
+					// Schritt 1: MetadataUpload + UrlFetch
+					metadata();
+					break;
+				case UPLOAD:
+					// Schritt 2: Chunkupload
+					upload();
+					break;
+				case RESUMEINFO:
+					// Schritt 3: Fetchen des Resumeinfo
+					resumeinfo();
+					break;
+				case POSTPROCESS:
+					// Schritt 4: Postprocessing
+					break;
+				default:
+					break;
 			}
+
 		}
 		eventBus.unregister(this);
 		return null;
@@ -182,25 +146,24 @@ public class UploadWorker extends Task<Void> {
 				uploadProgress.done = true;
 				break;
 			case FAILED:
-				setFailedStatus(currentStatus.getErrorCode());
+				setFailedStatus();
 				break;
 			case ABORTED:
-				setFailedStatus(UploadCode.USER_ABORT);
+				setFailedStatus();
 				break;
 			default:
-				logger.info("Unknow error: {} ::::::: {}", currentStatus.getErrorCode(), upload.getStatus());
-				setFailedStatus(UploadCode.UNKNOWN_ERROR);
+				setFailedStatus();
 				break;
 		}
 		eventBus.post(uploadProgress);
 	}
 
-	private void resumeinfo() throws SystemException {
+	private void resumeinfo() throws ResumeIOException, ResumeInvalidResponseException {
 		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
 		if (null == resumeInfo) {
 			currentStatus = STATUS.FAILED;
-			throw new SystemException(UploadCode.MAX_RETRIES_REACHED).set("url", upload.getUploadurl())
-					.set("time", Calendar.getInstance().getTime().toString());
+
+			///MAX RETRIES
 		}
 		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
 		if (null != resumeInfo.videoId) { // upload actually completed despite
@@ -300,7 +263,7 @@ public class UploadWorker extends Task<Void> {
 	//		}
 	//	}
 
-	private void metadata() throws SystemException {
+	private void metadata() throws MetaLocationMissingException, MetaBadRequestException, MetaIOException {
 
 		if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
 			logger.info("Uploadurl existing: {}", upload.getUploadurl());
@@ -369,13 +332,9 @@ public class UploadWorker extends Task<Void> {
 	//		}
 	//	}
 
-	private void updateUploadAction() throws SystemException {
+	private void updateUploadAction() throws MetaIOException, MetaBadRequestException {
 		final String atomData = metadataService.atomBuilder(upload);
-		try {
-			metadataService.updateMetaData(atomData, upload.getVideoid(), upload.getAccount());
-		} catch (SystemException e) {
-			throw new SystemException(e, UploadCode.UPDATE_METADATA_IO_ERROR).set("atomdata", atomData);
-		}
+		metadataService.updateMetaData(atomData, upload.getVideoid(), upload.getAccount());
 	}
 
 	//	private void logfileAction() throws SystemException {
@@ -430,19 +389,14 @@ public class UploadWorker extends Task<Void> {
 	//		metadata.setKeywords(extendedPlaceholders.replace(metadata.getKeywords()));
 	//	}
 
-	public void run(final Upload upload) {
-		this.upload = upload;
-	}
-
-	private void setFailedStatus(final ErrorCode errorCode) {
+	private void setFailedStatus() {
 		upload.getStatus().setFailed(true);
-		upload.getStatus().setStatus(errorCode.getClass().getName() + '.' + errorCode.name());
 		upload.setDateOfStart(null);
 		uploadService.update(upload);
 		uploadProgress.failed = true;
 	}
 
-	private void upload() throws SystemException {
+	private void upload() throws UploadIOException, UploadResponseException {
 		// GET END SIZE
 		final long end = generateEndBytes(start, bytesToUpload);
 
@@ -476,15 +430,13 @@ public class UploadWorker extends Task<Void> {
 
 			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
 				 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
-				final long skipped = bufferedInputStream.skip(start);
-				if (start != skipped) {
-					throw new SystemException(UploadCode.FILE_IO_ERROR);
-				}
+				bufferedInputStream.skip(start);
 				flowChunk(bufferedInputStream, throttledOutputStream, start, end);
 
 				switch (request.getResponseCode()) {
 					case SC_OK:
-						throw new SystemException(UploadCode.UPLOAD_REPONSE_200);
+						//FILE UPLOADED
+						throw new UploadResponseException(SC_OK);
 					case SC_CREATED:
 						final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
 							@Override
@@ -501,18 +453,14 @@ public class UploadWorker extends Task<Void> {
 						logger.debug("responseMessage={}", request.getResponseMessage());
 						break;
 					default:
-						throw new SystemException(UploadCode.UPLOAD_RESPONSE_UNKNOWN).set("code", request.getResponseCode());
+						throw new UploadResponseException(request.getResponseCode());
 				}
 
 				bytesToUpload -= chunkSize;
 				start = end + 1;
 			}
-		} catch (final FileNotFoundException ex) {
-			throw new SystemException(ex, UploadCode.FILE_NOT_FOUND).set("file", fileToUpload);
-		} catch (final IOException ex) {
-			if (STATUS.ABORTED != currentStatus) {
-				throw new SystemException(ex, UploadCode.FILE_IO_ERROR);
-			}
+		} catch (final IOException e) {
+			throw new UploadIOException(e);
 		}
 	}
 }

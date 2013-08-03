@@ -10,21 +10,35 @@
 
 package de.chaosfisch.google.youtube.upload;
 
+import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
+import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
+import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
+import com.google.common.io.CharStreams;
+import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
+import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
+import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 import de.chaosfisch.http.IRequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class UploadJob implements Callable<Upload> {
 
@@ -75,103 +89,234 @@ public class UploadJob implements Callable<Upload> {
 
 	@Override
 	public Upload call() throws Exception {
+
+		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
+		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
+				.withMaxDelay(30000)
+				.withMaxRetries(5)
+				.retryOn(MetaIOException.class)
+				.retryOn(MetaLocationMissingException.class)
+				.abortOn(MetaBadRequestException.class)
+				.abortOn(FileNotFoundException.class);
+
 		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && resumeableManager
 				.canContinue() && !Thread.currentThread().isInterrupted()) {
 
-			try {
-
-				switch (currentStatus) {
-					case INITIALIZE:
-						initialize();
-						break;
-					case METADATA:
-						// Schritt 1: MetadataUpload + UrlFetch
-						metadata();
-						break;
-					case UPLOAD:
-						// Schritt 2: Chunkupload
-						upload();
-						break;
-					case RESUMEINFO:
-						// Schritt 3: Fetchen des Resumeinfo
-						resumeinfo();
-						break;
-					case POSTPROCESS:
-						// Schritt 4: Postprocessing
-						break;
-					default:
-						break;
-				}
-				resumeableManager.setRetries(0);
-			} catch (final SystemException e) {
-				if (e.getErrorCode() instanceof MetadataCode) {
-					if (e.getErrorCode().equals(MetadataCode.BAD_REQUEST)) {
-						logger.warn("Bad request", e);
-						currentStatus = STATUS.FAILED.setErrorCode(MetadataCode.BAD_REQUEST);
-					} else {
-						logger.warn("Metadata IO error", e);
-						resumeableManager.setRetries(resumeableManager.getRetries() + 1);
-						resumeableManager.delay();
-					}
-				} else if (e.getErrorCode() instanceof AuthCode) {
-					logger.warn("AuthException", e);
-					resumeableManager.setRetries(resumeableManager.getRetries() + 1);
-					resumeableManager.delay();
-				} else if (e.getErrorCode() instanceof UploadCode) {
-					if (e.getErrorCode().equals(UploadCode.FILE_NOT_FOUND)) {
-						logger.warn("File not found - upload failed", e);
-						currentStatus = STATUS.FAILED.setErrorCode(UploadCode.FILE_NOT_FOUND);
-					} else if (e.getErrorCode().equals(UploadCode.LOGFILE_IO_ERROR)) {
-						logger.warn("Logfile IO Error", e);
-					} else if (e.getErrorCode().equals(UploadCode.PLAYLIST_IO_ERROR)) {
-						logger.warn("Playlist IO Error", e);
-					} else if (e.getErrorCode().equals(UploadCode.UPDATE_METADATA_IO_ERROR)) {
-						logger.warn("Update Metadata IO Error", e);
-					} else {
-						logger.warn("UploadException", e);
-						currentStatus = STATUS.RESUMEINFO;
-					}
-				}
+			switch (currentStatus) {
+				case INITIALIZE:
+					executor.getWithRetry(initialize()).get();
+					break;
+				case METADATA:
+					// Schritt 1: MetadataUpload + UrlFetch
+					executor.getWithRetry(metadata()).get();
+					break;
+				case UPLOAD:
+					// Schritt 2: Chunkupload
+					executor.getWithRetry(upload()).get();
+					break;
+				case RESUMEINFO:
+					// Schritt 3: Fetchen des Resumeinfo
+					executor.getWithRetry(resumeinfo()).get();
+					break;
+				case POSTPROCESS:
+					// Schritt 4: Postprocessing
+					break;
+				default:
+					break;
 			}
 		}
 		eventBus.unregister(this);
 		return upload;
 	}
 
-	private void initialize() throws FileNotFoundException {
-		// Set the time uploaded started
-		final GregorianCalendar calendar = new GregorianCalendar();
-		upload.setDateOfStart(calendar);
-		uploadService.update(upload);
+	private Callable<Void> initialize() {
 
-		// Get File and Check if existing
-		fileToUpload = upload.getFile();
+		return new Callable<Void>() {
+			@Override
+			public Void call() throws FileNotFoundException {
+				// Set the time uploaded started
+				final GregorianCalendar calendar = new GregorianCalendar();
+				upload.setDateOfStart(calendar);
+				uploadService.update(upload);
 
-		if (!fileToUpload.exists()) {
-			throw new FileNotFoundException("Datei existiert nicht.");
-		}
+				// Get File and Check if existing
+				fileToUpload = upload.getFile();
+
+				if (!fileToUpload.exists()) {
+					throw new FileNotFoundException("Datei existiert nicht.");
+				}
+
+				return null;
+			}
+		};
 	}
 
-	private void metadata() {
+	private Callable<Void> metadata() {
 
-		if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
-			logger.info("Uploadurl existing: {}", upload.getUploadurl());
-			currentStatus = STATUS.RESUMEINFO;
-			return;
+		return new Callable<Void>() {
+			@Override
+			public Void call() throws MetaLocationMissingException, MetaBadRequestException, MetaIOException {
+				if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
+					logger.info("Uploadurl existing: {}", upload.getUploadurl());
+					currentStatus = STATUS.RESUMEINFO;
+					return null;
+				}
+
+				upload.setUploadurl(uploadService.fetchUploadUrl(upload));
+				uploadService.update(upload);
+
+				// Log operation
+				logger.info("Uploadurl received: {}", upload.getUploadurl());
+				// INIT Vars
+				fileSize = fileToUpload.length();
+				totalBytesUploaded = 0;
+				start = 0;
+				bytesToUpload = fileSize;
+				currentStatus = STATUS.UPLOAD;
+				return null;
+			}
+		};
+	}
+
+	private Callable<Void> upload() {
+		return new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+
+				// GET END SIZE
+				final long end = generateEndBytes(start, bytesToUpload);
+
+				// Log operation
+				logger.debug(String.format("start=%s end=%s filesize=%s", start, end, (int) bytesToUpload));
+
+				// Log operation
+				logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
+
+				if (null == uploadProgress) {
+					uploadProgress = new UploadJobProgressEvent(upload, fileSize);
+					uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
+				}
+
+				// Calculating the chunk size
+				final int chunk = (int) (end - start + 1);
+
+				try {
+					// Building PUT RequestImpl for chunk data
+					final URL url = URI.create(upload.getUploadurl()).toURL();
+					final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+					request.setRequestMethod("POST");
+					request.setDoOutput(true);
+					request.setFixedLengthStreamingMode(chunk);
+					//Properties
+					request.setRequestProperty("Content-Type", upload.getMimetype());
+					request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload
+							.length()));
+					requestSigner.setAccount(upload.getAccount());
+					requestSigner.sign(request);
+					request.connect();
+
+					try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
+						 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
+						bufferedInputStream.skip(start);
+						flowChunk(bufferedInputStream, throttledOutputStream, start, end);
+
+						switch (request.getResponseCode()) {
+							case SC_OK:
+								//FILE UPLOADED
+								throw new UploadResponseException(SC_OK);
+							case SC_CREATED:
+								final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
+									@Override
+									public InputStream getInput() throws IOException {
+										return request.getInputStream();
+									}
+								};
+								upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
+								uploadService.update(upload);
+								currentStatus = STATUS.POSTPROCESS;
+								break;
+							case SC_RESUME_INCOMPLETE:
+								// OK, the chunk completed succesfully
+								logger.debug("responseMessage={}", request.getResponseMessage());
+								break;
+							default:
+								throw new UploadResponseException(request.getResponseCode());
+						}
+
+						bytesToUpload -= chunkSize;
+						start = end + 1;
+					}
+				} catch (final IOException e) {
+					throw new UploadIOException(e);
+				}
+				return null;
+			}
+		};
+	}
+
+	private Callable<Void> resumeinfo() {
+		return new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
+				if (null == resumeInfo) {
+					currentStatus = STATUS.FAILED;
+
+					///MAX RETRIES
+				}
+				logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
+				if (null != resumeInfo.videoId) { // upload actually completed despite
+					// the exception
+					final String videoId = resumeInfo.videoId;
+					logger.info("No need to resume video ID {}", videoId);
+					currentStatus = STATUS.POSTPROCESS;
+				} else {
+					totalBytesUploaded = resumeInfo.nextByteToUpload;
+					// possibly rolling back the previously saved value
+					fileSize = fileToUpload.length();
+					bytesToUpload = fileSize - resumeInfo.nextByteToUpload;
+					start = resumeInfo.nextByteToUpload;
+					logger.info("Next byte to upload is {].", resumeInfo.nextByteToUpload);
+					currentStatus = STATUS.UPLOAD;
+				}
+
+				return null;
+			}
+		};
+	}
+
+	private long generateEndBytes(final long start, final double bytesToUpload) {
+		final long end;
+		if (0 < bytesToUpload - chunkSize) {
+			end = start + chunkSize - 1;
+		} else {
+			end = start + (int) bytesToUpload - 1;
 		}
+		return end;
+	}
 
-		upload.setUploadurl(uploadService.fetchUploadUrl(upload));
-		uploadService.update(upload);
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte) throws IOException {
 
-		// Log operation
-		logger.info("Uploadurl received: {}", upload.getUploadurl());
-		// INIT Vars
-		fileSize = fileToUpload.length();
-		totalBytesUploaded = 0;
-		start = 0;
-		bytesToUpload = fileSize;
-		currentStatus = STATUS.UPLOAD;
+		// Write Chunk
+		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+		long totalRead = 0;
 
+		while (!Thread.currentThread()
+				.isInterrupted() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
+			// Upload bytes in buffer
+			final int bytesRead = requestUtil.flowChunk(inputStream, outputStream, buffer, 0, DEFAULT_BUFFER_SIZE);
+			// Calculate all uploadinformation
+			totalRead += bytesRead;
+			totalBytesUploaded += bytesRead;
+
+			// PropertyChangeEvent
+			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
+			if (1000 < diffTime || totalRead == endByte - startByte + 1) {
+				uploadProgress.setBytes(totalBytesUploaded);
+				uploadProgress.setTime(diffTime);
+				eventBus.post(uploadProgress);
+			}
+		}
 	}
 
 	public void updateUpload(final Upload received) {

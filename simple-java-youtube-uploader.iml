@@ -36,6 +36,8 @@
     <orderEntry type="library" exported="" name="guice-assistedinject-4.0-beta" level="project" />
     <orderEntry type="library" exported="" name="guice-4.0-beta" level="project" />
     <orderEntry type="library" exported="" name="asm-4.0" level="project" />
+    <orderEntry type="library" exported="" name="unirest-java-1.1.2" level="project" />
+    <orderEntry type="module" module-name="template" exported="" />
   </component>
 </module>
 

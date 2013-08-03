@@ -42,7 +42,7 @@ public interface IAccountService {
 	 * @param account
 	 * 		Account to check
 	 */
-	void verifyAccount(Account account);
+	void verifyAccount(Account account) throws AuthenticationInvalidException, AuthenticationIOException;
 
 	/**
 	 * Fetches HTML Content of the clientLogin resultpage
@@ -54,5 +54,5 @@ public interface IAccountService {
 	 *
 	 * @return String received server response
 	 */
-	String getLoginContent(Account account, String redirectUrl);
+	String getLoginContent(Account account, String redirectUrl) throws AuthenticationIOException, AuthenticationInvalidException;
 }

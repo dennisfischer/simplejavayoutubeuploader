@@ -10,6 +10,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -35,11 +37,12 @@ dependencies {
     compile 'com.h2database:h2:1.3.170', 'com.google.inject:guice:+',
             'ch.qos.logback:logback-classic:1.0.9',
             'com.google.guava:guava:14+', 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
-            'com.cathive.fx:fx-guice:+', 'org.hsqldb:hsqldb:+', 'com.google.inject.extensions:guice-assistedinject:+'
+            'com.cathive.fx:fx-guice:+', 'org.hsqldb:hsqldb:+', 'com.google.inject.extensions:guice-assistedinject:+',
+            'com.mashape.unirest:unirest-java:+'
 
     compile files("/lib/jupidator.jar", "/lib/jfxtras-labs-2.2-2.2-r5-SNAPSHOT.jar")
 
-    compile project('google'), project('persistence')
+    compile project('google'), project('persistence'), project('template')
 
     testCompile 'junit:junit:4.10'
 
@@ -49,6 +52,7 @@ dependencies {
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "http://maven.mashape.com/releases" }
 
 }
 

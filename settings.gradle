@@ -8,4 +8,6 @@
  * Contributors: Dennis Fischer
  */
 
-include 'persistence', 'google', 'http', 'util', 'serialization'
+
+
+include 'persistence', 'google', 'http', 'util', 'serialization', 'template'

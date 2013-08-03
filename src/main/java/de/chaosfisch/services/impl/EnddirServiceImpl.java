@@ -13,8 +13,8 @@ package de.chaosfisch.services.impl;
 import com.google.common.io.Files;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.services.EnddirService;
+import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
 import de.chaosfisch.util.RegexpUtils;
-import de.chaosfisch.youtubeuploader.SimpleJavaYoutubeUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

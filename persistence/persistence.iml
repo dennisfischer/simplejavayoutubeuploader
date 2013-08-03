@@ -36,6 +36,7 @@
     <orderEntry type="library" exported="" name="guice-4.0-beta" level="project" />
     <orderEntry type="library" exported="" name="guice-assistedinject-4.0-beta" level="project" />
     <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
+    <orderEntry type="module" module-name="template" exported="" />
   </component>
 </module>
 

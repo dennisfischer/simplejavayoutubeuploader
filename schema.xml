@@ -27,47 +27,47 @@
             <customTypes>
                 <customType>
                     <name>java.util.GregorianCalendar</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.CalendarConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.CalendarConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Category</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.CategoryConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.CategoryConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimOption</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.ClaimOptionConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.ClaimOptionConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimType</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.ClaimTypeConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.ClaimTypeConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Comment</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.CommentConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.CommentConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.License</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.LicenseConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.LicenseConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.VideoresponseConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.VideoresponseConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.VisibilityConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.VisibilityConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Asset</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.AssetConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.AssetConverter</converter>
                 </customType>
                 <customType>
                     <name>de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.SyndicationConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.SyndicationConverter</converter>
                 </customType>
                 <customType>
                     <name>java.io.File</name>
-                    <converter>de.chaosfisch.youtubeuploader.db.converter.FileConverter</converter>
+                    <converter>de.chaosfisch.uploader.db.converter.FileConverter</converter>
                 </customType>
             </customTypes>
             <forcedTypes>

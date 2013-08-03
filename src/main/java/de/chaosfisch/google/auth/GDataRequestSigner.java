@@ -13,7 +13,7 @@ package de.chaosfisch.google.auth;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.youtubeuploader.ApplicationData;
+import de.chaosfisch.uploader.ApplicationData;
 import org.apache.http.HttpRequest;
 
 import java.net.HttpURLConnection;

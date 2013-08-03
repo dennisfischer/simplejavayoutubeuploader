@@ -11,6 +11,8 @@
 package de.chaosfisch.google.youtube.upload.metadata;
 
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.AuthenticationIOException;
+import de.chaosfisch.google.account.AuthenticationInvalidException;
 import de.chaosfisch.google.youtube.upload.Upload;
 
 import java.io.File;
@@ -22,5 +24,5 @@ public interface IMetadataService {
 
 	void updateMetaData(String atomData, String videoId, Account account) throws MetaBadRequestException, MetaIOException;
 
-	void activateBrowserfeatures(Upload upload) throws MetaIOException, MetaDeadEndException;
+	void activateBrowserfeatures(Upload upload) throws MetaIOException, MetaDeadEndException, AuthenticationIOException, AuthenticationInvalidException;
 }

@@ -12,7 +12,6 @@ package de.chaosfisch.google.youtube.upload.resume;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import de.chaosfisch.exceptions.SystemException;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.IUploadService;
@@ -52,7 +51,7 @@ public class ResumeableManagerImpl implements IResumeableManager {
 	}
 
 	@Override
-	public ResumeInfo fetchResumeInfo(final Upload upload) throws SystemException {
+	public ResumeInfo fetchResumeInfo(final Upload upload) throws ResumeIOException, ResumeInvalidResponseException {
 		ResumeInfo resumeInfo;
 		do {
 			if (!canResume()) {
@@ -63,7 +62,7 @@ public class ResumeableManagerImpl implements IResumeableManager {
 		return resumeInfo;
 	}
 
-	private ResumeInfo resumeFileUpload(final Upload upload) throws SystemException {
+	private ResumeInfo resumeFileUpload(final Upload upload) throws ResumeIOException, ResumeInvalidResponseException {
 		requestSigner.setAccount(upload.getAccount());
 		final IRequest request = requestBuilderFactory.create(upload.getUploadurl())
 				.put(null)
@@ -76,7 +75,7 @@ public class ResumeableManagerImpl implements IResumeableManager {
 			if (SC_OK <= response.getStatusCode() && SC_MULTIPLE_CHOICES > response.getStatusCode()) {
 				return new ResumeInfo(parseVideoId(response.getContent()));
 			} else if (SC_RESUME_INCOMPLETE != response.getStatusCode()) {
-				throw new SystemException(ResumeCode.UNEXPECTED_RESPONSE_CODE).set("code", response.getStatusCode());
+				throw new ResumeInvalidResponseException(response.getStatusCode());
 			}
 
 			final long nextByteToUpload;
@@ -104,7 +103,7 @@ public class ResumeableManagerImpl implements IResumeableManager {
 			return resumeInfo;
 
 		} catch (final IOException e) {
-			throw new SystemException(e, ResumeCode.IO_ERROR);
+			throw new ResumeIOException(e);
 		}
 	}
 

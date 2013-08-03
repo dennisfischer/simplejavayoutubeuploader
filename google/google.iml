@@ -27,6 +27,8 @@
     <orderEntry type="library" exported="" name="asm-4.0" level="project" />
     <orderEntry type="library" exported="" name="asm-tree-4.0" level="project" />
     <orderEntry type="library" exported="" name="guice-assistedinject-4.0-beta" level="project" />
+    <orderEntry type="library" name="unirest-java-1.1.2" level="project" />
+    <orderEntry type="library" exported="" name="asyncretry" level="project" />
   </component>
 </module>
 

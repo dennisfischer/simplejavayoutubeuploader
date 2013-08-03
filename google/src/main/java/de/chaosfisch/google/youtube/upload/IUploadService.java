@@ -10,6 +10,9 @@
 
 package de.chaosfisch.google.youtube.upload;
 
+import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 
 import java.util.List;
@@ -34,9 +37,21 @@ public interface IUploadService {
 
 	int countReadyStarttime();
 
-	String fetchUploadUrl(Upload upload);
+	void resetUnfinishedUploads();
+
+	void startUploading();
+
+	void stopUploading();
+
+	void startStarttimeCheck();
+
+	void stopStarttimeCheck();
+
+	String fetchUploadUrl(Upload upload) throws MetaLocationMissingException, MetaBadRequestException, MetaIOException;
 
 	boolean uploadChunk(Upload upload);
 
 	ResumeInfo fetchResumeInfo(Upload upload);
+
+	Upload fetchByArchived(boolean archived);
 }

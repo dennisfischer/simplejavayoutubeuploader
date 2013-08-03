@@ -17,7 +17,7 @@ public interface IResumeableManager {
 
 	boolean canContinue();
 
-	ResumeInfo fetchResumeInfo(Upload upload);
+	ResumeInfo fetchResumeInfo(Upload upload) throws ResumeIOException, ResumeInvalidResponseException;
 
 	void setRetries(int i);
 
