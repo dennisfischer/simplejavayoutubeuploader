@@ -92,7 +92,7 @@ public class Uploader {
 
 	private void enqueueUpload() {
 		if (canAddJob()) {
-			final Upload polled = uploadService.findNextUpload();
+			final Upload polled = uploadService.fetchNextUpload();
 			if (null != polled) {
 				if (null == polled.getAccount()) {
 					polled.getStatus().setLocked(true);

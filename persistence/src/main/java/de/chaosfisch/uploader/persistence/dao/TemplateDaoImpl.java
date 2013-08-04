@@ -8,46 +8,41 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.persistence;
+package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.inject.Inject;
-import de.chaosfisch.uploader.persistence.dao.ITemplateDao;
-import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
-public class TemplateServiceImpl implements ITemplateService {
-
-	private final ITemplateDao templateDao;
+public class TemplateDaoImpl implements ITemplateDao {
 
 	@Inject
-	public TemplateServiceImpl(final ITemplateDao templateDao) {
-		this.templateDao = templateDao;
-	}
+	protected EntityManager entityManager;
 
 	@Override
 	public List<Template> getAll() {
-		return templateDao.getAll();
+		return (List<Template>) entityManager.createQuery("SELECT t FROM template t").getResultList();
 	}
 
 	@Override
 	public Template get(final int id) {
-		return templateDao.get(id);
+		return entityManager.find(Template.class, id);
 	}
 
 	@Override
 	public void insert(final Template template) {
-		templateDao.insert(template);
+		entityManager.persist(template);
 	}
 
 	@Override
 	public void update(final Template template) {
-		templateDao.update(template);
+		entityManager.persist(template);
 	}
 
 	@Override
 	public void delete(final Template template) {
-		templateDao.delete(template);
+		entityManager.remove(template);
 	}
 }

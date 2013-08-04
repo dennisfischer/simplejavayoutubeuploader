@@ -19,11 +19,11 @@ import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.metadata.License;
-import de.chaosfisch.google.youtube.upload.metadata.Metadata;
-import de.chaosfisch.google.youtube.upload.metadata.Monetization;
-import de.chaosfisch.google.youtube.upload.metadata.Social;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
+import de.chaosfisch.google.youtube.upload.metadata.*;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.command.RefreshPlaylistsCommand;
 import de.chaosfisch.uploader.command.RemoveTemplateCommand;
@@ -834,7 +834,7 @@ public class UploadController {
 		release.setValue(upload.getDateOfRelease());
 		enddirProperty.setValue(upload.getEnddir());
 		uploadFile.setValue(upload.getFile());
-		uploadThumbnail.setText(upload.getThumbnail().getAbsolutePath());
+		uploadThumbnail.setText(null == upload.getThumbnail() ? "" : upload.getThumbnail().getAbsolutePath());
 
 		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
 		uploadCategory.setValue(metadata.getCategory());
@@ -896,7 +896,7 @@ public class UploadController {
 		idProperty.setValue(null);
 		uploadStore = null;
 		enddirProperty.setValue(template.getEnddir());
-		uploadThumbnail.setText(template.getThumbnail().getAbsolutePath());
+		uploadThumbnail.setText(null == template.getThumbnail() ? "" : template.getThumbnail().getAbsolutePath());
 		defaultDirProperty.setValue(template.getDefaultdir());
 		enddirProperty.setValue(template.getEnddir());
 

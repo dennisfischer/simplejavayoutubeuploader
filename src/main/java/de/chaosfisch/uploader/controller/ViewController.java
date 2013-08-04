@@ -202,14 +202,14 @@ public class ViewController {
 	}
 
 	private void loadMenuGraphics() {
-		try (InputStream addPlaylistStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/table_add.png");
-			 InputStream addTemplateStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/page_add.png");
-			 InputStream closeStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/cancel.png");
-			 InputStream openStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/folder_explore.png");
-			 InputStream databaseStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/database_refresh.png");
-			 InputStream documentationStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/book.png");
-			 InputStream faqStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/help.png");
-			 InputStream logsStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/report.png")
+		try (InputStream addPlaylistStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/table_add.png");
+			 InputStream addTemplateStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/page_add.png");
+			 InputStream closeStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/cancel.png");
+			 InputStream openStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/folder_explore.png");
+			 InputStream databaseStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/database_refresh.png");
+			 InputStream documentationStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/book.png");
+			 InputStream faqStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/help.png");
+			 InputStream logsStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/report.png")
 
 		) {
 			menuAddPlaylist.setGraphic(new ImageView(new Image(addPlaylistStream)));
@@ -271,6 +271,7 @@ public class ViewController {
 		standardTemplate.setSocial(social);
 		standardTemplate.setMonetization(monetization);
 		standardTemplate.setMetadata(metadata);
+		standardTemplate.setThumbnail(null);
 		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
 	}
 

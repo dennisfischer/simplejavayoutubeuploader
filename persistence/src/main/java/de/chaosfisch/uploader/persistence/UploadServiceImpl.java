@@ -15,116 +15,73 @@ import de.chaosfisch.google.youtube.upload.AbstractUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.uploader.persistence.dao.IUploadDao;
 
 import java.util.List;
 
 public class UploadServiceImpl extends AbstractUploadService {
 
+	private final IUploadDao uploadDao;
+
 	@Inject
-	public UploadServiceImpl(final IMetadataService metadataService, final Uploader uploader) {
+	public UploadServiceImpl(final IMetadataService metadataService, final Uploader uploader, final IUploadDao uploadDao) {
 		super(metadataService, uploader);
+		this.uploadDao = uploadDao;
 		uploader.setUploadService(this);
 	}
 
 	@Override
 	public List<Upload> getAll() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return uploadDao.getAll();
 	}
 
 	@Override
 	public Upload get(final int id) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return uploadDao.get(id);
 	}
 
 	@Override
 	public void insert(final Upload upload) {
-		/*
-		NEEDED ? FIXME
-			return context.insertInto(Tables.UPLOAD)
-				.set(context.newRecord(Tables.UPLOAD, upload))
-				.returning()
-				.fetchOne()
-				.into(Upload.class);
-		 */
-
-		//To change body of implemented methods use File | Settings | File Templates.
+		uploadDao.insert(upload);
 	}
 
 	@Override
 	public void update(final Upload upload) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		uploadDao.update(upload);
 	}
 
 	@Override
 	public void delete(final Upload upload) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		uploadDao.delete(upload);
 	}
 
 	@Override
-	public Upload findNextUpload() {
-		/*
-				final GregorianCalendar cal = new GregorianCalendar();
-
-		return context.select()
-				.from(Tables.UPLOAD)
-				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.ne(true), Tables.UPLOAD
-						.INPROGRESS
-						.ne(true), Tables.UPLOAD.LOCKED.ne(true), Tables.UPLOAD
-						.DATE_OF_START
-						.le(cal)
-						.or(Tables.UPLOAD.DATE_OF_START.isNull()))
-				.orderBy(Tables.UPLOAD.DATE_OF_START.desc(), Tables.UPLOAD.FAILED.asc())
-				.limit(1)
-				.fetchOneInto(Upload.class);
-		 */
-
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public Upload fetchNextUpload() {
+		return uploadDao.fetchNextUpload();
 	}
 
 	@Override
 	public int count() {
-		return 0;  //To change body of implemented methods use File | Settings | File Templates.
+		return uploadDao.count();
 	}
 
 	@Override
 	public int countUnprocessed() {
-		/*
-		return context.select()
-				.from(Tables.UPLOAD)
-				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.FAILED.eq(false))
-				.fetchCount();
-		 */
-		return 0;  //To change body of implemented methods use File | Settings | File Templates.
+		return uploadDao.countUnprocessed();
 	}
 
 	@Override
 	public int countReadyStarttime() {
-		/*
-		final GregorianCalendar cal = new GregorianCalendar();
-
-		return context.select()
-				.from(Tables.UPLOAD)
-				.where(Tables.UPLOAD.ARCHIVED.ne(true), Tables.UPLOAD.INPROGRESS.ne(true), Tables.UPLOAD
-						.FAILED
-						.ne(true), Tables.UPLOAD.DATE_OF_START.le(cal))
-				.fetchCount();
-		 */
-		return 0;  //To change body of implemented methods use File | Settings | File Templates.
+		return uploadDao.countReadyStarttime();
 	}
 
 	@Override
 	public void resetUnfinishedUploads() {
-		//FIXME
-		/*
-		DSL.using(injector.getInstance(Configuration.class))
-				.update(Tables.UPLOAD)
-				.set(Tables.UPLOAD.INPROGRESS, false)
-				.set(Tables.UPLOAD.FAILED, false)
-				.execute();     */
+		uploadDao.resetUnfinishedUploads();
 	}
 
 	@Override
-	public Upload fetchByArchived(final boolean archived) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public List<Upload> fetchByArchived(final boolean archived) {
+		return uploadDao.fetchByArchived(archived);
 	}
 }

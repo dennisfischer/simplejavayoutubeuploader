@@ -53,7 +53,7 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 
 			//Load data from database and construct checkboxes
 			final ArrayList<CheckBox> children = new ArrayList<>(25);
-			for (final Playlist playlist : playlistService.fetchByAccount(item)) {
+			for (final Playlist playlist : playlistService.getAll(item)) {
 				children.add(CheckBoxBuilder.create()
 						.text(playlist.getTitle())
 						.selected(playlist.getHidden())

@@ -32,7 +32,9 @@ public interface IPlaylistService {
 
 	List<Playlist> findByHidden(Account account, boolean hidden);
 
-	List<Playlist> findByPkey(String playlistKey);
+	Playlist findByPkey(String playlistKey);
+
+	List<Playlist> fetchUnhiddenByAccount(Account account);
 
 	/**
 	 * Adds the specified video to the playlist.
@@ -67,8 +69,4 @@ public interface IPlaylistService {
 	 * @return Multimap containing all done changes
 	 */
 	Multimap<Account, Playlist> synchronizePlaylists(List<Account> accounts) throws PlaylistSynchException, PlaylistIOException;
-
-	List<Playlist> fetchByAccount(Account item);
-
-	List<Playlist> fetchUnhiddenByAccount(Account newValue);
 }

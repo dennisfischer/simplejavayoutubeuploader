@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.youtube.upload.metadata.permissions;
+package de.chaosfisch.google.youtube.upload.metadata;
 
 import de.chaosfisch.google.atom.media.MediaCategory;
 import de.chaosfisch.util.TextUtil;

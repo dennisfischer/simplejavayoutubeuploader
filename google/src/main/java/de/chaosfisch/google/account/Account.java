@@ -13,15 +13,19 @@
  */
 package de.chaosfisch.google.account;
 
+import de.chaosfisch.google.youtube.playlist.Playlist;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class Account implements Serializable {
 
 	private static final long serialVersionUID = 144852581;
 
-	private Integer id;
-	private String  name;
-	private String  password;
+	private Integer        id;
+	private String         name;
+	private String         password;
+	private List<Playlist> playlists;
 
 	public Integer getId() {
 		return id;
@@ -45,5 +49,13 @@ public class Account implements Serializable {
 
 	public void setPassword(final String password) {
 		this.password = password;
+	}
+
+	public List<Playlist> getPlaylists() {
+		return playlists;
+	}
+
+	public void setPlaylists(final List<Playlist> playlists) {
+		this.playlists = playlists;
 	}
 }

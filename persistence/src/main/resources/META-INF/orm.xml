@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013 Dennis Fischer.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Public License v3.0+
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.gnu.org/licenses/gpl.html
+  ~
+  ~ Contributors: Dennis Fischer
+  -->
+
+<entity-mappings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_1.xsd"
+                 version="2.1">
+
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete/>
+        <exclude-default-mappings/>
+    </persistence-unit-metadata>
+
+    <converter class="de.chaosfisch.uploader.persistence.dao.converter.FileToStringConverter" auto-apply="true"/>
+
+    <entity class="de.chaosfisch.google.account.Account" name="account">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="name">
+                <column name="name" unique="true" nullable="false"/>
+            </basic>
+            <basic name="password">
+                <column name="password" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.playlist.Playlist" name="playlist">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="pkey">
+                <column name="pkey" unique="true" nullable="false"/>
+            </basic>
+            <basic name="private_">
+                <column name="private" nullable="false"/>
+            </basic>
+            <basic name="title">
+                <column name="title" nullable="false"/>
+            </basic>
+            <basic name="url">
+                <column name="url" unique="true" nullable="false"/>
+            </basic>
+            <basic name="thumbnail">
+                <column name="thumbnail" unique="true" nullable="false"/>
+            </basic>
+            <basic name="number">
+                <column name="number" nullable="false"/>
+            </basic>
+            <basic name="summary">
+                <column name="summary" nullable="false"/>
+            </basic>
+            <basic name="hidden">
+                <column name="hidden" nullable="false"/>
+            </basic>
+            <basic name="dateOfModified" attribute-type="java.util.Calendar">
+                <column name="date_of_modified"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.uploader.template.Template" name="template">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="defaultdir">
+                <column name="defaultdir"/>
+            </basic>
+            <basic name="enddir">
+                <column name="enddir"/>
+            </basic>
+            <basic name="thumbnail">
+                <column name="thumbnail"/>
+            </basic>
+            <basic name="name">
+                <column name="name" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.upload.Upload" name="upload">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="file">
+                <column name="file" nullable="false"/>
+            </basic>
+            <basic name="mimetype">
+                <column name="mimetype"/>
+            </basic>
+            <basic name="uploadurl">
+                <column name="uploadurl" unique="true"/>
+            </basic>
+            <basic name="enddir">
+                <column name="enddir"/>
+            </basic>
+            <basic name="thumbnail">
+                <column name="thumbnail"/>
+            </basic>
+            <basic name="dateOfStart" attribute-type="java.util.Calendar">
+                <column name="date_of_start"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="dateOfRelease" attribute-type="java.util.Calendar">
+                <column name="date_of_release"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="videoid">
+                <column name="videoid" unique="true"/>
+            </basic>
+            <basic name="pauseOnFinish">
+                <column name="pauseonfinish" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.upload.Status" name="status">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="archived">
+                <column name="archived" nullable="false"/>
+            </basic>
+            <basic name="failed">
+                <column name="failed" nullable="false"/>
+            </basic>
+            <basic name="running">
+                <column name="running" nullable="false"/>
+            </basic>
+            <basic name="locked">
+                <column name="locked" nullable="false"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.upload.metadata.Metadata" name="metadata">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="title">
+                <column name="title" nullable="false"/>
+            </basic>
+            <basic name="description">
+                <column name="description" nullable="false"/>
+            </basic>
+            <basic name="keywords">
+                <column name="keywords" nullable="false"/>
+            </basic>
+            <basic name="category" attribute-type="de.chaosfisch.google.youtube.upload.metadata.Category">
+                <column name="category"/>
+            </basic>
+            <basic name="license" attribute-type="de.chaosfisch.google.youtube.upload.metadata.License">
+                <column name="license"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions" name="permissions">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="comment" attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Comment">
+                <column name="comment"/>
+            </basic>
+            <basic name="commentvote">
+                <column name="commentvote" nullable="false"/>
+            </basic>
+            <basic name="embed">
+                <column name="embed"/>
+            </basic>
+            <basic name="rate">
+                <column name="rate"/>
+            </basic>
+            <basic name="videoresponse"
+                   attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse">
+                <column name="videoresponse"/>
+            </basic>
+            <basic name="visibility"
+                   attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility">
+                <column name="visibility"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="de.chaosfisch.google.youtube.upload.metadata.Monetization" name="monetization">
+        <attributes>
+            <id name="id">
+                <column name="id" unique="true" nullable="false" precision="10"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="claim">
+                <column name="claim" nullable="false"/>
+            </basic>
+            <basic name="overlay">
+                <column name="overlay" nullable="false"/>
+            </basic>
+            <basic name="trueview">
+                <column name="trueview" nullable="false"/>
+            </basic>
+            <basic name="instream">
+                <column name="instream" nullable="false"/>
+            </basic>
+            <basic name="instreamDefaults">
+                <column name="instreamDefaults" nullable="false"/>
+            </basic>
+            <basic name="product">
+                <column name="product" nullable="false"/>
+            </basic>
+            <basic name="partner">
+                <column name="partner" nullable="false"/>
+            </basic>
+            <basic name="title">
+                <column name="title"/>
+            </basic>
+            <basic name="description">
+                <column name="description"/>
+            </basic>
+            <basic name="customId">
+                <column name="customId"/>
+            </basic>
+            <basic name="notes">
+                <column name="notes"/>
+            </basic>
+            <basic name="tmsid">
+                <column name="tmsid"/>
+            </basic>
+            <basic name="isan">
+                <column name="isan"/>
+            </basic>
+            <basic name="eidr">
+                <column name="eidr"/>
+            </basic>
+            <basic name="titleepisode">
+                <column name="titleepisode"/>
+            </basic>
+            <basic name="seasonNb">
+                <column name="seasonNb"/>
+            </basic>
+            <basic name="episodeNb">
+                <column name="episodeNb"/>
+            </basic>
+            <basic name="syndication"
+                   attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication">
+                <column name="syndication"/>
+            </basic>
+            <basic name="claimtype" attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimType">
+                <column name="claimtype"/>
+            </basic>
+            <basic name="claimoption"
+                   attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimOption">
+                <column name="claimoption"/>
+            </basic>
+            <basic name="asset" attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Asset">
+                <column name="asset"/>
+            </basic>
+        </attributes>
+    </entity>
+
+</entity-mappings>

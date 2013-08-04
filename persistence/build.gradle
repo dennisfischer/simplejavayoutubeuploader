@@ -14,6 +14,8 @@
 
 
 
+
+
 apply plugin: 'java'
 
 allprojects {
@@ -26,7 +28,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.inject:guice:3+', 'com.google.inject.extensions:guice-assistedinject:3+', 'org.eclipse.persistence:eclipselink:+'
+    compile 'com.google.inject:guice:3+', 'com.google.inject.extensions:guice-assistedinject:3+', 'org.eclipse.persistence:eclipselink:+',
+            'org.hsqldb:hsqldb:+'
     compile project(':google'), project(':template')
 }
 

@@ -10,20 +10,16 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Category;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
-
 import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
-	private Integer     id;
-	private Category    category;
-	private String      title;
-	private String      description;
-	private String      keywords;
-	private Permissions permissions;
-	private License     license;
+	private Integer  id;
+	private Category category;
+	private String   title;
+	private String   description;
+	private String   keywords;
+	private License  license;
 
 	public Integer getId() {
 		return id;
@@ -63,14 +59,6 @@ public class Metadata implements Serializable {
 
 	public void setKeywords(final String keywords) {
 		this.keywords = keywords;
-	}
-
-	public Permissions getPermissions() {
-		return permissions;
-	}
-
-	public void setPermissions(final Permissions permissions) {
-		this.permissions = permissions;
 	}
 
 	public License getLicense() {

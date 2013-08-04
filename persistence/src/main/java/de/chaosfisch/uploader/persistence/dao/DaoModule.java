@@ -17,10 +17,39 @@
 package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class DaoModule extends AbstractModule {
+	private static final String PERSISTENCE_UNIT_NAME = "persistenceUnit";
+
+	private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<EntityManager>();
+
 	@Override
 	protected void configure() {
-		//add configuration logic here
+		bind(IAccountDao.class).to(AccountDaoImpl.class).in(Singleton.class);
+		bind(IPlaylistDao.class).to(PlaylistDaoImpl.class).in(Singleton.class);
+		bind(ITemplateDao.class).to(TemplateDaoImpl.class).in(Singleton.class);
+		bind(IUploadDao.class).to(UploadDaoImpl.class).in(Singleton.class);
+
+	}
+
+	@Provides
+	@Singleton
+	public EntityManagerFactory provideEntityManagerFactory() {
+		return Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+	}
+
+	@Provides
+	public EntityManager provideEntityManager(final EntityManagerFactory entityManagerFactory) {
+		EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
+		if (null == entityManager) {
+			ENTITY_MANAGER_CACHE.set(entityManager = entityManagerFactory.createEntityManager());
+		}
+		return entityManager;
 	}
 }

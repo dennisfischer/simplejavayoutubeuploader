@@ -142,9 +142,9 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		}
 		final List<Playlist> list = Lists.newArrayListWithExpectedSize(feed.videoEntries.size());
 		for (final VideoEntry entry : feed.videoEntries) {
-			final List<Playlist> playlists = findByPkey(entry.playlistId);
-			if (1 == playlists.size()) {
-				list.add(_updateExistingPlaylist(account, entry, playlists.get(0)));
+			final Playlist playlist = findByPkey(entry.playlistId);
+			if (null == playlist) {
+				list.add(_updateExistingPlaylist(account, entry, playlist));
 			} else {
 				list.add(_createNewPlaylist(account, entry));
 			}

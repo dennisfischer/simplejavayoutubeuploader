@@ -11,17 +11,24 @@
 package de.chaosfisch.uploader.persistence.dao;
 
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.youtube.playlist.Playlist;
 
 import java.util.List;
 
-public interface IAccountDao {
-	List<Account> getAll();
+public interface IPlaylistDao {
+	List<Playlist> getAll(Account account);
 
-	Account get(int id);
+	Playlist get(int id);
 
-	void insert(Account account);
+	void insert(Playlist playlist);
 
-	void update(Account account);
+	void update(Playlist playlist);
 
-	void delete(Account account);
+	void delete(Playlist playlist);
+
+	void cleanByAccount(Account account);
+
+	List<Playlist> fetchByHidden(Account account, boolean hidden);
+
+	Playlist fetchByPKey(String playlistKey);
 }

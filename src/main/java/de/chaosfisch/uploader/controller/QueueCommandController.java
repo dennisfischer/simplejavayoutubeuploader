@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.controller;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
+import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.ActionOnFinish;
 import de.chaosfisch.uploader.command.StartUploadCommand;
 import de.chaosfisch.uploader.command.StopUploadCommand;
@@ -31,6 +32,7 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class QueueCommandController {
@@ -74,7 +76,10 @@ public class QueueCommandController {
 
 	@FXML
 	void clearQueue(final ActionEvent event) {
-		uploadService.delete(uploadService.fetchByArchived(true));
+		final List<Upload> uploads = uploadService.fetchByArchived(true);
+		for (final Upload upload : uploads) {
+			uploadService.delete(upload);
+		}
 	}
 
 	@FXML

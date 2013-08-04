@@ -11,7 +11,15 @@
 
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>de.chaosfisch.google.account.Account</class>
+        <class>de.chaosfisch.google.youtube.upload.Upload</class>
+        <class>de.chaosfisch.google.youtube.upload.Status</class>
+        <class>de.chaosfisch.google.youtube.upload.metadata.Metadata</class>
+        <class>de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions</class>
+        <class>de.chaosfisch.google.youtube.upload.metadata.Monetization</class>
+        <class>de.chaosfisch.google.youtube.playlist.Playlist</class>
+        <class>de.chaosfisch.uploader.template.Template</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url"

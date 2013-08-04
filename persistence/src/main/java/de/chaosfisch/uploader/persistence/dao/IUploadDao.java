@@ -10,18 +10,30 @@
 
 package de.chaosfisch.uploader.persistence.dao;
 
-import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.youtube.upload.Upload;
 
 import java.util.List;
 
-public interface IAccountDao {
-	List<Account> getAll();
+public interface IUploadDao {
+	List<Upload> getAll();
 
-	Account get(int id);
+	Upload get(int id);
 
-	void insert(Account account);
+	void insert(Upload upload);
 
-	void update(Account account);
+	void update(Upload upload);
 
-	void delete(Account account);
+	void delete(Upload upload);
+
+	Upload fetchNextUpload();
+
+	int count();
+
+	int countUnprocessed();
+
+	int countReadyStarttime();
+
+	void resetUnfinishedUploads();
+
+	List<Upload> fetchByArchived(boolean archived);
 }

@@ -8,11 +8,13 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.template;
+package de.chaosfisch.uploader.persistence.dao;
+
+import de.chaosfisch.uploader.template.Template;
 
 import java.util.List;
 
-public interface ITemplateService {
+public interface ITemplateDao {
 	List<Template> getAll();
 
 	Template get(int id);
@@ -22,5 +24,4 @@ public interface ITemplateService {
 	void update(Template template);
 
 	void delete(Template template);
-
 }

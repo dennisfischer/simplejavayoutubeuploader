@@ -29,7 +29,7 @@ public interface IUploadService {
 
 	void delete(Upload upload);
 
-	Upload findNextUpload();
+	Upload fetchNextUpload();
 
 	int count();
 
@@ -53,5 +53,5 @@ public interface IUploadService {
 
 	ResumeInfo fetchResumeInfo(Upload upload);
 
-	Upload fetchByArchived(boolean archived);
+	List<Upload> fetchByArchived(boolean archived);
 }
