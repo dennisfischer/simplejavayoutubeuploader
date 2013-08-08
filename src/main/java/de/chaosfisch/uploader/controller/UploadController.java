@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -72,6 +73,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@FXMLController
 public class UploadController {
 
 	@FXML
@@ -782,7 +784,9 @@ public class UploadController {
 							   defaultDirProperty.getValue());
 
 		template.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
-		template.setThumbnail(new File(uploadThumbnail.getText()));
+		template.setThumbnail(Strings.isNullOrEmpty(uploadThumbnail.getText()) ?
+							  null :
+							  new File(uploadThumbnail.getText()));
 
 		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
 		metadata.setCategory(uploadCategory.getValue());

@@ -34,8 +34,6 @@ import de.chaosfisch.http.RequestModule;
 import de.chaosfisch.serialization.SerializationModule;
 import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
-import de.chaosfisch.uploader.ApplicationData;
-import de.chaosfisch.uploader.PersistenceConfiguration;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.util.EventBusUtil;
@@ -51,7 +49,7 @@ public class GuiceBindings extends AbstractModule {
 		install(new RequestModule());
 		install(new SerializationModule());
 		install(new GoogleModule());
-		install(new PersistenceModule(new PersistenceConfiguration(ApplicationData.HOME, ApplicationData.HOME + "SimpleJavaYoutubeUploader/", "schema.sql", "/")));
+		install(new PersistenceModule());
 
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));

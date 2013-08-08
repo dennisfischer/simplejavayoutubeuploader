@@ -22,15 +22,15 @@ public class Playlist implements Serializable {
 
 	private static final long serialVersionUID = 1215529732;
 
-	private Integer           id;
+	private int               id;
 	private String            pkey;
-	private Boolean           private_;
+	private boolean           private_;
 	private String            title;
 	private String            url;
 	private String            thumbnail;
-	private Integer           number;
+	private int               number;
 	private String            summary;
-	private Boolean           hidden;
+	private boolean           hidden;
 	private GregorianCalendar dateOfModified;
 	private Account           account;
 

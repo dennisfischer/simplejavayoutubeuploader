@@ -18,13 +18,13 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import java.io.Serializable;
 
 public class Monetization implements Serializable {
-	private Integer     id;
-	private Boolean     instreamDefaults;
-	private Boolean     claim;
-	private Boolean     overlay;
-	private Boolean     trueview;
-	private Boolean     instream;
-	private Boolean     product;
+	private int         id;
+	private boolean     instreamDefaults;
+	private boolean     claim;
+	private boolean     overlay;
+	private boolean     trueview;
+	private boolean     instream;
+	private boolean     product;
 	private Syndication syndication;
 	private String      title;
 	private String      description;
@@ -39,7 +39,7 @@ public class Monetization implements Serializable {
 	private ClaimType   claimtype;
 	private ClaimOption claimoption;
 	private Asset       asset;
-	private Boolean     partner;
+	private boolean     partner;
 
 	public Integer getId() {
 		return id;

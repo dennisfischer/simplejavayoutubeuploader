@@ -14,9 +14,9 @@ import java.io.Serializable;
 
 public class Social implements Serializable {
 
-	private Integer id;
-	private Boolean facebook;
-	private Boolean twitter;
+	private int     id;
+	private boolean facebook;
+	private boolean twitter;
 	private String  message;
 
 	public Integer getId() {

@@ -22,7 +22,7 @@ public class Account implements Serializable {
 
 	private static final long serialVersionUID = 144852581;
 
-	private Integer        id;
+	private int            id;
 	private String         name;
 	private String         password;
 	private List<Playlist> playlists;

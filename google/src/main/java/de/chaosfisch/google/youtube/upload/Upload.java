@@ -29,14 +29,13 @@ public class Upload implements Serializable {
 
 	private static final long serialVersionUID = -414398454;
 
-	private Integer id;
-
+	private int               id;
 	private File              file;
 	private String            mimetype;
 	private String            uploadurl;
 	private GregorianCalendar dateOfStart;
 	private GregorianCalendar dateOfRelease;
-	private Boolean           pauseOnFinish;
+	private boolean           pauseOnFinish;
 	private String            videoid;
 	private File              enddir;
 	private File              thumbnail;

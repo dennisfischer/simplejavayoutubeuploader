@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+@FXMLController
 public class QueueCommandController {
 
 	@FXML

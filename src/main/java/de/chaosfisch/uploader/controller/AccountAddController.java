@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
 import de.chaosfisch.uploader.command.AddAccountCommand;
 import de.chaosfisch.uploader.guice.CommandProvider;
@@ -24,6 +25,7 @@ import javafx.scene.layout.HBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@FXMLController
 public class AccountAddController {
 
 	@FXML

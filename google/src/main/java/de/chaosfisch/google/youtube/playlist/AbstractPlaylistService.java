@@ -120,12 +120,15 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 					.build();
 			try (final IResponse response = request.execute()) {
 				if (SC_OK != response.getStatusCode()) {
+					System.out.println(response.getStatusCode());
 					throw new PlaylistSynchException(response.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
 				data.putAll(account, _parsePlaylistsFeed(account, response.getContent()));
 				cleanByAccount(account);
 			} catch (final HttpIOException e) {
+				System.out.println("exception 2");
+
 				throw new PlaylistIOException(e);
 			}
 		}

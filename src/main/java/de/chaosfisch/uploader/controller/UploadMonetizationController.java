@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
@@ -25,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@FXMLController
 public class UploadMonetizationController {
 	@FXML
 	protected ResourceBundle resources;

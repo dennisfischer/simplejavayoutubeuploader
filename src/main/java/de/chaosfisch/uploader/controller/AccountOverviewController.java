@@ -10,6 +10,8 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
+import com.cathive.fx.guice.FxApplicationThread;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -22,6 +24,7 @@ import javafx.scene.control.ListView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@FXMLController
 public class AccountOverviewController {
 
 	@FXML
@@ -46,44 +49,24 @@ public class AccountOverviewController {
 		accountItems.addAll(accountService.getAll());
 	}
 
-	/*
-		FIXME CHECK ME
-
+	@FxApplicationThread
 	private void onAccountAdded(final Account account) {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				accountItems.add(account);
-			}
-		});
+		accountItems.add(account);
 	}
 
+	@FxApplicationThread
 	private void onAccountUpdated(final Account account) {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				final int index = accountItems.indexOf(account);
-				accountItems.remove(account);
-				accountItems.add(index, account);
-			}
-		});
+		final int index = accountItems.indexOf(account);
+		accountItems.remove(account);
+		accountItems.add(index, account);
 	}
 
+	@FxApplicationThread
 	private void onAccountDeleted(final Account account) {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				accountItems.remove(account);
-			}
-		});
+		accountItems.remove(account);
 	}
 
-
-
-
+	/*
 	@Subscribe
 	public void onModelUpdated(final ModelUpdatedEvent event) {
 		if (event.getModel() instanceof Account) {
@@ -111,18 +94,12 @@ public class AccountOverviewController {
 		}
 	}
 
-
+	@FxApplicationThread
 	private void _triggerPlaylist() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				final Account[] accounts = new Account[accountItems.size()];
-				accountItems.toArray(accounts);
-				accountItems.clear();
-				accountItems.addAll(accounts);
-			}
-		});
+		final Account[] accounts = new Account[accountItems.size()];
+		accountItems.toArray(accounts);
+		accountItems.clear();
+		accountItems.addAll(accounts);
 	}
 	*/
 }

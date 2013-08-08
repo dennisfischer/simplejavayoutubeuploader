@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.inject.Inject;
+import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 import de.chaosfisch.uploader.template.Template;
 
 import javax.persistence.EntityManager;
@@ -23,7 +24,7 @@ public class TemplateDaoImpl implements ITemplateDao {
 
 	@Override
 	public List<Template> getAll() {
-		return (List<Template>) entityManager.createQuery("SELECT t FROM template t").getResultList();
+		return entityManager.createQuery("SELECT t FROM template t", Template.class).getResultList();
 	}
 
 	@Override
@@ -32,16 +33,19 @@ public class TemplateDaoImpl implements ITemplateDao {
 	}
 
 	@Override
+	@Transactional
 	public void insert(final Template template) {
 		entityManager.persist(template);
 	}
 
 	@Override
+	@Transactional
 	public void update(final Template template) {
-		entityManager.persist(template);
+		entityManager.merge(template);
 	}
 
 	@Override
+	@Transactional
 	public void delete(final Template template) {
 		entityManager.remove(template);
 	}

@@ -19,6 +19,9 @@ package de.chaosfisch.uploader.persistence.dao;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matchers;
+import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
+import de.chaosfisch.uploader.persistence.dao.transactional.TransactionalIntercepter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,7 +30,7 @@ import javax.persistence.Persistence;
 public class DaoModule extends AbstractModule {
 	private static final String PERSISTENCE_UNIT_NAME = "persistenceUnit";
 
-	private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<EntityManager>();
+	private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<>();
 
 	@Override
 	protected void configure() {
@@ -36,6 +39,9 @@ public class DaoModule extends AbstractModule {
 		bind(ITemplateDao.class).to(TemplateDaoImpl.class).in(Singleton.class);
 		bind(IUploadDao.class).to(UploadDaoImpl.class).in(Singleton.class);
 
+		final TransactionalIntercepter transactionalIntercepter = new TransactionalIntercepter();
+		requestInjection(transactionalIntercepter);
+		bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class), transactionalIntercepter);
 	}
 
 	@Provides
@@ -45,6 +51,7 @@ public class DaoModule extends AbstractModule {
 	}
 
 	@Provides
+	@Singleton
 	public EntityManager provideEntityManager(final EntityManagerFactory entityManagerFactory) {
 		EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
 		if (null == entityManager) {

@@ -13,6 +13,7 @@ package de.chaosfisch.uploader.persistence.dao;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
+import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Calendar;
@@ -26,7 +27,7 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 
 	@Override
 	public List<Playlist> getAll(final Account account) {
-		return (List<Playlist>) entityManager.createQuery("SELECT p FROM playlist p").getResultList();
+		return entityManager.createQuery("SELECT p FROM playlist p", Playlist.class).getResultList();
 	}
 
 	@Override
@@ -35,26 +36,30 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 	}
 
 	@Override
+	@Transactional
 	public void insert(final Playlist playlist) {
 		entityManager.persist(playlist);
 	}
 
 	@Override
+	@Transactional
 	public void update(final Playlist playlist) {
-		entityManager.persist(playlist);
+		entityManager.merge(playlist);
 	}
 
 	@Override
+	@Transactional
 	public void delete(final Playlist playlist) {
 		entityManager.remove(playlist);
 	}
 
 	@Override
+	@Transactional
 	public void cleanByAccount(final Account account) {
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.MINUTE, -5);
-		entityManager.createQuery("DELETE p FROM playlist p WHERE dateOfModified >= :dateOfModified AND account = :account")
+		entityManager.createQuery("DELETE p FROM playlist p WHERE p.dateOfModified >= :dateOfModified AND p.account = :account")
 				.setParameter("dateOfModified", cal)
 				.setParameter("account", account)
 				.executeUpdate();
@@ -63,7 +68,7 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 	@Override
 	public List<Playlist> fetchByHidden(final Account account, final boolean hidden) {
 
-		return (List<Playlist>) entityManager.createQuery("SELECT p FROM playlist p WHERE hidden = :hidden AND account = :account")
+		return entityManager.createQuery("SELECT p FROM playlist p WHERE p.hidden = :hidden AND p.account = :account", Playlist.class)
 				.setParameter("hidden", hidden)
 				.setParameter("account", account)
 				.getResultList();
@@ -71,7 +76,7 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 
 	@Override
 	public Playlist fetchByPKey(final String playlistKey) {
-		return (Playlist) entityManager.createQuery("SELECT p FROM playlist p WHERE pkey = :pkey")
+		return entityManager.createQuery("SELECT p FROM playlist p WHERE p.pkey = :pkey", Playlist.class)
 				.setParameter("pkey", playlistKey)
 				.getSingleResult();
 	}

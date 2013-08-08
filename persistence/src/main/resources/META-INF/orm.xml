@@ -17,6 +17,11 @@
     <persistence-unit-metadata>
         <xml-mapping-metadata-complete/>
         <exclude-default-mappings/>
+        <persistence-unit-defaults>
+            <entity-listeners>
+                <entity-listener class=""/>
+            </entity-listeners>
+        </persistence-unit-defaults>
     </persistence-unit-metadata>
 
     <converter class="de.chaosfisch.uploader.persistence.dao.converter.FileToStringConverter" auto-apply="true"/>
@@ -33,6 +38,12 @@
             <basic name="password">
                 <column name="password" nullable="false"/>
             </basic>
+
+            <one-to-many name="playlists" mapped-by="account" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
 
@@ -70,6 +81,7 @@
                 <column name="date_of_modified"/>
                 <temporal>TIMESTAMP</temporal>
             </basic>
+            <many-to-one name="account"/>
         </attributes>
     </entity>
 
@@ -91,6 +103,29 @@
             <basic name="name">
                 <column name="name" nullable="false"/>
             </basic>
+            <many-to-one name="account" target-entity="de.chaosfisch.google.account.Account"/>
+            <one-to-one name="monetization"
+                        target-entity="de.chaosfisch.google.youtube.upload.metadata.Monetization"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="metadata"
+                        target-entity="de.chaosfisch.google.youtube.upload.metadata.Metadata"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="permissions"
+                        target-entity="de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <many-to-many name="playlists" target-entity="de.chaosfisch.google.youtube.playlist.Playlist"/>
         </attributes>
     </entity>
 
@@ -129,6 +164,33 @@
             <basic name="pauseOnFinish">
                 <column name="pauseonfinish" nullable="false"/>
             </basic>
+
+            <many-to-one name="account" target-entity="de.chaosfisch.google.account.Account"/>
+            <one-to-one name="status" target-entity="de.chaosfisch.google.youtube.upload.Status" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="monetization" target-entity="de.chaosfisch.google.youtube.upload.metadata.Monetization"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="metadata" target-entity="de.chaosfisch.google.youtube.upload.metadata.Metadata"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="permissions"
+                        target-entity="de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions"
+                        orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <many-to-many name="playlists" target-entity="de.chaosfisch.google.youtube.playlist.Playlist"/>
         </attributes>
     </entity>
 

@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
-	private Integer  id;
+	private int      id;
 	private Category category;
 	private String   title;
 	private String   description;

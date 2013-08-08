@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -23,7 +24,7 @@ public class AccountDaoImpl implements IAccountDao {
 
 	@Override
 	public List<Account> getAll() {
-		return (List<Account>) entityManager.createQuery("SELECT a FROM account a").getResultList();
+		return entityManager.createQuery("SELECT a FROM account a", Account.class).getResultList();
 	}
 
 	@Override
@@ -32,16 +33,19 @@ public class AccountDaoImpl implements IAccountDao {
 	}
 
 	@Override
+	@Transactional
 	public void insert(final Account account) {
 		entityManager.persist(account);
 	}
 
 	@Override
+	@Transactional
 	public void update(final Account account) {
-		entityManager.persist(account);
+		entityManager.merge(account);
 	}
 
 	@Override
+	@Transactional
 	public void delete(final Account account) {
 		entityManager.remove(account);
 	}

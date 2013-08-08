@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 public class Status implements Serializable {
 
-	private Integer id;
+	private int     id;
 	private boolean archived;
 	private boolean failed;
 	private boolean running;

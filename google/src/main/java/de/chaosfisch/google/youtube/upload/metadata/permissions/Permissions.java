@@ -14,11 +14,11 @@ import java.io.Serializable;
 
 public class Permissions implements Serializable {
 
-	private Integer       id;
+	private int           id;
 	private Comment       comment;
-	private Boolean       commentvote;
-	private Boolean       embed;
-	private Boolean       rate;
+	private boolean       commentvote;
+	private boolean       embed;
+	private boolean       rate;
 	private Videoresponse videoresponse;
 	private Visibility    visibility;
 

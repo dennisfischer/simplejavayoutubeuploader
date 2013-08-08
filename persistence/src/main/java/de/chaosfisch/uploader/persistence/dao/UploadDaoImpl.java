@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.GregorianCalendar;
@@ -24,7 +25,7 @@ public class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public List<Upload> getAll() {
-		return (List<Upload>) entityManager.createQuery("SELECT u FROM upload u").getResultList();
+		return entityManager.createQuery("SELECT u FROM upload u", Upload.class).getResultList();
 	}
 
 	@Override
@@ -33,16 +34,19 @@ public class UploadDaoImpl implements IUploadDao {
 	}
 
 	@Override
+	@Transactional
 	public void insert(final Upload upload) {
 		entityManager.persist(upload);
 	}
 
 	@Override
+	@Transactional
 	public void update(final Upload upload) {
-		entityManager.persist(upload);
+		entityManager.merge(upload);
 	}
 
 	@Override
+	@Transactional
 	public void delete(final Upload upload) {
 		entityManager.remove(upload);
 	}
@@ -51,9 +55,11 @@ public class UploadDaoImpl implements IUploadDao {
 	public Upload fetchNextUpload() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
-		return (Upload) entityManager.createQuery("SELECT u FROM upload u " +
-				"WHERE archived <> true AND failed <> true AND running <> true AND locked <> true AND (dateOfStart >= :dateOfStart OR dateOfStart IS NULL) " +
-				"ORDER BY dateOfStart DESC, FAILED ASC").setParameter("dateOfStart", cal).getSingleResult();
+		return entityManager.createQuery("SELECT u FROM upload u, status s " +
+				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (s.dateOfStart >= :dateOfStart OR s.dateOfStart IS NULL) " +
+				"ORDER BY s.dateOfStart DESC, s.failed ASC", Upload.class)
+				.setParameter("dateOfStart", cal)
+				.getSingleResult();
 	}
 
 	@Override
@@ -63,35 +69,28 @@ public class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public int countUnprocessed() {
-		return entityManager.createQuery("SELECT s FROM status s WHERE s.archived <> true AND s.failed <> true")
-				.getResultList()
-				.size();
+		return entityManager.createQuery("SELECT COUNT(s) FROM status s WHERE s.archived <> true AND s.failed <> true", Integer.class)
+				.getSingleResult();
 	}
 
 	@Override
 	public int countReadyStarttime() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
-		return entityManager.createQuery("SELECT u FROM upload WHERE archived <> true AND running <> true AND failed <> true AND dateOfStart >= :dateOfStart")
+		return entityManager.createQuery("SELECT COUNT(s) FROM status s WHERE s.archived <> true AND s.running <> true AND s.failed <> true AND s.dateOfStart >= :dateOfStart", Integer.class)
 				.setParameter("dateOfStart", cal)
-				.getResultList()
-				.size();
+				.getSingleResult();
 	}
 
 	@Override
+	@Transactional
 	public void resetUnfinishedUploads() {
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.createQuery("UPDATE status s SET s.running = false, s.failed = false WHERE s.archived <> true")
-					.executeUpdate();
-			entityManager.getTransaction().commit();
-		} catch (Exception e) {
-			entityManager.getTransaction().rollback();
-		}
+		entityManager.createQuery("UPDATE status s SET s.running = false, s.failed = false WHERE s.archived <> true")
+				.executeUpdate();
 	}
 
 	@Override
 	public List<Upload> fetchByArchived(final boolean archived) {
-		return (List<Upload>) entityManager.createQuery("SELECT u FROM upload u WHERE archvied = true").getResultList();
+		return entityManager.createQuery("SELECT u FROM upload u WHERE archvied = true", Upload.class).getResultList();
 	}
 }

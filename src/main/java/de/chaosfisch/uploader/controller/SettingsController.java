@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -31,6 +32,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
+@FXMLController
 public class SettingsController {
 
 	@FXML

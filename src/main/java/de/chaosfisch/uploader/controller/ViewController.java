@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.controller;
 
+import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -52,6 +53,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
+@FXMLController
 public class ViewController {
 
 	@FXML
@@ -265,6 +267,9 @@ public class ViewController {
 
 		final Metadata metadata = new Metadata();
 		metadata.setLicense(License.YOUTUBE);
+		metadata.setDescription("");
+		metadata.setTitle("");
+		metadata.setKeywords("");
 
 		standardTemplate = new Template();
 		standardTemplate.setPermissions(permissions);

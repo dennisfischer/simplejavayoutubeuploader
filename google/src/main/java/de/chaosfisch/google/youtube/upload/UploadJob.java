@@ -99,32 +99,16 @@ public class UploadJob implements Callable<Upload> {
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class);
 
-		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && resumeableManager
-				.canContinue() && !Thread.currentThread().isInterrupted()) {
+		// Schritt 1: Initialize
+		executor.getWithRetry(initialize()).get();
+		// Schritt 2: MetadataUpload + UrlFetch
+		executor.getWithRetry(metadata()).get();
+		// Schritt 3: Chunkupload
+		executor.getWithRetry(upload()).get();
+		// Schritt 4: Fetchen des Resumeinfo
+		executor.getWithRetry(resumeinfo()).get();
+		// Schritt 5: Postprocessing
 
-			switch (currentStatus) {
-				case INITIALIZE:
-					executor.getWithRetry(initialize()).get();
-					break;
-				case METADATA:
-					// Schritt 1: MetadataUpload + UrlFetch
-					executor.getWithRetry(metadata()).get();
-					break;
-				case UPLOAD:
-					// Schritt 2: Chunkupload
-					executor.getWithRetry(upload()).get();
-					break;
-				case RESUMEINFO:
-					// Schritt 3: Fetchen des Resumeinfo
-					executor.getWithRetry(resumeinfo()).get();
-					break;
-				case POSTPROCESS:
-					// Schritt 4: Postprocessing
-					break;
-				default:
-					break;
-			}
-		}
 		eventBus.unregister(this);
 		return upload;
 	}
