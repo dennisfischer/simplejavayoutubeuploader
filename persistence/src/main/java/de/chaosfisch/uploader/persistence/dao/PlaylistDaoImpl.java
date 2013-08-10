@@ -59,7 +59,7 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.MINUTE, -5);
-		entityManager.createQuery("DELETE p FROM playlist p WHERE p.dateOfModified >= :dateOfModified AND p.account = :account")
+		entityManager.createQuery("DELETE FROM playlist p WHERE p.dateOfModified >= :dateOfModified AND p.account = :account")
 				.setParameter("dateOfModified", cal)
 				.setParameter("account", account)
 				.executeUpdate();

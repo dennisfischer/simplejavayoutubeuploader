@@ -34,11 +34,11 @@ public class Playlist implements Serializable {
 	private GregorianCalendar dateOfModified;
 	private Account           account;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -50,11 +50,11 @@ public class Playlist implements Serializable {
 		this.pkey = pkey;
 	}
 
-	public Boolean getPrivate() {
+	public boolean isPrivate_() {
 		return private_;
 	}
 
-	public void setPrivate(final Boolean private_) {
+	public void setPrivate_(final boolean private_) {
 		this.private_ = private_;
 	}
 
@@ -82,11 +82,11 @@ public class Playlist implements Serializable {
 		this.thumbnail = thumbnail;
 	}
 
-	public Integer getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(final Integer number) {
+	public void setNumber(final int number) {
 		this.number = number;
 	}
 
@@ -98,11 +98,11 @@ public class Playlist implements Serializable {
 		this.summary = summary;
 	}
 
-	public Boolean getHidden() {
+	public boolean isHidden() {
 		return hidden;
 	}
 
-	public void setHidden(final Boolean hidden) {
+	public void setHidden(final boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -120,5 +120,27 @@ public class Playlist implements Serializable {
 
 	public void setAccount(final Account account) {
 		this.account = account;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof Playlist)) {
+			return false;
+		}
+
+		final Playlist playlist = (Playlist) o;
+
+		return id == playlist.id && pkey.equals(playlist.pkey);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + pkey.hashCode();
+		return result;
 	}
 }

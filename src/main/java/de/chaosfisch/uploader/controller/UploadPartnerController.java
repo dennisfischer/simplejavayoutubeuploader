@@ -180,12 +180,12 @@ public class UploadPartnerController {
 		monetizeTitle.setText(monetization.getTitle());
 		monetizeTitleEpisode.setText(monetization.getTitleepisode());
 
-		monetizeClaim.setSelected(null != monetization.getClaim() && monetization.getClaim());
-		monetizeOverlay.setSelected(null != monetization.getOverlay() && monetization.getOverlay());
-		monetizeTrueview.setSelected(null != monetization.getTrueview() && monetization.getTrueview());
-		monetizeProduct.setSelected(null != monetization.getProduct() && monetization.getProduct());
-		monetizeInstream.setSelected(null != monetization.getInstream() && monetization.getInstream());
-		monetizeInstreamDefaults.setSelected(null != monetization.getInstreamDefaults() && monetization.getInstreamDefaults());
+		monetizeClaim.setSelected(monetization.isClaim());
+		monetizeOverlay.setSelected(monetization.isOverlay());
+		monetizeTrueview.setSelected(monetization.isTrueview());
+		monetizeProduct.setSelected(monetization.isProduct());
+		monetizeInstream.setSelected(monetization.isInstream());
+		monetizeInstreamDefaults.setSelected(monetization.isInstreamDefaults());
 	}
 
 	public Upload toUpload(final Upload upload) {

@@ -48,16 +48,12 @@ public class Upload implements Serializable {
 	private Account        account;
 	private List<Playlist> playlists;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
-	}
-
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
 	}
 
 	public File getFile() {
@@ -100,11 +96,11 @@ public class Upload implements Serializable {
 		this.dateOfRelease = dateOfRelease;
 	}
 
-	public Boolean getPauseOnFinish() {
+	public boolean isPauseOnFinish() {
 		return pauseOnFinish;
 	}
 
-	public void setPauseOnFinish(final Boolean pauseOnFinish) {
+	public void setPauseOnFinish(final boolean pauseOnFinish) {
 		this.pauseOnFinish = pauseOnFinish;
 	}
 
@@ -186,5 +182,24 @@ public class Upload implements Serializable {
 
 	public void setPlaylists(final List<Playlist> playlists) {
 		this.playlists = playlists;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Upload)) {
+			return false;
+		}
+
+		final Upload upload = (Upload) obj;
+
+		return id == upload.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

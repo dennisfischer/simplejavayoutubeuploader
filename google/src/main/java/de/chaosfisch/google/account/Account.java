@@ -27,11 +27,11 @@ public class Account implements Serializable {
 	private String         password;
 	private List<Playlist> playlists;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -57,5 +57,26 @@ public class Account implements Serializable {
 
 	public void setPlaylists(final List<Playlist> playlists) {
 		this.playlists = playlists;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Account)) {
+			return false;
+		}
+
+		final Account account = (Account) obj;
+
+		return id == account.id && name.equals(account.name);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + name.hashCode();
+		return result;
 	}
 }

@@ -323,7 +323,7 @@ public class ViewController {
 				final Playlist playlist = new Playlist();
 				playlist.setTitle(title.getText());
 				playlist.setSummary(summary.getText());
-				playlist.setPrivate(playlistPrivate.isSelected());
+				playlist.setPrivate_(playlistPrivate.isSelected());
 				playlist.setAccount(accounts.getValue());
 				try {
 					playlistService.addYoutubePlaylist(playlist);

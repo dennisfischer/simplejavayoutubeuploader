@@ -41,59 +41,59 @@ public class Monetization implements Serializable {
 	private Asset       asset;
 	private boolean     partner;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
-	public Boolean getInstreamDefaults() {
+	public boolean isInstreamDefaults() {
 		return instreamDefaults;
 	}
 
-	public void setInstreamDefaults(final Boolean instreamDefaults) {
+	public void setInstreamDefaults(final boolean instreamDefaults) {
 		this.instreamDefaults = instreamDefaults;
 	}
 
-	public Boolean getClaim() {
+	public boolean isClaim() {
 		return claim;
 	}
 
-	public void setClaim(final Boolean claim) {
+	public void setClaim(final boolean claim) {
 		this.claim = claim;
 	}
 
-	public Boolean getOverlay() {
+	public boolean isOverlay() {
 		return overlay;
 	}
 
-	public void setOverlay(final Boolean overlay) {
+	public void setOverlay(final boolean overlay) {
 		this.overlay = overlay;
 	}
 
-	public Boolean getTrueview() {
+	public boolean isTrueview() {
 		return trueview;
 	}
 
-	public void setTrueview(final Boolean trueview) {
+	public void setTrueview(final boolean trueview) {
 		this.trueview = trueview;
 	}
 
-	public Boolean getInstream() {
+	public boolean isInstream() {
 		return instream;
 	}
 
-	public void setInstream(final Boolean instream) {
+	public void setInstream(final boolean instream) {
 		this.instream = instream;
 	}
 
-	public Boolean getProduct() {
+	public boolean isProduct() {
 		return product;
 	}
 
-	public void setProduct(final Boolean product) {
+	public void setProduct(final boolean product) {
 		this.product = product;
 	}
 
@@ -209,11 +209,30 @@ public class Monetization implements Serializable {
 		this.asset = asset;
 	}
 
-	public Boolean getPartner() {
+	public boolean isPartner() {
 		return partner;
 	}
 
-	public void setPartner(final Boolean partner) {
+	public void setPartner(final boolean partner) {
 		this.partner = partner;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Monetization)) {
+			return false;
+		}
+
+		final Monetization that = (Monetization) obj;
+
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

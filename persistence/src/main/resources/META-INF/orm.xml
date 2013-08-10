@@ -19,7 +19,11 @@
         <exclude-default-mappings/>
         <persistence-unit-defaults>
             <entity-listeners>
-                <entity-listener class=""/>
+                <entity-listener class="de.chaosfisch.uploader.persistence.dao.listener.TemplateListener">
+                    <post-persist method-name="onAction"/>
+                    <post-remove method-name="onAction"/>
+                    <post-update method-name="onAction"/>
+                </entity-listener>
             </entity-listeners>
         </persistence-unit-defaults>
     </persistence-unit-metadata>
@@ -127,6 +131,7 @@
             </one-to-one>
             <many-to-many name="playlists" target-entity="de.chaosfisch.google.youtube.playlist.Playlist"/>
         </attributes>
+
     </entity>
 
     <entity class="de.chaosfisch.google.youtube.upload.Upload" name="upload">

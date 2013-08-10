@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.guice;
+package de.chaosfisch.uploader;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
@@ -42,7 +42,7 @@ import javafx.stage.FileChooser;
 
 import java.util.ResourceBundle;
 
-public class GuiceBindings extends AbstractModule {
+public class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
@@ -57,7 +57,6 @@ public class GuiceBindings extends AbstractModule {
 		bind(IRequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 		bind(IGoogleRequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 
-		mapCommands();
 		mapServices();
 		mapUtil();
 
@@ -92,9 +91,4 @@ public class GuiceBindings extends AbstractModule {
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
 		bind(IResumeableManager.class).to(ResumeableManagerImpl.class);
 	}
-
-	private void mapCommands() {
-		bind(ICommandProvider.class).to(CommandProvider.class);
-	}
-
 }

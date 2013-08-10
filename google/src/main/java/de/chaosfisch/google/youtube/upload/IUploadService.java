@@ -54,4 +54,6 @@ public interface IUploadService {
 	ResumeInfo fetchResumeInfo(Upload upload);
 
 	List<Upload> fetchByArchived(boolean archived);
+
+	void abort(Upload upload);
 }

@@ -96,11 +96,11 @@ public class AbstractMetadataService implements IMetadataService {
 		}
 
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(permissions.getEmbed())));
+				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(permissions.isEmbed())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(permissions.getRate())));
+				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(permissions.isRate())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.getCommentvote())));
+				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(permissions.getVideoresponse()
 						.ordinal())));
@@ -261,13 +261,13 @@ public class AbstractMetadataService implements IMetadataService {
 
 		params.put("allow_comments", Comment.DENIED == permissions.getComment() ? "no" : "yes");
 		params.put("allow_comments_detail", Comment.ALLOWED == permissions.getComment() ? "all" : "approval");
-		params.put("allow_comment_ratings", permissions.getCommentvote() ? "yes" : "no");
-		params.put("allow_ratings", permissions.getRate() ? "yes" : "no");
+		params.put("allow_comment_ratings", permissions.isCommentvote() ? "yes" : "no");
+		params.put("allow_ratings", permissions.isRate() ? "yes" : "no");
 		params.put("allow_responses", Videoresponse.DENIED == permissions.getVideoresponse() ? "no" : "yes");
 		params.put("allow_responses_detail", Videoresponse.ALLOWED == permissions.getVideoresponse() ?
 											 "all" :
 											 "approval");
-		params.put("allow_embedding", permissions.getEmbed() ? "yes" : "no");
+		params.put("allow_embedding", permissions.isEmbed() ? "yes" : "no");
 		return params;
 	}
 
@@ -286,18 +286,18 @@ public class AbstractMetadataService implements IMetadataService {
 		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(20);
 		final Metadata metadata = upload.getMetadata();
 		final Monetization monetization = upload.getMonetization();
-		if (monetization.getClaim()) {
+		if (monetization.isClaim()) {
 			params.put("enable_monetization", boolConverter(true));
 			params.put("monetization_style", "ads");
-			if (!monetization.getPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
-				params.put("enable_overlay_ads", boolConverter(monetization.getOverlay()));
-				params.put("trueview_instream", boolConverter(monetization.getTrueview()));
-				params.put("instream", boolConverter(monetization.getInstream()));
-				params.put("long_ads_checkbox", boolConverter(monetization.getInstreamDefaults()));
-				params.put("paid_product", boolConverter(monetization.getProduct()));
+			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
+				params.put("enable_overlay_ads", boolConverter(monetization.isOverlay()));
+				params.put("trueview_instream", boolConverter(monetization.isTrueview()));
+				params.put("instream", boolConverter(monetization.isInstream()));
+				params.put("long_ads_checkbox", boolConverter(monetization.isInstreamDefaults()));
+				params.put("paid_product", boolConverter(monetization.isProduct()));
 				params.put("allow_syndication", boolConverter(Syndication.GLOBAL == monetization.getSyndication()));
 			}
-			if (monetization.getPartner()) {
+			if (monetization.isPartner()) {
 				params.put("claim_type", ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ?
 										 "B" :
 										 ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
@@ -360,8 +360,8 @@ public class AbstractMetadataService implements IMetadataService {
 			final Social social = upload.getSocial();
 			if (null != social.getMessage() && !social.getMessage().isEmpty()) {
 				params.put("creator_share_custom_message", social.getMessage());
-				params.put("creator_share_facebook", boolConverter(social.getFacebook()));
-				params.put("creator_share_twitter", boolConverter(social.getTwitter()));
+				params.put("creator_share_facebook", boolConverter(social.isFacebook()));
+				params.put("creator_share_twitter", boolConverter(social.isTwitter()));
 			}
 		}
 		return params;

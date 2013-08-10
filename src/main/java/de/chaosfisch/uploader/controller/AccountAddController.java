@@ -12,8 +12,10 @@ package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
-import de.chaosfisch.uploader.command.AddAccountCommand;
-import de.chaosfisch.uploader.guice.CommandProvider;
+import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -44,17 +46,12 @@ public class AccountAddController {
 	private HBox progressPane;
 
 	@Inject
-	private CommandProvider commandProvider;
+	private IAccountService accountService;
 
 	@FXML
 	void addAccount(final ActionEvent event) {
-		final AddAccountCommand command = commandProvider.get(AddAccountCommand.class);
-		command.setOnRunning(new AccountAddRunning());
-		command.setOnSucceeded(new AccountAddSucceeded());
-		command.setOnFailed(new AcccountAddFailed());
-		command.name = nameTextfield.getText();
-		command.password = passwordTextfield.getText();
-		command.start();
+		final AddAccountService service = new AddAccountService(nameTextfield.getText(), passwordTextfield.getText());
+		service.start();
 	}
 
 	@FXML
@@ -73,6 +70,35 @@ public class AccountAddController {
 		passwordTextfield.clear();
 		nameTextfield.getStyleClass().remove("input-invalid");
 		passwordTextfield.getStyleClass().remove("input-invalid");
+	}
+
+	private class AddAccountService extends Service<Void> {
+
+		private final String name;
+		private final String password;
+
+		public AddAccountService(final String name, final String password) {
+			this.name = name;
+			this.password = password;
+			setOnSucceeded(new AccountAddSucceeded());
+			setOnRunning(new AcccountAddFailed());
+			setOnFailed(new AccountAddRunning());
+		}
+
+		@Override
+		protected Task<Void> createTask() {
+			return new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					final Account account = new Account();
+					account.setName(name);
+					account.setPassword(password);
+					accountService.verifyAccount(account);
+					accountService.insert(account);
+					return null;
+				}
+			};
+		}
 	}
 
 	private final class AccountAddRunning implements EventHandler<WorkerStateEvent> {

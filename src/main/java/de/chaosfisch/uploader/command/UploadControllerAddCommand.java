@@ -96,15 +96,14 @@ public class UploadControllerAddCommand extends Service<Void> {
 				}
 
 				final Monetization monetization = upload.getMonetization();
-				if (!monetization.getPartner() && (monetization.getOverlay() || monetization.getTrueview() || monetization
-						.getProduct())) {
+				if (!monetization.isPartner() && (monetization.isOverlay() || monetization.isTrueview() || monetization.isProduct())) {
 					monetization.setClaim(true);
 				}
 
 				upload.setPlaylists(playlists);
 
-				if (null == upload.getId() || upload.getId().equals(0)) {
-					upload.setId(null);
+				if (0 == upload.getId()) {
+					upload.setId(0);
 					final Status status = new Status();
 					status.setArchived(false);
 					status.setFailed(false);

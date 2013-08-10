@@ -11,8 +11,10 @@
 package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
+import com.cathive.fx.guice.FxApplicationThread;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -26,17 +28,12 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
-import de.chaosfisch.uploader.command.RefreshPlaylistsCommand;
-import de.chaosfisch.uploader.command.RemoveTemplateCommand;
-import de.chaosfisch.uploader.command.UpdateTemplateCommand;
 import de.chaosfisch.uploader.command.UploadControllerAddCommand;
 import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.controller.renderer.PlaylistGridCell;
-import de.chaosfisch.uploader.guice.ICommandProvider;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.validation.UploadValidationCode;
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -47,6 +44,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -219,8 +218,6 @@ public class UploadController {
 	@Inject
 	private DirectoryChooser directoryChooser;
 	@Inject
-	private ICommandProvider commandProvider;
-	@Inject
 	private IAccountService  accountService;
 	@Inject
 	private IPlaylistService playlistService;
@@ -261,7 +258,7 @@ public class UploadController {
 		if (null == uploadEnddir.getText() || uploadEnddir.getText().isEmpty()) {
 			upload.setEnddir(null);
 		}
-		final UploadControllerAddCommand command = commandProvider.get(UploadControllerAddCommand.class);
+		final UploadControllerAddCommand command = new UploadControllerAddCommand();
 		command.upload = upload;
 		command.account = uploadAccount.getValue();
 		command.playlists = playlistTargetList;
@@ -428,18 +425,15 @@ public class UploadController {
 
 	@FXML
 	void refreshPlaylists(final ActionEvent event) {
-		final RefreshPlaylistsCommand command = commandProvider.get(RefreshPlaylistsCommand.class);
-		command.accounts = accountsList;
-		command.start();
+		final RefreshPlaylistService service = new RefreshPlaylistService(accountsList);
+		service.start();
 	}
 
 	@FXML
 	void removeTemplate(final ActionEvent event) {
 		final Template template;
 		if (null != (template = templates.getSelectionModel().getSelectedItem())) {
-			final RemoveTemplateCommand command = commandProvider.get(RemoveTemplateCommand.class);
-			command.template = template;
-			command.start();
+			templateService.delete(template);
 		}
 	}
 
@@ -457,11 +451,10 @@ public class UploadController {
 		if (null == templates.getValue()) {
 			return;
 		}
-		final UpdateTemplateCommand command = commandProvider.get(UpdateTemplateCommand.class);
-		command.template = toTemplate(templates.getValue());
-		command.account = uploadAccount.getValue();
-		command.playlists = playlistTargetList;
-		command.start();
+		final Template template = toTemplate(templates.getValue());
+		template.setAccount(uploadAccount.getValue());
+		template.setPlaylists(playlistTargetList);
+		templateService.update(template);
 	}
 
 	@FXML
@@ -530,11 +523,10 @@ public class UploadController {
 
 	/* CHECK ME FIXME
 	@Subscribe
-	public void onModelAdded(final ModelAddedEvent event) {
-		Platform.runLater(new Runnable() {
+		@FxApplicationThread
 
-			@Override
-			public void run() {
+	public void onModelAdded(final ModelAddedEvent event) {
+
 				if (event.getModel() instanceof Account) {
 					accountsList.add((Account) event.getModel());
 					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
@@ -552,15 +544,14 @@ public class UploadController {
 						.equals(uploadAccount.getValue())) {
 					playlistSourceList.add((Playlist) event.getModel());
 				}
-			}
-		});
+
 	}
 
 	@Subscribe
+		@FxApplicationThread
+
 	public void onModelUpdated(final ModelUpdatedEvent event) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
+
 				if (event.getModel() instanceof Account) {
 					accountsList.set(accountsList.indexOf(event.getModel()), (Account) event.getModel());
 				} else if (event.getModel() instanceof Template) {
@@ -579,15 +570,14 @@ public class UploadController {
 						playlistSourceList.add((Playlist) event.getModel());
 					}
 				}
-			}
-		});
+
 	}
 
 	@Subscribe
+		@FxApplicationThread
+
 	public void onModelRemoved(final ModelRemovedEvent event) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
+
 				if (event.getModel() instanceof Account) {
 					accountsList.remove(event.getModel());
 					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
@@ -602,8 +592,6 @@ public class UploadController {
 					playlistSourceList.remove(event.getModel());
 					playlistTargetList.remove(event.getModel());
 				}
-			}
-		});
 
 	}
 
@@ -848,19 +836,19 @@ public class UploadController {
 		uploadTitle.setText(metadata.getTitle());
 
 		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
-		uploadCommentvote.setSelected(permissions.getCommentvote());
+		uploadCommentvote.setSelected(permissions.isCommentvote());
 		uploadComment.setValue(permissions.getComment());
-		uploadEmbed.setSelected(permissions.getEmbed());
-		uploadRate.setSelected(permissions.getRate());
+		uploadEmbed.setSelected(permissions.isEmbed());
+		uploadRate.setSelected(permissions.isRate());
 		uploadVisibility.setValue(permissions.getVisibility());
 		uploadVideoresponse.setValue(permissions.getVideoresponse());
 
 		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
-		uploadFacebook.setSelected(social.getFacebook());
-		uploadTwitter.setSelected(social.getTwitter());
+		uploadFacebook.setSelected(social.isFacebook());
+		uploadTwitter.setSelected(social.isTwitter());
 		uploadMessage.setText(social.getMessage());
 
-		monetizePartner.setSelected(null == upload.getMonetization() ? false : upload.getMonetization().getPartner());
+		monetizePartner.setSelected(null == upload.getMonetization() ? false : upload.getMonetization().isPartner());
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.fromUpload(upload);
@@ -914,21 +902,19 @@ public class UploadController {
 		final Permissions permissions = null == template.getPermissions() ?
 										new Permissions() :
 										template.getPermissions();
-		uploadCommentvote.setSelected(permissions.getCommentvote());
+		uploadCommentvote.setSelected(permissions.isCommentvote());
 		uploadComment.setValue(permissions.getComment());
-		uploadEmbed.setSelected(permissions.getEmbed());
-		uploadRate.setSelected(permissions.getRate());
+		uploadEmbed.setSelected(permissions.isEmbed());
+		uploadRate.setSelected(permissions.isRate());
 		uploadVisibility.setValue(permissions.getVisibility());
 		uploadVideoresponse.setValue(permissions.getVideoresponse());
 
 		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
-		uploadFacebook.setSelected(social.getFacebook());
-		uploadTwitter.setSelected(social.getTwitter());
+		uploadFacebook.setSelected(social.isFacebook());
+		uploadTwitter.setSelected(social.isTwitter());
 		uploadMessage.setText(social.getMessage());
 
-		monetizePartner.setSelected(null == template.getMonetization() ?
-									false :
-									template.getMonetization().getPartner());
+		monetizePartner.setSelected(null != template.getMonetization() && template.getMonetization().isPartner());
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.fromTemplate(template);
@@ -1004,18 +990,13 @@ public class UploadController {
 		}
 	}
 
+	@FxApplicationThread
 	private void _triggerPlaylist() {
-		Platform.runLater(new Runnable() {
+		playlistTargetzone.setItems(null);
+		playlistTargetzone.setItems(playlistTargetList);
 
-			@Override
-			public void run() {
-				playlistTargetzone.setItems(null);
-				playlistTargetzone.setItems(playlistTargetList);
-
-				playlistSourcezone.setItems(null);
-				playlistSourcezone.setItems(playlistSourceList);
-			}
-		});
+		playlistSourcezone.setItems(null);
+		playlistSourcezone.setItems(playlistSourceList);
 	}
 
 	private final class AccountChangeListener implements ChangeListener<Account> {
@@ -1240,4 +1221,24 @@ public class UploadController {
 			event.consume();
 		}
 	}
+
+	public class RefreshPlaylistService extends Service<Multimap<Account, Playlist>> {
+
+		public List<Account> accounts;
+
+		public RefreshPlaylistService(final List<Account> accounts) {
+			this.accounts = accounts;
+		}
+
+		@Override
+		protected Task<Multimap<Account, Playlist>> createTask() {
+			return new Task<Multimap<Account, Playlist>>() {
+				@Override
+				protected Multimap<Account, Playlist> call() throws Exception {
+					return playlistService.synchronizePlaylists(accounts);
+				}
+			};
+		}
+	}
+
 }

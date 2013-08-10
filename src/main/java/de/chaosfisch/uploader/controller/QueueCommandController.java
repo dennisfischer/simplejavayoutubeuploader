@@ -15,10 +15,7 @@ import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.ActionOnFinish;
-import de.chaosfisch.uploader.command.StartUploadCommand;
-import de.chaosfisch.uploader.command.StopUploadCommand;
 import de.chaosfisch.uploader.controller.renderer.ConfirmDialog;
-import de.chaosfisch.uploader.guice.ICommandProvider;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -73,9 +70,6 @@ public class QueueCommandController {
 	@Inject
 	private IUploadService uploadService;
 
-	@Inject
-	private ICommandProvider commandProvider;
-
 	@FXML
 	void clearQueue(final ActionEvent event) {
 		final List<Upload> uploads = uploadService.fetchByArchived(true);
@@ -88,15 +82,13 @@ public class QueueCommandController {
 	void startQueue(final ActionEvent event) {
 		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"), resources);
 		if (MonologFXButton.Type.YES == dialog.showDialog()) {
-			final StartUploadCommand command = commandProvider.get(StartUploadCommand.class);
-			command.start();
+			uploadService.startUploading();
 		}
 	}
 
 	@FXML
 	void stopQueue(final ActionEvent event) {
-		final StopUploadCommand command = commandProvider.get(StopUploadCommand.class);
-		command.start();
+		uploadService.stopUploading();
 	}
 
 	@FXML

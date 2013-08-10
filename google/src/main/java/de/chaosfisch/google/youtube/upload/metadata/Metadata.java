@@ -21,11 +21,11 @@ public class Metadata implements Serializable {
 	private String   keywords;
 	private License  license;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -67,5 +67,24 @@ public class Metadata implements Serializable {
 
 	public void setLicense(final License license) {
 		this.license = license;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Metadata)) {
+			return false;
+		}
+
+		final Metadata metadata = (Metadata) obj;
+
+		return id == metadata.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

@@ -22,11 +22,11 @@ public class Permissions implements Serializable {
 	private Videoresponse videoresponse;
 	private Visibility    visibility;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -38,27 +38,27 @@ public class Permissions implements Serializable {
 		this.comment = comment;
 	}
 
-	public Boolean getCommentvote() {
+	public boolean isCommentvote() {
 		return commentvote;
 	}
 
-	public void setCommentvote(final Boolean commentvote) {
+	public void setCommentvote(final boolean commentvote) {
 		this.commentvote = commentvote;
 	}
 
-	public Boolean getEmbed() {
+	public boolean isEmbed() {
 		return embed;
 	}
 
-	public void setEmbed(final Boolean embed) {
+	public void setEmbed(final boolean embed) {
 		this.embed = embed;
 	}
 
-	public Boolean getRate() {
+	public boolean isRate() {
 		return rate;
 	}
 
-	public void setRate(final Boolean rate) {
+	public void setRate(final boolean rate) {
 		this.rate = rate;
 	}
 
@@ -76,5 +76,24 @@ public class Permissions implements Serializable {
 
 	public void setVisibility(final Visibility visibility) {
 		this.visibility = visibility;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Permissions)) {
+			return false;
+		}
+
+		final Permissions that = (Permissions) obj;
+
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

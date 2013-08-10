@@ -14,14 +14,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
-import de.chaosfisch.uploader.command.AbortUploadCommand;
-import de.chaosfisch.uploader.command.RemoveUploadCommand;
-import de.chaosfisch.uploader.command.UpdateUploadCommand;
 import de.chaosfisch.uploader.controller.UploadController;
-import de.chaosfisch.uploader.guice.ICommandProvider;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -42,8 +39,6 @@ import java.util.concurrent.TimeUnit;
 public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListCell<Upload>> {
 
 	@Inject
-	private ICommandProvider commandProvider;
-	@Inject
 	private UploadController uploadController;
 	@Inject
 	private EventBus         eventBus;
@@ -52,6 +47,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private ResourceBundle   resources;
 	@Inject
 	private DesktopUtil      desktopUtil;
+	@Inject
+	private IUploadService   uploadService;
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -93,7 +90,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			final ToggleButton btnPauseOnFinish = ToggleButtonBuilder.create()
 					.styleClass("queueCellPauseButton")
 					.onAction(new QueueCellPauseButtonHandler(item))
-					.selected(item.getPauseOnFinish())
+					.selected(item.isPauseOnFinish())
 					.tooltip(TooltipBuilder.create()
 							.autoHide(true)
 							.text(resources.getString("tooltip.queuecellpause"))
@@ -213,9 +210,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.removeupload.title"), resources
 						.getString("dialog.removeupload.message"), resources);
 				if (MonologFXButton.Type.YES == dialog.showDialog()) {
-					final RemoveUploadCommand command = commandProvider.get(RemoveUploadCommand.class);
-					command.upload = item;
-					command.start();
+					uploadService.delete(upload);
 				}
 			}
 		}
@@ -251,9 +246,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.getString("dialog.abortupload.message"), resources);
 
 				if (MonologFXButton.Type.YES == dialog.showDialog()) {
-					final AbortUploadCommand command = commandProvider.get(AbortUploadCommand.class);
-					command.upload = item;
-					command.start();
+					uploadService.abort(item);
 				}
 			}
 		}
@@ -270,9 +263,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final ToggleButton source = (ToggleButton) event.getSource();
 				item.setPauseOnFinish(source.isSelected());
 
-				final UpdateUploadCommand command = commandProvider.get(UpdateUploadCommand.class);
-				command.upload = item;
-				command.start();
+				uploadService.update(item);
 			}
 		}
 

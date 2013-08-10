@@ -21,11 +21,11 @@ public class Status implements Serializable {
 	private boolean locked;
 	private String  status;
 
-	protected Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -67,5 +67,24 @@ public class Status implements Serializable {
 
 	public void setStatus(final String status) {
 		this.status = status;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Status)) {
+			return false;
+		}
+
+		final Status status = (Status) obj;
+
+		return id == status.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

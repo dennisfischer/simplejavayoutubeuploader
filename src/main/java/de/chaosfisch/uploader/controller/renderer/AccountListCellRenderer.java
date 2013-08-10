@@ -56,7 +56,7 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 			for (final Playlist playlist : playlistService.getAll(item)) {
 				children.add(CheckBoxBuilder.create()
 						.text(playlist.getTitle())
-						.selected(playlist.getHidden())
+						.selected(playlist.isHidden())
 						.styleClass("accountCellCheckbox")
 						.onAction(new AccountCellCheckboxHandler(playlist))
 						.build());
@@ -115,7 +115,7 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 
 			@Override
 			public void handle(final ActionEvent event) {
-				playlist.setHidden(!playlist.getHidden());
+				playlist.setHidden(!playlist.isHidden());
 				playlistService.update(playlist);
 			}
 		}

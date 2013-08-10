@@ -79,9 +79,9 @@ public class UploadMonetizationController {
 	}
 
 	private void fromMonetization(final Monetization monetization) {
-		monetizeOverlay.setSelected(null != monetization.getOverlay() && monetization.getOverlay());
-		monetizeTrueView.setSelected(null != monetization.getTrueview() && monetization.getTrueview());
-		monetizeProduct.setSelected(null != monetization.getProduct() && monetization.getProduct());
+		monetizeOverlay.setSelected(monetization.isOverlay());
+		monetizeTrueView.setSelected(monetization.isTrueview());
+		monetizeProduct.setSelected(monetization.isProduct());
 		monetizeSyndication.setValue(monetization.getSyndication());
 	}
 

@@ -20,7 +20,6 @@ import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.uploader.controller.renderer.ConfirmDialog;
-import de.chaosfisch.uploader.guice.GuiceBindings;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -69,7 +68,7 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void init(final List<Module> modules) throws Exception {
-		modules.add(new GuiceBindings());
+		modules.add(new UploaderModule());
 	}
 
 	private void initApplication(final Stage primaryStage) {

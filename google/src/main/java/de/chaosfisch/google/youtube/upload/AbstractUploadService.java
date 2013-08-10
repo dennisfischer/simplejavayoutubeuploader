@@ -67,4 +67,9 @@ public abstract class AbstractUploadService implements IUploadService {
 		//FIXME
 		//uploader.exit();
 	}
+
+	@Override
+	public void abort(final Upload upload) {
+		uploader.abort(upload);
+	}
 }

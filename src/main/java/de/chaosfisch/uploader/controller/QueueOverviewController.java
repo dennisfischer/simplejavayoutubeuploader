@@ -50,40 +50,28 @@ public class QueueOverviewController {
 		uploads.addAll(uploadService.getAll());
 	}
 
+
 	/* FIXME CHECK ME
+							  @FxApplicationThread
 
 	private void onUploadAdded(final Upload upload) {
-		Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
 				uploads.add(upload);
-			}
-		});
-	}
 
+	}
+        @FxApplicationThread
 	private void onUploadRemoved(final Upload upload) {
-		Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
 				uploads.remove(upload);
-			}
-		});
+
 	}
-
+        @FxApplicationThread
 	private void onUploadUpdated(final Upload upload) {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
 				if (uploads.contains(upload)) {
 					final int index = uploads.indexOf(upload);
 					uploads.remove(upload);
 					uploads.add(index, upload);
 				}
-			}
-		});
 	}
 
 	@Subscribe

@@ -119,7 +119,7 @@ public class Uploader {
 				if (null != upload) {
 					logger.info("Running uploads: {}", runningUploads);
 
-					if (upload.getPauseOnFinish()) {
+					if (upload.isPauseOnFinish()) {
 						running = false;
 					}
 				}

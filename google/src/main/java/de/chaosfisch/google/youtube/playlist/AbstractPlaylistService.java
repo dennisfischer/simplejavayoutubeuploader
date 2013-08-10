@@ -80,7 +80,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		final VideoEntry entry = new VideoEntry();
 		entry.title = playlist.getTitle();
 		entry.playlistSummary = playlist.getSummary();
-		if (playlist.getPrivate()) {
+		if (playlist.isPrivate_()) {
 			entry.ytPrivate = new Object();
 		}
 		entry.mediaGroup = null;

@@ -19,27 +19,27 @@ public class Social implements Serializable {
 	private boolean twitter;
 	private String  message;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
-	public Boolean getFacebook() {
+	public boolean isFacebook() {
 		return facebook;
 	}
 
-	public void setFacebook(final Boolean facebook) {
+	public void setFacebook(final boolean facebook) {
 		this.facebook = facebook;
 	}
 
-	public Boolean getTwitter() {
+	public boolean isTwitter() {
 		return twitter;
 	}
 
-	public void setTwitter(final Boolean twitter) {
+	public void setTwitter(final boolean twitter) {
 		this.twitter = twitter;
 	}
 
@@ -49,5 +49,24 @@ public class Social implements Serializable {
 
 	public void setMessage(final String message) {
 		this.message = message;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Social)) {
+			return false;
+		}
+
+		final Social social = (Social) obj;
+
+		return id == social.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }
