@@ -81,8 +81,8 @@ public class AccountAddController {
 			this.name = name;
 			this.password = password;
 			setOnSucceeded(new AccountAddSucceeded());
-			setOnRunning(new AcccountAddFailed());
-			setOnFailed(new AccountAddRunning());
+			setOnRunning(new AccountAddRunning());
+			setOnFailed(new AcccountAddFailed());
 		}
 
 		@Override

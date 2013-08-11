@@ -26,8 +26,6 @@ public interface IPlaylistDao {
 
 	void delete(Playlist playlist);
 
-	void cleanByAccount(Account account);
-
 	List<Playlist> fetchByHidden(Account account, boolean hidden);
 
 	Playlist fetchByPKey(String playlistKey);

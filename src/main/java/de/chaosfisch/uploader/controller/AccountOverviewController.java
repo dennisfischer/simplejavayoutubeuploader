@@ -11,11 +11,14 @@
 package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
-import com.cathive.fx.guice.FxApplicationThread;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.account.events.AccountAdded;
+import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.uploader.controller.renderer.AccountListCellRenderer;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,8 +38,8 @@ public class AccountOverviewController {
 
 	@FXML
 	private ListView<Account> accountListView;
-
 	private final ObservableList<Account> accountItems = FXCollections.observableArrayList();
+
 	@Inject
 	private IAccountService         accountService;
 	@Inject
@@ -49,57 +52,30 @@ public class AccountOverviewController {
 		accountItems.addAll(accountService.getAll());
 	}
 
-	@FxApplicationThread
-	private void onAccountAdded(final Account account) {
-		accountItems.add(account);
-	}
-
-	@FxApplicationThread
-	private void onAccountUpdated(final Account account) {
-		final int index = accountItems.indexOf(account);
-		accountItems.remove(account);
-		accountItems.add(index, account);
-	}
-
-	@FxApplicationThread
-	private void onAccountDeleted(final Account account) {
-		accountItems.remove(account);
-	}
-
-	/*
 	@Subscribe
-	public void onModelUpdated(final ModelUpdatedEvent event) {
-		if (event.getModel() instanceof Account) {
-			onAccountUpdated((Account) event.getModel());
-		} else if (event.getModel() instanceof Playlist) {
-			_triggerPlaylist();
-		}
+	public void onAccountDeleted(final AccountRemoved event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				accountItems.remove(event.getAccount());
+			}
+		});
 	}
 
 	@Subscribe
-	public void onModelAdded(final ModelAddedEvent event) {
-		if (event.getModel() instanceof Account) {
-			onAccountAdded((Account) event.getModel());
-		} else if (event.getModel() instanceof Playlist) {
-			_triggerPlaylist();
-		}
+	public void onAccountAdded(final AccountAdded event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				accountItems.add(event.getAccount());
+			}
+		});
 	}
 
-	@Subscribe
-	public void onModelremoved(final ModelRemovedEvent event) {
-		if (event.getModel() instanceof Account) {
-			onAccountDeleted((Account) event.getModel());
-		} else if (event.getModel() instanceof Playlist) {
-			_triggerPlaylist();
-		}
-	}
-
-	@FxApplicationThread
 	private void _triggerPlaylist() {
 		final Account[] accounts = new Account[accountItems.size()];
 		accountItems.toArray(accounts);
 		accountItems.clear();
 		accountItems.addAll(accounts);
 	}
-	*/
 }

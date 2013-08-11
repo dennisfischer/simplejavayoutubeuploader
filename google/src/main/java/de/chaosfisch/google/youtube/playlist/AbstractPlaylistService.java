@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.Feed;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
@@ -43,12 +44,14 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	private final IGoogleRequestSigner  requestSigner;
 	private final RequestBuilderFactory requestBuilderFactory;
 	private final IXmlSerializer        xmlSerializer;
+	private final IAccountService       accountService;
 
 	@Inject
-	public AbstractPlaylistService(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer) {
+	public AbstractPlaylistService(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer, final IAccountService accountService) {
 		this.requestSigner = requestSigner;
 		this.requestBuilderFactory = requestBuilderFactory;
 		this.xmlSerializer = xmlSerializer;
+		this.accountService = accountService;
 	}
 
 	@Override
@@ -124,11 +127,11 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 					throw new PlaylistSynchException(response.getStatusCode());
 				}
 				logger.debug("Playlist synchronize okay.");
-				data.putAll(account, _parsePlaylistsFeed(account, response.getContent()));
-				cleanByAccount(account);
+				final List<Playlist> playlists = _parsePlaylistsFeed(account, response.getContent());
+				data.putAll(account, playlists);
+				account.setPlaylists(playlists);
+				accountService.update(account);
 			} catch (final HttpIOException e) {
-				System.out.println("exception 2");
-
 				throw new PlaylistIOException(e);
 			}
 		}

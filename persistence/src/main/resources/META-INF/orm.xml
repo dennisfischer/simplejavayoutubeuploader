@@ -17,15 +17,6 @@
     <persistence-unit-metadata>
         <xml-mapping-metadata-complete/>
         <exclude-default-mappings/>
-        <persistence-unit-defaults>
-            <entity-listeners>
-                <entity-listener class="de.chaosfisch.uploader.persistence.dao.listener.TemplateListener">
-                    <post-persist method-name="onAction"/>
-                    <post-remove method-name="onAction"/>
-                    <post-update method-name="onAction"/>
-                </entity-listener>
-            </entity-listeners>
-        </persistence-unit-defaults>
     </persistence-unit-metadata>
 
     <converter class="de.chaosfisch.uploader.persistence.dao.converter.FileToStringConverter" auto-apply="true"/>

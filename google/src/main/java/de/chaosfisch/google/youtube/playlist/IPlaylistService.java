@@ -28,8 +28,6 @@ public interface IPlaylistService {
 
 	void delete(Playlist playlist);
 
-	void cleanByAccount(final Account account);
-
 	List<Playlist> findByHidden(Account account, boolean hidden);
 
 	Playlist findByPkey(String playlistKey);

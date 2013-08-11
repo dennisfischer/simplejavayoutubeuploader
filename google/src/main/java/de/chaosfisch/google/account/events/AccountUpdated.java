@@ -8,19 +8,18 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.util;
+package de.chaosfisch.google.account.events;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.Inject;
+import de.chaosfisch.google.account.Account;
 
-public final class EventBusUtil {
-	@Inject
-	private static EventBus instance;
+public class AccountUpdated {
+	private final Account account;
 
-	private EventBusUtil() {
+	public AccountUpdated(final Account account) {
+		this.account = account;
 	}
 
-	public static EventBus getInstance() {
-		return instance;
+	public Account getAccount() {
+		return account;
 	}
 }

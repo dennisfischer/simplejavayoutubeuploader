@@ -15,9 +15,12 @@ import com.cathive.fx.guice.FxApplicationThread;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.account.events.AccountAdded;
+import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
@@ -33,7 +36,10 @@ import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.controller.renderer.PlaylistGridCell;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
+import de.chaosfisch.uploader.template.events.TemplateAdded;
+import de.chaosfisch.uploader.template.events.TemplateRemoved;
 import de.chaosfisch.uploader.validation.UploadValidationCode;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -434,11 +440,13 @@ public class UploadController {
 		final Template template;
 		if (null != (template = templates.getSelectionModel().getSelectedItem())) {
 			templateService.delete(template);
+			System.out.println(template.getId());
 		}
 	}
 
 	@FXML
 	void resetUpload(final ActionEvent event) {
+
 		_reset();
 	}
 
@@ -520,26 +528,68 @@ public class UploadController {
 		refreshPlaylists(null);
 	}
 
+	@Subscribe
+	public void onTemplateAdded(final TemplateAdded event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				templatesList.add(event.getTemplate());
+				if (null == templates.getValue()) {
+					templates.getSelectionModel().selectFirst();
+				}
+			}
+		});
+	}
+
+	@Subscribe
+	public void onTemplateRemoved(final TemplateRemoved event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				templatesList.remove(event.getTemplate());
+				if (event.getTemplate().equals(templates.getValue())) {
+					templates.setValue(null);
+					templates.getSelectionModel().selectFirst();
+				}
+			}
+		});
+	}
+
+	@Subscribe
+	public void onAccountAdded(final AccountAdded event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				accountsList.add(event.getAccount());
+				if (null == uploadAccount.getValue()) {
+					uploadAccount.getSelectionModel().selectFirst();
+				}
+			}
+		});
+	}
+
+	@Subscribe
+	public void onAccountRemoved(final AccountRemoved event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				accountsList.remove(event.getAccount());
+				if (event.getAccount().equals(uploadAccount.getValue())) {
+					uploadAccount.setValue(null);
+					uploadAccount.getSelectionModel().selectFirst();
+				}
+			}
+		});
+	}
 
 	/* CHECK ME FIXME
 	@Subscribe
-		@FxApplicationThread
 
 	public void onModelAdded(final ModelAddedEvent event) {
 
 				if (event.getModel() instanceof Account) {
-					accountsList.add((Account) event.getModel());
-					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
-						uploadAccount.getSelectionModel().selectFirst();
-					}
+
 					refreshPlaylists(null);
-				} else if (event.getModel() instanceof Template) {
-
-					templatesList.add((Template) event.getModel());
-					if (null == templates.getValue() && !templatesList.isEmpty()) {
-						templates.getSelectionModel().selectFirst();
-					}
-
 				} else if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount()
 						.equals(uploadAccount.getValue())) {
 					playlistSourceList.add((Playlist) event.getModel());
@@ -548,16 +598,10 @@ public class UploadController {
 	}
 
 	@Subscribe
-		@FxApplicationThread
 
 	public void onModelUpdated(final ModelUpdatedEvent event) {
 
-				if (event.getModel() instanceof Account) {
-					accountsList.set(accountsList.indexOf(event.getModel()), (Account) event.getModel());
-				} else if (event.getModel() instanceof Template) {
-					templatesList.set(templatesList.indexOf(event.getModel()), (Template) event.getModel());
-					templates.getSelectionModel().select((Template) event.getModel());
-				} else if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount().
+			 if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount().
 						equals(uploadAccount.getValue())) {
 					if (((Playlist) event.getModel()).getHidden()) {
 						playlistSourceList.remove(event.getModel());
@@ -574,21 +618,10 @@ public class UploadController {
 	}
 
 	@Subscribe
-		@FxApplicationThread
 
 	public void onModelRemoved(final ModelRemovedEvent event) {
 
-				if (event.getModel() instanceof Account) {
-					accountsList.remove(event.getModel());
-					if (null == uploadAccount.getValue() && !accountsList.isEmpty()) {
-						uploadAccount.getSelectionModel().selectFirst();
-					}
-				} else if (event.getModel() instanceof Template) {
-					templatesList.remove(event.getModel());
-					if (null == templates.getValue() && !templatesList.isEmpty()) {
-						templates.getSelectionModel().selectFirst();
-					}
-				} else if (event.getModel() instanceof Playlist) {
+	 if (event.getModel() instanceof Playlist) {
 					playlistSourceList.remove(event.getModel());
 					playlistTargetList.remove(event.getModel());
 				}

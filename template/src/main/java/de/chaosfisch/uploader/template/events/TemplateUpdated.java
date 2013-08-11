@@ -8,18 +8,18 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.persistence.dao.listener;
+package de.chaosfisch.uploader.template.events;
 
 import de.chaosfisch.uploader.template.Template;
 
-public class TemplateListener {
+public class TemplateUpdated {
+	private final Template template;
 
-	public void onAction(final Object o) {
-		if (o instanceof Template) {
-			System.out.println(((Template) o).getName());
-		} else {
-			System.out.println("Unknown object");
-			System.out.println(o.toString());
-		}
+	public TemplateUpdated(final Template template) {
+		this.template = template;
+	}
+
+	public Template getTemplate() {
+		return template;
 	}
 }

@@ -36,7 +36,6 @@ import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
-import de.chaosfisch.util.EventBusUtil;
 import de.chaosfisch.util.TextUtil;
 import javafx.stage.FileChooser;
 
@@ -81,7 +80,6 @@ public class UploaderModule extends AbstractModule {
 			}
 		});
 
-		requestStaticInjection(EventBusUtil.class);
 		requestStaticInjection(TextUtil.class);
 	}
 

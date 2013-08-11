@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.persistence;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.playlist.AbstractPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
@@ -26,8 +27,8 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 	private final IPlaylistDao playlistDao;
 
 	@Inject
-	public PlaylistServiceImpl(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer, final IPlaylistDao playlistDao) {
-		super(requestSigner, requestBuilderFactory, xmlSerializer);
+	public PlaylistServiceImpl(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer, final IPlaylistDao playlistDao, final IAccountService accountService) {
+		super(requestSigner, requestBuilderFactory, xmlSerializer, accountService);
 		this.playlistDao = playlistDao;
 	}
 
@@ -54,11 +55,6 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 	@Override
 	public void delete(final Playlist playlist) {
 		playlistDao.delete(playlist);
-	}
-
-	@Override
-	public void cleanByAccount(final Account account) {
-		playlistDao.cleanByAccount(account);
 	}
 
 	@Override

@@ -10,27 +10,66 @@
 
 package de.chaosfisch.uploader.persistence.dao;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 public class UploadDaoImpl implements IUploadDao {
 
+	private final ArrayList<Upload> uploads = new ArrayList<>(10);
+
 	@Inject
 	protected EntityManager entityManager;
+	@Inject
+	protected EventBus      eventBus;
 
 	@Override
 	public List<Upload> getAll() {
-		return entityManager.createQuery("SELECT u FROM upload u", Upload.class).getResultList();
+		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u", Upload.class).getResultList();
+		for (final Upload upload : result) {
+			addOrUpdateUpload(upload);
+		}
+		return uploads;
 	}
 
 	@Override
 	public Upload get(final int id) {
-		return entityManager.find(Upload.class, id);
+		final Upload upload = entityManager.find(Upload.class, id);
+		addOrUpdateUpload(upload);
+		return getUploadFromList(upload);
+	}
+
+	@Override
+	public Upload fetchNextUpload() {
+		final GregorianCalendar cal = new GregorianCalendar();
+
+		final Upload upload = entityManager.createQuery("SELECT u FROM upload u, status s " +
+				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (s.dateOfStart >= :dateOfStart OR s.dateOfStart IS NULL) " +
+				"ORDER BY s.dateOfStart DESC, s.failed ASC", Upload.class)
+				.setParameter("dateOfStart", cal)
+				.getSingleResult();
+
+		addOrUpdateUpload(upload);
+		return getUploadFromList(upload);
+	}
+
+	@Override
+	public List<Upload> fetchByArchived(final boolean archived) {
+		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u WHERE archvied = true", Upload.class)
+				.getResultList();
+
+		final ArrayList<Upload> tmp = new ArrayList<>();
+		for (final Upload upload : result) {
+			addOrUpdateUpload(upload);
+			tmp.add(upload);
+		}
+		return uploads;
 	}
 
 	@Override
@@ -49,17 +88,6 @@ public class UploadDaoImpl implements IUploadDao {
 	@Transactional
 	public void delete(final Upload upload) {
 		entityManager.remove(upload);
-	}
-
-	@Override
-	public Upload fetchNextUpload() {
-		final GregorianCalendar cal = new GregorianCalendar();
-
-		return entityManager.createQuery("SELECT u FROM upload u, status s " +
-				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (s.dateOfStart >= :dateOfStart OR s.dateOfStart IS NULL) " +
-				"ORDER BY s.dateOfStart DESC, s.failed ASC", Upload.class)
-				.setParameter("dateOfStart", cal)
-				.getSingleResult();
 	}
 
 	@Override
@@ -89,8 +117,19 @@ public class UploadDaoImpl implements IUploadDao {
 				.executeUpdate();
 	}
 
-	@Override
-	public List<Upload> fetchByArchived(final boolean archived) {
-		return entityManager.createQuery("SELECT u FROM upload u WHERE archvied = true", Upload.class).getResultList();
+	private void addOrUpdateUpload(final Upload upload) {
+		if (uploads.contains(upload)) {
+			refreshUpload(upload);
+		} else {
+			uploads.add(upload);
+		}
+	}
+
+	private void refreshUpload(final Upload upload) {
+		entityManager.refresh(getUploadFromList(upload));
+	}
+
+	private Upload getUploadFromList(final Upload upload) {
+		return uploads.get(uploads.indexOf(upload));
 	}
 }
