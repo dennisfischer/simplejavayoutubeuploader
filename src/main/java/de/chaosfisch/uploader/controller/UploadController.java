@@ -24,6 +24,7 @@ import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.*;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
@@ -31,14 +32,12 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
-import de.chaosfisch.uploader.command.UploadControllerAddCommand;
 import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.controller.renderer.PlaylistGridCell;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.template.events.TemplateAdded;
 import de.chaosfisch.uploader.template.events.TemplateRemoved;
-import de.chaosfisch.uploader.validation.UploadValidationCode;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -52,7 +51,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -258,121 +256,123 @@ public class UploadController {
 
 	@FXML
 	void addUpload(final ActionEvent event) {
-		final Upload upload = null == uploadStore ? new Upload() : uploadStore;
+
+		try {
+			resetControlls();
+			buildUpload();
+			// Cleanup (reset form)
+			filesList.remove(uploadFile.getValue());
+			uploadFile.getSelectionModel().selectNext();
+			idProperty.setValue(null);
+		} catch (IllegalArgumentException e) {
+			handleUploadBuildException(e);
+		}
+	}
+
+	private void handleUploadBuildException(final IllegalArgumentException e) {
+		switch (e.getMessage()) {
+			case Upload.Validation.ACCOUNT:
+				uploadAccount.getStyleClass().add("input-invalid");
+				uploadAccount.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.account"))
+						.build());
+				uploadAccount.getTooltip().show(uploadAccount, getTooltipX(uploadAccount), getTooltipY(uploadAccount));
+				break;
+			case Upload.Validation.CATEGORY:
+				uploadCategory.getStyleClass().add("input-invalid");
+				uploadCategory.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.category"))
+						.build());
+				uploadCategory.getTooltip()
+						.show(uploadCategory, getTooltipX(uploadCategory), getTooltipY(uploadCategory));
+				break;
+			case Upload.Validation.DESCRIPTION_CHARACTERS:
+				uploadDescription.getStyleClass().add("input-invalid");
+				uploadDescription.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.description.characters"))
+						.build());
+				uploadDescription.getTooltip()
+						.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
+				break;
+			case Upload.Validation.DESCRIPTION_SIZE:
+				uploadDescription.getStyleClass().add("input-invalid");
+				uploadDescription.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.description"))
+						.build());
+				uploadDescription.getTooltip()
+						.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
+				break;
+			case Upload.Validation.FILE:
+				uploadFile.getStyleClass().add("input-invalid");
+				uploadFile.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.filelist"))
+						.build());
+				uploadFile.getTooltip().show(uploadFile, getTooltipX(uploadFile), getTooltipY(uploadFile));
+				break;
+			case Upload.Validation.KEYWORD:
+				uploadTags.getStyleClass().add("input-invalid");
+				uploadTags.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.tags"))
+						.build());
+				uploadTags.getTooltip().show(uploadTags, getTooltipX(uploadTags), getTooltipY(uploadTags));
+				break;
+			case Upload.Validation.THUMBNAIL:
+			case Upload.Validation.THUMBNAIL_SIZE:
+				uploadThumbnail.getStyleClass().add("input-invalid");
+				uploadThumbnail.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.thumbnail"))
+						.build());
+				uploadThumbnail.getTooltip()
+						.show(uploadThumbnail, getTooltipX(uploadThumbnail), getTooltipY(uploadThumbnail));
+				break;
+			case Upload.Validation.TITLE:
+			case Upload.Validation.TITLE_SIZE:
+			case Upload.Validation.TITLE_CHARACTERS:
+				uploadTitle.getStyleClass().add("input-invalid");
+				uploadTitle.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.title"))
+						.build());
+				uploadTitle.getTooltip().show(uploadTitle, getTooltipX(uploadTitle), getTooltipY(uploadTitle));
+				break;
+		}
+	}
+
+	private void buildUpload() {
+		final Upload upload = null == uploadStore ?
+							  new Upload(uploadAccount.getValue(), uploadFile.getValue()) :
+							  uploadStore;
 		toUpload(upload);
 
-		if (null == uploadEnddir.getText() || uploadEnddir.getText().isEmpty()) {
-			upload.setEnddir(null);
+		final Monetization monetization = upload.getMonetization();
+		if (!monetization.isPartner() && (monetization.isOverlay() || monetization.isTrueview() || monetization.isProduct())) {
+			monetization.setClaim(true);
 		}
-		final UploadControllerAddCommand command = new UploadControllerAddCommand();
-		command.upload = upload;
-		command.account = uploadAccount.getValue();
-		command.playlists = playlistTargetList;
-		command.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-			@Override
-			public void handle(final WorkerStateEvent event) {
-				// Cleanup (reset form)
-				filesList.remove(uploadFile.getValue());
-				uploadFile.getSelectionModel().selectNext();
-				idProperty.setValue(null);
-			}
-		});
-		command.setOnRunning(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(final WorkerStateEvent workerStateEvent) {
-				resetControlls();
-			}
-		});
-		command.setOnFailed(new EventHandler<WorkerStateEvent>() {
+		if (0 == upload.getId()) {
+			final Status status = new Status();
+			status.setArchived(false);
+			status.setFailed(false);
+			status.setRunning(false);
+			status.setLocked(false);
+			upload.setStatus(status);
+			uploadService.insert(upload);
+		} else {
+			final Status status = upload.getStatus();
+			status.setArchived(false);
+			status.setFailed(false);
+			status.setLocked(false);
 
-			@Override
-			public void handle(final WorkerStateEvent event) {
-				try {
-					//noinspection ThrowableResultOfMethodCallIgnored
-					final UploadValidationCode error = UploadValidationCode.valueOf(event.getSource()
-							.getException()
-							.getMessage());
-					switch (error) {
-						case ACCOUNT_NULL:
-							uploadAccount.getStyleClass().add("input-invalid");
-							uploadAccount.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.account"))
-									.build());
-							uploadAccount.getTooltip()
-									.show(uploadAccount, getTooltipX(uploadAccount), getTooltipY(uploadAccount));
-							break;
-						case CATEGORY_NULL:
-							uploadCategory.getStyleClass().add("input-invalid");
-							uploadCategory.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.category"))
-									.build());
-							uploadCategory.getTooltip()
-									.show(uploadCategory, getTooltipX(uploadCategory), getTooltipY(uploadCategory));
-							break;
-						case DESCRIPTION_ILLEGAL:
-							uploadDescription.getStyleClass().add("input-invalid");
-							uploadDescription.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.description.characters"))
-									.build());
-							uploadDescription.getTooltip()
-									.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
-							break;
-						case DESCRIPTION_LENGTH:
-							uploadDescription.getStyleClass().add("input-invalid");
-							uploadDescription.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.description"))
-									.build());
-							uploadDescription.getTooltip()
-									.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
-							break;
-						case FILE_NULL:
-							uploadFile.getStyleClass().add("input-invalid");
-							uploadFile.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.filelist"))
-									.build());
-							uploadFile.getTooltip().show(uploadFile, getTooltipX(uploadFile), getTooltipY(uploadFile));
-							break;
-						case TAGS_ILLEGAL:
-							uploadTags.getStyleClass().add("input-invalid");
-							uploadTags.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.tags"))
-									.build());
-							uploadTags.getTooltip().show(uploadTags, getTooltipX(uploadTags), getTooltipY(uploadTags));
-							break;
-						case THUMBNAIL_SIZE:
-							uploadThumbnail.getStyleClass().add("input-invalid");
-							uploadThumbnail.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.thumbnail"))
-									.build());
-							uploadThumbnail.getTooltip()
-									.show(uploadThumbnail, getTooltipX(uploadThumbnail), getTooltipY(uploadThumbnail));
-							break;
-						case TITLE_ILLEGAL:
-						case TITLE_NULL:
-							uploadTitle.getStyleClass().add("input-invalid");
-							uploadTitle.setTooltip(TooltipBuilder.create()
-									.autoHide(true)
-									.text(resources.getString("validation.title"))
-									.build());
-							uploadTitle.getTooltip()
-									.show(uploadTitle, getTooltipX(uploadTitle), getTooltipY(uploadTitle));
-							break;
-					}
-				} catch (final Exception e) {
-					//noinspection ThrowableResultOfMethodCallIgnored
-					event.getSource().getException().printStackTrace();
-				}
-			}
-		});
-		command.start();
+			upload.setStatus(status);
+			uploadService.update(upload);
+		}
 	}
 
 	private void resetControlls() {
@@ -746,7 +746,7 @@ public class UploadController {
 		upload.setId(idProperty.getValue());
 		upload.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
 		upload.setFile(uploadFile.getValue());
-		upload.setThumbnail(new File(uploadThumbnail.getText()));
+		upload.setThumbnail(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : new File(uploadThumbnail.getText()));
 
 		if (null != started.getValue()) {
 			final GregorianCalendar cal = new GregorianCalendar();
@@ -759,12 +759,8 @@ public class UploadController {
 			upload.setDateOfRelease(cal);
 		}
 
-		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
-		metadata.setCategory(uploadCategory.getValue());
-		metadata.setDescription(uploadDescription.getText());
-		metadata.setKeywords(uploadTags.getText());
-		metadata.setLicense(uploadLicense.getValue());
-		metadata.setTitle(uploadTitle.getText());
+		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
+				.getText(), uploadLicense.getValue());
 
 		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
 		permissions.setCommentvote(uploadCommentvote.isSelected());
@@ -788,6 +784,7 @@ public class UploadController {
 		upload.setPermissions(permissions);
 		upload.setSocial(social);
 		upload.setMonetization(monetization);
+		upload.setPlaylists(playlistTargetList);
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.toUpload(upload);
@@ -809,12 +806,8 @@ public class UploadController {
 							  null :
 							  new File(uploadThumbnail.getText()));
 
-		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
-		metadata.setCategory(uploadCategory.getValue());
-		metadata.setDescription(uploadDescription.getText());
-		metadata.setKeywords(uploadTags.getText());
-		metadata.setLicense(uploadLicense.getValue());
-		metadata.setTitle(uploadTitle.getText());
+		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
+				.getText(), uploadLicense.getValue());
 
 		final Permissions permissions = null == template.getPermissions() ?
 										new Permissions() :
@@ -881,7 +874,7 @@ public class UploadController {
 		uploadTwitter.setSelected(social.isTwitter());
 		uploadMessage.setText(social.getMessage());
 
-		monetizePartner.setSelected(null == upload.getMonetization() ? false : upload.getMonetization().isPartner());
+		monetizePartner.setSelected(null != upload.getMonetization() && upload.getMonetization().isPartner());
 
 		if (monetizePartner.isSelected()) {
 			uploadPartnerController.fromUpload(upload);

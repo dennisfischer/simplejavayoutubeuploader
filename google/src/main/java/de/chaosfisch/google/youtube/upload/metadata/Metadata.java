@@ -10,6 +10,9 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.google.common.base.Charsets;
+import de.chaosfisch.google.youtube.upload.Upload;
+
 import java.io.Serializable;
 
 public class Metadata implements Serializable {
@@ -20,6 +23,23 @@ public class Metadata implements Serializable {
 	private String   description;
 	private String   keywords;
 	private License  license;
+
+	public Metadata() {
+		this("", Category.ANIMALS, "", "");
+	}
+
+	public Metadata(final String title, final Category category, final String description, final String keywords) {
+		this(title, category, description, keywords, License.YOUTUBE);
+	}
+
+	public Metadata(final String title, final Category category, final String description, final String keywords, final License license) {
+		setTitle(title);
+		setCategory(category);
+		setDescription(description);
+		setKeywords(keywords);
+		//noinspection CallToSimpleSetterFromWithinClass
+		setLicense(license);
+	}
 
 	public int getId() {
 		return id;
@@ -34,6 +54,9 @@ public class Metadata implements Serializable {
 	}
 
 	public void setCategory(final Category category) {
+		if (null == category) {
+			throw new IllegalArgumentException(Upload.Validation.CATEGORY);
+		}
 		this.category = category;
 	}
 
@@ -42,6 +65,14 @@ public class Metadata implements Serializable {
 	}
 
 	public void setTitle(final String title) {
+		if (null == title) {
+			throw new IllegalArgumentException(Upload.Validation.TITLE);
+		} else if (Upload.Validation.MAX_TITLE_SIZE < title.getBytes(Charsets.UTF_8).length) {
+			throw new IllegalArgumentException(Upload.Validation.TITLE_SIZE);
+		} else if (title.contains(">") || title.contains("<")) {
+			throw new IllegalArgumentException(Upload.Validation.TITLE_CHARACTERS);
+		}
+
 		this.title = title;
 	}
 
@@ -50,7 +81,15 @@ public class Metadata implements Serializable {
 	}
 
 	public void setDescription(final String description) {
-		this.description = description;
+		if (null == description) {
+			this.description = "";
+		} else if (Upload.Validation.MAX_DESCRIPTION_SIZE < description.getBytes().length) {
+			throw new IllegalArgumentException(Upload.Validation.DESCRIPTION_SIZE);
+		} else if (description.contains(">") || description.contains("<")) {
+			throw new IllegalArgumentException(Upload.Validation.DESCRIPTION_CHARACTERS);
+		} else {
+			this.description = description;
+		}
 	}
 
 	public String getKeywords() {
@@ -58,7 +97,14 @@ public class Metadata implements Serializable {
 	}
 
 	public void setKeywords(final String keywords) {
-		this.keywords = keywords;
+		if (null == keywords) {
+			this.keywords = "";
+		} else {
+			if (!TagParser.isValid(keywords)) {
+				throw new IllegalArgumentException(Upload.Validation.KEYWORD);
+			}
+			this.keywords = keywords;
+		}
 	}
 
 	public License getLicense() {

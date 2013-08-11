@@ -13,6 +13,9 @@ package de.chaosfisch.uploader.persistence.dao;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.events.UploadAdded;
+import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
+import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
 import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
@@ -61,7 +64,7 @@ public class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public List<Upload> fetchByArchived(final boolean archived) {
-		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u WHERE archvied = true", Upload.class)
+		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u, status s WHERE u.status = s AND s.archived = true", Upload.class)
 				.getResultList();
 
 		final ArrayList<Upload> tmp = new ArrayList<>();
@@ -69,25 +72,30 @@ public class UploadDaoImpl implements IUploadDao {
 			addOrUpdateUpload(upload);
 			tmp.add(upload);
 		}
-		return uploads;
+		return tmp;
 	}
 
 	@Override
 	@Transactional
 	public void insert(final Upload upload) {
 		entityManager.persist(upload);
+		uploads.add(upload);
+		eventBus.post(new UploadAdded(upload));
 	}
 
 	@Override
 	@Transactional
 	public void update(final Upload upload) {
 		entityManager.merge(upload);
+		eventBus.post(new UploadUpdated(upload));
 	}
 
 	@Override
 	@Transactional
 	public void delete(final Upload upload) {
 		entityManager.remove(upload);
+		uploads.remove(upload);
+		eventBus.post(new UploadRemoved(upload));
 	}
 
 	@Override

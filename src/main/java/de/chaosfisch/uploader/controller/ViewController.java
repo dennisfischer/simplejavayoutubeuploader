@@ -16,7 +16,6 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.upload.metadata.License;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
@@ -266,11 +265,6 @@ public class ViewController {
 		monetization.setSyndication(Syndication.GLOBAL);
 
 		final Metadata metadata = new Metadata();
-		metadata.setLicense(License.YOUTUBE);
-		metadata.setDescription("");
-		metadata.setTitle("");
-		metadata.setKeywords("");
-
 		standardTemplate = new Template();
 		standardTemplate.setPermissions(permissions);
 		standardTemplate.setSocial(social);

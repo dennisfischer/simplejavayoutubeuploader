@@ -22,6 +22,7 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class Upload implements Serializable {
 
 	private static final long serialVersionUID = -414398454;
 
-	private int               id;
-	private File              file;
-	private String            mimetype;
+	private int  id;
+	private File file;
+	private String mimetype = "application/octet-stream";
 	private String            uploadurl;
 	private GregorianCalendar dateOfStart;
 	private GregorianCalendar dateOfRelease;
@@ -48,6 +49,33 @@ public class Upload implements Serializable {
 	private Account        account;
 	private List<Playlist> playlists;
 
+	public interface Validation {
+		int MAX_THUMBNAIL_SIZE   = 2097152;
+		int MAX_TITLE_SIZE       = 100;
+		int MAX_DESCRIPTION_SIZE = 5000;
+
+		String ACCOUNT                = "accountNull";
+		String FILE                   = "fileNullNotExisting";
+		String ENDDIR                 = "enddirNotExisting";
+		String THUMBNAIL              = "thumbnailNotExsiting";
+		String THUMBNAIL_SIZE         = "thumbnailSize";
+		String TITLE                  = "titleNull";
+		String TITLE_SIZE             = "titleSize";
+		String TITLE_CHARACTERS       = "titleCharacters";
+		String CATEGORY               = "categoryNull";
+		String DESCRIPTION_SIZE       = "descriptionNull";
+		String DESCRIPTION_CHARACTERS = "descriptionCharacters";
+		String KEYWORD                = "keywordIllegal";
+	}
+
+	public Upload() {
+	}
+
+	public Upload(final Account account, final File file) {
+		setAccount(account);
+		setFile(file);
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -61,6 +89,9 @@ public class Upload implements Serializable {
 	}
 
 	public void setFile(final File file) {
+		if (null == file || !file.exists()) {
+			throw new IllegalArgumentException(Validation.FILE);
+		}
 		this.file = file;
 	}
 
@@ -85,15 +116,31 @@ public class Upload implements Serializable {
 	}
 
 	public void setDateOfStart(final GregorianCalendar dateOfStart) {
-		this.dateOfStart = dateOfStart;
+		if (null == dateOfStart || dateOfStart.getTimeInMillis() <= System.currentTimeMillis()) {
+			this.dateOfStart = null;
+		} else {
+			this.dateOfStart = dateOfStart;
+		}
 	}
 
 	public GregorianCalendar getDateOfRelease() {
 		return dateOfRelease;
 	}
 
+	@SuppressWarnings("MagicNumber")
 	public void setDateOfRelease(final GregorianCalendar dateOfRelease) {
-		this.dateOfRelease = dateOfRelease;
+		if (null == dateOfRelease || dateOfRelease.getTimeInMillis() <= System.currentTimeMillis()) {
+			this.dateOfRelease = null;
+		} else {
+			final GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTime(dateOfRelease.getTime());
+			final int mod = calendar.get(Calendar.MINUTE) % 30;
+			calendar.add(Calendar.MINUTE, 16 > mod ? -mod : 30 - mod);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			this.dateOfRelease = calendar;
+		}
+
 	}
 
 	public boolean isPauseOnFinish() {
@@ -117,6 +164,9 @@ public class Upload implements Serializable {
 	}
 
 	public void setEnddir(final File enddir) {
+		if (null != enddir && !enddir.exists()) {
+			throw new IllegalArgumentException(Validation.ENDDIR);
+		}
 		this.enddir = enddir;
 	}
 
@@ -125,6 +175,13 @@ public class Upload implements Serializable {
 	}
 
 	public void setThumbnail(final File thumbnail) {
+		if (null != thumbnail) {
+			if (!thumbnail.exists()) {
+				throw new IllegalArgumentException(Validation.THUMBNAIL);
+			} else if (Validation.MAX_THUMBNAIL_SIZE < thumbnail.length()) {
+				throw new IllegalArgumentException(Validation.THUMBNAIL_SIZE);
+			}
+		}
 		this.thumbnail = thumbnail;
 	}
 
@@ -173,6 +230,9 @@ public class Upload implements Serializable {
 	}
 
 	public void setAccount(final Account account) {
+		if (null == account) {
+			throw new IllegalArgumentException(Validation.ACCOUNT);
+		}
 		this.account = account;
 	}
 
