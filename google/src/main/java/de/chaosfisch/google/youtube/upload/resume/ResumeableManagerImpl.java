@@ -10,22 +10,18 @@
 
 package de.chaosfisch.google.youtube.upload.resume;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import de.chaosfisch.google.Config;
+import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.http.IRequest;
-import de.chaosfisch.http.IResponse;
-import de.chaosfisch.http.RequestBuilderFactory;
 import de.chaosfisch.serialization.IXmlSerializer;
 import de.chaosfisch.util.RegexpUtils;
-import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class ResumeableManagerImpl implements IResumeableManager {
 	private static final double BACKOFF              = 4;
@@ -37,16 +33,14 @@ public class ResumeableManagerImpl implements IResumeableManager {
 	private int numberOfRetries;
 
 	private static final Logger logger = LoggerFactory.getLogger(ResumeableManagerImpl.class);
-	private final IGoogleRequestSigner  requestSigner;
-	private final IUploadService        uploadService;
-	private final RequestBuilderFactory requestBuilderFactory;
-	private final IXmlSerializer        xmlSerializer;
+	private final IUploadService  uploadService;
+	private final IAccountService accountService;
+	private final IXmlSerializer  xmlSerializer;
 
 	@Inject
-	public ResumeableManagerImpl(final IGoogleRequestSigner requestSigner, final IUploadService uploadService, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer) {
-		this.requestSigner = requestSigner;
+	public ResumeableManagerImpl(final IUploadService uploadService, final IAccountService accountService, final IXmlSerializer xmlSerializer) {
 		this.uploadService = uploadService;
-		this.requestBuilderFactory = requestBuilderFactory;
+		this.accountService = accountService;
 		this.xmlSerializer = xmlSerializer;
 	}
 
@@ -63,31 +57,30 @@ public class ResumeableManagerImpl implements IResumeableManager {
 	}
 
 	private ResumeInfo resumeFileUpload(final Upload upload) throws ResumeIOException, ResumeInvalidResponseException {
-		requestSigner.setAccount(upload.getAccount());
-		final IRequest request = requestBuilderFactory.create(upload.getUploadurl())
-				.put(null)
-				.headers(ImmutableMap.of("Content-Range", "bytes */*"))
-				.sign(requestSigner)
-				.build();
+		try {
+			final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
+					.header("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader())
+					.header("Content-Range", "bytes */*")
+					.asString();
 
-		try (final IResponse response = request.execute()) {
-
-			if (SC_OK <= response.getStatusCode() && SC_MULTIPLE_CHOICES > response.getStatusCode()) {
-				return new ResumeInfo(parseVideoId(response.getContent()));
-			} else if (SC_RESUME_INCOMPLETE != response.getStatusCode()) {
-				throw new ResumeInvalidResponseException(response.getStatusCode());
+			if (SC_OK <= response.getCode() && SC_MULTIPLE_CHOICES > response.getCode()) {
+				return new ResumeInfo(parseVideoId(response.getBody()));
+			} else if (SC_RESUME_INCOMPLETE != response.getCode()) {
+				throw new ResumeInvalidResponseException(response.getCode());
 			}
 
 			final long nextByteToUpload;
 
-			final Header range = response.getHeader("Range");
-			if (null == range) {
+			if (!response.getHeaders().containsKey("Range")) {
 				logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 				nextByteToUpload = 0;
 			} else {
-				logger.info("Range header is: {}", range.getValue());
+				logger.info("Range header is: {}", response.getHeaders().get("Range"));
 
-				final String[] parts = RegexpUtils.getPattern("-").split(range.getValue());
+				final String[] parts = RegexpUtils.getPattern("-").split(response.getHeaders().get("Range"));
 				if (1 < parts.length) {
 					nextByteToUpload = Long.parseLong(parts[1]) + 1;
 				} else {
@@ -95,14 +88,13 @@ public class ResumeableManagerImpl implements IResumeableManager {
 				}
 			}
 			final ResumeInfo resumeInfo = new ResumeInfo(nextByteToUpload);
-			if (null != response.getHeader("Location")) {
-				final Header location = response.getHeader("Location");
-				upload.setUploadurl(location.getValue());
+			if (response.getHeaders().containsKey("Location")) {
+				upload.setUploadurl(response.getHeaders().get("Location"));
 				uploadService.update(upload);
 			}
 			return resumeInfo;
 
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			throw new ResumeIOException(e);
 		}
 	}

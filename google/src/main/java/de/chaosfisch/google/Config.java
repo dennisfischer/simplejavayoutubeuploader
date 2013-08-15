@@ -8,8 +8,10 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.http;
+package de.chaosfisch.google;
 
-public interface IRequest {
-	IResponse execute() throws HttpIOException;
+public interface Config {
+	String DEVELOPER_KEY = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
+	String GDATA_V2      = "2";
+	String GDATA_V3      = "3";
 }

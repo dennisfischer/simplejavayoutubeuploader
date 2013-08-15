@@ -23,6 +23,7 @@ public class Metadata implements Serializable {
 	private String   description;
 	private String   keywords;
 	private License  license;
+	private int      version;
 
 	public Metadata() {
 		this("", Category.ANIMALS, "", "");
@@ -132,5 +133,13 @@ public class Metadata implements Serializable {
 	@Override
 	public int hashCode() {
 		return id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

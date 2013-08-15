@@ -173,10 +173,175 @@
     <default-dialect>H2</default-dialect>
     <libraries>
       <library>
-        <url>jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/com.h2database/h2/1.3.170/jar/7200aeef0a3c6889d049f4d8f6f26266721ccc48/h2-1.3.170.jar!/</url>
+        <url>jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/com.h2database/h2/1.3.170/jar/7200aeef0a3c6889d049f4d8f6f26266721ccc48/h2-1.3.170.jar!/</url>
       </library>
     </libraries>
     <schema name="PUBLIC" catalog="YOUTUBEUPLOADER-V3"/>
+    <table name="ACCOUNT" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="NAME" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="PASSWORD" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_E49" columns="ID"/>
+      <exported-key name="FK_PLAYLIST_ACCOUNT_ID" table="PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="ACCOUNT_ID"/>
+      <exported-key name="FK_TEMPLATE_ACCOUNT_ID" table="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="ACCOUNT_ID"/>
+      <exported-key name="FK_UPLOAD_ACCOUNT_ID" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="ACCOUNT_ID"/>
+    </table>
+    <table name="METADATA" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="CATEGORY" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="DESCRIPTION" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="KEYWORDS" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="LICENSE" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="TITLE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_13" columns="ID"/>
+      <exported-key name="FK_TEMPLATE_METADATA_ID" table="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="METADATA_ID"/>
+      <exported-key name="FK_UPLOAD_METADATA_ID" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="METADATA_ID"/>
+    </table>
+    <table name="MONETIZATION" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="ASSET" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="CLAIM" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="CLAIMOPTION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="CLAIMTYPE" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="CUSTOMID" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="DESCRIPTION" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="EIDR" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="EPISODENB" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="INSTREAM" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="INSTREAMDEFAULTS" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="ISAN" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="NOTES" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="OVERLAY" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="PARTNER" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="PRODUCT" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="SEASONNB" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="SYNDICATION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="TITLE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="TITLEEPISODE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="TMSID" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="TRUEVIEW" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_70" columns="ID"/>
+      <exported-key name="FK_TEMPLATE_MONETIZATION_ID" table="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="MONETIZATION_ID"/>
+      <exported-key name="FK_UPLOAD_MONETIZATION_ID" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="MONETIZATION_ID"/>
+    </table>
+    <table name="PERMISSIONS" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="COMMENT" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="COMMENTVOTE" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="EMBED" sqlType="BOOLEAN" length="1" precision="0" nullable="true" jdbcType="16"/>
+      <column name="RATE" sqlType="BOOLEAN" length="1" precision="0" nullable="true" jdbcType="16"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="VIDEORESPONSE" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="VISIBILITY" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_C3" columns="ID"/>
+      <exported-key name="FK_TEMPLATE_PERMISSIONS_ID" table="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="PERMISSIONS_ID"/>
+      <exported-key name="FK_UPLOAD_PERMISSIONS_ID" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="PERMISSIONS_ID"/>
+    </table>
+    <table name="PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="HIDDEN" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="NUMBER" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="PKEY" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="PRIVATE" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="SUMMARY" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="THUMBNAIL" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="TITLE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="URL" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="ACCOUNT_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_9EAC71" columns="ID"/>
+      <foreign-key name="FK_PLAYLIST_ACCOUNT_ID" columns="ACCOUNT_ID" ref-table="ACCOUNT" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <exported-key name="FK_TEMPLATE_PLAYLIST_PLAYLISTS_ID" table="TEMPLATE_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="PLAYLISTS_ID"/>
+      <exported-key name="FK_UPLOAD_PLAYLIST_PLAYLISTS_ID" table="UPLOAD_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="PLAYLISTS_ID"/>
+      <index name="FK_PLAYLIST_ACCOUNT_ID_INDEX_9" unique="false" columns="ACCOUNT_ID"/>
+    </table>
+    <table name="SEQUENCE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="SEQ_NAME" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="SEQ_COUNT" sqlType="DECIMAL" length="38" precision="0" nullable="true" jdbcType="3"/>
+      <primary-key name="CONSTRAINT_7F" columns="SEQ_NAME"/>
+    </table>
+    <table name="STATUS" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="ARCHIVED" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="FAILED" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="LOCKED" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="RUNNING" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="STATUS" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_926" columns="ID"/>
+      <exported-key name="FK_UPLOAD_STATUS_ID" table="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="STATUS_ID"/>
+    </table>
+    <table name="TEMPLATE" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="DEFAULTDIR" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="ENDDIR" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="NAME" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="THUMBNAIL" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="ACCOUNT_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="METADATA_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="MONETIZATION_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="PERMISSIONS_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_DF" columns="ID"/>
+      <foreign-key name="FK_TEMPLATE_ACCOUNT_ID" columns="ACCOUNT_ID" ref-table="ACCOUNT" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_TEMPLATE_METADATA_ID" columns="METADATA_ID" ref-table="METADATA" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_TEMPLATE_MONETIZATION_ID" columns="MONETIZATION_ID" ref-table="MONETIZATION" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_TEMPLATE_PERMISSIONS_ID" columns="PERMISSIONS_ID" ref-table="PERMISSIONS" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <exported-key name="FK_TEMPLATE_PLAYLIST_TEMPLATE_ID" table="TEMPLATE_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="TEMPLATE_ID"/>
+      <index name="FK_TEMPLATE_ACCOUNT_ID_INDEX_D" unique="false" columns="ACCOUNT_ID"/>
+      <index name="FK_TEMPLATE_METADATA_ID_INDEX_D" unique="false" columns="METADATA_ID"/>
+      <index name="FK_TEMPLATE_MONETIZATION_ID_INDEX_D" unique="false" columns="MONETIZATION_ID"/>
+      <index name="FK_TEMPLATE_PERMISSIONS_ID_INDEX_D" unique="false" columns="PERMISSIONS_ID"/>
+    </table>
+    <table name="TEMPLATE_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="TEMPLATE_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="PLAYLISTS_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_F" columns="TEMPLATE_ID,PLAYLISTS_ID"/>
+      <foreign-key name="FK_TEMPLATE_PLAYLIST_PLAYLISTS_ID" columns="PLAYLISTS_ID" ref-table="PLAYLIST" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_TEMPLATE_PLAYLIST_TEMPLATE_ID" columns="TEMPLATE_ID" ref-table="TEMPLATE" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <index name="FK_TEMPLATE_PLAYLIST_PLAYLISTS_ID_INDEX_F" unique="false" columns="PLAYLISTS_ID"/>
+    </table>
+    <table name="UPLOAD" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="DATE_OF_RELEASE" sqlType="TIMESTAMP" length="23" precision="10" nullable="true" jdbcType="93"/>
+      <column name="DATE_OF_START" sqlType="TIMESTAMP" length="23" precision="10" nullable="true" jdbcType="93"/>
+      <column name="ENDDIR" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="FILE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="MIMETYPE" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="PAUSEONFINISH" sqlType="BOOLEAN" length="1" precision="0" nullable="false" jdbcType="16"/>
+      <column name="THUMBNAIL" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="UPLOADURL" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="VERSION" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="VIDEOID" sqlType="VARCHAR" length="2147483647" precision="0" nullable="true" jdbcType="12"/>
+      <column name="ACCOUNT_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="METADATA_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="MONETIZATION_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="PERMISSIONS_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="STATUS_ID" sqlType="INTEGER" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_9597" columns="ID"/>
+      <foreign-key name="FK_UPLOAD_ACCOUNT_ID" columns="ACCOUNT_ID" ref-table="ACCOUNT" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_UPLOAD_METADATA_ID" columns="METADATA_ID" ref-table="METADATA" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_UPLOAD_MONETIZATION_ID" columns="MONETIZATION_ID" ref-table="MONETIZATION" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_UPLOAD_PERMISSIONS_ID" columns="PERMISSIONS_ID" ref-table="PERMISSIONS" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_UPLOAD_STATUS_ID" columns="STATUS_ID" ref-table="STATUS" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <exported-key name="FK_UPLOAD_PLAYLIST_UPLOAD_ID" table="UPLOAD_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" columns="UPLOAD_ID"/>
+      <index name="FK_UPLOAD_ACCOUNT_ID_INDEX_9" unique="false" columns="ACCOUNT_ID"/>
+      <index name="FK_UPLOAD_METADATA_ID_INDEX_9" unique="false" columns="METADATA_ID"/>
+      <index name="FK_UPLOAD_MONETIZATION_ID_INDEX_9" unique="false" columns="MONETIZATION_ID"/>
+      <index name="FK_UPLOAD_PERMISSIONS_ID_INDEX_9" unique="false" columns="PERMISSIONS_ID"/>
+      <index name="FK_UPLOAD_STATUS_ID_INDEX_9" unique="false" columns="STATUS_ID"/>
+    </table>
+    <table name="UPLOAD_PLAYLIST" schema="PUBLIC" catalog="YOUTUBEUPLOADER-V3" type="TABLE">
+      <column name="UPLOAD_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="PLAYLISTS_ID" sqlType="INTEGER" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="CONSTRAINT_EF" columns="UPLOAD_ID,PLAYLISTS_ID"/>
+      <foreign-key name="FK_UPLOAD_PLAYLIST_PLAYLISTS_ID" columns="PLAYLISTS_ID" ref-table="PLAYLIST" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <foreign-key name="FK_UPLOAD_PLAYLIST_UPLOAD_ID" columns="UPLOAD_ID" ref-table="UPLOAD" ref-schema="PUBLIC" ref-catalog="YOUTUBEUPLOADER-V3" ref-columns="ID" update-rule="1" delete-rule="1" deferrability="2"/>
+      <index name="FK_UPLOAD_PLAYLIST_PLAYLISTS_ID_INDEX_E" unique="false" columns="PLAYLISTS_ID"/>
+    </table>
   </data-source>
   <data-source source="LOCAL" name="V2" product="HSQL Database Engine" version="2.2.9" jdbc-version="4.0" driver-name="HSQL Database Engine Driver" driver-version="2.2.9" uuid="e32aa1d4-0743-442d-b973-8776f11799b2">
     <identifier-quote-string>&quot;</identifier-quote-string>

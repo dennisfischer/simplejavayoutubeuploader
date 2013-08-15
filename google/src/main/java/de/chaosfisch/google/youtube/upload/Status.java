@@ -20,6 +20,7 @@ public class Status implements Serializable {
 	private boolean running;
 	private boolean locked;
 	private String  status;
+	private int     version;
 
 	public int getId() {
 		return id;
@@ -86,5 +87,13 @@ public class Status implements Serializable {
 	@Override
 	public int hashCode() {
 		return id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

@@ -10,22 +10,16 @@
 
 
 
-
-
-
-
 apply plugin: 'java'
-
-allprojects {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.google.inject:guice:3.0', 'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+'
+    compile 'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
+            'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+'
 }
 

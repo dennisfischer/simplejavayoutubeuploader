@@ -11,14 +11,13 @@
 package de.chaosfisch.google.account;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import de.chaosfisch.google.Config;
 import de.chaosfisch.google.auth.Authentication;
-import de.chaosfisch.http.*;
-import de.chaosfisch.http.entity.Entity;
-import de.chaosfisch.http.entity.EntityBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
@@ -28,15 +27,7 @@ public abstract class AbstractAccountService implements IAccountService {
 	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
 	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
 	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
-
-	private final IRequestSigner        requestSigner;
-	private final RequestBuilderFactory requestBuilderFactory;
-
-	@Inject
-	public AbstractAccountService(final IRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory) {
-		this.requestSigner = requestSigner;
-		this.requestBuilderFactory = requestBuilderFactory;
-	}
+	private static final Logger                   logger               = LoggerFactory.getLogger(AbstractAccountService.class);
 
 	private String getAuthToken(final Account account) throws AuthenticationIOException, AuthenticationInvalidException {
 
@@ -56,28 +47,26 @@ public abstract class AbstractAccountService implements IAccountService {
 
 	private String _receiveToken(final Account account, final String service, final String source) throws AuthenticationIOException, AuthenticationInvalidException {
 		// STEP 1 CLIENT LOGIN
-		final Entity entity = new EntityBuilder().charset(Charsets.UTF_8)
-				.add("Email", account.getName())
-				.add("Passwd", account.getPassword())
-				.add("service", service)
-				.add("PesistentCookie", "0")
-				.add("accountType", "HOSTED_OR_GOOGLE")
-				.add("source", source)
-				.build();
 
-		final IRequest clientLoginRequest = requestBuilderFactory.create(CLIENT_LOGIN_URL)
-				.post(entity)
-				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-				.sign(requestSigner)
-				.build();
+		try {
+			final HttpResponse<String> response = Unirest.post(CLIENT_LOGIN_URL)
+					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.field("Email", account.getName())
+					.field("Passwd", account.getPassword())
+					.field("service", service)
+					.field("PesistentCookie", "0")
+					.field("accountType", "HOSTED_OR_GOOGLE")
+					.field("source", source)
+					.asString();
 
-		try (final IResponse response = clientLoginRequest.execute()) {
-			if (SC_OK != response.getStatusCode()) {
-				throw new AuthenticationInvalidException(response.getStatusCode());
+			if (SC_OK != response.getCode()) {
+				throw new AuthenticationInvalidException(response.getCode());
 			}
 
-			return response.getContent();
-		} catch (final HttpIOException e) {
+			return response.getBody();
+		} catch (final Exception e) {
 			throw new AuthenticationIOException(e);
 		}
 	}
@@ -93,6 +82,7 @@ public abstract class AbstractAccountService implements IAccountService {
 			}
 			return new Authentication(header);
 		} catch (Exception e) {
+			logger.error("Auth invalid", e);
 			return new Authentication();
 		}
 	}
@@ -114,13 +104,13 @@ public abstract class AbstractAccountService implements IAccountService {
 			final String tokenAuthUrl = String.format("https://www.google.com/accounts/TokenAuth?auth=%s&service=youtube&continue=%s&source=googletalk", URLEncoder
 					.encode(issueTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
 					.name()));
+			final HttpResponse<String> response = Unirest.get(tokenAuthUrl)
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.asString();
 
-			final IRequest tokenAuthRequest = requestBuilderFactory.create(tokenAuthUrl).get().build();
-
-			try (final IResponse response = tokenAuthRequest.execute()) {
-				return response.getContent();
-			}
-		} catch (UnsupportedEncodingException | HttpIOException e) {
+			return response.getBody();
+		} catch (Exception e) {
 			throw new AuthenticationIOException(e);
 		}
 	}
@@ -130,21 +120,20 @@ public abstract class AbstractAccountService implements IAccountService {
 		final String sid = clientLoginContent.substring(clientLoginContent.indexOf("SID=") + 4, clientLoginContent.indexOf("LSID="));
 		final String lsid = clientLoginContent.substring(clientLoginContent.indexOf("LSID=") + 5, clientLoginContent.indexOf("Auth="));
 
-		final Entity entity = new EntityBuilder().charset(Charsets.UTF_8)
-				.add("SID", sid)
-				.add("LSID", lsid)
-				.add("service", "gaia")
-				.add("Session", "true")
-				.add("source", "googletalk")
-				.build();
+		try {
+			final HttpResponse<String> response = Unirest.post(ISSUE_AUTH_TOKEN_URL)
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
+					.field("SID", sid)
+					.field("LSID", lsid)
+					.field("service", "gaia")
+					.field("Session", "true")
+					.field("source", "googletalk")
+					.asString();
 
-		final IRequest issueTokenRequest = requestBuilderFactory.create(ISSUE_AUTH_TOKEN_URL)
-				.post(entity)
-				.headers(ImmutableMap.of("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;"))
-				.build();
-		try (final IResponse response = issueTokenRequest.execute()) {
-			return response.getContent();
-		} catch (HttpIOException e) {
+			return response.getBody();
+		} catch (Exception e) {
 			throw new AuthenticationIOException(e);
 		}
 	}

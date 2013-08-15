@@ -34,11 +34,16 @@
                 <column name="password" nullable="false"/>
             </basic>
 
+            <version name="version">
+                <column name="version"/>
+            </version>
+
             <one-to-many name="playlists" mapped-by="account" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
             </one-to-many>
+
         </attributes>
     </entity>
 
@@ -61,7 +66,7 @@
                 <column name="url" unique="true" nullable="false"/>
             </basic>
             <basic name="thumbnail">
-                <column name="thumbnail" unique="true" nullable="false"/>
+                <column name="thumbnail" unique="true"/>
             </basic>
             <basic name="number">
                 <column name="number" nullable="false"/>
@@ -72,10 +77,9 @@
             <basic name="hidden">
                 <column name="hidden" nullable="false"/>
             </basic>
-            <basic name="dateOfModified" attribute-type="java.util.Calendar">
-                <column name="date_of_modified"/>
-                <temporal>TIMESTAMP</temporal>
-            </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
             <many-to-one name="account"/>
         </attributes>
     </entity>
@@ -98,6 +102,9 @@
             <basic name="name">
                 <column name="name" nullable="false"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
             <many-to-one name="account" target-entity="de.chaosfisch.google.account.Account"/>
             <one-to-one name="monetization"
                         target-entity="de.chaosfisch.google.youtube.upload.metadata.Monetization"
@@ -160,6 +167,9 @@
             <basic name="pauseOnFinish">
                 <column name="pauseonfinish" nullable="false"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
 
             <many-to-one name="account" target-entity="de.chaosfisch.google.account.Account"/>
             <one-to-one name="status" target-entity="de.chaosfisch.google.youtube.upload.Status" orphan-removal="true">
@@ -211,6 +221,9 @@
             <basic name="status">
                 <column name="status"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
         </attributes>
     </entity>
 
@@ -235,6 +248,9 @@
             <basic name="license" attribute-type="de.chaosfisch.google.youtube.upload.metadata.License">
                 <column name="license"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
         </attributes>
     </entity>
 
@@ -264,6 +280,9 @@
                    attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility">
                 <column name="visibility"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
         </attributes>
     </entity>
 
@@ -338,6 +357,9 @@
             <basic name="asset" attribute-type="de.chaosfisch.google.youtube.upload.metadata.permissions.Asset">
                 <column name="asset"/>
             </basic>
+            <version name="version">
+                <column name="version"/>
+            </version>
         </attributes>
     </entity>
 

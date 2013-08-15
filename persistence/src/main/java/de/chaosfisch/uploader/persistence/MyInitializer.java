@@ -8,15 +8,14 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.persistence.dao.transactional;
+package de.chaosfisch.uploader.persistence;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.inject.Inject;
+import com.google.inject.persist.PersistService;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Transactional {
+public class MyInitializer {
+	@Inject
+	public MyInitializer(final PersistService service) {
+		service.start();
+	}
 }
-

@@ -12,14 +12,8 @@ package de.chaosfisch.google.youtube.upload.events;
 
 import de.chaosfisch.google.youtube.upload.Upload;
 
-public class UploadRemoved {
-	private final Upload upload;
-
+public class UploadRemoved extends UploadEvent {
 	public UploadRemoved(final Upload upload) {
-		this.upload = upload;
-	}
-
-	public Upload getUpload() {
-		return upload;
+		super(upload);
 	}
 }

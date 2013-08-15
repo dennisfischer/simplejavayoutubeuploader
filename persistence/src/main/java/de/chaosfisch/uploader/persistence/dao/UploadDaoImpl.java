@@ -12,11 +12,11 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadAdded;
 import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
 import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
-import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -53,8 +53,8 @@ public class UploadDaoImpl implements IUploadDao {
 		final GregorianCalendar cal = new GregorianCalendar();
 
 		final Upload upload = entityManager.createQuery("SELECT u FROM upload u, status s " +
-				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (s.dateOfStart >= :dateOfStart OR s.dateOfStart IS NULL) " +
-				"ORDER BY s.dateOfStart DESC, s.failed ASC", Upload.class)
+				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (u.dateOfStart <= :dateOfStart OR u.dateOfStart IS NULL) " +
+				"ORDER BY u.dateOfStart DESC, s.failed ASC", Upload.class)
 				.setParameter("dateOfStart", cal)
 				.getSingleResult();
 
@@ -73,6 +73,18 @@ public class UploadDaoImpl implements IUploadDao {
 			tmp.add(upload);
 		}
 		return tmp;
+	}
+
+	@Override
+	public long fetchStarttimeDelay() {
+		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u, status s WHERE s.archived <> true AND s.failed <> true AND s.locked <> true AND NOT u.dateOfStart IS NULL ORDER BY u.dateOfStart ASC", Upload.class)
+				.setMaxResults(1)
+				.getResultList();
+		if (result.isEmpty()) {
+			return 0;
+		} else {
+			return result.get(0).getDateOfStart().getTimeInMillis() - System.currentTimeMillis();
+		}
 	}
 
 	@Override
@@ -110,19 +122,20 @@ public class UploadDaoImpl implements IUploadDao {
 	}
 
 	@Override
-	public int countReadyStarttime() {
+	public long countReadyStarttime() {
 		final GregorianCalendar cal = new GregorianCalendar();
 
-		return entityManager.createQuery("SELECT COUNT(s) FROM status s WHERE s.archived <> true AND s.running <> true AND s.failed <> true AND s.dateOfStart >= :dateOfStart", Integer.class)
+		return entityManager.createQuery("SELECT COUNT(s) FROM upload u, status s WHERE s.archived <> true AND s.running <> true AND s.failed <> true AND u.dateOfStart <= :dateOfStart", Long.class)
 				.setParameter("dateOfStart", cal)
 				.getSingleResult();
 	}
 
 	@Override
-	@Transactional
 	public void resetUnfinishedUploads() {
+		entityManager.getTransaction().begin();
 		entityManager.createQuery("UPDATE status s SET s.running = false, s.failed = false WHERE s.archived <> true")
 				.executeUpdate();
+		entityManager.getTransaction().commit();
 	}
 
 	private void addOrUpdateUpload(final Upload upload) {

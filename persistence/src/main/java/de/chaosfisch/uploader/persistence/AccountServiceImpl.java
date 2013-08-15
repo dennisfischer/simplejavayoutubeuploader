@@ -13,8 +13,6 @@ package de.chaosfisch.uploader.persistence;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.AbstractAccountService;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.http.IRequestSigner;
-import de.chaosfisch.http.RequestBuilderFactory;
 import de.chaosfisch.uploader.persistence.dao.IAccountDao;
 
 import java.util.List;
@@ -24,8 +22,7 @@ class AccountServiceImpl extends AbstractAccountService {
 	private final IAccountDao accountDao;
 
 	@Inject
-	public AccountServiceImpl(final IRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IAccountDao accountDao) {
-		super(requestSigner, requestBuilderFactory);
+	public AccountServiceImpl(final IAccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
 

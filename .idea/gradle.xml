@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="GradleSettings">
-    <option name="gradleHome" value="D:\Development\java_projects\gradle\gradle-1.6" />
-    <option name="linkedProjectPath" value="D:\Development\java_projects\simple-java-youtube-uploader\template\build.gradle" />
+    <option name="gradleHome" value="D:\Development\java_projects\gradle\gradle-1.7" />
+    <option name="linkedProjectPath" value="D:\Development\java_projects\simple-java-youtube-uploader\build.gradle" />
     <option name="preferLocalInstallationToWrapper" value="true" />
   </component>
 </project>

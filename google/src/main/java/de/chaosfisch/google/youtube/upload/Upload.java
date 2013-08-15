@@ -48,6 +48,7 @@ public class Upload implements Serializable {
 	private Metadata       metadata;
 	private Account        account;
 	private List<Playlist> playlists;
+	private int            version;
 
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;
@@ -242,6 +243,14 @@ public class Upload implements Serializable {
 
 	public void setPlaylists(final List<Playlist> playlists) {
 		this.playlists = playlists;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 
 	@Override

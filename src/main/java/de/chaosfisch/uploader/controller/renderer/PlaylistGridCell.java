@@ -84,7 +84,7 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 
 			private Image getDefaultThumbnail() {
 				if (null == defaultThumbnail) {
-					try (InputStream inputStream = getClass().getResourceAsStream("/org/chaosfisch/uploader/resources/images/thumbnail-missing.png")) {
+					try (InputStream inputStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/thumbnail-missing.png")) {
 						defaultThumbnail = new Image(inputStream);
 					} catch (IOException e) {
 						logger.warn("Default thumbnail load error", e);

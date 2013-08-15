@@ -18,15 +18,14 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import de.chaosfisch.google.Config;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
-import de.chaosfisch.http.IRequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,11 +67,7 @@ public class UploadJob implements Callable<Upload> {
 	private final IAccountService accountService;
 
 	@Inject
-	private IRequestUtil         requestUtil;
-	@Inject
-	private IGoogleRequestSigner requestSigner;
-	@Inject
-	private IResumeableManager   resumeableManager;
+	private IResumeableManager resumeableManager;
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
 
@@ -195,8 +190,10 @@ public class UploadJob implements Callable<Upload> {
 					request.setRequestProperty("Content-Type", upload.getMimetype());
 					request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload
 							.length()));
-					requestSigner.setAccount(upload.getAccount());
-					requestSigner.sign(request);
+					request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount())
+							.getHeader());
+					request.setRequestProperty("GData-Version", Config.GDATA_V2);
+					request.setRequestProperty("X-GData-Key", String.format("key=%s", Config.DEVELOPER_KEY));
 					request.connect();
 
 					try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
@@ -288,7 +285,7 @@ public class UploadJob implements Callable<Upload> {
 		while (!Thread.currentThread()
 				.isInterrupted() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
 			// Upload bytes in buffer
-			final int bytesRead = requestUtil.flowChunk(inputStream, outputStream, buffer, 0, DEFAULT_BUFFER_SIZE);
+			final int bytesRead = flowChunk(inputStream, outputStream, buffer, 0, DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
 			totalRead += bytesRead;
 			totalBytesUploaded += bytesRead;
@@ -312,4 +309,12 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
+	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+		final int numRead;
+		if (0 <= (numRead = is.read(buf, off, len))) {
+			os.write(buf, 0, numRead);
+		}
+		os.flush();
+		return numRead;
+	}
 }

@@ -10,33 +10,28 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
+import de.chaosfisch.google.Config;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.AuthenticationIOException;
 import de.chaosfisch.google.account.AuthenticationInvalidException;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailJsonException;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailResponseException;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
-import de.chaosfisch.http.HttpIOException;
-import de.chaosfisch.http.IRequest;
-import de.chaosfisch.http.IResponse;
-import de.chaosfisch.http.RequestBuilderFactory;
-import de.chaosfisch.http.entity.EntityBuilder;
 import de.chaosfisch.util.RegexpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,17 +56,13 @@ public class AbstractMetadataService implements IMetadataService {
 	private static final String[] deadEnds                       = {
 			"https://accounts.google.com/b/0/SmsAuthInterstitial"};
 
-	private final IGoogleRequestSigner  requestSigner;
-	private final IThumbnailService     thumbnailService;
-	private final RequestBuilderFactory requestBuilderFactory;
-	private final IAccountService       accountService;
+	private final IThumbnailService thumbnailService;
+	private final IAccountService   accountService;
 
 	@Inject
-	public AbstractMetadataService(final IGoogleRequestSigner requestSigner, final IThumbnailService thumbnailService, final IAccountService accountService, final RequestBuilderFactory requestBuilderFactory) {
-		this.requestSigner = requestSigner;
+	public AbstractMetadataService(final IThumbnailService thumbnailService, final IAccountService accountService) {
 		this.thumbnailService = thumbnailService;
 		this.accountService = accountService;
-		this.requestBuilderFactory = requestBuilderFactory;
 	}
 
 	@Override
@@ -149,43 +140,48 @@ public class AbstractMetadataService implements IMetadataService {
 	@Override
 	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException, MetaIOException {
 		// Upload atomData and fetch uploadUrl
-		requestSigner.setAccount(account);
-		final IRequest request = requestBuilderFactory.create(METADATA_CREATE_RESUMEABLE_URL)
-				.post(new EntityBuilder().charset(Charsets.UTF_8).stringEntity(atomData).build())
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;", "Slug", fileToUpload.getAbsolutePath()))
-				.sign(requestSigner)
-				.build();
-		// Write the atomData to GOOGLE
-		try (final IResponse response = request.execute()) {
+		try {
+			final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
+					.header("Slug", fileToUpload.getAbsolutePath())
+					.header("Authorization", accountService.getAuthentication(account).getHeader())
+					.body(atomData)
+					.asString();
+
 			// Check the response code for any problematic codes.
-			if (SC_BAD_REQUEST == response.getStatusCode()) {
-				throw new MetaBadRequestException(atomData, response.getStatusCode());
+			if (SC_BAD_REQUEST == response.getCode()) {
+				throw new MetaBadRequestException(atomData, response.getCode());
 			}
 			// Check if uploadurl is available
-			if (null != response.getHeader("Location")) {
-				return response.getHeader("Location").getValue();
+			if (response.getHeaders().containsKey("Location")) {
+				return response.getHeaders().get("Location");
 			} else {
-				throw new MetaLocationMissingException(response.getStatusCode());
+				throw new MetaLocationMissingException(response.getCode());
 			}
-		} catch (final IOException e) {
+			//FIXME Exceptions wrapped
+		} catch (final Exception e) {
 			throw new MetaIOException(e);
 		}
 	}
 
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
-		requestSigner.setAccount(account);
-		final IRequest request = requestBuilderFactory.create(METADATA_UPDATE_URL + '/' + videoId)
-				.put(new EntityBuilder().charset(Charsets.UTF_8).stringEntity(atomData).build())
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=UTF-8;"))
-				.sign(requestSigner)
-				.build();
+		try {
+			final HttpResponse<String> response = Unirest.post(METADATA_UPDATE_URL + '/' + videoId)
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
+					.header("Authorization", accountService.getAuthentication(account).getHeader())
+					.body(atomData)
+					.asString();
 
-		try (final IResponse response = request.execute()) {
-			if (SC_OK != response.getStatusCode()) {
-				throw new MetaBadRequestException(atomData, response.getStatusCode());
+			if (SC_OK != response.getCode()) {
+				throw new MetaBadRequestException(atomData, response.getCode());
 			}
-		} catch (IOException e) {
+			//FIXME Exceptions wrapped
+		} catch (Exception e) {
 			throw new MetaIOException(e);
 		}
 	}
@@ -208,14 +204,14 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	private String redirectToYoutube(final String content) throws IOException, MetaDeadEndException {
-		final IRequest request = requestBuilderFactory.create(extractor(content, "location.replace(\"", "\"").replaceAll(Pattern
-				.quote("\\x26"), "&").replaceAll(Pattern.quote("\\x3d"), "=")).get().build();
-		try (final IResponse response = request.execute()) {
-			if (Arrays.asList(deadEnds).contains(response.getCurrentUrl())) {
-				throw new MetaDeadEndException(response.getCurrentUrl());
-			}
-			return response.getContent();
+		final String url = extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
+				.replaceAll(Pattern.quote("\\x3d"), "=");
+		final HttpResponse<String> response = Unirest.get(url).asString();
+
+		if (Arrays.asList(deadEnds).contains(response.getHeaders().get("Location"))) {
+			throw new MetaDeadEndException(response.getHeaders().get("Location"));
 		}
+		return response.getBody();
 	}
 
 	private String boolConverter(final boolean flag) {
@@ -245,12 +241,12 @@ public class AbstractMetadataService implements IMetadataService {
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
 
-		final IRequest request = requestBuilderFactory.create(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
-				.getVideoid())).post(new EntityBuilder().charset(Charsets.UTF_8).addAll(params).build()).build();
+		try {
+			final HttpResponse<String> response = Unirest.post(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
+					.getVideoid())).fields(params).asString();
 
-		try (final IResponse response = request.execute()) {
-			logger.info(response.getContent());
-		} catch (HttpIOException e) {
+			logger.info(response.getBody());
+		} catch (Exception e) {
 			logger.warn("Metadata not set", e);
 		}
 	}

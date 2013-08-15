@@ -10,10 +10,8 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-import de.chaosfisch.http.HttpIOException;
-
 public class ThumbnailResponseException extends Exception {
-	public ThumbnailResponseException(final HttpIOException e) {
+	public ThumbnailResponseException(final Exception e) {
 		super(e);
 	}
 }

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/google/google.iml" filepath="$PROJECT_DIR$/google/google.iml" />
-      <module fileurl="file://$PROJECT_DIR$/http/http.iml" filepath="$PROJECT_DIR$/http/http.iml" />
       <module fileurl="file://$PROJECT_DIR$/persistence/persistence.iml" filepath="$PROJECT_DIR$/persistence/persistence.iml" />
       <module fileurl="file://$PROJECT_DIR$/serialization/serialization.iml" filepath="$PROJECT_DIR$/serialization/serialization.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-java-youtube-uploader.iml" filepath="$PROJECT_DIR$/simple-java-youtube-uploader.iml" />

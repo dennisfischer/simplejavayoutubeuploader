@@ -10,14 +10,9 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-import com.google.common.base.Charsets;
 import com.google.inject.Inject;
-import de.chaosfisch.http.HttpIOException;
-import de.chaosfisch.http.IRequest;
-import de.chaosfisch.http.IResponse;
-import de.chaosfisch.http.RequestBuilderFactory;
-import de.chaosfisch.http.entity.Entity;
-import de.chaosfisch.http.entity.EntityBuilder;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import de.chaosfisch.serialization.IJsonSerializer;
 
 import java.io.File;
@@ -25,12 +20,10 @@ import java.io.FileNotFoundException;
 
 public class ThumbnailServiceImpl implements IThumbnailService {
 
-	private final RequestBuilderFactory requestBuilderFactory;
-	private final IJsonSerializer       jsonSerializer;
+	private final IJsonSerializer jsonSerializer;
 
 	@Inject
-	public ThumbnailServiceImpl(final RequestBuilderFactory requestBuilderFactory, final IJsonSerializer jsonSerializer) {
-		this.requestBuilderFactory = requestBuilderFactory;
+	public ThumbnailServiceImpl(final IJsonSerializer jsonSerializer) {
 		this.jsonSerializer = jsonSerializer;
 	}
 
@@ -41,35 +34,27 @@ public class ThumbnailServiceImpl implements IThumbnailService {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		final IRequest thumbnailPost = requestBuilderFactory.create("http://www.youtube.com/my_thumbnail_post")
-				.post(buildEntity(content, videoid, thumbnail))
-				.build();
+		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
+		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
+				.indexOf(search) + search.length()));
 
-		try (IResponse response = thumbnailPost.execute()) {
-			final String json = response.getContent();
+		try {
+			final HttpResponse<String> response = Unirest.post("http://www.youtube.com/my_thumbnail_post")
+					.field("video_id", videoid)
+					.field("is_ajax", "1")
+					.field("session_token", sessiontoken)
+					.field("imagefile", thumbnail)
+					.asString();
+
+			final String json = response.getBody();
 			try {
 				return parseResponse(json);
 			} catch (final Exception e) {
 				throw new ThumbnailJsonException(json, e);
 			}
-		} catch (final HttpIOException e) {
+		} catch (final Exception e) {
 			throw new ThumbnailResponseException(e);
 		}
-	}
-
-	private Entity buildEntity(final String content, final String videoid, final File thumbnail) {
-
-		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
-				.indexOf(search) + search.length()));
-
-		return new EntityBuilder().multipart()
-				.charset(Charsets.UTF_8)
-				.add("video_id", videoid)
-				.add("is_ajax", "1")
-				.add("session_token", sessiontoken)
-				.add("imagefile", thumbnail)
-				.build();
 	}
 
 	private Integer parseResponse(final String json) {

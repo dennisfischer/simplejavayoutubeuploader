@@ -11,25 +11,23 @@
 
 
 
-
-
-
 apply plugin: 'java'
-
-allprojects {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 
 repositories {
     mavenCentral()
+    maven { url "http://maven.mashape.com/releases" }
 }
 
 dependencies {
-    compile 'com.google.inject:guice:3+', 'com.google.inject.extensions:guice-assistedinject:3+', 'com.thoughtworks.xstream:xstream:1.4.3',
-            'com.google.guava:guava:14+'
+    compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:+',
+            'com.google.guava:guava:14+', 'org.apache.httpcomponents:httpclient:4.2.3',
+            'org.apache.httpcomponents:httpasyncclient:4.0-beta3', 'org.apache.httpcomponents:httpmime:4.2.3',
+            'org.json:json:20090211',
+            'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0'
     compile files('/lib/asyncretry.jar')
-    compile project(':util'), project(':http'), project(':serialization')
+    compile project(':util'), project(':serialization')
 }
 

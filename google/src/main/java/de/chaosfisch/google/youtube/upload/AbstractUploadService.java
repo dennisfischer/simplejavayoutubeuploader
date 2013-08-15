@@ -56,16 +56,12 @@ public abstract class AbstractUploadService implements IUploadService {
 
 	@Override
 	public void startStarttimeCheck() {
-		//FIXME
-		//uploader.runStarttimeChecker();
+		uploader.runStarttimeChecker();
 	}
 
 	@Override
 	public void stopStarttimeCheck() {
-		//FIXME
-		//uploader.stopStarttimeChecker();
-		//FIXME
-		//uploader.exit();
+		uploader.stopStarttimeChecker();
 	}
 
 	@Override

@@ -18,6 +18,7 @@ public class Social implements Serializable {
 	private boolean facebook;
 	private boolean twitter;
 	private String  message;
+	private int     version;
 
 	public int getId() {
 		return id;
@@ -68,5 +69,13 @@ public class Social implements Serializable {
 	@Override
 	public int hashCode() {
 		return id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

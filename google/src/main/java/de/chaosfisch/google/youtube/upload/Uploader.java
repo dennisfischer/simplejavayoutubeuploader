@@ -12,7 +12,9 @@ package de.chaosfisch.google.youtube.upload;
 
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import de.chaosfisch.google.youtube.upload.events.UploadEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
@@ -20,23 +22,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.*;
 
 public class Uploader {
 
-	private static final int ENQUEUE_WAIT_TIME = 10000;
-	private boolean running;
-	private int     runningUploads;
-	private int     maxUploads;
-	private final        CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(Executors.newFixedThreadPool(10));
-	private final        List<Future<Upload>>      futures              = Lists.newArrayListWithExpectedSize(10);
-	private static final Logger                    logger               = LoggerFactory.getLogger(Uploader.class);
+	private static final int    ENQUEUE_WAIT_TIME   = 10000;
+	private static final int    DEFAULT_MAX_UPLOADS = 1;
+	private static final Logger logger              = LoggerFactory.getLogger(Uploader.class);
+
+	private       int                       maxUploads           = DEFAULT_MAX_UPLOADS;
+	private final CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(Executors.newFixedThreadPool(10));
+	private final List<Future<Upload>>      futures              = Lists.newArrayListWithExpectedSize(10);
 
 	private final Thread consumer = new UploadFinishProcessor();
-
-	private final EventBus          eventBus;
+	private       boolean           running;
+	private       int               runningUploads;
 	private       IUploadService    uploadService;
+	private final EventBus          eventBus;
 	private final IUploadJobFactory uploadJobFactory;
+	private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledFuture<?> task;
 
 	@Inject
 	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory) {
@@ -149,7 +155,9 @@ public class Uploader {
 			}
 		}
 	}
+
 	/*
+	TODO move
 	private void uploadFinished(final Upload queue) {
 			switch (actionOnFinish.get()) {
 				default:
@@ -174,25 +182,45 @@ public class Uploader {
 			}
 		}
 	}
-
+         */
 	public void runStarttimeChecker() {
-		executorService.submit(new Callable<Boolean>() {
-
+		new Thread(new Runnable() {
 			@Override
-			public Boolean call() {
-				while (!Thread.interrupted()) {
-					if (0 < uploadService.countReadyStarttime()) {
-						start();
-					}
-					try {
-						Thread.sleep(60000);
-					} catch (final InterruptedException e) {
-						Thread.currentThread().interrupt();
-					}
+			public void run() {
+				scheduleTask();
+				if (0 < uploadService.countReadyStarttime()) {
+					run();
 				}
-				return true;
 			}
-		});
+		}).start();
 	}
-	*/
+
+	private void scheduleTask() {
+		final long delay = uploadService.getStarttimeDelay();
+		final TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				if (0 < uploadService.countReadyStarttime()) {
+					Uploader.this.run();
+				}
+				scheduleTask();
+			}
+		};
+		if (0 < delay) {
+			task = timer.schedule(timerTask, delay, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	@Subscribe
+	public void onUploadEvent(final UploadEvent uploadEvent) {
+		if (null != task && !task.isCancelled()) {
+			task.cancel(false);
+		}
+		runStarttimeChecker();
+	}
+
+	public void stopStarttimeChecker() {
+		timer.shutdownNow();
+	}
+
 }

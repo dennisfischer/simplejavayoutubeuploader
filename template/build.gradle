@@ -9,16 +9,13 @@
  */
 
 
-
 apply plugin: 'java'
-
-allprojects {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
+    maven { url "http://maven.mashape.com/releases" }
 }
 
 dependencies {

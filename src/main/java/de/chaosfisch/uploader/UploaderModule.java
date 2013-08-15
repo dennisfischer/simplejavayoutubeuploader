@@ -20,8 +20,6 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import de.chaosfisch.google.GoogleModule;
-import de.chaosfisch.google.auth.GDataRequestSigner;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
 import de.chaosfisch.google.youtube.upload.Uploader;
@@ -29,8 +27,6 @@ import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
 import de.chaosfisch.google.youtube.upload.resume.ResumeableManagerImpl;
-import de.chaosfisch.http.IRequestSigner;
-import de.chaosfisch.http.RequestModule;
 import de.chaosfisch.serialization.SerializationModule;
 import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
@@ -45,16 +41,12 @@ public class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		install(new RequestModule());
+		install(new PersistenceModule());
 		install(new SerializationModule());
 		install(new GoogleModule());
-		install(new PersistenceModule());
 
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));
-
-		bind(IRequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
-		bind(IGoogleRequestSigner.class).to(GDataRequestSigner.class).in(Singleton.class);
 
 		mapServices();
 		mapUtil();

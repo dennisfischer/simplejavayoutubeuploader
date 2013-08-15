@@ -12,7 +12,7 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
+import com.google.inject.persist.Transactional;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.template.events.TemplateAdded;
 import de.chaosfisch.uploader.template.events.TemplateRemoved;
@@ -25,7 +25,6 @@ import java.util.List;
 public class TemplateDaoImpl implements ITemplateDao {
 
 	protected ArrayList<Template> templates = new ArrayList<>(10);
-
 	@Inject
 	protected EntityManager entityManager;
 	@Inject

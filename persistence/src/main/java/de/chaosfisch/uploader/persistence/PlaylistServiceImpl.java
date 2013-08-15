@@ -13,10 +13,8 @@ package de.chaosfisch.uploader.persistence;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.playlist.AbstractPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.http.RequestBuilderFactory;
 import de.chaosfisch.serialization.IXmlSerializer;
 import de.chaosfisch.uploader.persistence.dao.IPlaylistDao;
 
@@ -27,8 +25,8 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 	private final IPlaylistDao playlistDao;
 
 	@Inject
-	public PlaylistServiceImpl(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer, final IPlaylistDao playlistDao, final IAccountService accountService) {
-		super(requestSigner, requestBuilderFactory, xmlSerializer, accountService);
+	public PlaylistServiceImpl(final IXmlSerializer xmlSerializer, final IPlaylistDao playlistDao, final IAccountService accountService) {
+		super(xmlSerializer, accountService);
 		this.playlistDao = playlistDao;
 	}
 

@@ -21,6 +21,7 @@ public class Permissions implements Serializable {
 	private boolean       rate;
 	private Videoresponse videoresponse;
 	private Visibility    visibility;
+	private int           version;
 
 	public int getId() {
 		return id;
@@ -95,5 +96,13 @@ public class Permissions implements Serializable {
 	@Override
 	public int hashCode() {
 		return id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

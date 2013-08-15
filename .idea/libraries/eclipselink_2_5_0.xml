@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="eclipselink-2.5.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.eclipse.persistence/eclipselink/2.5.0/jar/33693e782e0f99ca7e2deeca0222f493ebb6bc82/eclipselink-2.5.0.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/org.eclipse.persistence/eclipselink/2.5.0/jar/33693e782e0f99ca7e2deeca0222f493ebb6bc82/eclipselink-2.5.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.eclipse.persistence/eclipselink/2.5.0/source/69184f161bd99d7c3a68f0ab8902b757c09c2a31/eclipselink-2.5.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/org.eclipse.persistence/eclipselink/2.5.0/source/69184f161bd99d7c3a68f0ab8902b757c09c2a31/eclipselink-2.5.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

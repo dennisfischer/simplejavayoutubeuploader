@@ -8,12 +8,18 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.auth;
+package de.chaosfisch.google.youtube.upload.events;
 
-import de.chaosfisch.google.account.Account;
-import de.chaosfisch.http.IRequestSigner;
+import de.chaosfisch.google.youtube.upload.Upload;
 
-public interface IGoogleRequestSigner extends IRequestSigner {
+public class UploadEvent {
+	protected final Upload upload;
 
-	void setAccount(Account account);
+	public UploadEvent(final Upload upload) {
+		this.upload = upload;
+	}
+
+	public Upload getUpload() {
+		return upload;
+	}
 }

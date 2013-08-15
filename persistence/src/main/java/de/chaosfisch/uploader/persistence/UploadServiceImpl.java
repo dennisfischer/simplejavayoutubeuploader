@@ -71,7 +71,7 @@ public class UploadServiceImpl extends AbstractUploadService {
 	}
 
 	@Override
-	public int countReadyStarttime() {
+	public long countReadyStarttime() {
 		return uploadDao.countReadyStarttime();
 	}
 
@@ -83,5 +83,10 @@ public class UploadServiceImpl extends AbstractUploadService {
 	@Override
 	public List<Upload> fetchByArchived(final boolean archived) {
 		return uploadDao.fetchByArchived(archived);
+	}
+
+	@Override
+	public long getStarttimeDelay() {
+		return uploadDao.fetchStarttimeDelay();
 	}
 }

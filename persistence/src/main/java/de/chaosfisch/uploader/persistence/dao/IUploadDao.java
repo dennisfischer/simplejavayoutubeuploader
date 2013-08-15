@@ -31,9 +31,11 @@ public interface IUploadDao {
 
 	int countUnprocessed();
 
-	int countReadyStarttime();
+	long countReadyStarttime();
 
 	void resetUnfinishedUploads();
 
 	List<Upload> fetchByArchived(boolean archived);
+
+	long fetchStarttimeDelay();
 }

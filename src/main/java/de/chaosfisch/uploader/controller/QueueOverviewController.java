@@ -17,6 +17,7 @@ import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadAdded;
 import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
+import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
 import de.chaosfisch.uploader.controller.renderer.QueueUploadCellRenderer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -52,6 +53,19 @@ public class QueueOverviewController {
 		queueListView.setItems(uploads);
 
 		uploads.addAll(uploadService.getAll());
+	}
+
+	@Subscribe
+	public void onUploadUpdated(final UploadUpdated event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final Upload upload = queueListView.getSelectionModel().getSelectedItem();
+				queueListView.setItems(null);
+				queueListView.setItems(uploads);
+				queueListView.getSelectionModel().select(upload);
+			}
+		});
 	}
 
 	@Subscribe

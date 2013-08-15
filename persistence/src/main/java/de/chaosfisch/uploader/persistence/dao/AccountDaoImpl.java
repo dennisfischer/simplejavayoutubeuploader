@@ -12,11 +12,12 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.google.account.events.AccountUpdated;
-import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
+import de.chaosfisch.uploader.persistence.MyInitializer;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class AccountDaoImpl implements IAccountDao {
 
 	protected ArrayList<Account> accounts = new ArrayList<>(10);
 
+	@Inject
+	protected MyInitializer test;
 	@Inject
 	protected EntityManager entityManager;
 	@Inject

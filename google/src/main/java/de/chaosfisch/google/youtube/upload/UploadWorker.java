@@ -17,7 +17,6 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
 import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
@@ -28,7 +27,6 @@ import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
 import de.chaosfisch.google.youtube.upload.resume.ResumeIOException;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInvalidResponseException;
-import de.chaosfisch.http.IRequestUtil;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,18 +63,14 @@ public class UploadWorker extends Task<Void> {
 	private Upload upload;
 
 	@Inject
-	private       IMetadataService     metadataService;
+	private       IMetadataService   metadataService;
 	@Inject
-	private       IUploadService       uploadService;
+	private       IUploadService     uploadService;
 	@Inject
-	private       IAccountService      accountService;
+	private       IAccountService    accountService;
 	@Inject
-	private       IGoogleRequestSigner requestSigner;
-	@Inject
-	private       IResumeableManager   resumeableManager;
-	private final EventBus             eventBus;
-	@Inject
-	private       IRequestUtil         requestUtil;
+	private       IResumeableManager resumeableManager;
+	private final EventBus           eventBus;
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
 
@@ -190,7 +184,7 @@ public class UploadWorker extends Task<Void> {
 
 		while (!isCancelled() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
 			// Upload bytes in buffer
-			final int bytesRead = requestUtil.flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
+			final int bytesRead = flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
 			// Calculate all uploadinformation
 			totalRead += bytesRead;
 			totalBytesUploaded += bytesRead;
@@ -424,8 +418,9 @@ public class UploadWorker extends Task<Void> {
 			//Properties
 			request.setRequestProperty("Content-Type", upload.getMimetype());
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-			requestSigner.setAccount(upload.getAccount());
+		/*	requestSigner.setAccount(upload.getAccount());
 			requestSigner.sign(request);
+		*/
 			request.connect();
 
 			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
@@ -462,5 +457,14 @@ public class UploadWorker extends Task<Void> {
 		} catch (final IOException e) {
 			throw new UploadIOException(e);
 		}
+	}
+
+	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+		final int numRead;
+		if (0 <= (numRead = is.read(buf, off, len))) {
+			os.write(buf, 0, numRead);
+		}
+		os.flush();
+		return numRead;
 	}
 }

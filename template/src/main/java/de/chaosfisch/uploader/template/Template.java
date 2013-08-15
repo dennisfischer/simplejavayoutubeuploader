@@ -35,6 +35,7 @@ public class Template {
 	private Metadata       metadata;
 	private Account        account;
 	private List<Playlist> playlists;
+	private int            version;
 
 	@Override
 	public String toString() {
@@ -127,5 +128,13 @@ public class Template {
 
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

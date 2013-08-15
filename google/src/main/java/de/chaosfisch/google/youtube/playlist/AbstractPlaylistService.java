@@ -10,22 +10,17 @@
 
 package de.chaosfisch.google.youtube.playlist;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import de.chaosfisch.google.Config;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.Feed;
 import de.chaosfisch.google.atom.VideoEntry;
-import de.chaosfisch.google.auth.IGoogleRequestSigner;
-import de.chaosfisch.http.HttpIOException;
-import de.chaosfisch.http.IRequest;
-import de.chaosfisch.http.IResponse;
-import de.chaosfisch.http.RequestBuilderFactory;
-import de.chaosfisch.http.entity.EntityBuilder;
 import de.chaosfisch.serialization.IXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,15 +36,11 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	private static final Logger logger     = LoggerFactory.getLogger(AbstractPlaylistService.class);
 	private static final int    SC_OK      = 200;
 	private static final int    SC_CREATED = 201;
-	private final IGoogleRequestSigner  requestSigner;
-	private final RequestBuilderFactory requestBuilderFactory;
-	private final IXmlSerializer        xmlSerializer;
-	private final IAccountService       accountService;
+	private final IXmlSerializer  xmlSerializer;
+	private final IAccountService accountService;
 
 	@Inject
-	public AbstractPlaylistService(final IGoogleRequestSigner requestSigner, final RequestBuilderFactory requestBuilderFactory, final IXmlSerializer xmlSerializer, final IAccountService accountService) {
-		this.requestSigner = requestSigner;
-		this.requestBuilderFactory = requestBuilderFactory;
+	public AbstractPlaylistService(final IXmlSerializer xmlSerializer, final IAccountService accountService) {
 		this.xmlSerializer = xmlSerializer;
 		this.accountService = accountService;
 	}
@@ -61,17 +52,18 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		submitFeed.mediaGroup = null;
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(submitFeed));
 
-		requestSigner.setAccount(playlist.getAccount());
-		final IRequest request = requestBuilderFactory.create(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
-				.post(new EntityBuilder().charset(Charsets.UTF_8).stringEntity(atomData).build())
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-				.sign(requestSigner)
-				.build();
+		try {
+			final HttpResponse<String> response = Unirest.post(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
+					.header("Content-Type", "application/atom+xml; charset=utf-8;")
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
+					.body(atomData)
+					.asString();
 
-		try (final IResponse response = request.execute()) {
 			logger.debug("Video added to playlist!");
-			return xmlSerializer.fromXML(response.getContent(), Feed.class);
-		} catch (final HttpIOException e) {
+			return xmlSerializer.fromXML(response.getBody(), Feed.class);
+		} catch (final Exception e) {
 			throw new PlaylistIOException(e);
 		}
 	}
@@ -90,21 +82,21 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(entry));
 
 		logger.debug("Playlist atomdata: {}", atomData);
+		try {
+			final HttpResponse<String> response = Unirest.post(YOUTUBE_PLAYLIST_ADD_FEED)
+					.header("Content-Type", "application/atom+xml; charset=utf-8;")
+					.header("GData-Version", Config.GDATA_V2)
+					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
+					.body(atomData)
+					.asString();
 
-		requestSigner.setAccount(playlist.getAccount());
-
-		final IRequest request = requestBuilderFactory.create(YOUTUBE_PLAYLIST_ADD_FEED)
-				.post(new EntityBuilder().charset(Charsets.UTF_8).stringEntity(atomData).build())
-				.headers(ImmutableMap.of("Content-Type", "application/atom+xml; charset=utf-8;"))
-				.sign(requestSigner)
-				.build();
-		try (final IResponse response = request.execute()) {
-			if (SC_OK != response.getStatusCode() && SC_CREATED != response.getStatusCode()) {
-				throw new PlaylistInvalidResponseException(response.getStatusCode());
+			if (SC_OK != response.getCode() && SC_CREATED != response.getCode()) {
+				throw new PlaylistInvalidResponseException(response.getCode());
 			}
 			logger.info("Added playlist to youtube");
-			return xmlSerializer.fromXML(response.getContent(), Feed.class);
-		} catch (final HttpIOException e) {
+			return xmlSerializer.fromXML(response.getBody(), Feed.class);
+		} catch (final Exception e) {
 			throw new PlaylistIOException(e);
 		}
 	}
@@ -116,22 +108,24 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		final Multimap<Account, Playlist> data = ArrayListMultimap.create();
 
 		for (final Account account : accounts) {
-			requestSigner.setAccount(account);
-			final IRequest request = requestBuilderFactory.create(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
-					.get()
-					.sign(requestSigner)
-					.build();
-			try (final IResponse response = request.execute()) {
-				if (SC_OK != response.getStatusCode()) {
-					System.out.println(response.getStatusCode());
-					throw new PlaylistSynchException(response.getStatusCode());
+			try {
+				final HttpResponse<String> response = Unirest.get(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
+						.header("GData-Version", Config.GDATA_V2)
+						.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+						.header("Authorization", accountService.getAuthentication(account).getHeader())
+						.asString();
+
+				if (SC_OK != response.getCode()) {
+					System.out.println(response.getCode());
+					throw new PlaylistSynchException(response.getCode());
 				}
 				logger.debug("Playlist synchronize okay.");
-				final List<Playlist> playlists = _parsePlaylistsFeed(account, response.getContent());
+				final List<Playlist> playlists = _parsePlaylistsFeed(account, response.getBody());
 				data.putAll(account, playlists);
 				account.setPlaylists(playlists);
 				accountService.update(account);
-			} catch (final HttpIOException e) {
+			} catch (final Exception e) {
+				e.printStackTrace();
 				throw new PlaylistIOException(e);
 			}
 		}
@@ -150,9 +144,9 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		for (final VideoEntry entry : feed.videoEntries) {
 			final Playlist playlist = findByPkey(entry.playlistId);
 			if (null == playlist) {
-				list.add(_updateExistingPlaylist(account, entry, playlist));
-			} else {
 				list.add(_createNewPlaylist(account, entry));
+			} else {
+				list.add(_updateExistingPlaylist(account, entry, playlist));
 			}
 		}
 		return list;
@@ -162,7 +156,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		final Playlist playlist = new Playlist();
 		playlist.setTitle(entry.title);
 		playlist.setPkey(entry.playlistId);
-		playlist.setUrl(entry.title);
+		playlist.setUrl(entry.content.src);
 		playlist.setNumber(entry.playlistCountHint);
 		playlist.setSummary(entry.playlistSummary);
 		playlist.setThumbnail(getThumbnail(entry));
@@ -183,7 +177,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 
 	Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
 		playlist.setTitle(entry.title);
-		playlist.setUrl(entry.title);
+		playlist.setUrl(entry.content.src);
 		playlist.setNumber(entry.playlistCountHint);
 		playlist.setSummary(entry.playlistSummary);
 		playlist.setAccount(account);

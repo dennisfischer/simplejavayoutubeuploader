@@ -26,6 +26,7 @@ public class Account implements Serializable {
 	private String         name;
 	private String         password;
 	private List<Playlist> playlists;
+	private int            version;
 
 	public int getId() {
 		return id;
@@ -78,5 +79,13 @@ public class Account implements Serializable {
 		int result = id;
 		result = 31 * result + name.hashCode();
 		return result;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

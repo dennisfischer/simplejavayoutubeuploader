@@ -13,12 +13,12 @@ package de.chaosfisch.uploader.persistence.dao;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.playlist.events.PlaylistAdded;
 import de.chaosfisch.google.youtube.playlist.events.PlaylistRemoved;
 import de.chaosfisch.google.youtube.playlist.events.PlaylistUpdated;
-import de.chaosfisch.uploader.persistence.dao.transactional.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -69,9 +69,14 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 
 	@Override
 	public Playlist fetchByPKey(final String playlistKey) {
-		final Playlist playlist = entityManager.createQuery("SELECT p FROM playlist p WHERE p.pkey = :pkey", Playlist.class)
+		final List<Playlist> result = entityManager.createQuery("SELECT p FROM playlist p WHERE p.pkey = :pkey", Playlist.class)
 				.setParameter("pkey", playlistKey)
-				.getSingleResult();
+				.setMaxResults(1)
+				.getResultList();
+		if (result.isEmpty()) {
+			return null;
+		}
+		final Playlist playlist = result.get(0);
 		addOrUpdatePlaylist(playlist);
 		return getFromPlaylistList(playlist);
 	}
@@ -85,9 +90,11 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 	}
 
 	@Override
-	@Transactional
 	public void update(final Playlist playlist) {
+		entityManager.getTransaction().begin();
 		entityManager.merge(playlist);
+		entityManager.flush();
+		entityManager.getTransaction().commit();
 		eventBus.post(new PlaylistUpdated(playlist));
 	}
 

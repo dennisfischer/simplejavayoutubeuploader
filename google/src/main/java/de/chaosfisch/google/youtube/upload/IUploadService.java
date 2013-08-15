@@ -35,7 +35,7 @@ public interface IUploadService {
 
 	int countUnprocessed();
 
-	int countReadyStarttime();
+	long countReadyStarttime();
 
 	void resetUnfinishedUploads();
 
@@ -56,4 +56,6 @@ public interface IUploadService {
 	List<Upload> fetchByArchived(boolean archived);
 
 	void abort(Upload upload);
+
+	long getStarttimeDelay();
 }

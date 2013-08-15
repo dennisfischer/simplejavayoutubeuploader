@@ -16,23 +16,22 @@ package de.chaosfisch.google.youtube.playlist;
 import de.chaosfisch.google.account.Account;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
 
 public class Playlist implements Serializable {
 
 	private static final long serialVersionUID = 1215529732;
 
-	private int               id;
-	private String            pkey;
-	private boolean           private_;
-	private String            title;
-	private String            url;
-	private String            thumbnail;
-	private int               number;
-	private String            summary;
-	private boolean           hidden;
-	private GregorianCalendar dateOfModified;
-	private Account           account;
+	private int     id;
+	private String  pkey;
+	private boolean private_;
+	private String  title;
+	private String  url;
+	private String  thumbnail;
+	private int     number;
+	private String  summary;
+	private boolean hidden;
+	private Account account;
+	private int     version;
 
 	public int getId() {
 		return id;
@@ -106,14 +105,6 @@ public class Playlist implements Serializable {
 		this.hidden = hidden;
 	}
 
-	public GregorianCalendar getDateOfModified() {
-		return dateOfModified;
-	}
-
-	public void setDateOfModified(final GregorianCalendar dateOfModified) {
-		this.dateOfModified = dateOfModified;
-	}
-
 	public Account getAccount() {
 		return account;
 	}
@@ -142,5 +133,13 @@ public class Playlist implements Serializable {
 		int result = id;
 		result = 31 * result + pkey.hashCode();
 		return result;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(final int version) {
+		this.version = version;
 	}
 }

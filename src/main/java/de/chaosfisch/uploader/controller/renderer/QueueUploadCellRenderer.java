@@ -57,8 +57,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 	public class QueueUploadCell extends ListCell<Upload> {
 
-		Upload upload;
-		Parent progressNode;
+		private Upload upload;
+		private Parent progressNode;
 
 		@Override
 		protected void updateItem(final Upload item, final boolean empty) {
@@ -68,6 +68,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			} else if (null == upload) {
 				eventBus.register(this);
 			}
+
 			upload = item;
 			final Status status = upload.getStatus();
 

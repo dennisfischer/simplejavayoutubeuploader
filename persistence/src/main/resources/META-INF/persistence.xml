@@ -24,15 +24,17 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:h2:~/SimpleJavaYoutubeUploader/youtubeuploader-v3;"/>
+                      value="jdbc:h2:~/SimpleJavaYoutubeUploader/youtubeuploader-v3;MVCC=true"/>
             <property name="javax.persistence.jdbc.user" value="username"/>
             <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.sharedCache.mode" value="ALL"/>
 
             <!-- EclipseLink should create the database schema automatically -->
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.ddl-generation.output-mode"
                       value="database"/>
             <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.weaving" value="static"/>
         </properties>
 
     </persistence-unit>
