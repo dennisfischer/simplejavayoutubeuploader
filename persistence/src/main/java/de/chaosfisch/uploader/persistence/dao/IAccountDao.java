@@ -17,7 +17,7 @@ import java.util.List;
 public interface IAccountDao {
 	List<Account> getAll();
 
-	Account get(int id);
+	Account get(String id);
 
 	void insert(Account account);
 

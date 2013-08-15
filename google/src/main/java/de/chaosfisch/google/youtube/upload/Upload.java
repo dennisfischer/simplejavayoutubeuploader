@@ -30,8 +30,8 @@ public class Upload implements Serializable {
 
 	private static final long serialVersionUID = -414398454;
 
-	private int  id;
-	private File file;
+	private String id;
+	private File   file;
 	private String mimetype = "application/octet-stream";
 	private String            uploadurl;
 	private GregorianCalendar dateOfStart;
@@ -48,7 +48,6 @@ public class Upload implements Serializable {
 	private Metadata       metadata;
 	private Account        account;
 	private List<Playlist> playlists;
-	private int            version;
 
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;
@@ -77,11 +76,11 @@ public class Upload implements Serializable {
 		setFile(file);
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final int id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -245,14 +244,6 @@ public class Upload implements Serializable {
 		this.playlists = playlists;
 	}
 
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
-	}
-
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -264,11 +255,11 @@ public class Upload implements Serializable {
 
 		final Upload upload = (Upload) obj;
 
-		return id == upload.id;
+		return !(null != id ? !id.equals(upload.id) : null != upload.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return id;
+		return null != id ? id.hashCode() : 0;
 	}
 }

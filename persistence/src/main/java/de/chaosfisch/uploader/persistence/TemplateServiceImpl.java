@@ -32,7 +32,7 @@ public class TemplateServiceImpl implements ITemplateService {
 	}
 
 	@Override
-	public Template get(final int id) {
+	public Template get(final String id) {
 		return templateDao.get(id);
 	}
 

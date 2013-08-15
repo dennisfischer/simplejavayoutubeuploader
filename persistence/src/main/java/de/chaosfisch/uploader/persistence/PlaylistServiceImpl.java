@@ -36,7 +36,7 @@ public class PlaylistServiceImpl extends AbstractPlaylistService {
 	}
 
 	@Override
-	public Playlist get(final int id) {
+	public Playlist get(final String id) {
 		return playlistDao.get(id);
 	}
 

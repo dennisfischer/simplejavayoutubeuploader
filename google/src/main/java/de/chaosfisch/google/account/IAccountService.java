@@ -18,7 +18,7 @@ public interface IAccountService {
 
 	List<Account> getAll();
 
-	Account get(int id);
+	Account get(String id);
 
 	void insert(Account account);
 

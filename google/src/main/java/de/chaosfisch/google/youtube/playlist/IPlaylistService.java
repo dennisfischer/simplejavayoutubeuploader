@@ -20,7 +20,7 @@ public interface IPlaylistService {
 
 	List<Playlist> getAll(Account account);
 
-	Playlist get(int id);
+	Playlist get(String id);
 
 	void insert(Playlist playlist);
 

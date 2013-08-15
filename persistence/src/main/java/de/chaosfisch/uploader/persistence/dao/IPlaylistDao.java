@@ -18,7 +18,7 @@ import java.util.List;
 public interface IPlaylistDao {
 	List<Playlist> getAll(Account account);
 
-	Playlist get(int id);
+	Playlist get(String id);
 
 	void insert(Playlist playlist);
 

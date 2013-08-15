@@ -12,100 +12,115 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadAdded;
 import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
 import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class UploadDaoImpl implements IUploadDao {
 
 	private final ArrayList<Upload> uploads = new ArrayList<>(10);
 
 	@Inject
-	protected EntityManager entityManager;
-	@Inject
-	protected EventBus      eventBus;
+	protected EventBus eventBus;
 
 	@Override
 	public List<Upload> getAll() {
-		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u", Upload.class).getResultList();
-		for (final Upload upload : result) {
-			addOrUpdateUpload(upload);
-		}
 		return uploads;
 	}
 
 	@Override
-	public Upload get(final int id) {
-		final Upload upload = entityManager.find(Upload.class, id);
-		addOrUpdateUpload(upload);
-		return getUploadFromList(upload);
+	public Upload get(final String id) {
+		for (final Upload upload : uploads) {
+			if (upload.getId().equals(id)) {
+				return upload;
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public Upload fetchNextUpload() {
-		final GregorianCalendar cal = new GregorianCalendar();
+		if (uploads.isEmpty()) {
+			return null;
+		}
+		final long timestamp = System.currentTimeMillis();
 
-		final Upload upload = entityManager.createQuery("SELECT u FROM upload u, status s " +
-				"WHERE s.archived <> true AND s.failed <> true AND s.running <> true AND s.locked <> true AND (u.dateOfStart <= :dateOfStart OR u.dateOfStart IS NULL) " +
-				"ORDER BY u.dateOfStart DESC, s.failed ASC", Upload.class)
-				.setParameter("dateOfStart", cal)
-				.getSingleResult();
+		final List<Upload> result = new ArrayList<>(uploads.size());
+		for (final Upload upload : uploads) {
+			if (null == upload.getDateOfStart() || upload.getDateOfStart().getTimeInMillis() <= timestamp) {
+				final Status status = upload.getStatus();
+				if (!status.isArchived() && !status.isFailed() && !status.isRunning() && !status.isLocked()) {
+					result.add(upload);
+				}
+			}
+		}
 
-		addOrUpdateUpload(upload);
-		return getUploadFromList(upload);
+		Collections.sort(result, new Comparator<Upload>() {
+			@Override
+			public int compare(final Upload o1, final Upload o2) {
+				final boolean o1Null = null == o1.getDateOfStart();
+				final boolean o2Null = null == o2.getDateOfStart();
+				if (o1Null || o2Null) {
+					return o1Null && o2Null ? 0 : o1Null ? -1 : 1;
+				}
+				return Long.compare(o1.getDateOfStart().getTimeInMillis(), o2.getDateOfStart().getTimeInMillis());
+			}
+		});
+
+		return result.get(0);
 	}
 
 	@Override
 	public List<Upload> fetchByArchived(final boolean archived) {
-		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u, status s WHERE u.status = s AND s.archived = true", Upload.class)
-				.getResultList();
-
-		final ArrayList<Upload> tmp = new ArrayList<>();
-		for (final Upload upload : result) {
-			addOrUpdateUpload(upload);
-			tmp.add(upload);
+		final List<Upload> result = new ArrayList<>(uploads.size());
+		for (final Upload upload : uploads) {
+			final Status status = upload.getStatus();
+			if (status.isArchived() == archived) {
+				result.add(upload);
+			}
 		}
-		return tmp;
+		return result;
 	}
 
 	@Override
 	public long fetchStarttimeDelay() {
-		final List<Upload> result = entityManager.createQuery("SELECT u FROM upload u, status s WHERE s.archived <> true AND s.failed <> true AND s.locked <> true AND NOT u.dateOfStart IS NULL ORDER BY u.dateOfStart ASC", Upload.class)
-				.setMaxResults(1)
-				.getResultList();
-		if (result.isEmpty()) {
+		if (uploads.isEmpty()) {
 			return 0;
-		} else {
-			return result.get(0).getDateOfStart().getTimeInMillis() - System.currentTimeMillis();
 		}
+
+		final long time = System.currentTimeMillis();
+		long delay = time;
+
+		for (final Upload upload : uploads) {
+			final Status status = upload.getStatus();
+			if (null != upload.getDateOfStart() && !status.isArchived() && !status.isFailed() && !status.isRunning() && !status
+					.isLocked()) {
+				if (upload.getDateOfStart().getTimeInMillis() < delay) {
+					delay = upload.getDateOfStart().getTimeInMillis();
+				}
+			}
+		}
+		return delay == time ? 0 : delay - System.currentTimeMillis();
 	}
 
 	@Override
-	@Transactional
 	public void insert(final Upload upload) {
-		entityManager.persist(upload);
+		upload.setId(UUID.randomUUID().toString());
 		uploads.add(upload);
 		eventBus.post(new UploadAdded(upload));
 	}
 
 	@Override
-	@Transactional
 	public void update(final Upload upload) {
-		entityManager.merge(upload);
 		eventBus.post(new UploadUpdated(upload));
 	}
 
 	@Override
-	@Transactional
 	public void delete(final Upload upload) {
-		entityManager.remove(upload);
 		uploads.remove(upload);
 		eventBus.post(new UploadRemoved(upload));
 	}
@@ -117,40 +132,39 @@ public class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public int countUnprocessed() {
-		return entityManager.createQuery("SELECT COUNT(s) FROM status s WHERE s.archived <> true AND s.failed <> true", Integer.class)
-				.getSingleResult();
+		int count = 0;
+		for (final Upload upload : uploads) {
+			final Status status = upload.getStatus();
+			if (!status.isArchived() && !status.isFailed() && !status.isLocked()) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	@Override
 	public long countReadyStarttime() {
-		final GregorianCalendar cal = new GregorianCalendar();
-
-		return entityManager.createQuery("SELECT COUNT(s) FROM upload u, status s WHERE s.archived <> true AND s.running <> true AND s.failed <> true AND u.dateOfStart <= :dateOfStart", Long.class)
-				.setParameter("dateOfStart", cal)
-				.getSingleResult();
+		final long time = System.currentTimeMillis();
+		int count = 0;
+		for (final Upload upload : uploads) {
+			final Status status = upload.getStatus();
+			if (!status.isArchived() && !status.isFailed() && !status.isLocked()) {
+				if (null != upload.getDateOfStart() && upload.getDateOfStart().getTimeInMillis() <= time) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 	@Override
 	public void resetUnfinishedUploads() {
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("UPDATE status s SET s.running = false, s.failed = false WHERE s.archived <> true")
-				.executeUpdate();
-		entityManager.getTransaction().commit();
-	}
-
-	private void addOrUpdateUpload(final Upload upload) {
-		if (uploads.contains(upload)) {
-			refreshUpload(upload);
-		} else {
-			uploads.add(upload);
+		for (final Upload upload : uploads) {
+			final Status status = upload.getStatus();
+			if (!status.isArchived()) {
+				status.setFailed(false);
+				status.setRunning(false);
+			}
 		}
-	}
-
-	private void refreshUpload(final Upload upload) {
-		entityManager.refresh(getUploadFromList(upload));
-	}
-
-	private Upload getUploadFromList(final Upload upload) {
-		return uploads.get(uploads.indexOf(upload));
 	}
 }

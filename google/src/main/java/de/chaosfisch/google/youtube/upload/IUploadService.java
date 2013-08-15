@@ -21,7 +21,7 @@ public interface IUploadService {
 
 	List<Upload> getAll();
 
-	Upload get(int id);
+	Upload get(String id);
 
 	void insert(Upload upload);
 

@@ -21,7 +21,7 @@ public class Playlist implements Serializable {
 
 	private static final long serialVersionUID = 1215529732;
 
-	private int     id;
+	private String  id;
 	private String  pkey;
 	private boolean private_;
 	private String  title;
@@ -31,13 +31,12 @@ public class Playlist implements Serializable {
 	private String  summary;
 	private boolean hidden;
 	private Account account;
-	private int     version;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final int id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -114,32 +113,25 @@ public class Playlist implements Serializable {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(o instanceof Playlist)) {
+		if (!(obj instanceof Playlist)) {
 			return false;
 		}
 
-		final Playlist playlist = (Playlist) o;
+		final Playlist playlist = (Playlist) obj;
 
-		return id == playlist.id && pkey.equals(playlist.pkey);
-
+		return !(null != id ? !id.equals(playlist.id) : null != playlist.id) && !(null != pkey ?
+																				  !pkey.equals(playlist.pkey) :
+																				  null != playlist.pkey);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		result = 31 * result + pkey.hashCode();
+		int result = null != id ? id.hashCode() : 0;
+		result = 31 * result + (null != pkey ? pkey.hashCode() : 0);
 		return result;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 }

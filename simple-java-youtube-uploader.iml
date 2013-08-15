@@ -33,6 +33,8 @@
     <orderEntry type="library" exported="" name="xstream-1.4.3" level="project" />
     <orderEntry type="library" exported="" name="guice-3.0" level="project" />
     <orderEntry type="library" exported="" name="guice-assistedinject-3.0" level="project" />
+    <orderEntry type="library" exported="" name="h2-1.3.170" level="project" />
+    <orderEntry type="library" exported="" name="hsqldb-2.3.0" level="project" />
   </component>
 </module>
 

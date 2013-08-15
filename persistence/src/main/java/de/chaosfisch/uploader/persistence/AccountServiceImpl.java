@@ -32,7 +32,7 @@ class AccountServiceImpl extends AbstractAccountService {
 	}
 
 	@Override
-	public Account get(final int id) {
+	public Account get(final String id) {
 		return accountDao.get(id);
 	}
 

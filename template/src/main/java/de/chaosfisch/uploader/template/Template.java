@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Template {
 
-	private Integer id;
+	private String id;
 
 	private File   defaultdir;
 	private File   enddir;
@@ -35,18 +35,17 @@ public class Template {
 	private Metadata       metadata;
 	private Account        account;
 	private List<Playlist> playlists;
-	private int            version;
 
 	@Override
 	public String toString() {
 		return name;
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -130,11 +129,22 @@ public class Template {
 		this.name = name;
 	}
 
-	public int getVersion() {
-		return version;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Template)) {
+			return false;
+		}
+
+		final Template template = (Template) obj;
+
+		return !(null != id ? !id.equals(template.id) : null != template.id);
 	}
 
-	public void setVersion(final int version) {
-		this.version = version;
+	@Override
+	public int hashCode() {
+		return null != id ? id.hashCode() : 0;
 	}
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public interface IUploadDao {
 	List<Upload> getAll();
 
-	Upload get(int id);
+	Upload get(String id);
 
 	void insert(Upload upload);
 

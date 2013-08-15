@@ -36,7 +36,7 @@ public class UploadServiceImpl extends AbstractUploadService {
 	}
 
 	@Override
-	public Upload get(final int id) {
+	public Upload get(final String id) {
 		return uploadDao.get(id);
 	}
 

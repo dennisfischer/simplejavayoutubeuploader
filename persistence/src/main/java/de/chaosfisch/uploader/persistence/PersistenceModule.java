@@ -18,7 +18,6 @@ package de.chaosfisch.uploader.persistence;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.persist.jpa.JpaPersistModule;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
@@ -26,12 +25,9 @@ import de.chaosfisch.uploader.persistence.dao.DaoModule;
 import de.chaosfisch.uploader.template.ITemplateService;
 
 public class PersistenceModule extends AbstractModule {
-	private static final String PERSISTENCE_UNIT_NAME = "persistenceUnit";
 
 	@Override
 	protected void configure() {
-		install(new JpaPersistModule(PERSISTENCE_UNIT_NAME));
-		bind(MyInitializer.class).asEagerSingleton();
 		install(new DaoModule());
 		bind(IAccountService.class).to(AccountServiceImpl.class).in(Singleton.class);
 		bind(IUploadService.class).to(UploadServiceImpl.class).in(Singleton.class);

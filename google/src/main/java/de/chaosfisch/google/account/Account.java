@@ -22,17 +22,18 @@ public class Account implements Serializable {
 
 	private static final long serialVersionUID = 144852581;
 
-	private int            id;
+	private String         id;
 	private String         name;
-	private String         password;
+	private String         sid;
+	private String         lsid;
+	private String         refreshToken;
 	private List<Playlist> playlists;
-	private int            version;
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final int id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -44,12 +45,28 @@ public class Account implements Serializable {
 		this.name = name;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getSid() {
+		return sid;
 	}
 
-	public void setPassword(final String password) {
-		this.password = password;
+	public void setSid(final String sid) {
+		this.sid = sid;
+	}
+
+	public String getLsid() {
+		return lsid;
+	}
+
+	public void setLsid(final String lsid) {
+		this.lsid = lsid;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(final String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 
 	public List<Playlist> getPlaylists() {
@@ -71,21 +88,11 @@ public class Account implements Serializable {
 
 		final Account account = (Account) obj;
 
-		return id == account.id && name.equals(account.name);
+		return !(null != id ? !id.equals(account.id) : null != account.id);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		result = 31 * result + name.hashCode();
-		return result;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
+		return null != id ? id.hashCode() : 0;
 	}
 }

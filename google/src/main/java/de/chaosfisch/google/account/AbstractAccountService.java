@@ -23,11 +23,11 @@ import java.util.HashMap;
 
 public abstract class AbstractAccountService implements IAccountService {
 
-	private static final int                      SC_OK                = 200;
-	private final        HashMap<Integer, String> authtokens           = new HashMap<>(10);
-	private static final String                   CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
-	private static final String                   ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
-	private static final Logger                   logger               = LoggerFactory.getLogger(AbstractAccountService.class);
+	private static final int                     SC_OK                = 200;
+	private final        HashMap<String, String> authtokens           = new HashMap<>(10);
+	private static final String                  CLIENT_LOGIN_URL     = "https://accounts.google.com/ClientLogin";
+	private static final String                  ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
+	private static final Logger                  logger               = LoggerFactory.getLogger(AbstractAccountService.class);
 
 	private String getAuthToken(final Account account) throws AuthenticationIOException, AuthenticationInvalidException {
 
@@ -54,7 +54,7 @@ public abstract class AbstractAccountService implements IAccountService {
 					.header("GData-Version", Config.GDATA_V2)
 					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
 					.field("Email", account.getName())
-					.field("Passwd", account.getPassword())
+					.field("Passwd", account.getLsid())
 					.field("service", service)
 					.field("PesistentCookie", "0")
 					.field("accountType", "HOSTED_OR_GOOGLE")

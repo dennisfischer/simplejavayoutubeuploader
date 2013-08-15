@@ -42,8 +42,8 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -243,7 +243,7 @@ public class UploadController {
 	private final ObservableList<Videoresponse> videoresponsesList = FXCollections.observableArrayList();
 	private final ObservableList<Playlist>      playlistSourceList = FXCollections.observableArrayList();
 	private final ObservableList<Playlist>      playlistTargetList = FXCollections.observableArrayList();
-	private final SimpleIntegerProperty         idProperty         = new SimpleIntegerProperty();
+	private final SimpleStringProperty          idProperty         = new SimpleStringProperty();
 	private final SimpleObjectProperty<File>    defaultDirProperty = new SimpleObjectProperty<>();
 	private final SimpleObjectProperty<File>    enddirProperty     = new SimpleObjectProperty<>();
 	private UploadMonetizationController uploadMonetizationController;
@@ -356,7 +356,7 @@ public class UploadController {
 			monetization.setClaim(true);
 		}
 
-		if (0 == upload.getId()) {
+		if (null == upload.getId()) {
 			final Status status = new Status();
 			status.setArchived(false);
 			status.setFailed(false);
@@ -1110,7 +1110,7 @@ public class UploadController {
 	private final class UploadIdInvalidationListener implements InvalidationListener {
 		@Override
 		public void invalidated(final Observable arg0) {
-			if (null == idProperty.getValue() || 0 == idProperty.getValue()) {
+			if (null == idProperty.getValue()) {
 				addUpload.setText(resources.getString("button.addUpload"));
 				addUpload.setId("addUpload");
 			} else {

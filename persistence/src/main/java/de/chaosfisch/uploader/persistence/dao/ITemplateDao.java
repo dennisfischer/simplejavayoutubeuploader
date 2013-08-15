@@ -17,7 +17,7 @@ import java.util.List;
 public interface ITemplateDao {
 	List<Template> getAll();
 
-	Template get(int id);
+	Template get(String id);
 
 	void insert(Template template);
 

@@ -15,7 +15,7 @@ import java.util.List;
 public interface ITemplateService {
 	List<Template> getAll();
 
-	Template get(int id);
+	Template get(String id);
 
 	void insert(Template template);
 
