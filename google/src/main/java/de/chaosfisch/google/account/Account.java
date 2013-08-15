@@ -16,18 +16,19 @@ package de.chaosfisch.google.account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Account implements Serializable {
 
 	private static final long serialVersionUID = 144852581;
 
-	private String         id;
-	private String         name;
-	private String         sid;
-	private String         lsid;
-	private String         refreshToken;
-	private List<Playlist> playlists;
+	private String id;
+	private String name;
+	private String sid;
+	private String lsid;
+	private String refreshToken;
+	private List<Playlist> playlists = new ArrayList<>(0);
 
 	public String getId() {
 		return id;

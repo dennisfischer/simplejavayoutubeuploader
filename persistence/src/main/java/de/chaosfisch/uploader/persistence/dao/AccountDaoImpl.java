@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AccountDaoImpl implements IAccountDao {
+class AccountDaoImpl implements IAccountDao {
 
-	protected ArrayList<Account> accounts = new ArrayList<>(10);
+	protected List<Account> accounts = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus eventBus;
+	protected EventBus            eventBus;
+	@Inject
+	protected IPersistenceService persistenceService;
 
 	@Override
 	public List<Account> getAll() {
@@ -47,17 +49,30 @@ public class AccountDaoImpl implements IAccountDao {
 	public void insert(final Account account) {
 		account.setId(UUID.randomUUID().toString());
 		accounts.add(account);
+		persistenceService.saveToStorage();
 		eventBus.post(new AccountAdded(account));
 	}
 
 	@Override
 	public void update(final Account account) {
+		persistenceService.saveToStorage();
 		eventBus.post(new AccountUpdated(account));
 	}
 
 	@Override
 	public void delete(final Account account) {
 		accounts.remove(account);
+		persistenceService.saveToStorage();
 		eventBus.post(new AccountRemoved(account));
+	}
+
+	@Override
+	public void setAccounts(final List<Account> accounts) {
+		this.accounts.addAll(accounts);
+	}
+
+	@Override
+	public List<Account> getAccounts() {
+		return accounts;
 	}
 }

@@ -17,7 +17,7 @@ import de.chaosfisch.uploader.template.Template;
 
 import java.util.List;
 
-public class TemplateServiceImpl implements ITemplateService {
+class TemplateServiceImpl implements ITemplateService {
 
 	private final ITemplateDao templateDao;
 

@@ -24,4 +24,8 @@ public interface ITemplateDao {
 	void update(Template template);
 
 	void delete(Template template);
+
+	void setTemplates(List<Template> templates);
+
+	List<Template> getTemplates();
 }

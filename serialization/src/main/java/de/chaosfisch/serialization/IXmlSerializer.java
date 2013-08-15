@@ -10,8 +10,16 @@
 
 package de.chaosfisch.serialization;
 
+import java.io.File;
+
 public interface IXmlSerializer {
 	String toXML(Object o);
 
 	<T> T fromXML(String xml, Class<T> clazz);
+
+	<T> T fromXML(File xml, Class<T> clazz);
+
+	void toXML(Object o, File xml);
+
+	void addAlias(Class<?> clazz, String alias);
 }

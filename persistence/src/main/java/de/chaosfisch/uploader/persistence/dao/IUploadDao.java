@@ -38,4 +38,8 @@ public interface IUploadDao {
 	List<Upload> fetchByArchived(boolean archived);
 
 	long fetchStarttimeDelay();
+
+	void setUploads(List<Upload> uploads);
+
+	List<Upload> getUploads();
 }

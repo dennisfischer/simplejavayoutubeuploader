@@ -12,25 +12,21 @@ package de.chaosfisch.uploader.persistence.dao;
 
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
+import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.uploader.template.Template;
 
-import java.util.List;
+public interface IPersistenceService {
+	String PERSISTENCE_FOLDER = "PERSISTENCE_FOLDER";
 
-public interface IPlaylistDao {
-	List<Playlist> getAll(Account account);
+	void saveToStorage();
 
-	Playlist get(String id);
+	void loadFromStorage();
 
-	void insert(Playlist playlist);
-
-	void update(Playlist playlist);
-
-	void delete(Playlist playlist);
-
-	List<Playlist> fetchByHidden(Account account, boolean hidden);
-
-	Playlist fetchByPKey(String playlistKey);
-
-	void setPlaylists(List<Playlist> playlists);
-
-	List<Playlist> getPlaylists();
+	class Data {
+		Upload[]   uploads   = new Upload[0];
+		Template[] templates = new Template[0];
+		Playlist[] playlists = new Playlist[0];
+		Account[]  accounts  = new Account[0];
+		int version;
+	}
 }

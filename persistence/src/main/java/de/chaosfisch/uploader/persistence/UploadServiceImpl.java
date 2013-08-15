@@ -19,7 +19,7 @@ import de.chaosfisch.uploader.persistence.dao.IUploadDao;
 
 import java.util.List;
 
-public class UploadServiceImpl extends AbstractUploadService {
+class UploadServiceImpl extends AbstractUploadService {
 
 	private final IUploadDao uploadDao;
 

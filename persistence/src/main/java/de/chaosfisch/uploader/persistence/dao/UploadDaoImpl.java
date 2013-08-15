@@ -20,12 +20,14 @@ import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
 
 import java.util.*;
 
-public class UploadDaoImpl implements IUploadDao {
+class UploadDaoImpl implements IUploadDao {
 
-	private final ArrayList<Upload> uploads = new ArrayList<>(10);
+	private List<Upload> uploads = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus eventBus;
+	protected EventBus            eventBus;
+	@Inject
+	protected IPersistenceService persistenceService;
 
 	@Override
 	public List<Upload> getAll() {
@@ -108,20 +110,33 @@ public class UploadDaoImpl implements IUploadDao {
 	}
 
 	@Override
+	public void setUploads(final List<Upload> uploads) {
+		this.uploads.addAll(uploads);
+	}
+
+	@Override
+	public List<Upload> getUploads() {
+		return uploads;
+	}
+
+	@Override
 	public void insert(final Upload upload) {
 		upload.setId(UUID.randomUUID().toString());
 		uploads.add(upload);
+		persistenceService.saveToStorage();
 		eventBus.post(new UploadAdded(upload));
 	}
 
 	@Override
 	public void update(final Upload upload) {
+		persistenceService.saveToStorage();
 		eventBus.post(new UploadUpdated(upload));
 	}
 
 	@Override
 	public void delete(final Upload upload) {
 		uploads.remove(upload);
+		persistenceService.saveToStorage();
 		eventBus.post(new UploadRemoved(upload));
 	}
 

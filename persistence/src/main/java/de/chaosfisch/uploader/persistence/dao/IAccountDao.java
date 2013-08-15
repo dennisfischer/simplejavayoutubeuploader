@@ -24,4 +24,8 @@ public interface IAccountDao {
 	void update(Account account);
 
 	void delete(Account account);
+
+	void setAccounts(List<Account> accounts);
+
+	List<Account> getAccounts();
 }

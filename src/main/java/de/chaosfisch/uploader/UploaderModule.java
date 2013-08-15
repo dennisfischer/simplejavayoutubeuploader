@@ -32,6 +32,7 @@ import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
+import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.util.TextUtil;
 import javafx.stage.FileChooser;
 
@@ -41,6 +42,8 @@ public class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		bind(String.class).annotatedWith(Names.named(IPersistenceService.PERSISTENCE_FOLDER))
+				.toInstance(ApplicationData.DATA_DIR);
 		install(new PersistenceModule());
 		install(new SerializationModule());
 		install(new GoogleModule());

@@ -12,7 +12,7 @@ package de.chaosfisch.serialization;
 
 import com.google.gson.Gson;
 
-public final class GsonHelper implements IJsonSerializer {
+final class GsonHelper implements IJsonSerializer {
 
 	private final Gson gson = new Gson();
 

@@ -23,6 +23,7 @@ public class DaoModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		bind(IPersistenceService.class).to(PersistenceService.class).in(Singleton.class);
 		bind(IAccountDao.class).to(AccountDaoImpl.class).in(Singleton.class);
 		bind(IPlaylistDao.class).to(PlaylistDaoImpl.class).in(Singleton.class);
 		bind(ITemplateDao.class).to(TemplateDaoImpl.class).in(Singleton.class);

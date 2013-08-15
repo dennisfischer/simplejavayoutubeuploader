@@ -18,6 +18,7 @@ import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Template {
@@ -29,12 +30,12 @@ public class Template {
 	private File   thumbnail;
 	private String name;
 
-	private Social         social;
-	private Monetization   monetization;
-	private Permissions    permissions;
-	private Metadata       metadata;
-	private Account        account;
-	private List<Playlist> playlists;
+	private Social       social;
+	private Monetization monetization;
+	private Permissions  permissions;
+	private Metadata     metadata;
+	private Account      account;
+	private List<Playlist> playlists = new ArrayList<>(0);
 
 	@Override
 	public String toString() {

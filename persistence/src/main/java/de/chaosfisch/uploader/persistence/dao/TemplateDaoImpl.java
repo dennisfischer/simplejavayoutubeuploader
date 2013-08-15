@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TemplateDaoImpl implements ITemplateDao {
+class TemplateDaoImpl implements ITemplateDao {
 
-	protected ArrayList<Template> templates = new ArrayList<>(10);
+	protected List<Template> templates = new ArrayList<>(10);
 	@Inject
-	protected EventBus eventBus;
+	protected EventBus            eventBus;
+	@Inject
+	protected IPersistenceService persistenceService;
 
 	@Override
 	public List<Template> getAll() {
@@ -46,17 +48,30 @@ public class TemplateDaoImpl implements ITemplateDao {
 	public void insert(final Template template) {
 		template.setId(UUID.randomUUID().toString());
 		templates.add(template);
+		persistenceService.saveToStorage();
 		eventBus.post(new TemplateAdded(template));
 	}
 
 	@Override
 	public void update(final Template template) {
+		persistenceService.saveToStorage();
 		eventBus.post(new TemplateUpdated(template));
 	}
 
 	@Override
 	public void delete(final Template template) {
 		templates.remove(template);
+		persistenceService.saveToStorage();
 		eventBus.post(new TemplateRemoved(template));
+	}
+
+	@Override
+	public void setTemplates(final List<Template> templates) {
+		this.templates.addAll(templates);
+	}
+
+	@Override
+	public List<Template> getTemplates() {
+		return templates;
 	}
 }

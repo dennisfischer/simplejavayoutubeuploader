@@ -13,9 +13,16 @@ package de.chaosfisch.serialization;
 import com.google.common.base.Charsets;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public final class XStreamHelper implements IXmlSerializer {
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+final class XStreamHelper implements IXmlSerializer {
 	private static final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
+	private static final Logger  logger  = LoggerFactory.getLogger(XStreamHelper.class);
 
 	@Override
 	public String toXML(final Object o) {
@@ -27,6 +34,27 @@ public final class XStreamHelper implements IXmlSerializer {
 	public <T> T fromXML(final String xml, final Class<T> clazz) {
 		xStream.processAnnotations(clazz);
 		return castObject(clazz, xStream.fromXML(xml));
+	}
+
+	@Override
+	public <T> T fromXML(final File xml, final Class<T> clazz) {
+		xStream.processAnnotations(clazz);
+		return castObject(clazz, xStream.fromXML(xml));
+	}
+
+	@Override
+	public void toXML(final Object o, final File xml) {
+		xStream.processAnnotations(o.getClass());
+		try (FileWriter writer = new FileWriter(xml)) {
+			xStream.toXML(o, writer);
+		} catch (IOException e) {
+			logger.error("Couldn't write xml file", e);
+		}
+	}
+
+	@Override
+	public void addAlias(final Class<?> clazz, final String alias) {
+		xStream.alias(alias, clazz);
 	}
 
 	private <T> T castObject(final Class<T> clazz, final Object o) {

@@ -22,6 +22,7 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -41,13 +42,13 @@ public class Upload implements Serializable {
 	private File              enddir;
 	private File              thumbnail;
 
-	private Social         social;
-	private Status         status;
-	private Monetization   monetization;
-	private Permissions    permissions;
-	private Metadata       metadata;
-	private Account        account;
-	private List<Playlist> playlists;
+	private Social       social;
+	private Status       status;
+	private Monetization monetization;
+	private Permissions  permissions;
+	private Metadata     metadata;
+	private Account      account;
+	private List<Playlist> playlists = new ArrayList<>(0);
 
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;

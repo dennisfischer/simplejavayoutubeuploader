@@ -16,6 +16,8 @@
 
 
 
+
+
 apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -26,7 +28,7 @@ repositories {
 
 dependencies {
     compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
-            'com.google.guava:guava:14+',
+            'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+',
             'com.google.inject:guice:3.0'
 }
 

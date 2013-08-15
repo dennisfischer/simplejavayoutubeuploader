@@ -440,7 +440,6 @@ public class UploadController {
 		final Template template;
 		if (null != (template = templates.getSelectionModel().getSelectedItem())) {
 			templateService.delete(template);
-			System.out.println(template.getId());
 		}
 	}
 
@@ -963,7 +962,7 @@ public class UploadController {
 			playlistIterator.remove();
 		}
 
-		if (null != templates.getValue()) {
+		if (null != templates.getValue() && null != templates.getValue().getPlaylists()) {
 			for (final Playlist playlist : templates.getValue().getPlaylists()) {
 				playlistTargetList.add(playlist);
 				playlistSourceList.remove(playlist);

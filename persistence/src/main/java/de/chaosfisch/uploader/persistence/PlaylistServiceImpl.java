@@ -20,7 +20,7 @@ import de.chaosfisch.uploader.persistence.dao.IPlaylistDao;
 
 import java.util.List;
 
-public class PlaylistServiceImpl extends AbstractPlaylistService {
+class PlaylistServiceImpl extends AbstractPlaylistService {
 
 	private final IPlaylistDao playlistDao;
 

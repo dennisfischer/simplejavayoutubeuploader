@@ -22,12 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class PlaylistDaoImpl implements IPlaylistDao {
+class PlaylistDaoImpl implements IPlaylistDao {
 
-	private final ArrayList<Playlist> playlists = new ArrayList<>(10);
+	private List<Playlist> playlists = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus eventBus;
+	protected EventBus            eventBus;
+	@Inject
+	protected IPersistenceService persistenceService;
 
 	@Override
 	public List<Playlist> getAll(final Account account) {
@@ -72,20 +74,33 @@ public class PlaylistDaoImpl implements IPlaylistDao {
 	}
 
 	@Override
+	public void setPlaylists(final List<Playlist> playlists) {
+		this.playlists.addAll(playlists);
+	}
+
+	@Override
+	public List<Playlist> getPlaylists() {
+		return playlists;
+	}
+
+	@Override
 	public void insert(final Playlist playlist) {
 		playlist.setId(UUID.randomUUID().toString());
 		playlists.add(playlist);
+		persistenceService.saveToStorage();
 		eventBus.post(new PlaylistAdded(playlist));
 	}
 
 	@Override
 	public void update(final Playlist playlist) {
+		persistenceService.saveToStorage();
 		eventBus.post(new PlaylistUpdated(playlist));
 	}
 
 	@Override
 	public void delete(final Playlist playlist) {
 		playlists.remove(playlist);
+		persistenceService.saveToStorage();
 		eventBus.post(new PlaylistRemoved(playlist));
 	}
 }
