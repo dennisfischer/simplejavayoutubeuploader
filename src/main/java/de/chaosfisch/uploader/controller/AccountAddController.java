@@ -92,7 +92,7 @@ public class AccountAddController {
 				protected Void call() throws Exception {
 					final Account account = new Account();
 					account.setName(name);
-					account.setLsid(password);
+					account.setLSID(password);
 					accountService.verifyAccount(account);
 					accountService.insert(account);
 					return null;

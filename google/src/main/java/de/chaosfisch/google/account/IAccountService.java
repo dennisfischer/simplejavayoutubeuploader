@@ -10,8 +10,6 @@
 
 package de.chaosfisch.google.account;
 
-import de.chaosfisch.google.auth.Authentication;
-
 import java.util.List;
 
 public interface IAccountService {
@@ -43,6 +41,8 @@ public interface IAccountService {
 	 * 		Account to check
 	 */
 	void verifyAccount(Account account) throws AuthenticationInvalidException, AuthenticationIOException;
+
+	String getRefreshToken(final String code) throws AuthenticationIOException;
 
 	/**
 	 * Fetches HTML Content of the clientLogin resultpage

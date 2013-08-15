@@ -25,8 +25,10 @@ public class Account implements Serializable {
 
 	private String id;
 	private String name;
-	private String sid;
-	private String lsid;
+	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
+	private String SID;
+	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
+	private String LSID;
 	private String refreshToken;
 	private List<Playlist> playlists = new ArrayList<>(0);
 
@@ -46,20 +48,20 @@ public class Account implements Serializable {
 		this.name = name;
 	}
 
-	public String getSid() {
-		return sid;
+	public String getSID() {
+		return SID;
 	}
 
-	public void setSid(final String sid) {
-		this.sid = sid;
+	public void setSID(final String SID) {
+		this.SID = SID;
 	}
 
-	public String getLsid() {
-		return lsid;
+	public String getLSID() {
+		return LSID;
 	}
 
-	public void setLsid(final String lsid) {
-		this.lsid = lsid;
+	public void setLSID(final String LSID) {
+		this.LSID = LSID;
 	}
 
 	public String getRefreshToken() {

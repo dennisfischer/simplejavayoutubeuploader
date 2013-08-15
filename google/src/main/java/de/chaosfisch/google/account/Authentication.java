@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.google.auth;
+package de.chaosfisch.google.account;
 
 public class Authentication {
 
@@ -30,6 +30,6 @@ public class Authentication {
 	}
 
 	public String getHeader() {
-		return String.format("GoogleLogin auth=%s", header);
+		return String.format("Bearer %s", header);
 	}
 }
