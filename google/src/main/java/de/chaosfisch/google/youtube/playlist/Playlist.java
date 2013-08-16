@@ -19,8 +19,7 @@ import java.io.Serializable;
 
 public class Playlist implements Serializable {
 
-	private static final long serialVersionUID = 1215529732;
-
+	private static final long serialVersionUID = 2910991664117922235L;
 	private String  id;
 	private String  pkey;
 	private boolean private_;

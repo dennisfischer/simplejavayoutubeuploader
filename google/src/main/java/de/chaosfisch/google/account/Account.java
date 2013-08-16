@@ -21,8 +21,7 @@ import java.util.List;
 
 public class Account implements Serializable {
 
-	private static final long serialVersionUID = 144852581;
-
+	private static final long serialVersionUID = 5650306344672785865L;
 	private String id;
 	private String name;
 	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
@@ -73,11 +72,12 @@ public class Account implements Serializable {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return playlists;
+		return new ArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {
-		this.playlists = playlists;
+		this.playlists.clear();
+		this.playlists.addAll(playlists);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import java.util.UUID;
 
 class TemplateDaoImpl implements ITemplateDao {
 
-	protected List<Template> templates = new ArrayList<>(10);
+	protected final List<Template> templates = new ArrayList<>(10);
 	@Inject
 	protected EventBus            eventBus;
 	@Inject
@@ -67,6 +67,7 @@ class TemplateDaoImpl implements ITemplateDao {
 
 	@Override
 	public void setTemplates(final List<Template> templates) {
+		this.templates.clear();
 		this.templates.addAll(templates);
 	}
 

@@ -29,8 +29,7 @@ import java.util.List;
 
 public class Upload implements Serializable {
 
-	private static final long serialVersionUID = -414398454;
-
+	private static final long serialVersionUID = 6768248403657209980L;
 	private String id;
 	private File   file;
 	private String mimetype = "application/octet-stream";
@@ -238,11 +237,12 @@ public class Upload implements Serializable {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return playlists;
+		return new ArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {
-		this.playlists = playlists;
+		this.playlists.clear();
+		this.playlists.addAll(playlists);
 	}
 
 	@Override

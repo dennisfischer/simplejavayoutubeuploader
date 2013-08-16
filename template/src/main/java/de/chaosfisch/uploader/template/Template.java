@@ -18,13 +18,13 @@ import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Template {
-
+public class Template implements Serializable {
+	private static final long serialVersionUID = 8931231976635700898L;
 	private String id;
-
 	private File   defaultdir;
 	private File   enddir;
 	private File   thumbnail;
@@ -115,11 +115,12 @@ public class Template {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return playlists;
+		return new ArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {
-		this.playlists = playlists;
+		this.playlists.clear();
+		this.playlists.addAll(playlists);
 	}
 
 	public String getName() {

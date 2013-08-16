@@ -28,6 +28,7 @@ import javafx.scene.SceneBuilder;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import jfxtras.labs.dialogs.MonologFXButton;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void start(final Stage primaryStage) {
-		Platform.setImplicitExit(true);
+		Platform.setImplicitExit(false);
 		initApplication(primaryStage);
 
 		uploadService.resetUnfinishedUploads();
@@ -81,7 +82,6 @@ public class GuiUploader extends GuiceApplication {
 
 			try (InputStream iconInputStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/film.png")) {
 				StageBuilder.create()
-						.title(resources.getString("application.title") + ' ' + ApplicationData.VERSION)
 						.icons(new Image(iconInputStream))
 						.minHeight(MIN_HEIGHT)
 						.height(MIN_HEIGHT)
@@ -93,6 +93,7 @@ public class GuiUploader extends GuiceApplication {
 						.applyTo(primaryStage);
 			}
 
+			primaryStage.initStyle(StageStyle.TRANSPARENT);
 			primaryStage.show();
 		} catch (final IOException e) {
 			logger.error("FXML Load error", e);

@@ -15,6 +15,10 @@ import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.template.Template;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public interface IPersistenceService {
 	String PERSISTENCE_FOLDER = "PERSISTENCE_FOLDER";
 
@@ -22,11 +26,12 @@ public interface IPersistenceService {
 
 	void loadFromStorage();
 
-	class Data {
-		Upload[]   uploads   = new Upload[0];
-		Template[] templates = new Template[0];
-		Playlist[] playlists = new Playlist[0];
-		Account[]  accounts  = new Account[0];
+	class Data implements Serializable {
+		private static final long serialVersionUID = -7729985568529356434L;
+		List<Upload>   uploads   = new ArrayList<>(0);
+		List<Template> templates = new ArrayList<>(0);
+		List<Playlist> playlists = new ArrayList<>(0);
+		List<Account>  accounts  = new ArrayList<>(0);
 		int version;
 	}
 }

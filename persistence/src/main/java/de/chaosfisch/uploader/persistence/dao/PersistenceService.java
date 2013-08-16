@@ -14,75 +14,48 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.metadata.*;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
-import de.chaosfisch.serialization.IXmlSerializer;
 import de.chaosfisch.uploader.template.Template;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
 class PersistenceService implements IPersistenceService {
-	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-[0-9]+.xml");
+	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-[0-9]+.data");
 
-	private final IXmlSerializer xmlSerializer;
-	private final IAccountDao    accountDao;
-	private final IPlaylistDao   playlistDao;
-	private final ITemplateDao   templateDao;
-	private final IUploadDao     uploadDao;
-	private final String         storage;
+	private final IAccountDao  accountDao;
+	private final IPlaylistDao playlistDao;
+	private final ITemplateDao templateDao;
+	private final IUploadDao   uploadDao;
+	private final String       storage;
 	private Data data = new Data();
 
 	@Inject
-	public PersistenceService(final IXmlSerializer xmlSerializer, final IAccountDao accountDao, final IPlaylistDao playlistDao, final ITemplateDao templateDao, final IUploadDao uploadDao, @Named(PERSISTENCE_FOLDER) final String storage) {
-		this.xmlSerializer = xmlSerializer;
+	public PersistenceService(final IAccountDao accountDao, final IPlaylistDao playlistDao, final ITemplateDao templateDao, final IUploadDao uploadDao, @Named(PERSISTENCE_FOLDER) final String storage) {
 		this.accountDao = accountDao;
 		this.playlistDao = playlistDao;
 		this.templateDao = templateDao;
 		this.uploadDao = uploadDao;
 		this.storage = storage;
-		xmlSerializer.addAlias(Account.class, "account");
-		xmlSerializer.addAlias(Playlist.class, "playlist");
-		xmlSerializer.addAlias(Template.class, "template");
-		xmlSerializer.addAlias(Upload.class, "upload");
-		xmlSerializer.addAlias(Status.class, "status");
-		xmlSerializer.addAlias(Metadata.class, "metadata");
-		xmlSerializer.addAlias(Monetization.class, "monetization");
-		xmlSerializer.addAlias(Permissions.class, "permissions");
-		xmlSerializer.addAlias(Social.class, "social");
-		xmlSerializer.addAlias(File.class, "file");
-		xmlSerializer.addAlias(Syndication.class, "syndication");
-		xmlSerializer.addAlias(ClaimType.class, "claimtype");
-		xmlSerializer.addAlias(ClaimOption.class, "claimoption");
-		xmlSerializer.addAlias(Asset.class, "asset");
-		xmlSerializer.addAlias(Comment.class, "comment");
-		xmlSerializer.addAlias(Videoresponse.class, "videoresponse");
-		xmlSerializer.addAlias(Visibility.class, "visibility");
-		xmlSerializer.addAlias(Category.class, "category");
-		xmlSerializer.addAlias(License.class, "license");
-		xmlSerializer.addAlias(GregorianCalendar.class, "calendar");
-		xmlSerializer.addAlias(Data.class, "data");
 		loadFromStorage();
 	}
 
 	@Override
 	public void saveToStorage() {
-		data.playlists = new Playlist[playlistDao.getPlaylists().size()];
-		playlistDao.getPlaylists().toArray(data.playlists);
-		data.accounts = new Account[accountDao.getAccounts().size()];
-		accountDao.getAccounts().toArray(data.accounts);
-		data.uploads = new Upload[uploadDao.getUploads().size()];
-		uploadDao.getUploads().toArray(data.uploads);
-		data.templates = new Template[templateDao.getTemplates().size()];
-		templateDao.getTemplates().toArray(data.templates);
+		data.playlists = new ArrayList<>(playlistDao.getPlaylists());
+		data.accounts = new ArrayList<>(accountDao.getAccounts());
+		data.uploads = new ArrayList<>(uploadDao.getUploads());
+		data.templates = new ArrayList<>(templateDao.getTemplates());
 		data.version++;
 
-		final File storageFile = new File(storage + String.format("/data-%07d.xml", data.version));
-		xmlSerializer.toXML(data, storageFile);
+		final File storageFile = new File(storage + String.format("/data-%07d.data", data.version));
+
+		try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
+			objectOutputStream.writeObject(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -110,15 +83,21 @@ class PersistenceService implements IPersistenceService {
 				file.delete();
 			}
 		}
-		data = xmlSerializer.fromXML(storageFile, Data.class);
-		loadPlaylists(data);
-		loadAccounts(data);
-		loadTemplates(data);
-		loadUploads(data);
+
+		try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(storageFile))) {
+			data = (Data) objectInputStream.readObject();
+			loadPlaylists(data);
+			loadAccounts(data);
+			loadTemplates(data);
+			loadUploads(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void loadUploads(final Data data) {
-		final List<Upload> uploads = Arrays.asList(data.uploads);
+		final List<Upload> uploads = data.uploads;
 
 		for (final Upload upload : uploads) {
 			if (null != upload.getAccount()) {
@@ -135,7 +114,7 @@ class PersistenceService implements IPersistenceService {
 	}
 
 	private void loadTemplates(final Data data) {
-		final List<Template> templates = Arrays.asList(data.templates);
+		final List<Template> templates = data.templates;
 		for (final Template template : templates) {
 			if (null != template.getAccount()) {
 				template.setAccount(accountDao.getAccounts()
@@ -152,7 +131,7 @@ class PersistenceService implements IPersistenceService {
 	}
 
 	private void loadAccounts(final Data data) {
-		final List<Account> accounts = Arrays.asList(data.accounts);
+		final List<Account> accounts = data.accounts;
 		for (final Account account : accounts) {
 			for (final Playlist playlist : playlistDao.getPlaylists()) {
 				if (account.getPlaylists().contains(playlist)) {
@@ -165,6 +144,6 @@ class PersistenceService implements IPersistenceService {
 	}
 
 	private void loadPlaylists(final Data data) {
-		playlistDao.setPlaylists(Arrays.asList(data.playlists));
+		playlistDao.setPlaylists(data.playlists);
 	}
 }

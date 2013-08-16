@@ -10,40 +10,23 @@
   ~ Contributors: Dennis Fischer
   -->
 
+<?scenebuilder-stylesheet ../resources/style.css?>
+
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
-<StackPane id="StackPane" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="de.chaosfisch.uploader.controller.AccountAddController">
-    <GridPane hgap="3.0" prefHeight="-1.0" prefWidth="-1.0" snapToPixel="true" vgap="3.0">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0"/>
-        </columnConstraints>
-        <padding>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
-        </padding>
-        <rowConstraints>
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-            <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-        </rowConstraints>
-        <Label text="%label.account" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <Button id="addAccount" mnemonicParsing="false" onAction="#addAccount" text="%button.addAccount"
-                GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-        <Button id="resetAccount" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetAccount"
-                text="%button.reset" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
-        <TextField id="account" fx:id="nameTextfield" maxWidth="-1.0" prefWidth="-1.0" GridPane.columnIndex="1"
-                   GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
-        <PasswordField id="password" fx:id="passwordTextfield" prefWidth="-1.0" GridPane.columnIndex="1"
-                       GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
-    </GridPane>
-    <HBox id="HBox" fx:id="progressPane" alignment="CENTER" opacity="0.65" spacing="5.0"
-          style="-fx-background-color: #555555" visible="false">
-        <ProgressBar focusTraversable="false" opacity="1.0" prefWidth="-1.0" progress="-1.0" scaleX="2.0"
-                     scaleY="2.0" scaleZ="2.0"/>
-    </HBox>
-</StackPane>
+<GridPane alignment="CENTER_RIGHT" hgap="3.0" prefHeight="-1.0" prefWidth="-1.0" snapToPixel="true" vgap="3.0"
+          xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+          fx:controller="de.chaosfisch.uploader.controller.AccountAddController">
+    <Button id="addAccount" mnemonicParsing="false" onAction="#addAccount" text="%button.addAccount"
+            GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0"/>
+    </columnConstraints>
+    <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+    </padding>
+    <rowConstraints>
+        <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+</GridPane>

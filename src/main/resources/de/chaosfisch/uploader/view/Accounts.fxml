@@ -15,12 +15,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
-<HBox layoutX="0.0" prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" xmlns:fx="http://javafx.com/fxml">
+<HBox layoutX="0.0" prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/2.2">
     <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="3.0" HBox.hgrow="ALWAYS">
         <fx:include source="AccountsOverview.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
                     VBox.vgrow="ALWAYS"/>
-        <fx:include source="AccountsAdd.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
-                    VBox.vgrow="NEVER"/>
+        <fx:include source="AccountsAdd.fxml" alignment="CENTER_RIGHT" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0"
+                    minWidth="-1.0" VBox.vgrow="NEVER"/>
     </VBox>
     <padding>
         <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>

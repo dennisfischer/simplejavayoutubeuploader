@@ -24,6 +24,10 @@ final class XStreamHelper implements IXmlSerializer {
 	private static final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 	private static final Logger  logger  = LoggerFactory.getLogger(XStreamHelper.class);
 
+	static {
+		xStream.setMode(XStream.NO_REFERENCES);
+	}
+
 	@Override
 	public String toXML(final Object o) {
 		xStream.processAnnotations(o.getClass());

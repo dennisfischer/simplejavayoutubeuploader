@@ -15,10 +15,13 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
+<?import de.chaosfisch.uploader.controller.renderer.ImageButton?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0"
-            prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
+            prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
             fx:controller="de.chaosfisch.uploader.controller.ViewController">
     <GridPane id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -31,28 +34,72 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
             <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
         </rowConstraints>
-        <MenuBar GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" GridPane.rowSpan="1">
-            <Menu mnemonicParsing="false" text="%menu.file">
-                <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile"
-                          fx:id="menuOpen"/>
-                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close"
-                          fx:id="menuClose"/>
-            </Menu>
-            <Menu mnemonicParsing="false" text="%menu.edit">
-                <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate"
-                          text="%menu.addTemplate" fx:id="menuAddTemplate"/>
-                <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist"
-                          text="%menu.addPlaylist" fx:id="menuAddPlaylist"/>
-            </Menu>
-            <Menu mnemonicParsing="false" text="%menu.help">
-                <MenuItem mnemonicParsing="false" onAction="#migrateDatabase" text="%menu.migratedatabase"
-                          fx:id="migrateDatabase"/>
-                <MenuItem mnemonicParsing="false" onAction="#openDocumentation" text="%menu.documentation"
-                          fx:id="openDocumentation"/>
-                <MenuItem mnemonicParsing="false" onAction="#openFAQ" text="%menu.faq" fx:id="openFAQ"/>
-                <MenuItem mnemonicParsing="false" onAction="#openLogs" text="%menu.logs" fx:id="openLogs"/>
-            </Menu>
-        </MenuBar>
+        <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+            <padding>
+                <Insets/>
+            </padding>
+            <MenuBar fx:id="menuBar">
+                <Menu mnemonicParsing="false" text="%menu.file">
+                    <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile"
+                              fx:id="menuOpen"/>
+                    <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close"
+                              fx:id="menuClose"/>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menu.edit">
+                    <MenuItem id="menuAddTemplate" mnemonicParsing="false" onAction="#menuAddTemplate"
+                              text="%menu.addTemplate" fx:id="menuAddTemplate"/>
+                    <MenuItem id="menuAddPlaylist" mnemonicParsing="false" onAction="#menuAddPlaylist"
+                              text="%menu.addPlaylist" fx:id="menuAddPlaylist"/>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menu.help">
+                    <MenuItem mnemonicParsing="false" onAction="#migrateDatabase" text="%menu.migratedatabase"
+                              fx:id="migrateDatabase"/>
+                    <MenuItem mnemonicParsing="false" onAction="#openDocumentation" text="%menu.documentation"
+                              fx:id="openDocumentation"/>
+                    <MenuItem mnemonicParsing="false" onAction="#openFAQ" text="%menu.faq" fx:id="openFAQ"/>
+                    <MenuItem mnemonicParsing="false" onAction="#openLogs" text="%menu.logs" fx:id="openLogs"/>
+                </Menu>
+                <StackPane.margin>
+                    <Insets left="10.0"/>
+                </StackPane.margin>
+            </MenuBar>
+            <Label text="%application.title" textFill="WHITE" fx:id="title"/>
+            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
+                         onAction="#closeControlAction">
+                <image>
+                    <Image url="@../resources/images/close_control.png"/>
+                </image>
+                <StackPane.margin>
+                    <Insets right="5.0"/>
+                </StackPane.margin>
+            </ImageButton>
+            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
+                         onAction="#maximizeControlAction">
+                <image>
+                    <Image url="@../resources/images/maximize_control.png"/>
+                </image>
+                <StackPane.margin>
+                    <Insets right="25.0"/>
+                </StackPane.margin>
+            </ImageButton>
+            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
+                         onAction="#minimizeControlAction">
+                <image>
+                    <Image url="@../resources/images/minimize_control.png"/>
+                </image>
+                <StackPane.margin>
+                    <Insets right="45.0"/>
+                </StackPane.margin>
+            </ImageButton>
+            <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true"
+                       StackPane.alignment="CENTER_LEFT">
+                <StackPane.margin>
+                    <Insets left="3.0"/>
+                </StackPane.margin>
+                <Image url="@../resources/images/film.png"/>
+            </ImageView>
+        </StackPane>
         <AnchorPane id="content_pane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
                     onDragDropped="#fileDragDropped" onDragOver="#fileDragOver" prefHeight="-1.0" prefWidth="-1.0"
                     GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">

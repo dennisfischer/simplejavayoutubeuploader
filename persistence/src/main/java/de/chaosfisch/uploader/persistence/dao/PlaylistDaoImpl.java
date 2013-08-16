@@ -24,7 +24,7 @@ import java.util.UUID;
 
 class PlaylistDaoImpl implements IPlaylistDao {
 
-	private List<Playlist> playlists = new ArrayList<>(10);
+	private final List<Playlist> playlists = new ArrayList<>(10);
 
 	@Inject
 	protected EventBus            eventBus;
@@ -75,6 +75,7 @@ class PlaylistDaoImpl implements IPlaylistDao {
 
 	@Override
 	public void setPlaylists(final List<Playlist> playlists) {
+		this.playlists.clear();
 		this.playlists.addAll(playlists);
 	}
 

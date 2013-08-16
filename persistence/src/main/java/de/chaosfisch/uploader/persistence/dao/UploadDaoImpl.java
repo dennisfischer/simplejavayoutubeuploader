@@ -22,7 +22,7 @@ import java.util.*;
 
 class UploadDaoImpl implements IUploadDao {
 
-	private List<Upload> uploads = new ArrayList<>(10);
+	private final List<Upload> uploads = new ArrayList<>(10);
 
 	@Inject
 	protected EventBus            eventBus;
@@ -111,6 +111,7 @@ class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public void setUploads(final List<Upload> uploads) {
+		this.uploads.clear();
 		this.uploads.addAll(uploads);
 	}
 

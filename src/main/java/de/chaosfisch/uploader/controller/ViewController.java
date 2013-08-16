@@ -30,17 +30,21 @@ import de.chaosfisch.uploader.controller.renderer.URLOpenErrorDialog;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jfxtras.labs.dialogs.MonologFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +58,12 @@ import java.util.prefs.Preferences;
 
 @FXMLController
 public class ViewController {
+
+	@FXML
+	public Label title;
+
+	@FXML
+	public MenuBar menuBar;
 
 	@FXML
 	private ResourceBundle resources;
@@ -84,6 +94,14 @@ public class ViewController {
 
 	@FXML
 	private MenuItem openLogs;
+
+	private boolean maximized = false;
+	private double width;
+	private double height;
+	private double x;
+	private double y;
+	private double xOffset = 0;
+	private double yOffset = 0;
 
 	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
 	@Inject
@@ -145,7 +163,9 @@ public class ViewController {
 
 	@FXML
 	void menuClose(final ActionEvent event) {
-		Platform.exit();
+		menuBar.getScene()
+				.getWindow()
+				.fireEvent(new WindowEvent(menuBar.getScene().getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
 	@FXML
@@ -189,6 +209,43 @@ public class ViewController {
 	}
 
 	@FXML
+	public void closeControlAction(final ActionEvent actionEvent) {
+		menuBar.getScene()
+				.getWindow()
+				.fireEvent(new WindowEvent(menuBar.getScene().getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+	}
+
+	@FXML
+	public void maximizeControlAction(final ActionEvent actionEvent) {
+		final Screen screen = Screen.getPrimary();
+		final Rectangle2D bounds = screen.getVisualBounds();
+
+		final Stage primaryStage = (Stage) menuBar.getScene().getWindow();
+		maximized = !maximized;
+
+		if (maximized) {
+			x = primaryStage.getX();
+			y = primaryStage.getY();
+			width = primaryStage.getWidth();
+			height = primaryStage.getHeight();
+			primaryStage.setX(bounds.getMinX());
+			primaryStage.setY(bounds.getMinY());
+			primaryStage.setWidth(bounds.getWidth());
+			primaryStage.setHeight(bounds.getHeight());
+		} else {
+			primaryStage.setX(x);
+			primaryStage.setY(y);
+			primaryStage.setWidth(width);
+			primaryStage.setHeight(height);
+		}
+	}
+
+	@FXML
+	public void minimizeControlAction(final ActionEvent actionEvent) {
+		((Stage) menuBar.getScene().getWindow()).setIconified(true);
+	}
+
+	@FXML
 	void initialize() {
 		assert null != menuAddPlaylist : "fx:id=\"menuAddPlaylist\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuAddTemplate : "fx:id=\"menuAddTemplate\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
@@ -199,6 +256,22 @@ public class ViewController {
 		assert null != openFAQ : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openLogs : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 
+		title.setText(title.getText() + ' ' + ApplicationData.VERSION);
+
+		menuBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				xOffset = event.getSceneX();
+				yOffset = event.getSceneY();
+			}
+		});
+		menuBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				((Stage) menuBar.getScene().getWindow()).setX(event.getScreenX() - xOffset);
+				((Stage) menuBar.getScene().getWindow()).setY(event.getScreenY() - yOffset);
+			}
+		});
 		loadMenuGraphics();
 	}
 
