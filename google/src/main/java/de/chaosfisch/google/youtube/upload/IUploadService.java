@@ -14,6 +14,7 @@ import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.List;
 
@@ -58,4 +59,12 @@ public interface IUploadService {
 	void abort(Upload upload);
 
 	long getStarttimeDelay();
+
+	SimpleBooleanProperty runningProperty();
+
+	void setRunning(boolean running);
+
+	boolean getRunning();
+
+	void setMaxUploads(int maxUploads);
 }

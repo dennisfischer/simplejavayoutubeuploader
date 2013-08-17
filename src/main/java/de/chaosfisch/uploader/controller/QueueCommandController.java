@@ -12,10 +12,16 @@ package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
 import de.chaosfisch.uploader.ActionOnFinish;
+import de.chaosfisch.util.ComputerUtil;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -66,14 +72,16 @@ public class QueueCommandController {
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
 
-	private static final Logger logger = LoggerFactory.getLogger(QueueCommandController.class);
+	private static final Logger logger           = LoggerFactory.getLogger(QueueCommandController.class);
+	private static final int    MAX_UPLOAD_SPEED = 10000;
 
 	private final ListSpinner<Integer>           numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
 			.withAlignment(Pos.CENTER_RIGHT)
 			.withPostfix(" Upload(s)")
 			.withPrefix("max. ")
 			.withArrowPosition(ArrowPosition.LEADING);
-	private final ListSpinner<Integer>           uploadSpeed         = new ListSpinner<Integer>(0, 10000, 10).withValue(0)
+	private final ListSpinner<Integer>           uploadSpeed         = new ListSpinner<Integer>(0, MAX_UPLOAD_SPEED, 10)
+			.withValue(0)
 			.withAlignment(Pos.CENTER_RIGHT)
 			.withArrowPosition(ArrowPosition.LEADING)
 			.withPostfix(" kb/s")
@@ -83,6 +91,8 @@ public class QueueCommandController {
 
 	@Inject
 	private IUploadService uploadService;
+	@Inject
+	private ComputerUtil   computerUtil;
 
 	@FXML
 	void clearQueue(final ActionEvent event) {
@@ -134,17 +144,21 @@ public class QueueCommandController {
 		actionOnFinishItems.addAll(ActionOnFinish.values());
 		actionOnFinish.setItems(actionOnFinishItems);
 		actionOnFinish.getSelectionModel().selectFirst();
+
+		numberOfUploads.valueProperty().addListener(new ChangeListener<Integer>() {
+			@Override
+			public void changed(final ObservableValue<? extends Integer> observableValue, final Integer oldMaxUploads, final Integer newMaxUploads) {
+				uploadService.setMaxUploads(null == newMaxUploads ? 0 : newMaxUploads);
+			}
+		});
 	}
 
 	private void initBindindings() {
+		startQueue.disableProperty().bind(uploadService.runningProperty());
+		stopQueue.disableProperty().bind(uploadService.runningProperty().not());
 		/*
-		FIXME BINDINGS
-		startQueue.disableProperty().bind(uploader.inProgressProperty);
-		stopQueue.disableProperty().bind(uploader.inProgressProperty.not());
-		uploader.actionOnFinish.bind(actionOnFinish.getSelectionModel().selectedItemProperty());
-		uploader.maxUploads.bind(numberOfUploads.valueProperty());
-		throttle.maxBps.bind(uploadSpeed.valueProperty());
-		*/
+		throttle.maxBps.bind(uploadSpeed.valueProperty());          */
+
 		actionOnFinish.setConverter(new StringConverter<ActionOnFinish>() {
 			@Override
 			public String toString(final ActionOnFinish actionOnFinish) {
@@ -173,10 +187,35 @@ public class QueueCommandController {
 		public Integer fromString(final String string) {
 			try {
 				return Integer.parseInt(string);
-			} catch (final NumberFormatException e) { // $codepro.audit.disable
-				// logExceptions
+			} catch (final NumberFormatException e) {
 				return uploadSpeed.getValue();
 			}
+		}
+	}
+
+	@Subscribe
+	public void onUploadsFinished(final UploadFinishedEvent event) {
+		final ActionOnFinish action = actionOnFinish.getSelectionModel().getSelectedItem();
+		switch (action) {
+			default:
+			case NOTHING:
+				return;
+			case CLOSE:
+				logger.info("CLOSING APPLICATION");
+				Platform.exit();
+				break;
+			case SHUTDOWN:
+				logger.info("SHUTDOWN COMPUTER");
+				computerUtil.shutdownComputer();
+				break;
+			case SLEEP:
+				logger.info("HIBERNATE COMPUTER");
+				computerUtil.hibernateComputer();
+				break;
+			case CUSTOM:
+				logger.info("Custom command: {}", action.getCommand());
+				computerUtil.customCommand(action.getCommand());
+				break;
 		}
 	}
 }

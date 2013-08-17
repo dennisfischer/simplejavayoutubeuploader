@@ -36,7 +36,6 @@ public class Uploader {
 	private final List<Future<Upload>>      futures              = Lists.newArrayListWithExpectedSize(10);
 
 	private final Thread consumer = new UploadFinishProcessor();
-	private       boolean           running;
 	private       int               runningUploads;
 	private       IUploadService    uploadService;
 	private final EventBus          eventBus;
@@ -58,11 +57,11 @@ public class Uploader {
 	}
 
 	private boolean canAddJob() {
-		return running && maxUploads > runningUploads;
+		return uploadService.getRunning() && maxUploads > runningUploads;
 	}
 
 	public void shutdown(final boolean force) {
-		running = false;
+		uploadService.setRunning(false);
 
 		if (force) {
 			for (final Future<Upload> job : futures) {
@@ -73,19 +72,31 @@ public class Uploader {
 	}
 
 	public void run() {
-		if (running) {
+		if (uploadService.getRunning()) {
 			return;
 		}
-		running = true;
+		uploadService.setRunning(true);
 
-		while (canAddJob()) {
-			enqueueUpload();
-			try {
-				Thread.sleep(ENQUEUE_WAIT_TIME);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
+		final Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (canAddJob() && hasJobs()) {
+					enqueueUpload();
+
+					try {
+						Thread.sleep(ENQUEUE_WAIT_TIME);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
+				}
 			}
-		}
+		});
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	private boolean hasJobs() {
+		return 0 < uploadService.countUnprocessed();
 	}
 
 	public void shutdown() {
@@ -126,15 +137,15 @@ public class Uploader {
 					logger.info("Running uploads: {}", runningUploads);
 
 					if (upload.isPauseOnFinish()) {
-						running = false;
+						uploadService.setRunning(false);
 					}
 				}
 				final long leftUploads = uploadService.countUnprocessed();
 				logger.info("Left uploads: {}", leftUploads);
 				enqueueUpload();
 
-				if ((!running || 0 == leftUploads) && 0 == runningUploads) {
-					running = false;
+				if ((!uploadService.getRunning() || 0 == leftUploads) && 0 == runningUploads) {
+					uploadService.setRunning(false);
 					logger.info("All uploads finished");
 					eventBus.post(new UploadFinishedEvent());
 				}
@@ -156,33 +167,6 @@ public class Uploader {
 		}
 	}
 
-	/*
-	TODO move
-	private void uploadFinished(final Upload queue) {
-			switch (actionOnFinish.get()) {
-				default:
-				case NOTHING:
-					return;
-				case CLOSE:
-					logger.info("CLOSING APPLICATION");
-					Platform.exit();
-					break;
-				case SHUTDOWN:
-					logger.info("SHUTDOWN COMPUTER");
-					computerUtil.shutdownComputer();
-					break;
-				case SLEEP:
-					logger.info("HIBERNATE COMPUTER");
-					computerUtil.hibernateComputer();
-					break;
-				case CUSTOM:
-					logger.info("Custom command: {}", actionOnFinish.get().getCommand());
-					computerUtil.customCommand(actionOnFinish.get().getCommand());
-					break;
-			}
-		}
-	}
-         */
 	public void runStarttimeChecker() {
 		new Thread(new Runnable() {
 			@Override
