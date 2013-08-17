@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.AuthenticationIOException;
 import de.chaosfisch.google.account.AuthenticationInvalidException;
@@ -142,8 +142,8 @@ public class AbstractMetadataService implements IMetadataService {
 		// Upload atomData and fetch uploadUrl
 		try {
 			final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
 					.header("Slug", fileToUpload.getAbsolutePath())
 					.header("Authorization", accountService.getAuthentication(account).getHeader())
@@ -170,8 +170,8 @@ public class AbstractMetadataService implements IMetadataService {
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
 		try {
 			final HttpResponse<String> response = Unirest.post(METADATA_UPDATE_URL + '/' + videoId)
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
 					.header("Authorization", accountService.getAuthentication(account).getHeader())
 					.body(atomData)

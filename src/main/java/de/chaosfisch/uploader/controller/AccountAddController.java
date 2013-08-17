@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import javafx.beans.value.ChangeListener;
@@ -75,7 +75,7 @@ public class AccountAddController {
 		final Joiner joiner = Joiner.on(' ').skipNulls();
 
 		final String scope = URLEncoder.encode(joiner.join(SCOPES));
-		webEngine.load(String.format(OAUTH_URL, scope, Config.REDIRECT_URI, "code", Config.CLIENT_ID));
+		webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
 		webEngine.titleProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> observableValue, final String oldTitle, final String newTitle) {

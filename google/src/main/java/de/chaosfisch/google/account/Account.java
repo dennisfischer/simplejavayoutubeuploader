@@ -29,7 +29,7 @@ public class Account implements Serializable {
 	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
 	private String LSID;
 	private String refreshToken;
-	private List<Playlist> playlists = new ArrayList<>(0);
+	private final List<Playlist> playlists = new ArrayList<>(0);
 
 	public String getId() {
 		return id;

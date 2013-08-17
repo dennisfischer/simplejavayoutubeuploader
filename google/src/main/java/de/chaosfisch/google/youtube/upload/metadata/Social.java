@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 public class Social implements Serializable {
 
+	private static final long serialVersionUID = 1996880624554193297L;
 	private int     id;
 	private boolean facebook;
 	private boolean twitter;

@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.upload.metadata;
 
 public class MetaLocationMissingException extends Exception {
+	private static final long serialVersionUID = 2294458166891784471L;
 	private final int statusCode;
 
 	public MetaLocationMissingException(final int statusCode) {

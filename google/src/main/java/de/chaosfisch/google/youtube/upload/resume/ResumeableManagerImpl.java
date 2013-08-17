@@ -13,7 +13,7 @@ package de.chaosfisch.google.youtube.upload.resume;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.youtube.upload.IUploadService;
@@ -59,8 +59,8 @@ public class ResumeableManagerImpl implements IResumeableManager {
 	private ResumeInfo resumeFileUpload(final Upload upload) throws ResumeIOException, ResumeInvalidResponseException {
 		try {
 			final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
 					.header("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader())
 					.header("Content-Range", "bytes */*")

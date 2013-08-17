@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.upload;
 
 public class UploadResponseException extends Exception {
+	private static final long serialVersionUID = 1970942015159922294L;
 	private final int responseCode;
 
 	public UploadResponseException(final int responseCode) {

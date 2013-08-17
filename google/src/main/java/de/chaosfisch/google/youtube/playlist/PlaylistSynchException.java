@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.playlist;
 
 public class PlaylistSynchException extends Exception {
+	private static final long serialVersionUID = -8956422000301644520L;
 	private final int statusCode;
 
 	public PlaylistSynchException(final int statusCode) {

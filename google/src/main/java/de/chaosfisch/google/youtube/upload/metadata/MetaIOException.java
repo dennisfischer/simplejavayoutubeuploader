@@ -11,6 +11,8 @@
 package de.chaosfisch.google.youtube.upload.metadata;
 
 public class MetaIOException extends Exception {
+	private static final long serialVersionUID = 3914276421701017598L;
+
 	public MetaIOException(final Exception e) {
 		super(e);
 	}

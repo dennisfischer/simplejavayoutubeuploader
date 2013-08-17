@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 public class Status implements Serializable {
 
+	private static final long serialVersionUID = -6609560404674546724L;
 	private int     id;
 	private boolean archived;
 	private boolean failed;

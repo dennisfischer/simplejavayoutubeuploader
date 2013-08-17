@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 public class Permissions implements Serializable {
 
+	private static final long serialVersionUID = -4202788983688840206L;
 	private int           id;
 	private Comment       comment;
 	private boolean       commentvote;

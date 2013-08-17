@@ -11,6 +11,8 @@
 package de.chaosfisch.google.youtube.upload.resume;
 
 public class ResumeIOException extends Exception {
+	private static final long serialVersionUID = -6653275464417690075L;
+
 	public ResumeIOException(final Exception e) {
 		super(e);
 	}

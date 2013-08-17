@@ -30,9 +30,6 @@ public final class DBConverter {
 
 	public static void main(final String[] args) throws SQLException, IOException {
 
-		if (true) {
-			return;
-		}
 		try {
 			if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/db/youtubeuploader.db.data"))) {
 				logger.info("Converting v2");

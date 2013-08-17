@@ -14,7 +14,7 @@ import com.google.common.base.Charsets;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +41,11 @@ public abstract class AbstractAccountService implements IAccountService {
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.field("grant_type", "refresh_token")
-					.field("client_id", Config.CLIENT_ID)
-					.field("client_secret", Config.CLIENT_SECRET)
+					.field("client_id", GDATAConfig.CLIENT_ID)
+					.field("client_secret", GDATAConfig.CLIENT_SECRET)
 					.field("refresh_token", account.getRefreshToken())
 					.asJson();
 			if (SC_OK != response.getCode()) {
@@ -76,12 +76,12 @@ public abstract class AbstractAccountService implements IAccountService {
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.field("grant_type", "authorization_code")
-					.field("client_id", Config.CLIENT_ID)
-					.field("client_secret", Config.CLIENT_SECRET)
-					.field("redirect_uri", Config.REDIRECT_URI)
+					.field("client_id", GDATAConfig.CLIENT_ID)
+					.field("client_secret", GDATAConfig.CLIENT_SECRET)
+					.field("redirect_uri", GDATAConfig.REDIRECT_URI)
 					.field("code", code)
 					.asJson();
 
@@ -121,8 +121,8 @@ public abstract class AbstractAccountService implements IAccountService {
 					.encode(issueTokenContent, Charsets.UTF_8.name()), URLEncoder.encode(redirectUrl, Charsets.UTF_8
 					.name()));
 			final HttpResponse<String> response = Unirest.get(tokenAuthUrl)
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.asString();
 
 			return response.getBody();
@@ -135,8 +135,8 @@ public abstract class AbstractAccountService implements IAccountService {
 		// STEP 2 ISSUE AUTH TOKEN
 		try {
 			final HttpResponse<String> response = Unirest.post(ISSUE_AUTH_TOKEN_URL)
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
 					.field("SID", account.getSID())
 					.field("LSID", account.getLSID())

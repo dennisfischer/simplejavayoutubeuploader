@@ -11,6 +11,7 @@
 package de.chaosfisch.google.account;
 
 public class AuthenticationInvalidException extends Exception {
+	private static final long serialVersionUID = -9099165989881766183L;
 	private final int statusCode;
 
 	public AuthenticationInvalidException(final int statusCode) {

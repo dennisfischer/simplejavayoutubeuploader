@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.playlist;
 
 public class PlaylistInvalidResponseException extends Exception {
+	private static final long serialVersionUID = -7183584503708452933L;
 	private final int statusCode;
 
 	public PlaylistInvalidResponseException(final int statusCode) {

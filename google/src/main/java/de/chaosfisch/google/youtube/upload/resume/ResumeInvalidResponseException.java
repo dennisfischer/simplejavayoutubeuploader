@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.upload.resume;
 
 public class ResumeInvalidResponseException extends Exception {
+	private static final long serialVersionUID = 431588175629226728L;
 	private final int statusCode;
 
 	public ResumeInvalidResponseException(final int statusCode) {

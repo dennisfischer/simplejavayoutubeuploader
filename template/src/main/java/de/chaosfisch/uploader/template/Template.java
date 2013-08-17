@@ -35,7 +35,7 @@ public class Template implements Serializable {
 	private Permissions  permissions;
 	private Metadata     metadata;
 	private Account      account;
-	private List<Playlist> playlists = new ArrayList<>(0);
+	private final List<Playlist> playlists = new ArrayList<>(0);
 
 	@Override
 	public String toString() {

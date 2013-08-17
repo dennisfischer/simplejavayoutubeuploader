@@ -1249,7 +1249,7 @@ public class UploadController {
 
 	public class RefreshPlaylistService extends Service<Multimap<Account, Playlist>> {
 
-		public List<Account> accounts;
+		public final List<Account> accounts;
 
 		public RefreshPlaylistService(final List<Account> accounts) {
 			this.accounts = accounts;

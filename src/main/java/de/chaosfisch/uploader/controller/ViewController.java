@@ -292,7 +292,7 @@ public class ViewController {
 
 		control_resize.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent e) {
+			public void handle(final MouseEvent e) {
 				final Stage stage = (Stage) control_resize.getScene().getWindow();
 				dragOffsetX = stage.getX() + stage.getWidth() - e.getScreenX();
 				dragOffsetY = stage.getY() + stage.getHeight() - e.getScreenY();
@@ -301,7 +301,7 @@ public class ViewController {
 		});
 		control_resize.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent e) {
+			public void handle(final MouseEvent e) {
 				final Stage stage = (Stage) control_resize.getScene().getWindow();
 				final ObservableList<Screen> screens = Screen.getScreensForRectangle(stage.getX(), stage.getY(), 1, 1);
 				final Screen screen;

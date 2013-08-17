@@ -18,7 +18,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
@@ -192,8 +192,8 @@ public class UploadJob implements Callable<Upload> {
 							.length()));
 					request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount())
 							.getHeader());
-					request.setRequestProperty("GData-Version", Config.GDATA_V2);
-					request.setRequestProperty("X-GData-Key", String.format("key=%s", Config.DEVELOPER_KEY));
+					request.setRequestProperty("GData-Version", GDATAConfig.GDATA_V2);
+					request.setRequestProperty("X-GData-Key", String.format("key=%s", GDATAConfig.DEVELOPER_KEY));
 					request.connect();
 
 					try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));

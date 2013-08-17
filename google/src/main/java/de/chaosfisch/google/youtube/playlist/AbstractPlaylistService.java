@@ -16,7 +16,7 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.google.Config;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.Feed;
@@ -55,8 +55,8 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		try {
 			final HttpResponse<String> response = Unirest.post(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
 					.header("Content-Type", "application/atom+xml; charset=utf-8;")
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
 					.body(atomData)
 					.asString();
@@ -85,8 +85,8 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		try {
 			final HttpResponse<String> response = Unirest.post(YOUTUBE_PLAYLIST_ADD_FEED)
 					.header("Content-Type", "application/atom+xml; charset=utf-8;")
-					.header("GData-Version", Config.GDATA_V2)
-					.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+					.header("GData-Version", GDATAConfig.GDATA_V2)
+					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
 					.body(atomData)
 					.asString();
@@ -110,8 +110,8 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		for (final Account account : accounts) {
 			try {
 				final HttpResponse<String> response = Unirest.get(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
-						.header("GData-Version", Config.GDATA_V2)
-						.header("X-GData-Key", "key=" + Config.DEVELOPER_KEY)
+						.header("GData-Version", GDATAConfig.GDATA_V2)
+						.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 						.header("Authorization", accountService.getAuthentication(account).getHeader())
 						.asString();
 

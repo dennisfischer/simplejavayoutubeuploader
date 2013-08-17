@@ -47,7 +47,7 @@ public class Upload implements Serializable {
 	private Permissions  permissions;
 	private Metadata     metadata;
 	private Account      account;
-	private List<Playlist> playlists = new ArrayList<>(0);
+	private final List<Playlist> playlists = new ArrayList<>(0);
 
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;

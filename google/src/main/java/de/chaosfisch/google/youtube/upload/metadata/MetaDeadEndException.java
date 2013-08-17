@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.upload.metadata;
 
 public class MetaDeadEndException extends Exception {
+	private static final long serialVersionUID = 6792750274154632545L;
 	private final String currentUrl;
 
 	public MetaDeadEndException(final String currentUrl) {

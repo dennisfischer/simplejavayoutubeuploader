@@ -11,6 +11,8 @@
 package de.chaosfisch.google.youtube.playlist;
 
 public class PlaylistIOException extends Exception {
+	private static final long serialVersionUID = -6202643396909658030L;
+
 	public PlaylistIOException(final Exception e) {
 		super(e);
 	}

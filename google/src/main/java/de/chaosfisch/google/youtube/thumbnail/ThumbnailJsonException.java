@@ -11,6 +11,7 @@
 package de.chaosfisch.google.youtube.thumbnail;
 
 public class ThumbnailJsonException extends Exception {
+	private static final long serialVersionUID = -2704426040284831949L;
 	private final String json;
 
 	public ThumbnailJsonException(final String json, final Exception e) {

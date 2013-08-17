@@ -17,6 +17,7 @@ import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
+	private static final long serialVersionUID = -6095318226028745525L;
 	private int      id;
 	private Category category;
 	private String   title;

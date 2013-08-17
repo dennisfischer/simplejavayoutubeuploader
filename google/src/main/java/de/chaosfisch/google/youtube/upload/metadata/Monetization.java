@@ -18,6 +18,7 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import java.io.Serializable;
 
 public class Monetization implements Serializable {
+	private static final long serialVersionUID = -2575407439740776825L;
 	private int         id;
 	private boolean     instreamDefaults;
 	private boolean     claim;
