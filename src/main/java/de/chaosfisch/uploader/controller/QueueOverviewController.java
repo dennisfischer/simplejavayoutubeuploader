@@ -18,7 +18,7 @@ import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadAdded;
 import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
 import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
-import de.chaosfisch.uploader.controller.renderer.QueueUploadCellRenderer;
+import de.chaosfisch.uploader.renderer.QueueUploadCellRenderer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

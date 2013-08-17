@@ -15,14 +15,14 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import de.chaosfisch.uploader.controller.renderer.ImageButton?>
+<?import de.chaosfisch.uploader.renderer.ImageButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0"
-            prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-            fx:controller="de.chaosfisch.uploader.controller.ViewController">
+            prefWidth="-1.0" style="-fx-border-color: #393939;" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.controller.ViewController">
     <GridPane id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -34,8 +34,8 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
             <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
         </rowConstraints>
-        <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0"
-                   GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+        <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
+                   GridPane.rowIndex="0">
             <padding>
                 <Insets/>
             </padding>
@@ -64,15 +64,12 @@
                     <Insets left="10.0"/>
                 </StackPane.margin>
             </MenuBar>
-            <Label text="%application.title" textFill="WHITE" fx:id="title"/>
+            <Label fx:id="title" text="%application.title" textFill="WHITE"/>
             <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
                          onAction="#closeControlAction">
                 <image>
                     <Image url="@../resources/images/close_control.png"/>
                 </image>
-                <StackPane.margin>
-                    <Insets right="5.0"/>
-                </StackPane.margin>
             </ImageButton>
             <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
                          onAction="#maximizeControlAction">
@@ -80,7 +77,7 @@
                     <Image url="@../resources/images/maximize_control.png"/>
                 </image>
                 <StackPane.margin>
-                    <Insets right="25.0"/>
+                    <Insets right="20.0"/>
                 </StackPane.margin>
             </ImageButton>
             <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
@@ -89,7 +86,7 @@
                     <Image url="@../resources/images/minimize_control.png"/>
                 </image>
                 <StackPane.margin>
-                    <Insets right="45.0"/>
+                    <Insets right="40.0"/>
                 </StackPane.margin>
             </ImageButton>
             <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true"
@@ -122,7 +119,14 @@
                 </Tab>
             </TabPane>
         </AnchorPane>
-        <AnchorPane id="Content" maxHeight="-1.0" maxWidth="-1.0" minHeight="24.0" minWidth="-1.0" styleClass="menu-bar"
-                    GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
+        <StackPane id="StackPane" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+            <ImageView fx:id="control_resize" StackPane.alignment="CENTER_RIGHT">
+                <Image url="@../resources/images/resize_control.png"/>
+                <StackPane.margin>
+                    <Insets right="-5"/>
+                </StackPane.margin>
+            </ImageView>
+        </StackPane>
     </GridPane>
 </AnchorPane>

@@ -19,18 +19,16 @@ import com.google.inject.name.Named;
 import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Uploader;
-import de.chaosfisch.uploader.controller.renderer.ConfirmDialog;
+import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import javafx.stage.StageBuilder;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
-import jfxtras.labs.dialogs.MonologFXButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +55,8 @@ public class GuiUploader extends GuiceApplication {
 	ResourceBundle resources;
 
 	private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
+	private double initX;
+	private double initY;
 
 	@Override
 	public void start(final Stage primaryStage) {
@@ -73,12 +73,13 @@ public class GuiUploader extends GuiceApplication {
 	}
 
 	private void initApplication(final Stage primaryStage) {
+
 		try {
 			StyleManager.getInstance().addUserAgentStylesheet("/de/chaosfisch/uploader/resources/style.css");
 			final Parent parent = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
 					.getRoot();
 
-			final Scene scene = SceneBuilder.create().root(parent).build();
+			final Scene scene = SceneBuilder.create().root(parent).fill(Color.TRANSPARENT).build();
 
 			try (InputStream iconInputStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/film.png")) {
 				StageBuilder.create()
@@ -92,10 +93,28 @@ public class GuiUploader extends GuiceApplication {
 						.onCloseRequest(new ApplicationClosePromptDialog())
 						.applyTo(primaryStage);
 			}
+			parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(final MouseEvent me) {
+					primaryStage.setX(me.getScreenX() - initX);
+					primaryStage.setY(me.getScreenY() - initY);
+				}
+			});
+
+			parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(final MouseEvent me) {
+					initX = me.getScreenX() - primaryStage.getX();
+					initY = me.getScreenY() - primaryStage.getY();
+				}
+			});
 
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 			primaryStage.show();
-		} catch (final IOException e) {
+		} catch (final IOException e)
+
+		{
 			logger.error("FXML Load error", e);
 			throw new RuntimeException(e);
 		}
@@ -113,13 +132,26 @@ public class GuiUploader extends GuiceApplication {
 	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
 		@Override
 		public void handle(final WindowEvent event) {
-			final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.exitapplication.title"), resources
-					.getString("dialog.exitapplication.message"), resources);
+			try {
+				final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ConfirmDialog.fxml"), resources);
+				final ConfirmDialogController controller = result.getController();
+				controller.setTitle(resources.getString("dialog.exitapplication.title"));
+				controller.setMessage(resources.getString("dialog.exitapplication.message"));
 
-			if (MonologFXButton.Type.NO == dialog.showDialog()) {
-				event.consume();
-			} else {
-				Platform.exit();
+				final Parent parent = result.getRoot();
+				final Scene scene = SceneBuilder.create().root(parent).build();
+				final Stage stage = StageBuilder.create().scene(scene).build();
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.showAndWait();
+				stage.requestFocus();
+				if (!controller.ask()) {
+					event.consume();
+				} else {
+					Platform.exit();
+				}
+			} catch (IOException e) {
+				logger.error("Couldn't load ConfirmDialog", e);
 			}
 		}
 	}

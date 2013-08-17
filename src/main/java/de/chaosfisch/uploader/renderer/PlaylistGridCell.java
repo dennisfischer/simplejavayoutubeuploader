@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller.renderer;
+package de.chaosfisch.uploader.renderer;
 
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import javafx.beans.value.ChangeListener;

@@ -8,17 +8,18 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller.renderer;
+package de.chaosfisch.uploader.renderer;
 
 import jfxtras.labs.dialogs.MonologFX;
 
 import java.util.ResourceBundle;
 
-public class DirectoryOpenErrorDialog {
-	public DirectoryOpenErrorDialog(final String directory, final ResourceBundle resourceBundle) {
+public class URLOpenErrorDialog {
+
+	public URLOpenErrorDialog(final String url, final ResourceBundle resourceBundle) {
 		final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
-		monologFX.setTitleText(resourceBundle.getString("dialog.directory_unsupported.title"));
-		monologFX.setMessage(String.format(resourceBundle.getString("dialog.directory_unsupported.text"), directory));
+		monologFX.setTitleText(resourceBundle.getString("dialog.browser_unsupported.title"));
+		monologFX.setMessage(String.format(resourceBundle.getString("dialog.browser_unsupported.text"), url));
 		monologFX.showDialog();
 	}
 }

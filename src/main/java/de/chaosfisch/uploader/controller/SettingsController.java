@@ -16,7 +16,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
-import de.chaosfisch.uploader.controller.renderer.ProgressNodeRenderer;
+import de.chaosfisch.uploader.renderer.ProgressNodeRenderer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;

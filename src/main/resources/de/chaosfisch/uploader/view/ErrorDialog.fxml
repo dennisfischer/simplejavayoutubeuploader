@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
+
+<!--
+  ~ Copyright (c) 2013 Dennis Fischer.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Public License v3.0+
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.gnu.org/licenses/gpl.html
+  ~
+  ~ Contributors: Dennis Fischer
+  -->
+
+<?import de.chaosfisch.uploader.renderer.ImageButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-1.0" maxWidth="-1.0" minHeight="100.0" minWidth="250.0"
+            prefHeight="-1.0"
+            prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+            fx:controller="de.chaosfisch.uploader.controller.ErrorDialogController"
+            style="-fx-border-color: #aaaaaa; -fx-border-radius: 5px">
+    <VBox id="VBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="450.0"
+          prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane id="StackPane" styleClass="menu-bar">
+            <Label fx:id="title" textFill="WHITE"/>
+            <ImageButton onAction="#closeDialog" StackPane.alignment="CENTER_RIGHT">
+                <image>
+                    <Image url="@../resources/images/close_control.png"/>
+                </image>
+            </ImageButton>
+        </StackPane>
+
+        <Label fx:id="message" wrapText="true" maxWidth="400">
+            <VBox.margin>
+                <Insets right="10" left="10" top="5" bottom="5"/>
+            </VBox.margin>
+        </Label>
+
+        <HBox id="HBox" alignment="CENTER_RIGHT" maxHeight="-Infinity" spacing="5.0">
+            <Button mnemonicParsing="false" text="%errorDialog.accept" onAction="#onAccept"/>
+            <padding>
+                <Insets fx:id="x1" right="5" left="5" top="5" bottom="5"/>
+            </padding>
+        </HBox>
+    </VBox>
+</AnchorPane>

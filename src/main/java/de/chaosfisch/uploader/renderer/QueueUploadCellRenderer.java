@@ -8,8 +8,9 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller.renderer;
+package de.chaosfisch.uploader.renderer;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -18,20 +19,29 @@ import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
+import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SceneBuilder;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageBuilder;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import jfxtras.labs.dialogs.MonologFXButton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +59,9 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private DesktopUtil      desktopUtil;
 	@Inject
 	private IUploadService   uploadService;
+	@Inject
+	private GuiceFXMLLoader  fxmlLoader;
+	private static final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -207,11 +220,24 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				if (item.getStatus().isRunning()) {
 					return;
 				}
+				try {
+					final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ConfirmDialog.fxml"), resources);
+					final ConfirmDialogController controller = result.getController();
+					controller.setTitle(resources.getString("dialog.removeupload.title"));
+					controller.setMessage(resources.getString("dialog.removeupload.message"));
 
-				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.removeupload.title"), resources
-						.getString("dialog.removeupload.message"), resources);
-				if (MonologFXButton.Type.YES == dialog.showDialog()) {
-					uploadService.delete(upload);
+					final Parent parent = result.getRoot();
+					final Scene scene = SceneBuilder.create().root(parent).build();
+					final Stage stage = StageBuilder.create().scene(scene).build();
+					stage.initStyle(StageStyle.UNDECORATED);
+					stage.initModality(Modality.APPLICATION_MODAL);
+					stage.showAndWait();
+					stage.requestFocus();
+					if (controller.ask()) {
+						uploadService.delete(upload);
+					}
+				} catch (IOException e) {
+					logger.error("Couldn't load ConfirmDialog", e);
 				}
 			}
 		}
@@ -243,11 +269,24 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					return;
 				}
 
-				final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.abortupload.title"), resources
-						.getString("dialog.abortupload.message"), resources);
+				try {
+					final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ConfirmDialog.fxml"), resources);
+					final ConfirmDialogController controller = result.getController();
+					controller.setTitle(resources.getString("dialog.abortupload.title"));
+					controller.setMessage(resources.getString("dialog.abortupload.message"));
 
-				if (MonologFXButton.Type.YES == dialog.showDialog()) {
-					uploadService.abort(item);
+					final Parent parent = result.getRoot();
+					final Scene scene = SceneBuilder.create().root(parent).build();
+					final Stage stage = StageBuilder.create().scene(scene).build();
+					stage.initStyle(StageStyle.UNDECORATED);
+					stage.initModality(Modality.APPLICATION_MODAL);
+					stage.showAndWait();
+					stage.requestFocus();
+					if (controller.ask()) {
+						uploadService.abort(item);
+					}
+				} catch (IOException e) {
+					logger.error("Couldn't load ConfirmDialog", e);
 				}
 			}
 		}

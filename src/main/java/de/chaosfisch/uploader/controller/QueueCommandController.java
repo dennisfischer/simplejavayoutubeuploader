@@ -11,24 +11,33 @@
 package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.ActionOnFinish;
-import de.chaosfisch.uploader.controller.renderer.ConfirmDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SceneBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageBuilder;
+import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
-import jfxtras.labs.dialogs.MonologFXButton;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,6 +62,11 @@ public class QueueCommandController {
 
 	@FXML
 	private HBox viewElementsHBox;
+
+	@Inject
+	private GuiceFXMLLoader fxmlLoader;
+
+	private static final Logger logger = LoggerFactory.getLogger(QueueCommandController.class);
 
 	private final ListSpinner<Integer>           numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
 			.withAlignment(Pos.CENTER_RIGHT)
@@ -80,9 +94,24 @@ public class QueueCommandController {
 
 	@FXML
 	void startQueue(final ActionEvent event) {
-		final ConfirmDialog dialog = new ConfirmDialog(resources.getString("dialog.youtubetos.title"), resources.getString("dialog.youtubetos.message"), resources);
-		if (MonologFXButton.Type.YES == dialog.showDialog()) {
-			uploadService.startUploading();
+		try {
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ConfirmDialog.fxml"), resources);
+			final ConfirmDialogController controller = result.getController();
+			controller.setTitle(resources.getString("dialog.youtubetos.title"));
+			controller.setMessage(resources.getString("dialog.youtubetos.message"));
+
+			final Parent parent = result.getRoot();
+			final Scene scene = SceneBuilder.create().root(parent).build();
+			final Stage stage = StageBuilder.create().scene(scene).build();
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+			stage.requestFocus();
+			if (controller.ask()) {
+				uploadService.startUploading();
+			}
+		} catch (IOException e) {
+			logger.error("Couldn't load ConfirmDialog", e);
 		}
 	}
 

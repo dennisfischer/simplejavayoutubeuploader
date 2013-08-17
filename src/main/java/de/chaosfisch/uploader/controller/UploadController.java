@@ -32,8 +32,8 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
-import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
-import de.chaosfisch.uploader.controller.renderer.PlaylistGridCell;
+import de.chaosfisch.uploader.renderer.AccountStringConverter;
+import de.chaosfisch.uploader.renderer.PlaylistGridCell;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.template.events.TemplateAdded;
@@ -450,7 +450,7 @@ public class UploadController {
 	}
 
 	private void _reset() {
-		fromTemplate(null == templates.getValue() ? ViewController.standardTemplate : templates.getValue());
+		fromTemplate(null == templates.getValue() ? TemplateAddController.standardTemplate : templates.getValue());
 	}
 
 	@FXML

@@ -17,7 +17,7 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
-import de.chaosfisch.uploader.controller.renderer.AccountListCellRenderer;
+import de.chaosfisch.uploader.renderer.AccountListCellRenderer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

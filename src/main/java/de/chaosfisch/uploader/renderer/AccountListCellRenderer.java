@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller.renderer;
+package de.chaosfisch.uploader.renderer;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;

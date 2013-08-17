@@ -11,45 +11,36 @@
 package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
-import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.youtube.playlist.IPlaylistService;
-import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.upload.metadata.Metadata;
-import de.chaosfisch.google.youtube.upload.metadata.Monetization;
-import de.chaosfisch.google.youtube.upload.metadata.Social;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.serialization.IJsonSerializer;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
-import de.chaosfisch.uploader.controller.renderer.AccountStringConverter;
-import de.chaosfisch.uploader.controller.renderer.DirectoryOpenErrorDialog;
-import de.chaosfisch.uploader.controller.renderer.InputDialog;
-import de.chaosfisch.uploader.controller.renderer.URLOpenErrorDialog;
-import de.chaosfisch.uploader.template.ITemplateService;
-import de.chaosfisch.uploader.template.Template;
+import de.chaosfisch.uploader.renderer.URLOpenErrorDialog;
 import de.chaosfisch.util.DesktopUtil;
-import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.*;
+import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SceneBuilder;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.stage.*;
 import jfxtras.labs.dialogs.MonologFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -64,6 +55,9 @@ public class ViewController {
 
 	@FXML
 	public MenuBar menuBar;
+
+	@FXML
+	public ImageView control_resize;
 
 	@FXML
 	private ResourceBundle resources;
@@ -95,19 +89,21 @@ public class ViewController {
 	@FXML
 	private MenuItem openLogs;
 
-	private boolean maximized = false;
-	private double width;
-	private double height;
-	private double x;
-	private double y;
-	private double xOffset = 0;
-	private double yOffset = 0;
+	private boolean maximized;
+	private double  width;
+	private double  height;
+	private double  x;
+	private double  y;
+	private double  xOffset;
+	private double  yOffset;
 
 	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
 	@Inject
 	private DesktopUtil     desktopUtil;
 	@Inject
 	private IJsonSerializer jsonSerializer;
+	@Inject
+	private GuiceFXMLLoader fxmlLoader;
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {
@@ -133,32 +129,36 @@ public class ViewController {
 
 	@FXML
 	void menuAddPlaylist(final ActionEvent event) {
-		final TextField title = new TextField();
-		final CheckBox playlistPrivate = new CheckBox();
-		final TextArea summary = new TextArea();
-		final ChoiceBox<Account> accounts = new ChoiceBox<>();
-		accounts.setMaxWidth(Double.MAX_VALUE);
-		accounts.setConverter(new AccountStringConverter());
-		accounts.setItems(FXCollections.observableList(accountService.getAll()));
-		accounts.getSelectionModel().selectFirst();
+		try {
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml"), resources);
+			final Parent parent = result.getRoot();
 
-		final Object[] message = {resources.getString("playlistDialog.playlistLabel"), title,
-								  resources.getString("playlistDialog.descriptionLabel"), summary,
-								  resources.getString("playlistDialog.playlistPrivate"), playlistPrivate,
-								  resources.getString("playlistDialog.playlistAccount"), accounts};
-		final InputDialog myDialog = new InputDialog(resources.getString("playlistDialog.addPlaylistLabel"), message);
-
-		myDialog.setCallback(new PlaylistAddDialogCallback(playlistPrivate, summary, accounts, title, myDialog));
+			final Scene scene = SceneBuilder.create().root(parent).build();
+			final Stage stage = StageBuilder.create().scene(scene).build();
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.requestFocus();
+			stage.showAndWait();
+		} catch (IOException e) {
+			logger.error("Couldn't load PlaylistAddDialog", e);
+		}
 	}
 
 	@FXML
 	void menuAddTemplate(final ActionEvent event) {
-		final TextField textfield = new TextField();
-		final Object[] message = {resources.getString("templateDialog.templateLabel"), textfield};
+		try {
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/TemplateAddDialog.fxml"), resources);
+			final Parent parent = result.getRoot();
 
-		final InputDialog myDialog = new InputDialog(resources.getString("templateDialog.addTemplateLabel"), message);
-
-		myDialog.setCallback(new TemplateAddDialogCallback(myDialog, textfield));
+			final Scene scene = SceneBuilder.create().root(parent).build();
+			final Stage stage = StageBuilder.create().scene(scene).build();
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.show();
+			stage.requestFocus();
+		} catch (IOException e) {
+			logger.error("Couldn't load TemplateAddDialog", e);
+		}
 	}
 
 	@FXML
@@ -204,7 +204,22 @@ public class ViewController {
 	void openLogs(final ActionEvent event) {
 		final String directory = ApplicationData.DATA_DIR;
 		if (!desktopUtil.openDirectory(directory)) {
-			new DirectoryOpenErrorDialog(directory, resources);
+			try {
+				final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ErrorDialog.fxml"), resources);
+				final ErrorDialogController controller = result.getController();
+				controller.setTitle(resources.getString("dialog.directory_unsupported.title"));
+				controller.setMessage(String.format(resources.getString("dialog.directory_unsupported.text"), directory));
+
+				final Parent parent = result.getRoot();
+				final Scene scene = SceneBuilder.create().root(parent).build();
+				final Stage stage = StageBuilder.create().scene(scene).build();
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.show();
+				stage.requestFocus();
+			} catch (IOException e) {
+				logger.error("Couldn't load ConfirmDialog", e);
+			}
 		}
 	}
 
@@ -245,6 +260,8 @@ public class ViewController {
 		((Stage) menuBar.getScene().getWindow()).setIconified(true);
 	}
 
+	private double dragOffsetX, dragOffsetY;
+
 	@FXML
 	void initialize() {
 		assert null != menuAddPlaylist : "fx:id=\"menuAddPlaylist\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
@@ -260,18 +277,60 @@ public class ViewController {
 
 		menuBar.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
+			public void handle(final MouseEvent event) {
 				xOffset = event.getSceneX();
 				yOffset = event.getSceneY();
 			}
 		});
 		menuBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				((Stage) menuBar.getScene().getWindow()).setX(event.getScreenX() - xOffset);
-				((Stage) menuBar.getScene().getWindow()).setY(event.getScreenY() - yOffset);
+			public void handle(final MouseEvent event) {
+				menuBar.getScene().getWindow().setX(event.getScreenX() - xOffset);
+				menuBar.getScene().getWindow().setY(event.getScreenY() - yOffset);
 			}
 		});
+
+		control_resize.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				final Stage stage = (Stage) control_resize.getScene().getWindow();
+				dragOffsetX = stage.getX() + stage.getWidth() - e.getScreenX();
+				dragOffsetY = stage.getY() + stage.getHeight() - e.getScreenY();
+				e.consume();
+			}
+		});
+		control_resize.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				final Stage stage = (Stage) control_resize.getScene().getWindow();
+				final ObservableList<Screen> screens = Screen.getScreensForRectangle(stage.getX(), stage.getY(), 1, 1);
+				final Screen screen;
+				if (!screens.isEmpty()) {
+					screen = Screen.getScreensForRectangle(stage.getX(), stage.getY(), 1, 1).get(0);
+				} else {
+					screen = Screen.getScreensForRectangle(0, 0, 1, 1).get(0);
+				}
+				final Rectangle2D visualBounds = screen.getVisualBounds();
+				final double maxX = Math.min(visualBounds.getMaxX(), e.getScreenX() + dragOffsetX);
+				final double maxY = Math.min(visualBounds.getMaxY(), e.getScreenY() - dragOffsetY);
+				stage.setWidth(Math.max(stage.getMinWidth(), maxX - stage.getX()));
+				stage.setHeight(Math.max(stage.getMinHeight(), maxY - stage.getY()));
+				e.consume();
+			}
+		});
+		control_resize.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent mouseEvent) {
+				control_resize.getScene().setCursor(Cursor.SE_RESIZE);
+			}
+		});
+		control_resize.setOnMouseExited(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent mouseEvent) {
+				control_resize.getScene().setCursor(Cursor.DEFAULT);
+			}
+		});
+
 		loadMenuGraphics();
 	}
 
@@ -300,109 +359,5 @@ public class ViewController {
 	}
 
 	@Inject
-	private IPlaylistService playlistService;
-	@Inject
 	private UploadController uploadController;
-	@Inject
-	private IAccountService  accountService;
-	@Inject
-	private ITemplateService templateService;
-
-	public static final Template standardTemplate;
-
-	static {
-		final Permissions permissions = new Permissions();
-		permissions.setEmbed(true);
-		permissions.setCommentvote(true);
-		permissions.setComment(Comment.ALLOWED);
-		permissions.setRate(true);
-		permissions.setVisibility(Visibility.PUBLIC);
-		permissions.setVideoresponse(Videoresponse.MODERATED);
-
-		final Social social = new Social();
-		social.setFacebook(false);
-		social.setTwitter(false);
-		social.setMessage("");
-
-		final Monetization monetization = new Monetization();
-		monetization.setClaim(false);
-		monetization.setOverlay(false);
-		monetization.setTrueview(false);
-		monetization.setProduct(false);
-		monetization.setInstream(false);
-		monetization.setInstreamDefaults(false);
-		monetization.setPartner(false);
-		monetization.setClaimtype(ClaimType.AUDIO_VISUAL);
-		monetization.setClaimoption(ClaimOption.MONETIZE);
-		monetization.setAsset(Asset.WEB);
-		monetization.setSyndication(Syndication.GLOBAL);
-
-		final Metadata metadata = new Metadata();
-		standardTemplate = new Template();
-		standardTemplate.setPermissions(permissions);
-		standardTemplate.setSocial(social);
-		standardTemplate.setMonetization(monetization);
-		standardTemplate.setMetadata(metadata);
-		standardTemplate.setThumbnail(null);
-		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
-	}
-
-	private final class TemplateAddDialogCallback implements EventHandler<ActionEvent> {
-		private final InputDialog myDialog;
-		private final TextField   textfield;
-
-		private TemplateAddDialogCallback(final InputDialog myDialog, final TextField textfield) {
-			this.myDialog = myDialog;
-			this.textfield = textfield;
-		}
-
-		@Override
-		public void handle(final ActionEvent event) {
-			if (!textfield.getText().isEmpty()) {
-
-				final Template template = jsonSerializer.fromJSON(jsonSerializer.toJSON(standardTemplate), Template.class);
-				template.setName(textfield.getText());
-				template.setDefaultdir(new File(template.getDefaultdir().getPath()));
-				templateService.insert(template);
-				myDialog.close();
-			}
-		}
-	}
-
-	private final class PlaylistAddDialogCallback implements EventHandler<ActionEvent> {
-		private final CheckBox           playlistPrivate;
-		private final TextArea           summary;
-		private final ChoiceBox<Account> accounts;
-		private final TextField          title;
-		private final InputDialog        myDialog;
-
-		private PlaylistAddDialogCallback(final CheckBox playlistPrivate, final TextArea summary, final ChoiceBox<Account> accounts, final TextField title, final InputDialog myDialog) {
-			this.playlistPrivate = playlistPrivate;
-			this.summary = summary;
-			this.accounts = accounts;
-			this.title = title;
-			this.myDialog = myDialog;
-		}
-
-		@Override
-		public void handle(final ActionEvent event) {
-			if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
-				final Playlist playlist = new Playlist();
-				playlist.setTitle(title.getText());
-				playlist.setSummary(summary.getText());
-				playlist.setPrivate_(playlistPrivate.isSelected());
-				playlist.setAccount(accounts.getValue());
-				try {
-					playlistService.addYoutubePlaylist(playlist);
-				} catch (final Exception e) {
-					final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
-					monologFX.setTitleText(resources.getString("dialog.playlistadd.error.title"));
-					//FIXME error message
-					monologFX.setMessage(resources.getString(""));
-					monologFX.showDialog();
-				}
-				myDialog.close();
-			}
-		}
-	}
 }
