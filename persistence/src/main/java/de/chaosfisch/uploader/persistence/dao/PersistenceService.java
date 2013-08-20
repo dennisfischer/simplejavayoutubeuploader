@@ -17,12 +17,20 @@ import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.template.Template;
 
+import javax.crypto.Cipher;
+import javax.crypto.SealedObject;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.regex.Pattern;
 
 class PersistenceService implements IPersistenceService {
 	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-[0-9]+.data");
+	private static final int     ITERATIONS      = 42;
 
 	private final IAccountDao  accountDao;
 	private final IPlaylistDao playlistDao;
@@ -30,6 +38,11 @@ class PersistenceService implements IPersistenceService {
 	private final IUploadDao   uploadDao;
 	private final String       storage;
 	private Data data = new Data();
+	private String masterPassword;
+
+	//Arbitrarily selected 8-byte salt sequence:
+	private static final byte[] salt = {(byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7, (byte) 0x5b, (byte) 0xd7,
+										(byte) 0x45, (byte) 0x17};
 
 	@Inject
 	public PersistenceService(final IAccountDao accountDao, final IPlaylistDao playlistDao, final ITemplateDao templateDao, final IUploadDao uploadDao, @Named(PERSISTENCE_FOLDER) final String storage) {
@@ -38,7 +51,6 @@ class PersistenceService implements IPersistenceService {
 		this.templateDao = templateDao;
 		this.uploadDao = uploadDao;
 		this.storage = storage;
-		loadFromStorage();
 	}
 
 	@Override
@@ -52,14 +64,19 @@ class PersistenceService implements IPersistenceService {
 		final File storageFile = new File(storage + String.format("/data-%07d.data", data.version));
 
 		try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
-			objectOutputStream.writeObject(data);
-		} catch (IOException e) {
+			if (null == masterPassword) {
+				objectOutputStream.writeObject(data);
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, false);
+				objectOutputStream.writeObject(new SealedObject(data, cipher));
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void loadFromStorage() {
+	public boolean loadFromStorage() {
 		final File storageDir = new File(storage);
 		final List<File> list = Arrays.asList(storageDir.listFiles(new FilenameFilter() {
 			@Override
@@ -68,7 +85,7 @@ class PersistenceService implements IPersistenceService {
 			}
 		}));
 		if (list.isEmpty()) {
-			return;
+			return false;
 		}
 		Collections.sort(list, new Comparator<File>() {
 			@Override
@@ -85,15 +102,48 @@ class PersistenceService implements IPersistenceService {
 		}
 
 		try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(storageFile))) {
-			data = (Data) objectInputStream.readObject();
+			if (null == masterPassword) {
+				data = (Data) objectInputStream.readObject();
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, true);
+				data = (Data) ((SealedObject) objectInputStream.readObject()).getObject(cipher);
+			}
 			loadPlaylists(data);
 			loadAccounts(data);
 			loadTemplates(data);
 			loadUploads(data);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	private Cipher makeCipher(final String pass, final boolean decryptMode) throws GeneralSecurityException {
+
+		//Use a KeyFactory to derive the corresponding key from the passphrase:
+		final PBEKeySpec keySpec = new PBEKeySpec(pass.toCharArray());
+		final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
+		final SecretKey key = keyFactory.generateSecret(keySpec);
+
+		//Create parameters from the salt and an arbitrary number of iterations:
+		final PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, ITERATIONS);
+
+		//Set up the cipher:
+		final Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
+
+		//Set the cipher mode to decryption or encryption:
+		if (decryptMode) {
+			cipher.init(Cipher.DECRYPT_MODE, key, pbeParamSpec);
+		} else {
+			cipher.init(Cipher.ENCRYPT_MODE, key, pbeParamSpec);
 		}
 
+		return cipher;
+	}
+
+	@Override
+	public void setMasterPassword(final String masterPassword) {
+		this.masterPassword = masterPassword;
 	}
 
 	private void loadUploads(final Data data) {

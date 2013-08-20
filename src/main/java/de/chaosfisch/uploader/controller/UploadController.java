@@ -450,7 +450,7 @@ public class UploadController {
 	}
 
 	private void _reset() {
-		fromTemplate(null == templates.getValue() ? TemplateAddController.standardTemplate : templates.getValue());
+		fromTemplate(null == templates.getValue() ? ViewController.standardTemplate : templates.getValue());
 	}
 
 	@FXML

@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.template;
 
+import com.google.common.base.Strings;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
@@ -36,6 +37,14 @@ public class Template implements Serializable {
 	private Metadata     metadata;
 	private Account      account;
 	private final List<Playlist> playlists = new ArrayList<>(0);
+
+	public interface Validation {
+		String NAME = "NAME";
+	}
+
+	public Template(final String name) {
+		setName(name);
+	}
 
 	@Override
 	public String toString() {
@@ -128,6 +137,9 @@ public class Template implements Serializable {
 	}
 
 	public void setName(final String name) {
+		if (Strings.isNullOrEmpty(name)) {
+			throw new IllegalArgumentException(Validation.NAME);
+		}
 		this.name = name;
 	}
 

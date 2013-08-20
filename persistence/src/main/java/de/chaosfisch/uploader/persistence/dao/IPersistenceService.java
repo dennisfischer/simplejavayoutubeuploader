@@ -21,10 +21,13 @@ import java.util.List;
 
 public interface IPersistenceService {
 	String PERSISTENCE_FOLDER = "PERSISTENCE_FOLDER";
+	String MASTER_PASSWORD    = "master_password";
 
 	void saveToStorage();
 
-	void loadFromStorage();
+	boolean loadFromStorage();
+
+	void setMasterPassword(String masterPassword);
 
 	class Data implements Serializable {
 		private static final long serialVersionUID = -7729985568529356434L;

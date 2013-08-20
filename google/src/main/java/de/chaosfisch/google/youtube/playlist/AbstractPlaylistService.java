@@ -169,7 +169,9 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 
 	private String getThumbnail(final VideoEntry entry) {
 		String thumbnail = null;
-		if (null != entry.mediaGroup && null != entry.mediaGroup.thumbnails && 2 < entry.mediaGroup.thumbnails.size()) {
+		if (null != entry.mediaGroup && null != entry.mediaGroup.thumbnails && 3 <= entry.mediaGroup
+				.thumbnails
+				.size()) {
 			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
 		}
 		return thumbnail;

@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
@@ -94,16 +95,17 @@ public class UploadJob implements Callable<Upload> {
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class);
 
-		// Schritt 1: Initialize
-		executor.getWithRetry(initialize()).get();
-		// Schritt 2: MetadataUpload + UrlFetch
-		executor.getWithRetry(metadata()).get();
-		// Schritt 3: Chunkupload
-		executor.getWithRetry(upload()).get();
-		// Schritt 4: Fetchen des Resumeinfo
-		executor.getWithRetry(resumeinfo()).get();
-		// Schritt 5: Postprocessing
-
+		try {
+			// Schritt 1: Initialize
+			executor.getWithRetry(initialize()).get();
+			// Schritt 2: MetadataUpload + UrlFetch
+			executor.getWithRetry(metadata()).get();
+			// Schritt 3: Chunkupload
+			executor.getWithRetry(upload()).get();
+			// Schritt 5: Postprocessing
+		} catch (Exception e) {
+		}
+		eventBus.post(new UploadJobFinishedEvent(upload));
 		eventBus.unregister(this);
 		return upload;
 	}

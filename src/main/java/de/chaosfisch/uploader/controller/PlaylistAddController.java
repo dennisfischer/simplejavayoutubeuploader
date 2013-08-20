@@ -65,9 +65,8 @@ public class PlaylistAddController extends UndecoratedDialogController {
 
 	@FXML
 	public void addPlaylist(final ActionEvent actionEvent) {
-		//TODO MOVE VALIDATION;
-		if (!title.getText().isEmpty() && !accounts.getSelectionModel().isEmpty()) {
-			final Playlist playlist = new Playlist();
+		try {
+			final Playlist playlist = new Playlist(title.getText(), accounts.getValue());
 			playlist.setTitle(title.getText());
 			playlist.setSummary(summary.getText());
 			playlist.setPrivate_(playlistPrivate.isSelected());
@@ -80,6 +79,14 @@ public class PlaylistAddController extends UndecoratedDialogController {
 				//FIXME error message
 				monologFX.setMessage(resources.getString(""));
 				monologFX.showDialog();
+			}
+		} catch (IllegalArgumentException e) {
+			//TODO Handle failed validation
+			switch (e.getMessage()) {
+				case Playlist.Validation.TITLE:
+					break;
+				case Playlist.Validation.ACCOUNT:
+					break;
 			}
 		}
 	}

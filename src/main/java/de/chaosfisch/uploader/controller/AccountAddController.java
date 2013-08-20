@@ -106,9 +106,7 @@ public class AccountAddController {
 		});
 
 		final VBox container = new VBox();
-		container.getChildren().
-
-				add(webView);
+		container.getChildren().add(webView);
 
 		final Scene scene = new Scene(container);
 

@@ -20,6 +20,9 @@ import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
+import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
+import de.chaosfisch.uploader.renderer.Callback;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -36,17 +39,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class GuiUploader extends GuiceApplication {
 
 	private static final int MIN_HEIGHT = 640;
 	private static final int MIN_WIDTH  = 1000;
 	@Inject
-	private GuiceFXMLLoader fxmlLoader;
+	private GuiceFXMLLoader     fxmlLoader;
 	@Inject
-	private Injector        injector;
+	private Injector            injector;
 	@Inject
-	private Uploader        uploader;
+	private Uploader            uploader;
+	@Inject
+	private DialogHelper        dialogHelper;
+	@Inject
+	private IPersistenceService persistenceService;
 
 	@Inject
 	private IUploadService uploadService;
@@ -54,17 +62,31 @@ public class GuiUploader extends GuiceApplication {
 	@Named("i18n-resources")
 	ResourceBundle resources;
 
-	private static final Logger logger = LoggerFactory.getLogger(GuiUploader.class);
+	private static final Preferences prefs  = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final Logger      logger = LoggerFactory.getLogger(GuiUploader.class);
 	private double initX;
 	private double initY;
 
 	@Override
 	public void start(final Stage primaryStage) {
-		Platform.setImplicitExit(false);
-		initApplication(primaryStage);
+		if (prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false)) {
+			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
+				@Override
+				public void onInput(final String input) {
+					persistenceService.setMasterPassword(input);
+				}
+			}, true);
+		}
+		if (!persistenceService.loadFromStorage()) {
+			dialogHelper.showErrorDialog("Closing..", "Invalid password.");
+			Platform.exit();
+		} else {
+			Platform.setImplicitExit(false);
+			initApplication(primaryStage);
 
-		uploadService.resetUnfinishedUploads();
-		uploadService.startStarttimeCheck();
+			uploadService.resetUnfinishedUploads();
+			uploadService.startStarttimeCheck();
+		}
 	}
 
 	@Override

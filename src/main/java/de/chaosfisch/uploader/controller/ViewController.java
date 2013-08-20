@@ -13,10 +13,16 @@ package de.chaosfisch.uploader.controller;
 import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
+import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.google.youtube.upload.metadata.Social;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.serialization.IJsonSerializer;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.renderer.URLOpenErrorDialog;
+import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,9 +30,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -36,11 +39,14 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.stage.*;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jfxtras.labs.dialogs.MonologFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -104,6 +110,47 @@ public class ViewController {
 	private IJsonSerializer jsonSerializer;
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
+	@Inject
+	private DialogHelper    dialogHelper;
+
+	public static final Template standardTemplate;
+
+	static {
+		final Permissions permissions = new Permissions();
+		permissions.setEmbed(true);
+		permissions.setCommentvote(true);
+		permissions.setComment(Comment.ALLOWED);
+		permissions.setRate(true);
+		permissions.setVisibility(Visibility.PUBLIC);
+		permissions.setVideoresponse(Videoresponse.MODERATED);
+
+		final Social social = new Social();
+		social.setFacebook(false);
+		social.setTwitter(false);
+		social.setMessage("");
+
+		final Monetization monetization = new Monetization();
+		monetization.setClaim(false);
+		monetization.setOverlay(false);
+		monetization.setTrueview(false);
+		monetization.setProduct(false);
+		monetization.setInstream(false);
+		monetization.setInstreamDefaults(false);
+		monetization.setPartner(false);
+		monetization.setClaimtype(ClaimType.AUDIO_VISUAL);
+		monetization.setClaimoption(ClaimOption.MONETIZE);
+		monetization.setAsset(Asset.WEB);
+		monetization.setSyndication(Syndication.GLOBAL);
+
+		final Metadata metadata = new Metadata();
+		standardTemplate = new Template("default");
+		standardTemplate.setPermissions(permissions);
+		standardTemplate.setSocial(social);
+		standardTemplate.setMonetization(monetization);
+		standardTemplate.setMetadata(metadata);
+		standardTemplate.setThumbnail(null);
+		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
+	}
 
 	@FXML
 	void fileDragDropped(final DragEvent event) {
@@ -129,36 +176,12 @@ public class ViewController {
 
 	@FXML
 	void menuAddPlaylist(final ActionEvent event) {
-		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml"), resources);
-			final Parent parent = result.getRoot();
-
-			final Scene scene = SceneBuilder.create().root(parent).build();
-			final Stage stage = StageBuilder.create().scene(scene).build();
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.requestFocus();
-			stage.showAndWait();
-		} catch (IOException e) {
-			logger.error("Couldn't load PlaylistAddDialog", e);
-		}
+		dialogHelper.showPlaylistAddDialog();
 	}
 
 	@FXML
 	void menuAddTemplate(final ActionEvent event) {
-		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/TemplateAddDialog.fxml"), resources);
-			final Parent parent = result.getRoot();
-
-			final Scene scene = SceneBuilder.create().root(parent).build();
-			final Stage stage = StageBuilder.create().scene(scene).build();
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.show();
-			stage.requestFocus();
-		} catch (IOException e) {
-			logger.error("Couldn't load TemplateAddDialog", e);
-		}
+		dialogHelper.showTemplateAddDialog();
 	}
 
 	@FXML
@@ -204,22 +227,8 @@ public class ViewController {
 	void openLogs(final ActionEvent event) {
 		final String directory = ApplicationData.DATA_DIR;
 		if (!desktopUtil.openDirectory(directory)) {
-			try {
-				final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ErrorDialog.fxml"), resources);
-				final ErrorDialogController controller = result.getController();
-				controller.setTitle(resources.getString("dialog.directory_unsupported.title"));
-				controller.setMessage(String.format(resources.getString("dialog.directory_unsupported.text"), directory));
-
-				final Parent parent = result.getRoot();
-				final Scene scene = SceneBuilder.create().root(parent).build();
-				final Stage stage = StageBuilder.create().scene(scene).build();
-				stage.initStyle(StageStyle.UNDECORATED);
-				stage.initModality(Modality.APPLICATION_MODAL);
-				stage.show();
-				stage.requestFocus();
-			} catch (IOException e) {
-				logger.error("Couldn't load ConfirmDialog", e);
-			}
+			dialogHelper.showErrorDialog(resources.getString("dialog.directory_unsupported.title"), String.format(resources
+					.getString("dialog.directory_unsupported.text"), directory));
 		}
 	}
 

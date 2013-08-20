@@ -33,6 +33,7 @@ import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.util.TextUtil;
 import javafx.stage.FileChooser;
 
@@ -60,6 +61,7 @@ public class UploaderModule extends AbstractModule {
 
 	private void mapUtil() {
 		bind(FileChooser.class).in(Singleton.class);
+		bind(DialogHelper.class).in(Singleton.class);
 
 		final EventBus eventBus = new EventBus();
 		bind(EventBus.class).toInstance(eventBus);

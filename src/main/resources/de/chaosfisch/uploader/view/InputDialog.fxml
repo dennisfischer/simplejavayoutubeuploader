@@ -22,13 +22,13 @@
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-1.0" maxWidth="-1.0" minHeight="100.0" minWidth="250.0"
             prefHeight="-1.0"
             prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-            fx:controller="de.chaosfisch.uploader.controller.TemplateAddController"
+            fx:controller="de.chaosfisch.uploader.controller.InputDialogController"
             style="-fx-border-color: #aaaaaa; -fx-border-radius: 5px">
     <VBox id="VBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
           prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <StackPane id="StackPane" styleClass="menu-bar">
-            <Label text="%templateDialog.templateTitle" textFill="WHITE"/>
+            <Label fx:id="title" textFill="WHITE"/>
             <ImageButton onAction="#closeDialog" StackPane.alignment="CENTER_RIGHT">
                 <image>
                     <Image url="@../resources/images/close_control.png"/>
@@ -46,11 +46,11 @@
             <rowConstraints>
                 <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
             </rowConstraints>
-            <Label text="%templateDialog.templateLabel" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <TextField fx:id="title" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label fx:id="inputLabel" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="input" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         </GridPane>
         <HBox id="HBox" alignment="CENTER_RIGHT" maxHeight="-Infinity" padding="$x1" spacing="5.0">
-            <Button mnemonicParsing="false" text="%templateDialog.addTemplateLabel" onAction="#addTemplate"/>
+            <Button mnemonicParsing="false" text="%inputDialog.okayLabel" onAction="#okayAction"/>
         </HBox>
     </VBox>
 </AnchorPane>

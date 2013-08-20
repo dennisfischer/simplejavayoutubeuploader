@@ -13,6 +13,7 @@
  */
 package de.chaosfisch.google.youtube.playlist;
 
+import com.google.common.base.Strings;
 import de.chaosfisch.google.account.Account;
 
 import java.io.Serializable;
@@ -30,6 +31,16 @@ public class Playlist implements Serializable {
 	private String  summary;
 	private boolean hidden;
 	private Account account;
+
+	public interface Validation {
+		String TITLE   = "TITLE";
+		String ACCOUNT = "ACCOUNT";
+	}
+
+	public Playlist(final String title, final Account account) {
+		setTitle(title);
+		setAccount(account);
+	}
 
 	public String getId() {
 		return id;
@@ -60,6 +71,9 @@ public class Playlist implements Serializable {
 	}
 
 	public void setTitle(final String title) {
+		if (Strings.isNullOrEmpty(title)) {
+			throw new IllegalArgumentException(Validation.TITLE);
+		}
 		this.title = title;
 	}
 
@@ -108,6 +122,9 @@ public class Playlist implements Serializable {
 	}
 
 	public void setAccount(final Account account) {
+		if (null == account) {
+			throw new IllegalArgumentException(Validation.ACCOUNT);
+		}
 		this.account = account;
 	}
 

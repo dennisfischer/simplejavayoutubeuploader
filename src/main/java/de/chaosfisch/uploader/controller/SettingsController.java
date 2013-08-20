@@ -16,6 +16,9 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
+import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
+import de.chaosfisch.uploader.renderer.Callback;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.renderer.ProgressNodeRenderer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,8 +53,15 @@ public class SettingsController {
 	@FXML
 	private CheckBox progressCheckbox;
 
+	@FXML
+	private CheckBox masterPasswordCheckbox;
+
 	@Inject
-	private EnddirServiceImpl enddirService;
+	private EnddirServiceImpl   enddirService;
+	@Inject
+	private IPersistenceService persistenceService;
+	@Inject
+	private DialogHelper        dialogHelper;
 
 	final                Properties  vmOptions     = new Properties();
 	final                File        vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
@@ -80,11 +90,32 @@ public class SettingsController {
 	}
 
 	@FXML
+	void toggleMasterPassword(final ActionEvent event) {
+		if (masterPasswordCheckbox.isSelected()) {
+			masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
+			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
+				@Override
+				public void onInput(final String input) {
+					persistenceService.setMasterPassword(input);
+					prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
+					masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
+				}
+			}, true);
+		} else {
+			persistenceService.setMasterPassword(null);
+			prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, masterPasswordCheckbox.isSelected());
+		}
+		persistenceService.saveToStorage();
+	}
+
+	@FXML
 	void initialize() {
 		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != masterPasswordCheckbox : "fx:id=\"masterPasswordCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
 		progressCheckbox.setSelected(prefs.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
+		masterPasswordCheckbox.setSelected(prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
 
 		loadVMOptions();
 	}
