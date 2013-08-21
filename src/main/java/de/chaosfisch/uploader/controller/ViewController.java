@@ -282,7 +282,7 @@ public class ViewController {
 		assert null != openFAQ : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openLogs : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 
-		title.setText(title.getText() + ' ' + ApplicationData.VERSION);
+		title.setText(String.format("%s %s", title.getText(), ApplicationData.VERSION));
 
 		menuBar.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override

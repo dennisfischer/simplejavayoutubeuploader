@@ -10,6 +10,7 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -55,6 +56,9 @@ public class AbstractMetadataService implements IMetadataService {
 	private static final Logger   logger                         = LoggerFactory.getLogger(AbstractMetadataService.class);
 	private static final String[] deadEnds                       = {
 			"https://accounts.google.com/b/0/SmsAuthInterstitial"};
+	private static final int      MONETIZE_PARAMS_SIZE           = 20;
+	private static final char     MODIFIED_SEPERATOR             = ',';
+	private static final int      METADATA_PARAMS_SIZE           = 40;
 
 	private final IThumbnailService thumbnailService;
 	private final IAccountService   accountService;
@@ -160,7 +164,8 @@ public class AbstractMetadataService implements IMetadataService {
 			} else {
 				throw new MetaLocationMissingException(response.getCode());
 			}
-			//FIXME Exceptions wrapped
+		} catch (final MetaLocationMissingException | MetaBadRequestException e) {
+			throw e;
 		} catch (final Exception e) {
 			throw new MetaIOException(e);
 		}
@@ -169,7 +174,7 @@ public class AbstractMetadataService implements IMetadataService {
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
 		try {
-			final HttpResponse<String> response = Unirest.post(METADATA_UPDATE_URL + '/' + videoId)
+			final HttpResponse<String> response = Unirest.post(String.format("%s/%s", METADATA_UPDATE_URL, videoId))
 					.header("GData-Version", GDATAConfig.GDATA_V2)
 					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
@@ -180,7 +185,8 @@ public class AbstractMetadataService implements IMetadataService {
 			if (SC_OK != response.getCode()) {
 				throw new MetaBadRequestException(atomData, response.getCode());
 			}
-			//FIXME Exceptions wrapped
+		} catch (MetaBadRequestException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new MetaIOException(e);
 		}
@@ -220,7 +226,7 @@ public class AbstractMetadataService implements IMetadataService {
 
 	private void changeMetadata(final String content, final Upload upload) {
 
-		final Map<String, Object> params = new HashMap<>(40);
+		final Map<String, Object> params = new HashMap<>(METADATA_PARAMS_SIZE);
 
 		params.putAll(getMetadataThumbnail(content, upload));
 		params.putAll(getMetadataDateOfRelease(upload));
@@ -229,14 +235,7 @@ public class AbstractMetadataService implements IMetadataService {
 		params.putAll(getMetadataMetadata(upload));
 		params.putAll(getMetadataPermissions(upload));
 
-		final StringBuilder modified = new StringBuilder(params.size() * 15);
-		for (final Map.Entry param : params.entrySet()) {
-			modified.append(param.getValue());
-			modified.append(',');
-		}
-		modified.deleteCharAt(modified.length() - 1);
-
-		params.put("modified_fields", modified.toString());
+		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.entrySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
@@ -279,7 +278,7 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	private Map<String, Object> getMetadataMonetization(final String content, final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(20);
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
 		final Metadata metadata = upload.getMetadata();
 		final Monetization monetization = upload.getMonetization();
 		if (monetization.isClaim()) {

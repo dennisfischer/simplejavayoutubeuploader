@@ -15,15 +15,17 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
+import de.chaosfisch.google.youtube.playlist.PlaylistIOException;
+import de.chaosfisch.google.youtube.playlist.PlaylistInvalidResponseException;
+import de.chaosfisch.uploader.renderer.AccountStringConverter;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import jfxtras.labs.dialogs.MonologFX;
+import javafx.scene.control.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 
@@ -50,6 +52,10 @@ public class PlaylistAddController extends UndecoratedDialogController {
 	private IPlaylistService playlistService;
 	@Inject
 	private IAccountService  accountService;
+	@Inject
+	private DialogHelper     dialogHelper;
+
+	private static final Logger logger = LoggerFactory.getLogger(PlaylistAddController.class);
 
 	@FXML
 	void initialize() {
@@ -61,31 +67,41 @@ public class PlaylistAddController extends UndecoratedDialogController {
 		accountItems.addAll(accountService.getAll());
 		accounts.setItems(accountItems);
 		accounts.getSelectionModel().selectFirst();
+		accounts.setConverter(new AccountStringConverter());
 	}
 
 	@FXML
 	public void addPlaylist(final ActionEvent actionEvent) {
+		dialogHelper.resetControlls(new Control[] {title, accounts});
 		try {
 			final Playlist playlist = new Playlist(title.getText(), accounts.getValue());
-			playlist.setTitle(title.getText());
 			playlist.setSummary(summary.getText());
 			playlist.setPrivate_(playlistPrivate.isSelected());
-			playlist.setAccount(accounts.getValue());
 			try {
 				playlistService.addYoutubePlaylist(playlist);
-			} catch (final Exception e) {
-				final MonologFX monologFX = new MonologFX(MonologFX.Type.ERROR);
-				monologFX.setTitleText(resources.getString("dialog.playlistadd.error.title"));
-				//FIXME error message
-				monologFX.setMessage(resources.getString(""));
-				monologFX.showDialog();
+			} catch (final PlaylistInvalidResponseException | PlaylistIOException e) {
+				logger.warn("Playlist add error", e);
+				dialogHelper.showErrorDialog(resources.getString("dialog.playlistadd.error.title"), resources.getString("dialog.playlistadd.error.message"));
 			}
 		} catch (IllegalArgumentException e) {
-			//TODO Handle failed validation
 			switch (e.getMessage()) {
 				case Playlist.Validation.TITLE:
+				case Playlist.Validation.TITLE_SIZE:
+					title.getStyleClass().add("input-invalid");
+					title.setTooltip(TooltipBuilder.create()
+							.autoHide(true)
+							.text(resources.getString("validation.playlisttitle"))
+							.build());
+					title.getTooltip().show(title, dialogHelper.getTooltipX(title), dialogHelper.getTooltipY(title));
 					break;
 				case Playlist.Validation.ACCOUNT:
+					accounts.getStyleClass().add("input-invalid");
+					accounts.setTooltip(TooltipBuilder.create()
+							.autoHide(true)
+							.text(resources.getString("validation.account"))
+							.build());
+					accounts.getTooltip()
+							.show(accounts, dialogHelper.getTooltipX(accounts), dialogHelper.getTooltipY(accounts));
 					break;
 			}
 		}

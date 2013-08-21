@@ -18,9 +18,6 @@ public final class TagParser {
 	private static final char   BLOCK_DELIMITER = '"';
 	private static final String STRING_TO_MATCH = ",";
 
-	/** flag if block is openBrowser */
-	private static boolean blockOpen;
-
 	/** the separator between tags */
 	private static final char DELIMITER = ' ';
 
@@ -60,20 +57,22 @@ public final class TagParser {
 
 		input = input.trim();
 
+		/** flag if block is open */
+		boolean blockOpen = false;
 		final StringBuilder parsedOutput = new StringBuilder(500);
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
 				case TagParser.BLOCK_DELIMITER:
-					TagParser.blockOpen = !TagParser.blockOpen;
-					parsedOutput.append('"');
-					if (TagParser.blockOpen) {
+					blockOpen = !blockOpen;
+					parsedOutput.append(BLOCK_DELIMITER);
+					if (blockOpen) {
 						break;
 					}
 				case TagParser.DELIMITER:
-					if (TagParser.blockOpen) {
+					if (blockOpen) {
 						parsedOutput.append(input.charAt(i));
-					} else if (parsedOutput.lastIndexOf(",") != parsedOutput.length() && i + 1 != input.length()) {
-						parsedOutput.append(',');
+					} else if (parsedOutput.lastIndexOf(STRING_TO_MATCH) != parsedOutput.length() && i + 1 != input.length()) {
+						parsedOutput.append(STRING_TO_MATCH);
 					}
 					break;
 				default:
@@ -109,7 +108,7 @@ public final class TagParser {
 				if (null == tmpTags[j]) {
 					break;
 				}
-				stringBuilder.append(',');
+				stringBuilder.append(STRING_TO_MATCH);
 				stringBuilder.append(tmpTags[j]);
 			}
 		}

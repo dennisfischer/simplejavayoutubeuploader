@@ -153,14 +153,12 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	}
 
 	Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
-		final Playlist playlist = new Playlist();
-		playlist.setTitle(entry.title);
+		final Playlist playlist = new Playlist(entry.title, account);
 		playlist.setPkey(entry.playlistId);
 		playlist.setUrl(entry.content.src);
 		playlist.setNumber(entry.playlistCountHint);
 		playlist.setSummary(entry.playlistSummary);
 		playlist.setThumbnail(getThumbnail(entry));
-		playlist.setAccount(account);
 		playlist.setHidden(false);
 
 		insert(playlist);

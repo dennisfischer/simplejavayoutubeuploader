@@ -72,7 +72,7 @@ public class AccountAddController {
 		final Stage dialog = new Stage();
 		final WebView webView = new WebView();
 		final WebEngine webEngine = webView.getEngine();
-		final Joiner joiner = Joiner.on(' ').skipNulls();
+		final Joiner joiner = Joiner.on(" ").skipNulls();
 
 		final String scope = URLEncoder.encode(joiner.join(SCOPES));
 		webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));

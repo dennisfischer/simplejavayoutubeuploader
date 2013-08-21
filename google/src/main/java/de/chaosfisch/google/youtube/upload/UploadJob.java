@@ -104,6 +104,7 @@ public class UploadJob implements Callable<Upload> {
 			executor.getWithRetry(upload()).get();
 			// Schritt 5: Postprocessing
 		} catch (Exception e) {
+			logger.error("Upload error", e);
 		}
 		eventBus.post(new UploadJobFinishedEvent(upload));
 		eventBus.unregister(this);

@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
+	private static final char FILE_EXTENSION_SEPERATOR = '.';
 	private final ResourceBundle resourceBundle;
 	/** The file for the {file} placeholder */
 	private       File           file;
@@ -107,22 +108,18 @@ public class ExtendedPlaceholders {
 			input = sb.toString();
 		}
 
-		if (null != file)
-
-		{
+		if (null != file) {
 
 			final String fileName = file.getAbsolutePath();
 
-			int index = fileName.lastIndexOf('.');
+			int index = fileName.lastIndexOf(FILE_EXTENSION_SEPERATOR);
 			if (-1 == index) {
 				index = fileName.length();
 			}
 			input = input.replaceAll(resourceBundle.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
 		}
 
-		for (final Map.Entry<String, String> vars : map.entrySet())
-
-		{
+		for (final Map.Entry<String, String> vars : map.entrySet()) {
 			input = input.replaceAll(Pattern.quote(vars.getKey()), vars.getValue());
 		}
 
@@ -135,7 +132,7 @@ public class ExtendedPlaceholders {
 	}
 
 	private void appendMissingPlaylist(final StringBuffer sb, final int playlist) {
-		sb.append("{NO-PLAYLIST-").append(playlist + 1).append('}');
+		sb.append(String.format("{NO-PLAYLIST-%d}", playlist + 1));
 	}
 
 	private boolean containsPlaylist(final int playlist) {

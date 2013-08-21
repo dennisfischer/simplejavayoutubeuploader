@@ -33,8 +33,11 @@ public class Playlist implements Serializable {
 	private Account account;
 
 	public interface Validation {
-		String TITLE   = "TITLE";
-		String ACCOUNT = "ACCOUNT";
+		String TITLE      = "TITLE";
+		String TITLE_SIZE = "TITLE_SIZE";
+		String ACCOUNT    = "ACCOUNT";
+
+		int TITLE_MAX_LENGTH = 60;
 	}
 
 	public Playlist(final String title, final Account account) {
@@ -73,6 +76,9 @@ public class Playlist implements Serializable {
 	public void setTitle(final String title) {
 		if (Strings.isNullOrEmpty(title)) {
 			throw new IllegalArgumentException(Validation.TITLE);
+		}
+		if (Validation.TITLE_MAX_LENGTH < title.getBytes().length) {
+			throw new IllegalArgumentException(Validation.TITLE_SIZE);
 		}
 		this.title = title;
 	}

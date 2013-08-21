@@ -33,6 +33,7 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.renderer.AccountStringConverter;
+import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.renderer.PlaylistGridCell;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
@@ -55,7 +56,6 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -79,6 +79,7 @@ import java.util.*;
 @FXMLController
 public class UploadController {
 
+	private static final char FILE_EXTENSION_SEPERATOR = '.';
 	@FXML
 	private ResourceBundle resources;
 
@@ -229,6 +230,8 @@ public class UploadController {
 	private ITemplateService templateService;
 	@Inject
 	private IUploadService   uploadService;
+	@Inject
+	private DialogHelper     dialogHelper;
 
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
@@ -258,7 +261,8 @@ public class UploadController {
 	void addUpload(final ActionEvent event) {
 
 		try {
-			resetControlls();
+			dialogHelper.resetControlls(new Control[] {uploadAccount, uploadCategory, uploadDescription, uploadFile,
+													   uploadTags, uploadThumbnail, uploadTitle});
 			buildUpload();
 			// Cleanup (reset form)
 			filesList.remove(uploadFile.getValue());
@@ -277,7 +281,8 @@ public class UploadController {
 						.autoHide(true)
 						.text(resources.getString("validation.account"))
 						.build());
-				uploadAccount.getTooltip().show(uploadAccount, getTooltipX(uploadAccount), getTooltipY(uploadAccount));
+				uploadAccount.getTooltip()
+						.show(uploadAccount, dialogHelper.getTooltipX(uploadAccount), dialogHelper.getTooltipY(uploadAccount));
 				break;
 			case Upload.Validation.CATEGORY:
 				uploadCategory.getStyleClass().add("input-invalid");
@@ -286,7 +291,7 @@ public class UploadController {
 						.text(resources.getString("validation.category"))
 						.build());
 				uploadCategory.getTooltip()
-						.show(uploadCategory, getTooltipX(uploadCategory), getTooltipY(uploadCategory));
+						.show(uploadCategory, dialogHelper.getTooltipX(uploadCategory), dialogHelper.getTooltipY(uploadCategory));
 				break;
 			case Upload.Validation.DESCRIPTION_CHARACTERS:
 				uploadDescription.getStyleClass().add("input-invalid");
@@ -295,7 +300,7 @@ public class UploadController {
 						.text(resources.getString("validation.description.characters"))
 						.build());
 				uploadDescription.getTooltip()
-						.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
+						.show(uploadDescription, dialogHelper.getTooltipX(uploadDescription), dialogHelper.getTooltipY(uploadDescription));
 				break;
 			case Upload.Validation.DESCRIPTION_SIZE:
 				uploadDescription.getStyleClass().add("input-invalid");
@@ -304,7 +309,7 @@ public class UploadController {
 						.text(resources.getString("validation.description"))
 						.build());
 				uploadDescription.getTooltip()
-						.show(uploadDescription, getTooltipX(uploadDescription), getTooltipY(uploadDescription));
+						.show(uploadDescription, dialogHelper.getTooltipX(uploadDescription), dialogHelper.getTooltipY(uploadDescription));
 				break;
 			case Upload.Validation.FILE:
 				uploadFile.getStyleClass().add("input-invalid");
@@ -312,7 +317,8 @@ public class UploadController {
 						.autoHide(true)
 						.text(resources.getString("validation.filelist"))
 						.build());
-				uploadFile.getTooltip().show(uploadFile, getTooltipX(uploadFile), getTooltipY(uploadFile));
+				uploadFile.getTooltip()
+						.show(uploadFile, dialogHelper.getTooltipX(uploadFile), dialogHelper.getTooltipY(uploadFile));
 				break;
 			case Upload.Validation.KEYWORD:
 				uploadTags.getStyleClass().add("input-invalid");
@@ -320,7 +326,8 @@ public class UploadController {
 						.autoHide(true)
 						.text(resources.getString("validation.tags"))
 						.build());
-				uploadTags.getTooltip().show(uploadTags, getTooltipX(uploadTags), getTooltipY(uploadTags));
+				uploadTags.getTooltip()
+						.show(uploadTags, dialogHelper.getTooltipX(uploadTags), dialogHelper.getTooltipY(uploadTags));
 				break;
 			case Upload.Validation.THUMBNAIL:
 			case Upload.Validation.THUMBNAIL_SIZE:
@@ -330,7 +337,7 @@ public class UploadController {
 						.text(resources.getString("validation.thumbnail"))
 						.build());
 				uploadThumbnail.getTooltip()
-						.show(uploadThumbnail, getTooltipX(uploadThumbnail), getTooltipY(uploadThumbnail));
+						.show(uploadThumbnail, dialogHelper.getTooltipX(uploadThumbnail), dialogHelper.getTooltipY(uploadThumbnail));
 				break;
 			case Upload.Validation.TITLE:
 			case Upload.Validation.TITLE_SIZE:
@@ -340,7 +347,8 @@ public class UploadController {
 						.autoHide(true)
 						.text(resources.getString("validation.title"))
 						.build());
-				uploadTitle.getTooltip().show(uploadTitle, getTooltipX(uploadTitle), getTooltipY(uploadTitle));
+				uploadTitle.getTooltip()
+						.show(uploadTitle, dialogHelper.getTooltipX(uploadTitle), dialogHelper.getTooltipY(uploadTitle));
 				break;
 		}
 	}
@@ -373,26 +381,6 @@ public class UploadController {
 			upload.setStatus(status);
 			uploadService.update(upload);
 		}
-	}
-
-	private void resetControlls() {
-		final Control[] nodes = {uploadAccount, uploadCategory, uploadDescription, uploadFile, uploadTags,
-								 uploadThumbnail, uploadTitle};
-		for (final Control node : nodes) {
-			node.getStyleClass().remove("input-invalid");
-			node.setTooltip(null);
-		}
-	}
-
-	private double getTooltipY(final Node node) {
-		final Point2D p = node.localToScene(0.0, 0.0);
-		return p.getY() + node.getScene().getY() + node.getScene().getWindow().getY() + node.getLayoutBounds()
-				.getHeight() - 5;
-	}
-
-	private double getTooltipX(final Node node) {
-		final Point2D p = node.localToScene(0.0, 0.0);
-		return p.getX() + node.getScene().getX() + node.getScene().getWindow().getX() - 5;
 	}
 
 	@FXML
@@ -904,7 +892,6 @@ public class UploadController {
 	}
 
 	private void fromTemplate(final Template template) {
-		resetControlls();
 		if (null != template.getDefaultdir() && template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
 			directoryChooser.setInitialDirectory(template.getDefaultdir());
@@ -1007,7 +994,7 @@ public class UploadController {
 		uploadFile.getSelectionModel().selectFirst();
 		if (null == uploadTitle.getText() || uploadTitle.getText().isEmpty()) {
 			final String file = files.get(0).getAbsolutePath();
-			int index = file.lastIndexOf('.');
+			int index = file.lastIndexOf(FILE_EXTENSION_SEPERATOR);
 			if (-1 == index) {
 				index = file.length();
 			}

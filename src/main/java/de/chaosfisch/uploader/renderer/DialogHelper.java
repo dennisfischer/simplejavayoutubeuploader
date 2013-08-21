@@ -19,9 +19,12 @@ import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.controller.ViewController;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
+import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -132,4 +135,23 @@ public class DialogHelper {
 			logger.error("Couldn't load InputDialog", e);
 		}
 	}
+
+	public double getTooltipY(final Node node) {
+		final Point2D p = node.localToScene(0.0, 0.0);
+		return p.getY() + node.getScene().getY() + node.getScene().getWindow().getY() + node.getLayoutBounds()
+				.getHeight() - 5;
+	}
+
+	public double getTooltipX(final Node node) {
+		final Point2D p = node.localToScene(0.0, 0.0);
+		return p.getX() + node.getScene().getX() + node.getScene().getWindow().getX() - 5;
+	}
+
+	public void resetControlls(final Control[] nodes) {
+		for (final Control node : nodes) {
+			node.getStyleClass().remove("input-invalid");
+			node.setTooltip(null);
+		}
+	}
+
 }

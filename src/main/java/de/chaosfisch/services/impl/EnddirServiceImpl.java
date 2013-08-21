@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class EnddirServiceImpl implements EnddirService {
-	private static final String      SETTING_ENDDIR_TITLE = "general.enddir.title";
-	private static final Logger      logger               = LoggerFactory.getLogger(EnddirServiceImpl.class);
-	private final        Preferences prefs                = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final String      SETTING_ENDDIR_TITLE     = "general.enddir.title";
+	private static final Logger      logger                   = LoggerFactory.getLogger(EnddirServiceImpl.class);
+	private static final char        FILE_EXTENSION_SEPERATOR = '.';
+	private final        Preferences prefs                    = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload) {
@@ -60,18 +61,19 @@ public class EnddirServiceImpl implements EnddirService {
 		if (0 == increment) {
 			return fileName;
 		}
-		return fileName.substring(0, fileName.lastIndexOf('.')) + '_' + increment + fileName.substring(fileName.lastIndexOf('.'));
+		return String.format("%s_%d%s", fileName.substring(0, fileName.lastIndexOf(FILE_EXTENSION_SEPERATOR)), increment, fileName
+				.substring(fileName.lastIndexOf(FILE_EXTENSION_SEPERATOR)));
 	}
 
 	String _getFileName(final File fileToMove, final File enddir, final Upload upload) {
 		final String fileName;
 		if (getEnddirSetting()) {
-			fileName = enddir.getAbsolutePath() + '/' + RegexpUtils.getMatcher(upload.getMetadata()
-					.getTitle(), "[\\?\\*:\\\\<>\"/]").replaceAll("") + upload.getFile()
+			fileName = String.format("%s/%s%s", enddir.getAbsolutePath(), RegexpUtils.getMatcher(upload.getMetadata()
+					.getTitle(), "[\\?\\*:\\\\<>\"/]").replaceAll(""), upload.getFile()
 					.getAbsolutePath()
-					.substring(upload.getFile().getAbsolutePath().lastIndexOf('.'));
+					.substring(upload.getFile().getAbsolutePath().lastIndexOf(FILE_EXTENSION_SEPERATOR)));
 		} else {
-			fileName = enddir.getAbsolutePath() + '/' + fileToMove.getName();
+			fileName = String.format("%s/%s", enddir.getAbsolutePath(), fileToMove.getName());
 
 		}
 		return fileName;
