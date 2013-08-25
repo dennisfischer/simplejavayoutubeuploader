@@ -29,8 +29,6 @@ import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
-import de.chaosfisch.google.youtube.thumbnail.ThumbnailJsonException;
-import de.chaosfisch.google.youtube.thumbnail.ThumbnailResponseException;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.util.RegexpUtils;
@@ -38,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -228,7 +225,6 @@ public class AbstractMetadataService implements IMetadataService {
 
 		final Map<String, Object> params = new HashMap<>(METADATA_PARAMS_SIZE);
 
-		params.putAll(getMetadataThumbnail(content, upload));
 		params.putAll(getMetadataDateOfRelease(upload));
 		params.putAll(getMetadataSocial(upload));
 		params.putAll(getMetadataMonetization(content, upload));
@@ -379,30 +375,6 @@ public class AbstractMetadataService implements IMetadataService {
 			}
 		}
 
-		return params;
-	}
-
-	private Map<String, Object> getMetadataThumbnail(final String content, final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(4);
-
-		Integer thumbnailId = null;
-		try {
-			if (null != upload.getThumbnail() && upload.getThumbnail().exists()) {
-				thumbnailId = thumbnailService.upload(content, upload.getThumbnail(), upload.getVideoid());
-			}
-		} catch (final ThumbnailJsonException | ThumbnailResponseException e) {
-			logger.warn("Thumbnail not set", e);
-		} catch (final FileNotFoundException e) {
-			logger.warn("Thumbnail not found {}", upload.getThumbnail().getAbsolutePath(), e);
-		}
-
-		if (null != thumbnailId) {
-			params.put("still_id", "0");
-			params.put("still_id_custom_thumb_version", thumbnailId.toString());
-		} else {
-			params.put("still_id", "2");
-			params.put("still_id_custom_thumb_version", "");
-		}
 		return params;
 	}
 }

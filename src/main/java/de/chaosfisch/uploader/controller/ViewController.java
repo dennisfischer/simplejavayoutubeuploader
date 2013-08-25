@@ -21,7 +21,6 @@ import de.chaosfisch.serialization.IJsonSerializer;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
 import de.chaosfisch.uploader.renderer.DialogHelper;
-import de.chaosfisch.uploader.renderer.URLOpenErrorDialog;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.collections.ObservableList;
@@ -33,6 +32,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -42,7 +42,6 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jfxtras.labs.dialogs.MonologFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +54,12 @@ import java.util.prefs.Preferences;
 
 @FXMLController
 public class ViewController {
+
+	@FXML
+	private ProgressBar busyProgressBar;
+
+	@FXML
+	private Label busyProgressLabel;
 
 	@FXML
 	public Label title;
@@ -201,17 +206,15 @@ public class ViewController {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 		prefs.putInt("version", 0);
 
-		final MonologFX monologFX = new MonologFX(MonologFX.Type.INFO);
-		monologFX.setTitleText(resources.getString("dialog.migratedatabase.title"));
-		monologFX.setMessage(resources.getString("dialog.migratedatabase.text"));
-		monologFX.showDialog();
+		dialogHelper.showErrorDialog(resources.getString("dialog.migratedatabase.title"), resources.getString("dialog.migratedatabase.text"));
 	}
 
 	@FXML
 	void openDocumentation(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/documentation.html";
 		if (!desktopUtil.openBrowser(url)) {
-			new URLOpenErrorDialog(url, resources);
+			dialogHelper.showErrorDialog(resources.getString("dialog.browser_unsupported.title"), String.format(resources
+					.getString("dialog.browser_unsupported.text"), url));
 		}
 	}
 
@@ -219,7 +222,8 @@ public class ViewController {
 	void openFAQ(final ActionEvent event) {
 		final String url = "http://uploader.chaosfisch.com/faq.html";
 		if (!desktopUtil.openBrowser(url)) {
-			new URLOpenErrorDialog(url, resources);
+			dialogHelper.showErrorDialog(resources.getString("dialog.browser_unsupported.title"), String.format(resources
+					.getString("dialog.browser_unsupported.text"), url));
 		}
 	}
 
@@ -281,6 +285,8 @@ public class ViewController {
 		assert null != openDocumentation : "fx:id=\"openDocumentation\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openFAQ : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openLogs : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+
+		dialogHelper.registerBusyControls(busyProgressBar, busyProgressLabel);
 
 		title.setText(String.format("%s %s", title.getText(), ApplicationData.VERSION));
 

@@ -10,10 +10,10 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-public class ThumbnailResponseException extends Exception {
+public class ThumbnailIOException extends Exception {
 	private static final long serialVersionUID = -2891454084663818371L;
 
-	public ThumbnailResponseException(final Exception e) {
+	public ThumbnailIOException(final Exception e) {
 		super(e);
 	}
 }

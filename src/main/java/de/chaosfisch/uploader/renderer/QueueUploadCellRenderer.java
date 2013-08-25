@@ -61,6 +61,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private IUploadService   uploadService;
 	@Inject
 	private GuiceFXMLLoader  fxmlLoader;
+	@Inject
+	private DialogHelper     dialogHelper;
 	private static final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
 	@Override
@@ -174,7 +176,6 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				renderer.setBytes(humanReadableByteCount(uploadProgress.getTotalBytesUploaded()) + " / " + humanReadableByteCount(uploadProgress
 						.getFileSize()));
 			}
-
 		}
 
 		private String calculateFinish(final long remainingBytes, final long speed) {
@@ -319,7 +320,8 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 				final String url = "http://youtu.be/" + item.getVideoid();
 
 				if (!desktopUtil.openBrowser(url)) {
-					new URLOpenErrorDialog(url, resources);
+					dialogHelper.showErrorDialog(resources.getString("dialog.browser_unsupported.title"), String.format(resources
+							.getString("dialog.browser_unsupported.text"), url));
 				}
 			}
 		}

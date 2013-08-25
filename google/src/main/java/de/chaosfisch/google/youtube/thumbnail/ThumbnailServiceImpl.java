@@ -10,54 +10,41 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
+import com.google.api.client.http.InputStreamContent;
+import com.google.api.services.youtube.YouTube;
 import com.google.inject.Inject;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.serialization.IJsonSerializer;
+import de.chaosfisch.google.YouTubeProvider;
+import de.chaosfisch.google.account.Account;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 public class ThumbnailServiceImpl implements IThumbnailService {
 
-	private final IJsonSerializer jsonSerializer;
+	private final YouTubeProvider youTubeProvider;
 
 	@Inject
-	public ThumbnailServiceImpl(final IJsonSerializer jsonSerializer) {
-		this.jsonSerializer = jsonSerializer;
+	public ThumbnailServiceImpl(final YouTubeProvider youTubeProvider) {
+		this.youTubeProvider = youTubeProvider;
 	}
 
 	@Override
-	public Integer upload(final String content, final File thumbnail, final String videoid) throws FileNotFoundException, ThumbnailResponseException, ThumbnailJsonException {
-
+	public void upload(final File thumbnail, final String videoid, final Account account) throws FileNotFoundException, ThumbnailIOException {
 		if (!thumbnail.exists()) {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		final String search = "yt.setAjaxToken(\"my_thumbnail_post\", \"";
-		final String sessiontoken = content.substring(content.indexOf(search) + search.length(), content.indexOf('\"', content
-				.indexOf(search) + search.length()));
+		try (InputStream inputStream = new BufferedInputStream(new FileInputStream(thumbnail))) {
 
-		try {
-			final HttpResponse<String> response = Unirest.post("http://www.youtube.com/my_thumbnail_post")
-					.field("video_id", videoid)
-					.field("is_ajax", "1")
-					.field("session_token", sessiontoken)
-					.field("imagefile", thumbnail)
-					.asString();
+			final InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
+			mediaContent.setLength(thumbnail.length());
 
-			final String json = response.getBody();
-			try {
-				return parseResponse(json);
-			} catch (final Exception e) {
-				throw new ThumbnailJsonException(json, e);
-			}
-		} catch (final Exception e) {
-			throw new ThumbnailResponseException(e);
+			final YouTube.Thumbnails.Set upload = youTubeProvider.setAccount(account)
+					.get()
+					.thumbnails()
+					.set(videoid, mediaContent);
+			upload.execute();
+		} catch (IOException e) {
+			throw new ThumbnailIOException(e);
 		}
-	}
-
-	private Integer parseResponse(final String json) {
-		return jsonSerializer.fromJSON(json, Thumbnail.class).version;
 	}
 }

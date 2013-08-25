@@ -12,6 +12,7 @@ package de.chaosfisch.uploader;
 
 import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -20,6 +21,7 @@ import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
+import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.uploader.renderer.Callback;
 import de.chaosfisch.uploader.renderer.DialogHelper;
@@ -69,16 +71,26 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void start(final Stage primaryStage) {
-		if (prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false)) {
+		final boolean useMasterPassword = prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
+		if (useMasterPassword) {
 			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
 				@Override
-				public void onInput(final String input) {
-					persistenceService.setMasterPassword(input);
+				public void onInput(final InputDialogController controller, final String input) {
+					if (Strings.isNullOrEmpty(input)) {
+						controller.input.getStyleClass().add("input-invalid");
+					} else {
+						persistenceService.setMasterPassword(input);
+						controller.closeDialog(null);
+					}
 				}
 			}, true);
 		}
 		if (!persistenceService.loadFromStorage()) {
-			dialogHelper.showErrorDialog("Closing..", "Invalid password.");
+			if (useMasterPassword) {
+				dialogHelper.showErrorDialog("Closing..", "Invalid password.");
+			} else {
+				dialogHelper.showErrorDialog("Closing..", "Unknown error occured.");
+			}
 			Platform.exit();
 		} else {
 			Platform.setImplicitExit(false);
@@ -134,9 +146,7 @@ public class GuiUploader extends GuiceApplication {
 
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 			primaryStage.show();
-		} catch (final IOException e)
-
-		{
+		} catch (final IOException e) {
 			logger.error("FXML Load error", e);
 			throw new RuntimeException(e);
 		}

@@ -85,7 +85,7 @@ class PersistenceService implements IPersistenceService {
 			}
 		}));
 		if (list.isEmpty()) {
-			return false;
+			return true;
 		}
 		Collections.sort(list, new Comparator<File>() {
 			@Override

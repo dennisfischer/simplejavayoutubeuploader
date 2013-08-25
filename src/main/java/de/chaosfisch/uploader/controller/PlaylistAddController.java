@@ -15,12 +15,11 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.playlist.PlaylistIOException;
-import de.chaosfisch.google.youtube.playlist.PlaylistInvalidResponseException;
 import de.chaosfisch.uploader.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -46,16 +45,19 @@ public class PlaylistAddController extends UndecoratedDialogController {
 	@FXML
 	private TextField title;
 
-	private final ObservableList<Account> accountItems = FXCollections.observableArrayList();
+	private static final Logger                  logger       = LoggerFactory.getLogger(PlaylistAddController.class);
+	private final        ObservableList<Account> accountItems = FXCollections.observableArrayList();
+
+	private final IPlaylistService playlistService;
+	private final IAccountService  accountService;
+	private final DialogHelper     dialogHelper;
 
 	@Inject
-	private IPlaylistService playlistService;
-	@Inject
-	private IAccountService  accountService;
-	@Inject
-	private DialogHelper     dialogHelper;
-
-	private static final Logger logger = LoggerFactory.getLogger(PlaylistAddController.class);
+	public PlaylistAddController(final IPlaylistService playlistService, final IAccountService accountService, final DialogHelper dialogHelper) {
+		this.playlistService = playlistService;
+		this.accountService = accountService;
+		this.dialogHelper = dialogHelper;
+	}
 
 	@FXML
 	void initialize() {
@@ -77,12 +79,10 @@ public class PlaylistAddController extends UndecoratedDialogController {
 			final Playlist playlist = new Playlist(title.getText(), accounts.getValue());
 			playlist.setSummary(summary.getText());
 			playlist.setPrivate_(playlistPrivate.isSelected());
-			try {
-				playlistService.addYoutubePlaylist(playlist);
-			} catch (final PlaylistInvalidResponseException | PlaylistIOException e) {
-				logger.warn("Playlist add error", e);
-				dialogHelper.showErrorDialog(resources.getString("dialog.playlistadd.error.title"), resources.getString("dialog.playlistadd.error.message"));
-			}
+
+			final Thread th = new Thread(createPlaylistAddTask(playlist));
+			th.setDaemon(true);
+			th.start();
 		} catch (IllegalArgumentException e) {
 			switch (e.getMessage()) {
 				case Playlist.Validation.TITLE:
@@ -105,5 +105,32 @@ public class PlaylistAddController extends UndecoratedDialogController {
 					break;
 			}
 		}
+	}
+
+	private Task<Void> createPlaylistAddTask(final Playlist playlist) {
+		final Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				updateProgress(-1, -1);
+				updateMessage("Adding playlist...");
+				playlistService.addYoutubePlaylist(playlist);
+				return null;
+			}
+
+			@Override
+			protected void failed() {
+				logger.warn("Playlist add error", getException());
+				dialogHelper.showErrorDialog(resources.getString("dialog.playlistadd.error.title"), resources.getString("dialog.playlistadd.error.message"));
+			}
+
+			@Override
+			protected void succeeded() {
+				updateMessage("Playlist added!");
+				updateProgress(1, 1);
+				closeDialog(null);
+			}
+		};
+		dialogHelper.registerBusyTask(task);
+		return task;
 	}
 }

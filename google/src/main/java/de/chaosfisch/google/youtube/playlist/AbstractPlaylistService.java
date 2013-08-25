@@ -10,139 +10,116 @@
 
 package de.chaosfisch.google.youtube.playlist;
 
-import com.google.common.collect.ArrayListMultimap;
+import com.google.api.services.youtube.model.*;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import de.chaosfisch.google.GDATAConfig;
+import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
-import de.chaosfisch.google.atom.Feed;
-import de.chaosfisch.google.atom.VideoEntry;
-import de.chaosfisch.serialization.IXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractPlaylistService implements IPlaylistService {
-	private static final String YOUTUBE_PLAYLIST_FEED_50_RESULTS = "http://gdata.youtube.com/feeds/api/users/default/playlists?v=2&max-results=50";
-	private static final String YOUTUBE_PLAYLIST_VIDEO_ADD_FEED  = "http://gdata.youtube.com/feeds/api/playlists/%s";
-	private static final String YOUTUBE_PLAYLIST_ADD_FEED        = "http://gdata.youtube.com/feeds/api/users/default/playlists";
-
-	private static final Logger logger     = LoggerFactory.getLogger(AbstractPlaylistService.class);
-	private static final int    SC_OK      = 200;
-	private static final int    SC_CREATED = 201;
-	private final IXmlSerializer  xmlSerializer;
+	private static final Logger logger            = LoggerFactory.getLogger(AbstractPlaylistService.class);
+	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private final IAccountService accountService;
+	private final YouTubeProvider youTubeProvider;
 
 	@Inject
-	public AbstractPlaylistService(final IXmlSerializer xmlSerializer, final IAccountService accountService) {
-		this.xmlSerializer = xmlSerializer;
+	public AbstractPlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
 		this.accountService = accountService;
+		this.youTubeProvider = youTubeProvider;
 	}
 
 	@Override
-	public Feed addVideoToPlaylist(final Playlist playlist, final String videoId) throws PlaylistIOException {
-		final VideoEntry submitFeed = new VideoEntry();
-		submitFeed.id = videoId;
-		submitFeed.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(submitFeed));
-
+	public void addVideoToPlaylist(final Playlist playlist, final String videoId) throws PlaylistIOException {
 		try {
-			final HttpResponse<String> response = Unirest.post(String.format(YOUTUBE_PLAYLIST_VIDEO_ADD_FEED, playlist.getPkey()))
-					.header("Content-Type", "application/atom+xml; charset=utf-8;")
-					.header("GData-Version", GDATAConfig.GDATA_V2)
-					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
-					.body(atomData)
-					.asString();
+
+			final ResourceId resourceId = new ResourceId();
+			resourceId.setKind("youtube#video");
+			resourceId.setVideoId(videoId);
+
+			final PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
+			playlistItemSnippet.setPlaylistId(playlist.getPkey());
+			playlistItemSnippet.setResourceId(resourceId);
+
+			final PlaylistItem playlistItem = new PlaylistItem();
+			playlistItem.setSnippet(playlistItemSnippet);
+
+			youTubeProvider.setAccount(playlist.getAccount())
+					.get()
+					.playlistItems()
+					.insert("snippet,status", playlistItem)
+					.execute();
 
 			logger.debug("Video added to playlist!");
-			return xmlSerializer.fromXML(response.getBody(), Feed.class);
 		} catch (final Exception e) {
 			throw new PlaylistIOException(e);
 		}
 	}
 
 	@Override
-	public Feed addYoutubePlaylist(final Playlist playlist) throws PlaylistIOException, PlaylistInvalidResponseException {
+	public void addYoutubePlaylist(final Playlist playlist) throws PlaylistIOException {
 		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
-
-		final VideoEntry entry = new VideoEntry();
-		entry.title = playlist.getTitle();
-		entry.playlistSummary = playlist.getSummary();
-		if (playlist.isPrivate_()) {
-			entry.ytPrivate = new Object();
-		}
-		entry.mediaGroup = null;
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xmlSerializer.toXML(entry));
-
-		logger.debug("Playlist atomdata: {}", atomData);
 		try {
-			final HttpResponse<String> response = Unirest.post(YOUTUBE_PLAYLIST_ADD_FEED)
-					.header("Content-Type", "application/atom+xml; charset=utf-8;")
-					.header("GData-Version", GDATAConfig.GDATA_V2)
-					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-					.header("Authorization", accountService.getAuthentication(playlist.getAccount()).getHeader())
-					.body(atomData)
-					.asString();
+			final PlaylistSnippet playlistSnippet = new PlaylistSnippet();
+			playlistSnippet.setTitle(playlist.getTitle());
+			playlistSnippet.setDescription(playlist.getSummary());
 
-			if (SC_OK != response.getCode() && SC_CREATED != response.getCode()) {
-				throw new PlaylistInvalidResponseException(response.getCode());
-			}
+			final PlaylistStatus playlistStatus = new PlaylistStatus();
+			playlistStatus.setPrivacyStatus(playlist.isPrivate_() ? "private" : "public");
+
+			final com.google.api.services.youtube.model.Playlist youTubePlaylist = new com.google.api.services.youtube.model.Playlist();
+			youTubePlaylist.setSnippet(playlistSnippet);
+			youTubePlaylist.setStatus(playlistStatus);
+
+			youTubeProvider.setAccount(playlist.getAccount())
+					.get()
+					.playlists()
+					.insert("snippet,status", youTubePlaylist)
+					.execute();
 			logger.info("Added playlist to youtube");
-			return xmlSerializer.fromXML(response.getBody(), Feed.class);
 		} catch (final Exception e) {
 			throw new PlaylistIOException(e);
 		}
 	}
 
 	@Override
-	public Multimap<Account, Playlist> synchronizePlaylists(final List<Account> accounts) throws PlaylistSynchException, PlaylistIOException {
+	public void synchronizePlaylists(final List<Account> accounts) throws PlaylistIOException {
 		logger.info("Synchronizing playlists.");
-
-		final Multimap<Account, Playlist> data = ArrayListMultimap.create();
-
 		for (final Account account : accounts) {
 			try {
-				final HttpResponse<String> response = Unirest.get(YOUTUBE_PLAYLIST_FEED_50_RESULTS)
-						.header("GData-Version", GDATAConfig.GDATA_V2)
-						.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-						.header("Authorization", accountService.getAuthentication(account).getHeader())
-						.asString();
+				final PlaylistListResponse response = youTubeProvider.setAccount(account)
+						.get()
+						.playlists()
+						.list("id,snippet,contentDetails")
+						.setMine(true)
+						.execute();
 
-				if (SC_OK != response.getCode()) {
-					System.out.println(response.getCode());
-					throw new PlaylistSynchException(response.getCode());
-				}
 				logger.debug("Playlist synchronize okay.");
-				final List<Playlist> playlists = _parsePlaylistsFeed(account, response.getBody());
-				data.putAll(account, playlists);
+
+				final List<Playlist> playlists = parsePlaylistListResponse(account, response);
+				final List<Playlist> accountPlaylists = account.getPlaylists();
+				accountPlaylists.removeAll(playlists);
+				for (final Playlist playlist : accountPlaylists) {
+					delete(playlist);
+				}
 				account.setPlaylists(playlists);
 				accountService.update(account);
 			} catch (final Exception e) {
-				e.printStackTrace();
+				logger.error("Playlist sync exception", e);
 				throw new PlaylistIOException(e);
 			}
 		}
 		logger.info("Playlists synchronized");
-		return data;
 	}
 
-	List<Playlist> _parsePlaylistsFeed(final Account account, final String content) {
-		final Feed feed = xmlSerializer.fromXML(content, Feed.class);
-
-		if (null == feed.videoEntries) {
-			logger.info("No playlists found.");
-			return new ArrayList<>(0);
-		}
-		final List<Playlist> list = Lists.newArrayListWithExpectedSize(feed.videoEntries.size());
-		for (final VideoEntry entry : feed.videoEntries) {
-			final Playlist playlist = findByPkey(entry.playlistId);
+	List<Playlist> parsePlaylistListResponse(final Account account, final PlaylistListResponse response) {
+		final List<Playlist> list = Lists.newArrayListWithExpectedSize(response.getItems().size());
+		for (final com.google.api.services.youtube.model.Playlist entry : response.getItems()) {
+			final Playlist playlist = findByPkey(entry.getId());
 			if (null == playlist) {
 				list.add(_createNewPlaylist(account, entry));
 			} else {
@@ -152,37 +129,25 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 		return list;
 	}
 
-	Playlist _createNewPlaylist(final Account account, final VideoEntry entry) {
-		final Playlist playlist = new Playlist(entry.title, account);
-		playlist.setPkey(entry.playlistId);
-		playlist.setUrl(entry.content.src);
-		playlist.setNumber(entry.playlistCountHint);
-		playlist.setSummary(entry.playlistSummary);
-		playlist.setThumbnail(getThumbnail(entry));
+	Playlist _createNewPlaylist(final Account account, final com.google.api.services.youtube.model.Playlist entry) {
+		final Playlist playlist = new Playlist(entry.getSnippet().getTitle(), account);
+		playlist.setPkey(entry.getId());
+		playlist.setNumber(entry.getContentDetails().getItemCount());
+		playlist.setSummary(entry.getSnippet().getDescription());
+		final String thumbnailUrl = entry.getSnippet().getThumbnails().getHigh().getUrl();
+		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
 		playlist.setHidden(false);
-
 		insert(playlist);
 		return playlist;
 	}
 
-	private String getThumbnail(final VideoEntry entry) {
-		String thumbnail = null;
-		if (null != entry.mediaGroup && null != entry.mediaGroup.thumbnails && 3 <= entry.mediaGroup
-				.thumbnails
-				.size()) {
-			thumbnail = entry.mediaGroup.thumbnails.get(2).url;
-		}
-		return thumbnail;
-	}
-
-	Playlist _updateExistingPlaylist(final Account account, final VideoEntry entry, final Playlist playlist) {
-		playlist.setTitle(entry.title);
-		playlist.setUrl(entry.content.src);
-		playlist.setNumber(entry.playlistCountHint);
-		playlist.setSummary(entry.playlistSummary);
+	Playlist _updateExistingPlaylist(final Account account, final com.google.api.services.youtube.model.Playlist entry, final Playlist playlist) {
+		playlist.setTitle(entry.getSnippet().getTitle());
+		playlist.setNumber(entry.getContentDetails().getItemCount());
+		playlist.setSummary(entry.getSnippet().getDescription());
+		final String thumbnailUrl = entry.getSnippet().getThumbnails().getHigh().getUrl();
+		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
 		playlist.setAccount(account);
-		playlist.setThumbnail(getThumbnail(entry));
-
 		update(playlist);
 		return playlist;
 	}

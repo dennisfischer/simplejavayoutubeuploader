@@ -14,13 +14,13 @@ import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.FxApplicationThread;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
-import com.google.common.collect.Multimap;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
+import de.chaosfisch.google.account.events.AccountUpdated;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.IUploadService;
@@ -50,7 +50,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -210,11 +209,9 @@ public class UploadController {
 	private TitledPane x5;
 
 	private final CalendarTextField  started            = new CalendarTextField().withValue(Calendar.getInstance())
-			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-			.withShowTime(true);
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"));
 	private final CalendarTextField  release            = new CalendarTextField().withValue(Calendar.getInstance())
-			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"))
-			.withShowTime(true);
+			.withDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm"));
 	private final GridView<Playlist> playlistSourcezone = GridViewBuilder.create(Playlist.class).build();
 	private final GridView<Playlist> playlistTargetzone = GridViewBuilder.create(Playlist.class).build();
 
@@ -419,8 +416,32 @@ public class UploadController {
 
 	@FXML
 	void refreshPlaylists(final ActionEvent event) {
-		final RefreshPlaylistService service = new RefreshPlaylistService(accountsList);
-		service.start();
+
+		final Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				updateMessage("Loading playlists");
+				updateProgress(-1, -1);
+				playlistService.synchronizePlaylists(accountsList);
+				return null;
+			}
+
+			@Override
+			protected void failed() {
+				updateMessage("Failed loading playlists");
+				updateProgress(0, 0);
+			}
+
+			@Override
+			protected void succeeded() {
+				updateMessage("Playlists loaded.");
+				updateProgress(1, 1);
+			}
+		};
+		dialogHelper.registerBusyTask(task);
+		final Thread th = new Thread(task);
+		th.setDaemon(true);
+		th.start();
 	}
 
 	@FXML
@@ -433,7 +454,6 @@ public class UploadController {
 
 	@FXML
 	void resetUpload(final ActionEvent event) {
-
 		_reset();
 	}
 
@@ -511,8 +531,6 @@ public class UploadController {
 		initBindings();
 		initData();
 		initSelection();
-
-		refreshPlaylists(null);
 	}
 
 	@Subscribe
@@ -551,6 +569,7 @@ public class UploadController {
 				if (null == uploadAccount.getValue()) {
 					uploadAccount.getSelectionModel().selectFirst();
 				}
+				refreshPlaylists(null);
 			}
 		});
 	}
@@ -562,6 +581,8 @@ public class UploadController {
 			public void run() {
 				accountsList.remove(event.getAccount());
 				if (event.getAccount().equals(uploadAccount.getValue())) {
+					playlistSourceList.clear();
+					playlistTargetList.clear();
 					uploadAccount.setValue(null);
 					uploadAccount.getSelectionModel().selectFirst();
 				}
@@ -569,53 +590,28 @@ public class UploadController {
 		});
 	}
 
-	/* CHECK ME FIXME
 	@Subscribe
+	public void onAccountUpdated(final AccountUpdated event) {
+		if (!uploadAccount.getValue().equals(event.getAccount())) {
+			return;
+		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				playlistSourceList.retainAll(event.getAccount().getPlaylists());
+				playlistTargetList.retainAll(event.getAccount().getPlaylists());
 
-	public void onModelAdded(final ModelAddedEvent event) {
-
-				if (event.getModel() instanceof Account) {
-
-					refreshPlaylists(null);
-				} else if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount()
-						.equals(uploadAccount.getValue())) {
-					playlistSourceList.add((Playlist) event.getModel());
-				}
-
-	}
-
-	@Subscribe
-
-	public void onModelUpdated(final ModelUpdatedEvent event) {
-
-			 if (event.getModel() instanceof Playlist && ((Playlist) event.getModel()).getAccount().
-						equals(uploadAccount.getValue())) {
-					if (((Playlist) event.getModel()).getHidden()) {
-						playlistSourceList.remove(event.getModel());
-						playlistTargetList.remove(event.getModel());
-					} else if (playlistSourceList.contains(event.getModel())) {
-						playlistSourceList.set(playlistSourceList.indexOf(event.getModel()), (Playlist) event.getModel());
-					} else if (playlistTargetList.contains(event.getModel())) {
-						playlistTargetList.set(playlistTargetList.indexOf(event.getModel()), (Playlist) event.getModel());
-					} else {
-						playlistSourceList.add((Playlist) event.getModel());
+				for (final Playlist playlist : event.getAccount().getPlaylists()) {
+					if (playlist.isHidden()) {
+						playlistSourceList.remove(playlist);
+						playlistTargetList.remove(playlist);
+					} else if (!playlistSourceList.contains(playlist) && !playlistTargetList.contains(playlist)) {
+						playlistSourceList.add(playlist);
 					}
 				}
-
+			}
+		});
 	}
-
-	@Subscribe
-
-	public void onModelRemoved(final ModelRemovedEvent event) {
-
-	 if (event.getModel() instanceof Playlist) {
-					playlistSourceList.remove(event.getModel());
-					playlistTargetList.remove(event.getModel());
-				}
-
-	}
-
-	*/
 
 	private void initData() {
 		visibilityList.addAll(Visibility.values());
@@ -1020,7 +1016,6 @@ public class UploadController {
 				playlistSourceList.addAll(playlistService.fetchUnhiddenByAccount(newValue));
 			}
 			_triggerPlaylist();
-
 		}
 	}
 
@@ -1233,24 +1228,4 @@ public class UploadController {
 			event.consume();
 		}
 	}
-
-	public class RefreshPlaylistService extends Service<Multimap<Account, Playlist>> {
-
-		public final List<Account> accounts;
-
-		public RefreshPlaylistService(final List<Account> accounts) {
-			this.accounts = accounts;
-		}
-
-		@Override
-		protected Task<Multimap<Account, Playlist>> createTask() {
-			return new Task<Multimap<Account, Playlist>>() {
-				@Override
-				protected Multimap<Account, Playlist> call() throws Exception {
-					return playlistService.synchronizePlaylists(accounts);
-				}
-			};
-		}
-	}
-
 }

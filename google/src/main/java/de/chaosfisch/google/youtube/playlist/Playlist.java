@@ -27,7 +27,7 @@ public class Playlist implements Serializable {
 	private String  title;
 	private String  url;
 	private String  thumbnail;
-	private int     number;
+	private long    number;
 	private String  summary;
 	private boolean hidden;
 	private Account account;
@@ -99,11 +99,11 @@ public class Playlist implements Serializable {
 		this.thumbnail = thumbnail;
 	}
 
-	public int getNumber() {
+	public long getNumber() {
 		return number;
 	}
 
-	public void setNumber(final int number) {
+	public void setNumber(final long number) {
 		this.number = number;
 	}
 
@@ -145,15 +145,11 @@ public class Playlist implements Serializable {
 
 		final Playlist playlist = (Playlist) obj;
 
-		return !(null != id ? !id.equals(playlist.id) : null != playlist.id) && !(null != pkey ?
-																				  !pkey.equals(playlist.pkey) :
-																				  null != playlist.pkey);
+		return !(null != pkey ? !pkey.equals(playlist.pkey) : null != playlist.pkey);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = null != id ? id.hashCode() : 0;
-		result = 31 * result + (null != pkey ? pkey.hashCode() : 0);
-		return result;
+		return null != pkey ? pkey.hashCode() : 0;
 	}
 }

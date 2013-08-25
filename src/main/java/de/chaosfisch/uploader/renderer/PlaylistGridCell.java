@@ -26,10 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 public class PlaylistGridCell extends GridCell<Playlist> {
 	private Image defaultThumbnail;
-	private static final Logger logger = LoggerFactory.getLogger(PlaylistGridCell.class);
+	private static final Logger                 logger = LoggerFactory.getLogger(PlaylistGridCell.class);
+	private static final HashMap<String, Image> images = new HashMap<>(10);
 
 	public PlaylistGridCell() {
 		itemProperty().addListener(new ChangeListener<Playlist>() {
@@ -50,7 +52,11 @@ public class PlaylistGridCell extends GridCell<Playlist> {
 				final Pane pane = new Pane();
 				final ImageView imageView;
 				if (null != playlist.getThumbnail()) {
-					imageView = new ImageView(playlist.getThumbnail());
+					if (!images.containsKey(playlist.getThumbnail())) {
+						final Image image = new Image(playlist.getThumbnail());
+						images.put(playlist.getThumbnail(), image);
+					}
+					imageView = new ImageView(images.get(playlist.getThumbnail()));
 					imageView.setPreserveRatio(true);
 					final double width = 0 < imageView.getImage().getWidth() ? imageView.getImage().getWidth() : 0;
 					final double height = 90 < imageView.getImage().getHeight() ?

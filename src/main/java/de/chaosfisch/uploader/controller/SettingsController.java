@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
@@ -95,10 +96,15 @@ public class SettingsController {
 			masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
 			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
 				@Override
-				public void onInput(final String input) {
-					persistenceService.setMasterPassword(input);
-					prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
-					masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
+				public void onInput(final InputDialogController controller, final String input) {
+					if (Strings.isNullOrEmpty(input)) {
+						controller.input.getStyleClass().add("input-invalid");
+					} else {
+						persistenceService.setMasterPassword(input);
+						prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
+						masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
+						controller.closeDialog(null);
+					}
 				}
 			}, true);
 		} else {

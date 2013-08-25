@@ -10,6 +10,8 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
+import de.chaosfisch.google.account.Account;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -17,14 +19,12 @@ public interface IThumbnailService {
 	/**
 	 * Uploads a thumbnail via the YouTube webpage. This may fail!
 	 *
-	 * @param content
-	 * 		the HTML content of the video edit page
 	 * @param thumbnail
 	 * 		the thumbnail file
 	 * @param videoid
 	 * 		the matching videoid
-	 *
-	 * @return Integer containing the "thumbnail_id"
+	 * @param account
+	 * 		the matching videoid
 	 */
-	Integer upload(String content, File thumbnail, String videoid) throws FileNotFoundException, ThumbnailResponseException, ThumbnailJsonException;
+	void upload(File thumbnail, String videoid, Account account) throws FileNotFoundException, ThumbnailIOException;
 }

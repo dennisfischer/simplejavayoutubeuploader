@@ -10,7 +10,6 @@
 
 package de.chaosfisch.uploader.controller;
 
-import com.google.common.base.Strings;
 import de.chaosfisch.uploader.renderer.Callback;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,13 +37,7 @@ public class InputDialogController extends UndecoratedDialogController {
 
 	@FXML
 	public void okayAction(final ActionEvent actionEvent) {
-		if (Strings.isNullOrEmpty(input.getText())) {
-			input.getStyleClass().add("input-invalid");
-		} else {
-			input.getStyleClass().remove("input-invalid");
-			callback.onInput(input.getText());
-			closeDialog(actionEvent);
-		}
+		callback.onInput(this, input.getText());
 	}
 
 	public void setTitle(final String title) {

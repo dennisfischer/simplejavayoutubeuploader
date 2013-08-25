@@ -11,11 +11,11 @@
 package de.chaosfisch.uploader.persistence;
 
 import com.google.inject.Inject;
+import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.AbstractPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.serialization.IXmlSerializer;
 import de.chaosfisch.uploader.persistence.dao.IPlaylistDao;
 
 import java.util.List;
@@ -25,8 +25,8 @@ class PlaylistServiceImpl extends AbstractPlaylistService {
 	private final IPlaylistDao playlistDao;
 
 	@Inject
-	public PlaylistServiceImpl(final IXmlSerializer xmlSerializer, final IPlaylistDao playlistDao, final IAccountService accountService) {
-		super(xmlSerializer, accountService);
+	public PlaylistServiceImpl(final IPlaylistDao playlistDao, final IAccountService accountService, final YouTubeProvider youTubeProvider) {
+		super(accountService, youTubeProvider);
 		this.playlistDao = playlistDao;
 	}
 

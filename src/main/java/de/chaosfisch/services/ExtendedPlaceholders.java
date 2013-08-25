@@ -149,7 +149,7 @@ public class ExtendedPlaceholders {
 	 *
 	 * @return the filled number string
 	 */
-	private String zeroFill(final int number, final int width) {
+	private String zeroFill(final long number, final int width) {
 		return String.format(String.format("%%0%dd", width), number);
 	}
 

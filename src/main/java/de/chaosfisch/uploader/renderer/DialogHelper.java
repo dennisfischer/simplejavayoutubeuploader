@@ -19,12 +19,16 @@ import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.controller.ViewController;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TooltipBuilder;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -53,19 +57,43 @@ public class DialogHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(DialogHelper.class);
 
+	private ProgressBar busyProgressBar;
+	private Label       busyProgressLabel;
+
+	public void registerBusyTask(final Task task) {
+		if (null != busyProgressBar) {
+			busyProgressBar.progressProperty().unbind();
+			busyProgressBar.progressProperty().bind(task.progressProperty());
+		}
+		if (null != busyProgressLabel) {
+			busyProgressLabel.textProperty().unbind();
+			busyProgressLabel.textProperty().bind(task.messageProperty());
+		}
+	}
+
 	public void showTemplateAddDialog() {
 		showInputDialog("templateDialog.templateTitle", "templateDialog.templateLabel", new Callback() {
 			@Override
-			public void onInput(final String input) {
+			public void onInput(final InputDialogController controller, final String input) {
 				try {
+					controller.input.getStyleClass().remove("input-invalid");
 					final Template template = jsonSerializer.fromJSON(jsonSerializer.toJSON(ViewController.standardTemplate), Template.class);
 					template.setName(input);
 					template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 					templateService.insert(template);
+					controller.closeDialog(null);
 				} catch (IllegalArgumentException e) {
-					//TODO HANDLE FAILED VALIDATION
 					switch (e.getMessage()) {
 						case Template.Validation.NAME:
+							controller.input.getStyleClass().add("input-invalid");
+							controller.input
+									.setTooltip(TooltipBuilder.create()
+											.autoHide(true)
+											.text(resources.getString("validation.name"))
+											.build());
+							controller.input
+									.getTooltip()
+									.show(controller.input, getTooltipX(controller.input), getTooltipY(controller.input));
 							break;
 					}
 				}
@@ -154,4 +182,24 @@ public class DialogHelper {
 		}
 	}
 
+	public void registerBusyControls(final ProgressBar busyProgressBar, final Label busyProgressLabel) {
+		this.busyProgressBar = busyProgressBar;
+		this.busyProgressLabel = busyProgressLabel;
+	}
+
+	public void showAccountAddDialog() {
+		try {
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/AccountAddDialog.fxml"), resources);
+			final Parent parent = result.getRoot();
+
+			final Scene scene = SceneBuilder.create().root(parent).build();
+			final Stage stage = StageBuilder.create().scene(scene).build();
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.requestFocus();
+			stage.showAndWait();
+		} catch (IOException e) {
+			logger.error("Couldn't load AccountAddDialog", e);
+		}
+	}
 }

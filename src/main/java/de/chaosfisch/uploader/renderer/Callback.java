@@ -10,6 +10,8 @@
 
 package de.chaosfisch.uploader.renderer;
 
+import de.chaosfisch.uploader.controller.InputDialogController;
+
 public interface Callback {
-	void onInput(String input);
+	void onInput(InputDialogController controller, String input);
 }

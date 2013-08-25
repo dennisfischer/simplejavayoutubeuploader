@@ -37,7 +37,7 @@
         <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
                    GridPane.rowIndex="0">
             <padding>
-                <Insets/>
+                <Insets fx:id="x1"/>
             </padding>
             <MenuBar fx:id="menuBar">
                 <Menu mnemonicParsing="false" text="%menu.file">
@@ -121,12 +121,24 @@
         </AnchorPane>
         <StackPane id="StackPane" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0"
                    GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-            <ImageView fx:id="control_resize" StackPane.alignment="CENTER_RIGHT">
-                <Image url="@../resources/images/resize_control.png"/>
-                <StackPane.margin>
-                    <Insets right="-5"/>
-                </StackPane.margin>
-            </ImageView>
+            <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" padding="$x1" spacing="10.0"
+                  StackPane.alignment="CENTER_RIGHT">
+                <children>
+                    <Label fx:id="busyProgressLabel" alignment="CENTER_RIGHT" text="" textFill="WHITE">
+                        <labelFor>
+                            <ProgressBar fx:id="busyProgressBar" prefWidth="-1.0" progress="0.0">
+                                <HBox.margin>
+                                    <Insets fx:id="x1"/>
+                                </HBox.margin>
+                            </ProgressBar>
+                        </labelFor>
+                    </Label>
+                    <fx:reference source="busyProgressBar"/>
+                    <ImageView fx:id="control_resize" fitHeight="10.0" fitWidth="10.0" preserveRatio="true">
+                        <Image url="@../resources/images/resize_control.png"/>
+                    </ImageView>
+                </children>
+            </HBox>
         </StackPane>
     </GridPane>
 </AnchorPane>

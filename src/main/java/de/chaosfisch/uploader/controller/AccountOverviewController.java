@@ -17,6 +17,7 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
+import de.chaosfisch.google.account.events.AccountUpdated;
 import de.chaosfisch.uploader.renderer.AccountListCellRenderer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -72,7 +73,8 @@ public class AccountOverviewController {
 		});
 	}
 
-	private void _triggerPlaylist() {
+	@Subscribe
+	public void onAccountUpdated(final AccountUpdated event) {
 		final Account[] accounts = new Account[accountItems.size()];
 		accountItems.toArray(accounts);
 		accountItems.clear();
