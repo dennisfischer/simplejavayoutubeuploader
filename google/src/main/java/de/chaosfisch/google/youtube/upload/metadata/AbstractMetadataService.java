@@ -10,8 +10,15 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
@@ -44,7 +51,7 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	private static final String   METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String   METADATA_CREATE_RESUMEABLE_URL = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=status,snippet";
 	private static final String   METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String   REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
 	private static final int      SC_OK                          = 200;
@@ -136,32 +143,49 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public String createMetaData(final String atomData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException, MetaIOException {
-		// Upload atomData and fetch uploadUrl
-		try {
-			final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
-					.header("GData-Version", GDATAConfig.GDATA_V2)
-					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-					.header("Slug", fileToUpload.getAbsolutePath())
-					.header("Authorization", accountService.getAuthentication(account).getHeader())
-					.body(atomData)
-					.asString();
+	public String jsonBuilder(final Upload upload) throws IOException {
+		final VideoStatus status = new VideoStatus();
+		status.setPrivacyStatus("private");
 
-			// Check the response code for any problematic codes.
-			if (SC_BAD_REQUEST == response.getCode()) {
-				throw new MetaBadRequestException(atomData, response.getCode());
-			}
-			// Check if uploadurl is available
-			if (response.getHeaders().containsKey("Location")) {
-				return response.getHeaders().get("Location");
-			} else {
-				throw new MetaLocationMissingException(response.getCode());
-			}
-		} catch (final MetaLocationMissingException | MetaBadRequestException e) {
-			throw e;
-		} catch (final Exception e) {
-			throw new MetaIOException(e);
+		final Iterable<String> tagIterable = Splitter.on(",")
+				.omitEmptyStrings()
+				.split(RegexpUtils.getMatcher(TagParser.parseAll(upload.getMetadata().getKeywords()), "\"")
+						.replaceAll(""));
+		final List<String> tags = new ArrayList<>(Iterables.size(tagIterable));
+		for (final String tag : tagIterable) {
+			tags.add(tag);
+		}
+
+		final VideoSnippet snippet = new VideoSnippet();
+		snippet.setTitle(upload.getMetadata().getTitle());
+		snippet.setDescription(upload.getMetadata().getDescription());
+		snippet.setTags(tags);
+
+		final Video videoObjectDefiningMetadata = new Video();
+		videoObjectDefiningMetadata.setStatus(status);
+		videoObjectDefiningMetadata.setSnippet(snippet);
+
+		final JsonFactory factory = new GsonFactory();
+		return factory.toString(videoObjectDefiningMetadata);
+	}
+
+	@Override
+	public String createMetaData(final String jsonData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException, IOException {
+		// Upload atomData and fetch uploadUrl
+		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
+				.header("Content-Type", "application/json; charset=UTF-8;")
+				.header("Authorization", accountService.getAuthentication(account).getHeader())
+				.header("X-Upload-Content-Lenght", String.format("%d", fileToUpload.length()))
+				.header("X-Upload-Content-Type", "application/octet-stream")
+				.body(jsonData)
+				.asString();
+		if (SC_BAD_REQUEST == response.getCode()) {
+			throw new MetaBadRequestException(jsonData, response.getCode());
+		}
+		if (response.getHeaders().containsKey("Location")) {
+			return response.getHeaders().get("Location");
+		} else {
+			throw new MetaLocationMissingException(response.getCode());
 		}
 	}
 

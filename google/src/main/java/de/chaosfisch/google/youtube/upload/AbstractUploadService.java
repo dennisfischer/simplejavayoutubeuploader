@@ -13,9 +13,10 @@ package de.chaosfisch.google.youtube.upload;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
-import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import javafx.beans.property.SimpleBooleanProperty;
+
+import java.io.IOException;
 
 public abstract class AbstractUploadService implements IUploadService {
 
@@ -30,9 +31,12 @@ public abstract class AbstractUploadService implements IUploadService {
 	}
 
 	@Override
-	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException, MetaIOException {
-		final String atomData = metadataService.atomBuilder(upload);
-		return metadataService.createMetaData(atomData, upload.getFile(), upload.getAccount());
+	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException, IOException {
+		try {
+			return metadataService.createMetaData(metadataService.jsonBuilder(upload), upload.getFile(), upload.getAccount());
+		} catch (IOException e) {
+			throw new MetaBadRequestException("", 0);
+		}
 	}
 
 	@Override

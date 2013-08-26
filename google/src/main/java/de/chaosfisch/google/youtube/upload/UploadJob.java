@@ -14,12 +14,15 @@ import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryContext;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.function.RetryCallable;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.youtube.model.Video;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.ByteStreams;
-import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -29,9 +32,7 @@ import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
-import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
-import de.chaosfisch.google.youtube.upload.resume.ResumeIOException;
 import de.chaosfisch.util.RegexpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,40 +43,38 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 public class UploadJob implements Callable<Upload> {
 
-	private static final int  SC_OK                = 200;
-	private static final int  SC_CREATED           = 201;
-	private static final int  SC_MULTIPLE_CHOICES  = 300;
-	private static final int  SC_RESUME_INCOMPLETE = 308;
-	private static final long chunkSize            = 10485760;
+	private static final int    SC_OK                    = 200;
+	private static final int    SC_CREATED               = 201;
+	private static final int    SC_RESUME_INCOMPLETE     = 308;
+	private static final int    SC_INTERNAL_SERVER_ERROR = 500;
+	private static final int    SC_BAD_GATEWAY           = 502;
+	private static final int    SC_SERVICE_UNAVAILABLE   = 503;
+	private static final int    SC_GATEWAY_TIMEOUT       = 504;
+	private static final int    DEFAULT_BUFFER_SIZE      = 65536;
+	private static final int    MAX_DELAY                = 30000;
+	private static final int    INITIAL_DELAY            = 5000;
+	private static final double MULTIPLIER_DELAY         = 2;
+	private static final int    MAX_RETRIES              = 5;
+	private static final Logger logger                   = LoggerFactory.getLogger(UploadWorker.class);
 
-	private static final int DEFAULT_BUFFER_SIZE      = 65536;
-	private static final int SC_INTERNAL_SERVER_ERROR = 500;
-	private static final int SC_BAD_GATEWAY           = 502;
-	private static final int SC_SERVICE_UNAVAILABLE   = 503;
-	private static final int SC_GATEWAY_TIMEOUT       = 504;
-
-	/** File that is uploaded */
-	private File fileToUpload;
-	private long totalBytesUploaded;
-	private long fileSize;
-	private long start;
-	private long end;
-
-	private       Upload          upload;
 	private final EventBus        eventBus;
 	private final IUploadService  uploadService;
 	private final IAccountService accountService;
 	private final RateLimiter     rateLimiter;
 
-	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
-
 	private UploadJobProgressEvent uploadProgress;
+	private Upload                 upload;
+	private boolean                isResuming;
+	private File                   fileToUpload;
+	private long                   totalBytesUploaded;
+	private long                   fileSize;
+	private long                   start;
+	private long                   end;
+	private boolean                canceled;
 
 	@Inject
 	public UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
@@ -91,29 +90,43 @@ public class UploadJob implements Callable<Upload> {
 	public Upload call() throws Exception {
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
-				.withMaxDelay(30000)
-				.withMaxRetries(5)
-				.retryOn(MetaIOException.class)
-				.retryOn(UploadIOException.class)
-				.retryOn(ResumeIOException.class)
-				.retryOn(MetaLocationMissingException.class)
-				.dontRetry()
+		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(INITIAL_DELAY, MULTIPLIER_DELAY)
+				.withMaxDelay(MAX_DELAY)
+				.withMaxRetries(MAX_RETRIES)
+				.retryOn(Exception.class)
+				.abortOn(InterruptedException.class)
+				.abortOn(CancellationException.class)
+				.abortOn(ExecutionException.class)
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(UploadFinishedException.class)
 				.abortOn(UploadResponseException.class);
+		ListenableFuture<Void> future = null;
 		try {
 			// Schritt 1: Initialize
 			initialize();
 			// Schritt 2: MetadataUpload + UrlFetch
-			executor.getWithRetry(metadata()).get();
-			// Schritt 3: Chunkupload
-			executor.getWithRetry(upload()).get();
-			// Schritt 5: Postprocessing
+			future = executor.getWithRetry(metadata());
+			future.get();
+			// Schritt 3: Upload
+			future = executor.getWithRetry(upload());
+			future.get();
+			eventBus.post(new UploadJobFinishedEvent(upload));
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			logger.error("Upload aborted / stopped.");
+			upload.getStatus().setAborted(true);
 		} catch (Exception e) {
 			logger.error("Upload error", e);
+			upload.getStatus().setFailed(true);
 		}
-		eventBus.post(new UploadJobFinishedEvent(upload));
+
+		upload.getStatus().setRunning(false);
+		uploadService.update(upload);
+		canceled = true;
+		if (null != future && !future.isCancelled() && !future.isDone()) {
+			future.cancel(true);
+		}
+		schedueler.shutdownNow();
 		eventBus.unregister(this);
 		return upload;
 	}
@@ -136,13 +149,14 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
-	private Callable<Void> metadata() {
+	private RetryCallable<Void> metadata() {
 
-		return new Callable<Void>() {
+		return new RetryCallable<Void>() {
 			@Override
-			public Void call() throws MetaLocationMissingException, MetaBadRequestException, MetaIOException {
+			public Void call(final RetryContext retryContext) throws MetaLocationMissingException, MetaBadRequestException, UploadFinishedException, UploadResponseException, IOException {
 				if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
 					logger.info("Uploadurl existing: {}", upload.getUploadurl());
+					resumeinfo();
 					return null;
 				}
 
@@ -160,7 +174,7 @@ public class UploadJob implements Callable<Upload> {
 		return new RetryCallable<Void>() {
 
 			@Override
-			public Void call(final RetryContext retryContext) throws ResumeIOException, UploadFinishedException, UploadIOException, UploadResponseException {
+			public Void call(final RetryContext retryContext) throws UploadFinishedException, UploadResponseException, IOException {
 				try {
 					if (null != retryContext.getLastThrowable()) {
 						throw retryContext.getLastThrowable();
@@ -175,70 +189,69 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private void uploadChunk() throws UploadResponseException, UploadIOException {
+	private void uploadChunk() throws UploadResponseException, IOException, UploadFinishedException {
 		// Log operation
-		logger.debug(String.format("start=%s end=%s filesize=%s", start, end, (int) fileSize));
+		logger.debug("start={} end={} filesize={}", start, end, fileSize);
 
 		// Log operation
-		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
+		logger.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
 
 		if (null == uploadProgress) {
 			uploadProgress = new UploadJobProgressEvent(upload, fileSize);
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 
-		// Calculating the chunk size
-		final int chunk = (int) (end - start + 1);
-
-		try {
-			// Building PUT RequestImpl for chunk data
-			final URL url = URI.create(upload.getUploadurl()).toURL();
-			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-			request.setRequestMethod("PUT");
-			request.setDoOutput(true);
-			request.setChunkedStreamingMode(chunk);
-			//Properties
-			request.setRequestProperty("Content-Type", upload.getMimetype());
-			request.setRequestProperty("Content-Length", String.format("%d", fileSize - start));
+		// Building PUT RequestImpl for chunk data
+		final URL url = URI.create(upload.getUploadurl()).toURL();
+		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		request.setRequestMethod("PUT");
+		request.setDoOutput(true);
+		request.setChunkedStreamingMode((int) fileSize);
+		//Properties
+		request.setRequestProperty("Content-Type", upload.getMimetype());
+		request.setRequestProperty("Content-Length", String.format("%d", fileSize - start));
+		if (isResuming) {
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileSize));
-			request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount())
-					.getHeader());
-			request.connect();
+		}
+		request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader());
+		request.connect();
 
-			try (final TokenOutputStream throttledOutputStream = new TokenOutputStream(request.getOutputStream(), this)) {
+		try (final TokenOutputStream tokenOutputStream = new TokenOutputStream(request.getOutputStream(), this)) {
 
-				final InputSupplier<InputStream> fileInputSupplier = ByteStreams.slice(Files.newInputStreamSupplier(fileToUpload), start, end);
-				ByteStreams.copy(fileInputSupplier, throttledOutputStream);
+			final InputSupplier<InputStream> fileInputSupplier = ByteStreams.slice(Files.newInputStreamSupplier(fileToUpload), start, end);
+			ByteStreams.copy(fileInputSupplier, tokenOutputStream);
 
-				switch (request.getResponseCode()) {
-					case SC_CREATED:
-						final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
-							@Override
-							public InputStream getInput() throws IOException {
-								return request.getInputStream();
-							}
-						};
-						logger.debug("Upload created {} ", CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
-						/*
-						upload.setVideoid(resumeableManager.parseVideoId());
-						uploadService.update(upload);
-						*/
-						break;
-					case SC_INTERNAL_SERVER_ERROR:
-					case SC_BAD_GATEWAY:
-					case SC_SERVICE_UNAVAILABLE:
-					case SC_GATEWAY_TIMEOUT:
-						throw new IOException(String.format("Unexepected response: %d", request.getResponseCode()));
-					default:
-						throw new UploadResponseException(request.getResponseCode());
-				}
+			final int code = request.getResponseCode();
+			switch (code) {
+				case SC_OK:
+				case SC_CREATED:
+
+					final JsonFactory factory = new GsonFactory();
+					final Video video = factory.fromInputStream(request.getInputStream(), Charsets.UTF_8, Video.class);
+					logger.debug("Upload created {} ", video.toPrettyString());
+
+					upload.setVideoid(video.getId());
+					upload.getStatus().setArchived(true);
+					upload.getStatus().setFailed(false);
+					uploadService.update(upload);
+					break;
+				case SC_RESUME_INCOMPLETE:
+					System.out.println("Why is this called?");
+					break;
+
+				case SC_INTERNAL_SERVER_ERROR:
+				case SC_BAD_GATEWAY:
+				case SC_SERVICE_UNAVAILABLE:
+				case SC_GATEWAY_TIMEOUT:
+					throw new IOException(String.format("Unexepected response: %d", code));
+				default:
+					throw new UploadResponseException(code);
 			}
-		} catch (final IOException e) {
-			throw new UploadIOException(e);
 		}
 	}
 
-	private void resumeinfo() throws ResumeIOException, UploadFinishedException, UploadResponseException {
+	private void resumeinfo() throws UploadFinishedException, UploadResponseException, IOException {
+		isResuming = true;
 		fetchResumeInfo(upload);
 
 		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
@@ -249,7 +262,7 @@ public class UploadJob implements Callable<Upload> {
 		logger.info("Next byte to upload is {}-{}.", start, end);
 	}
 
-	private void fetchResumeInfo(final Upload upload) throws ResumeIOException, UploadFinishedException, UploadResponseException {
+	private void fetchResumeInfo(final Upload upload) throws IOException, UploadFinishedException, UploadResponseException {
 		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
 				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
 				.header("Content-Range", String.format("bytes */%d", fileSize))
@@ -268,7 +281,7 @@ public class UploadJob implements Callable<Upload> {
 			case SC_BAD_GATEWAY:
 			case SC_SERVICE_UNAVAILABLE:
 			case SC_GATEWAY_TIMEOUT:
-				throw new ResumeIOException(new IOException(String.format("Unexepected response: %d", response.getCode())));
+				throw new IOException(String.format("Unexepected response: %d", response.getCode()));
 			default:
 				throw new UploadResponseException(response.getCode());
 			case SC_RESUME_INCOMPLETE:
@@ -310,7 +323,7 @@ public class UploadJob implements Callable<Upload> {
 		private final UploadJob job;
 
 		public TokenOutputStream(final OutputStream outputStream, final UploadJob job) {
-			super(outputStream);
+			super(outputStream, DEFAULT_BUFFER_SIZE);
 			this.job = job;
 		}
 
@@ -320,6 +333,9 @@ public class UploadJob implements Callable<Upload> {
 				job.rateLimiter.acquire(b.length);
 			}
 			super.write(b, off, len);
+			if (job.canceled) {
+				throw new CancellationException("Cancled");
+			}
 
 			// Event Upload Progress
 			// Calculate all uploadinformation

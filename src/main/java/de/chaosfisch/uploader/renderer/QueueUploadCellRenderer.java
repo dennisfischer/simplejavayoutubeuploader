@@ -18,6 +18,7 @@ import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.UploadController;
@@ -122,11 +123,16 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.onAction(new QueueCellHyperlinkHandler(item))
 						.build();
 			} else if (status.isFailed()) {
-				//FIXME STATUS MESSAGE MISSING
-				final String statusMessage = ""; // resources.getString(item.getStatus().toLowerCase(Locale.getDefault()));
-
+				//TODO Adjust message?
+				final String statusMessage = "Failed"; // resources.getString(item.getStatus().toLowerCase(Locale.getDefault()));
 				progressNode = LabelBuilder.create()
 						.text(statusMessage)
+						.styleClass("queueCellFailedLabel")
+						.prefWidth(500)
+						.build();
+			} else if (status.isAborted()) {
+				progressNode = LabelBuilder.create()
+						.text("Aborted")
 						.styleClass("queueCellFailedLabel")
 						.prefWidth(500)
 						.build();
@@ -160,20 +166,31 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		}
 
 		@Subscribe
-		public void onUploadProgress(final UploadJobProgressEvent uploadProgress) {
-
-			if (!uploadProgress.getUpload().equals(upload)) {
+		public void onUploadFinished(final UploadJobFinishedEvent event) {
+			if (!event.getUpload().equals(upload)) {
 				return;
 			}
 			if (progressNode instanceof ProgressNodeRenderer) {
-				final long speed = uploadProgress.getDiffBytes() / (uploadProgress.getDiffTime() + 1) * 1000 + 1;
+				final ProgressNodeRenderer renderer = (ProgressNodeRenderer) progressNode;
+				renderer.setProgress(1);
+			}
+		}
+
+		@Subscribe
+		public void onUploadProgress(final UploadJobProgressEvent event) {
+
+			if (!event.getUpload().equals(upload)) {
+				return;
+			}
+			if (progressNode instanceof ProgressNodeRenderer) {
+				final long speed = event.getDiffBytes() / (event.getDiffTime() + 1) * 1000 + 1;
 
 				final ProgressNodeRenderer renderer = (ProgressNodeRenderer) progressNode;
-				renderer.setProgress((double) uploadProgress.getTotalBytesUploaded() / (double) uploadProgress.getFileSize());
-				renderer.setEta(calculateEta(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
+				renderer.setProgress((double) event.getTotalBytesUploaded() / (double) event.getFileSize());
+				renderer.setEta(calculateEta(event.getFileSize() - event.getTotalBytesUploaded(), speed));
 				renderer.setSpeed(humanReadableByteCount(speed) + "/s");
-				renderer.setFinish(calculateFinish(uploadProgress.getFileSize() - uploadProgress.getTotalBytesUploaded(), speed));
-				renderer.setBytes(humanReadableByteCount(uploadProgress.getTotalBytesUploaded()) + " / " + humanReadableByteCount(uploadProgress
+				renderer.setFinish(calculateFinish(event.getFileSize() - event.getTotalBytesUploaded(), speed));
+				renderer.setBytes(humanReadableByteCount(event.getTotalBytesUploaded()) + " / " + humanReadableByteCount(event
 						.getFileSize()));
 			}
 		}

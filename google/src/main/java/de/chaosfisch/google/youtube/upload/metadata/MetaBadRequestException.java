@@ -15,6 +15,12 @@ public class MetaBadRequestException extends Exception {
 	private final String atomData;
 	private final int    statusCode;
 
+	public MetaBadRequestException(final Exception e) {
+		super(e);
+		atomData = "empty";
+		statusCode = 400;
+	}
+
 	public MetaBadRequestException(final String atomData, final int statusCode) {
 		this.atomData = atomData;
 		this.statusCode = statusCode;

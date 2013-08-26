@@ -15,6 +15,7 @@ public class UploadResponseException extends Exception {
 	private final int responseCode;
 
 	public UploadResponseException(final int responseCode) {
+		super("Response code " + responseCode);
 		this.responseCode = responseCode;
 	}
 

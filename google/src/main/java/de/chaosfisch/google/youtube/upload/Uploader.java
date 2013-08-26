@@ -10,19 +10,19 @@
 
 package de.chaosfisch.google.youtube.upload;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.events.UploadEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
-import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.*;
 
@@ -30,26 +30,37 @@ public class Uploader {
 
 	private static final int    ENQUEUE_WAIT_TIME   = 10000;
 	private static final int    DEFAULT_MAX_UPLOADS = 1;
-	private static final Logger logger              = LoggerFactory.getLogger(Uploader.class);
 	private static final int    ONE_KILOBYTE        = 1024;
+	private static final Logger logger              = LoggerFactory.getLogger(Uploader.class);
 
-	private       int                       maxUploads           = DEFAULT_MAX_UPLOADS;
-	private final CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(Executors.newFixedThreadPool(10));
-	private final List<Future<Upload>>      futures              = Lists.newArrayListWithExpectedSize(10);
+	private final ExecutorService                 executorService      = Executors.newFixedThreadPool(10);
+	private final ScheduledExecutorService        timer                = Executors.newSingleThreadScheduledExecutor();
+	private final RateLimiter                     rateLimitter         = RateLimiter.create(Double.MAX_VALUE);
+	private final CompletionService<Upload>       jobCompletionService = new ExecutorCompletionService<>(executorService);
+	private final HashMap<Upload, Future<Upload>> futures              = Maps.newHashMapWithExpectedSize(10);
 
-	private final Thread consumer = new UploadFinishProcessor();
-	private       int               runningUploads;
-	private       IUploadService    uploadService;
-	private final EventBus          eventBus;
-	private final IUploadJobFactory uploadJobFactory;
-	private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledFuture<?> task;
-	private RateLimiter rateLimitter = RateLimiter.create(Double.MAX_VALUE);
+	private final EventBus              eventBus;
+	private final IUploadJobFactory     uploadJobFactory;
+	private       int                   runningUploads;
+	private       IUploadService        uploadService;
+	private       UploadFinishProcessor consumer;
+	private       ScheduledFuture<?>    task;
+
+	private int maxUploads = DEFAULT_MAX_UPLOADS;
 
 	@Inject
 	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory) {
 		this.eventBus = eventBus;
 		this.uploadJobFactory = uploadJobFactory;
+	}
+
+	private void createConsumer() {
+		if (null != consumer && consumer.isAlive()) {
+			return;
+		}
+		consumer = new UploadFinishProcessor();
+		consumer.setDaemon(true);
+		consumer.start();
 	}
 
 	public void setMaxUploads(final int maxUploads) {
@@ -67,9 +78,9 @@ public class Uploader {
 		uploadService.setRunning(false);
 
 		if (force) {
-			for (final Future<Upload> job : futures) {
-				job.cancel(true);
-				futures.remove(job);
+			for (final Map.Entry<Upload, Future<Upload>> job : futures.entrySet()) {
+				job.getValue().cancel(true);
+				futures.remove(job.getKey());
 			}
 		}
 	}
@@ -93,7 +104,7 @@ public class Uploader {
 					}
 				}
 			}
-		});
+		}, "Enqueue-Thread");
 		thread.setDaemon(true);
 		thread.start();
 	}
@@ -107,7 +118,7 @@ public class Uploader {
 	}
 
 	public void abort(final Upload upload) {
-		eventBus.post(new UploadJobAbortEvent(upload));
+		futures.get(upload).cancel(true);
 	}
 
 	private void enqueueUpload() {
@@ -118,9 +129,10 @@ public class Uploader {
 					polled.getStatus().setLocked(true);
 					uploadService.update(polled);
 				} else {
+					createConsumer();
 					polled.getStatus().setRunning(true);
 					uploadService.update(polled);
-					jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter));
+					futures.put(polled, jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter)));
 					runningUploads++;
 				}
 			}
@@ -136,6 +148,10 @@ public class Uploader {
 	}
 
 	private class UploadFinishProcessor extends Thread {
+		public UploadFinishProcessor() {
+			super("Upload Finish Processor-Thread");
+		}
+
 		@Override
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
@@ -167,7 +183,7 @@ public class Uploader {
 				eventBus.post(new UploadJobFinishedEvent(upload));
 				runningUploads--;
 				return upload;
-			} catch (ExecutionException | InterruptedException e) {
+			} catch (ExecutionException | CancellationException | InterruptedException e) {
 				Thread.currentThread().interrupt();
 				return null;
 			}
@@ -175,7 +191,7 @@ public class Uploader {
 	}
 
 	public void runStarttimeChecker() {
-		new Thread(new Runnable() {
+		final Thread th = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				scheduleTask();
@@ -183,7 +199,9 @@ public class Uploader {
 					run();
 				}
 			}
-		}).start();
+		}, "Starttime-Thread");
+		th.setDaemon(true);
+		th.start();
 	}
 
 	private void scheduleTask() {
@@ -212,5 +230,6 @@ public class Uploader {
 
 	public void stopStarttimeChecker() {
 		timer.shutdownNow();
+		executorService.shutdownNow();
 	}
 }

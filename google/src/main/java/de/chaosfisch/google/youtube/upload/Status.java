@@ -16,6 +16,7 @@ public class Status implements Serializable {
 
 	private static final long serialVersionUID = -6609560404674546724L;
 	private int     id;
+	private boolean aborted;
 	private boolean archived;
 	private boolean failed;
 	private boolean running;
@@ -96,5 +97,13 @@ public class Status implements Serializable {
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	public boolean isAborted() {
+		return aborted;
+	}
+
+	public void setAborted(final boolean aborted) {
+		this.aborted = aborted;
 	}
 }
