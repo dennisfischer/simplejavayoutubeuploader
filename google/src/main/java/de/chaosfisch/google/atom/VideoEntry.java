@@ -58,7 +58,7 @@ public class VideoEntry {
 	public String location;
 
 	@XStreamAlias("media:group")
-	public MediaGroup mediaGroup = new MediaGroup();
+	public final MediaGroup mediaGroup = new MediaGroup();
 
 	@XStreamAlias("yt:countHint")
 	public Integer playlistCountHint;

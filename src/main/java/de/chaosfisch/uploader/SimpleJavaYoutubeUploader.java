@@ -30,7 +30,6 @@ public final class SimpleJavaYoutubeUploader {
 
 	public static void main(final String[] args) {
 		loadVMOptions();
-		initUpdater();
 		initApplication(args);
 	}
 
@@ -47,10 +46,6 @@ public final class SimpleJavaYoutubeUploader {
 			prefs.putInt("version", ApplicationData.RELEASE);
 		}
 		GuiUploader.initialize(args);
-	}
-
-	private static void initUpdater() {
-		new ApplicationUpdater();
 	}
 
 	private static void loadVMOptions() {

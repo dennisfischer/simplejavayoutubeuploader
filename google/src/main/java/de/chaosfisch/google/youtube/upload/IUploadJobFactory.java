@@ -10,6 +10,8 @@
 
 package de.chaosfisch.google.youtube.upload;
 
+import com.google.common.util.concurrent.RateLimiter;
+
 public interface IUploadJobFactory {
-	UploadJob create(Upload upload);
+	UploadJob create(Upload upload, RateLimiter rateLimiter);
 }

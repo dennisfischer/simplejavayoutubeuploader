@@ -10,57 +10,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="21a08e30-0f87-41a4-a993-a28723a4cba8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddDialogController.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/YouTubeProvider.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/google_api_client_1_16_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/google_api_services_youtube_v3_rev72_1_16_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/google_http_client_1_16_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/google_http_client_gson_1_16_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/google_oauth_client_1_16_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jfxtras_labs_2_2_r5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jsr305_1_3_9.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/xpp3_1_1_4c.xml" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\.idea\libraries\jfxtras_labs_2_2_2_2_r5_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\thumbnail\Thumbnail.java" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\thumbnail\ThumbnailJsonException.java" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\lib\jfxtras-labs-2.2-2.2-r5-SNAPSHOT.jar" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\src\main\java\de\chaosfisch\uploader\renderer\URLOpenErrorDialog.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/excludeFromValidation.xml" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\playlist\PlaylistInvalidResponseException.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\playlist\PlaylistSynchException.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\upload\resume\IResumeableManager.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\upload\resume\ResumeInfo.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\upload\resume\ResumeInvalidResponseException.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\upload\resume\ResumeableManagerImpl.java" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\lib\jupidator.jar" afterPath="" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\src\main\java\de\chaosfisch\uploader\ApplicationUpdater.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/AbstractPlaylistService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/AbstractPlaylistService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountOverviewController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountOverviewController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/Callback.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/Callback.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/DialogHelper.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/DialogHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExtendedPlaceholders.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExtendedPlaceholders.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/GoogleModule.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/GoogleModule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/AbstractUploadService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/AbstractUploadService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/GuiUploader.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/GuiUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/IPlaylistService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/IPlaylistService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/IThumbnailService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/IThumbnailService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/InputDialogController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/InputDialogController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/PersistenceService.java" afterPath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/PersistenceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/Playlist.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/Playlist.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/PlaylistAddController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/PlaylistAddController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/PlaylistGridCell.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/PlaylistGridCell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/PlaylistServiceImpl.java" afterPath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/PlaylistServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/QueueUploadCellRenderer.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/QueueUploadCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/SettingsController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/SettingsController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadJobFactory.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadJobFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/QueueCommandController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/QueueCommandController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/ThumbnailServiceImpl.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/ThumbnailServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/ViewController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/ViewController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_de.properties" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_de.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadWorker.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadWorker.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/UploaderModule.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/UploaderModule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/atom/VideoEntry.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/atom/VideoEntry.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/build.gradle" afterPath="$PROJECT_DIR$/google/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simple-java-youtube-uploader.iml" afterPath="$PROJECT_DIR$/simple-java-youtube-uploader.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/build.gradle" afterPath="$PROJECT_DIR$/persistence/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/persistence.iml" afterPath="$PROJECT_DIR$/persistence/persistence.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simple-java-youtube-uploader\google\src\main\java\de\chaosfisch\google\youtube\thumbnail\ThumbnailResponseException.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/ThumbnailIOException.java" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377459642925" ignored="false" />
+    <file path="/Dummy.txt" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377521791509" ignored="false" />
     <file path="/launch4j.xml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375996862436" ignored="false" />
     <file path="/MetadataServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375470373654" ignored="false" />
     <file path="/PlaylistServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377417718012" ignored="false" />
@@ -69,8 +50,8 @@
     <file path="/AccountTrigger.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366536627823" ignored="false" />
     <file path="/UploadController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377450922441" ignored="false" />
     <file path="/RemoveUploadCommand.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375535485221" ignored="false" />
-    <file path="/GuiUploader.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377417846378" ignored="false" />
-    <file path="/a.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377423302915" ignored="false" />
+    <file path="/GuiUploader.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377523697735" ignored="false" />
+    <file path="/a.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377523005412" ignored="false" />
     <file path="/ApplicationData.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366556895353" ignored="false" />
     <file path="/UploadControllerAddCommand.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376140043095" ignored="false" />
     <file path="/QueueUploadCellRenderer.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377166094436" ignored="false" />
@@ -97,10 +78,10 @@
     <file path="/UploadPartnerController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376139891481" ignored="false" />
     <file path="/UploadPartner.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366222746491" ignored="false" />
     <file path="/style.css" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1367657727428" ignored="false" />
-    <file path="/fragment.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377416683030" ignored="false" />
+    <file path="/fragment.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377530490048" ignored="false" />
     <file path="/ViewController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377434603471" ignored="false" />
     <file path="/AccountOverviewController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377460116095" ignored="false" />
-    <file path="/a.dummy" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377114058529" ignored="false" />
+    <file path="/a.dummy" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377530493361" ignored="false" />
     <file path="/application_de.properties" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377167499205" ignored="false" />
     <file path="$PROJECT_DIR$/src/main/java/org/chaosfisch/youtubeuploader/controller/renderer/AccountListViewCellFactorys.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366399010499" ignored="false" />
     <file path="/ThumbnailServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377416756005" ignored="false" />
@@ -139,7 +120,7 @@
     <file path="$PROJECT_DIR$/../temp/org/chaosfisch/youtubeuploader/db/generated/tables/daos/TemplateDao.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366573739143" ignored="false" />
     <file path="$PROJECT_DIR$/../temp/org/chaosfisch/youtubeuploader/db/generated/tables/daos/PlaylistDao.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366573739144" ignored="false" />
     <file path="/UploadDao.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366644673782" ignored="false" />
-    <file path="/Uploader.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376773540528" ignored="false" />
+    <file path="/Uploader.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377528978458" ignored="false" />
     <file path="/Protocol.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366789374306" ignored="false" />
     <file path="/TagParser.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377114031825" ignored="false" />
     <file path="/RegexpUtils.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1366789847311" ignored="false" />
@@ -180,7 +161,7 @@
     <file path="/URLOpenErrorDialog.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1371585558729" ignored="false" />
     <file path="/DesktopUtil.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1372082541265" ignored="false" />
     <file path="/DirectoryOpenErrorDialog.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1371585504038" ignored="false" />
-    <file path="/QueueCommandController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376771912093" ignored="false" />
+    <file path="/QueueCommandController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377528361952" ignored="false" />
     <file path="/application.properties" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1370268759942" ignored="false" />
     <file path="/SettingsController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377167403556" ignored="false" />
     <file path="/ActionOnFinish.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1370268699782" ignored="false" />
@@ -240,7 +221,7 @@
     <file path="/Auhtentication.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1372080856651" ignored="false" />
     <file path="/TemplateServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376572373438" ignored="false" />
     <file path="/UploadJobFactory.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1372087743400" ignored="false" />
-    <file path="/UploadJob.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377113681637" ignored="false" />
+    <file path="/UploadJob.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377532090627" ignored="false" />
     <file path="/UploadFinishedEvent.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1372088964422" ignored="false" />
     <file path="/MetaBadRequestException.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375470024058" ignored="false" />
     <file path="/MetaLocationMissingException.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375469932041" ignored="false" />
@@ -260,7 +241,7 @@
     <file path="/Configuration.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375527734534" ignored="false" />
     <file path="/IConfiguration.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375532533735" ignored="false" />
     <file path="/PersistenceConfiguration.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375532746982" ignored="false" />
-    <file path="/AbstractUploadService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376771900237" ignored="false" />
+    <file path="/AbstractUploadService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377528176466" ignored="false" />
     <file path="/ITemplateService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376572377006" ignored="false" />
     <file path="/Template.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377030321204" ignored="false" />
     <file path="/AccountListCellRenderer.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377113653636" ignored="false" />
@@ -292,7 +273,7 @@
     <file path="/AbstractService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376139130124" ignored="false" />
     <file path="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/IGenericDao.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376139171455" ignored="false" />
     <file path="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/AbstractService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376139176105" ignored="false" />
-    <file path="/AbstractMetadataService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377111603707" ignored="false" />
+    <file path="/AbstractMetadataService.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377522806123" ignored="false" />
     <file path="/AccountRemoved.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376145841241" ignored="false" />
     <file path="/TemplateAdded.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376147600988" ignored="false" />
     <file path="/PlaylistRemoved.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1376206272039" ignored="false" />
@@ -327,8 +308,9 @@
     <file path="/DialogHelper.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377435369544" ignored="false" />
     <file path="/InputDialogController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377167172551" ignored="false" />
     <file path="/Callback.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377167159031" ignored="false" />
-    <file path="/AccountAddDialog.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377460042849" ignored="false" />
+    <file path="/AccountAddDialog.fxml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377460625531" ignored="false" />
     <file path="/AccountAddDialogController.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377460463198" ignored="false" />
+    <file path="/IUploadJobFactory.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377527803797" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -361,7 +343,6 @@
     <sortChildren value="false" />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -399,6 +380,7 @@
       </breakpoint>
     </breakpoint_any>
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -627,22 +609,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/ViewController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/PlaylistAddController.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/IPlaylistService.java" />
-        <option value="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/PlaylistDaoImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/UploaderModule.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/Playlist.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/Account.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/playlist/AbstractPlaylistService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/PlaylistGridCell.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/GuiUploader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountOverviewController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/DialogHelper.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddController.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddDialogController.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
+        <option value="$PROJECT_DIR$/persistence/build.gradle" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/resume/ResumeableManagerImpl.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadJobFactory.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadService.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/AbstractUploadService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/QueueCommandController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/UploaderModule.java" />
+        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/GuiUploader.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/resume/ResumeInfo.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadWorker.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
       </list>
     </option>
   </component>
@@ -773,15 +755,39 @@
             <id />
           </State>
           <State>
-            <id>Security issues</id>
+            <id>Android Lint</id>
           </State>
           <State>
-            <id>Serialization issues</id>
+            <id>Declaration redundancy</id>
+          </State>
+          <State>
+            <id>Dependency issues</id>
+          </State>
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>Inheritance issues</id>
+          </State>
+          <State>
+            <id>Initialization issues</id>
+          </State>
+          <State>
+            <id>Maven</id>
+          </State>
+          <State>
+            <id>Modularization issues</id>
+          </State>
+          <State>
+            <id>Packaging issues</id>
+          </State>
+          <State>
+            <id>SQL</id>
           </State>
         </expanded-state>
         <selected-state>
           <State>
-            <id>SerializableHasSerialVersionUIDField</id>
+            <id>InconsistentLanguageLevel</id>
           </State>
         </selected-state>
       </profile-state>
@@ -827,6 +833,276 @@
       <sortByType ProjectPane="false" />
     </navigator>
     <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtube" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="upload" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtube" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simple-java-youtube-uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="Scope">
         <subPane subId="Problems" />
         <subPane subId="Project Files">
@@ -900,334 +1176,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controller" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="persistence" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="persistence" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="persistence" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="persistence" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="google" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="google" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="google" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="org.chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="youtubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simple-java-youtube-uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="org.chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1246,16 +1194,16 @@
     <property name="Database.TableEditor.Splitter" value="0.4663212" />
     <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="Downloaded.Files.Path" value="D:\Development\java_projects\simple-java-youtube-uploader\lib" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="Downloaded.Files.Path" value="D:\Development\java_projects\simple-java-youtube-uploader\lib" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="options.lastSelected" value="preferences.sourceCode.Java" />
-    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="options.lastSelected" value="Errors" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="TODO_SCOPE" value="All" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
@@ -1279,20 +1227,20 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="gradle.tool.window.active" value="Tasks" />
-    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
     <property name="last.edited.regexp" value="Succedss code=4/dwdqwdqwdjqwdn qwkdqwk qwkdqwkdnqwk" />
-    <property name="options.searchVisible" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-      <recent name="org.chaosfisch.exceptions.SystemException" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="org.chaosfisch.google.atom" />
       <recent name="org.chaosfisch.exceptions" />
       <recent name="org.chaosfisch.youtubeuploader" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+      <recent name="org.chaosfisch.exceptions.SystemException" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.chaosfisch.youtubeuploader.converter" />
@@ -1312,11 +1260,11 @@
       <recent name="org.chaosfisch.util.http" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="de.chaosfisch.google.youtube.upload.UploadJob" />
+      <recent name="de.chaosfisch.google.youtube.upload.Uploader" />
       <recent name="de.chaosfisch.uploader.controller.UploadController" />
       <recent name="de.chaosfisch.services.ExtendedPlaceholders" />
       <recent name="de.chaosfisch.services.impl.EnddirServiceImpl" />
-      <recent name="de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService" />
-      <recent name="de.chaosfisch.uploader.persistence.dao.PersistenceService" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="de.chaosfisch.uploader.renderer" />
@@ -1325,8 +1273,10 @@
       <recent name="de.chaosfisch.uploader.persistence.dao" />
       <recent name="de.chaosfisch.uploader" />
     </key>
-    <key name="ImportMappingsDialog.RecentPackages">
-      <recent name="" />
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="de.chaosfisch.uploader" />
+      <recent name="org.chaosfisch.youtubeuploader" />
+      <recent name="org.chaosfisch" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Development\java_projects\simple-java-youtube-uploader\src\main\resources\de\chaosfisch\uploader\resources\images" />
@@ -1335,10 +1285,8 @@
       <recent name="D:\Development\java_projects\simple-java-youtube-uploader\src\main\resources\de\chaosfisch\uploader" />
       <recent name="D:\Development\java_projects\simple-java-youtube-uploader\google\lib" />
     </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="de.chaosfisch.uploader" />
-      <recent name="org.chaosfisch.youtubeuploader" />
-      <recent name="org.chaosfisch" />
+    <key name="ImportMappingsDialog.RecentPackages">
+      <recent name="" />
     </key>
   </component>
   <component name="RunManager" selected="Application.SimpleJavaYoutubeUploader">
@@ -1854,7 +1802,11 @@
       <created>1377117934970</created>
       <updated>1377117934971</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Did several gui speed improvements. Using Google API java client.">
+      <created>1377460562279</created>
+      <updated>1377460562279</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1882,12 +1834,13 @@
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32222223" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19370331" sideWeight="0.6971047" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19370331" sideWeight="0.61" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3129176" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18036287" sideWeight="0.6792873" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3975501" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30178174" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.311804" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32516703" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.298441" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -1895,8 +1848,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32870865" sideWeight="0.6837416" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15261473" sideWeight="0.688196" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.311804" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21558164" sideWeight="0.688196" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.311804" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6792873" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.688196" order="2" side_tool="false" content_ui="combo" />
@@ -1904,10 +1858,8 @@
       <window_info id="JPA Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31403118" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.73608017" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850778" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3908686" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="UpdateCopyrightCheckinHandler">
@@ -1955,7 +1907,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="added validation to gui display, code inspection done," />
+    <option name="LAST_COMMIT_MESSAGE" value="Did several gui speed improvements. Using Google API java client." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1969,7 +1921,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Refactoring - moved classes to more suitable packages." />
     <MESSAGE value="Further refactoring and duplicate removal." />
     <MESSAGE value="Removed duplicate files for db conversion. Added commenting and better DI usage to YouTube services." />
     <MESSAGE value="Initial seperation into more maintainable self contained models. Does not compile." />
@@ -1994,6 +1945,7 @@
     <MESSAGE value="Bound running status" />
     <MESSAGE value="Added dialogs, added masterpassword, moved validation template+playlist to pojos." />
     <MESSAGE value="added validation to gui display, code inspection done," />
+    <MESSAGE value="Did several gui speed improvements. Using Google API java client." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2003,129 +1955,155 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/QueueUploadCellRenderer.java">
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadJobFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="323" column="0" selection-start="11130" selection-end="11130" vertical-scroll-proportion="5.465675">
+        <state line="15" column="59" selection-start="513" selection-end="513" vertical-scroll-proportion="0.13646789">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/PlaylistGridCell.java">
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/IUploadService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="65" selection-start="1932" selection-end="1932" vertical-scroll-proportion="0.64334863">
-          <folding>
-            <element signature="e#2631#2816#0" expanded="true" />
-            <element signature="e#2809#2810#0" expanded="true" />
-            <element signature="e#2853#2986#0" expanded="true" />
-            <element signature="e#2979#2980#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="19" selection-start="710" selection-end="710" vertical-scroll-proportion="0.116972476">
+        <state line="49" column="119" selection-start="1201" selection-end="1201" vertical-scroll-proportion="0.70183486">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadController.java">
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/AbstractUploadService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="532" column="24" selection-start="19880" selection-end="19880" vertical-scroll-proportion="-0.9814189">
+        <state line="80" column="21" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.7465596">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/src.zip!/java/lang/Class.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2799" column="0" selection-start="114446" selection-end="114446" vertical-scroll-proportion="0.33277026">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/jre/lib/jfxrt.jar!/com/sun/javafx/application/LauncherImpl.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="0" selection-start="2516" selection-end="2516" vertical-scroll-proportion="0.8238342">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/DBConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="19" selection-start="713" selection-end="713" vertical-scroll-proportion="0.1761658">
           <folding>
-            <element signature="e#0#45518#0" expanded="true" />
-            <element signature="imports" expanded="true" />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="DROP TRIGGER..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="ALTER TABLE TEMPLATE..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="ALTER TABLE UPLOAD..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..PRESETS..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..QUEUE..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..UPLOADS..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..TEMPLATES..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..ACCOUNTS..." />
+            <marker date="1376761269437" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="31" selection-start="4005" selection-end="4005" vertical-scroll-proportion="0.19594595">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/GuiUploader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="123" column="33" selection-start="4167" selection-end="4167" vertical-scroll-proportion="0.9425676">
+        <state line="56" column="11" selection-start="2006" selection-end="2006" vertical-scroll-proportion="0.45945945">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountsAdd.fxml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/UploaderModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="51" selection-start="2846" selection-end="2846" vertical-scroll-proportion="0.9189189">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/QueueCommandController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="157" column="64" selection-start="5386" selection-end="5386" vertical-scroll-proportion="0.660473">
+          <folding>
+            <element signature="e#5445#5679#0" expanded="true" />
+            <element signature="e#5674#5675#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadWorker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="161" column="6" selection-start="4437" selection-end="4437" vertical-scroll-proportion="2.6708715">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/resume/ResumeIOException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="59" selection-start="557" selection-end="557" vertical-scroll-proportion="0.3158784">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/jre/lib/rt.jar!/sun/net/www/protocol/http/HttpURLConnection.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="289" column="0" selection-start="14219" selection-end="14219" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/com.google.guava/guava/14.0.1/source/169f11e28e3ed9a64e9fa895eaafb579e6a5aa6c/guava-14.0.1-sources.jar!/com/google/common/util/concurrent/AbstractFuture.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="305" column="0" selection-start="10516" selection-end="10516" vertical-scroll-proportion="0.33277026">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="122" column="58" selection-start="4656" selection-end="4656" vertical-scroll-proportion="0.6773649">
+          <folding>
+            <element signature="e#0#11787#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#5603#6006#0" expanded="true" />
+            <element signature="e#6001#6002#0" expanded="true" />
+            <element signature="e#7725#7892#0" expanded="true" />
+            <element signature="e#7742#7755#0" expanded="true" />
+            <element signature="e#7883#7884#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UndecoratedDialogController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="13" selection-start="522" selection-end="522" vertical-scroll-proportion="0.116972476">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="66" selection-start="118" selection-end="118" vertical-scroll-proportion="0.058486238">
           <folding>
-            <marker date="1376761134126" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <element signature="n#!!doc" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/PlaylistAddController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="55" selection-start="1066" selection-end="1066" vertical-scroll-proportion="0.019495413">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountOverviewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="57" selection-start="2111" selection-end="2111" vertical-scroll-proportion="0.76605505">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/InputDialogController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="8" selection-start="778" selection-end="881" vertical-scroll-proportion="0.38990825">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationUpdater.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="0" selection-start="648" selection-end="648" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddDialogController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="59" selection-start="4309" selection-end="4309" vertical-scroll-proportion="0.9425676">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="76" selection-start="1548" selection-end="1548" vertical-scroll-proportion="0.5405405">
-          <folding>
-            <marker date="1377460042760" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/renderer/DialogHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="197" column="57" selection-start="7162" selection-end="7179" vertical-scroll-proportion="1.070946">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/AccountAddController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="734" selection-end="734" vertical-scroll-proportion="0.2924312">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2199,7 +2177,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>

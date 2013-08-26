@@ -25,8 +25,6 @@ import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
-import de.chaosfisch.google.youtube.upload.resume.ResumeableManagerImpl;
 import de.chaosfisch.serialization.SerializationModule;
 import de.chaosfisch.services.EnddirService;
 import de.chaosfisch.services.impl.EnddirServiceImpl;
@@ -84,6 +82,5 @@ public class UploaderModule extends AbstractModule {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
 		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
-		bind(IResumeableManager.class).to(ResumeableManagerImpl.class);
 	}
 }

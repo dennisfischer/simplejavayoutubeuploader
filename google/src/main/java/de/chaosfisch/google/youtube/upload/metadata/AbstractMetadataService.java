@@ -28,7 +28,6 @@ import de.chaosfisch.google.account.AuthenticationInvalidException;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
-import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.util.RegexpUtils;
@@ -57,12 +56,10 @@ public class AbstractMetadataService implements IMetadataService {
 	private static final char     MODIFIED_SEPERATOR             = ',';
 	private static final int      METADATA_PARAMS_SIZE           = 40;
 
-	private final IThumbnailService thumbnailService;
-	private final IAccountService   accountService;
+	private final IAccountService accountService;
 
 	@Inject
-	public AbstractMetadataService(final IThumbnailService thumbnailService, final IAccountService accountService) {
-		this.thumbnailService = thumbnailService;
+	public AbstractMetadataService(final IAccountService accountService) {
 		this.accountService = accountService;
 	}
 

@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-1.0" maxWidth="-1.0" minHeight="300.0" minWidth="500.0"
-            prefHeight="-1.0" prefWidth="-1.0" style="-fx-border-color: #aaaaaa; -fx-border-radius: 5px"
+            prefHeight="-1.0" prefWidth="-1.0" style="-fx-border-color: #aaaaaa;"
             xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
             fx:controller="de.chaosfisch.uploader.controller.AccountAddDialogController">
     <VBox id="VBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"

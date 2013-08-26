@@ -13,6 +13,7 @@ package de.chaosfisch.google.youtube.upload;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.events.UploadEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
@@ -30,6 +31,7 @@ public class Uploader {
 	private static final int    ENQUEUE_WAIT_TIME   = 10000;
 	private static final int    DEFAULT_MAX_UPLOADS = 1;
 	private static final Logger logger              = LoggerFactory.getLogger(Uploader.class);
+	private static final int    ONE_KILOBYTE        = 1024;
 
 	private       int                       maxUploads           = DEFAULT_MAX_UPLOADS;
 	private final CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(Executors.newFixedThreadPool(10));
@@ -42,6 +44,7 @@ public class Uploader {
 	private final IUploadJobFactory uploadJobFactory;
 	private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> task;
+	private RateLimiter rateLimitter = RateLimiter.create(Double.MAX_VALUE);
 
 	@Inject
 	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory) {
@@ -117,7 +120,7 @@ public class Uploader {
 				} else {
 					polled.getStatus().setRunning(true);
 					uploadService.update(polled);
-					jobCompletionService.submit(uploadJobFactory.create(polled));
+					jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter));
 					runningUploads++;
 				}
 			}
@@ -126,6 +129,10 @@ public class Uploader {
 
 	public void setUploadService(final IUploadService uploadService) {
 		this.uploadService = uploadService;
+	}
+
+	public void setMaxSpeed(final int maxSpeed) {
+		rateLimitter.setRate(0 == maxSpeed ? Double.MAX_VALUE : maxSpeed * ONE_KILOBYTE);
 	}
 
 	private class UploadFinishProcessor extends Thread {
@@ -206,5 +213,4 @@ public class Uploader {
 	public void stopStarttimeChecker() {
 		timer.shutdownNow();
 	}
-
 }

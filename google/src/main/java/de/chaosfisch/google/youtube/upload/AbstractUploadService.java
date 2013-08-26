@@ -15,7 +15,6 @@ import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
-import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public abstract class AbstractUploadService implements IUploadService {
@@ -34,16 +33,6 @@ public abstract class AbstractUploadService implements IUploadService {
 	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException, MetaIOException {
 		final String atomData = metadataService.atomBuilder(upload);
 		return metadataService.createMetaData(atomData, upload.getFile(), upload.getAccount());
-	}
-
-	@Override
-	public boolean uploadChunk(final Upload upload) {
-		return false;  //To change body of implemented methods use File | Settings | File Templates.
-	}
-
-	@Override
-	public ResumeInfo fetchResumeInfo(final Upload upload) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
@@ -89,5 +78,10 @@ public abstract class AbstractUploadService implements IUploadService {
 	@Override
 	public void setMaxUploads(final int maxUploads) {
 		uploader.setMaxUploads(maxUploads);
+	}
+
+	@Override
+	public void setMaxSpeed(final int maxSpeed) {
+		uploader.setMaxSpeed(maxSpeed);
 	}
 }

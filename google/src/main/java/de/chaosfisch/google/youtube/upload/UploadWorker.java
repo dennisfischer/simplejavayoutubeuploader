@@ -10,11 +10,8 @@
 
 package de.chaosfisch.google.youtube.upload;
 
-import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.events.UploadJobAbortEvent;
@@ -23,19 +20,12 @@ import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
-import de.chaosfisch.google.youtube.upload.resume.IResumeableManager;
-import de.chaosfisch.google.youtube.upload.resume.ResumeIOException;
-import de.chaosfisch.google.youtube.upload.resume.ResumeInfo;
-import de.chaosfisch.google.youtube.upload.resume.ResumeInvalidResponseException;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.util.Calendar;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.GregorianCalendar;
 
 public class UploadWorker extends Task<Void> {
@@ -50,8 +40,7 @@ public class UploadWorker extends Task<Void> {
 		ABORTED, DONE, FAILED, INITIALIZE, METADATA, POSTPROCESS, RESUMEINFO, UPLOAD
 	}
 
-	private static final int    DEFAULT_BUFFER_SIZE = 65536;
-	private              STATUS currentStatus       = STATUS.INITIALIZE;
+	private STATUS currentStatus = STATUS.INITIALIZE;
 
 	private long start;
 	private long totalBytesUploaded;
@@ -63,14 +52,12 @@ public class UploadWorker extends Task<Void> {
 	private Upload upload;
 
 	@Inject
-	private       IMetadataService   metadataService;
+	private       IMetadataService metadataService;
 	@Inject
-	private       IUploadService     uploadService;
+	private       IUploadService   uploadService;
 	@Inject
-	private       IAccountService    accountService;
-	@Inject
-	private       IResumeableManager resumeableManager;
-	private final EventBus           eventBus;
+	private       IAccountService  accountService;
+	private final EventBus         eventBus;
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadWorker.class);
 
@@ -89,8 +76,9 @@ public class UploadWorker extends Task<Void> {
 		 * Abzuarbeiten sind mehrere Teilschritte, jeder Schritt kann jedoch
 		 * fehlschlagen und muss wiederholbar sein.
 		 */
-		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && resumeableManager
-				.canContinue() && !isCancelled() && !Thread.currentThread().isInterrupted()) {
+		while (STATUS.ABORTED != currentStatus && STATUS.DONE != currentStatus && STATUS.FAILED != currentStatus && !isCancelled() && !Thread
+				.currentThread()
+				.isInterrupted()) {
 
 			switch (currentStatus) {
 				case INITIALIZE:
@@ -101,12 +89,6 @@ public class UploadWorker extends Task<Void> {
 					metadata();
 					break;
 				case UPLOAD:
-					// Schritt 2: Chunkupload
-					upload();
-					break;
-				case RESUMEINFO:
-					// Schritt 3: Fetchen des Resumeinfo
-					resumeinfo();
 					break;
 				case POSTPROCESS:
 					// Schritt 4: Postprocessing
@@ -114,7 +96,6 @@ public class UploadWorker extends Task<Void> {
 				default:
 					break;
 			}
-
 		}
 		eventBus.unregister(this);
 		return null;
@@ -150,53 +131,6 @@ public class UploadWorker extends Task<Void> {
 				break;
 		}
 		eventBus.post(uploadProgress);
-	}
-
-	private void resumeinfo() throws ResumeIOException, ResumeInvalidResponseException {
-		final ResumeInfo resumeInfo = resumeableManager.fetchResumeInfo(upload);
-		if (null == resumeInfo) {
-			currentStatus = STATUS.FAILED;
-
-			///MAX RETRIES
-		}
-		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
-		if (null != resumeInfo.videoId) { // upload actually completed despite
-			// the exception
-			final String videoId = resumeInfo.videoId;
-			logger.info("No need to resume video ID {}", videoId);
-			currentStatus = STATUS.POSTPROCESS;
-		} else {
-			totalBytesUploaded = resumeInfo.nextByteToUpload;
-			// possibly rolling back the previously saved value
-			fileSize = fileToUpload.length();
-			bytesToUpload = fileSize - resumeInfo.nextByteToUpload;
-			start = resumeInfo.nextByteToUpload;
-			logger.info("Next byte to upload is {].", resumeInfo.nextByteToUpload);
-			currentStatus = STATUS.UPLOAD;
-		}
-	}
-
-	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte) throws IOException {
-
-		// Write Chunk
-		final byte[] buffer = new byte[UploadWorker.DEFAULT_BUFFER_SIZE];
-		long totalRead = 0;
-
-		while (!isCancelled() && STATUS.UPLOAD == currentStatus && totalRead != endByte - startByte + 1) {
-			// Upload bytes in buffer
-			final int bytesRead = flowChunk(inputStream, outputStream, buffer, 0, UploadWorker.DEFAULT_BUFFER_SIZE);
-			// Calculate all uploadinformation
-			totalRead += bytesRead;
-			totalBytesUploaded += bytesRead;
-
-			// PropertyChangeEvent
-			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
-			if (1000 < diffTime || totalRead == endByte - startByte + 1) {
-				uploadProgress.setBytes(totalBytesUploaded);
-				uploadProgress.setTime(diffTime);
-				eventBus.post(uploadProgress);
-			}
-		}
 	}
 
 	private long generateEndBytes(final long start, final double bytesToUpload) {
@@ -277,7 +211,6 @@ public class UploadWorker extends Task<Void> {
 		start = 0;
 		bytesToUpload = fileSize;
 		currentStatus = STATUS.UPLOAD;
-
 	}
 
 	@Subscribe
@@ -388,83 +321,5 @@ public class UploadWorker extends Task<Void> {
 		upload.setDateOfStart(null);
 		uploadService.update(upload);
 		uploadProgress.failed = true;
-	}
-
-	private void upload() throws UploadIOException, UploadResponseException {
-		// GET END SIZE
-		final long end = generateEndBytes(start, bytesToUpload);
-
-		// Log operation
-		logger.debug(String.format("start=%s end=%s filesize=%s", start, end, (int) bytesToUpload));
-
-		// Log operation
-		logger.debug(String.format("Uploaded %d bytes so far, using PUT method.", (int) totalBytesUploaded));
-
-		if (null == uploadProgress) {
-			uploadProgress = new UploadJobProgressEvent(upload, fileSize);
-			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
-		}
-
-		// Calculating the chunk size
-		final int chunk = (int) (end - start + 1);
-
-		try {
-			// Building PUT RequestImpl for chunk data
-			final URL url = URI.create(upload.getUploadurl()).toURL();
-			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-			request.setRequestMethod("POST");
-			request.setDoOutput(true);
-			request.setFixedLengthStreamingMode(chunk);
-			//Properties
-			request.setRequestProperty("Content-Type", upload.getMimetype());
-			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-		/*	requestSigner.setAccount(upload.getAccount());
-			requestSigner.sign(request);
-		*/
-			request.connect();
-
-			try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileToUpload));
-				 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
-				bufferedInputStream.skip(start);
-				flowChunk(bufferedInputStream, throttledOutputStream, start, end);
-
-				switch (request.getResponseCode()) {
-					case SC_OK:
-						//FILE UPLOADED
-						throw new UploadResponseException(SC_OK);
-					case SC_CREATED:
-						final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
-							@Override
-							public InputStream getInput() throws IOException {
-								return request.getInputStream();
-							}
-						};
-						upload.setVideoid(resumeableManager.parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
-						uploadService.update(upload);
-						currentStatus = STATUS.POSTPROCESS;
-						break;
-					case SC_RESUME_INCOMPLETE:
-						// OK, the chunk completed succesfully
-						logger.debug("responseMessage={}", request.getResponseMessage());
-						break;
-					default:
-						throw new UploadResponseException(request.getResponseCode());
-				}
-
-				bytesToUpload -= chunkSize;
-				start = end + 1;
-			}
-		} catch (final IOException e) {
-			throw new UploadIOException(e);
-		}
-	}
-
-	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
-		final int numRead;
-		if (0 <= (numRead = is.read(buf, off, len))) {
-			os.write(buf, 0, numRead);
-		}
-		os.flush();
-		return numRead;
 	}
 }

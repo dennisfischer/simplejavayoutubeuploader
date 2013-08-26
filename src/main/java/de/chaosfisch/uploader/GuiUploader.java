@@ -14,12 +14,10 @@ import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.name.Named;
 import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
-import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
@@ -45,29 +43,24 @@ import java.util.prefs.Preferences;
 
 public class GuiUploader extends GuiceApplication {
 
-	private static final int MIN_HEIGHT = 640;
-	private static final int MIN_WIDTH  = 1000;
+	private static final int         MIN_HEIGHT = 640;
+	private static final int         MIN_WIDTH  = 1000;
+	private static final Preferences prefs      = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private static final Logger      logger     = LoggerFactory.getLogger(GuiUploader.class);
+
 	@Inject
 	private GuiceFXMLLoader     fxmlLoader;
-	@Inject
-	private Injector            injector;
-	@Inject
-	private Uploader            uploader;
 	@Inject
 	private DialogHelper        dialogHelper;
 	@Inject
 	private IPersistenceService persistenceService;
-
 	@Inject
-	private IUploadService uploadService;
+	private IUploadService      uploadService;
 	@Inject
 	@Named("i18n-resources")
-	ResourceBundle resources;
-
-	private static final Preferences prefs  = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
-	private static final Logger      logger = LoggerFactory.getLogger(GuiUploader.class);
-	private double initX;
-	private double initY;
+	private ResourceBundle      resources;
+	private double              initX;
+	private double              initY;
 
 	@Override
 	public void start(final Stage primaryStage) {

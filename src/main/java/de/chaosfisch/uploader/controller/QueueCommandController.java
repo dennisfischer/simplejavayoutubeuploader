@@ -156,8 +156,12 @@ public class QueueCommandController {
 	private void initBindindings() {
 		startQueue.disableProperty().bind(uploadService.runningProperty());
 		stopQueue.disableProperty().bind(uploadService.runningProperty().not());
-		/*
-		throttle.maxBps.bind(uploadSpeed.valueProperty());          */
+		uploadSpeed.valueProperty().addListener(new ChangeListener<Integer>() {
+			@Override
+			public void changed(final ObservableValue<? extends Integer> observableValue, final Integer oldMaxSpeed, final Integer newMaxSpeed) {
+				uploadService.setMaxSpeed(newMaxSpeed);
+			}
+		});
 
 		actionOnFinish.setConverter(new StringConverter<ActionOnFinish>() {
 			@Override
