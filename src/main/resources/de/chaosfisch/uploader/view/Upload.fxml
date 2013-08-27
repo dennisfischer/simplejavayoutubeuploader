@@ -13,12 +13,13 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
+<?import de.chaosfisch.uploader.renderer.TagTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <fx:root type="javafx.scene.layout.AnchorPane" id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0"
-         minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml"
-         fx:controller="de.chaosfisch.uploader.controller.UploadController">
+         minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1"
+         xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.controller.UploadController">
     <children>
         <GridPane id="" gridLinesVisible="false" hgap="0.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0"
                   minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="outergrid"
@@ -42,17 +43,17 @@
                 <Label text="%label.title" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                 <Label text="%label.tags" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
                 <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="-1.0" minHeight="-1.0"
-                            minWidth="-1.0" prefViewportHeight="100.0" prefViewportWidth="300.0"
-                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES"
-                            GridPane.rowIndex="4" GridPane.vgrow="SOMETIMES">
+                            minWidth="-1.0" prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
+                            GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4"
+                            GridPane.vgrow="SOMETIMES">
                     <TextArea fx:id="uploadDescription" maxHeight="-1.0" minHeight="-1.0" minWidth="-1.0"
                               wrapText="true"/>
                 </ScrollPane>
                 <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="-1.0" minWidth="-1.0"
-                            prefViewportHeight="100.0" prefViewportWidth="300.0" GridPane.columnIndex="1"
+                            prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
                             GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5"
                             GridPane.vgrow="SOMETIMES">
-                    <TextArea fx:id="uploadTags" maxHeight="-1.0" wrapText="true"/>
+                    <TagTextArea maxHeight="-1.0" minHeight="-1.0" minWidth="-1.0" fx:id="uploadTags"/>
                 </ScrollPane>
                 <TextField fx:id="uploadTitle" minHeight="-Infinity" minWidth="-Infinity" promptText="Enter the title"
                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
@@ -81,6 +82,10 @@
                            focusTraversable="false" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity"
                            minWidth="-Infinity" style="-fx-background-color: #cccccc&#10;" text=""
                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
+                <ScrollPane fx:id="playlistDropScrollpane" fitToHeight="false" fitToWidth="false" hbarPolicy="AS_NEEDED"
+                            maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pannable="false"
+                            prefHeight="-1.0" prefWidth="-1.0" styleClass="dropzone" vbarPolicy="NEVER"
+                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
                 <columnConstraints>
                     <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-1.0" minWidth="-Infinity"/>
                     <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-Infinity"/>
@@ -106,10 +111,6 @@
                                     vgrow="SOMETIMES"/>
                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
-                <ScrollPane fx:id="playlistDropScrollpane" fitToHeight="false" fitToWidth="false" hbarPolicy="AS_NEEDED"
-                            maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pannable="false"
-                            prefHeight="-1.0" prefWidth="-1.0" styleClass="dropzone" vbarPolicy="NEVER"
-                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
             </GridPane>
             <Accordion maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" visible="true"
                        GridPane.columnIndex="1" GridPane.rowIndex="0">

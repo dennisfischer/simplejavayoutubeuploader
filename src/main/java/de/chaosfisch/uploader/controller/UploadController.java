@@ -35,6 +35,7 @@ import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.renderer.AccountStringConverter;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.renderer.PlaylistGridCell;
+import de.chaosfisch.uploader.renderer.TagTextArea;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.template.events.TemplateAdded;
@@ -185,7 +186,7 @@ public class UploadController {
 	private CheckBox uploadRate;
 
 	@FXML
-	private TextArea uploadTags;
+	private TagTextArea uploadTags;
 
 	@FXML
 	private TextField uploadThumbnail;
@@ -259,7 +260,8 @@ public class UploadController {
 
 		try {
 			dialogHelper.resetControlls(new Control[] {uploadAccount, uploadCategory, uploadDescription, uploadFile,
-													   uploadTags, uploadThumbnail, uploadTitle});
+													   uploadThumbnail, uploadTitle});
+			uploadTags.getStyleClass().remove("input-invalid");
 			buildUpload();
 			// Cleanup (reset form)
 			filesList.remove(uploadFile.getValue());
@@ -319,12 +321,12 @@ public class UploadController {
 				break;
 			case Upload.Validation.KEYWORD:
 				uploadTags.getStyleClass().add("input-invalid");
-				uploadTags.setTooltip(TooltipBuilder.create()
+				final Tooltip tooltip = TooltipBuilder.create()
 						.autoHide(true)
 						.text(resources.getString("validation.tags"))
-						.build());
-				uploadTags.getTooltip()
-						.show(uploadTags, dialogHelper.getTooltipX(uploadTags), dialogHelper.getTooltipY(uploadTags));
+						.build();
+				tooltip.show(uploadTags, dialogHelper.getTooltipX(uploadTags), dialogHelper.getTooltipY(uploadTags));
+
 				break;
 			case Upload.Validation.THUMBNAIL:
 			case Upload.Validation.THUMBNAIL_SIZE:
@@ -743,7 +745,7 @@ public class UploadController {
 		}
 
 		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
-				.getText(), uploadLicense.getValue());
+				.getTags(), uploadLicense.getValue());
 
 		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
 		permissions.setCommentvote(uploadCommentvote.isSelected());
@@ -790,7 +792,7 @@ public class UploadController {
 							  new File(uploadThumbnail.getText()));
 
 		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
-				.getText(), uploadLicense.getValue());
+				.getTags(), uploadLicense.getValue());
 
 		final Permissions permissions = null == template.getPermissions() ?
 										new Permissions() :
@@ -840,7 +842,7 @@ public class UploadController {
 		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
 		uploadCategory.setValue(metadata.getCategory());
 		uploadDescription.setText(metadata.getDescription());
-		uploadTags.setText(metadata.getKeywords());
+		uploadTags.setTags(metadata.getKeywords());
 		uploadLicense.setValue(metadata.getLicense());
 		uploadTitle.setText(metadata.getTitle());
 
@@ -903,7 +905,7 @@ public class UploadController {
 		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
 		uploadCategory.setValue(metadata.getCategory());
 		uploadDescription.setText(metadata.getDescription());
-		uploadTags.setText(metadata.getKeywords());
+		uploadTags.setTags(metadata.getKeywords());
 		uploadLicense.setValue(metadata.getLicense());
 		uploadTitle.setText(metadata.getTitle());
 

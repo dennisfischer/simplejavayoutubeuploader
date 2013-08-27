@@ -156,6 +156,7 @@ public class Uploader {
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
 				final Upload upload = getUpload();
+				futures.remove(upload);
 				if (null != upload) {
 					logger.info("Running uploads: {}", runningUploads);
 

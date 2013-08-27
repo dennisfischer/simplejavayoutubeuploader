@@ -22,7 +22,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -100,16 +99,13 @@ public class UploadJob implements Callable<Upload> {
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(UploadFinishedException.class)
 				.abortOn(UploadResponseException.class);
-		ListenableFuture<Void> future = null;
 		try {
 			// Schritt 1: Initialize
 			initialize();
 			// Schritt 2: MetadataUpload + UrlFetch
-			future = executor.getWithRetry(metadata());
-			future.get();
+			executor.getWithRetry(metadata()).get();
 			// Schritt 3: Upload
-			future = executor.getWithRetry(upload());
-			future.get();
+			executor.getWithRetry(upload()).get();
 			eventBus.post(new UploadJobFinishedEvent(upload));
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -122,12 +118,9 @@ public class UploadJob implements Callable<Upload> {
 
 		upload.getStatus().setRunning(false);
 		uploadService.update(upload);
-		canceled = true;
-		if (null != future && !future.isCancelled() && !future.isDone()) {
-			future.cancel(true);
-		}
 		schedueler.shutdownNow();
 		eventBus.unregister(this);
+		canceled = true;
 		return upload;
 	}
 
@@ -337,6 +330,7 @@ public class UploadJob implements Callable<Upload> {
 				throw new CancellationException("Cancled");
 			}
 
+			flush();
 			// Event Upload Progress
 			// Calculate all uploadinformation
 			job.totalBytesUploaded += b.length;
