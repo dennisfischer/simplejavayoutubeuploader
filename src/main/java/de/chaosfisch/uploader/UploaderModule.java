@@ -20,21 +20,27 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import de.chaosfisch.google.GoogleModule;
+import de.chaosfisch.google.enddir.EnddirServiceImpl;
+import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.serialization.SerializationModule;
-import de.chaosfisch.services.EnddirService;
-import de.chaosfisch.services.impl.EnddirServiceImpl;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.util.TextUtil;
 import javafx.stage.FileChooser;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 public class UploaderModule extends AbstractModule {
@@ -43,6 +49,18 @@ public class UploaderModule extends AbstractModule {
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named(IPersistenceService.PERSISTENCE_FOLDER))
 				.toInstance(ApplicationData.DATA_DIR);
+
+		try {
+			final String configFile = ApplicationData.DATA_DIR + "/config.properties";
+			if (!Files.exists(Paths.get(configFile))) {
+				Files.createFile(Paths.get(configFile));
+			}
+			final PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration(configFile);
+			propertiesConfiguration.setAutoSave(true);
+			bind(Configuration.class).toInstance(propertiesConfiguration);
+		} catch (IOException | ConfigurationException e) {
+			throw new RuntimeException(e);
+		}
 		install(new PersistenceModule());
 		install(new SerializationModule());
 		install(new GoogleModule());
@@ -80,7 +98,7 @@ public class UploaderModule extends AbstractModule {
 
 	private void mapServices() {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
-		bind(EnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
+		bind(IEnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
 	}
 }

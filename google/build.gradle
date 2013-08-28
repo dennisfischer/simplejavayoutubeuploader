@@ -13,6 +13,8 @@
 
 
 
+
+
 apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -29,7 +31,8 @@ dependencies {
             'org.apache.httpcomponents:httpasyncclient:4.0-beta3', 'org.apache.httpcomponents:httpmime:4.2.3',
             'org.json:json:20090211',
             'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
-            'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+'
+            'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',
+            'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile files('/lib/asyncretry.jar')
     compile project(':util'), project(':serialization')
 }

@@ -8,12 +8,8 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.services;
+package de.chaosfisch.google.youtube.upload;
 
-import de.chaosfisch.google.youtube.upload.Upload;
-
-import java.io.File;
-
-public interface EnddirService {
-	void moveFileByUpload(File fileToMove, Upload upload);
+public interface UploadPostProcessor {
+	Upload process(Upload upload);
 }

@@ -15,8 +15,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
-import de.chaosfisch.services.impl.EnddirServiceImpl;
-import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
+import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.uploader.renderer.Callback;
 import de.chaosfisch.uploader.renderer.DialogHelper;
@@ -26,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 @FXMLController
 public class SettingsController {
@@ -57,17 +56,20 @@ public class SettingsController {
 	@FXML
 	private CheckBox masterPasswordCheckbox;
 
-	@Inject
-	private EnddirServiceImpl   enddirService;
-	@Inject
-	private IPersistenceService persistenceService;
-	@Inject
-	private DialogHelper        dialogHelper;
+	private final        Properties vmOptions     = new Properties();
+	private final        File       vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
+	private static final Logger     LOGGER        = LoggerFactory.getLogger(SettingsController.class);
 
-	final                Properties  vmOptions     = new Properties();
-	final                File        vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
-	private static final Logger      logger        = LoggerFactory.getLogger(SettingsController.class);
-	private static final Preferences prefs         = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+	private final IPersistenceService persistenceService;
+	private final DialogHelper        dialogHelper;
+	private final Configuration       config;
+
+	@Inject
+	public SettingsController(final IPersistenceService persistenceService, final DialogHelper dialogHelper, final Configuration config) {
+		this.persistenceService = persistenceService;
+		this.dialogHelper = dialogHelper;
+		this.config = config;
+	}
 
 	@FXML
 	void openHomeDir(final ActionEvent event) {
@@ -82,12 +84,12 @@ public class SettingsController {
 
 	@FXML
 	void toggleEnddirTitle(final ActionEvent event) {
-		enddirService.setEnddirSetting(enddirService.getEnddirSetting());
+		config.setProperty(IEnddirService.RENAME_PROPERTY, !config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
 	}
 
 	@FXML
 	void toggleProgress(final ActionEvent event) {
-		prefs.putBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, progressCheckbox.isSelected());
+		config.setProperty(ProgressNodeRenderer.DISPLAY_PROGRESS, progressCheckbox.isSelected());
 	}
 
 	@FXML
@@ -101,7 +103,7 @@ public class SettingsController {
 						controller.input.getStyleClass().add("input-invalid");
 					} else {
 						persistenceService.setMasterPassword(input);
-						prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
+						config.setProperty(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
 						masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
 						controller.closeDialog(null);
 					}
@@ -109,7 +111,7 @@ public class SettingsController {
 			}, true);
 		} else {
 			persistenceService.setMasterPassword(null);
-			prefs.putBoolean(IPersistenceService.MASTER_PASSWORD, masterPasswordCheckbox.isSelected());
+			config.setProperty(IPersistenceService.MASTER_PASSWORD, masterPasswordCheckbox.isSelected());
 		}
 		persistenceService.saveToStorage();
 	}
@@ -119,9 +121,9 @@ public class SettingsController {
 		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != masterPasswordCheckbox : "fx:id=\"masterPasswordCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
-		enddirCheckbox.setSelected(enddirService.getEnddirSetting());
-		progressCheckbox.setSelected(prefs.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
-		masterPasswordCheckbox.setSelected(prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
+		enddirCheckbox.setSelected(config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
+		progressCheckbox.setSelected(config.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
+		masterPasswordCheckbox.setSelected(config.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
 
 		loadVMOptions();
 	}
@@ -130,7 +132,7 @@ public class SettingsController {
 		try {
 			vmOptions.store(Files.newWriter(vmOptionsFile, Charsets.UTF_8), "");
 		} catch (IOException e) {
-			logger.error("Failed writing vmoptions", e);
+			LOGGER.error("Failed writing vmoptions", e);
 		}
 	}
 
@@ -143,7 +145,7 @@ public class SettingsController {
 			vmOptions.load(Files.newReader(vmOptionsFile, Charsets.UTF_8));
 			homeDirTextField.setText(vmOptions.getProperty("user.home", ""));
 		} catch (IOException e) {
-			logger.error("Failed loading vmoptions", e);
+			LOGGER.error("Failed loading vmoptions", e);
 		}
 	}
 }

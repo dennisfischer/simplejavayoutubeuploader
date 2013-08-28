@@ -34,7 +34,6 @@
     <orderEntry type="library" exported="" name="httpcore-4.2.2" level="project" />
     <orderEntry type="library" exported="" name="guice-assistedinject-3.0" level="project" />
     <orderEntry type="library" exported="" name="guice-3.0" level="project" />
-    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev72-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="google-api-client-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
@@ -42,6 +41,10 @@
     <orderEntry type="library" exported="" name="xpp3-1.1.4c" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-gson-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev73-1.16.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
+    <orderEntry type="library" exported="" name="commons-configuration-1.9" level="project" />
+    <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
   </component>
 </module>
 

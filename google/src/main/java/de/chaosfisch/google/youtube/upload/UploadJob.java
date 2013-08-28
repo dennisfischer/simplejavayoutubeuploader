@@ -42,6 +42,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.concurrent.*;
 
 public class UploadJob implements Callable<Upload> {
@@ -60,25 +61,29 @@ public class UploadJob implements Callable<Upload> {
 	private static final int    MAX_RETRIES              = 5;
 	private static final Logger logger                   = LoggerFactory.getLogger(UploadWorker.class);
 
-	private final EventBus        eventBus;
-	private final IUploadService  uploadService;
-	private final IAccountService accountService;
-	private final RateLimiter     rateLimiter;
+	private final Set<UploadPreProcessor>  uploadPreProcessors;
+	private final Set<UploadPostProcessor> uploadPostProcessors;
+	private final EventBus                 eventBus;
+	private final IUploadService           uploadService;
+	private final IAccountService          accountService;
+	private final RateLimiter              rateLimiter;
 
 	private UploadJobProgressEvent uploadProgress;
 	private Upload                 upload;
-	private boolean                isResuming;
 	private File                   fileToUpload;
 	private long                   totalBytesUploaded;
 	private long                   fileSize;
 	private long                   start;
 	private long                   end;
 	private boolean                canceled;
+	private boolean                retryed;
 
 	@Inject
-	public UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
+	public UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
 		this.upload = upload;
 		this.rateLimiter = rateLimiter;
+		this.uploadPreProcessors = uploadPreProcessors;
+		this.uploadPostProcessors = uploadPostProcessors;
 		this.eventBus = eventBus;
 		this.uploadService = uploadService;
 		this.accountService = accountService;
@@ -87,6 +92,10 @@ public class UploadJob implements Callable<Upload> {
 
 	@Override
 	public Upload call() throws Exception {
+
+		for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
+			upload = preProcessor.process(upload);
+		}
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
 		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(INITIAL_DELAY, MULTIPLIER_DELAY)
@@ -106,6 +115,11 @@ public class UploadJob implements Callable<Upload> {
 			executor.getWithRetry(metadata()).get();
 			// Schritt 3: Upload
 			executor.getWithRetry(upload()).get();
+
+			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
+				upload = postProcessor.process(upload);
+			}
+
 			eventBus.post(new UploadJobFinishedEvent(upload));
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -203,7 +217,7 @@ public class UploadJob implements Callable<Upload> {
 		//Properties
 		request.setRequestProperty("Content-Type", upload.getMimetype());
 		request.setRequestProperty("Content-Length", String.format("%d", fileSize - start));
-		if (isResuming) {
+		if (retryed) {
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileSize));
 		}
 		request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader());
@@ -244,7 +258,7 @@ public class UploadJob implements Callable<Upload> {
 	}
 
 	private void resumeinfo() throws UploadFinishedException, UploadResponseException, IOException {
-		isResuming = true;
+		retryed = true;
 		fetchResumeInfo(upload);
 
 		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
