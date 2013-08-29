@@ -10,12 +10,40 @@
 
 package de.chaosfisch.google.processors;
 
+import com.google.inject.Inject;
+import de.chaosfisch.google.account.AuthenticationIOException;
+import de.chaosfisch.google.account.AuthenticationInvalidException;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.google.youtube.upload.metadata.MetaDeadEndException;
+import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ExtendedGDataPostProcessor implements UploadPostProcessor {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedGDataPostProcessor.class);
+	private final IMetadataService metadataService;
+
+	@Inject
+	ExtendedGDataPostProcessor(final IMetadataService metadataService) {
+		this.metadataService = metadataService;
+	}
+
 	@Override
 	public Upload process(final Upload upload) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		try {
+			metadataService.activateBrowserfeatures(upload);
+		} catch (MetaIOException e) {
+			LOGGER.error("Metadata IOException", e);
+		} catch (MetaDeadEndException e) {
+			LOGGER.error("Run into dead end", e);
+		} catch (AuthenticationIOException e) {
+			LOGGER.error("Authentication IOException", e);
+		} catch (AuthenticationInvalidException e) {
+			LOGGER.error("Authentication invalid", e);
+		}
+		return upload;
 	}
 }

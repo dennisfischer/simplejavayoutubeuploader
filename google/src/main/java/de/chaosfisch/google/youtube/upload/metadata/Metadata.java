@@ -102,7 +102,7 @@ public class Metadata implements Serializable {
 		if (null == keywords) {
 			this.keywords = "";
 		} else {
-			if (!TagParser.isValid(keywords)) {
+			if (!TagParser.areTagsValid(TagParser.parse(keywords))) {
 				throw new IllegalArgumentException(Upload.Validation.KEYWORD);
 			}
 			this.keywords = keywords;

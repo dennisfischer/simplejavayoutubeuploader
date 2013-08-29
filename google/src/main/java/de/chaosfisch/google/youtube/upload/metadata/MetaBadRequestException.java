@@ -22,6 +22,7 @@ public class MetaBadRequestException extends Exception {
 	}
 
 	public MetaBadRequestException(final String atomData, final int statusCode) {
+		super("Code: " + statusCode + "; Data: " + atomData);
 		this.atomData = atomData;
 		this.statusCode = statusCode;
 	}

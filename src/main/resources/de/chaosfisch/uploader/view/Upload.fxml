@@ -37,11 +37,12 @@
                       snapToPixel="true" styleClass="grid" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <Label text="%label.file" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                 <Label text="%label.playlist" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                <Label text="%label.description" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                <Label text="%label.description" fx:id="descriptionLabel" GridPane.columnIndex="0" GridPane.rowIndex="4"
                        GridPane.valignment="TOP"/>
                 <Label text="%label.category" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                <Label text="%label.title" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label text="%label.tags" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
+                <Label text="%label.title" fx:id="titleLabel" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Label text="%label.tags" fx:id="tagLabel" GridPane.columnIndex="0" GridPane.rowIndex="5"
+                       GridPane.valignment="TOP"/>
                 <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="-1.0" minHeight="-1.0"
                             minWidth="-1.0" prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
                             GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4"

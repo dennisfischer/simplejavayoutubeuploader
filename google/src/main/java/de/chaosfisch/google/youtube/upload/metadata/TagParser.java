@@ -10,108 +10,74 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
-import de.chaosfisch.util.RegexpUtils;
+import com.google.common.base.Splitter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public final class TagParser {
-	/** the separator between "block" tags */
-	private static final char   BLOCK_DELIMITER = '"';
-	private static final String STRING_TO_MATCH = ",";
-
-	/** the separator between tags */
-	private static final char DELIMITER = ' ';
+	public static final char TAG_DELIMITER       = ',';
+	public static final int  MAX_TAG_LENGTH      = 30;
+	public static final int  MIN_TAG_LEGNTH      = 2;
+	public static final int  MAX_TAG_BODY_LENGTH = 500;
 
 	private TagParser() {
 	}
 
-	/**
-	 * Checks validity of the given string
-	 *
-	 * @param input
-	 * 		the string to be checked
-	 *
-	 * @return true if input is valid
-	 */
-	public static boolean isValid(final String input) {
-		final String parsed = TagParser.parseAll(input);
-		if (500 < parsed.getBytes(Charsets.UTF_8).length || parsed.contains("<") || parsed.contains(">")) {
-			return false;
-		}
-		for (final String tag : RegexpUtils.getPattern(STRING_TO_MATCH).split(parsed)) {
-			if (30 < tag.length() || 2 > tag.length() || 30 < tag.getBytes(Charsets.UTF_8).length) {
+	public static boolean areTagsValid(final List<String> tags) {
+		for (final String tag : tags) {
+			if (!isTagValid(tag)) {
 				return false;
 			}
 		}
-		return true;
+		return MAX_TAG_BODY_LENGTH >= getLength(tags);
 	}
 
-	/**
-	 * Returns a parsed input string, invalid tags are removed
-	 *
-	 * @param input
-	 * 		the string to be parsed
-	 *
-	 * @return the parsed string
-	 */
-	public static String parseAll(String input) {
+	private static boolean isTagValid(final String tag) {
+		final int byteLength = tag.getBytes(Charsets.UTF_8).length;
+		return MIN_TAG_LEGNTH <= byteLength && MAX_TAG_LENGTH >= byteLength && !(tag.contains("<") || tag.contains(">"));
+	}
 
-		input = input.trim();
+	public static List<String> parse(final String input) {
+		final Iterable<String> tagIterable = Splitter.on(TAG_DELIMITER).omitEmptyStrings().split(input);
+		final List<String> tags = new ArrayList<>(10);
 
-		/** flag if block is open */
-		boolean blockOpen = false;
-		final StringBuilder parsedOutput = new StringBuilder(500);
-		for (int i = 0; i < input.length(); i++) {
-			switch (input.charAt(i)) {
-				case TagParser.BLOCK_DELIMITER:
-					blockOpen = !blockOpen;
-					parsedOutput.append(BLOCK_DELIMITER);
-					if (blockOpen) {
-						break;
-					}
-				case TagParser.DELIMITER:
-					if (blockOpen) {
-						parsedOutput.append(input.charAt(i));
-					} else if (parsedOutput.lastIndexOf(STRING_TO_MATCH) != parsedOutput.length() && i + 1 != input.length()) {
-						parsedOutput.append(STRING_TO_MATCH);
-					}
-					break;
-				default:
-					parsedOutput.append(input.charAt(i));
-					break;
+		for (final String tag : tagIterable) {
+			tags.add(tag.trim());
+		}
+		return tags;
+	}
+
+	private static List<String> removeInvalid(final List<String> tags) {
+		final Iterator<String> tagIterator = tags.iterator();
+		while (tagIterator.hasNext()) {
+			final String tag = tagIterator.next();
+			if (!isTagValid(tag)) {
+				tagIterator.remove();
 			}
 		}
-		return TagParser.removeInvalid(parsedOutput.toString().trim());
+		return tags;
 	}
 
-	/**
-	 * Removes invalid tags from input
-	 *
-	 * @param input
-	 * 		the string to be cleaned
-	 *
-	 * @return the cleaned string
-	 */
-	private static String removeInvalid(final String input) {
-		final String[] tags = RegexpUtils.getPattern(STRING_TO_MATCH).split(input);
-		final String[] tmpTags = new String[250];
-		int i = 0;
+	public static List<String> parse(final String keywords, final boolean removeInvalid) {
+		if (removeInvalid) {
+			return removeInvalid(parse(keywords, removeInvalid));
+		} else {
+			return parse(keywords);
+		}
+	}
+
+	public static int getLength(final List<String> tags) {
+		int length = 0;
 		for (final String tag : tags) {
-			if (!(30 < tag.length()) && !(2 > tag.length()) && !(30 < tag.getBytes(Charsets.UTF_8).length)) {
-				tmpTags[i] = tag;
-				i++;
+			length += tag.length();
+			if (CharMatcher.WHITESPACE.matchesAnyOf(tag)) {
+				length += 2;
 			}
 		}
-		final StringBuilder stringBuilder = new StringBuilder(30);
-		if (0 < tmpTags.length) {
-			stringBuilder.append(tmpTags[0]);
-			for (int j = 1; j < tmpTags.length; j++) {
-				if (null == tmpTags[j]) {
-					break;
-				}
-				stringBuilder.append(STRING_TO_MATCH);
-				stringBuilder.append(tmpTags[j]);
-			}
-		}
-		return stringBuilder.toString();
+		return length;
 	}
 }

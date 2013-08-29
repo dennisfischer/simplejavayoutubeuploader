@@ -16,9 +16,7 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
@@ -37,7 +35,6 @@ import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
-import de.chaosfisch.util.RegexpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,9 +79,9 @@ public class AbstractMetadataService implements IMetadataService {
 		videoEntry.mediaGroup.license = metadata.getLicense().getMetaIdentifier();
 		videoEntry.mediaGroup.title = metadata.getTitle();
 		videoEntry.mediaGroup.description = metadata.getDescription();
-		videoEntry.mediaGroup.keywords = RegexpUtils.getMatcher(TagParser.parseAll(metadata.getKeywords()), "\"")
-				.replaceAll("");
-
+	/*	videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
+				.skipNulls()
+				.join(TagParser.parse(metadata.getKeywords()));    */
 		final Permissions permissions = upload.getPermissions();
 
 		if (Visibility.PRIVATE == permissions.getVisibility() || Visibility.SCHEDULED == permissions.getVisibility()) {
@@ -147,19 +144,10 @@ public class AbstractMetadataService implements IMetadataService {
 		final VideoStatus status = new VideoStatus();
 		status.setPrivacyStatus("private");
 
-		final Iterable<String> tagIterable = Splitter.on(",")
-				.omitEmptyStrings()
-				.split(RegexpUtils.getMatcher(TagParser.parseAll(upload.getMetadata().getKeywords()), "\"")
-						.replaceAll(""));
-		final List<String> tags = new ArrayList<>(Iterables.size(tagIterable));
-		for (final String tag : tagIterable) {
-			tags.add(tag);
-		}
-
 		final VideoSnippet snippet = new VideoSnippet();
 		snippet.setTitle(upload.getMetadata().getTitle());
 		snippet.setDescription(upload.getMetadata().getDescription());
-		snippet.setTags(tags);
+		snippet.setTags(TagParser.parse(upload.getMetadata().getKeywords(), true));
 
 		final Video videoObjectDefiningMetadata = new Video();
 		videoObjectDefiningMetadata.setStatus(status);
@@ -192,7 +180,7 @@ public class AbstractMetadataService implements IMetadataService {
 	@Override
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
 		try {
-			final HttpResponse<String> response = Unirest.post(String.format("%s/%s", METADATA_UPDATE_URL, videoId))
+			final HttpResponse<String> response = Unirest.put(String.format("%s/%s", METADATA_UPDATE_URL, videoId))
 					.header("GData-Version", GDATAConfig.GDATA_V2)
 					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
@@ -201,6 +189,7 @@ public class AbstractMetadataService implements IMetadataService {
 					.asString();
 
 			if (SC_OK != response.getCode()) {
+				System.out.println(response.getBody());
 				throw new MetaBadRequestException(atomData, response.getCode());
 			}
 		} catch (MetaBadRequestException e) {
@@ -288,8 +277,9 @@ public class AbstractMetadataService implements IMetadataService {
 		final Metadata metadata = upload.getMetadata();
 		params.put("title", metadata.getTitle());
 		params.put("description", Strings.nullToEmpty(metadata.getDescription()));
-		params.put("keywords", Strings.nullToEmpty(RegexpUtils.getMatcher(TagParser.parseAll(metadata.getKeywords()), "\"")
-				.replaceAll("")));
+		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
+				.skipNulls()
+				.join(TagParser.parse(metadata.getKeywords(), true)));
 		params.put("reuse", License.YOUTUBE == metadata.getLicense() ? "all_rights_reserved" : "creative_commons");
 		return params;
 	}

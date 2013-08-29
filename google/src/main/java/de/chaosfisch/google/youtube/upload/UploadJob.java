@@ -313,15 +313,6 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
-	public void updateUpload(final Upload received) {
-		if (upload.equals(received)) {
-			upload = received;
-			if (null != uploadProgress) {
-				uploadProgress.setUpload(upload);
-			}
-		}
-	}
-
 	private static class UploadFinishedException extends Exception {
 		private static final long serialVersionUID = -9034528149972478083L;
 	}

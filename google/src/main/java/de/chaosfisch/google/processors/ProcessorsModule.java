@@ -20,8 +20,8 @@ public class ProcessorsModule extends AbstractModule {
 	protected void configure() {
 		final Multibinder<UploadPreProcessor> preProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPreProcessor.class);
 		final Multibinder<UploadPostProcessor> postProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPostProcessor.class);
-		//	postProcessorMultibinder.addBinding().to(MetadataUpdatePostProcessor.class);
-		//	postProcessorMultibinder.addBinding().to(ExtendedGDataPostProcessor.class);
+		postProcessorMultibinder.addBinding().to(MetadataUpdatePostProcessor.class);
+		//postProcessorMultibinder.addBinding().to(ExtendedGDataPostProcessor.class);
 		postProcessorMultibinder.addBinding().to(ThumbnailPostProcessor.class);
 		postProcessorMultibinder.addBinding().to(EnddirPostProcessor.class);
 	}

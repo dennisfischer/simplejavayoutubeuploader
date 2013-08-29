@@ -13,8 +13,10 @@ package de.chaosfisch.uploader.controller;
 import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.FxApplicationThread;
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -60,6 +62,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
@@ -79,7 +82,15 @@ import java.util.*;
 @FXMLController
 public class UploadController {
 
-	private static final char FILE_EXTENSION_SEPERATOR = '.';
+	@FXML
+	public Label descriptionLabel;
+
+	@FXML
+	public Label tagLabel;
+
+	@FXML
+	public Label titleLabel;
+
 	@FXML
 	private ResourceBundle resources;
 
@@ -631,6 +642,48 @@ public class UploadController {
 		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
+
+		final String formatTitle = resources.getString("label.title") + "\n%d/100";
+		previewTitle.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> observableValue, final String oldTitle, final String newTitle) {
+				final int length = newTitle.getBytes(Charsets.UTF_8).length;
+				if (Upload.Validation.MAX_TITLE_SIZE < length) {
+					titleLabel.setTextFill(Color.RED);
+				} else {
+					titleLabel.setTextFill(Color.BLACK);
+				}
+				titleLabel.setText(String.format(formatTitle, length));
+			}
+		});
+
+		final String formatDescription = resources.getString("label.description") + "\n%d/5000";
+		uploadDescription.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> observableValue, final String oldDescription, final String newDescription) {
+				final int length = newDescription.getBytes(Charsets.UTF_8).length;
+				if (Upload.Validation.MAX_DESCRIPTION_SIZE < length) {
+					descriptionLabel.setTextFill(Color.RED);
+				} else {
+					descriptionLabel.setTextFill(Color.BLACK);
+				}
+				descriptionLabel.setText(String.format(formatDescription, length));
+			}
+		});
+
+		final String formatTags = resources.getString("label.tags") + "\n%d/500";
+		uploadTags.tagsProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> observableValue, final String oldTags, final String newTags) {
+				final List<String> tags = TagParser.parse(newTags);
+				if (!TagParser.areTagsValid(tags)) {
+					tagLabel.setTextFill(Color.RED);
+				} else {
+					tagLabel.setTextFill(Color.BLACK);
+				}
+				tagLabel.setText(String.format(formatTags, TagParser.getLength(tags)));
+			}
+		});
 	}
 
 	private void initCustomFactories() {
@@ -992,11 +1045,7 @@ public class UploadController {
 		uploadFile.getSelectionModel().selectFirst();
 		if (null == uploadTitle.getText() || uploadTitle.getText().isEmpty()) {
 			final String file = files.get(0).getAbsolutePath();
-			int index = file.lastIndexOf(FILE_EXTENSION_SEPERATOR);
-			if (-1 == index) {
-				index = file.length();
-			}
-			uploadTitle.setText(file.substring(file.lastIndexOf(File.separator) + 1, index));
+			uploadTitle.setText(Files.getNameWithoutExtension(files.get(0).getName()));
 		}
 	}
 
