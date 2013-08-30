@@ -10,6 +10,8 @@
 
 
 
+def javaFxHome = "${System.properties['java.home']}";
+
 apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -18,8 +20,21 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    //we do not want to have jfxrt.jar in the classpath when creating the jar,
+    //therefore a seperate configuration is required
+    providedCompile
+}
+
 dependencies {
     compile 'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
             'com.google.guava:guava:14+', 'org.slf4j:slf4j-api:+'
+    providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
+
+compileJava {
+    //add required JavaFX libs to compile classpath
+    sourceSets.main.compileClasspath += configurations.providedCompile
+}
+
 

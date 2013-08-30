@@ -9,6 +9,8 @@
  */
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -16,11 +18,11 @@ apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 buildscript {
-    version = "3.0.1.1";
+    version = "3.1.0.0";
 }
 
 allprojects {
-    mainClassName = 'SimpleJavaYoutubeUploader'
+    mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 }
 
 configurations {
@@ -67,7 +69,7 @@ task launch4j(type: Exec) {
 
 task javaFXPackager(type: Exec) {
     commandLine = [
-            'C:/Program Files/Java/jdk1.7.0_21/bin/javafxpackager.exe',
+            'C:/Program Files/Java/jdk1.7.0_25/bin/javafxpackager.exe',
             '-createjar',
             '-srcdir',
             sourceSets.main.output.classesDir,

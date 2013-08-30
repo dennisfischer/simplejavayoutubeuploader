@@ -12,7 +12,7 @@
     <dontWrapJar>true</dontWrapJar>
     <headerType>gui</headerType>
     <jar>SimpleJavaYoutubeUploader.jar</jar>
-    <outfile>out/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
+    <outfile>build/launch4j/SimpleJavaYoutubeUploader.exe</outfile>
     <errTitle/>
     <cmdLine/>
     <chdir/>

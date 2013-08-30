@@ -9,13 +9,7 @@
  */
 
 
-
-
-
-
-
-
-
+def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 sourceCompatibility = 1.7
@@ -25,6 +19,12 @@ targetCompatibility = 1.7
 repositories {
     mavenCentral()
     maven { url "http://maven.mashape.com/releases" }
+}
+
+configurations {
+    //we do not want to have jfxrt.jar in the classpath when creating the jar,
+    //therefore a seperate configuration is required
+    providedCompile
 }
 
 dependencies {
@@ -37,5 +37,11 @@ dependencies {
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile files('/lib/asyncretry.jar')
     compile project(':util')
+    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+}
+
+compileJava {
+    //add required JavaFX libs to compile classpath
+    sourceSets.main.compileClasspath += configurations.providedCompile
 }
 
