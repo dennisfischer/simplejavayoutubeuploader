@@ -18,16 +18,16 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 @XStreamAlias("yt:accessControl")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"access"})
 public class YoutubeAccessControl {
-	public String access;
+	private String access;
 
 	@XStreamAsAttribute
-	public String action;
+	private String action;
 
 	@XStreamAsAttribute
-	public String permission;
+	private String permission;
 
 	@XStreamAsAttribute
-	public String type;
+	private String type;
 
 	public YoutubeAccessControl() {
 
@@ -37,7 +37,7 @@ public class YoutubeAccessControl {
 		this(action, permission, null, null);
 	}
 
-	public YoutubeAccessControl(final String action, final String permission, final String type, final String access) {
+	private YoutubeAccessControl(final String action, final String permission, final String type, final String access) {
 		this.action = action;
 		this.permission = permission;
 		this.type = type;

@@ -13,7 +13,6 @@ package de.chaosfisch.uploader.renderer;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import de.chaosfisch.serialization.IJsonSerializer;
 import de.chaosfisch.uploader.controller.ErrorDialogController;
 import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.controller.ViewController;
@@ -34,6 +33,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
 import javafx.stage.StageStyle;
+import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +44,7 @@ import java.util.ResourceBundle;
 public class DialogHelper {
 
 	@Inject
-	private GuiceFXMLLoader fxmlLoader;
-
-	@Inject
-	private IJsonSerializer  jsonSerializer;
+	private GuiceFXMLLoader  fxmlLoader;
 	@Inject
 	private ITemplateService templateService;
 
@@ -77,7 +74,7 @@ public class DialogHelper {
 			public void onInput(final InputDialogController controller, final String input) {
 				try {
 					controller.input.getStyleClass().remove("input-invalid");
-					final Template template = jsonSerializer.fromJSON(jsonSerializer.toJSON(ViewController.standardTemplate), Template.class);
+					final Template template = (Template) SerializationUtils.clone(ViewController.standardTemplate);
 					template.setName(input);
 					template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 					templateService.insert(template);
@@ -136,7 +133,7 @@ public class DialogHelper {
 		}
 	}
 
-	public void showInputDialog(final String title, final String input, final Callback callback) {
+	void showInputDialog(final String title, final String input, final Callback callback) {
 		showInputDialog(title, input, callback, false);
 	}
 

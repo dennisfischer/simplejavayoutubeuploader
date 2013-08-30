@@ -13,9 +13,9 @@ package de.chaosfisch.google.youtube.upload.events;
 import de.chaosfisch.google.youtube.upload.Upload;
 
 public class UploadEvent {
-	protected final Upload upload;
+	private final Upload upload;
 
-	public UploadEvent(final Upload upload) {
+	UploadEvent(final Upload upload) {
 		this.upload = upload;
 	}
 

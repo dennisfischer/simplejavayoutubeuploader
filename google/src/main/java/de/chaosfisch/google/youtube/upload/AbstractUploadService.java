@@ -31,7 +31,7 @@ public abstract class AbstractUploadService implements IUploadService {
 	}
 
 	@Override
-	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException, IOException {
+	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException {
 		try {
 			return metadataService.createMetaData(metadataService.jsonBuilder(upload), upload.getFile(), upload.getAccount());
 		} catch (IOException e) {

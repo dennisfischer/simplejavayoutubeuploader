@@ -14,7 +14,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:content")
-public class MediaContent {
+class MediaContent {
 
 	@XStreamAsAttribute
 	public Integer duration;

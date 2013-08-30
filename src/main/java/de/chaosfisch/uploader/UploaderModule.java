@@ -15,6 +15,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -24,10 +25,11 @@ import de.chaosfisch.google.enddir.EnddirServiceImpl;
 import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
+import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.serialization.SerializationModule;
+import de.chaosfisch.services.PlaceholderPreProcessor;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
@@ -43,7 +45,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-public class UploaderModule extends AbstractModule {
+class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
@@ -62,8 +64,10 @@ public class UploaderModule extends AbstractModule {
 			throw new RuntimeException(e);
 		}
 		install(new PersistenceModule());
-		install(new SerializationModule());
 		install(new GoogleModule());
+
+		final Multibinder<UploadPreProcessor> preProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPreProcessor.class);
+		preProcessorMultibinder.addBinding().to(PlaceholderPreProcessor.class);
 
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));

@@ -12,16 +12,17 @@ package de.chaosfisch.google.enddir;
 
 import com.google.common.io.Files;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.util.RegexpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class EnddirServiceImpl implements IEnddirService {
-	private static final Logger LOGGER           = LoggerFactory.getLogger(EnddirServiceImpl.class);
-	private static final String VALID_FILE_NAMES = "[^a-zA-Z0-9\\._]+";
+	private static final Logger  LOGGER                   = LoggerFactory.getLogger(EnddirServiceImpl.class);
+	private static final String  VALID_FILE_NAMES         = "[^a-zA-Z0-9\\._]+";
+	private static final Pattern VALID_FILE_NAMES_PATTERN = Pattern.compile(VALID_FILE_NAMES);
 
 	@Override
 	public void moveFileByUpload(final File fileToMove, final Upload upload, final boolean rename) {
@@ -60,7 +61,7 @@ public class EnddirServiceImpl implements IEnddirService {
 	}
 
 	private String getFileName(final File fileToMove, final File enddir, final String name) {
-		final String normalizedTitle = RegexpUtils.getMatcher(name, VALID_FILE_NAMES).replaceAll("_");
+		final String normalizedTitle = VALID_FILE_NAMES_PATTERN.matcher(name).replaceAll("_");
 		return String.format("%s/%s.%s", enddir.getAbsolutePath(), normalizedTitle, Files.getFileExtension(fileToMove.getName()));
 	}
 

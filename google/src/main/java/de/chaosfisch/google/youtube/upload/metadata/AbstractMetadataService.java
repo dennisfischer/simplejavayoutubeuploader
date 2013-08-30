@@ -29,7 +29,6 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.AuthenticationIOException;
-import de.chaosfisch.google.account.AuthenticationInvalidException;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
@@ -158,7 +157,7 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public String createMetaData(final String jsonData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException, IOException {
+	public String createMetaData(final String jsonData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException {
 		// Upload atomData and fetch uploadUrl
 		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
 				.header("Content-Type", "application/json; charset=UTF-8;")
@@ -200,15 +199,11 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) throws MetaIOException, MetaDeadEndException, AuthenticationIOException, AuthenticationInvalidException {
-		try {
-			final String googleContent = accountService.getLoginContent(upload.getAccount(), String.
-					format(REDIRECT_URL, upload.getVideoid()));
+	public void activateBrowserfeatures(final Upload upload) throws MetaDeadEndException, AuthenticationIOException {
+		final String googleContent = accountService.getLoginContent(upload.getAccount(), String.
+				format(REDIRECT_URL, upload.getVideoid()));
 
-			changeMetadata(redirectToYoutube(googleContent), upload);
-		} catch (final IOException e) {
-			throw new MetaIOException(e);
-		}
+		changeMetadata(redirectToYoutube(googleContent), upload);
 	}
 
 	private String extractor(final String input, final String search, final String end) {
@@ -216,7 +211,7 @@ public class AbstractMetadataService implements IMetadataService {
 				.length()));
 	}
 
-	private String redirectToYoutube(final String content) throws IOException, MetaDeadEndException {
+	private String redirectToYoutube(final String content) throws MetaDeadEndException {
 		final String url = extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
 				.replaceAll(Pattern.quote("\\x3d"), "=");
 		final HttpResponse<String> response = Unirest.get(url).asString();

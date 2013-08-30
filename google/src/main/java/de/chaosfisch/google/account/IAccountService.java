@@ -40,7 +40,7 @@ public interface IAccountService {
 	 * @param account
 	 * 		Account to check
 	 */
-	void verifyAccount(Account account) throws AuthenticationInvalidException, AuthenticationIOException;
+	void verifyAccount(Account account) throws AuthenticationIOException;
 
 	String getRefreshToken(final String code) throws AuthenticationIOException;
 
@@ -54,5 +54,5 @@ public interface IAccountService {
 	 *
 	 * @return String received server response
 	 */
-	String getLoginContent(Account account, String redirectUrl) throws AuthenticationIOException, AuthenticationInvalidException;
+	String getLoginContent(Account account, String redirectUrl) throws AuthenticationIOException;
 }

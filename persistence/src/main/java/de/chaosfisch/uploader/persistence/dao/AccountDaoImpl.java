@@ -23,7 +23,7 @@ import java.util.UUID;
 
 class AccountDaoImpl implements IAccountDao {
 
-	protected final List<Account> accounts = new ArrayList<>(10);
+	private final List<Account> accounts = new ArrayList<>(10);
 
 	@Inject
 	protected EventBus            eventBus;

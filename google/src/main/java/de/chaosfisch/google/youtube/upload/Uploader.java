@@ -74,7 +74,7 @@ public class Uploader {
 		return uploadService.getRunning() && maxUploads > runningUploads;
 	}
 
-	public void shutdown(final boolean force) {
+	void shutdown(final boolean force) {
 		uploadService.setRunning(false);
 
 		if (force) {

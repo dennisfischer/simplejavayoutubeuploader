@@ -22,7 +22,7 @@ import javafx.scene.web.WebView;
 public class TagTextArea extends StackPane {
 
 	private final SimpleStringProperty tags    = new SimpleStringProperty();
-	final         WebView              webView = new WebView();
+	private final WebView              webView = new WebView();
 
 	public TagTextArea() {
 		webView.getEngine().loadContent(getInlineHtml());

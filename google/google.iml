@@ -13,7 +13,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="util" exported="" />
-    <orderEntry type="module" module-name="serialization" exported="" />
     <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="asm-3.1" level="project" />
     <orderEntry type="library" exported="" name="asyncretry" level="project" />
@@ -40,11 +39,11 @@
     <orderEntry type="library" exported="" name="google-oauth-client-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="xpp3-1.1.4c" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-gson-1.16.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
     <orderEntry type="library" exported="" name="commons-configuration-1.9" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev74-1.16.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.1" level="project" />
   </component>
 </module>
 

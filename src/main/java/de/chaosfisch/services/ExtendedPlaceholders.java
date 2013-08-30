@@ -10,8 +10,8 @@
 
 package de.chaosfisch.services;
 
+import com.google.common.io.Files;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.util.RegexpUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -22,8 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
-	private static final char FILE_EXTENSION_SEPERATOR = '.';
 	private final ResourceBundle resourceBundle;
+	private final Pattern        numberPattern;
+	private final Pattern        playlistPattern;
 	/** The file for the {file} placeholder */
 	private       File           file;
 
@@ -45,10 +46,12 @@ public class ExtendedPlaceholders {
 		this.file = file;
 		this.playlists = playlists;
 		this.resourceBundle = resourceBundle;
+		numberPattern = Pattern.compile(resourceBundle.getString("autotitle.numberPattern"));
+		playlistPattern = Pattern.compile(resourceBundle.getString("autotitle.playlistPattern"));
 	}
 
 	public ExtendedPlaceholders(final ResourceBundle resourceBundle) {
-		this.resourceBundle = resourceBundle;
+		this(null, null, resourceBundle);
 	}
 
 	/**
@@ -76,7 +79,7 @@ public class ExtendedPlaceholders {
 			return "";
 		}
 		if (!playlists.isEmpty()) {
-			Matcher matcher = RegexpUtils.getMatcher(input, resourceBundle.getString("autotitle.numberPattern"));
+			Matcher matcher = numberPattern.matcher(input);
 
 			StringBuffer sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
@@ -93,7 +96,7 @@ public class ExtendedPlaceholders {
 			matcher.appendTail(sb);
 			input = sb.toString();
 
-			matcher = RegexpUtils.getMatcher(input, resourceBundle.getString("autotitle.playlistPattern"));
+			matcher = playlistPattern.matcher(input);
 			sb = new StringBuffer(input.length() + 100);
 			while (matcher.find()) {
 				final int playlist = getPlaylist(matcher, sb);
@@ -109,14 +112,8 @@ public class ExtendedPlaceholders {
 		}
 
 		if (null != file) {
-
 			final String fileName = file.getAbsolutePath();
-
-			int index = fileName.lastIndexOf(FILE_EXTENSION_SEPERATOR);
-			if (-1 == index) {
-				index = fileName.length();
-			}
-			input = input.replaceAll(resourceBundle.getString("autotitle.file"), fileName.substring(fileName.lastIndexOf(File.separator) + 1, index));
+			input = input.replaceAll(resourceBundle.getString("autotitle.file"), Files.getNameWithoutExtension(fileName));
 		}
 
 		for (final Map.Entry<String, String> vars : map.entrySet()) {

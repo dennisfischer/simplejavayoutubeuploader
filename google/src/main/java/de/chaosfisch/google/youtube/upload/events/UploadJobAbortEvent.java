@@ -12,7 +12,7 @@ package de.chaosfisch.google.youtube.upload.events;
 
 import de.chaosfisch.google.youtube.upload.Upload;
 
-public class UploadJobAbortEvent {
+class UploadJobAbortEvent {
 
 	private final Upload upload;
 

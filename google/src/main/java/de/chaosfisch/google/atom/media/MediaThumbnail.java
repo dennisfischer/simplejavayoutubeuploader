@@ -14,7 +14,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("media:thumbnail")
-public class MediaThumbnail {
+class MediaThumbnail {
 
 	@XStreamAlias("height")
 	@XStreamAsAttribute

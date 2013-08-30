@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 @XStreamAlias("feed")
-public class Feed {
+class Feed {
 	public YoutubeAuthor author;
 	public String        category;
 	public String        generator;

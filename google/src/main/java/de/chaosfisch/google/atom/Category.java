@@ -17,10 +17,10 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class Category {
 
 	@XStreamAsAttribute
-	public String label;
+	protected String label;
 
 	@XStreamAsAttribute
-	public String scheme;
+	protected String scheme;
 
 	@XStreamAsAttribute
 	public String term;

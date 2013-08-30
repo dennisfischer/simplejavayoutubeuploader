@@ -15,6 +15,8 @@
 
 
 
+
+
 apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -34,6 +36,6 @@ dependencies {
             'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile files('/lib/asyncretry.jar')
-    compile project(':util'), project(':serialization')
+    compile project(':util')
 }
 

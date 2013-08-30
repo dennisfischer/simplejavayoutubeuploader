@@ -1044,7 +1044,6 @@ public class UploadController {
 		filesList.addAll(files);
 		uploadFile.getSelectionModel().selectFirst();
 		if (null == uploadTitle.getText() || uploadTitle.getText().isEmpty()) {
-			final String file = files.get(0).getAbsolutePath();
 			uploadTitle.setText(Files.getNameWithoutExtension(files.get(0).getName()));
 		}
 	}

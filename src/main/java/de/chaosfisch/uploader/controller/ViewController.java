@@ -17,7 +17,6 @@ import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
-import de.chaosfisch.serialization.IJsonSerializer;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
 import de.chaosfisch.uploader.renderer.DialogHelper;
@@ -111,8 +110,6 @@ public class ViewController {
 	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
 	@Inject
 	private DesktopUtil     desktopUtil;
-	@Inject
-	private IJsonSerializer jsonSerializer;
 	@Inject
 	private GuiceFXMLLoader fxmlLoader;
 	@Inject

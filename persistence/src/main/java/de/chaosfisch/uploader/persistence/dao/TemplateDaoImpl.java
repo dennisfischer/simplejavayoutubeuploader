@@ -23,7 +23,7 @@ import java.util.UUID;
 
 class TemplateDaoImpl implements ITemplateDao {
 
-	protected final List<Template> templates = new ArrayList<>(10);
+	private final List<Template> templates = new ArrayList<>(10);
 	@Inject
 	protected EventBus            eventBus;
 	@Inject

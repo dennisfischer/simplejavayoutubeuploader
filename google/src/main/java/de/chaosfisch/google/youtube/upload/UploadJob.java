@@ -13,7 +13,7 @@ package de.chaosfisch.google.youtube.upload;
 import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryContext;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
-import com.blogspot.nurkiewicz.asyncretry.function.RetryCallable;
+import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.model.Video;
@@ -32,7 +32,6 @@ import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
-import de.chaosfisch.util.RegexpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,22 +43,24 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 public class UploadJob implements Callable<Upload> {
 
-	private static final int    SC_OK                    = 200;
-	private static final int    SC_CREATED               = 201;
-	private static final int    SC_RESUME_INCOMPLETE     = 308;
-	private static final int    SC_INTERNAL_SERVER_ERROR = 500;
-	private static final int    SC_BAD_GATEWAY           = 502;
-	private static final int    SC_SERVICE_UNAVAILABLE   = 503;
-	private static final int    SC_GATEWAY_TIMEOUT       = 504;
-	private static final int    DEFAULT_BUFFER_SIZE      = 65536;
-	private static final int    MAX_DELAY                = 30000;
-	private static final int    INITIAL_DELAY            = 5000;
-	private static final double MULTIPLIER_DELAY         = 2;
-	private static final int    MAX_RETRIES              = 5;
-	private static final Logger logger                   = LoggerFactory.getLogger(UploadWorker.class);
+	private static final int     SC_OK                    = 200;
+	private static final int     SC_CREATED               = 201;
+	private static final int     SC_RESUME_INCOMPLETE     = 308;
+	private static final int     SC_INTERNAL_SERVER_ERROR = 500;
+	private static final int     SC_BAD_GATEWAY           = 502;
+	private static final int     SC_SERVICE_UNAVAILABLE   = 503;
+	private static final int     SC_GATEWAY_TIMEOUT       = 504;
+	private static final int     DEFAULT_BUFFER_SIZE      = 65536;
+	private static final int     MAX_DELAY                = 30000;
+	private static final int     INITIAL_DELAY            = 5000;
+	private static final double  MULTIPLIER_DELAY         = 2;
+	private static final int     MAX_RETRIES              = 5;
+	private static final Logger  logger                   = LoggerFactory.getLogger(UploadJob.class);
+	private static final Pattern RANGE_HEADER_SEPERATOR   = Pattern.compile("-");
 
 	private final Set<UploadPreProcessor>  uploadPreProcessors;
 	private final Set<UploadPostProcessor> uploadPostProcessors;
@@ -112,9 +113,9 @@ public class UploadJob implements Callable<Upload> {
 			// Schritt 1: Initialize
 			initialize();
 			// Schritt 2: MetadataUpload + UrlFetch
-			executor.getWithRetry(metadata()).get();
+			executor.doWithRetry(metadata()).get();
 			// Schritt 3: Upload
-			executor.getWithRetry(upload()).get();
+			executor.doWithRetry(upload()).get();
 
 			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
 				upload = postProcessor.process(upload);
@@ -156,15 +157,14 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
-	private RetryCallable<Void> metadata() {
+	private RetryRunnable metadata() {
 
-		return new RetryCallable<Void>() {
+		return new RetryRunnable() {
 			@Override
-			public Void call(final RetryContext retryContext) throws MetaLocationMissingException, MetaBadRequestException, UploadFinishedException, UploadResponseException, IOException {
+			public void run(final RetryContext retryContext) throws MetaLocationMissingException, MetaBadRequestException, UploadFinishedException, UploadResponseException, IOException {
 				if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
 					logger.info("Uploadurl existing: {}", upload.getUploadurl());
 					resumeinfo();
-					return null;
 				}
 
 				upload.setUploadurl(uploadService.fetchUploadUrl(upload));
@@ -172,16 +172,15 @@ public class UploadJob implements Callable<Upload> {
 
 				// Log operation
 				logger.info("Uploadurl received: {}", upload.getUploadurl());
-				return null;
 			}
 		};
 	}
 
-	private RetryCallable<Void> upload() {
-		return new RetryCallable<Void>() {
+	private RetryRunnable upload() {
+		return new RetryRunnable() {
 
 			@Override
-			public Void call(final RetryContext retryContext) throws UploadFinishedException, UploadResponseException, IOException {
+			public void run(final RetryContext retryContext) throws Exception {
 				try {
 					if (null != retryContext.getLastThrowable()) {
 						throw retryContext.getLastThrowable();
@@ -190,13 +189,11 @@ public class UploadJob implements Callable<Upload> {
 					resumeinfo();
 				}
 				uploadChunk();
-
-				return null;
 			}
 		};
 	}
 
-	private void uploadChunk() throws UploadResponseException, IOException, UploadFinishedException {
+	private void uploadChunk() throws UploadResponseException, IOException {
 		// Log operation
 		logger.debug("start={} end={} filesize={}", start, end, fileSize);
 
@@ -300,7 +297,7 @@ public class UploadJob implements Callable<Upload> {
 				} else {
 					logger.info("Range header is: {}", response.getHeaders().get("Range"));
 
-					final String[] parts = RegexpUtils.getPattern("-").split(response.getHeaders().get("Range"));
+					final String[] parts = RANGE_HEADER_SEPERATOR.split(response.getHeaders().get("Range"));
 					if (1 < parts.length) {
 						start = Long.parseLong(parts[1]) + 1;
 					}

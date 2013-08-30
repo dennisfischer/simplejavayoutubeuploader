@@ -75,9 +75,14 @@ public class AccountOverviewController {
 
 	@Subscribe
 	public void onAccountUpdated(final AccountUpdated event) {
-		final Account[] accounts = new Account[accountItems.size()];
-		accountItems.toArray(accounts);
-		accountItems.clear();
-		accountItems.addAll(accounts);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final Account[] accounts = new Account[accountItems.size()];
+				accountItems.toArray(accounts);
+				accountItems.clear();
+				accountItems.addAll(accounts);
+			}
+		});
 	}
 }

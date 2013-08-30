@@ -12,7 +12,7 @@ package de.chaosfisch.google.account;
 
 import java.util.concurrent.TimeUnit;
 
-public class Token {
+class Token {
 	private final String token;
 	private final long   livetime;
 
@@ -20,7 +20,7 @@ public class Token {
 		this(token, livetime, TimeUnit.SECONDS);
 	}
 
-	public Token(final String token, final long livetime, final TimeUnit timeUnit) {
+	private Token(final String token, final long livetime, final TimeUnit timeUnit) {
 		this.token = token;
 		this.livetime = System.currentTimeMillis() + timeUnit.toMillis(livetime);
 	}

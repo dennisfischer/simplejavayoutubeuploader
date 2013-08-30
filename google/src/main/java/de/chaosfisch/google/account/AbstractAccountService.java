@@ -30,14 +30,14 @@ public abstract class AbstractAccountService implements IAccountService {
 	private static final String                  ISSUE_AUTH_TOKEN_URL = "https://www.google.com/accounts/IssueAuthToken";
 	private static final Logger                  logger               = LoggerFactory.getLogger(AbstractAccountService.class);
 
-	private Token getAuthToken(final Account account) throws AuthenticationIOException, AuthenticationInvalidException {
+	private Token getAuthToken(final Account account) throws AuthenticationIOException {
 		if (!authtokens.containsKey(account) || !authtokens.get(account).isValid()) {
 			authtokens.put(account, _receiveToken(account));
 		}
 		return authtokens.get(account);
 	}
 
-	private Token _receiveToken(final Account account) throws AuthenticationIOException, AuthenticationInvalidException {
+	private Token _receiveToken(final Account account) throws AuthenticationIOException {
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
@@ -96,7 +96,7 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public void verifyAccount(final Account account) throws AuthenticationInvalidException, AuthenticationIOException {
+	public void verifyAccount(final Account account) throws AuthenticationIOException {
 		try {
 			final HttpResponse<String> response = Unirest.get(String.format(TOKENINFO_URL, account.getRefreshToken()))
 					.asString();
@@ -109,9 +109,8 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public String getLoginContent(final Account account, final String redirectUrl) throws AuthenticationIOException, AuthenticationInvalidException {
+	public String getLoginContent(final Account account, final String redirectUrl) throws AuthenticationIOException {
 		return tokenAuthContent(redirectUrl, issueAuthToken(account));
-
 	}
 
 	private String tokenAuthContent(final String redirectUrl, final String issueTokenContent) throws AuthenticationIOException {

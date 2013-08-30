@@ -30,7 +30,7 @@ public class Metadata implements Serializable {
 		this("", Category.ANIMALS, "", "");
 	}
 
-	public Metadata(final String title, final Category category, final String description, final String keywords) {
+	private Metadata(final String title, final Category category, final String description, final String keywords) {
 		this(title, category, description, keywords, License.YOUTUBE);
 	}
 
@@ -55,7 +55,7 @@ public class Metadata implements Serializable {
 		return category;
 	}
 
-	public void setCategory(final Category category) {
+	void setCategory(final Category category) {
 		if (null == category) {
 			throw new IllegalArgumentException(Upload.Validation.CATEGORY);
 		}
@@ -113,7 +113,7 @@ public class Metadata implements Serializable {
 		return license;
 	}
 
-	public void setLicense(final License license) {
+	void setLicense(final License license) {
 		this.license = license;
 	}
 

@@ -16,7 +16,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.util.List;
 
 @XStreamAlias("app:categories")
-public class AppCategories {
+class AppCategories {
 
 	@XStreamAlias("atom:category")
 	@XStreamImplicit

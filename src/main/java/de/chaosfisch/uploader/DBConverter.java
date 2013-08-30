@@ -21,14 +21,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 
-public final class DBConverter {
+final class DBConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBConverter.class);
 
 	private DBConverter() {
 	}
 
-	public static void main(final String[] args) throws SQLException, IOException {
+	public static void main(final String[] args) {
 
 		try {
 			if (Files.exists(Paths.get(ApplicationData.DATA_DIR + "/db/youtubeuploader.db.data"))) {
@@ -423,7 +423,7 @@ public final class DBConverter {
 		}
 	}
 
-	public static void copyFolder(final File src, final File dest) throws IOException {
+	private static void copyFolder(final File src, final File dest) throws IOException {
 
 		if (src.isDirectory()) {
 
@@ -444,7 +444,6 @@ public final class DBConverter {
 				//recursive copy
 				copyFolder(srcFile, destFile);
 			}
-
 		} else {
 			//if file, then copy it
 			//Use bytes stream to support all file types
@@ -467,7 +466,7 @@ public final class DBConverter {
 		}
 	}
 
-	public static void deleteRecursive(final File path) throws FileNotFoundException {
+	private static void deleteRecursive(final File path) throws FileNotFoundException {
 		if (!path.exists()) {
 			throw new FileNotFoundException(path.getAbsolutePath());
 		}

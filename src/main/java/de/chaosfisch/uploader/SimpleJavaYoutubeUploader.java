@@ -17,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.prefs.Preferences;
@@ -37,11 +35,7 @@ public final class SimpleJavaYoutubeUploader {
 		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
 
 		if (6 >= prefs.getInt("version", 0)) {
-			try {
-				DBConverter.main(args);
-			} catch (SQLException | IOException e) {
-				e.printStackTrace();
-			}
+			DBConverter.main(args);
 
 			prefs.putInt("version", ApplicationData.RELEASE);
 		}
