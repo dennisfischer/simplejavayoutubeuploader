@@ -42,8 +42,8 @@
     <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
     <orderEntry type="library" exported="" name="commons-configuration-1.9" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
-    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev74-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
+    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev75-1.16.0-rc" level="project" />
   </component>
 </module>
 

@@ -55,7 +55,7 @@ class UploadDaoImpl implements IUploadDao {
 		for (final Upload upload : uploads) {
 			if (null == upload.getDateOfStart() || upload.getDateOfStart().getTimeInMillis() <= timestamp) {
 				final Status status = upload.getStatus();
-				if (!status.isArchived() && !status.isFailed() && !status.isRunning() && !status.isLocked()) {
+				if (!status.isArchived() && !status.isFailed() && !status.isRunning() && !status.isLocked() && !status.isAborted()) {
 					result.add(upload);
 				}
 			}
@@ -100,7 +100,7 @@ class UploadDaoImpl implements IUploadDao {
 		for (final Upload upload : uploads) {
 			final Status status = upload.getStatus();
 			if (null != upload.getDateOfStart() && !status.isArchived() && !status.isFailed() && !status.isRunning() && !status
-					.isLocked()) {
+					.isLocked() && !status.isAborted()) {
 				if (upload.getDateOfStart().getTimeInMillis() < delay) {
 					delay = upload.getDateOfStart().getTimeInMillis();
 				}
@@ -151,7 +151,7 @@ class UploadDaoImpl implements IUploadDao {
 		int count = 0;
 		for (final Upload upload : uploads) {
 			final Status status = upload.getStatus();
-			if (!status.isArchived() && !status.isFailed() && !status.isLocked()) {
+			if (!status.isArchived() && !status.isFailed() && !status.isLocked() && !status.isAborted()) {
 				count++;
 			}
 		}
@@ -164,7 +164,7 @@ class UploadDaoImpl implements IUploadDao {
 		int count = 0;
 		for (final Upload upload : uploads) {
 			final Status status = upload.getStatus();
-			if (!status.isArchived() && !status.isFailed() && !status.isLocked()) {
+			if (!status.isArchived() && !status.isFailed() && !status.isLocked() && !status.isAborted()) {
 				if (null != upload.getDateOfStart() && upload.getDateOfStart().getTimeInMillis() <= time) {
 					count++;
 				}
@@ -180,6 +180,7 @@ class UploadDaoImpl implements IUploadDao {
 			if (!status.isArchived()) {
 				status.setFailed(false);
 				status.setRunning(false);
+				status.setAborted(false);
 			}
 		}
 	}

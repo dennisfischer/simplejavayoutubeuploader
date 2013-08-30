@@ -64,7 +64,7 @@ public final class TagParser {
 
 	public static List<String> parse(final String keywords, final boolean removeInvalid) {
 		if (removeInvalid) {
-			return removeInvalid(parse(keywords, removeInvalid));
+			return removeInvalid(parse(keywords));
 		} else {
 			return parse(keywords);
 		}

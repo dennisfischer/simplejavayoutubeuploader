@@ -17,7 +17,6 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.events.UploadEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
-import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,12 +180,12 @@ public class Uploader {
 				final Future<Upload> uploadJobFuture = jobCompletionService.take();
 				final Upload upload = uploadJobFuture.get();
 				logger.info("Upload finished: {}; {}", upload.getMetadata().getTitle(), upload.getVideoid());
-				eventBus.post(new UploadJobFinishedEvent(upload));
-				runningUploads--;
 				return upload;
 			} catch (ExecutionException | CancellationException | InterruptedException e) {
 				Thread.currentThread().interrupt();
 				return null;
+			} finally {
+				runningUploads--;
 			}
 		}
 	}

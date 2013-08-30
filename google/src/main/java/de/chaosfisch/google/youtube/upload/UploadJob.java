@@ -59,7 +59,7 @@ public class UploadJob implements Callable<Upload> {
 	private static final int     INITIAL_DELAY            = 5000;
 	private static final double  MULTIPLIER_DELAY         = 2;
 	private static final int     MAX_RETRIES              = 5;
-	private static final Logger  logger                   = LoggerFactory.getLogger(UploadJob.class);
+	private static final Logger  LOGGER                   = LoggerFactory.getLogger(UploadJob.class);
 	private static final Pattern RANGE_HEADER_SEPERATOR   = Pattern.compile("-");
 
 	private final Set<UploadPreProcessor>  uploadPreProcessors;
@@ -78,6 +78,7 @@ public class UploadJob implements Callable<Upload> {
 	private long                   end;
 	private boolean                canceled;
 	private boolean                retryed;
+	private HttpURLConnection      request;
 
 	@Inject
 	public UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
@@ -95,7 +96,11 @@ public class UploadJob implements Callable<Upload> {
 	public Upload call() throws Exception {
 
 		for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
-			upload = preProcessor.process(upload);
+			try {
+				upload = preProcessor.process(upload);
+			} catch (Exception e) {
+				LOGGER.error("Preprocessor error", e);
+			}
 		}
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
@@ -118,16 +123,20 @@ public class UploadJob implements Callable<Upload> {
 			executor.doWithRetry(upload()).get();
 
 			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
-				upload = postProcessor.process(upload);
+				try {
+					upload = postProcessor.process(upload);
+				} catch (Exception e) {
+					LOGGER.error("Postprocessor error", e);
+				}
 			}
 
 			eventBus.post(new UploadJobFinishedEvent(upload));
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			logger.error("Upload aborted / stopped.");
+			LOGGER.error("Upload aborted / stopped.");
 			upload.getStatus().setAborted(true);
 		} catch (Exception e) {
-			logger.error("Upload error", e);
+			LOGGER.error("Upload error", e);
 			upload.getStatus().setFailed(true);
 		}
 
@@ -163,7 +172,7 @@ public class UploadJob implements Callable<Upload> {
 			@Override
 			public void run(final RetryContext retryContext) throws MetaLocationMissingException, MetaBadRequestException, UploadFinishedException, UploadResponseException, IOException {
 				if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
-					logger.info("Uploadurl existing: {}", upload.getUploadurl());
+					LOGGER.info("Uploadurl existing: {}", upload.getUploadurl());
 					resumeinfo();
 				}
 
@@ -171,7 +180,7 @@ public class UploadJob implements Callable<Upload> {
 				uploadService.update(upload);
 
 				// Log operation
-				logger.info("Uploadurl received: {}", upload.getUploadurl());
+				LOGGER.info("Uploadurl received: {}", upload.getUploadurl());
 			}
 		};
 	}
@@ -186,6 +195,7 @@ public class UploadJob implements Callable<Upload> {
 						throw retryContext.getLastThrowable();
 					}
 				} catch (Throwable e) {
+					LOGGER.error("Exception", e);
 					resumeinfo();
 				}
 				uploadChunk();
@@ -195,10 +205,10 @@ public class UploadJob implements Callable<Upload> {
 
 	private void uploadChunk() throws UploadResponseException, IOException {
 		// Log operation
-		logger.debug("start={} end={} filesize={}", start, end, fileSize);
+		LOGGER.debug("start={} end={} filesize={}", start, end, fileSize);
 
 		// Log operation
-		logger.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
+		LOGGER.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
 
 		if (null == uploadProgress) {
 			uploadProgress = new UploadJobProgressEvent(upload, fileSize);
@@ -207,24 +217,24 @@ public class UploadJob implements Callable<Upload> {
 
 		// Building PUT RequestImpl for chunk data
 		final URL url = URI.create(upload.getUploadurl()).toURL();
-		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		request = (HttpURLConnection) url.openConnection();
 		request.setRequestMethod("PUT");
+		request.setChunkedStreamingMode((int) (fileSize - start));
 		request.setDoOutput(true);
-		request.setChunkedStreamingMode((int) fileSize);
 		//Properties
 		request.setRequestProperty("Content-Type", upload.getMimetype());
-		request.setRequestProperty("Content-Length", String.format("%d", fileSize - start));
+		request.setRequestProperty("Content-Length", String.format("%d", fileSize));
 		if (retryed) {
 			request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileSize));
 		}
 		request.setRequestProperty("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader());
 		request.connect();
 
-		try (final TokenOutputStream tokenOutputStream = new TokenOutputStream(request.getOutputStream(), this)) {
+		try (final TokenOutputStream tokenOutputStream = new TokenOutputStream(request.getOutputStream())) {
 
 			final InputSupplier<InputStream> fileInputSupplier = ByteStreams.slice(Files.newInputStreamSupplier(fileToUpload), start, end);
 			ByteStreams.copy(fileInputSupplier, tokenOutputStream);
-
+			tokenOutputStream.close();
 			final int code = request.getResponseCode();
 			switch (code) {
 				case SC_OK:
@@ -232,7 +242,7 @@ public class UploadJob implements Callable<Upload> {
 
 					final JsonFactory factory = new GsonFactory();
 					final Video video = factory.fromInputStream(request.getInputStream(), Charsets.UTF_8, Video.class);
-					logger.debug("Upload created {} ", video.toPrettyString());
+					LOGGER.debug("Upload created {} ", video.toPrettyString());
 
 					upload.setVideoid(video.getId());
 					upload.getStatus().setArchived(true);
@@ -258,12 +268,12 @@ public class UploadJob implements Callable<Upload> {
 		retryed = true;
 		fetchResumeInfo(upload);
 
-		logger.info("Resuming stalled upload to: {}", upload.getUploadurl());
+		LOGGER.info("Resuming stalled upload to: {}", upload.getUploadurl());
 
 		totalBytesUploaded = start;
 		// possibly rolling back the previously saved value
 		fileSize = fileToUpload.length();
-		logger.info("Next byte to upload is {}-{}.", start, end);
+		LOGGER.info("Next byte to upload is {}-{}.", start, end);
 	}
 
 	private void fetchResumeInfo(final Upload upload) throws IOException, UploadFinishedException, UploadResponseException {
@@ -275,12 +285,15 @@ public class UploadJob implements Callable<Upload> {
 
 		switch (response.getCode()) {
 			case SC_CREATED:
-				logger.debug("Upload created {} ", response.getBody());
+				final JsonFactory factory = new GsonFactory();
+				final Video video = factory.fromString(response.getBody(), Video.class);
+				LOGGER.debug("Upload created {} ", video.toPrettyString());
+
+				upload.setVideoid(video.getId());
+				upload.getStatus().setArchived(true);
+				upload.getStatus().setFailed(false);
+				uploadService.update(upload);
 				throw new UploadFinishedException();
-						/*
-						upload.setVideoid(resumeableManager.parseVideoId());
-						uploadService.update(upload);
-						*/
 			case SC_INTERNAL_SERVER_ERROR:
 			case SC_BAD_GATEWAY:
 			case SC_SERVICE_UNAVAILABLE:
@@ -293,9 +306,10 @@ public class UploadJob implements Callable<Upload> {
 				end = fileSize - 1;
 
 				if (!response.getHeaders().containsKey("Range")) {
-					logger.info("PUT to {} did not return Range-header.", upload.getUploadurl());
+					LOGGER.info("PUT to {} did not return Range-header.", upload.getUploadurl());
+					LOGGER.info("Received headers: {}", response.getHeaders().toString());
 				} else {
-					logger.info("Range header is: {}", response.getHeaders().get("Range"));
+					LOGGER.info("Range header is: {}", response.getHeaders().get("Range"));
 
 					final String[] parts = RANGE_HEADER_SEPERATOR.split(response.getHeaders().get("Range"));
 					if (1 < parts.length) {
@@ -303,6 +317,7 @@ public class UploadJob implements Callable<Upload> {
 					}
 				}
 				if (response.getHeaders().containsKey("Location")) {
+					LOGGER.info("New upload url is: {}", response.getHeaders().get("Location"));
 					upload.setUploadurl(response.getHeaders().get("Location"));
 					uploadService.update(upload);
 				}
@@ -314,33 +329,32 @@ public class UploadJob implements Callable<Upload> {
 		private static final long serialVersionUID = -9034528149972478083L;
 	}
 
-	private static class TokenOutputStream extends BufferedOutputStream {
-		private final UploadJob job;
+	private class TokenOutputStream extends BufferedOutputStream {
 
-		public TokenOutputStream(final OutputStream outputStream, final UploadJob job) {
+		public TokenOutputStream(final OutputStream outputStream) {
 			super(outputStream, DEFAULT_BUFFER_SIZE);
-			this.job = job;
 		}
 
 		@Override
 		public synchronized void write(final byte[] b, final int off, final int len) throws IOException {
-			if (0 < job.rateLimiter.getRate()) {
-				job.rateLimiter.acquire(b.length);
+			if (0 < rateLimiter.getRate()) {
+				rateLimiter.acquire(b.length);
 			}
 			super.write(b, off, len);
-			if (job.canceled) {
+			flush();
+			if (canceled) {
+				request.disconnect();
 				throw new CancellationException("Cancled");
 			}
 
-			flush();
 			// Event Upload Progress
 			// Calculate all uploadinformation
-			job.totalBytesUploaded += b.length;
-			final long diffTime = Calendar.getInstance().getTimeInMillis() - job.uploadProgress.getTime();
+			totalBytesUploaded += b.length;
+			final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
 			if (1000 < diffTime) {
-				job.uploadProgress.setBytes(job.totalBytesUploaded);
-				job.uploadProgress.setTime(diffTime);
-				job.eventBus.post(job.uploadProgress);
+				uploadProgress.setBytes(totalBytesUploaded);
+				uploadProgress.setTime(diffTime);
+				eventBus.post(uploadProgress);
 			}
 		}
 	}

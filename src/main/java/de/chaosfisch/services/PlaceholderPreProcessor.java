@@ -16,6 +16,8 @@ import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ResourceBundle;
@@ -23,6 +25,7 @@ import java.util.ResourceBundle;
 public class PlaceholderPreProcessor implements UploadPreProcessor {
 
 	private final ResourceBundle resources;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderPreProcessor.class);
 
 	@Inject
 	public PlaceholderPreProcessor(@Named("i18n-resources") final ResourceBundle resources) {
@@ -31,7 +34,7 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 
 	@Override
 	public Upload process(final Upload upload) {
-
+		LOGGER.info("Replacing placeholders");
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), upload.getPlaylists(), resources);
 		final Metadata metadata = upload.getMetadata();
 		metadata.setTitle(extendedPlaceholders.replace(metadata.getTitle()));
@@ -54,7 +57,9 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 		monetization.setTitleepisode(extendedPlaceholders.replace(monetization.getTitleepisode()));
 		monetization.setSeasonNb(extendedPlaceholders.replace(monetization.getSeasonNb()));
 		monetization.setEpisodeNb(extendedPlaceholders.replace(monetization.getEpisodeNb()));
-		upload.setThumbnail(new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));
+		upload.setThumbnail(null == upload.getThumbnail() ?
+							null :
+							new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));
 
 		return upload;
 	}
