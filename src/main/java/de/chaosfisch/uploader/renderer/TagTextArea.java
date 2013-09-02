@@ -46,11 +46,11 @@ public class TagTextArea extends StackPane {
 	}
 
 	private void _createTags(final String tags) {
-		webView.getEngine().executeScript("$('#myTags').tagit('removeAll');");
-		webView.getEngine().executeScript("$('#myTags').tagit('removeAll');");
+		webView.getEngine().executeScript("$(document).ready(function() { $('#myTags').tagit('removeAll'); });");
 		final Iterable<String> tagIterator = Splitter.on(",").omitEmptyStrings().split(tags);
 		for (final String tag : tagIterator) {
-			webView.getEngine().executeScript(String.format("$('#myTags').tagit('createTag', '%s');", tag));
+			webView.getEngine()
+					.executeScript(String.format("$(document).ready(function() { $('#myTags').tagit('createTag', '%s'); });", tag));
 		}
 	}
 

@@ -58,7 +58,7 @@ public class UploadJob implements Callable<Upload> {
 	private static final int     MAX_DELAY                = 30000;
 	private static final int     INITIAL_DELAY            = 5000;
 	private static final double  MULTIPLIER_DELAY         = 2;
-	private static final int     MAX_RETRIES              = 5;
+	private static final int     MAX_RETRIES              = 10;
 	private static final Logger  LOGGER                   = LoggerFactory.getLogger(UploadJob.class);
 	private static final Pattern RANGE_HEADER_SEPERATOR   = Pattern.compile("-");
 
@@ -278,7 +278,6 @@ public class UploadJob implements Callable<Upload> {
 
 	private void fetchResumeInfo(final Upload upload) throws IOException, UploadFinishedException, UploadResponseException {
 		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
-				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
 				.header("Content-Range", String.format("bytes */%d", fileSize))
 				.header("Authorization", accountService.getAuthentication(upload.getAccount()).getHeader())
 				.asString();

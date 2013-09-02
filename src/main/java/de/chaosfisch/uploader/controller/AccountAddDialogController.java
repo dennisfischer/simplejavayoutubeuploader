@@ -19,8 +19,10 @@ import com.mashape.unirest.http.Unirest;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.http.PersistentCookieStore;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
@@ -68,18 +70,30 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private static final Logger   logger              = LoggerFactory.getLogger(AccountAddController.class);
 
 	private void initWebView() {
-		final CookieTrick cookieTrick = new CookieTrick();
-		final CookieManager cmrCookieMan = new CookieManager(null, cookieTrick);
+		final PersistentCookieStore persistentCookieStore = new PersistentCookieStore();
+		final CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
 		CookieHandler.setDefault(cmrCookieMan);
 
 		final WebEngine webEngine = webView.getEngine();
+		webView.setContextMenuEnabled(false);
 		final Joiner joiner = Joiner.on(" ").skipNulls();
 
-		try {
-			final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
-			webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
-		} catch (UnsupportedEncodingException ignored) {
-		}
+		title.setText("Loading...");
+		webView.getEngine().load("http://www.youtube.com/my_videos");
+		webView.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+			@Override
+			public void changed(final ObservableValue<? extends Worker.State> observableValue, final Worker.State state, final Worker.State state2) {
+				if (Worker.State.SUCCEEDED == state2) {
+					if (webView.getEngine().getLocation().startsWith("http://www.youtube.com/my_videos")) {
+						try {
+							final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
+							webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
+						} catch (UnsupportedEncodingException ignored) {
+						}
+					}
+				}
+			}
+		});
 
 		webEngine.titleProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -91,8 +105,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 						try {
 							final Account account = new Account();
 							account.setRefreshToken(accountService.getRefreshToken(matcher.group(1)));
-							account.setSID(cookieTrick.getCookie("SID"));
-							account.setLSID(cookieTrick.getCookie("LSID"));
+							account.setSerializeableCookies(persistentCookieStore.getSerializeableCookies());
 
 							final HttpResponse<JsonNode> response = Unirest.get(USERINFO_URL)
 									.header("Authorization", accountService.getAuthentication(account).getHeader())

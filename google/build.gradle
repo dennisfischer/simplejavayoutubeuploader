@@ -9,6 +9,8 @@
  */
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -29,8 +31,8 @@ configurations {
 
 dependencies {
     compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:+',
-            'com.google.guava:guava:14+', 'org.apache.httpcomponents:httpclient:4.2.3',
-            'org.apache.httpcomponents:httpasyncclient:4.0-beta3', 'org.apache.httpcomponents:httpmime:4.2.3',
+            'com.google.guava:guava:14+', 'org.apache.httpcomponents:httpclient:4.3-beta2',
+            'org.apache.httpcomponents:httpasyncclient:4.0-beta4', 'org.apache.httpcomponents:httpmime:4.3-beta2',
             'org.json:json:20090211',
             'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
             'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',

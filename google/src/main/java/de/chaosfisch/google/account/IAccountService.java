@@ -43,16 +43,4 @@ public interface IAccountService {
 	void verifyAccount(Account account) throws AuthenticationIOException;
 
 	String getRefreshToken(final String code) throws AuthenticationIOException;
-
-	/**
-	 * Fetches HTML Content of the clientLogin resultpage
-	 *
-	 * @param account
-	 * 		Account to use
-	 * @param redirectUrl
-	 * 		URL to redirect to
-	 *
-	 * @return String received server response
-	 */
-	String getLoginContent(Account account, String redirectUrl) throws AuthenticationIOException;
 }

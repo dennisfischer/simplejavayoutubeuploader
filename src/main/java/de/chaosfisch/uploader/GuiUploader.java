@@ -16,7 +16,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.name.Named;
-import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.InputDialogController;
@@ -102,7 +101,6 @@ public class GuiUploader extends GuiceApplication {
 	private void initApplication(final Stage primaryStage) {
 
 		try {
-			StyleManager.getInstance().addUserAgentStylesheet("/de/chaosfisch/uploader/resources/style.css");
 			final Parent parent = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
 					.getRoot();
 
@@ -174,6 +172,7 @@ public class GuiUploader extends GuiceApplication {
 					event.consume();
 				} else {
 					Platform.exit();
+					System.exit(0);
 				}
 			} catch (IOException e) {
 				logger.error("Couldn't load ConfirmDialog", e);

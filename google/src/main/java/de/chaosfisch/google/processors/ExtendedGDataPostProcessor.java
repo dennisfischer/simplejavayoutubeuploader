@@ -11,11 +11,9 @@
 package de.chaosfisch.google.processors;
 
 import com.google.inject.Inject;
-import de.chaosfisch.google.account.AuthenticationIOException;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.google.youtube.upload.metadata.MetaDeadEndException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +31,8 @@ class ExtendedGDataPostProcessor implements UploadPostProcessor {
 	public Upload process(final Upload upload) {
 		try {
 			metadataService.activateBrowserfeatures(upload);
-		} catch (MetaDeadEndException e) {
-			LOGGER.error("Run into dead end", e);
-		} catch (AuthenticationIOException e) {
-			LOGGER.error("Authentication IOException", e);
+		} catch (Exception e) {
+			LOGGER.error("Exception", e);
 		}
 		return upload;
 	}

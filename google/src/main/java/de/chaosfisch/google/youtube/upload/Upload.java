@@ -140,7 +140,6 @@ public class Upload implements Serializable {
 			calendar.set(Calendar.MILLISECOND, 0);
 			this.dateOfRelease = calendar;
 		}
-
 	}
 
 	public boolean isPauseOnFinish() {

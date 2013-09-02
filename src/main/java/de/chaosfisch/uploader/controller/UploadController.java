@@ -784,7 +784,9 @@ public class UploadController {
 		upload.setId(idProperty.getValue());
 		upload.setEnddir(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : enddirProperty.getValue());
 		upload.setFile(uploadFile.getValue());
-		upload.setThumbnail(Strings.isNullOrEmpty(uploadEnddir.getText()) ? null : new File(uploadThumbnail.getText()));
+		upload.setThumbnail(Strings.isNullOrEmpty(uploadThumbnail.getText()) ?
+							null :
+							new File(uploadThumbnail.getText()));
 
 		if (null != started.getValue()) {
 			final GregorianCalendar cal = new GregorianCalendar();

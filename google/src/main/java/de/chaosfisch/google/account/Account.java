@@ -19,17 +19,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.chaosfisch.google.http.PersistentCookieStore.SerializableCookie;
+
 public class Account implements Serializable {
 
 	private static final long serialVersionUID = 5650306344672785865L;
 	private String id;
 	private String name;
-	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
-	private String SID;
-	@SuppressWarnings("NonConstantFieldWithUpperCaseName")
-	private String LSID;
 	private String refreshToken;
 	private final List<Playlist> playlists = new ArrayList<>(0);
+	private List<SerializableCookie> serializeableCookies;
 
 	public String getId() {
 		return id;
@@ -45,22 +44,6 @@ public class Account implements Serializable {
 
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public String getSID() {
-		return SID;
-	}
-
-	public void setSID(final String SID) {
-		this.SID = SID;
-	}
-
-	public String getLSID() {
-		return LSID;
-	}
-
-	public void setLSID(final String LSID) {
-		this.LSID = LSID;
 	}
 
 	public String getRefreshToken() {
@@ -97,5 +80,13 @@ public class Account implements Serializable {
 	@Override
 	public int hashCode() {
 		return null != id ? id.hashCode() : 0;
+	}
+
+	public void setSerializeableCookies(final List<SerializableCookie> serializeableCookies) {
+		this.serializeableCookies = serializeableCookies;
+	}
+
+	public List<SerializableCookie> getSerializeableCookies() {
+		return serializeableCookies;
 	}
 }

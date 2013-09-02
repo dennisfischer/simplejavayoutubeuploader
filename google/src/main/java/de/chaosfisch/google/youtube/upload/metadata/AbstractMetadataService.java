@@ -28,12 +28,14 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.account.AuthenticationIOException;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
+import de.chaosfisch.google.http.PersistentCookieStore;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,17 +49,15 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	private static final String   METADATA_CREATE_RESUMEABLE_URL = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=status,snippet";
-	private static final String   METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
-	private static final String   REDIRECT_URL                   = "http://www.youtube.com/signin?action_handle_signin=true&feature=redirect_login&nomobiletemp=1&hl=en_US&next=%%2Fmy_videos_edit%%3Fvideo_id%%3D%s";
-	private static final int      SC_OK                          = 200;
-	private static final int      SC_BAD_REQUEST                 = 400;
-	private static final Logger   logger                         = LoggerFactory.getLogger(AbstractMetadataService.class);
-	private static final String[] deadEnds                       = {
-			"https://accounts.google.com/b/0/SmsAuthInterstitial"};
-	private static final int      MONETIZE_PARAMS_SIZE           = 20;
-	private static final char     MODIFIED_SEPERATOR             = ',';
-	private static final int      METADATA_PARAMS_SIZE           = 40;
+	private static final Logger LOGGER                         = LoggerFactory.getLogger(AbstractMetadataService.class);
+	private static final String METADATA_CREATE_RESUMEABLE_URL = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=status,snippet";
+	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String VIDEO_EDIT_URL                 = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
+	private static final int    SC_OK                          = 200;
+	private static final int    SC_BAD_REQUEST                 = 400;
+	private static final int    MONETIZE_PARAMS_SIZE           = 20;
+	private static final char   MODIFIED_SEPERATOR             = ',';
+	private static final int    METADATA_PARAMS_SIZE           = 40;
 
 	private final IAccountService accountService;
 
@@ -78,9 +78,9 @@ public class AbstractMetadataService implements IMetadataService {
 		videoEntry.mediaGroup.license = metadata.getLicense().getMetaIdentifier();
 		videoEntry.mediaGroup.title = metadata.getTitle();
 		videoEntry.mediaGroup.description = metadata.getDescription();
-	/*	videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
+		videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
 				.skipNulls()
-				.join(TagParser.parse(metadata.getKeywords()));    */
+				.join(TagParser.parse(metadata.getKeywords()));
 		final Permissions permissions = upload.getPermissions();
 
 		if (Visibility.PRIVATE == permissions.getVisibility() || Visibility.SCHEDULED == permissions.getVisibility()) {
@@ -134,7 +134,7 @@ public class AbstractMetadataService implements IMetadataService {
 		xStream.autodetectAnnotations(true);
 		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry));
 
-		logger.info("AtomData: {}", atomData);
+		LOGGER.info("AtomData: {}", atomData);
 		return atomData;
 	}
 
@@ -188,7 +188,7 @@ public class AbstractMetadataService implements IMetadataService {
 					.asString();
 
 			if (SC_OK != response.getCode()) {
-				System.out.println(response.getBody());
+				LOGGER.error("Metadata - invalid", response.getBody());
 				throw new MetaBadRequestException(atomData, response.getCode());
 			}
 		} catch (MetaBadRequestException e) {
@@ -198,28 +198,32 @@ public class AbstractMetadataService implements IMetadataService {
 		}
 	}
 
-	@Override
-	public void activateBrowserfeatures(final Upload upload) throws MetaDeadEndException, AuthenticationIOException {
-		final String googleContent = accountService.getLoginContent(upload.getAccount(), String.
-				format(REDIRECT_URL, upload.getVideoid()));
+	@Inject
+	private CookieStore cookieStore;
 
-		changeMetadata(redirectToYoutube(googleContent), upload);
+	@Override
+	public void activateBrowserfeatures(final Upload upload) {
+
+		// Create a local instance of cookie store
+		// Populate cookies if needed
+		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount()
+				.getSerializeableCookies()) {
+			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
+					.getName(), serializableCookie.getCookie().getValue());
+			cookie.setDomain(serializableCookie.getCookie().getDomain());
+			cookieStore.addCookie(cookie);
+		}
+
+		final HttpResponse<String> response = Unirest.get(String.format(VIDEO_EDIT_URL, upload.getVideoid()))
+				.asString();
+
+		changeMetadata(response.getBody(), upload);
+		cookieStore.clear();
 	}
 
 	private String extractor(final String input, final String search, final String end) {
 		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
 				.length()));
-	}
-
-	private String redirectToYoutube(final String content) throws MetaDeadEndException {
-		final String url = extractor(content, "location.replace(\"", "\"").replaceAll(Pattern.quote("\\x26"), "&")
-				.replaceAll(Pattern.quote("\\x3d"), "=");
-		final HttpResponse<String> response = Unirest.get(url).asString();
-
-		if (Arrays.asList(deadEnds).contains(response.getHeaders().get("Location"))) {
-			throw new MetaDeadEndException(response.getHeaders().get("Location"));
-		}
-		return response.getBody();
 	}
 
 	private String boolConverter(final boolean flag) {
@@ -236,7 +240,7 @@ public class AbstractMetadataService implements IMetadataService {
 		params.putAll(getMetadataMetadata(upload));
 		params.putAll(getMetadataPermissions(upload));
 
-		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.entrySet()));
+		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
@@ -245,9 +249,9 @@ public class AbstractMetadataService implements IMetadataService {
 			final HttpResponse<String> response = Unirest.post(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
 					.getVideoid())).fields(params).asString();
 
-			logger.info(response.getBody());
+			LOGGER.info(response.getBody());
 		} catch (Exception e) {
-			logger.warn("Metadata not set", e);
+			LOGGER.warn("Metadata not set", e);
 		}
 	}
 
@@ -283,7 +287,7 @@ public class AbstractMetadataService implements IMetadataService {
 		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
 		final Metadata metadata = upload.getMetadata();
 		final Monetization monetization = upload.getMonetization();
-		if (monetization.isClaim()) {
+		if (monetization.isClaim() && License.YOUTUBE == upload.getMetadata().getLicense()) {
 			params.put("enable_monetization", boolConverter(true));
 			params.put("monetization_style", "ads");
 			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {

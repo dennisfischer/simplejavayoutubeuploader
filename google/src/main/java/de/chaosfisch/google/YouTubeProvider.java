@@ -12,13 +12,15 @@ package de.chaosfisch.google;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.*;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTube;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.chaosfisch.google.account.Account;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +44,18 @@ public class YouTubeProvider implements Provider<YouTube> {
 					.setClientSecrets(GDATAConfig.CLIENT_ID, GDATAConfig.CLIENT_SECRET)
 					.build();
 			credential.setRefreshToken(account.getRefreshToken());
-			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, credential).setApplicationName("simple-java-youtube-uploader")
-					.build());
+			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
+				@Override
+				public void initialize(final HttpRequest request) throws IOException {
+					request.setInterceptor(new HttpExecuteInterceptor() {
+						@Override
+						public void intercept(final HttpRequest request) throws IOException {
+							credential.intercept(request);
+						}
+					});
+					request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(new ExponentialBackOff()));
+				}
+			}).setApplicationName("simple-java-youtube-uploader").build());
 		}
 		return services.get(account);
 	}
