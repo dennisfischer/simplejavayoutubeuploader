@@ -29,7 +29,7 @@ class EnddirPostProcessor implements UploadPostProcessor {
 
 	@Inject
 	public EnddirPostProcessor(final IEnddirService enddirService, final Configuration config) {
-		this(enddirService, config.getBoolean(IEnddirService.RENAME_PROPERTY));
+		this(enddirService, config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
 	}
 
 	public EnddirPostProcessor(final IEnddirService enddirService, final boolean rename) {
