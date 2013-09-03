@@ -50,7 +50,8 @@ public class TagTextArea extends StackPane {
 		final Iterable<String> tagIterator = Splitter.on(",").omitEmptyStrings().split(tags);
 		for (final String tag : tagIterator) {
 			webView.getEngine()
-					.executeScript(String.format("$(document).ready(function() { $('#myTags').tagit('createTag', '%s'); });", tag));
+					.executeScript(String.format("$(document).ready(function() { $('#myTags').tagit('createTag', \"%s\"); });", tag
+							.replace("\"", "\\\"")));
 		}
 	}
 

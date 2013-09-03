@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.*;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +39,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class GuiUploader extends GuiceApplication {
 
-	private static final int         MIN_HEIGHT = 640;
-	private static final int         MIN_WIDTH  = 1000;
-	private static final Preferences prefs      = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
-	private static final Logger      logger     = LoggerFactory.getLogger(GuiUploader.class);
+	private static final int    MIN_HEIGHT = 640;
+	private static final int    MIN_WIDTH  = 1000;
+	private static final Logger logger     = LoggerFactory.getLogger(GuiUploader.class);
 
 	@Inject
 	private GuiceFXMLLoader     fxmlLoader;
@@ -56,6 +55,8 @@ public class GuiUploader extends GuiceApplication {
 	@Inject
 	private IUploadService      uploadService;
 	@Inject
+	private Configuration       configuration;
+	@Inject
 	@Named("i18n-resources")
 	private ResourceBundle      resources;
 	private double              initX;
@@ -63,9 +64,7 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void start(final Stage primaryStage) {
-		updateDatabase();
-
-		final boolean useMasterPassword = prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
+		final boolean useMasterPassword = configuration.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
 		if (useMasterPassword) {
 			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
 				@Override
@@ -87,6 +86,7 @@ public class GuiUploader extends GuiceApplication {
 			}
 			Platform.exit();
 		} else {
+			updateDatabase();
 			Platform.setImplicitExit(false);
 			initApplication(primaryStage);
 
@@ -96,10 +96,9 @@ public class GuiUploader extends GuiceApplication {
 	}
 
 	private void updateDatabase() {
-		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
-		if (12 >= prefs.getInt("version", 0)) {
+		if (ApplicationData.RELEASE > configuration.getInt("version", 0)) {
 			getInjector().getInstance(DBConverter.class).run();
-			prefs.putInt("version", ApplicationData.RELEASE);
+			configuration.setProperty("version", ApplicationData.RELEASE);
 		}
 	}
 

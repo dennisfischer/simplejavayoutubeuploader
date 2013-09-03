@@ -15,19 +15,10 @@ import java.io.Serializable;
 public class Social implements Serializable {
 
 	private static final long serialVersionUID = 1996880624554193297L;
-	private int     id;
 	private boolean facebook;
 	private boolean twitter;
 	private String  message;
 	private int     version;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
 
 	public boolean isFacebook() {
 		return facebook;
@@ -51,25 +42,6 @@ public class Social implements Serializable {
 
 	public void setMessage(final String message) {
 		this.message = message;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Social)) {
-			return false;
-		}
-
-		final Social social = (Social) obj;
-
-		return id == social.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return id;
 	}
 
 	public int getVersion() {

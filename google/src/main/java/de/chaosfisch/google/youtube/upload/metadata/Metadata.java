@@ -18,7 +18,6 @@ import java.io.Serializable;
 public class Metadata implements Serializable {
 
 	private static final long serialVersionUID = -6095318226028745525L;
-	private int      id;
 	private Category category;
 	private String   title;
 	private String   description;
@@ -41,14 +40,6 @@ public class Metadata implements Serializable {
 		setKeywords(keywords);
 		//noinspection CallToSimpleSetterFromWithinClass
 		setLicense(license);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
 	}
 
 	public Category getCategory() {
@@ -115,25 +106,6 @@ public class Metadata implements Serializable {
 
 	void setLicense(final License license) {
 		this.license = license;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Metadata)) {
-			return false;
-		}
-
-		final Metadata metadata = (Metadata) obj;
-
-		return id == metadata.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return id;
 	}
 
 	public int getVersion() {

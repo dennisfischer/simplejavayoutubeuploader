@@ -50,7 +50,7 @@
             <TextField fx:id="input" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         </GridPane>
         <HBox id="HBox" alignment="CENTER_RIGHT" maxHeight="-Infinity" padding="$x1" spacing="5.0">
-            <Button mnemonicParsing="false" text="%inputDialog.okayLabel" onAction="#okayAction"/>
+            <Button defaultButton="true" mnemonicParsing="false" text="%inputDialog.okayLabel" onAction="#okayAction"/>
         </HBox>
     </VBox>
 </AnchorPane>

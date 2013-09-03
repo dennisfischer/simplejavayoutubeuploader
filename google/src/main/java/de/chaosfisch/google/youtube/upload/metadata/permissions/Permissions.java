@@ -15,7 +15,6 @@ import java.io.Serializable;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -4202788983688840206L;
-	private int           id;
 	private Comment       comment;
 	private boolean       commentvote;
 	private boolean       embed;
@@ -23,14 +22,6 @@ public class Permissions implements Serializable {
 	private Videoresponse videoresponse;
 	private Visibility    visibility;
 	private int           version;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
 
 	public Comment getComment() {
 		return comment;
@@ -78,25 +69,6 @@ public class Permissions implements Serializable {
 
 	public void setVisibility(final Visibility visibility) {
 		this.visibility = visibility;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Permissions)) {
-			return false;
-		}
-
-		final Permissions that = (Permissions) obj;
-
-		return id == that.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return id;
 	}
 
 	public int getVersion() {

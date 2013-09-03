@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 public class Monetization implements Serializable {
 	private static final long serialVersionUID = -2575407439740776825L;
-	private int         id;
 	private boolean     instreamDefaults;
 	private boolean     claim;
 	private boolean     overlay;
@@ -42,14 +41,6 @@ public class Monetization implements Serializable {
 	private Asset       asset;
 	private boolean     partner;
 	private int         version;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
 
 	public boolean isInstreamDefaults() {
 		return instreamDefaults;
@@ -217,25 +208,6 @@ public class Monetization implements Serializable {
 
 	public void setPartner(final boolean partner) {
 		this.partner = partner;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Monetization)) {
-			return false;
-		}
-
-		final Monetization that = (Monetization) obj;
-
-		return id == that.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return id;
 	}
 
 	public int getVersion() {
