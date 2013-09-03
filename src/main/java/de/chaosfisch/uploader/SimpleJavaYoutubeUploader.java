@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Map;
 import java.util.Properties;
-import java.util.prefs.Preferences;
 
 public final class SimpleJavaYoutubeUploader {
 
@@ -28,17 +27,6 @@ public final class SimpleJavaYoutubeUploader {
 
 	public static void main(final String[] args) {
 		loadVMOptions();
-		initApplication(args);
-	}
-
-	private static void initApplication(final String[] args) {
-		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
-
-		if (6 >= prefs.getInt("version", 0)) {
-			DBConverter.main(args);
-
-			prefs.putInt("version", ApplicationData.RELEASE);
-		}
 		GuiUploader.initialize(args);
 	}
 

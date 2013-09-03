@@ -63,6 +63,8 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void start(final Stage primaryStage) {
+		updateDatabase();
+
 		final boolean useMasterPassword = prefs.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
 		if (useMasterPassword) {
 			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
@@ -90,6 +92,14 @@ public class GuiUploader extends GuiceApplication {
 
 			uploadService.resetUnfinishedUploads();
 			uploadService.startStarttimeCheck();
+		}
+	}
+
+	private void updateDatabase() {
+		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
+		if (12 >= prefs.getInt("version", 0)) {
+			getInjector().getInstance(DBConverter.class).run();
+			prefs.putInt("version", ApplicationData.RELEASE);
 		}
 	}
 

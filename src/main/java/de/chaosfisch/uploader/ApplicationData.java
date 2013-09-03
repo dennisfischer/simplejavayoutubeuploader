@@ -13,11 +13,9 @@ package de.chaosfisch.uploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-	public static final String DEVELOPER_KEY = "AI39si6EquMrdMz_oKMFk9rNBHqOQTUEG-kJ4I33xveO-W40U95XjJAL3-Fa9voJ3bPxkMwsT7IQKc39M3tw0o2fHswYRN0Chg";
-	public static final String GDATA_VERSION = "2";
-	public static final String VERSION       = "3.0.1.1";
-	public static final int    RELEASE       = 11;
-	public static final String BASEURL       = "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
+	public static final String VERSION = "3.1.0.0";
+	public static final int    RELEASE = 12;
+	public static final String BASEURL = "http://youtubeuploader.square7.ch/nightly/jupidator/update.xml";
 	public static final String HOME;
 	public static final String DATA_DIR;
 
