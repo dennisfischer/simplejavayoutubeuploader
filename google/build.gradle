@@ -11,6 +11,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -30,7 +32,7 @@ configurations {
 }
 
 dependencies {
-    compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:+',
+    compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:1.2.2',
             'com.google.guava:guava:14+', 'org.apache.httpcomponents:httpclient:4.3-beta2',
             'org.apache.httpcomponents:httpasyncclient:4.0-beta4', 'org.apache.httpcomponents:httpmime:4.3-beta2',
             'org.json:json:20090211',

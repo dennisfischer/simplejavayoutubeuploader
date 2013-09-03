@@ -18,27 +18,22 @@ import com.google.api.services.youtube.YouTube;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.mashape.unirest.http.options.Option;
-import com.mashape.unirest.http.options.Options;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.utils.ClientFactory;
 import de.chaosfisch.google.processors.ProcessorsModule;
 import de.chaosfisch.google.youtube.upload.IUploadJobFactory;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 public class GoogleModule extends AbstractModule {
+
 	@Override
 	protected void configure() {
 
-		final CookieStore cookieStore = new BasicCookieStore();
-		final HttpClient client = HttpClientBuilder.create()
-				.useSystemProperties()
-				.setDefaultCookieStore(cookieStore)
-				.build();
-		Options.setOption(Option.HTTPCLIENT, client);
+		try {
+			ClientFactory.getAsyncHttpClient().shutdown();
+			Unirest.setAsyncHttpClient(null);
+		} catch (InterruptedException e) {
 
-		bind(CookieStore.class).toInstance(cookieStore);
+		}
 
 		install(new FactoryModuleBuilder().build(IUploadJobFactory.class));
 		install(new ProcessorsModule());

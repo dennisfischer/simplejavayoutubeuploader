@@ -35,6 +35,10 @@ import de.chaosfisch.google.http.PersistentCookieStore;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,14 +202,12 @@ public class AbstractMetadataService implements IMetadataService {
 		}
 	}
 
-	@Inject
-	private CookieStore cookieStore;
-
 	@Override
 	public void activateBrowserfeatures(final Upload upload) {
 
 		// Create a local instance of cookie store
 		// Populate cookies if needed
+		final CookieStore cookieStore = new BasicCookieStore();
 		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount()
 				.getSerializeableCookies()) {
 			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
@@ -214,11 +216,22 @@ public class AbstractMetadataService implements IMetadataService {
 			cookieStore.addCookie(cookie);
 		}
 
+		final HttpClient client = HttpClientBuilder.create()
+				.useSystemProperties()
+				.setDefaultCookieStore(cookieStore)
+				.build();
+		Unirest.setHttpClient(client);
+
 		final HttpResponse<String> response = Unirest.get(String.format(VIDEO_EDIT_URL, upload.getVideoid()))
 				.asString();
 
 		changeMetadata(response.getBody(), upload);
-		cookieStore.clear();
+
+		final RequestConfig clientConfig = RequestConfig.custom()
+				.setConnectTimeout(600000)
+				.setSocketTimeout(600000)
+				.build();
+		Unirest.setHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
 	}
 
 	private String extractor(final String input, final String search, final String end) {

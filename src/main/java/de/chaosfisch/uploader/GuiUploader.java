@@ -172,7 +172,6 @@ public class GuiUploader extends GuiceApplication {
 					event.consume();
 				} else {
 					Platform.exit();
-					System.exit(0);
 				}
 			} catch (IOException e) {
 				logger.error("Couldn't load ConfirmDialog", e);
