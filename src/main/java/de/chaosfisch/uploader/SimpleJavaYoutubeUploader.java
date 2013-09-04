@@ -27,6 +27,7 @@ public final class SimpleJavaYoutubeUploader {
 
 	public static void main(final String[] args) {
 		loadVMOptions();
+		new ApplicationUpdater();
 		GuiUploader.initialize(args);
 	}
 

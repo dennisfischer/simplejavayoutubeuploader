@@ -37,6 +37,7 @@
     <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="hamcrest-core-1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-4.10" level="project" />
+    <orderEntry type="library" exported="" name="jupidator" level="project" />
   </component>
 </module>
 

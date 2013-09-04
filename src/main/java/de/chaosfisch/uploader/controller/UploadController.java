@@ -360,6 +360,15 @@ public class UploadController {
 				uploadTitle.getTooltip()
 						.show(uploadTitle, dialogHelper.getTooltipX(uploadTitle), dialogHelper.getTooltipY(uploadTitle));
 				break;
+			case Upload.Validation.ENDDIR:
+				uploadEnddir.getStyleClass().add("input-invalid");
+				uploadEnddir.setTooltip(TooltipBuilder.create()
+						.autoHide(true)
+						.text(resources.getString("validation.enddir"))
+						.build());
+				uploadEnddir.getTooltip()
+						.show(uploadEnddir, dialogHelper.getTooltipX(uploadEnddir), dialogHelper.getTooltipY(uploadEnddir));
+				break;
 		}
 	}
 
