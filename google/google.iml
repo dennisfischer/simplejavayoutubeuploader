@@ -37,13 +37,13 @@
     <orderEntry type="library" exported="" name="commons-configuration-1.9" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="gson-2.1" level="project" />
-    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev75-1.16.0-rc" level="project" />
     <orderEntry type="library" exported="" name="httpasyncclient-4.0-beta4" level="project" />
     <orderEntry type="library" exported="" name="httpcore-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="httpcore-nio-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="httpclient-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="httpmime-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="unirest-java-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev76-1.16.0-rc" level="project" />
   </component>
 </module>
 

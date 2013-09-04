@@ -31,7 +31,7 @@ public class GoogleModule extends AbstractModule {
 		try {
 			ClientFactory.getAsyncHttpClient().shutdown();
 			Unirest.setAsyncHttpClient(null);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ignored) {
 
 		}
 

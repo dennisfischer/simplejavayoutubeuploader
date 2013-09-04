@@ -53,7 +53,7 @@ public class PlaylistAddController extends UndecoratedDialogController {
 	private final DialogHelper     dialogHelper;
 
 	@Inject
-	public PlaylistAddController(final IPlaylistService playlistService, final IAccountService accountService, final DialogHelper dialogHelper) {
+	private PlaylistAddController(final IPlaylistService playlistService, final IAccountService accountService, final DialogHelper dialogHelper) {
 		this.playlistService = playlistService;
 		this.accountService = accountService;
 		this.dialogHelper = dialogHelper;

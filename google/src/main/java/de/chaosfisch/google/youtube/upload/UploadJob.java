@@ -81,7 +81,7 @@ public class UploadJob implements Callable<Upload> {
 	private HttpURLConnection      request;
 
 	@Inject
-	public UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
+	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IAccountService accountService) {
 		this.upload = upload;
 		this.rateLimiter = rateLimiter;
 		this.uploadPreProcessors = uploadPreProcessors;

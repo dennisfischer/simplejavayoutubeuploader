@@ -25,7 +25,7 @@ public final class DesktopUtil {
 	private final Desktop desktop;
 
 	@Inject
-	public DesktopUtil() {
+	private DesktopUtil() {
 		desktop = Desktop.getDesktop();
 	}
 

@@ -65,7 +65,7 @@ public class SettingsController {
 	private final Configuration       config;
 
 	@Inject
-	public SettingsController(final IPersistenceService persistenceService, final DialogHelper dialogHelper, final Configuration config) {
+	private SettingsController(final IPersistenceService persistenceService, final DialogHelper dialogHelper, final Configuration config) {
 		this.persistenceService = persistenceService;
 		this.dialogHelper = dialogHelper;
 		this.config = config;

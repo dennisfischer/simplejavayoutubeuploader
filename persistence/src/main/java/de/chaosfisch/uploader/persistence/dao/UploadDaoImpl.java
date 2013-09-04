@@ -25,9 +25,9 @@ class UploadDaoImpl implements IUploadDao {
 	private final List<Upload> uploads = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus            eventBus;
+	private EventBus            eventBus;
 	@Inject
-	protected IPersistenceService persistenceService;
+	private IPersistenceService persistenceService;
 
 	@Override
 	public List<Upload> getAll() {

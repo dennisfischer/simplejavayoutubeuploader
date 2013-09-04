@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 
+@SuppressWarnings("WeakerAccess")
 public class UndecoratedDialogController {
 	@FXML
 	protected ResourceBundle resources;

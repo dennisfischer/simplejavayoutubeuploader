@@ -28,7 +28,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	private final YouTubeProvider youTubeProvider;
 
 	@Inject
-	public AbstractPlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
+	protected AbstractPlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
 		this.accountService = accountService;
 		this.youTubeProvider = youTubeProvider;
 	}

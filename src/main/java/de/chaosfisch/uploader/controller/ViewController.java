@@ -11,7 +11,6 @@
 package de.chaosfisch.uploader.controller;
 
 import com.cathive.fx.guice.FXMLController;
-import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
@@ -107,15 +106,11 @@ public class ViewController {
 	private double  xOffset;
 	private double  yOffset;
 
-	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
-	@Inject
-	private DesktopUtil     desktopUtil;
-	@Inject
-	private GuiceFXMLLoader fxmlLoader;
-	@Inject
-	private DialogHelper    dialogHelper;
+	private final DesktopUtil  desktopUtil;
+	private final DialogHelper dialogHelper;
 
 	public static final Template standardTemplate;
+	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
 
 	static {
 		final Permissions permissions = new Permissions();
@@ -152,6 +147,14 @@ public class ViewController {
 		standardTemplate.setMetadata(metadata);
 		standardTemplate.setThumbnail(null);
 		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	@Inject
+	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController) {
+		this.desktopUtil = desktopUtil;
+		this.dialogHelper = dialogHelper;
+		this.uploadController = uploadController;
 	}
 
 	@FXML
@@ -371,5 +374,5 @@ public class ViewController {
 	}
 
 	@Inject
-	private UploadController uploadController;
+	private final UploadController uploadController;
 }

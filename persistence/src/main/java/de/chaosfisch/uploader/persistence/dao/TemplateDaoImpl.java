@@ -25,9 +25,9 @@ class TemplateDaoImpl implements ITemplateDao {
 
 	private final List<Template> templates = new ArrayList<>(10);
 	@Inject
-	protected EventBus            eventBus;
+	private EventBus            eventBus;
 	@Inject
-	protected IPersistenceService persistenceService;
+	private IPersistenceService persistenceService;
 
 	@Override
 	public List<Template> getAll() {

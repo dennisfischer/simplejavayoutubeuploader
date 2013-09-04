@@ -26,9 +26,9 @@ class AccountDaoImpl implements IAccountDao {
 	private final List<Account> accounts = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus            eventBus;
+	private EventBus            eventBus;
 	@Inject
-	protected IPersistenceService persistenceService;
+	private IPersistenceService persistenceService;
 
 	@Override
 	public List<Account> getAll() {

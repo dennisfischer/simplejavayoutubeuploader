@@ -10,6 +10,7 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+@SuppressWarnings("WeakerAccess")
 public class MetaLocationMissingException extends Exception {
 	private static final long serialVersionUID = 2294458166891784471L;
 	private final int statusCode;

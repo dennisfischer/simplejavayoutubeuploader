@@ -27,9 +27,9 @@ class PlaylistDaoImpl implements IPlaylistDao {
 	private final List<Playlist> playlists = new ArrayList<>(10);
 
 	@Inject
-	protected EventBus            eventBus;
+	private EventBus            eventBus;
 	@Inject
-	protected IPersistenceService persistenceService;
+	private IPersistenceService persistenceService;
 
 	@Override
 	public List<Playlist> getAll(final Account account) {

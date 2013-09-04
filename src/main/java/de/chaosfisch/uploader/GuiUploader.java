@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.ResourceBundle;
 
+@SuppressWarnings("WeakerAccess")
 public class GuiUploader extends GuiceApplication {
 
 	private static final int    MIN_HEIGHT = 640;

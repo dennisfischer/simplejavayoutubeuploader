@@ -23,5 +23,5 @@ public class Category {
 	protected String scheme;
 
 	@XStreamAsAttribute
-	public String term;
+	protected String term;
 }

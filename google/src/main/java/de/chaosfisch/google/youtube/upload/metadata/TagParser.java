@@ -38,7 +38,8 @@ public final class TagParser {
 
 	private static boolean isTagValid(final String tag) {
 		final int byteLength = tag.getBytes(Charsets.UTF_8).length;
-		return MIN_TAG_LEGNTH <= byteLength && MAX_TAG_LENGTH >= byteLength && !(tag.contains("<") || tag.contains(">"));
+		return MIN_TAG_LEGNTH <= byteLength && MAX_TAG_LENGTH >= byteLength && !(tag.contains("<") || tag.contains(">") || tag
+				.contains("\""));
 	}
 
 	public static List<String> parse(final String input) {

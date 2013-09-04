@@ -20,7 +20,7 @@ public final class TextUtil {
 	@Inject
 	@Named("i18n-resources")
 
-	static ResourceBundle resources;
+	private static ResourceBundle resources;
 
 	private TextUtil() {
 	}
@@ -31,5 +31,4 @@ public final class TextUtil {
 		}
 		return resources.getString(key);
 	}
-
 }

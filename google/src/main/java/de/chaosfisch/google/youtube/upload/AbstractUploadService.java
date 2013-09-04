@@ -25,7 +25,7 @@ public abstract class AbstractUploadService implements IUploadService {
 	private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
 	@Inject
-	public AbstractUploadService(final IMetadataService metadataService, final Uploader uploader) {
+	protected AbstractUploadService(final IMetadataService metadataService, final Uploader uploader) {
 		this.metadataService = metadataService;
 		this.uploader = uploader;
 	}

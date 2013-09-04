@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -31,7 +30,7 @@ final class DBConverter {
 	@Inject
 	private ITemplateService templateService;
 
-	private void convertV3() throws SQLException, IOException {
+	private void convertV3() throws SQLException {
 		try {
 			Class.forName("org.h2.Driver");
 		} catch (Exception e) {

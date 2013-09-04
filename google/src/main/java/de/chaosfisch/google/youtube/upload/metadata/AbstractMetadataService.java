@@ -136,10 +136,8 @@ public class AbstractMetadataService implements IMetadataService {
 			}
 		});
 		xStream.autodetectAnnotations(true);
-		final String atomData = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry));
 
-		LOGGER.info("AtomData: {}", atomData);
-		return atomData;
+		return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry));
 	}
 
 	@Override
