@@ -17,7 +17,6 @@ import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.uploader.ApplicationData;
-import de.chaosfisch.uploader.SimpleJavaYoutubeUploader;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
@@ -40,6 +39,7 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 @FXMLController
 public class ViewController {
@@ -106,8 +105,10 @@ public class ViewController {
 	private double  xOffset;
 	private double  yOffset;
 
-	private final DesktopUtil  desktopUtil;
-	private final DialogHelper dialogHelper;
+	private final DesktopUtil      desktopUtil;
+	private final DialogHelper     dialogHelper;
+	private final UploadController uploadController;
+	private final Configuration    configuration;
 
 	public static final Template standardTemplate;
 	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
@@ -151,10 +152,11 @@ public class ViewController {
 
 	@SuppressWarnings("WeakerAccess")
 	@Inject
-	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController) {
+	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final Configuration configuration) {
 		this.desktopUtil = desktopUtil;
 		this.dialogHelper = dialogHelper;
 		this.uploadController = uploadController;
+		this.configuration = configuration;
 	}
 
 	@FXML
@@ -203,8 +205,7 @@ public class ViewController {
 
 	@FXML
 	void migrateDatabase(final ActionEvent event) {
-		final Preferences prefs = Preferences.userNodeForPackage(SimpleJavaYoutubeUploader.class);
-		prefs.putInt("version", 0);
+		configuration.setProperty("version", 0);
 
 		dialogHelper.showErrorDialog(resources.getString("dialog.migratedatabase.title"), resources.getString("dialog.migratedatabase.text"));
 	}
@@ -372,7 +373,4 @@ public class ViewController {
 			logger.warn("Icons not loaded", e);
 		}
 	}
-
-	@Inject
-	private final UploadController uploadController;
 }

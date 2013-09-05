@@ -39,12 +39,16 @@ public class QueueOverviewController {
 
 	@FXML
 	private ListView<Upload> queueListView;
+
 	private final ObservableList<Upload> uploads = FXCollections.observableArrayList();
+	private final IUploadService          uploadService;
+	private final QueueUploadCellRenderer queueUploadCellRenderer;
 
 	@Inject
-	private IUploadService          uploadService;
-	@Inject
-	private QueueUploadCellRenderer queueUploadCellRenderer;
+	public QueueOverviewController(final IUploadService uploadService, final QueueUploadCellRenderer queueUploadCellRenderer) {
+		this.uploadService = uploadService;
+		this.queueUploadCellRenderer = queueUploadCellRenderer;
+	}
 
 	@FXML
 	void initialize() {

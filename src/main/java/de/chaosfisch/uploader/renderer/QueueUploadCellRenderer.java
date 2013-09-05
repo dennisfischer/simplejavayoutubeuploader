@@ -14,6 +14,7 @@ import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
@@ -49,22 +50,28 @@ import java.util.concurrent.TimeUnit;
 
 public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListCell<Upload>> {
 
-	@Inject
-	private UploadController uploadController;
-	@Inject
-	private EventBus         eventBus;
-	@Inject
-	@Named("i18n-resources")
-	private ResourceBundle   resources;
-	@Inject
-	private DesktopUtil      desktopUtil;
-	@Inject
-	private IUploadService   uploadService;
-	@Inject
-	private GuiceFXMLLoader  fxmlLoader;
-	@Inject
-	private DialogHelper     dialogHelper;
+	private final UploadController               uploadController;
+	private final EventBus                       eventBus;
+	private final ResourceBundle                 resources;
+	private final DesktopUtil                    desktopUtil;
+	private final IUploadService                 uploadService;
+	private final GuiceFXMLLoader                fxmlLoader;
+	private final DialogHelper                   dialogHelper;
+	private final Provider<ProgressNodeRenderer> progressNodeProvider;
+
 	private static final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
+
+	@Inject
+	public QueueUploadCellRenderer(final UploadController uploadController, final EventBus eventBus, @Named("i18n-resources") final ResourceBundle resources, final DesktopUtil desktopUtil, final IUploadService uploadService, final GuiceFXMLLoader fxmlLoader, final DialogHelper dialogHelper, final Provider<ProgressNodeRenderer> progressNodeProvider) {
+		this.uploadController = uploadController;
+		this.eventBus = eventBus;
+		this.resources = resources;
+		this.desktopUtil = desktopUtil;
+		this.uploadService = uploadService;
+		this.fxmlLoader = fxmlLoader;
+		this.dialogHelper = dialogHelper;
+		this.progressNodeProvider = progressNodeProvider;
+	}
 
 	@Override
 	public ListCell<Upload> call(final ListView<Upload> arg0) {
@@ -137,7 +144,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 						.prefWidth(500)
 						.build();
 			} else {
-				progressNode = new ProgressNodeRenderer();
+				progressNode = progressNodeProvider.get();
 			}
 
 			final Label uploadTitle = LabelBuilder.create()
