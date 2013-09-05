@@ -47,8 +47,9 @@ final class DBConverter {
 
 		while (rsTemplate.next()) {
 
-			final Metadata metadata = new Metadata(rsTemplate.getString("TITLE"), Category.valueOf(rsTemplate.getString("CATEGORY")), rsTemplate
-					.getString("DESCRIPTION"), rsTemplate.getString("KEYWORDS"), License.valueOf(rsTemplate.getString("LICENSE")));
+			final Metadata metadata = new Metadata(Strings.nullToEmpty(rsTemplate.getString("TITLE")), Category.valueOf(rsTemplate
+					.getString("CATEGORY")), Strings.nullToEmpty(rsTemplate.getString("DESCRIPTION")), Strings.nullToEmpty(rsTemplate
+					.getString("KEYWORDS")), License.valueOf(rsTemplate.getString("LICENSE")));
 
 			final Monetization monetization = new Monetization();
 			monetization.setAsset(Asset.valueOf(rsTemplate.getString("MONETIZE_ASSET")));
@@ -74,7 +75,7 @@ final class DBConverter {
 			monetization.setTrueview(rsTemplate.getBoolean("MONETIZE_TRUEVIEW"));
 
 			final Social social = new Social();
-			social.setMessage(rsTemplate.getString("MESSAGE"));
+			social.setMessage(Strings.nullToEmpty(rsTemplate.getString("MESSAGE")));
 			social.setFacebook(rsTemplate.getBoolean("FACEBOOK"));
 			social.setTwitter(rsTemplate.getBoolean("TWITTER"));
 
