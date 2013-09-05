@@ -13,15 +13,8 @@ package de.chaosfisch.google.youtube.upload.metadata;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.upload.Upload;
 
-import java.io.File;
-import java.io.IOException;
-
 public interface IMetadataService {
 	String atomBuilder(Upload upload);
-
-	String jsonBuilder(Upload upload) throws IOException;
-
-	String createMetaData(String jsonData, File fileToUpload, Account account) throws MetaBadRequestException, MetaLocationMissingException;
 
 	void updateMetaData(String atomData, String videoId, Account account) throws MetaBadRequestException, MetaIOException;
 

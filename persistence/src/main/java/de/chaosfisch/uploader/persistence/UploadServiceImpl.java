@@ -25,7 +25,7 @@ class UploadServiceImpl extends AbstractUploadService {
 
 	@Inject
 	public UploadServiceImpl(final IMetadataService metadataService, final Uploader uploader, final IUploadDao uploadDao) {
-		super(metadataService, uploader);
+		super(uploader);
 		this.uploadDao = uploadDao;
 		uploader.setUploadService(this);
 	}

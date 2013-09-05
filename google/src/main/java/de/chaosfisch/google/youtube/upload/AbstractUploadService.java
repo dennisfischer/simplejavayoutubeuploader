@@ -11,32 +11,16 @@
 package de.chaosfisch.google.youtube.upload;
 
 import com.google.inject.Inject;
-import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
-import de.chaosfisch.google.youtube.upload.metadata.MetaLocationMissingException;
 import javafx.beans.property.SimpleBooleanProperty;
-
-import java.io.IOException;
 
 public abstract class AbstractUploadService implements IUploadService {
 
-	private final IMetadataService metadataService;
-	private final Uploader         uploader;
+	private final Uploader uploader;
 	private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
 	@Inject
-	protected AbstractUploadService(final IMetadataService metadataService, final Uploader uploader) {
-		this.metadataService = metadataService;
+	protected AbstractUploadService(final Uploader uploader) {
 		this.uploader = uploader;
-	}
-
-	@Override
-	public String fetchUploadUrl(final Upload upload) throws MetaLocationMissingException, MetaBadRequestException {
-		try {
-			return metadataService.createMetaData(metadataService.jsonBuilder(upload), upload.getFile(), upload.getAccount());
-		} catch (IOException e) {
-			throw new MetaBadRequestException("", 0);
-		}
 	}
 
 	@Override

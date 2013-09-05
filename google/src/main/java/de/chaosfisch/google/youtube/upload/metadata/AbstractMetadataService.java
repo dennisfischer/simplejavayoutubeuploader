@@ -10,11 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoSnippet;
-import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -43,8 +38,6 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,15 +46,13 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	private static final Logger LOGGER                         = LoggerFactory.getLogger(AbstractMetadataService.class);
-	private static final String METADATA_CREATE_RESUMEABLE_URL = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=status,snippet";
-	private static final String METADATA_UPDATE_URL            = "http://gdata.youtube.com/feeds/api/users/default/uploads";
-	private static final String VIDEO_EDIT_URL                 = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
-	private static final int    SC_OK                          = 200;
-	private static final int    SC_BAD_REQUEST                 = 400;
-	private static final int    MONETIZE_PARAMS_SIZE           = 20;
-	private static final char   MODIFIED_SEPERATOR             = ',';
-	private static final int    METADATA_PARAMS_SIZE           = 40;
+	private static final Logger LOGGER               = LoggerFactory.getLogger(AbstractMetadataService.class);
+	private static final String METADATA_UPDATE_URL  = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
+	private static final int    SC_OK                = 200;
+	private static final int    MONETIZE_PARAMS_SIZE = 20;
+	private static final char   MODIFIED_SEPERATOR   = ',';
+	private static final int    METADATA_PARAMS_SIZE = 40;
 
 	private final IAccountService accountService;
 
@@ -138,44 +129,6 @@ public class AbstractMetadataService implements IMetadataService {
 		xStream.autodetectAnnotations(true);
 
 		return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%s", xStream.toXML(videoEntry));
-	}
-
-	@Override
-	public String jsonBuilder(final Upload upload) throws IOException {
-		final VideoStatus status = new VideoStatus();
-		status.setPrivacyStatus("private");
-
-		final VideoSnippet snippet = new VideoSnippet();
-		snippet.setTitle(upload.getMetadata().getTitle());
-		snippet.setDescription(upload.getMetadata().getDescription());
-		snippet.setTags(TagParser.parse(upload.getMetadata().getKeywords(), true));
-
-		final Video videoObjectDefiningMetadata = new Video();
-		videoObjectDefiningMetadata.setStatus(status);
-		videoObjectDefiningMetadata.setSnippet(snippet);
-
-		final JsonFactory factory = new GsonFactory();
-		return factory.toString(videoObjectDefiningMetadata);
-	}
-
-	@Override
-	public String createMetaData(final String jsonData, final File fileToUpload, final Account account) throws MetaBadRequestException, MetaLocationMissingException {
-		// Upload atomData and fetch uploadUrl
-		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
-				.header("Content-Type", "application/json; charset=UTF-8;")
-				.header("Authorization", accountService.getAuthentication(account).getHeader())
-				.header("X-Upload-Content-Lenght", String.format("%d", fileToUpload.length()))
-				.header("X-Upload-Content-Type", "application/octet-stream")
-				.body(jsonData)
-				.asString();
-		if (SC_BAD_REQUEST == response.getCode()) {
-			throw new MetaBadRequestException(jsonData, response.getCode());
-		}
-		if (response.getHeaders().containsKey("Location")) {
-			return response.getHeaders().get("Location");
-		} else {
-			throw new MetaLocationMissingException(response.getCode());
-		}
 	}
 
 	@Override
