@@ -489,10 +489,14 @@ public class UploadController {
 		if (null == templates.getValue()) {
 			return;
 		}
-		final Template template = toTemplate(templates.getValue());
-		template.setAccount(uploadAccount.getValue());
-		template.setPlaylists(playlistTargetList);
-		templateService.update(template);
+		try {
+			final Template template = toTemplate(templates.getValue());
+			template.setAccount(uploadAccount.getValue());
+			template.setPlaylists(playlistTargetList);
+			templateService.update(template);
+		} catch (IllegalArgumentException e) {
+			handleUploadBuildException(e);
+		}
 	}
 
 	@FXML
