@@ -11,25 +11,14 @@
 
 
 
-
-
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-buildscript {
-    version = "3.1.0.1";
-}
-
-allprojects {
-    mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
-}
+version = "3.1.0.2";
+mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 configurations {
     //we do not want to have jfxrt.jar in the classpath when creating the jar,
