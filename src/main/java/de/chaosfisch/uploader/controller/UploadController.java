@@ -197,7 +197,7 @@ public class UploadController {
 	private CheckBox uploadRate;
 
 	@FXML
-	private TagTextArea uploadTags;
+	public ScrollPane uploadTagsScrollpane;
 
 	@FXML
 	private TextField uploadThumbnail;
@@ -241,9 +241,10 @@ public class UploadController {
 	private IUploadService   uploadService;
 	@Inject
 	private DialogHelper     dialogHelper;
-
 	@Inject
-	private GuiceFXMLLoader fxmlLoader;
+	private TagTextArea      uploadTags;
+	@Inject
+	private GuiceFXMLLoader  fxmlLoader;
 
 	private final ObservableList<File>          filesList          = FXCollections.observableArrayList();
 	private final ObservableList<Category>      categoriesList     = FXCollections.observableArrayList();
@@ -649,6 +650,7 @@ public class UploadController {
 	private void initControls() {
 		extendedSettingsGrid.add(started, 1, 11, GridPane.REMAINING, 1);
 		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
+		uploadTagsScrollpane.setContent(uploadTags);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
 

@@ -11,37 +11,55 @@
 package de.chaosfisch.uploader.renderer;
 
 import com.google.common.base.Splitter;
+import com.google.inject.Inject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
+import org.apache.commons.configuration.Configuration;
 
 public class TagTextArea extends StackPane {
 
-	private final SimpleStringProperty tags    = new SimpleStringProperty();
-	private final WebView              webView = new WebView();
+	public static final String               OLD_TAG_INPUT = "old_tags";
+	private final       SimpleStringProperty tags          = new SimpleStringProperty();
+	private final       WebView              webView       = new WebView();
+	private final boolean useOldTags;
 
-	public TagTextArea() {
-		webView.getEngine().loadContent(getInlineHtml());
-		webView.setContextMenuEnabled(false);
-		initPicker(webView);
+	@Inject
+	public TagTextArea(final Configuration configuration) {
+		useOldTags = configuration.getBoolean(OLD_TAG_INPUT, false);
+		if (useOldTags) {
+			initTextArea();
+		} else {
+			initPicker(webView);
+		}
+	}
+
+	private void initTextArea() {
+		final TextArea textArea = new TextArea();
+		textArea.setWrapText(true);
+		textArea.textProperty().bindBidirectional(tags);
+		getChildren().add(textArea);
 	}
 
 	public void setTags(final String tags) {
 		this.tags.set(tags);
-		webView.getEngine().getLoadWorker().runningProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(final ObservableValue<? extends Boolean> observableValue, final Boolean oldValue, final Boolean newValue) {
-				if (!newValue) {
-					_createTags(tags);
+		if (!useOldTags) {
+			webView.getEngine().getLoadWorker().runningProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(final ObservableValue<? extends Boolean> observableValue, final Boolean oldValue, final Boolean newValue) {
+					if (!newValue) {
+						_createTags(tags);
+					}
 				}
+			});
+			if (!webView.getEngine().getLoadWorker().isRunning()) {
+				_createTags(tags);
 			}
-		});
-		if (!webView.getEngine().getLoadWorker().isRunning()) {
-			_createTags(tags);
 		}
 	}
 
@@ -65,7 +83,8 @@ public class TagTextArea extends StackPane {
 
 	// initialize the date picker.
 	private void initPicker(final WebView webView) {
-		// attach a handler for an alert function call which will set the DatePicker's date property.
+		webView.getEngine().loadContent(getInlineHtml());
+		webView.setContextMenuEnabled(false);
 		webView.getEngine().setOnAlert(new EventHandler<WebEvent<String>>() {
 			@Override
 			public void handle(final WebEvent<String> event) {

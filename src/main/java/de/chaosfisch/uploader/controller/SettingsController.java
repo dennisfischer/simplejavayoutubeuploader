@@ -20,6 +20,7 @@ import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.uploader.renderer.Callback;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.renderer.ProgressNodeRenderer;
+import de.chaosfisch.uploader.renderer.TagTextArea;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -55,6 +56,9 @@ public class SettingsController {
 
 	@FXML
 	private CheckBox masterPasswordCheckbox;
+
+	@FXML
+	public CheckBox oldTagsCheckbox;
 
 	private final        Properties vmOptions     = new Properties();
 	private final        File       vmOptionsFile = new File("SimpleJavaYoutubeUploader.vmoptions");
@@ -117,6 +121,11 @@ public class SettingsController {
 	}
 
 	@FXML
+	public void toggleOldTags(final ActionEvent actionEvent) {
+		config.setProperty(TagTextArea.OLD_TAG_INPUT, oldTagsCheckbox.isSelected());
+	}
+
+	@FXML
 	void initialize() {
 		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
@@ -124,6 +133,7 @@ public class SettingsController {
 		enddirCheckbox.setSelected(config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
 		progressCheckbox.setSelected(config.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
 		masterPasswordCheckbox.setSelected(config.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
+		oldTagsCheckbox.setSelected(config.getBoolean(TagTextArea.OLD_TAG_INPUT, false));
 
 		loadVMOptions();
 	}

@@ -13,7 +13,6 @@
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import de.chaosfisch.uploader.renderer.TagTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -53,8 +52,7 @@
                 <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="-1.0" minWidth="-1.0"
                             prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
                             GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5"
-                            GridPane.vgrow="SOMETIMES">
-                    <TagTextArea maxHeight="-1.0" minHeight="-1.0" minWidth="-1.0" fx:id="uploadTags"/>
+                            GridPane.vgrow="SOMETIMES" fx:id="uploadTagsScrollpane">
                 </ScrollPane>
                 <TextField fx:id="uploadTitle" minHeight="-Infinity" minWidth="-Infinity" promptText="Enter the title"
                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>

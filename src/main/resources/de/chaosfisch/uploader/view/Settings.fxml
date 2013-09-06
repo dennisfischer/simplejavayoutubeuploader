@@ -31,6 +31,8 @@
             <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
         </rowConstraints>
         <Label text="%label.homedir" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         <CheckBox fx:id="enddirCheckbox" mnemonicParsing="false" onAction="#toggleEnddirTitle"
@@ -46,5 +48,7 @@
         <CheckBox fx:id="masterPasswordCheckbox" mnemonicParsing="false" onAction="#toggleMasterPassword"
                   text="%masterpasswordcheckbox.label" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
                   GridPane.rowIndex="3"/>
+        <CheckBox fx:id="oldTagsCheckbox" onAction="#toggleOldTags" mnemonicParsing="false" text="%checkbox.useOldTags"
+                  GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4"/>
     </GridPane>
 </AnchorPane>
