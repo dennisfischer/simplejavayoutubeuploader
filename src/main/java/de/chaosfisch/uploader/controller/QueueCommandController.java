@@ -84,7 +84,7 @@ public class QueueCommandController {
 			.withValue(0)
 			.withAlignment(Pos.CENTER_RIGHT)
 			.withArrowPosition(ArrowPosition.LEADING)
-			.withPostfix(" kb/s")
+			.withPostfix(" kB/s")
 			.withEditable(true)
 			.withStringConverter(new UploadSpeedStringConverter());
 	private final ObservableList<ActionOnFinish> actionOnFinishItems = FXCollections.observableArrayList();
