@@ -15,6 +15,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -42,6 +44,7 @@ dependencies {
             'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile project(':util')
+    compile files('/lib/asyncretry.jar')
     providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 

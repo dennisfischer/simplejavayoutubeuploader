@@ -10,35 +10,64 @@
 
 package de.chaosfisch.google.youtube.upload;
 
-import com.google.api.client.googleapis.media.MediaHttpUploader;
-import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
-import com.google.api.client.http.InputStreamContent;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoSnippet;
-import com.google.api.services.youtube.model.VideoStatus;
+import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
+import com.blogspot.nurkiewicz.asyncretry.RetryContext;
+import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
+import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
+import com.google.common.io.CharStreams;
+import com.google.common.io.InputSupplier;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.thoughtworks.xstream.XStream;
+import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.YouTubeProvider;
+import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
-import de.chaosfisch.google.youtube.upload.metadata.TagParser;
+import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UploadJob implements Callable<Upload> {
 
-	private static final int    DEFAULT_BUFFER_SIZE = 65536;
-	private static final Logger LOGGER              = LoggerFactory.getLogger(UploadJob.class);
+	private static final int     SC_OK                          = 200;
+	private static final int     SC_CREATED                     = 201;
+	private static final int     SC_MULTIPLE_CHOICES            = 300;
+	private static final int     SC_RESUME_INCOMPLETE           = 308;
+	private static final int     SC_BAD_REQUEST                 = 400;
+	private static final long    chunkSize                      = 10485760;
+	private static final int     DEFAULT_BUFFER_SIZE            = 65536;
+	private static final Logger  LOGGER                         = LoggerFactory.getLogger(UploadJob.class);
+	private static final String  METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final Pattern RANGE_HEADER_PATTERN           = Pattern.compile("-");
+
+	/** File that is uploaded */
+	private File fileToUpload;
+	private long start;
+	private long bytesToUpload;
+	private long totalBytesUploaded;
+	private long fileSize;
 
 	private final Set<UploadPreProcessor>  uploadPreProcessors;
 	private final Set<UploadPostProcessor> uploadPostProcessors;
@@ -48,11 +77,13 @@ public class UploadJob implements Callable<Upload> {
 
 	private       UploadJobProgressEvent uploadProgress;
 	private       Upload                 upload;
-	private       long                   totalBytesUploaded;
 	private final YouTubeProvider        youTubeProvider;
+	private final IMetadataService       metadataService;
+	private final XStream xStream = new XStream();
+	private Credential credential;
 
 	@Inject
-	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider) {
+	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
 		this.upload = upload;
 		this.rateLimiter = rateLimiter;
 		this.uploadPreProcessors = uploadPreProcessors;
@@ -60,24 +91,40 @@ public class UploadJob implements Callable<Upload> {
 		this.eventBus = eventBus;
 		this.uploadService = uploadService;
 		this.youTubeProvider = youTubeProvider;
+		this.metadataService = metadataService;
 		this.eventBus.register(this);
 	}
 
 	@Override
 	public Upload call() throws Exception {
 
-		for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
-			try {
-				upload = preProcessor.process(upload);
-			} catch (Exception e) {
-				LOGGER.error("Preprocessor error", e);
+		if (null == upload.getUploadurl()) {
+			for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
+				try {
+					upload = preProcessor.process(upload);
+				} catch (Exception e) {
+					LOGGER.error("Preprocessor error", e);
+				}
 			}
 		}
+
+		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
+		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
+				.withMaxDelay(30000)
+				.withMaxRetries(10)
+				.retryOn(IOException.class)
+				.retryOn(RuntimeException.class)
+				.abortOn(MetaBadRequestException.class)
+				.abortOn(FileNotFoundException.class)
+				.abortOn(UploadFinishedException.class);
 
 		try {
 			// Schritt 1: Initialize
 			initialize();
-			upload();
+			// Schritt 2: MetadataUpload + UrlFetch
+			executor.doWithRetry(metadata()).get();
+			// Schritt 3: Chunkupload
+			executor.doWithRetry(upload()).get();
 
 			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
 				try {
@@ -88,13 +135,16 @@ public class UploadJob implements Callable<Upload> {
 			}
 
 			eventBus.post(new UploadJobFinishedEvent(upload));
+		} catch (InterruptedException ignored) {
+			upload.getStatus().setAborted(true);
 		} catch (Exception e) {
-			if (!upload.getStatus().isAborted()) {
+			if (!upload.getStatus().isArchived()) {
 				LOGGER.error("Upload error", e);
 				upload.getStatus().setFailed(true);
 			}
 		}
 
+		schedueler.shutdownNow();
 		upload.getStatus().setRunning(false);
 		uploadService.update(upload);
 		eventBus.unregister(this);
@@ -107,15 +157,101 @@ public class UploadJob implements Callable<Upload> {
 		upload.setDateOfStart(calendar);
 		uploadService.update(upload);
 
-		// init vars
-		totalBytesUploaded = 0;
+		// Get File and Check if existing
+		fileToUpload = upload.getFile();
 
-		if (!upload.getFile().exists()) {
+		if (!fileToUpload.exists()) {
 			throw new FileNotFoundException("Datei existiert nicht.");
 		}
 	}
 
-	private void upload() throws Exception {
+	private RetryRunnable metadata() {
+
+		return new RetryRunnable() {
+
+			@Override
+			public void run(final RetryContext retryContext) throws IOException, MetaBadRequestException {
+				fileSize = fileToUpload.length();
+				totalBytesUploaded = 0;
+				start = 0;
+				bytesToUpload = fileSize;
+
+				if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
+					LOGGER.info("Uploadurl existing: {}", upload.getUploadurl());
+					return;
+				}
+
+				upload.setUploadurl(fetchUploadUrl(upload));
+				uploadService.update(upload);
+
+				// Log operation
+				LOGGER.info("Uploadurl received: {}", upload.getUploadurl());
+			}
+		};
+	}
+
+	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, IOException {
+		// Upload atomData and fetch uploadUrl
+		final String atomData = metadataService.atomBuilder(upload);
+		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
+				.header("GData-Version", GDATAConfig.GDATA_V2)
+				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
+				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
+				.header("Slug", fileToUpload.getAbsolutePath())
+				.header("Authorization", getAuthHeader())
+				.body(atomData)
+				.asString();
+
+		// Check the response code for any problematic codes.
+		if (SC_BAD_REQUEST == response.getCode()) {
+			throw new MetaBadRequestException(atomData, response.getCode());
+		}
+		// Check if uploadurl is available
+		if (response.getHeaders().containsKey("Location")) {
+			return response.getHeaders().get("Location");
+		} else {
+			throw new MetaBadRequestException("Location missing", response.getCode());
+		}
+	}
+
+	private String getAuthHeader() throws IOException {
+		if (null == credential) {
+			credential = youTubeProvider.getCredential(upload.getAccount());
+		}
+
+		if (null == credential.getAccessToken() || null != credential.getExpiresInSeconds() && 60 >= credential.getExpiresInSeconds()) {
+			credential.refreshToken();
+		}
+		return String.format("Bearer %s", credential.getAccessToken());
+	}
+
+	private RetryRunnable upload() {
+		return new RetryRunnable() {
+
+			@Override
+			public void run(final RetryContext retryContext) throws IOException, UploadResponseException, UploadFinishedException {
+				if (null != upload.getUploadurl() || null != retryContext.getLastThrowable()) {
+					LOGGER.info("#############RETRY#############");
+					resumeinfo();
+				}
+				uploadChunks();
+			}
+		};
+	}
+
+	private void uploadChunks() throws IOException, UploadResponseException {
+		while (!Thread.currentThread().isInterrupted() && totalBytesUploaded != fileSize) {
+			uploadChunk();
+		}
+	}
+
+	private void uploadChunk() throws IOException, UploadResponseException {
+		// GET END SIZE
+		final long end = generateEndBytes(start, bytesToUpload);
+
+		// Log operation
+		LOGGER.debug("start={} end={} filesize={}", start, end, fileSize);
+
 		// Log operation
 		LOGGER.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
 
@@ -124,65 +260,141 @@ public class UploadJob implements Callable<Upload> {
 			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 
-		final VideoStatus status = new VideoStatus();
-		status.setPrivacyStatus("private");
+		// Calculating the chunk size
+		final int chunk = (int) (end - start + 1);
 
-		final VideoSnippet snippet = new VideoSnippet();
-		snippet.setTitle(upload.getMetadata().getTitle());
-		snippet.setDescription(upload.getMetadata().getDescription());
-		snippet.setTags(TagParser.parse(upload.getMetadata().getKeywords(), true));
+		// Building PUT RequestImpl for chunk data
+		final URL url = URI.create(upload.getUploadurl()).toURL();
+		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		request.setRequestMethod("POST");
+		request.setDoOutput(true);
+		request.setFixedLengthStreamingMode(chunk);
+		//Properties
+		request.setRequestProperty("Content-Type", upload.getMimetype());
+		request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
+		request.setRequestProperty("Authorization", getAuthHeader());
+		request.setRequestProperty("GData-Version", GDATAConfig.GDATA_V2);
+		request.setRequestProperty("X-GData-Key", String.format("key=%s", GDATAConfig.DEVELOPER_KEY));
+		request.connect();
 
-		final Video videoObjectDefiningMetadata = new Video();
-		videoObjectDefiningMetadata.setStatus(status);
-		videoObjectDefiningMetadata.setSnippet(snippet);
+		try (final TokenInputStream tokenInputStream = new TokenInputStream(new FileInputStream(upload.getFile()));
+			 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
+			tokenInputStream.skip(start);
+			flowChunk(tokenInputStream, throttledOutputStream, start, end);
 
-		try (final TokenInputStream tokenInputStream = new TokenInputStream(new FileInputStream(upload.getFile()))) {
-			final InputStreamContent mediaContent = new InputStreamContent(upload.getMimetype(), tokenInputStream);
-			mediaContent.setLength(upload.getFile().length());
+			switch (request.getResponseCode()) {
+				case SC_OK:
+					//FILE UPLOADED
+					throw new UploadResponseException(SC_OK);
+				case SC_CREATED:
+					final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
+						@Override
+						public InputStream getInput() throws IOException {
+							return request.getInputStream();
+						}
+					};
+					upload.setVideoid(parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
+					upload.getStatus().setArchived(true);
+					uploadService.update(upload);
+					break;
+				case SC_RESUME_INCOMPLETE:
+					// OK, the chunk completed succesfully
+					LOGGER.debug("responseMessage={}", request.getResponseMessage());
+					break;
+				default:
+					throw new UploadResponseException(request.getResponseCode());
+			}
 
-			final YouTube youTube = youTubeProvider.setAccount(upload.getAccount()).get();
-			final YouTube.Videos.Insert request = youTube.videos()
-					.insert("snippet,statistics,status", videoObjectDefiningMetadata, mediaContent);
-			// Set the upload type and add event listener.
-			final MediaHttpUploader uploader = request.getMediaHttpUploader();
-
-      /*
-	   * Sets whether direct media upload is enabled or disabled. True = whole media content is
-       * uploaded in a single request. False (default) = resumable media upload protocol to upload
-       * in data chunks.
-       */
-			uploader.setDirectUploadEnabled(false);
-
-			final Video[] video = new Video[1];
-
-			final MediaHttpUploaderProgressListener progressListener = new MediaHttpUploaderProgressListener() {
-				@Override
-				public void progressChanged(final MediaHttpUploader uploader) throws IOException {
-					switch (uploader.getUploadState()) {
-						case INITIATION_STARTED:
-							LOGGER.info("Initiation Started");
-							break;
-						case INITIATION_COMPLETE:
-							LOGGER.info("Initiation Completed");
-							break;
-						case MEDIA_COMPLETE:
-							LOGGER.debug("Upload created {} ", video[0].toPrettyString());
-
-							upload.setVideoid(video[0].getId());
-							upload.getStatus().setArchived(true);
-							upload.getStatus().setFailed(false);
-							uploadService.update(upload);
-							break;
-						case NOT_STARTED:
-							LOGGER.info("Upload no started");
-							break;
-					}
-				}
-			};
-			uploader.setProgressListener(progressListener);
-
-			video[0] = request.execute();
+			bytesToUpload -= chunkSize;
+			start = end + 1;
 		}
+	}
+
+	private void resumeinfo() throws UploadFinishedException, UploadResponseException, IOException {
+		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
+				.header("GData-Version", GDATAConfig.GDATA_V2)
+				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
+				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
+				.header("Authorization", getAuthHeader())
+				.header("Content-Range", "bytes */*")
+				.asString();
+
+		if (SC_OK <= response.getCode() && SC_MULTIPLE_CHOICES > response.getCode()) {
+			upload.setVideoid(parseVideoId(response.getBody()));
+			upload.getStatus().setArchived(true);
+			uploadService.update(upload);
+			throw new UploadFinishedException();
+		} else if (SC_RESUME_INCOMPLETE != response.getCode()) {
+			throw new UploadResponseException(response.getCode());
+		}
+
+		if (!response.getHeaders().containsKey("Range")) {
+			LOGGER.info("PUT to {} did not return Range-header.", upload.getUploadurl());
+			totalBytesUploaded = 0;
+		} else {
+			LOGGER.info("Range header is: {}", response.getHeaders().get("Range"));
+
+			final String[] parts = RANGE_HEADER_PATTERN.split(response.getHeaders().get("Range"));
+			if (1 < parts.length) {
+				totalBytesUploaded = Long.parseLong(parts[1]) + 1;
+			} else {
+				totalBytesUploaded = 0;
+			}
+
+			bytesToUpload = fileSize - totalBytesUploaded;
+			start = totalBytesUploaded;
+			LOGGER.info("Next byte to upload is {}.", start);
+		}
+		if (response.getHeaders().containsKey("Location")) {
+			upload.setUploadurl(response.getHeaders().get("Location"));
+			uploadService.update(upload);
+		}
+	}
+
+	public String parseVideoId(final String atomData) {
+		LOGGER.info(atomData);
+		xStream.processAnnotations(VideoEntry.class);
+		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)<\\/yt:videoid>");
+		final Matcher matcher = pattern.matcher(atomData);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		} else {
+			return "missed";
+		}
+	}
+
+	private long generateEndBytes(final long start, final double bytesToUpload) {
+		final long end;
+		if (0 < bytesToUpload - chunkSize) {
+			end = start + chunkSize - 1;
+		} else {
+			end = start + (int) bytesToUpload - 1;
+		}
+		return end;
+	}
+
+	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte) throws IOException {
+
+		// Write Chunk
+		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+		long totalRead = 0;
+
+		while (!Thread.currentThread().isInterrupted() && totalRead != endByte - startByte + 1) {
+			// Upload bytes in buffer
+			final int bytesRead = flowChunk(inputStream, outputStream, buffer, 0, DEFAULT_BUFFER_SIZE);
+			// Calculate all uploadinformation
+			totalRead += bytesRead;
+		}
+	}
+
+	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+		final int numRead;
+		if (0 <= (numRead = is.read(buf, off, len))) {
+			os.write(buf, 0, numRead);
+		}
+		os.flush();
+		return numRead;
 	}
 
 	private class TokenInputStream extends BufferedInputStream {
@@ -216,6 +428,28 @@ public class UploadJob implements Callable<Upload> {
 			}
 
 			return bytes;
+		}
+	}
+
+	private static class UploadResponseException extends Exception {
+		private static final long serialVersionUID = 9064482080311824304L;
+		private final int status;
+
+		public UploadResponseException(final int status) {
+			super(String.format("Upload response exception: %d", status));
+			this.status = status;
+		}
+
+		private int getStatus() {
+			return status;
+		}
+	}
+
+	private static class UploadFinishedException extends Exception {
+		private static final long serialVersionUID = -5907578118391546810L;
+
+		public UploadFinishedException() {
+			super("Upload finished!");
 		}
 	}
 }

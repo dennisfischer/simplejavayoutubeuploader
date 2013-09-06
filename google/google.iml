@@ -43,6 +43,7 @@
     <orderEntry type="library" exported="" name="unirest-java-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev76-1.16.0-rc" level="project" />
     <orderEntry type="module" module-name="util" exported="" />
+    <orderEntry type="library" exported="" name="asyncretry" level="project" />
   </component>
 </module>
 

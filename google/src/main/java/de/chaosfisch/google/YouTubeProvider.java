@@ -34,7 +34,8 @@ public class YouTubeProvider implements Provider<YouTube> {
 	private final Map<Account, YouTube> services = new HashMap<>(1);
 	private final HttpTransport httpTransport;
 	private final JsonFactory   jsonFactory;
-	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubeProvider.class);
+	private static final Logger                   LOGGER      = LoggerFactory.getLogger(YouTubeProvider.class);
+	private final        Map<Account, Credential> credentials = new HashMap<>(1);
 
 	@Inject
 	public YouTubeProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
@@ -45,22 +46,7 @@ public class YouTubeProvider implements Provider<YouTube> {
 	@Override
 	public YouTube get() {
 		if (!services.containsKey(account)) {
-			final Credential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
-					.setTransport(httpTransport)
-					.setClientSecrets(GDATAConfig.CLIENT_ID, GDATAConfig.CLIENT_SECRET)
-					.addRefreshListener(new CredentialRefreshListener() {
-						@Override
-						public void onTokenResponse(final Credential credential, final TokenResponse tokenResponse) throws IOException {
-							LOGGER.info("Token refreshed {}", tokenResponse.toPrettyString());
-						}
-
-						@Override
-						public void onTokenErrorResponse(final Credential credential, final TokenErrorResponse tokenErrorResponse) throws IOException {
-							LOGGER.error("Token refresh error {}", tokenErrorResponse.toPrettyString());
-						}
-					})
-					.build();
-			credential.setRefreshToken(account.getRefreshToken());
+			final Credential credential = getCredential(account);
 			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
 				@Override
 				public void initialize(final HttpRequest request) throws IOException {
@@ -80,5 +66,28 @@ public class YouTubeProvider implements Provider<YouTube> {
 	public YouTubeProvider setAccount(final Account account) {
 		this.account = account;
 		return this;
+	}
+
+	public Credential getCredential(final Account account) {
+		if (!credentials.containsKey(account)) {
+			final Credential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
+					.setTransport(httpTransport)
+					.setClientSecrets(GDATAConfig.CLIENT_ID, GDATAConfig.CLIENT_SECRET)
+					.addRefreshListener(new CredentialRefreshListener() {
+						@Override
+						public void onTokenResponse(final Credential credential, final TokenResponse tokenResponse) throws IOException {
+							LOGGER.info("Token refreshed {}", tokenResponse.toPrettyString());
+						}
+
+						@Override
+						public void onTokenErrorResponse(final Credential credential, final TokenErrorResponse tokenErrorResponse) throws IOException {
+							LOGGER.error("Token refresh error {}", tokenErrorResponse.toPrettyString());
+						}
+					})
+					.build();
+			credential.setRefreshToken(account.getRefreshToken());
+			credentials.put(account, credential);
+		}
+		return credentials.get(account);
 	}
 }
