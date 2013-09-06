@@ -25,5 +25,4 @@ public class MediaRating {
 
 	@XStreamAsAttribute
 	public String scheme;
-
 }

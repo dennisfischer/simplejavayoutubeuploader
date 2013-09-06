@@ -2,11 +2,6 @@
 
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 
-<?import de.chaosfisch.uploader.renderer.ImageButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.layout.*?>
 <!--
   ~ Copyright (c) 2013 Dennis Fischer.
   ~ All rights reserved. This program and the accompanying materials
@@ -17,6 +12,11 @@
   ~ Contributors: Dennis Fischer
   -->
 
+<?import de.chaosfisch.uploader.renderer.ImageButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-1.0" maxWidth="-1.0" minHeight="300.0" minWidth="500.0"
             prefHeight="-1.0"
             prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"

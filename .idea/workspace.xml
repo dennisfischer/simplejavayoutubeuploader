@@ -10,18 +10,31 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="71a46ec7-70b3-4a10-a58e-fc9bdcfa3b88" name="simplejavayoutubeuploader-4 Resumeable uploads stop after 1h" comment="fixed #4 Resumeable uploads stop after 1h">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/google/lib/asyncretry.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/asyncretry.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/YouTubeProvider.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/YouTubeProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/build.gradle" afterPath="$PROJECT_DIR$/google/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountAddDialog.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Accounts.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Accounts.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountsAdd.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountsAdd.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountsOverview.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/AccountsOverview.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/ConfirmDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/ConfirmDialog.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/ErrorDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/ErrorDialog.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/src/main/java/de/chaosfisch/uploader/template/ITemplateService.java" afterPath="$PROJECT_DIR$/template/src/main/java/de/chaosfisch/uploader/template/ITemplateService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/InputDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/InputDialog.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/atom/media/MediaRating.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/atom/media/MediaRating.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Queue.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Queue.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/QueueCommand.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/QueueCommand.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/QueueOverview.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/QueueOverview.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Upload.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Upload.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/UploadMonetization.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/UploadMonetization.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/UploadPartner.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/UploadPartner.fxml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadPartnerController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/controller/UploadPartnerController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="71a46ec7-70b3-4a10-a58e-fc9bdcfa3b88" time="1378459403984" ignored="false" />
+    <file path="/Dummy.txt" changelist="71a46ec7-70b3-4a10-a58e-fc9bdcfa3b88" time="1378463452517" ignored="false" />
     <file path="/launch4j.xml" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377846770000" ignored="false" />
     <file path="/MetadataServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1375470373654" ignored="false" />
     <file path="/PlaylistServiceImpl.java" changelist="21a08e30-0f87-41a4-a993-a28723a4cba8" time="1377417718012" ignored="false" />
@@ -391,26 +404,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="simple-java-youtube-uploader" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="UploadJob.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="234" column="90" selection-start="8719" selection-end="8719" vertical-scroll-proportion="0.6495727">
-              <folding>
-                <element signature="e#0#16050#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#10835#10848#0" expanded="true" />
-                <element signature="class#TokenInputStream#0;class#UploadJob#0" expanded="false" />
-                <element signature="class#UploadResponseException#0;class#UploadJob#0" expanded="false" />
-                <element signature="class#UploadFinishedException#0;class#UploadJob#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -1671,18 +1664,28 @@
       <created>1378449331912</created>
       <updated>1378449331912</updated>
     </task>
-    <task active="true" id="simplejavayoutubeuploader-4" summary="Resumeable uploads stop after 1h">
-      <changelist id="71a46ec7-70b3-4a10-a58e-fc9bdcfa3b88" name="simplejavayoutubeuploader-4 Resumeable uploads stop after 1h" comment="fixed #4 Resumeable uploads stop after 1h" />
+    <task id="simplejavayoutubeuploader-4" summary="Resumeable uploads stop after 1h">
+      <changelist id="" name="simplejavayoutubeuploader-4 Resumeable uploads stop after 1h" comment="fixed #4 Resumeable uploads stop after 1h" />
       <created>1378441973000</created>
       <option name="issue" value="true" />
       <option name="type" value="BUG" />
-      <updated>1378459355739</updated>
+      <updated>1378463465364</updated>
     </task>
     <task id="LOCAL-00097" summary="Fixed textual display (speedlimiter)">
       <created>1378459406554</created>
       <updated>1378459406554</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="fixed #4 Resumeable uploads stop after 1h">
+      <created>1378463414449</created>
+      <updated>1378463414449</updated>
+    </task>
+    <task active="true" id="LOCAL-00099" summary="Default">
+      <changelist id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="" />
+      <created>1378463453914</created>
+      <updated>1378463465368</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
+    <option name="trackContextForNewChangelist" value="true" />
     <servers>
       <GitHub shared="false">
         <commitMessageFormat>fixed #{number} {summary}</commitMessageFormat>
@@ -1796,8 +1799,8 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed textual display (speedlimiter)" />
-    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed #4 Resumeable uploads stop after 1h" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1811,7 +1814,6 @@
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
     <confirmRemoveEmptyChangelist value="2" />
-    <MESSAGE value="added validation to gui display, code inspection done," />
     <MESSAGE value="Did several gui speed improvements. Using Google API java client." />
     <MESSAGE value="Started changing upload mechanism to v3 google api. TokenBucket -&gt; RateLimiter google guava." />
     <MESSAGE value="Uploader uploads now. Further testing required." />
@@ -1836,6 +1838,7 @@
     <MESSAGE value="fixed #3 Implement option to use old TagTextArea" />
     <MESSAGE value="Added logging option for tokenResponse" />
     <MESSAGE value="Fixed textual display (speedlimiter)" />
+    <MESSAGE value="fixed #4 Resumeable uploads stop after 1h" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1863,7 +1866,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="40" selection-start="1473" selection-end="1473" vertical-scroll-proportion="0.7465596" />
+        <state line="44" column="40" selection-start="1473" selection-end="1473" vertical-scroll-proportion="0.7465596">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/IMetadataService.java">
@@ -1952,7 +1959,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="90" selection-start="8719" selection-end="8719" vertical-scroll-proportion="0.6495727">
+        <state line="209" column="0" selection-start="7772" selection-end="7827" vertical-scroll-proportion="6.974359">
           <folding>
             <element signature="e#0#16050#0" expanded="true" />
             <element signature="imports" expanded="true" />

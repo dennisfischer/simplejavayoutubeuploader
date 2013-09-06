@@ -22,5 +22,4 @@ public interface ITemplateService {
 	void update(Template template);
 
 	void delete(Template template);
-
 }
