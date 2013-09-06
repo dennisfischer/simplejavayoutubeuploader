@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader;
 
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.metadata.*;
@@ -48,8 +49,10 @@ final class DBConverter {
 		while (rsTemplate.next()) {
 
 			final Metadata metadata = new Metadata(Strings.nullToEmpty(rsTemplate.getString("TITLE")), Category.valueOf(rsTemplate
-					.getString("CATEGORY")), Strings.nullToEmpty(rsTemplate.getString("DESCRIPTION")), Strings.nullToEmpty(rsTemplate
-					.getString("KEYWORDS")), License.valueOf(rsTemplate.getString("LICENSE")));
+					.getString("CATEGORY")), Strings.nullToEmpty(rsTemplate.getString("DESCRIPTION")), Joiner.on(",")
+					.skipNulls()
+					.join(TagParser.parse(Strings.nullToEmpty(rsTemplate.getString("KEYWORDS"))), true), License.valueOf(rsTemplate
+					.getString("LICENSE")));
 
 			final Monetization monetization = new Monetization();
 			monetization.setAsset(Asset.valueOf(rsTemplate.getString("MONETIZE_ASSET")));
