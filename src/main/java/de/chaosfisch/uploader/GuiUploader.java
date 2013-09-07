@@ -97,7 +97,7 @@ public class GuiUploader extends GuiceApplication {
 	}
 
 	private void updateDatabase() {
-		if (ApplicationData.RELEASE > configuration.getInt("version", 0)) {
+		if (15 > configuration.getInt("version", 0)) {
 			getInjector().getInstance(DBConverter.class).run();
 			configuration.setProperty("version", ApplicationData.RELEASE);
 		}

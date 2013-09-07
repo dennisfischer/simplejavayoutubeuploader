@@ -24,10 +24,8 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.thoughtworks.xstream.XStream;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.YouTubeProvider;
-import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
@@ -79,8 +77,7 @@ public class UploadJob implements Callable<Upload> {
 	private       Upload                 upload;
 	private final YouTubeProvider        youTubeProvider;
 	private final IMetadataService       metadataService;
-	private final XStream xStream = new XStream();
-	private Credential credential;
+	private       Credential             credential;
 
 	@Inject
 	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
@@ -353,7 +350,6 @@ public class UploadJob implements Callable<Upload> {
 
 	public String parseVideoId(final String atomData) {
 		LOGGER.info(atomData);
-		xStream.processAnnotations(VideoEntry.class);
 		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)<\\/yt:videoid>");
 		final Matcher matcher = pattern.matcher(atomData);
 

@@ -16,7 +16,7 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 
 <?import de.chaosfisch.uploader.renderer.ImageButton?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -37,9 +37,6 @@
         </rowConstraints>
         <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
                    GridPane.rowIndex="0">
-            <padding>
-                <Insets fx:id="x1"/>
-            </padding>
             <MenuBar fx:id="menuBar">
                 <Menu mnemonicParsing="false" text="%menu.file">
                     <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile"
@@ -122,15 +119,11 @@
         </AnchorPane>
         <StackPane id="StackPane" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0"
                    GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-            <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" padding="$x1" spacing="10.0"
+            <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" spacing="10.0"
                   StackPane.alignment="CENTER_RIGHT">
                 <Label fx:id="busyProgressLabel" alignment="CENTER_RIGHT" text="" textFill="WHITE">
                     <labelFor>
-                        <ProgressBar fx:id="busyProgressBar" prefWidth="-1.0" progress="0.0">
-                            <HBox.margin>
-                                <Insets fx:id="x1"/>
-                            </HBox.margin>
-                        </ProgressBar>
+                        <ProgressBar fx:id="busyProgressBar" prefWidth="-1.0" progress="0.0"/>
                     </labelFor>
                 </Label>
                 <fx:reference source="busyProgressBar"/>

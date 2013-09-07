@@ -14,7 +14,6 @@ import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.AbstractUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.Uploader;
-import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.uploader.persistence.dao.IUploadDao;
 
 import java.util.List;
@@ -24,7 +23,7 @@ class UploadServiceImpl extends AbstractUploadService {
 	private final IUploadDao uploadDao;
 
 	@Inject
-	public UploadServiceImpl(final IMetadataService metadataService, final Uploader uploader, final IUploadDao uploadDao) {
+	public UploadServiceImpl(final Uploader uploader, final IUploadDao uploadDao) {
 		super(uploader);
 		this.uploadDao = uploadDao;
 		uploader.setUploadService(this);
