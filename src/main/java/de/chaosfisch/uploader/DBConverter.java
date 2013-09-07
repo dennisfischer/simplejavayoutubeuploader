@@ -51,7 +51,7 @@ final class DBConverter {
 			final Metadata metadata = new Metadata(Strings.nullToEmpty(rsTemplate.getString("TITLE")), Category.valueOf(rsTemplate
 					.getString("CATEGORY")), Strings.nullToEmpty(rsTemplate.getString("DESCRIPTION")), Joiner.on(",")
 					.skipNulls()
-					.join(TagParser.parse(Strings.nullToEmpty(rsTemplate.getString("KEYWORDS"))), true), License.valueOf(rsTemplate
+					.join(TagParser.parse(Strings.nullToEmpty(rsTemplate.getString("KEYWORDS")), true)), License.valueOf(rsTemplate
 					.getString("LICENSE")));
 
 			final Monetization monetization = new Monetization();
