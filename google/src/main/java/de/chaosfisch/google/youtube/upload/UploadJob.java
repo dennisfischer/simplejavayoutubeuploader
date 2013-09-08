@@ -351,7 +351,7 @@ public class UploadJob implements Callable<Upload> {
 		throw new UploadFinishedException();
 	}
 
-	public String parseVideoId(final String atomData) {
+	String parseVideoId(final String atomData) {
 		LOGGER.info(atomData);
 		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)<\\/yt:videoid>");
 		final Matcher matcher = pattern.matcher(atomData);
@@ -387,7 +387,7 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
-	public int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
+	int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
 		final int numRead;
 		if (0 <= (numRead = is.read(buf, off, len))) {
 			os.write(buf, 0, numRead);

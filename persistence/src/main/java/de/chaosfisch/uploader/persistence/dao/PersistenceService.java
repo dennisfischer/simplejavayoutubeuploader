@@ -26,6 +26,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -158,7 +159,8 @@ class PersistenceService implements IPersistenceService {
 
 	@Override
 	public void generateBackup() {
-		final File backupFile = new File(storage + String.format("/backups/data-%07d.xml", data.version));
+		final File backupFile = new File(storage + String.format("/backups/%s.xml", new SimpleDateFormat("dd-MM-yyyy HH-mm-ss")
+				.format(new Date())));
 		try {
 			Files.createParentDirs(backupFile);
 			final XStream xStream = new XStream();
