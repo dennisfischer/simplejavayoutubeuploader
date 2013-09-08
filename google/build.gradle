@@ -9,14 +9,6 @@
  */
 
 
-
-
-
-
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
