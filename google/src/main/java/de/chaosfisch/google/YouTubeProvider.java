@@ -76,7 +76,7 @@ public class YouTubeProvider implements Provider<YouTube> {
 					.addRefreshListener(new CredentialRefreshListener() {
 						@Override
 						public void onTokenResponse(final Credential credential, final TokenResponse tokenResponse) throws IOException {
-							LOGGER.info("Token refreshed {}", tokenResponse.toPrettyString());
+							LOGGER.info("Token refreshed");
 						}
 
 						@Override

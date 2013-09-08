@@ -26,7 +26,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.YouTubeProvider;
-import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
@@ -122,16 +121,6 @@ public class UploadJob implements Callable<Upload> {
 			executor.doWithRetry(metadata()).get();
 			// Schritt 3: Chunkupload
 			executor.doWithRetry(upload()).get();
-
-			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
-				try {
-					upload = postProcessor.process(upload);
-				} catch (Exception e) {
-					LOGGER.error("Postprocessor error", e);
-				}
-			}
-
-			eventBus.post(new UploadJobFinishedEvent(upload));
 		} catch (InterruptedException ignored) {
 			upload.getStatus().setAborted(true);
 		} catch (Exception e) {
@@ -139,12 +128,24 @@ public class UploadJob implements Callable<Upload> {
 				LOGGER.error("Upload error", e);
 				upload.getStatus().setFailed(true);
 			}
+		} finally {
+			schedueler.shutdownNow();
+			eventBus.unregister(this);
 		}
 
-		schedueler.shutdownNow();
+		if (upload.getStatus().isArchived()) {
+			LOGGER.info("Starting postprocessing");
+			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
+				try {
+					upload = postProcessor.process(upload);
+				} catch (Exception e) {
+					LOGGER.error("Postprocessor error", e);
+				}
+			}
+		}
+
 		upload.getStatus().setRunning(false);
 		uploadService.update(upload);
-		eventBus.unregister(this);
 		return upload;
 	}
 
@@ -236,13 +237,13 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private void uploadChunks() throws IOException, UploadResponseException {
+	private void uploadChunks() throws IOException, UploadResponseException, UploadFinishedException {
 		while (!Thread.currentThread().isInterrupted() && totalBytesUploaded != fileSize) {
 			uploadChunk();
 		}
 	}
 
-	private void uploadChunk() throws IOException, UploadResponseException {
+	private void uploadChunk() throws IOException, UploadResponseException, UploadFinishedException {
 		// GET END SIZE
 		final long end = generateEndBytes(start, bytesToUpload);
 
@@ -281,18 +282,16 @@ public class UploadJob implements Callable<Upload> {
 
 			switch (request.getResponseCode()) {
 				case SC_OK:
-					//FILE UPLOADED
-					throw new UploadResponseException(SC_OK);
 				case SC_CREATED:
+					//FILE UPLOADED
 					final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
 						@Override
 						public InputStream getInput() throws IOException {
 							return request.getInputStream();
 						}
 					};
-					upload.setVideoid(parseVideoId(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8))));
-					upload.getStatus().setArchived(true);
-					uploadService.update(upload);
+					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
+
 					break;
 				case SC_RESUME_INCOMPLETE:
 					// OK, the chunk completed succesfully
@@ -317,10 +316,7 @@ public class UploadJob implements Callable<Upload> {
 				.asString();
 
 		if (SC_OK <= response.getCode() && SC_MULTIPLE_CHOICES > response.getCode()) {
-			upload.setVideoid(parseVideoId(response.getBody()));
-			upload.getStatus().setArchived(true);
-			uploadService.update(upload);
-			throw new UploadFinishedException();
+			handleSuccessfulUpload(response.getBody());
 		} else if (SC_RESUME_INCOMPLETE != response.getCode()) {
 			throw new UploadResponseException(response.getCode());
 		}
@@ -346,6 +342,13 @@ public class UploadJob implements Callable<Upload> {
 			upload.setUploadurl(response.getHeaders().get("Location"));
 			uploadService.update(upload);
 		}
+	}
+
+	private void handleSuccessfulUpload(final String body) throws UploadFinishedException {
+		upload.setVideoid(parseVideoId(body));
+		upload.getStatus().setArchived(true);
+		uploadService.update(upload);
+		throw new UploadFinishedException();
 	}
 
 	public String parseVideoId(final String atomData) {
@@ -429,15 +432,9 @@ public class UploadJob implements Callable<Upload> {
 
 	private static class UploadResponseException extends Exception {
 		private static final long serialVersionUID = 9064482080311824304L;
-		private final int status;
 
 		public UploadResponseException(final int status) {
 			super(String.format("Upload response exception: %d", status));
-			this.status = status;
-		}
-
-		private int getStatus() {
-			return status;
 		}
 	}
 

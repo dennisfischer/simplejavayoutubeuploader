@@ -19,7 +19,6 @@ import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.events.UploadJobFinishedEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.UploadController;
@@ -170,17 +169,6 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					.build();
 
 			setGraphic(containerPane);
-		}
-
-		@Subscribe
-		public void onUploadFinished(final UploadJobFinishedEvent event) {
-			if (!event.getUpload().equals(upload)) {
-				return;
-			}
-			if (progressNode instanceof ProgressNodeRenderer) {
-				final ProgressNodeRenderer renderer = (ProgressNodeRenderer) progressNode;
-				renderer.setProgress(1);
-			}
 		}
 
 		@Subscribe
