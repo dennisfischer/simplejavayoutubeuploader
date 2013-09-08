@@ -41,6 +41,10 @@
                 <Menu mnemonicParsing="false" text="%menu.file">
                     <MenuItem id="menuOpenFile" mnemonicParsing="false" onAction="#menuOpen" text="%menu.openFile"
                               fx:id="menuOpen"/>
+                    <MenuItem id="menuImportBackup" mnemonicParsing="false" onAction="#menuImportBackup"
+                              text="%menu.importBackup" fx:id="menuImportBackup"/>
+                    <MenuItem id="menuExportBackup" mnemonicParsing="false" onAction="#menuExportBackup"
+                              text="%menu.exportBackup" fx:id="menuExportBackup"/>
                     <MenuItem id="menuClose" mnemonicParsing="false" onAction="#menuClose" text="%menu.close"
                               fx:id="menuClose"/>
                 </Menu>

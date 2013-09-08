@@ -15,6 +15,7 @@ import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.template.Template;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,9 @@ public interface IPersistenceService {
 
 	boolean loadFromStorage();
 
-	void setMasterPassword(String masterPassword);
+	void generateBackup();
+
+	boolean loadBackup(File file);
 
 	class Data implements Serializable {
 		private static final long serialVersionUID = -7729985568529356434L;

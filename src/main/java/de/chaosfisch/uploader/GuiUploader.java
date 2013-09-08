@@ -73,7 +73,7 @@ public class GuiUploader extends GuiceApplication {
 					if (Strings.isNullOrEmpty(input)) {
 						controller.input.getStyleClass().add("input-invalid");
 					} else {
-						persistenceService.setMasterPassword(input);
+						persistenceService.generateBackup();
 						controller.closeDialog(null);
 					}
 				}

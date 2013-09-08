@@ -10,17 +10,18 @@
 
 package de.chaosfisch.uploader.persistence.dao;
 
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.thoughtworks.xstream.XStream;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.template.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.SealedObject;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 class PersistenceService implements IPersistenceService {
 	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-[0-9]+.data");
 	private static final int     ITERATIONS      = 42;
+	private static final Logger  LOGGER          = LoggerFactory.getLogger(PersistenceService.class);
 
 	private final IAccountDao  accountDao;
 	private final IPlaylistDao playlistDao;
@@ -112,10 +114,69 @@ class PersistenceService implements IPersistenceService {
 			loadAccounts(data);
 			loadTemplates(data);
 			loadUploads(data);
+
+			generateBackup();
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean loadBackup(final File file) {
+		if (!file.exists()) {
+			LOGGER.warn("Backup file not existing: {}", file.getAbsolutePath());
+			return false;
+		}
+		try {
+			final XStream xStream = new XStream();
+			final Data loadedData;
+			if (null == masterPassword) {
+				try (FileInputStream fileInputStream = new FileInputStream(file)) {
+					loadedData = (Data) xStream.fromXML(fileInputStream);
+				}
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, true);
+
+				try (FileInputStream fileInputStream = new FileInputStream(file);
+					 CipherInputStream cis = new CipherInputStream(fileInputStream, cipher)) {
+					loadedData = (Data) xStream.fromXML(cis);
+				}
+			}
+
+			loadPlaylists(loadedData);
+			loadAccounts(loadedData);
+			loadTemplates(loadedData);
+			loadUploads(loadedData);
+			saveToStorage();
+		} catch (Exception e) {
+			LOGGER.error("Couldn't create backup!", e);
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void generateBackup() {
+		final File backupFile = new File(storage + String.format("/backups/data-%07d.xml", data.version));
+		try {
+			Files.createParentDirs(backupFile);
+			final XStream xStream = new XStream();
+			if (null == masterPassword) {
+				try (FileOutputStream fileOutputStream = new FileOutputStream(backupFile)) {
+					xStream.toXML(data, fileOutputStream);
+				}
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, false);
+
+				try (FileOutputStream fileOutputStream = new FileOutputStream(backupFile);
+					 CipherOutputStream cos = new CipherOutputStream(fileOutputStream, cipher)) {
+					xStream.toXML(data, cos);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Couldn't create backup!", e);
+		}
 	}
 
 	private Cipher makeCipher(final String pass, final boolean decryptMode) throws GeneralSecurityException {
@@ -139,11 +200,6 @@ class PersistenceService implements IPersistenceService {
 		}
 
 		return cipher;
-	}
-
-	@Override
-	public void setMasterPassword(final String masterPassword) {
-		this.masterPassword = masterPassword;
 	}
 
 	private void loadUploads(final Data data) {

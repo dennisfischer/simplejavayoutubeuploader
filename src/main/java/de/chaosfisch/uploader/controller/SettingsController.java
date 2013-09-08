@@ -106,7 +106,7 @@ public class SettingsController {
 					if (Strings.isNullOrEmpty(input)) {
 						controller.input.getStyleClass().add("input-invalid");
 					} else {
-						persistenceService.setMasterPassword(input);
+						persistenceService.generateBackup();
 						config.setProperty(IPersistenceService.MASTER_PASSWORD, !masterPasswordCheckbox.isSelected());
 						masterPasswordCheckbox.setSelected(!masterPasswordCheckbox.isSelected());
 						controller.closeDialog(null);
@@ -114,7 +114,7 @@ public class SettingsController {
 				}
 			}, true);
 		} else {
-			persistenceService.setMasterPassword(null);
+			persistenceService.generateBackup();
 			config.setProperty(IPersistenceService.MASTER_PASSWORD, masterPasswordCheckbox.isSelected());
 		}
 		persistenceService.saveToStorage();

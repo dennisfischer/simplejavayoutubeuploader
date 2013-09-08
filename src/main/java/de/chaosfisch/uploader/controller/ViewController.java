@@ -17,6 +17,7 @@ import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.uploader.ApplicationData;
+import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
@@ -36,6 +37,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -83,6 +85,12 @@ public class ViewController {
 	private MenuItem menuClose;
 
 	@FXML
+	public MenuItem menuImportBackup;
+
+	@FXML
+	public MenuItem menuExportBackup;
+
+	@FXML
 	private MenuItem menuOpen;
 
 	@FXML
@@ -105,10 +113,11 @@ public class ViewController {
 	private double  xOffset;
 	private double  yOffset;
 
-	private final DesktopUtil      desktopUtil;
-	private final DialogHelper     dialogHelper;
-	private final UploadController uploadController;
-	private final Configuration    configuration;
+	private final DesktopUtil         desktopUtil;
+	private final DialogHelper        dialogHelper;
+	private final UploadController    uploadController;
+	private final Configuration       configuration;
+	private final IPersistenceService persistenceService;
 
 	public static final Template standardTemplate;
 	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
@@ -152,11 +161,12 @@ public class ViewController {
 
 	@SuppressWarnings("WeakerAccess")
 	@Inject
-	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final Configuration configuration) {
+	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final Configuration configuration, final IPersistenceService persistenceService) {
 		this.desktopUtil = desktopUtil;
 		this.dialogHelper = dialogHelper;
 		this.uploadController = uploadController;
 		this.configuration = configuration;
+		this.persistenceService = persistenceService;
 	}
 
 	@FXML
@@ -201,6 +211,24 @@ public class ViewController {
 	@FXML
 	void menuOpen(final ActionEvent event) {
 		uploadController.openFiles(event);
+	}
+
+	@FXML
+	public void menuImportBackup(final ActionEvent actionEvent) {
+		final File file = new FileChooser().showOpenDialog(null);
+		if (null != file && file.exists()) {
+			if (persistenceService.loadBackup(file)) {
+				dialogHelper.showErrorDialog(resources.getString("dialog.import.successful.title"), resources.getString("dialog.import.successful.message"));
+			} else {
+				dialogHelper.showErrorDialog(resources.getString("dialog.import.failed.title"), resources.getString("dialog.import.failed.message"));
+			}
+		}
+	}
+
+	@FXML
+	public void menuExportBackup(final ActionEvent actionEvent) {
+		persistenceService.saveToStorage();
+		desktopUtil.openDirectory(ApplicationData.DATA_DIR + "/backups");
 	}
 
 	@FXML
@@ -281,6 +309,8 @@ public class ViewController {
 		assert null != menuAddPlaylist : "fx:id=\"menuAddPlaylist\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuAddTemplate : "fx:id=\"menuAddTemplate\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuClose : "fx:id=\"menuClose\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert null != menuImportBackup : "fx:id=\"menuImportBackup\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
+		assert null != menuExportBackup : "fx:id=\"menuExportBackup\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuOpen : "fx:id=\"menuOpen\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != migrateDatabase : "fx:id=\"migrateDatabase\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openDocumentation : "fx:id=\"openDocumentation\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
