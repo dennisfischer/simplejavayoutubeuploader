@@ -227,7 +227,7 @@ public class ViewController {
 
 	@FXML
 	public void menuExportBackup(final ActionEvent actionEvent) {
-		persistenceService.saveToStorage();
+		persistenceService.generateBackup();
 		desktopUtil.openDirectory(ApplicationData.DATA_DIR + "/backups");
 	}
 

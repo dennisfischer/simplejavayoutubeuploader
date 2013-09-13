@@ -16,6 +16,7 @@ import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
+import de.chaosfisch.google.youtube.upload.metadata.Social;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,9 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 		extendedPlaceholders.setPlaylists(upload.getPlaylists());
 		extendedPlaceholders.register("{title}", upload.getMetadata().getTitle());
 		extendedPlaceholders.register("{description}", upload.getMetadata().getDescription());
+
+		final Social social = upload.getSocial();
+		social.setMessage(extendedPlaceholders.replace(social.getMessage()));
 
 		final Monetization monetization = upload.getMonetization();
 		monetization.setTitle(extendedPlaceholders.replace(monetization.getTitle()));
