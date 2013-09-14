@@ -31,7 +31,6 @@ import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.*;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Videoresponse;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.renderer.AccountStringConverter;
@@ -209,9 +208,6 @@ public class UploadController {
 	private CheckBox uploadTwitter;
 
 	@FXML
-	private ChoiceBox<Videoresponse> uploadVideoresponse;
-
-	@FXML
 	private ChoiceBox<Visibility> uploadVisibility;
 
 	@FXML
@@ -246,19 +242,18 @@ public class UploadController {
 	@Inject
 	private GuiceFXMLLoader  fxmlLoader;
 
-	private final ObservableList<File>          filesList          = FXCollections.observableArrayList();
-	private final ObservableList<Category>      categoriesList     = FXCollections.observableArrayList();
-	private final ObservableList<Account>       accountsList       = FXCollections.observableArrayList();
-	private final ObservableList<Template>      templatesList      = FXCollections.observableArrayList();
-	private final ObservableList<Visibility>    visibilityList     = FXCollections.observableArrayList();
-	private final ObservableList<Comment>       commentsList       = FXCollections.observableArrayList();
-	private final ObservableList<License>       licensesList       = FXCollections.observableArrayList();
-	private final ObservableList<Videoresponse> videoresponsesList = FXCollections.observableArrayList();
-	private final ObservableList<Playlist>      playlistSourceList = FXCollections.observableArrayList();
-	private final ObservableList<Playlist>      playlistTargetList = FXCollections.observableArrayList();
-	private final SimpleStringProperty          idProperty         = new SimpleStringProperty();
-	private final SimpleObjectProperty<File>    defaultDirProperty = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<File>    enddirProperty     = new SimpleObjectProperty<>();
+	private final ObservableList<File>       filesList          = FXCollections.observableArrayList();
+	private final ObservableList<Category>   categoriesList     = FXCollections.observableArrayList();
+	private final ObservableList<Account>    accountsList       = FXCollections.observableArrayList();
+	private final ObservableList<Template>   templatesList      = FXCollections.observableArrayList();
+	private final ObservableList<Visibility> visibilityList     = FXCollections.observableArrayList();
+	private final ObservableList<Comment>    commentsList       = FXCollections.observableArrayList();
+	private final ObservableList<License>    licensesList       = FXCollections.observableArrayList();
+	private final ObservableList<Playlist>   playlistSourceList = FXCollections.observableArrayList();
+	private final ObservableList<Playlist>   playlistTargetList = FXCollections.observableArrayList();
+	private final SimpleStringProperty       idProperty         = new SimpleStringProperty();
+	private final SimpleObjectProperty<File> defaultDirProperty = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<File> enddirProperty     = new SimpleObjectProperty<>();
 	private UploadMonetizationController uploadMonetizationController;
 	private UploadPartnerController      uploadPartnerController;
 	private Upload                       uploadStore;
@@ -548,7 +543,6 @@ public class UploadController {
 		assert null != uploadThumbnail : "fx:id=\"uploadThumbnail\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadTitle : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadTwitter : "fx:id=\"uploadTwitter\" was not injected: check your FXML file 'Upload.fxml'.";
-		assert null != uploadVideoresponse : "fx:id=\"uploadVideoresponse\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadVisibility : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x2 : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x5 : "fx:id=\"x5\" was not injected: check your FXML file 'Upload.fxml'.";
@@ -642,7 +636,6 @@ public class UploadController {
 
 	private void initData() {
 		visibilityList.addAll(Visibility.values());
-		videoresponsesList.addAll(Videoresponse.values());
 		commentsList.addAll(Comment.values());
 		licensesList.addAll(License.values());
 		categoriesList.addAll(Category.values());
@@ -652,8 +645,8 @@ public class UploadController {
 	}
 
 	private void initControls() {
-		extendedSettingsGrid.add(started, 1, 11, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(started, 1, 10, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(release, 1, 11, GridPane.REMAINING, 1);
 		uploadTagsScrollpane.setContent(uploadTags);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
@@ -741,7 +734,6 @@ public class UploadController {
 		uploadVisibility.setItems(visibilityList);
 		uploadComment.setItems(commentsList);
 		uploadLicense.setItems(licensesList);
-		uploadVideoresponse.setItems(videoresponsesList);
 		playlistTargetzone.setItems(playlistTargetList);
 		playlistSourcezone.setItems(playlistSourceList);
 	}
@@ -823,7 +815,6 @@ public class UploadController {
 		permissions.setEmbed(uploadEmbed.isSelected());
 		permissions.setRate(uploadRate.isSelected());
 		permissions.setVisibility(uploadVisibility.getValue());
-		permissions.setVideoresponse(uploadVideoresponse.getValue());
 
 		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
 		social.setFacebook(uploadFacebook.isSelected());
@@ -872,7 +863,6 @@ public class UploadController {
 		permissions.setEmbed(uploadEmbed.isSelected());
 		permissions.setRate(uploadRate.isSelected());
 		permissions.setVisibility(uploadVisibility.getValue());
-		permissions.setVideoresponse(uploadVideoresponse.getValue());
 
 		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
 		social.setFacebook(uploadFacebook.isSelected());
@@ -922,7 +912,6 @@ public class UploadController {
 		uploadEmbed.setSelected(permissions.isEmbed());
 		uploadRate.setSelected(permissions.isRate());
 		uploadVisibility.setValue(permissions.getVisibility());
-		uploadVideoresponse.setValue(permissions.getVideoresponse());
 
 		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
 		uploadFacebook.setSelected(social.isFacebook());
@@ -987,7 +976,6 @@ public class UploadController {
 		uploadEmbed.setSelected(permissions.isEmbed());
 		uploadRate.setSelected(permissions.isRate());
 		uploadVisibility.setValue(permissions.getVisibility());
-		uploadVideoresponse.setValue(permissions.getVideoresponse());
 
 		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
 		uploadFacebook.setSelected(social.isFacebook());
@@ -1033,8 +1021,8 @@ public class UploadController {
 
 	private void initSelection() {
 
-		final ChoiceBox<?>[] controls = new ChoiceBox[] {uploadVisibility, uploadComment, uploadLicense,
-														 uploadVideoresponse, uploadAccount, uploadCategory, templates};
+		final ChoiceBox<?>[] controls = new ChoiceBox[] {uploadVisibility, uploadComment, uploadLicense, uploadAccount,
+														 uploadCategory, templates};
 
 		for (final ChoiceBox<?> comboBox : controls) {
 			comboBox.getSelectionModel().selectFirst();

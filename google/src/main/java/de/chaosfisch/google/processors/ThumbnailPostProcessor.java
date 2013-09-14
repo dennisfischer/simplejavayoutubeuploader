@@ -10,6 +10,10 @@
 
 package de.chaosfisch.google.processors;
 
+import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
+import com.blogspot.nurkiewicz.asyncretry.RetryContext;
+import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
+import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailIOException;
@@ -19,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 class ThumbnailPostProcessor implements UploadPostProcessor {
 
@@ -33,12 +39,23 @@ class ThumbnailPostProcessor implements UploadPostProcessor {
 	@Override
 	public Upload process(final Upload upload) {
 		if (null != upload.getThumbnail()) {
+			final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
+			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
+					.withMaxDelay(30000)
+					.withMaxRetries(10)
+					.retryOn(ThumbnailIOException.class)
+					.abortOn(FileNotFoundException.class);
 			try {
-				thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount());
-			} catch (FileNotFoundException e) {
-				LOGGER.warn("Thumbnail doesn't exist", e);
-			} catch (ThumbnailIOException e) {
+				executor.doWithRetry(new RetryRunnable() {
+					@Override
+					public void run(final RetryContext retryContext) throws FileNotFoundException, ThumbnailIOException {
+						thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount());
+					}
+				});
+			} catch (Exception e) {
 				LOGGER.error("Thumbnail IOException", e);
+			} finally {
+				schedueler.shutdown();
 			}
 		}
 		return upload;

@@ -15,13 +15,12 @@ import java.io.Serializable;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -4202788983688840206L;
-	private Comment       comment;
-	private boolean       commentvote;
-	private boolean       embed;
-	private boolean       rate;
-	private Videoresponse videoresponse;
-	private Visibility    visibility;
-	private int           version;
+	private Comment    comment;
+	private boolean    commentvote;
+	private boolean    embed;
+	private boolean    rate;
+	private Visibility visibility;
+	private int        version;
 
 	public Comment getComment() {
 		return comment;
@@ -53,14 +52,6 @@ public class Permissions implements Serializable {
 
 	public void setRate(final boolean rate) {
 		this.rate = rate;
-	}
-
-	public Videoresponse getVideoresponse() {
-		return videoresponse;
-	}
-
-	public void setVideoresponse(final Videoresponse videoresponse) {
-		this.videoresponse = videoresponse;
 	}
 
 	public Visibility getVisibility() {

@@ -129,7 +129,6 @@ public class ViewController {
 		permissions.setComment(Comment.ALLOWED);
 		permissions.setRate(true);
 		permissions.setVisibility(Visibility.PUBLIC);
-		permissions.setVideoresponse(Videoresponse.MODERATED);
 
 		final Social social = new Social();
 		social.setFacebook(false);

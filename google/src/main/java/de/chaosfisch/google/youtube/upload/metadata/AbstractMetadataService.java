@@ -89,9 +89,6 @@ public class AbstractMetadataService implements IMetadataService {
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("videoRespond", PermissionStringConverter.convertInteger(permissions.getVideoresponse()
-						.ordinal())));
-		videoEntry.accessControl
 				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(permissions.getComment()
 						.ordinal())));
 		videoEntry.accessControl
@@ -220,17 +217,13 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(5);
 		final Permissions permissions = upload.getPermissions();
 
 		params.put("allow_comments", Comment.DENIED == permissions.getComment() ? "no" : "yes");
 		params.put("allow_comments_detail", Comment.ALLOWED == permissions.getComment() ? "all" : "approval");
 		params.put("allow_comment_ratings", permissions.isCommentvote() ? "yes" : "no");
 		params.put("allow_ratings", permissions.isRate() ? "yes" : "no");
-		params.put("allow_responses", Videoresponse.DENIED == permissions.getVideoresponse() ? "no" : "yes");
-		params.put("allow_responses_detail", Videoresponse.ALLOWED == permissions.getVideoresponse() ?
-											 "all" :
-											 "approval");
 		params.put("allow_embedding", permissions.isEmbed() ? "yes" : "no");
 		return params;
 	}

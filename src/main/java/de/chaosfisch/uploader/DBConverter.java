@@ -87,7 +87,6 @@ final class DBConverter {
 			permissions.setCommentvote(rsTemplate.getBoolean("COMMENTVOTE"));
 			permissions.setEmbed(rsTemplate.getBoolean("EMBED"));
 			permissions.setRate(rsTemplate.getBoolean("RATE"));
-			permissions.setVideoresponse(Videoresponse.valueOf(rsTemplate.getString("VIDEORESPONSE")));
 			permissions.setVisibility(Visibility.valueOf(rsTemplate.getString("VISIBILITY")));
 
 			final Template template = new Template(rsTemplate.getString("NAME"));

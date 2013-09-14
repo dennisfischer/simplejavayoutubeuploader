@@ -36,11 +36,11 @@
                       snapToPixel="true" styleClass="grid" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <Label text="%label.file" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                 <Label text="%label.playlist" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                <Label text="%label.description" fx:id="descriptionLabel" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                <Label fx:id="descriptionLabel" text="%label.description" GridPane.columnIndex="0" GridPane.rowIndex="4"
                        GridPane.valignment="TOP"/>
                 <Label text="%label.category" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                <Label text="%label.title" fx:id="titleLabel" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label text="%label.tags" fx:id="tagLabel" GridPane.columnIndex="0" GridPane.rowIndex="5"
+                <Label fx:id="titleLabel" text="%label.title" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Label fx:id="tagLabel" text="%label.tags" GridPane.columnIndex="0" GridPane.rowIndex="5"
                        GridPane.valignment="TOP"/>
                 <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="-1.0" minHeight="-1.0"
                             minWidth="-1.0" prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
@@ -49,11 +49,10 @@
                     <TextArea fx:id="uploadDescription" maxHeight="-1.0" minHeight="-1.0" minWidth="-1.0"
                               wrapText="true"/>
                 </ScrollPane>
-                <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="-1.0" minWidth="-1.0"
-                            prefViewportHeight="0.0" prefViewportWidth="0.0" GridPane.columnIndex="1"
-                            GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5"
-                            GridPane.vgrow="SOMETIMES" fx:id="uploadTagsScrollpane">
-                </ScrollPane>
+                <ScrollPane id="ScrollPane" fx:id="uploadTagsScrollpane" fitToHeight="true" fitToWidth="true"
+                            minHeight="-1.0" minWidth="-1.0" prefViewportHeight="0.0" prefViewportWidth="0.0"
+                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="SOMETIMES"
+                            GridPane.rowIndex="5" GridPane.vgrow="SOMETIMES"/>
                 <TextField fx:id="uploadTitle" minHeight="-Infinity" minWidth="-Infinity" promptText="Enter the title"
                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
                 <Label text="%label.account" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
@@ -128,12 +127,10 @@
                                        GridPane.rowIndex="2"/>
                                 <Label text="%label.permissions" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                                 <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-                                <Label contentDisplay="LEFT" text="%label.videorespone" GridPane.columnIndex="0"
-                                       GridPane.rowIndex="7"/>
-                                <Label text="%label.comments" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-                                <Label text="%label.license" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-                                <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
-                                <Label text="%label.release" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+                                <Label text="%label.comments" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                                <Label text="%label.license" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                                <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+                                <Label text="%label.release" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
                                 <Button fx:id="saveTemplate" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                         onAction="#saveTemplate" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
                                 <Button fx:id="removeTemplate" mnemonicParsing="false" onAction="#removeTemplate"
@@ -155,15 +152,12 @@
                                 <ChoiceBox fx:id="uploadVisibility" maxWidth="1.7976931348623157E308"
                                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
                                            GridPane.rowIndex="6"/>
-                                <ChoiceBox fx:id="uploadVideoresponse" maxWidth="1.7976931348623157E308"
-                                           GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                                           GridPane.rowIndex="7"/>
                                 <ChoiceBox fx:id="uploadComment" maxWidth="1.7976931348623157E308"
                                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                                           GridPane.rowIndex="8"/>
+                                           GridPane.rowIndex="7"/>
                                 <ChoiceBox fx:id="uploadLicense" maxWidth="1.7976931348623157E308"
                                            GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                                           GridPane.rowIndex="9"/>
+                                           GridPane.rowIndex="8"/>
                                 <Button fx:id="openDefaultdir" contentDisplay="GRAPHIC_ONLY" disable="false"
                                         mnemonicParsing="false" onAction="#openDefaultdir" styleClass="searchFile"
                                         text="%button.defaultdir" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
@@ -173,20 +167,20 @@
                                 <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed"
                                           GridPane.columnIndex="2" GridPane.rowIndex="4"/>
                                 <Label disable="false" text="%label.thumbnail" GridPane.columnIndex="0"
-                                       GridPane.rowIndex="10"/>
+                                       GridPane.rowIndex="9"/>
                                 <TextField fx:id="uploadThumbnail" disable="false" prefWidth="-1.0"
-                                           GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="10"/>
+                                           GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="9"/>
                                 <Button fx:id="openThumbnail" contentDisplay="GRAPHIC_ONLY" disable="false"
                                         mnemonicParsing="false" onAction="#openThumbnail" styleClass="searchFile"
-                                        text="Button" GridPane.columnIndex="4" GridPane.rowIndex="10"/>
-                                <Label text="%label.message" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+                                        text="Button" GridPane.columnIndex="4" GridPane.rowIndex="9"/>
+                                <Label text="%label.message" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
                                 <CheckBox fx:id="uploadFacebook" mnemonicParsing="false" text="%checkbox.facebook"
-                                          GridPane.columnIndex="0" GridPane.rowIndex="14"/>
+                                          GridPane.columnIndex="0" GridPane.rowIndex="13"/>
                                 <CheckBox fx:id="uploadTwitter" mnemonicParsing="false" text="%checkbox.twitter"
-                                          GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+                                          GridPane.columnIndex="0" GridPane.rowIndex="14"/>
                                 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="-1.0" prefWidth="-1.0"
                                             GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                                            GridPane.rowIndex="13" GridPane.rowSpan="2147483647">
+                                            GridPane.rowIndex="12" GridPane.rowSpan="2147483647">
                                     <TextArea fx:id="uploadMessage" minHeight="-1.0" minWidth="-1.0" prefWidth="-1.0"
                                               wrapText="true"/>
                                 </ScrollPane>
@@ -231,9 +225,7 @@
                                                     vgrow="SOMETIMES"/>
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                                     vgrow="SOMETIMES"/>
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
-                                                    vgrow="SOMETIMES"/>
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
+                                    <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0"
                                                     vgrow="SOMETIMES"/>
                                 </rowConstraints>
                             </GridPane>
