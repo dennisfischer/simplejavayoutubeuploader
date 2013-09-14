@@ -21,7 +21,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,7 +35,7 @@ public class UploadMonetizationController {
 	private URL location;
 
 	@FXML
-	private AnchorPane anchorPane;
+	private GridPane gridPane;
 
 	@FXML
 	private CheckBox monetizeOverlay;
@@ -53,7 +53,7 @@ public class UploadMonetizationController {
 
 	@FXML
 	void initialize() {
-		assert null != anchorPane : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
+		assert null != gridPane : "fx:id=\"gridPane\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
 		assert null != monetizeOverlay : "fx:id=\"monetizeOverlay\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
 		assert null != monetizeProduct : "fx:id=\"monetizeProduct\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
 		assert null != monetizeSyndication : "fx:id=\"monetizeSyndication\" was not injected: check your FXML file 'UploadMonetization.fxml'.";
@@ -109,6 +109,6 @@ public class UploadMonetizationController {
 	}
 
 	public Node getNode() {
-		return anchorPane;
+		return gridPane;
 	}
 }

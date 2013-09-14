@@ -12,21 +12,12 @@
 
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.*?>
-<GridPane alignment="CENTER_RIGHT" hgap="3.0" prefHeight="-1.0" prefWidth="-1.0" snapToPixel="true" vgap="3.0"
-          xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-          fx:controller="de.chaosfisch.uploader.controller.AccountAddController">
-    <Button id="addAccount" mnemonicParsing="false" onAction="#addAccount" text="%button.addAccount"
-            GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-    <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="-1.0"/>
-    </columnConstraints>
-    <padding>
-        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
-    </padding>
-    <rowConstraints>
-        <RowConstraints maxHeight="-1.0" minHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-    </rowConstraints>
-</GridPane>
+<?import javafx.scene.layout.HBox?>
+<HBox id="HBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.controller.AccountAddController">
+    <children>
+        <Button id="addAccount" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addAccount"
+                text="%button.addAccount"/>
+    </children>
+</HBox>

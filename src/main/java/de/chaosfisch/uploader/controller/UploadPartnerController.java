@@ -27,7 +27,7 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,7 +41,7 @@ public class UploadPartnerController {
 	private URL location;
 
 	@FXML
-	private AnchorPane anchorPane;
+	private GridPane gridPane;
 
 	@FXML
 	private ChoiceBox<Asset> monetizeAsset;
@@ -110,7 +110,7 @@ public class UploadPartnerController {
 
 	@FXML
 	void initialize() {
-		assert null != anchorPane : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadPartner.fxml'.";
+		assert null != gridPane : "fx:id=\"anchorPane\" was not injected: check your FXML file 'UploadPartner.fxml'.";
 		assert null != monetizeAsset : "fx:id=\"monetizeAsset\" was not injected: check your FXML file 'UploadPartner.fxml'.";
 		assert null != monetizeClaim : "fx:id=\"monetizeClaim\" was not injected: check your FXML file 'UploadPartner.fxml'.";
 		assert null != monetizeClaimOption : "fx:id=\"monetizeClaimOption\" was not injected: check your FXML file 'UploadPartner.fxml'.";
@@ -234,7 +234,7 @@ public class UploadPartnerController {
 	}
 
 	public Node getNode() {
-		return anchorPane;
+		return gridPane;
 	}
 
 	private final class ClaimOptionChangeListener implements ChangeListener<ClaimOption> {
