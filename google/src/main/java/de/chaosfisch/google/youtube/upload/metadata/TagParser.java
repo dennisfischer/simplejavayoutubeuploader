@@ -43,13 +43,13 @@ public final class TagParser {
 	}
 
 	public static List<String> parse(final String input) {
-		final Iterable<String> tagIterable = Splitter.on(TAG_DELIMITER).omitEmptyStrings().split(input);
-		final List<String> tags = new ArrayList<>(10);
+		final List<String> tags = Splitter.on(TAG_DELIMITER).omitEmptyStrings().splitToList(input);
+		final List<String> result = new ArrayList<>(tags.size());
 
-		for (final String tag : tagIterable) {
-			tags.add(tag.trim());
+		for (final String tag : tags) {
+			result.add(tag.trim());
 		}
-		return tags;
+		return result;
 	}
 
 	private static List<String> removeInvalid(final List<String> tags) {

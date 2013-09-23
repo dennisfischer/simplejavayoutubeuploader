@@ -13,6 +13,8 @@ package de.chaosfisch.uploader.renderer;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import de.chaosfisch.google.account.Account;
+import de.chaosfisch.uploader.controller.AccountAddDialogController;
 import de.chaosfisch.uploader.controller.ErrorDialogController;
 import de.chaosfisch.uploader.controller.InputDialogController;
 import de.chaosfisch.uploader.controller.ViewController;
@@ -184,10 +186,15 @@ public class DialogHelper {
 		this.busyProgressLabel = busyProgressLabel;
 	}
 
-	public void showAccountAddDialog() {
+	public void showAccountPermissionsDialog() {
+		showAccountPermissionsDialog(null);
+	}
+
+	public void showAccountPermissionsDialog(final Account account) {
 		try {
 			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/AccountAddDialog.fxml"), resources);
 			final Parent parent = result.getRoot();
+			((AccountAddDialogController) result.getController()).initWebView(account);
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
 			final Stage stage = StageBuilder.create().scene(scene).build();

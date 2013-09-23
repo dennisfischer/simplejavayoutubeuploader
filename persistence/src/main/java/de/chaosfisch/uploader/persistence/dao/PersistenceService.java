@@ -73,8 +73,13 @@ class PersistenceService implements IPersistenceService {
 				final Cipher cipher = makeCipher(masterPassword, false);
 				objectOutputStream.writeObject(new SealedObject(data, cipher));
 			}
+
+			if (!loadFromStorage()) {
+				throw new Exception("File was corrupted during write.");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Couldn't save data", e);
+			storageFile.delete();
 		}
 	}
 
@@ -155,6 +160,11 @@ class PersistenceService implements IPersistenceService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void setMasterPassword(final String masterPassword) {
+		this.masterPassword = masterPassword;
 	}
 
 	@Override

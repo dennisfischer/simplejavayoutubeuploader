@@ -10,6 +10,7 @@
 
 package de.chaosfisch.google.account;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IAccountService {
@@ -40,7 +41,7 @@ public interface IAccountService {
 	 * @param account
 	 * 		Account to check
 	 */
-	void verifyAccount(Account account) throws AuthenticationIOException;
+	boolean verifyAccount(final Account account) throws IOException;
 
 	String getRefreshToken(final String code) throws AuthenticationIOException;
 }

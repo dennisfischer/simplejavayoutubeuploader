@@ -1161,8 +1161,8 @@ public class UploadController {
 		public String toString(final File object) {
 			if (50 < object.getPath().length()) {
 				final String fileName = object.getPath();
-				return fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar))) + File.separator + "..." + fileName
-						.substring(fileName.lastIndexOf(File.separatorChar, fileName.length()));
+				return String.format("%s%s...%s", fileName.substring(0, fileName.indexOf(File.separatorChar, fileName.indexOf(File.separatorChar))), File.separator, fileName
+						.substring(fileName.lastIndexOf(File.separatorChar, fileName.length())));
 			}
 			return object.getPath();
 		}

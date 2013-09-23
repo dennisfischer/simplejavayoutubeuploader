@@ -16,19 +16,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
-<HBox fx:id="viewElementsHBox" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.controller.QueueCommandController">
-    <Button fx:id="startQueue" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" mnemonicParsing="false"
-            onAction="#startQueue" text="%button.start"/>
-    <Button fx:id="stopQueue" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" mnemonicParsing="false"
+<HBox fx:id="viewElementsHBox" maxHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0"
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+      fx:controller="de.chaosfisch.uploader.controller.QueueCommandController">
+    <Button fx:id="startQueue" maxWidth="-1.0" minHeight="30.0" minWidth="-1.0" mnemonicParsing="false"
+            onAction="#startQueue" prefHeight="-1.0" text="%button.start"/>
+    <Button fx:id="stopQueue" maxWidth="-1.0" minHeight="30.0" minWidth="-1.0" mnemonicParsing="false"
             onAction="#stopQueue" text="%button.stop"/>
-    <Label alignment="CENTER_LEFT" minHeight="-1.0" minWidth="-1.0" text="%label.actionOnFinish" underline="false">
+    <Label alignment="CENTER_LEFT" minHeight="30.0" minWidth="-1.0" text="%label.actionOnFinish" underline="false">
         <labelFor>
-            <ComboBox fx:id="actionOnFinish" editable="true" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"/>
+            <ComboBox fx:id="actionOnFinish" editable="true" maxWidth="-1.0" minHeight="30.0" minWidth="-1.0"/>
         </labelFor>
     </Label>
     <fx:reference source="actionOnFinish"/>
-    <Button mnemonicParsing="false" onAction="#clearQueue" text="%button.clearQueue"/>
+    <Button minHeight="25.0" mnemonicParsing="false" onAction="#clearQueue" prefHeight="30.0"
+            text="%button.clearQueue"/>
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>

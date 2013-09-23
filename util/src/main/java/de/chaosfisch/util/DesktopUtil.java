@@ -21,7 +21,7 @@ import java.net.URI;
 
 public final class DesktopUtil {
 
-	private static final Logger logger = LoggerFactory.getLogger(DesktopUtil.class);
+	private static final Logger LOOGER = LoggerFactory.getLogger(DesktopUtil.class);
 	private final Desktop desktop;
 
 	@Inject
@@ -38,7 +38,7 @@ public final class DesktopUtil {
 			desktop.browse(address);
 			return true;
 		} catch (IOException e) {
-			logger.error("Browser IOException at {}", url, e);
+			LOOGER.error("Browser IOException at {}", url, e);
 			return false;
 		}
 	}
@@ -57,7 +57,7 @@ public final class DesktopUtil {
 			desktop.open(dir);
 			return true;
 		} catch (IOException e) {
-			logger.error("Directory IOException at {}", dir.getAbsolutePath(), e);
+			LOOGER.error("Directory IOException at {}", dir.getAbsolutePath(), e);
 			return false;
 		}
 	}

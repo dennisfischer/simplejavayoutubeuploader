@@ -32,6 +32,8 @@ public interface IPersistenceService {
 
 	boolean loadBackup(File file);
 
+	void setMasterPassword(String masterPassword);
+
 	class Data implements Serializable {
 		private static final long serialVersionUID = -7729985568529356434L;
 		List<Upload>   uploads   = new ArrayList<>(0);

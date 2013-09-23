@@ -183,8 +183,8 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	private String extractor(final String input, final String search, final String end) {
-		return input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
-				.length()));
+		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
+				.length())));
 	}
 
 	private String boolConverter(final boolean flag) {

@@ -17,18 +17,23 @@ import de.chaosfisch.google.GDATAConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class AbstractAccountService implements IAccountService {
 
 	private static final int                     SC_OK             = 200;
-	private static final String                  TOKENINFO_URL     = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s";
 	private final        HashMap<Account, Token> authtokens        = new HashMap<>(3);
 	private static final String                  REFRESH_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
-	private static final Logger                  logger            = LoggerFactory.getLogger(AbstractAccountService.class);
+	private static final String                  TOKEN_TEST_URL    = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
+	private static final Logger                  LOGGER            = LoggerFactory.getLogger(AbstractAccountService.class);
 
 	private Token getAuthToken(final Account account) throws AuthenticationIOException {
-		if (!authtokens.containsKey(account) || !authtokens.get(account).isValid()) {
+		return getAuthToken(account, false);
+	}
+
+	private Token getAuthToken(final Account account, final boolean uncached) throws AuthenticationIOException {
+		if (uncached || !authtokens.containsKey(account) || !authtokens.get(account).isValid()) {
 			authtokens.put(account, _receiveToken(account));
 		}
 		return authtokens.get(account);
@@ -60,7 +65,7 @@ public abstract class AbstractAccountService implements IAccountService {
 		try {
 			return new Authentication(getAuthToken(account).getToken());
 		} catch (Exception e) {
-			logger.error("Auth invalid", e);
+			LOGGER.error("Auth invalid", e);
 			return new Authentication();
 		}
 	}
@@ -89,15 +94,25 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public void verifyAccount(final Account account) throws AuthenticationIOException {
+	public boolean verifyAccount(final Account account) throws IOException {
 		try {
-			final HttpResponse<String> response = Unirest.get(String.format(TOKENINFO_URL, account.getRefreshToken()))
-					.asString();
-			if (SC_OK != response.getCode()) {
-				throw new AuthenticationInvalidException(response.getCode());
-			}
-		} catch (Exception e) {
-			throw new AuthenticationIOException(e);
+			getAuthToken(account, true);
+			_testExtended(account);
+			return true;
+		} catch (AuthenticationIOException e) {
+			return false;
+		}
+	}
+
+	private void _testExtended(final Account account) throws AuthenticationIOException {
+		final HttpResponse<String> response = Unirest.get(TOKEN_TEST_URL)
+				.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
+				.header("Authorization", getAuthentication(account).getHeader())
+				.asString();
+
+		if (SC_OK != response.getCode()) {
+			throw new AuthenticationIOException(new IOException(String.format("Code %d during token test;\n%s", response
+					.getCode(), response.getBody())));
 		}
 	}
 }

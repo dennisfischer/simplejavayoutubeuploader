@@ -19,7 +19,6 @@
     <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
     <orderEntry type="library" exported="" name="fx-guice-2.1.2" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="logback-classic-1.0.9" level="project" />
     <orderEntry type="library" exported="" name="logback-core-1.0.9" level="project" />
@@ -39,6 +38,7 @@
     <orderEntry type="library" exported="" name="jupidator" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.5" level="project" />
     <orderEntry type="module" module-name="util" exported="" />
+    <orderEntry type="library" exported="" name="guava-15.0" level="project" />
   </component>
 </module>
 

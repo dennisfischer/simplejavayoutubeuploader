@@ -31,8 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.util.HashMap;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,8 +55,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	public void initialize() {
 		assert null != title : "fx:id=\"title\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 		assert null != webView : "fx:id=\"title\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-
-		initWebView();
 	}
 
 	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
@@ -69,14 +68,16 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private static final String   USERINFO_URL        = "https://www.googleapis.com/oauth2/v1/userinfo";
 	private static final Logger   logger              = LoggerFactory.getLogger(AccountAddController.class);
 
-	private void initWebView() {
+	public void initWebView(final Account account) {
 		final PersistentCookieStore persistentCookieStore = new PersistentCookieStore();
+		if (null != account) {
+			persistentCookieStore.setSerializeableCookies(account.getSerializeableCookies());
+		}
 		final CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
 		CookieHandler.setDefault(cmrCookieMan);
 
 		final WebEngine webEngine = webView.getEngine();
 		webView.setContextMenuEnabled(false);
-		final Joiner joiner = Joiner.on(" ").skipNulls();
 
 		title.setText("Loading...");
 		webView.getEngine().load("http://www.youtube.com/my_videos");
@@ -85,11 +86,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			public void changed(final ObservableValue<? extends Worker.State> observableValue, final Worker.State state, final Worker.State state2) {
 				if (Worker.State.SUCCEEDED == state2) {
 					if (webView.getEngine().getLocation().startsWith("http://www.youtube.com/my_videos")) {
-						try {
-							final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
-							webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
-						} catch (UnsupportedEncodingException ignored) {
-						}
+						startOAuthFlow(webEngine);
 					}
 				}
 			}
@@ -103,18 +100,26 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 					final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(newTitle);
 					if (matcher.matches()) {
 						try {
-							final Account account = new Account();
-							account.setRefreshToken(accountService.getRefreshToken(matcher.group(1)));
-							account.setSerializeableCookies(persistentCookieStore.getSerializeableCookies());
+							final Account modifiedAccount = null != account ? account : new Account();
+							modifiedAccount.setRefreshToken(accountService.getRefreshToken(matcher.group(1)));
+							modifiedAccount.setSerializeableCookies(persistentCookieStore.getSerializeableCookies());
 
 							final HttpResponse<JsonNode> response = Unirest.get(USERINFO_URL)
-									.header("Authorization", accountService.getAuthentication(account).getHeader())
+									.header("Authorization", accountService.getAuthentication(modifiedAccount)
+											.getHeader())
 									.asJson();
 
-							account.setName(response.getBody().getObject().getString("email"));
-
-							accountService.insert(account);
-							closeDialog(null);
+							modifiedAccount.setName(response.getBody().getObject().getString("email"));
+							if (!accountService.verifyAccount(modifiedAccount)) {
+								startOAuthFlow(webEngine);
+							} else {
+								if (null != account) {
+									accountService.update(modifiedAccount);
+								} else {
+									accountService.insert(modifiedAccount);
+								}
+								closeDialog(null);
+							}
 						} catch (Exception e) {
 							logger.error("Authentication exception", e);
 						}
@@ -125,17 +130,12 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		title.textProperty().bind(webEngine.titleProperty());
 	}
 
-	public static class CookieTrick implements CookiePolicy {
-		private final HashMap<String, String> cookies = new HashMap<>(10);
-
-		@Override
-		public boolean shouldAccept(final URI uri, final HttpCookie cookie) {
-			cookies.put(cookie.getName(), cookie.getValue());
-			return CookiePolicy.ACCEPT_ORIGINAL_SERVER.shouldAccept(uri, cookie);
-		}
-
-		public String getCookie(final String name) {
-			return cookies.get(name);
+	private void startOAuthFlow(final WebEngine webEngine) {
+		try {
+			final Joiner joiner = Joiner.on(" ").skipNulls();
+			final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
+			webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
+		} catch (UnsupportedEncodingException ignored) {
 		}
 	}
 }

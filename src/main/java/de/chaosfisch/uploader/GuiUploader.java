@@ -17,6 +17,8 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.name.Named;
 import com.sun.javafx.css.StyleManager;
+import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.InputDialogController;
@@ -46,7 +48,7 @@ public class GuiUploader extends GuiceApplication {
 
 	private static final int    MIN_HEIGHT = 640;
 	private static final int    MIN_WIDTH  = 1000;
-	private static final Logger logger     = LoggerFactory.getLogger(GuiUploader.class);
+	private static final Logger LOGGER     = LoggerFactory.getLogger(GuiUploader.class);
 
 	@Inject
 	private GuiceFXMLLoader     fxmlLoader;
@@ -56,6 +58,8 @@ public class GuiUploader extends GuiceApplication {
 	private IPersistenceService persistenceService;
 	@Inject
 	private IUploadService      uploadService;
+	@Inject
+	private IAccountService     accountService;
 	@Inject
 	private Configuration       configuration;
 	@Inject
@@ -75,6 +79,8 @@ public class GuiUploader extends GuiceApplication {
 						controller.input.getStyleClass().add("input-invalid");
 					} else {
 						persistenceService.generateBackup();
+						persistenceService.setMasterPassword(input);
+						persistenceService.saveToStorage();
 						controller.closeDialog(null);
 					}
 				}
@@ -94,6 +100,19 @@ public class GuiUploader extends GuiceApplication {
 
 			uploadService.resetUnfinishedUploads();
 			uploadService.startStarttimeCheck();
+
+			LOGGER.info("Verifying accounts");
+			final List<Account> accounts = accountService.getAll();
+			for (final Account account : accounts) {
+				try {
+					if (!accountService.verifyAccount(account)) {
+						LOGGER.warn("Account is invalid: {}", account.getName());
+						dialogHelper.showAccountPermissionsDialog(account);
+					}
+				} catch (IOException e) {
+					LOGGER.warn("IOException on account verify: {}", account.getName(), e);
+				}
+			}
 		}
 	}
 
@@ -152,7 +171,7 @@ public class GuiUploader extends GuiceApplication {
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 			primaryStage.show();
 		} catch (final IOException e) {
-			logger.error("FXML Load error", e);
+			LOGGER.error("FXML Load error", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -188,7 +207,7 @@ public class GuiUploader extends GuiceApplication {
 					Platform.exit();
 				}
 			} catch (IOException e) {
-				logger.error("Couldn't load ConfirmDialog", e);
+				LOGGER.error("Couldn't load ConfirmDialog", e);
 			}
 		}
 	}

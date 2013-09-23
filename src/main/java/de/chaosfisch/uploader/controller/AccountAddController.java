@@ -37,6 +37,6 @@ public class AccountAddController {
 
 	@FXML
 	void addAccount(final ActionEvent event) {
-		dialogHelper.showAccountAddDialog();
+		dialogHelper.showAccountPermissionsDialog();
 	}
 }
