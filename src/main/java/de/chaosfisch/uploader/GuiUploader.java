@@ -80,7 +80,6 @@ public class GuiUploader extends GuiceApplication {
 					} else {
 						persistenceService.generateBackup();
 						persistenceService.setMasterPassword(input);
-						persistenceService.saveToStorage();
 						controller.closeDialog(null);
 					}
 				}
