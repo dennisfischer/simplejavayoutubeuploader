@@ -94,12 +94,12 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public boolean verifyAccount(final Account account) throws IOException {
+	public boolean verifyAccount(final Account account) {
 		try {
 			getAuthToken(account, true);
 			_testExtended(account);
 			return true;
-		} catch (AuthenticationIOException e) {
+		} catch (IOException e) {
 			return false;
 		}
 	}
@@ -111,8 +111,8 @@ public abstract class AbstractAccountService implements IAccountService {
 				.asString();
 
 		if (SC_OK != response.getCode()) {
-			throw new AuthenticationIOException(new IOException(String.format("Code %d during token test;\n%s", response
-					.getCode(), response.getBody())));
+			throw new AuthenticationIOException(String.format("Code %d during token test;\n%s", response.getCode(), response
+					.getBody()));
 		}
 	}
 }

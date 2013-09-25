@@ -16,6 +16,8 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -63,7 +65,7 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 			}
 
 			//Create our main view elements
-			final Label nameLabel = LabelBuilder.create().text(item.getName()).build();
+			final TextField nameTextField = TextFieldBuilder.create().text(item.getName()).prefWidth(300).build();
 			final Button removeAccountButton = ButtonBuilder.create()
 					.text(resources.getString("button.remove"))
 					.styleClass("accountCellRemoveButton")
@@ -78,13 +80,23 @@ public class AccountListCellRenderer implements Callback<ListView<Account>, List
 					.styleClass("accountCellHiddenPlaylistsContainer")
 					.build();
 			final Pane container = PaneBuilder.create()
-					.children(nameLabel, removeAccountButton, playlistLabel, playlistContainer)
+					.children(nameTextField, removeAccountButton, playlistLabel, playlistContainer)
 					.styleClass("accountCellContainer")
 					.build();
 
+			nameTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(final ObservableValue<? extends Boolean> observableValue, final Boolean oldFocusState, final Boolean newFocusState) {
+					if (null != newFocusState && !newFocusState && !item.getName().equals(nameTextField.getText())) {
+						item.setName(nameTextField.getText());
+						accountService.update(item);
+					}
+				}
+			});
+
 			//Position our elements
 			removeAccountButton.layoutXProperty()
-					.bind(nameLabel.layoutXProperty().add(nameLabel.widthProperty()).add(10));
+					.bind(nameTextField.layoutXProperty().add(nameTextField.widthProperty()).add(10));
 			playlistLabel.layoutXProperty()
 					.bind(removeAccountButton.layoutXProperty().add(removeAccountButton.widthProperty()).add(10));
 			playlistContainer.layoutXProperty()

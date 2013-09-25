@@ -15,10 +15,10 @@
 <?scenebuilder-stylesheet ../resources/style.css?>
 <?scenebuilder-stylesheet ../resources/style.css?>
 
-<?import de.chaosfisch.uploader.renderer.ImageButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0"
             prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1"
@@ -66,30 +66,24 @@
                 </StackPane.margin>
             </MenuBar>
             <Label fx:id="title" text="%application.title" textFill="WHITE"/>
-            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
-                         onAction="#closeControlAction">
-                <image>
-                    <Image url="@../resources/images/close_control.png"/>
-                </image>
-            </ImageButton>
-            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
-                         onAction="#maximizeControlAction">
-                <image>
-                    <Image url="@../resources/images/maximize_control.png"/>
-                </image>
+            <Button id="closeDialogButton" styleClass="imageButton"
+                    StackPane.alignment="CENTER_RIGHT"
+                    onAction="#closeControlAction"/>
+
+            <Button id="maximizeDialogButton" styleClass="imageButton" StackPane.alignment="CENTER_RIGHT"
+                    onAction="#maximizeControlAction">
+
                 <StackPane.margin>
                     <Insets right="20.0"/>
                 </StackPane.margin>
-            </ImageButton>
-            <ImageButton contentDisplay="GRAPHIC_ONLY" StackPane.alignment="CENTER_RIGHT"
-                         onAction="#minimizeControlAction">
-                <image>
-                    <Image url="@../resources/images/minimize_control.png"/>
-                </image>
+            </Button>
+            <Button id="minimizeDialogButton" styleClass="imageButton" StackPane.alignment="CENTER_RIGHT"
+                    onAction="#minimizeControlAction">
+
                 <StackPane.margin>
                     <Insets right="40.0"/>
                 </StackPane.margin>
-            </ImageButton>
+            </Button>
             <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true"
                        StackPane.alignment="CENTER_LEFT">
                 <StackPane.margin>

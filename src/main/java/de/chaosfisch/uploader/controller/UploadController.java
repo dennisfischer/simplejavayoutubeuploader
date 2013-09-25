@@ -596,6 +596,24 @@ public class UploadController {
 	}
 
 	@Subscribe
+	public void onAccoutUpdated(final AccountUpdated event) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (accountsList.contains(event.getAccount())) {
+					accountsList.set(accountsList.indexOf(event.getAccount()), event.getAccount());
+				} else {
+					accountsList.add(event.getAccount());
+				}
+
+				if (null == uploadAccount.getValue()) {
+					uploadAccount.getSelectionModel().select(event.getAccount());
+				}
+			}
+		});
+	}
+
+	@Subscribe
 	public void onAccountRemoved(final AccountRemoved event) {
 		Platform.runLater(new Runnable() {
 			@Override

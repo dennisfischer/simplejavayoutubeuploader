@@ -103,13 +103,9 @@ public class GuiUploader extends GuiceApplication {
 			LOGGER.info("Verifying accounts");
 			final List<Account> accounts = accountService.getAll();
 			for (final Account account : accounts) {
-				try {
-					if (!accountService.verifyAccount(account)) {
-						LOGGER.warn("Account is invalid: {}", account.getName());
-						dialogHelper.showAccountPermissionsDialog(account);
-					}
-				} catch (IOException e) {
-					LOGGER.warn("IOException on account verify: {}", account.getName(), e);
+				if (!accountService.verifyAccount(account)) {
+					LOGGER.warn("Account is invalid: {}", account.getName());
+					dialogHelper.showAccountPermissionsDialog(account);
 				}
 			}
 		}

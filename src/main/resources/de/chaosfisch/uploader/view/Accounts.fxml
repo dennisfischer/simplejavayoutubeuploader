@@ -16,12 +16,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <GridPane id="GridPane" hgap="5.0" vgap="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-    <children>
-        <fx:include source="AccountsOverview.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
-                    GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
-        <fx:include source="AccountsAdd.fxml" alignment="CENTER_RIGHT" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0"
-                    minWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    </children>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0"/>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0"/>
@@ -33,4 +27,8 @@
         <RowConstraints minHeight="-1.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" minHeight="-1.0" vgrow="SOMETIMES"/>
     </rowConstraints>
+    <fx:include source="AccountsOverview.fxml" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0"
+                GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
+    <fx:include source="AccountsAdd.fxml" alignment="CENTER_RIGHT" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0"
+                minWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 </GridPane>

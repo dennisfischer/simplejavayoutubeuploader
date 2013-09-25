@@ -136,3 +136,30 @@
 .input-invalid {
     -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);
 }
+
+.imageButton {
+    -fx-content-display: graphic-only;
+    -fx-background-color: transparent;
+    -fx-padding: 3, 3, 3, 3;
+}
+
+.imageButton:pressed {
+    -fx-background-color: transparent;
+    -fx-padding: 4 2 2 4;
+}
+
+.imageButton:focused {
+    -fx-background-color: transparent;
+}
+
+#closeDialogButton {
+    -fx-graphic: url("images/close_control.png");
+}
+
+#maximizeDialogButton {
+    -fx-graphic: url("images/maximize_control.png");
+}
+
+#minimizeDialogButton {
+    -fx-graphic: url("images/minimize_control.png");
+}
