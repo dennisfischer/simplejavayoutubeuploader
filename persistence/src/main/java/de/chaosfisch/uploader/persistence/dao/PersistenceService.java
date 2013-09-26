@@ -54,6 +54,8 @@ class PersistenceService implements IPersistenceService {
 		this.templateDao = templateDao;
 		this.uploadDao = uploadDao;
 		this.storage = storage;
+
+		cleanStorage();
 	}
 
 	@Override
@@ -74,7 +76,7 @@ class PersistenceService implements IPersistenceService {
 				objectOutputStream.writeObject(new SealedObject(data, cipher));
 			}
 
-			if (!loadFromStorage()) {
+			if (null == getData()) {
 				throw new Exception("File was corrupted during write.");
 			}
 		} catch (Exception e) {
@@ -85,6 +87,48 @@ class PersistenceService implements IPersistenceService {
 
 	@Override
 	public boolean loadFromStorage() {
+		try {
+			data = getData();
+			generateBackup();
+			loadPlaylists(data);
+			loadAccounts(data);
+			loadTemplates(data);
+			loadUploads(data);
+		} catch (Exception e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private Data getData() throws Exception {
+		final File storageFile = getStorageFile();
+		if (null == storageFile) {
+			return new Data();
+		}
+
+		final Data loadedData;
+
+		try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(storageFile))) {
+			if (null == masterPassword) {
+				loadedData = (Data) objectInputStream.readObject();
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, true);
+				loadedData = (Data) ((SealedObject) objectInputStream.readObject()).getObject(cipher);
+			}
+			return loadedData;
+		}
+	}
+
+	public void cleanStorage() {
+		getStorageFile(true);
+	}
+
+	private File getStorageFile() {
+		return getStorageFile(false);
+	}
+
+	public File getStorageFile(final boolean cleanup) {
 		final File storageDir = new File(storage);
 		final List<File> list = Arrays.asList(storageDir.listFiles(new FilenameFilter() {
 			@Override
@@ -93,7 +137,7 @@ class PersistenceService implements IPersistenceService {
 			}
 		}));
 		if (list.isEmpty()) {
-			return true;
+			return null;
 		}
 		Collections.sort(list, new Comparator<File>() {
 			@Override
@@ -103,29 +147,16 @@ class PersistenceService implements IPersistenceService {
 		});
 
 		final File storageFile = list.get(list.size() - 1);
-		for (final File file : list) {
-			if (!file.equals(storageFile)) {
-				file.delete();
+
+		if (cleanup) {
+			for (final File file : list) {
+				if (!file.equals(storageFile)) {
+					file.delete();
+				}
 			}
 		}
 
-		try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(storageFile))) {
-			if (null == masterPassword) {
-				data = (Data) objectInputStream.readObject();
-			} else {
-				final Cipher cipher = makeCipher(masterPassword, true);
-				data = (Data) ((SealedObject) objectInputStream.readObject()).getObject(cipher);
-			}
-			loadPlaylists(data);
-			loadAccounts(data);
-			loadTemplates(data);
-			loadUploads(data);
-
-			generateBackup();
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
+		return storageFile;
 	}
 
 	@Override
