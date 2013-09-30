@@ -16,6 +16,7 @@ import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Charsets;
+import com.google.common.base.Predicate;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
@@ -32,6 +33,7 @@ import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -58,6 +60,7 @@ public class UploadJob implements Callable<Upload> {
 	private static final Logger  LOGGER                         = LoggerFactory.getLogger(UploadJob.class);
 	private static final String  METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final Pattern RANGE_HEADER_PATTERN           = Pattern.compile("-");
+	private static final int     SC_500                         = 500;
 
 	/** File that is uploaded */
 	private File fileToUpload;
@@ -110,6 +113,13 @@ public class UploadJob implements Callable<Upload> {
 				.withMaxRetries(10)
 				.retryOn(IOException.class)
 				.retryOn(RuntimeException.class)
+				.abortIf(new Predicate<Throwable>() {
+					@Override
+					public boolean apply(@Nullable final Throwable input) {
+						return input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input).getStatus();
+					}
+				})
+				.retryOn(UploadResponseException.class)
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class)
 				.abortOn(UploadFinishedException.class);
@@ -432,9 +442,15 @@ public class UploadJob implements Callable<Upload> {
 
 	private static class UploadResponseException extends Exception {
 		private static final long serialVersionUID = 9064482080311824304L;
+		private final int status;
 
 		public UploadResponseException(final int status) {
 			super(String.format("Upload response exception: %d", status));
+			this.status = status;
+		}
+
+		private int getStatus() {
+			return status;
 		}
 	}
 
