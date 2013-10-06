@@ -20,6 +20,7 @@ import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
+import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.util.DesktopUtil;
@@ -57,12 +58,13 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	private final GuiceFXMLLoader                fxmlLoader;
 	private final DialogHelper                   dialogHelper;
 	private final Provider<ProgressNodeRenderer> progressNodeProvider;
+	private final ExtendedPlaceholders           extendedPlaceholders;
 
 	private static final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
 	@SuppressWarnings("WeakerAccess")
 	@Inject
-	public QueueUploadCellRenderer(final UploadController uploadController, final EventBus eventBus, @Named("i18n-resources") final ResourceBundle resources, final DesktopUtil desktopUtil, final IUploadService uploadService, final GuiceFXMLLoader fxmlLoader, final DialogHelper dialogHelper, final Provider<ProgressNodeRenderer> progressNodeProvider) {
+	public QueueUploadCellRenderer(final UploadController uploadController, final EventBus eventBus, @Named("i18n-resources") final ResourceBundle resources, final DesktopUtil desktopUtil, final IUploadService uploadService, final GuiceFXMLLoader fxmlLoader, final DialogHelper dialogHelper, final Provider<ProgressNodeRenderer> progressNodeProvider, final ExtendedPlaceholders extendedPlaceholders) {
 		this.uploadController = uploadController;
 		this.eventBus = eventBus;
 		this.resources = resources;
@@ -71,6 +73,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		this.fxmlLoader = fxmlLoader;
 		this.dialogHelper = dialogHelper;
 		this.progressNodeProvider = progressNodeProvider;
+		this.extendedPlaceholders = extendedPlaceholders;
 	}
 
 	@Override
@@ -148,7 +151,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 			}
 
 			final Label uploadTitle = LabelBuilder.create()
-					.text(item.getMetadata().getTitle())
+					.text(extendedPlaceholders.replaceFileTag(upload.getMetadata().getTitle(), upload.getFile()))
 					.styleClass("queueCellTitleLabel")
 					.prefWidth(500)
 					.build();

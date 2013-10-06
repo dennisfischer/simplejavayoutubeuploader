@@ -11,8 +11,10 @@
 package de.chaosfisch.services;
 
 import com.google.common.io.Files;
+import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +52,8 @@ public class ExtendedPlaceholders {
 		playlistPattern = Pattern.compile(resourceBundle.getString("autotitle.playlistPattern"));
 	}
 
-	public ExtendedPlaceholders(final ResourceBundle resourceBundle) {
+	@Inject
+	public ExtendedPlaceholders(@Named("i18n-resources") final ResourceBundle resourceBundle) {
 		this(null, null, resourceBundle);
 	}
 
@@ -112,8 +115,7 @@ public class ExtendedPlaceholders {
 		}
 
 		if (null != file) {
-			final String fileName = file.getAbsolutePath();
-			input = input.replaceAll(resourceBundle.getString("autotitle.file"), Files.getNameWithoutExtension(fileName));
+			input = replaceFileTag(input, file);
 		}
 
 		for (final Map.Entry<String, String> vars : map.entrySet()) {
@@ -121,6 +123,11 @@ public class ExtendedPlaceholders {
 		}
 
 		return input;
+	}
+
+	public String replaceFileTag(final String input, final File file) {
+		final String fileName = file.getAbsolutePath();
+		return input.replaceAll(resourceBundle.getString("autotitle.file"), Files.getNameWithoutExtension(fileName));
 	}
 
 	private int getPlaylist(final Matcher matcher, final StringBuffer sb) {
