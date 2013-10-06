@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
-import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +24,10 @@ class EnddirPostProcessor implements UploadPostProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnddirPostProcessor.class);
 	private final IEnddirService enddirService;
-	private final boolean        rename;
 
 	@Inject
-	public EnddirPostProcessor(final IEnddirService enddirService, final Configuration config) {
-		this(enddirService, config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
-	}
-
-	public EnddirPostProcessor(final IEnddirService enddirService, final boolean rename) {
+	public EnddirPostProcessor(final IEnddirService enddirService) {
 		this.enddirService = enddirService;
-		this.rename = rename;
 	}
 
 	@Override
@@ -49,7 +42,7 @@ class EnddirPostProcessor implements UploadPostProcessor {
 				}
 
 				LOGGER.debug("Moving file to {}", upload.getEnddir().toString());
-				enddirService.moveFileByUpload(upload.getFile(), upload, rename);
+				enddirService.moveFileByUpload(upload.getFile(), upload);
 			} catch (IOException e) {
 				LOGGER.error("Enddir IOException", e);
 			}

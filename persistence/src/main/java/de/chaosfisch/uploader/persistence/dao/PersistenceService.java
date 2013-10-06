@@ -120,7 +120,7 @@ class PersistenceService implements IPersistenceService {
 		}
 	}
 
-	public void cleanStorage() {
+	void cleanStorage() {
 		getStorageFile(true);
 	}
 
@@ -128,7 +128,7 @@ class PersistenceService implements IPersistenceService {
 		return getStorageFile(false);
 	}
 
-	public File getStorageFile(final boolean cleanup) {
+	File getStorageFile(final boolean cleanup) {
 		final File storageDir = new File(storage);
 		final List<File> list = Arrays.asList(storageDir.listFiles(new FilenameFilter() {
 			@Override

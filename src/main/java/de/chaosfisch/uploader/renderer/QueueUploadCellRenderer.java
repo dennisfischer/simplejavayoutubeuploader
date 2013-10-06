@@ -60,6 +60,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 
 	private static final Logger logger = LoggerFactory.getLogger(QueueUploadCellRenderer.class);
 
+	@SuppressWarnings("WeakerAccess")
 	@Inject
 	public QueueUploadCellRenderer(final UploadController uploadController, final EventBus eventBus, @Named("i18n-resources") final ResourceBundle resources, final DesktopUtil desktopUtil, final IUploadService uploadService, final GuiceFXMLLoader fxmlLoader, final DialogHelper dialogHelper, final Provider<ProgressNodeRenderer> progressNodeProvider) {
 		this.uploadController = uploadController;

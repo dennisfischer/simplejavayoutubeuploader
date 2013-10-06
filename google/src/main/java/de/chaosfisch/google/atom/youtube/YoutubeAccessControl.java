@@ -15,6 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
+@SuppressWarnings("FieldCanBeLocal")
 @XStreamAlias("yt:accessControl")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"access"})
 public class YoutubeAccessControl {

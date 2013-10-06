@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
+@SuppressWarnings("WeakerAccess")
 public final class SimpleJavaYoutubeUploader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);

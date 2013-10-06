@@ -12,11 +12,13 @@ package de.chaosfisch.services;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
 import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +29,12 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 
 	private final ResourceBundle resources;
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderPreProcessor.class);
+	private final Configuration config;
 
 	@Inject
-	public PlaceholderPreProcessor(@Named("i18n-resources") final ResourceBundle resources) {
+	public PlaceholderPreProcessor(@Named("i18n-resources") final ResourceBundle resources, final Configuration config) {
 		this.resources = resources;
+		this.config = config;
 	}
 
 	@Override
@@ -64,6 +68,12 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 		upload.setThumbnail(null == upload.getThumbnail() ?
 							null :
 							new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));
+
+		if (config.getBoolean(IEnddirService.RENAME_PROPERTY, false)) {
+			upload.setEnddir(null == upload.getEnddir() ?
+							 null :
+							 new File(extendedPlaceholders.replace(upload.getEnddir().getAbsolutePath())));
+		}
 
 		return upload;
 	}

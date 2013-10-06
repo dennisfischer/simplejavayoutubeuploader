@@ -25,6 +25,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -47,6 +48,9 @@ public class SettingsController {
 
 	@FXML
 	private CheckBox enddirCheckbox;
+
+	@FXML
+	public TextField enddirTitle;
 
 	@FXML
 	private TextField homeDirTextField;
@@ -73,6 +77,13 @@ public class SettingsController {
 		this.persistenceService = persistenceService;
 		this.dialogHelper = dialogHelper;
 		this.config = config;
+	}
+
+	@FXML
+	void enddirTitleTyped(final KeyEvent event) {
+		config.setProperty(IEnddirService.TITLE_PROPERTY, Strings.isNullOrEmpty(enddirTitle.getText()) ?
+														  IEnddirService.TITLE_DEFAULT :
+														  enddirTitle.getText());
 	}
 
 	@FXML
@@ -131,15 +142,21 @@ public class SettingsController {
 
 	@FXML
 	void initialize() {
+		assert null != enddirTitle : "fx:id=\"enddirTitle\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != masterPasswordCheckbox : "fx:id=\"masterPasswordCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
+
+		loadValuesFromConfig();
+		loadVMOptions();
+	}
+
+	private void loadValuesFromConfig() {
+		enddirTitle.setText(config.getString(IEnddirService.TITLE_PROPERTY, IEnddirService.TITLE_DEFAULT));
 		enddirCheckbox.setSelected(config.getBoolean(IEnddirService.RENAME_PROPERTY, false));
 		progressCheckbox.setSelected(config.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
 		masterPasswordCheckbox.setSelected(config.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
 		oldTagsCheckbox.setSelected(config.getBoolean(TagTextArea.OLD_TAG_INPUT, false));
-
-		loadVMOptions();
 	}
 
 	private void writeVMOptions() {

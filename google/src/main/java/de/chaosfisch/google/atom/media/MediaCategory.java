@@ -15,6 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 import de.chaosfisch.google.atom.Category;
 
+@SuppressWarnings("FieldCanBeLocal")
 @XStreamAlias("media:category")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"category"})
 public class MediaCategory extends Category {

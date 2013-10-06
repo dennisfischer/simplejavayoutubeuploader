@@ -25,14 +25,9 @@ public class EnddirServiceImpl implements IEnddirService {
 	private static final Pattern VALID_FILE_NAMES_PATTERN = Pattern.compile(VALID_FILE_NAMES);
 
 	@Override
-	public void moveFileByUpload(final File fileToMove, final Upload upload, final boolean rename) {
+	public void moveFileByUpload(final File fileToMove, final Upload upload) {
 
-		final String fileName;
-		if (rename) {
-			fileName = getFileName(fileToMove, upload.getEnddir(), upload.getMetadata().getTitle());
-		} else {
-			fileName = getFileName(fileToMove, upload.getEnddir());
-		}
+		final String fileName = getFileName(fileToMove, upload.getEnddir());
 
 		File endFile = null;
 		for (int i = 0; 100 > i; i++) {

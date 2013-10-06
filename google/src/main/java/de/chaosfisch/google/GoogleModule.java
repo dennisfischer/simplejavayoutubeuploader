@@ -25,6 +25,7 @@ import de.chaosfisch.google.youtube.upload.IUploadJobFactory;
 
 public class GoogleModule extends AbstractModule {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void configure() {
 
