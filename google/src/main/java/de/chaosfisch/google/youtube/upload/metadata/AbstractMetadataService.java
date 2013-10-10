@@ -35,12 +35,17 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -328,14 +333,13 @@ public class AbstractMetadataService implements IMetadataService {
 	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
 		final Map<String, Object> params = new HashMap<>(4);
 
-		if (null != upload.getDateOfRelease()) {
-			if (upload.getDateOfRelease().after(Calendar.getInstance())) {
-				final Calendar calendar = upload.getDateOfRelease();
+		if (null != upload.getDateTimeOfRelease()) {
+			if (upload.getDateTimeOfRelease().isAfterNow()) {
+				final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm")
+						.withZone(DateTimeZone.UTC);
 
-				final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
-				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-				params.put("publish_time", dateFormat.format(calendar.getTime()));
+				System.out.println(upload.getDateTimeOfRelease().toString(dateTimeFormatter));
+				params.put("publish_time", upload.getDateTimeOfRelease().toString(dateTimeFormatter));
 				params.put("publish_timezone", "UTC");
 				params.put("time_published", "0");
 				params.put("privacy", "scheduled");

@@ -191,31 +191,19 @@ public class Uploader {
 	}
 
 	public void runStarttimeChecker() {
-		final Thread th = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				scheduleTask();
-				if (0 < uploadService.countReadyStarttime()) {
-					run();
-				}
-			}
-		}, "Starttime-Thread");
-		th.setDaemon(true);
-		th.start();
-	}
-
-	private void scheduleTask() {
+		logger.debug("Running starttime checker");
 		final long delay = uploadService.getStarttimeDelay();
+		logger.debug("Delay to upload is {}", delay);
 		final TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
 				if (0 < uploadService.countReadyStarttime()) {
 					Uploader.this.run();
 				}
-				scheduleTask();
+				runStarttimeChecker();
 			}
 		};
-		if (0 < delay) {
+		if (-1 != delay) {
 			task = timer.schedule(timerTask, delay, TimeUnit.MILLISECONDS);
 		}
 	}

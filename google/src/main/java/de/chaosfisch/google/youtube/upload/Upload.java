@@ -19,12 +19,12 @@ import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
+import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class Upload implements Serializable {
@@ -33,13 +33,17 @@ public class Upload implements Serializable {
 	private String id;
 	private File   file;
 	private String mimetype = "application/octet-stream";
-	private String            uploadurl;
-	private GregorianCalendar dateOfStart;
-	private GregorianCalendar dateOfRelease;
-	private boolean           pauseOnFinish;
-	private String            videoid;
-	private File              enddir;
-	private File              thumbnail;
+	private           String   uploadurl;
+	private           DateTime dateTimeOfStart;
+	@Deprecated
+	private transient Calendar dateOfStart;
+	@Deprecated
+	private transient Calendar dateOfRelease;
+	private           DateTime dateTimeOfRelease;
+	private           boolean  pauseOnFinish;
+	private           String   videoid;
+	private           File     enddir;
+	private           File     thumbnail;
 
 	private Social       social;
 	private Status       status;
@@ -111,34 +115,31 @@ public class Upload implements Serializable {
 		this.uploadurl = uploadurl;
 	}
 
-	public GregorianCalendar getDateOfStart() {
-		return dateOfStart;
+	public DateTime getDateTimeOfStart() {
+		return dateTimeOfStart;
 	}
 
-	public void setDateOfStart(final GregorianCalendar dateOfStart) {
-		if (null == dateOfStart || dateOfStart.getTimeInMillis() <= System.currentTimeMillis()) {
-			this.dateOfStart = null;
+	public void setDateTimeOfStart(final DateTime dateTimeOfStart) {
+		if (null == dateTimeOfStart || dateTimeOfStart.isBeforeNow()) {
+			this.dateTimeOfStart = null;
 		} else {
-			this.dateOfStart = dateOfStart;
+			this.dateTimeOfStart = dateTimeOfStart;
 		}
 	}
 
-	public GregorianCalendar getDateOfRelease() {
-		return dateOfRelease;
+	public DateTime getDateTimeOfRelease() {
+		return dateTimeOfRelease;
 	}
 
 	@SuppressWarnings("MagicNumber")
-	public void setDateOfRelease(final GregorianCalendar dateOfRelease) {
-		if (null == dateOfRelease || dateOfRelease.getTimeInMillis() <= System.currentTimeMillis()) {
-			this.dateOfRelease = null;
+	public void setDateTimeOfRelease(final DateTime dateTimeOfRelease) {
+		if (null == dateTimeOfRelease || dateTimeOfRelease.isBeforeNow()) {
+			this.dateTimeOfRelease = null;
 		} else {
-			final GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTime(dateOfRelease.getTime());
-			final int mod = calendar.get(Calendar.MINUTE) % 30;
-			calendar.add(Calendar.MINUTE, 16 > mod ? -mod : 30 - mod);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-			this.dateOfRelease = calendar;
+			final int mod = dateTimeOfRelease.getMinuteOfHour() % 30;
+			this.dateTimeOfRelease = dateTimeOfRelease.plusMinutes(16 > mod ? -mod : 30 - mod)
+					.minuteOfHour()
+					.roundFloorCopy();
 		}
 	}
 

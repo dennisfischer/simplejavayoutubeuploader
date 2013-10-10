@@ -49,11 +49,10 @@ class UploadDaoImpl implements IUploadDao {
 		if (uploads.isEmpty()) {
 			return null;
 		}
-		final long timestamp = System.currentTimeMillis();
 
 		final List<Upload> result = new ArrayList<>(uploads.size());
 		for (final Upload upload : uploads) {
-			if (null == upload.getDateOfStart() || upload.getDateOfStart().getTimeInMillis() <= timestamp) {
+			if (null == upload.getDateTimeOfStart() || upload.getDateTimeOfStart().isBeforeNow()) {
 				final Status status = upload.getStatus();
 				if (!status.isArchived() && !status.isFailed() && !status.isRunning() && !status.isLocked() && !status.isAborted()) {
 					result.add(upload);
@@ -64,12 +63,12 @@ class UploadDaoImpl implements IUploadDao {
 		Collections.sort(result, new Comparator<Upload>() {
 			@Override
 			public int compare(final Upload o1, final Upload o2) {
-				final boolean o1Null = null == o1.getDateOfStart();
-				final boolean o2Null = null == o2.getDateOfStart();
+				final boolean o1Null = null == o1.getDateTimeOfStart();
+				final boolean o2Null = null == o2.getDateTimeOfStart();
 				if (o1Null || o2Null) {
 					return o1Null && o2Null ? 0 : o1Null ? -1 : 1;
 				}
-				return Long.compare(o1.getDateOfStart().getTimeInMillis(), o2.getDateOfStart().getTimeInMillis());
+				return o1.getDateTimeOfStart().compareTo(o2.getDateTimeOfStart());
 			}
 		});
 
@@ -91,22 +90,22 @@ class UploadDaoImpl implements IUploadDao {
 	@Override
 	public long fetchStarttimeDelay() {
 		if (uploads.isEmpty()) {
-			return 0;
+			return -1;
 		}
 
 		final long time = System.currentTimeMillis();
-		long delay = time;
+		long delay = -1;
 
 		for (final Upload upload : uploads) {
 			final Status status = upload.getStatus();
-			if (null != upload.getDateOfStart() && !status.isArchived() && !status.isFailed() && !status.isRunning() && !status
+			if (null != upload.getDateTimeOfStart() && !status.isArchived() && !status.isFailed() && !status.isRunning() && !status
 					.isLocked() && !status.isAborted()) {
-				if (upload.getDateOfStart().getTimeInMillis() < delay) {
-					delay = upload.getDateOfStart().getTimeInMillis();
+				if (-1 == delay || upload.getDateTimeOfStart().isBefore(delay)) {
+					delay = upload.getDateTimeOfStart().getMillis();
 				}
 			}
 		}
-		return delay == time ? 0 : delay - System.currentTimeMillis();
+		return -1 == delay ? -1 : delay < time ? 0 : delay - System.currentTimeMillis();
 	}
 
 	@Override
@@ -160,12 +159,11 @@ class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public long countReadyStarttime() {
-		final long time = System.currentTimeMillis();
 		int count = 0;
 		for (final Upload upload : uploads) {
 			final Status status = upload.getStatus();
 			if (!status.isArchived() && !status.isFailed() && !status.isLocked() && !status.isAborted()) {
-				if (null != upload.getDateOfStart() && upload.getDateOfStart().getTimeInMillis() <= time) {
+				if (null != upload.getDateTimeOfStart() && upload.getDateTimeOfStart().isBeforeNow()) {
 					count++;
 				}
 			}

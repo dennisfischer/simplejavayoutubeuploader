@@ -30,6 +30,7 @@ import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -161,8 +161,7 @@ public class UploadJob implements Callable<Upload> {
 
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
-		final GregorianCalendar calendar = new GregorianCalendar();
-		upload.setDateOfStart(calendar);
+		upload.setDateTimeOfStart(DateTime.now());
 		uploadService.update(upload);
 
 		// Get File and Check if existing

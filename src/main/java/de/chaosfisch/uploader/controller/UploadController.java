@@ -71,6 +71,7 @@ import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.GridViewBuilder;
+import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.IOException;
@@ -631,7 +632,7 @@ public class UploadController {
 
 	@Subscribe
 	public void onAccountUpdated(final AccountUpdated event) {
-		if (!uploadAccount.getValue().equals(event.getAccount())) {
+		if (!event.getAccount().equals(uploadAccount.getValue())) {
 			return;
 		}
 		Platform.runLater(new Runnable() {
@@ -814,14 +815,10 @@ public class UploadController {
 							new File(uploadThumbnail.getText()));
 
 		if (null != started.getValue()) {
-			final GregorianCalendar cal = new GregorianCalendar();
-			cal.setTimeInMillis(started.getValue().getTimeInMillis());
-			upload.setDateOfStart(cal);
+			upload.setDateTimeOfStart(new DateTime(started.getValue()));
 		}
 		if (null != release.getValue()) {
-			final GregorianCalendar cal = new GregorianCalendar();
-			cal.setTimeInMillis(release.getValue().getTimeInMillis());
-			upload.setDateOfRelease(cal);
+			upload.setDateTimeOfRelease(new DateTime(release.getValue()));
 		}
 
 		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
@@ -911,10 +908,15 @@ public class UploadController {
 
 		uploadStore = upload;
 		idProperty.setValue(upload.getId());
-		started.setValue(upload.getDateOfStart());
-		release.setValue(upload.getDateOfRelease());
+		started.setValue(null == upload.getDateTimeOfStart() ?
+						 Calendar.getInstance() :
+						 upload.getDateTimeOfStart().toCalendar(Locale.getDefault()));
+		release.setValue(null == upload.getDateTimeOfRelease() ?
+						 Calendar.getInstance() :
+						 upload.getDateTimeOfRelease().toCalendar(Locale.getDefault()));
 		enddirProperty.setValue(upload.getEnddir());
-		uploadFile.setValue(upload.getFile());
+		uploadFile.getItems().add(upload.getFile());
+		uploadFile.getSelectionModel().select(upload.getFile());
 		uploadThumbnail.setText(null == upload.getThumbnail() ? "" : upload.getThumbnail().getAbsolutePath());
 
 		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
