@@ -205,8 +205,11 @@
                                         vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                         vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
+                    <CheckBox fx:id="uploadGplus" mnemonicParsing="false" text="%checkbox.gplus"
+                              GridPane.columnIndex="0" GridPane.rowIndex="16"/>
                 </GridPane>
             </TitledPane>
         </expandedPane>

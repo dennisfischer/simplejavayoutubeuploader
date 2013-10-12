@@ -17,6 +17,7 @@ public class Social implements Serializable {
 	private static final long serialVersionUID = 1996880624554193297L;
 	private boolean facebook;
 	private boolean twitter;
+	private boolean gplus;
 	private String  message;
 	private int     version;
 
@@ -50,5 +51,13 @@ public class Social implements Serializable {
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	public boolean isGplus() {
+		return gplus;
+	}
+
+	public void setGplus(final boolean gplus) {
+		this.gplus = gplus;
 	}
 }

@@ -328,6 +328,7 @@ public class AbstractMetadataService implements IMetadataService {
 				params.put("creator_share_custom_message", social.getMessage());
 				params.put("creator_share_facebook", boolConverter(social.isFacebook()));
 				params.put("creator_share_twitter", boolConverter(social.isTwitter()));
+				params.put("creator_share_gplus", boolConverter(social.isGplus()));
 			}
 		}
 		return params;

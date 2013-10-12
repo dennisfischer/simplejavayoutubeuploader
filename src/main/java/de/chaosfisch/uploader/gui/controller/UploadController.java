@@ -98,6 +98,9 @@ public class UploadController {
 	public CheckBox uploadPublicStatsViewable;
 
 	@FXML
+	public CheckBox uploadGplus;
+
+	@FXML
 	private ResourceBundle resources;
 
 	@FXML
@@ -861,6 +864,7 @@ public class UploadController {
 	private void toSocial(final Social social) {
 		social.setFacebook(uploadFacebook.isSelected());
 		social.setTwitter(uploadTwitter.isSelected());
+		social.setGplus(uploadGplus.isSelected());
 		social.setMessage(uploadMessage.getText());
 	}
 
@@ -1050,6 +1054,7 @@ public class UploadController {
 	private void fromSocial(final Social social) {
 		uploadFacebook.setSelected(social.isFacebook());
 		uploadTwitter.setSelected(social.isTwitter());
+		uploadGplus.setSelected(social.isGplus());
 		uploadMessage.setText(social.getMessage());
 	}
 
