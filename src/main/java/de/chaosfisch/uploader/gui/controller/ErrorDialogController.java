@@ -8,19 +8,17 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class ConfirmDialogController extends UndecoratedDialogController {
+public class ErrorDialogController extends UndecoratedDialogController {
 	@FXML
 	private Label title;
 	@FXML
 	private Label message;
-
-	private boolean accepted;
 
 	@FXML
 	public void initialize() {
@@ -36,17 +34,7 @@ public class ConfirmDialogController extends UndecoratedDialogController {
 		this.message.setText(message);
 	}
 
-	public boolean ask() {
-		return accepted;
-	}
-
 	public void onAccept(final ActionEvent actionEvent) {
-		accepted = true;
-		closeDialog(actionEvent);
-	}
-
-	public void onDecline(final ActionEvent actionEvent) {
-		accepted = false;
 		closeDialog(actionEvent);
 	}
 }

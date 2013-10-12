@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
@@ -17,8 +17,8 @@ import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.uploader.ApplicationData;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
-import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.collections.ObservableList;

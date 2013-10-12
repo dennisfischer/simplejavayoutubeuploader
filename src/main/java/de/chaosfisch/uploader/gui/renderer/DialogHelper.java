@@ -8,16 +8,16 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.renderer;
+package de.chaosfisch.uploader.gui.renderer;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.account.Account;
-import de.chaosfisch.uploader.controller.AccountAddDialogController;
-import de.chaosfisch.uploader.controller.ErrorDialogController;
-import de.chaosfisch.uploader.controller.InputDialogController;
-import de.chaosfisch.uploader.controller.ViewController;
+import de.chaosfisch.uploader.gui.controller.AccountAddDialogController;
+import de.chaosfisch.uploader.gui.controller.ErrorDialogController;
+import de.chaosfisch.uploader.gui.controller.InputDialogController;
+import de.chaosfisch.uploader.gui.controller.ViewController;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import javafx.concurrent.Task;

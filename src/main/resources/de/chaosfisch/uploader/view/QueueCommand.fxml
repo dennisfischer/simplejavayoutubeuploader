@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <HBox fx:id="viewElementsHBox" maxHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0"
       xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-      fx:controller="de.chaosfisch.uploader.controller.QueueCommandController">
+      fx:controller="de.chaosfisch.uploader.gui.controller.QueueCommandController">
     <Button fx:id="startQueue" maxWidth="-1.0" minHeight="30.0" minWidth="-1.0" mnemonicParsing="false"
             onAction="#startQueue" prefHeight="-1.0" text="%button.start"/>
     <Button fx:id="stopQueue" maxWidth="-1.0" minHeight="30.0" minWidth="-1.0" mnemonicParsing="false"

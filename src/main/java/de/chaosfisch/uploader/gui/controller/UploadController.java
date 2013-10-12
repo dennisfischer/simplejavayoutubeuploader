@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.cathive.fx.guice.FxApplicationThread;
@@ -33,10 +33,10 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
-import de.chaosfisch.uploader.renderer.AccountStringConverter;
-import de.chaosfisch.uploader.renderer.DialogHelper;
-import de.chaosfisch.uploader.renderer.PlaylistGridCell;
-import de.chaosfisch.uploader.renderer.TagTextArea;
+import de.chaosfisch.uploader.gui.renderer.AccountStringConverter;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
+import de.chaosfisch.uploader.gui.renderer.PlaylistGridCell;
+import de.chaosfisch.uploader.gui.renderer.TagTextArea;
 import de.chaosfisch.uploader.template.ITemplateService;
 import de.chaosfisch.uploader.template.Template;
 import de.chaosfisch.uploader.template.events.TemplateAdded;
@@ -90,6 +90,12 @@ public class UploadController {
 
 	@FXML
 	public Label titleLabel;
+
+	@FXML
+	public CheckBox uploadAgeRestricted;
+
+	@FXML
+	public CheckBox uploadPublicStatsViewable;
 
 	@FXML
 	private ResourceBundle resources;
@@ -545,6 +551,8 @@ public class UploadController {
 		assert null != uploadTitle : "fx:id=\"uploadTitle\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadTwitter : "fx:id=\"uploadTwitter\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadVisibility : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadAgeRestricted : "fx:id=\"uploadAgeRestricted\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadPublicStatsViewable : "fx:id=\"uploadPublicStatsViewable\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x2 : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x5 : "fx:id=\"x5\" was not injected: check your FXML file 'Upload.fxml'.";
 		initControls();
@@ -825,16 +833,10 @@ public class UploadController {
 				.getTags(), uploadLicense.getValue());
 
 		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
-		permissions.setCommentvote(uploadCommentvote.isSelected());
-		permissions.setComment(uploadComment.getValue());
-		permissions.setEmbed(uploadEmbed.isSelected());
-		permissions.setRate(uploadRate.isSelected());
-		permissions.setVisibility(uploadVisibility.getValue());
-
 		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
-		social.setFacebook(uploadFacebook.isSelected());
-		social.setTwitter(uploadTwitter.isSelected());
-		social.setMessage(uploadMessage.getText());
+
+		toPermissions(permissions);
+		toSocial(social);
 
 		final Monetization monetization = null == upload.getMonetization() ?
 										  new Monetization() :
@@ -856,6 +858,22 @@ public class UploadController {
 		return upload;
 	}
 
+	private void toSocial(final Social social) {
+		social.setFacebook(uploadFacebook.isSelected());
+		social.setTwitter(uploadTwitter.isSelected());
+		social.setMessage(uploadMessage.getText());
+	}
+
+	private void toPermissions(final Permissions permissions) {
+		permissions.setCommentvote(uploadCommentvote.isSelected());
+		permissions.setComment(uploadComment.getValue());
+		permissions.setEmbed(uploadEmbed.isSelected());
+		permissions.setRate(uploadRate.isSelected());
+		permissions.setVisibility(uploadVisibility.getValue());
+		permissions.setAgeRestricted(uploadAgeRestricted.isSelected());
+		permissions.setPublicStatsViewable(uploadPublicStatsViewable.isSelected());
+	}
+
 	private Template toTemplate(final Template template) {
 
 		template.setDefaultdir(Strings.isNullOrEmpty(uploadDefaultdir.getText()) ?
@@ -873,16 +891,10 @@ public class UploadController {
 		final Permissions permissions = null == template.getPermissions() ?
 										new Permissions() :
 										template.getPermissions();
-		permissions.setCommentvote(uploadCommentvote.isSelected());
-		permissions.setComment(uploadComment.getValue());
-		permissions.setEmbed(uploadEmbed.isSelected());
-		permissions.setRate(uploadRate.isSelected());
-		permissions.setVisibility(uploadVisibility.getValue());
-
 		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
-		social.setFacebook(uploadFacebook.isSelected());
-		social.setTwitter(uploadTwitter.isSelected());
-		social.setMessage(uploadMessage.getText());
+
+		toPermissions(permissions);
+		toSocial(social);
 
 		final Monetization monetization = null == template.getMonetization() ?
 										  new Monetization() :
@@ -920,23 +932,12 @@ public class UploadController {
 		uploadThumbnail.setText(null == upload.getThumbnail() ? "" : upload.getThumbnail().getAbsolutePath());
 
 		final Metadata metadata = null == upload.getMetadata() ? new Metadata() : upload.getMetadata();
-		uploadCategory.setValue(metadata.getCategory());
-		uploadDescription.setText(metadata.getDescription());
-		uploadTags.setTags(metadata.getKeywords());
-		uploadLicense.setValue(metadata.getLicense());
-		uploadTitle.setText(metadata.getTitle());
-
 		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
-		uploadCommentvote.setSelected(permissions.isCommentvote());
-		uploadComment.setValue(permissions.getComment());
-		uploadEmbed.setSelected(permissions.isEmbed());
-		uploadRate.setSelected(permissions.isRate());
-		uploadVisibility.setValue(permissions.getVisibility());
-
 		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
-		uploadFacebook.setSelected(social.isFacebook());
-		uploadTwitter.setSelected(social.isTwitter());
-		uploadMessage.setText(social.getMessage());
+
+		fromMetadata(metadata);
+		fromPermissions(permissions);
+		fromSocial(social);
 
 		monetizePartner.setSelected(null != upload.getMonetization() && upload.getMonetization().isPartner());
 
@@ -968,6 +969,24 @@ public class UploadController {
 		}
 	}
 
+	private void fromMetadata(final Metadata metadata) {
+		uploadCategory.setValue(metadata.getCategory());
+		uploadDescription.setText(metadata.getDescription());
+		uploadTags.setTags(metadata.getKeywords());
+		uploadLicense.setValue(metadata.getLicense());
+		uploadTitle.setText(metadata.getTitle());
+	}
+
+	private void fromPermissions(final Permissions permissions) {
+		uploadCommentvote.setSelected(permissions.isCommentvote());
+		uploadComment.setValue(permissions.getComment());
+		uploadEmbed.setSelected(permissions.isEmbed());
+		uploadRate.setSelected(permissions.isRate());
+		uploadVisibility.setValue(permissions.getVisibility());
+		uploadPublicStatsViewable.setSelected(permissions.isPublicStatsViewable());
+		uploadAgeRestricted.setSelected(permissions.isAgeRestricted());
+	}
+
 	private void fromTemplate(final Template template) {
 		if (null != template.getDefaultdir() && template.getDefaultdir().isDirectory()) {
 			fileChooser.setInitialDirectory(template.getDefaultdir());
@@ -982,25 +1001,14 @@ public class UploadController {
 		enddirProperty.setValue(template.getEnddir());
 
 		final Metadata metadata = null == template.getMetadata() ? new Metadata() : template.getMetadata();
-		uploadCategory.setValue(metadata.getCategory());
-		uploadDescription.setText(metadata.getDescription());
-		uploadTags.setTags(metadata.getKeywords());
-		uploadLicense.setValue(metadata.getLicense());
-		uploadTitle.setText(metadata.getTitle());
-
 		final Permissions permissions = null == template.getPermissions() ?
 										new Permissions() :
 										template.getPermissions();
-		uploadCommentvote.setSelected(permissions.isCommentvote());
-		uploadComment.setValue(permissions.getComment());
-		uploadEmbed.setSelected(permissions.isEmbed());
-		uploadRate.setSelected(permissions.isRate());
-		uploadVisibility.setValue(permissions.getVisibility());
-
 		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
-		uploadFacebook.setSelected(social.isFacebook());
-		uploadTwitter.setSelected(social.isTwitter());
-		uploadMessage.setText(social.getMessage());
+
+		fromMetadata(metadata);
+		fromPermissions(permissions);
+		fromSocial(social);
 
 		monetizePartner.setSelected(null != template.getMonetization() && template.getMonetization().isPartner());
 
@@ -1037,6 +1045,12 @@ public class UploadController {
 
 		playlistTargetzone.setItems(null);
 		playlistTargetzone.setItems(playlistTargetList);
+	}
+
+	private void fromSocial(final Social social) {
+		uploadFacebook.setSelected(social.isFacebook());
+		uploadTwitter.setSelected(social.isTwitter());
+		uploadMessage.setText(social.getMessage());
 	}
 
 	private void initSelection() {

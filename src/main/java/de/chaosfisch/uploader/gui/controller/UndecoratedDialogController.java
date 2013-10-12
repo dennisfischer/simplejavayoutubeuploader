@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

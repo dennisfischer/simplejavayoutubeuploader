@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader;
+package de.chaosfisch.uploader.gui;
 
 import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
@@ -20,11 +20,14 @@ import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
-import de.chaosfisch.uploader.controller.ConfirmDialogController;
-import de.chaosfisch.uploader.controller.InputDialogController;
+import de.chaosfisch.uploader.ApplicationData;
+import de.chaosfisch.uploader.DBConverter;
+import de.chaosfisch.uploader.UploaderModule;
+import de.chaosfisch.uploader.gui.controller.ConfirmDialogController;
+import de.chaosfisch.uploader.gui.controller.InputDialogController;
+import de.chaosfisch.uploader.gui.renderer.Callback;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
-import de.chaosfisch.uploader.renderer.Callback;
-import de.chaosfisch.uploader.renderer.DialogHelper;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -40,15 +43,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 @SuppressWarnings("WeakerAccess")
-public class GuiUploader extends GuiceApplication {
+public class GUIUploader extends GuiceApplication {
 
 	private static final int    MIN_HEIGHT = 640;
 	private static final int    MIN_WIDTH  = 1000;
-	private static final Logger LOGGER     = LoggerFactory.getLogger(GuiUploader.class);
+	private static final Logger LOGGER     = LoggerFactory.getLogger(GUIUploader.class);
 
 	@Inject
 	private GuiceFXMLLoader     fxmlLoader;
@@ -120,7 +124,7 @@ public class GuiUploader extends GuiceApplication {
 
 	@Override
 	public void init(final List<Module> modules) throws Exception {
-		modules.add(new UploaderModule());
+		modules.addAll(Arrays.asList(new UploaderModule(), new GUIModule()));
 	}
 
 	private void initApplication(final Stage primaryStage) {

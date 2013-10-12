@@ -206,6 +206,7 @@ public class AbstractMetadataService implements IMetadataService {
 		params.putAll(getMetadataMetadata(upload));
 		params.putAll(getMetadataPermissions(upload));
 
+		System.out.println(Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
@@ -222,14 +223,16 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(5);
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
 		final Permissions permissions = upload.getPermissions();
 
-		params.put("allow_comments", Comment.DENIED == permissions.getComment() ? "no" : "yes");
+		params.put("allow_comments", boolConverter(!(Comment.DENIED == permissions.getComment())));
 		params.put("allow_comments_detail", Comment.ALLOWED == permissions.getComment() ? "all" : "approval");
-		params.put("allow_comment_ratings", permissions.isCommentvote() ? "yes" : "no");
-		params.put("allow_ratings", permissions.isRate() ? "yes" : "no");
-		params.put("allow_embedding", permissions.isEmbed() ? "yes" : "no");
+		params.put("allow_comment_ratings", boolConverter(permissions.isCommentvote()));
+		params.put("allow_ratings", boolConverter(permissions.isRate()));
+		params.put("allow_embedding", boolConverter(permissions.isEmbed()));
+		params.put("self_racy", boolConverter(permissions.isAgeRestricted()));
+		params.put("allow_public_stats", boolConverter(permissions.isPublicStatsViewable()));
 		return params;
 	}
 
@@ -338,7 +341,6 @@ public class AbstractMetadataService implements IMetadataService {
 				final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm")
 						.withZone(DateTimeZone.UTC);
 
-				System.out.println(upload.getDateTimeOfRelease().toString(dateTimeFormatter));
 				params.put("publish_time", upload.getDateTimeOfRelease().toString(dateTimeFormatter));
 				params.put("publish_timezone", "UTC");
 				params.put("time_published", "0");

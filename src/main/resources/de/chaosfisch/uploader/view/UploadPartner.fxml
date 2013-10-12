@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.*?>
 <GridPane id="gridpane" fx:id="gridPane" gridLinesVisible="false" maxWidth="-1.0" prefHeight="385.0" prefWidth="515.0"
           styleClass="grid" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-          fx:controller="de.chaosfisch.uploader.controller.UploadPartnerController">
+          fx:controller="de.chaosfisch.uploader.gui.controller.UploadPartnerController">
     <CheckBox fx:id="monetizeClaim" disable="false" mnemonicParsing="false" prefWidth="-1.0" text="%label.monetizeClaim"
               visible="true" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0"/>
     <ChoiceBox fx:id="monetizeClaimOption" disable="false" maxWidth="1.7976931348623157E308" prefWidth="-1.0"

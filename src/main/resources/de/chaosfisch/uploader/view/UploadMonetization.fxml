@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.*?>
 <GridPane id="GridPane" fx:id="gridPane" maxWidth="-1.0" prefHeight="94.0" prefWidth="315.0" styleClass="grid"
           xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-          fx:controller="de.chaosfisch.uploader.controller.UploadMonetizationController">
+          fx:controller="de.chaosfisch.uploader.gui.controller.UploadMonetizationController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="-1.0"/>

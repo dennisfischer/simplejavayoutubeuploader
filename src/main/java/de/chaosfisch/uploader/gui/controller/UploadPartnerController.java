@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import de.chaosfisch.google.youtube.upload.Upload;

@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.renderer;
+package de.chaosfisch.uploader.gui.renderer;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.eventbus.EventBus;
@@ -21,8 +21,8 @@ import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.services.ExtendedPlaceholders;
-import de.chaosfisch.uploader.controller.ConfirmDialogController;
-import de.chaosfisch.uploader.controller.UploadController;
+import de.chaosfisch.uploader.gui.controller.ConfirmDialogController;
+import de.chaosfisch.uploader.gui.controller.UploadController;
 import de.chaosfisch.util.DesktopUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

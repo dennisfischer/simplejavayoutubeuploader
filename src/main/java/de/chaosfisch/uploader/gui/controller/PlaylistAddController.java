@@ -8,15 +8,15 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.playlist.IPlaylistService;
 import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.uploader.renderer.AccountStringConverter;
-import de.chaosfisch.uploader.renderer.DialogHelper;
+import de.chaosfisch.uploader.gui.renderer.AccountStringConverter;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;

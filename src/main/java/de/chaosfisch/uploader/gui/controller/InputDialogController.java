@@ -8,9 +8,9 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
-import de.chaosfisch.uploader.renderer.Callback;
+import de.chaosfisch.uploader.gui.renderer.Callback;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

@@ -13,10 +13,13 @@ package de.chaosfisch.uploader;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import de.chaosfisch.uploader.cli.CLIUploader;
+import de.chaosfisch.uploader.gui.GUIUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +27,8 @@ import java.util.Properties;
 @SuppressWarnings("WeakerAccess")
 public final class SimpleJavaYoutubeUploader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	private static final Logger LOGGER               = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	private static final String COMMANDLINE_ARGUMENT = "-cli";
 
 	private SimpleJavaYoutubeUploader() {
 	}
@@ -32,8 +36,14 @@ public final class SimpleJavaYoutubeUploader {
 	public static void main(final String[] args) {
 		loadVMOptions();
 		logVMInfo();
+
 		new ApplicationUpdater();
-		GuiUploader.initialize(args);
+
+		if (-1 == Arrays.binarySearch(args, COMMANDLINE_ARGUMENT)) {
+			GUIUploader.initialize(args);
+		} else {
+			CLIUploader.initialize();
+		}
 	}
 
 	private static void logVMInfo() {

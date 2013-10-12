@@ -8,11 +8,11 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
-import de.chaosfisch.uploader.renderer.DialogHelper;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 

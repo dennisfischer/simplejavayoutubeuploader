@@ -8,10 +8,13 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.renderer;
+package de.chaosfisch.uploader.cli;
 
-import de.chaosfisch.uploader.controller.InputDialogController;
+import com.google.inject.AbstractModule;
 
-public interface Callback {
-	void onInput(InputDialogController controller, String input);
+public class CLIModule extends AbstractModule {
+	@Override
+	protected void configure() {
+		bind(ICLIUtil.class).to(CLIUtil.class);
+	}
 }

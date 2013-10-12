@@ -30,12 +30,9 @@ import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.services.PlaceholderPreProcessor;
-import de.chaosfisch.uploader.controller.UploadController;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
-import de.chaosfisch.uploader.renderer.DialogHelper;
 import de.chaosfisch.util.TextUtil;
-import javafx.stage.FileChooser;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -45,7 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-class UploaderModule extends AbstractModule {
+public class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
@@ -74,15 +71,9 @@ class UploaderModule extends AbstractModule {
 
 		mapServices();
 		mapUtil();
-
-		bind(Uploader.class).in(Singleton.class);
-		bind(UploadController.class).in(Singleton.class);
 	}
 
 	private void mapUtil() {
-		bind(FileChooser.class).in(Singleton.class);
-		bind(DialogHelper.class).in(Singleton.class);
-
 		final EventBus eventBus = new EventBus();
 		bind(EventBus.class).toInstance(eventBus);
 		bindListener(Matchers.any(), new TypeListener() {
@@ -104,5 +95,6 @@ class UploaderModule extends AbstractModule {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
 		bind(IEnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
+		bind(Uploader.class).in(Singleton.class);
 	}
 }

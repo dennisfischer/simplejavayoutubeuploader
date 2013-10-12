@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox id="VBox" fx:id="view" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="450.0"
       prefHeight="98.0" prefWidth="248.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.controller.ErrorDialogController">
+      xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.gui.controller.ErrorDialogController">
     <StackPane id="StackPane" styleClass="menu-bar">
         <Label fx:id="title" textFill="WHITE"/>
         <Button onAction="#closeDialog" id="closeDialogButton" styleClass="imageButton"

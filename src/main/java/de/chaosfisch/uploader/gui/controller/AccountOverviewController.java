@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.common.eventbus.Subscribe;
@@ -18,7 +18,7 @@ import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.google.account.events.AccountUpdated;
-import de.chaosfisch.uploader.renderer.AccountListCellRenderer;
+import de.chaosfisch.uploader.gui.renderer.AccountListCellRenderer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader.controller;
+package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.common.base.Charsets;
@@ -16,11 +16,11 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.google.enddir.IEnddirService;
+import de.chaosfisch.uploader.gui.renderer.Callback;
+import de.chaosfisch.uploader.gui.renderer.DialogHelper;
+import de.chaosfisch.uploader.gui.renderer.ProgressNodeRenderer;
+import de.chaosfisch.uploader.gui.renderer.TagTextArea;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
-import de.chaosfisch.uploader.renderer.Callback;
-import de.chaosfisch.uploader.renderer.DialogHelper;
-import de.chaosfisch.uploader.renderer.ProgressNodeRenderer;
-import de.chaosfisch.uploader.renderer.TagTextArea;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;

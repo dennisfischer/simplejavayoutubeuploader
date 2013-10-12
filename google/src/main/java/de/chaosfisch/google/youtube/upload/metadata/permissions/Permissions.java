@@ -19,6 +19,8 @@ public class Permissions implements Serializable {
 	private boolean    commentvote;
 	private boolean    embed;
 	private boolean    rate;
+	private boolean    ageRestricted;
+	private boolean    publicStatsViewable;
 	private Visibility visibility;
 	private int        version;
 
@@ -68,5 +70,21 @@ public class Permissions implements Serializable {
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	public boolean isAgeRestricted() {
+		return ageRestricted;
+	}
+
+	public void setAgeRestricted(final boolean ageRestricted) {
+		this.ageRestricted = ageRestricted;
+	}
+
+	public boolean isPublicStatsViewable() {
+		return publicStatsViewable;
+	}
+
+	public void setPublicStatsViewable(final boolean publicStatsViewable) {
+		this.publicStatsViewable = publicStatsViewable;
 	}
 }
