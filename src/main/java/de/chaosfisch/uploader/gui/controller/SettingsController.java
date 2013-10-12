@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import de.chaosfisch.google.enddir.IEnddirService;
+import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.uploader.gui.renderer.Callback;
 import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import de.chaosfisch.uploader.gui.renderer.ProgressNodeRenderer;
@@ -40,6 +41,8 @@ import java.util.ResourceBundle;
 @FXMLController
 public class SettingsController {
 
+	@FXML
+	public  CheckBox       stopQueueOnError;
 	@FXML
 	private ResourceBundle resources;
 
@@ -141,11 +144,19 @@ public class SettingsController {
 	}
 
 	@FXML
+	public void toggleStopQueueOnError(final ActionEvent actionEvent) {
+		config.setProperty(Uploader.STOP_ON_ERROR, stopQueueOnError.isSelected());
+	}
+
+	@FXML
 	void initialize() {
 		assert null != enddirTitle : "fx:id=\"enddirTitle\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != enddirCheckbox : "fx:id=\"enddirCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != homeDirTextField : "fx:id=\"homeDirTextField\" was not injected: check your FXML file 'Settings.fxml'.";
 		assert null != masterPasswordCheckbox : "fx:id=\"masterPasswordCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != oldTagsCheckbox : "fx:id=\"oldTagsCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != progressCheckbox : "fx:id=\"progressCheckbox\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert null != stopQueueOnError : "fx:id=\"stopQueueOnError\" was not injected: check your FXML file 'Settings.fxml'.";
 
 		loadValuesFromConfig();
 		loadVMOptions();
@@ -157,6 +168,7 @@ public class SettingsController {
 		progressCheckbox.setSelected(config.getBoolean(ProgressNodeRenderer.DISPLAY_PROGRESS, false));
 		masterPasswordCheckbox.setSelected(config.getBoolean(IPersistenceService.MASTER_PASSWORD, false));
 		oldTagsCheckbox.setSelected(config.getBoolean(TagTextArea.OLD_TAG_INPUT, false));
+		stopQueueOnError.setSelected(config.getBoolean(Uploader.STOP_ON_ERROR, false));
 	}
 
 	private void writeVMOptions() {

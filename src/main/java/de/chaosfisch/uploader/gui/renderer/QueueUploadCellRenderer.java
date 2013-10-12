@@ -40,6 +40,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,15 +156,32 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					.styleClass("queueCellTitleLabel")
 					.prefWidth(500)
 					.build();
+
+			final String dateFormat = resources.getString("queuecell.date.format");
+			final String startText = String.format(resources.getString("queuecell.label.started"), getDateString(upload.getDateTimeOfStart(), dateFormat));
+			final String releaseText = String.format(resources.getString("queuecell.label.released"), getDateString(upload
+					.getDateTimeOfRelease(), dateFormat));
+			final Label uploadStarted = LabelBuilder.create()
+					.text(startText)
+					.styleClass("queueCellStartedLabel")
+					.prefWidth(300)
+					.build();
+
+			final Label uploadReleased = LabelBuilder.create()
+					.text(releaseText)
+					.styleClass("queueCellReleaseLabel")
+					.prefWidth(300)
+					.build();
+
 			final HBox containerTop = HBoxBuilder.create()
 					.spacing(5)
 					.styleClass("queueCellTopContainer")
-					.children(uploadTitle, btnRemove, btnEdit, btnPauseOnFinish)
+					.children(uploadTitle, uploadStarted, btnRemove, btnEdit, btnPauseOnFinish)
 					.build();
 			final HBox containerBottom = HBoxBuilder.create()
 					.spacing(5)
 					.styleClass("queueCellBottomContainer")
-					.children(progressNode, btnAbort)
+					.children(progressNode, uploadReleased, btnAbort)
 					.build();
 			final VBox containerPane = VBoxBuilder.create()
 					.children(containerTop, containerBottom)
@@ -173,6 +191,10 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 					.build();
 
 			setGraphic(containerPane);
+		}
+
+		private String getDateString(final DateTime dateTime, final String dateFormat) {
+			return null == dateTime ? resources.getString("queuecell.label.now") : dateTime.toString(dateFormat);
 		}
 
 		@Subscribe

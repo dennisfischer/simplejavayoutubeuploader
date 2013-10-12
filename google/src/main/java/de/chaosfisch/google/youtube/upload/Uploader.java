@@ -17,6 +17,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.events.UploadEvent;
 import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public class Uploader {
 	private static final int    DEFAULT_MAX_UPLOADS = 1;
 	private static final int    ONE_KILOBYTE        = 1024;
 	private static final Logger logger              = LoggerFactory.getLogger(Uploader.class);
+	public static final  String STOP_ON_ERROR       = "stopOnError";
 
 	private final ExecutorService                 executorService      = Executors.newFixedThreadPool(10);
 	private final ScheduledExecutorService        timer                = Executors.newSingleThreadScheduledExecutor();
@@ -40,6 +42,7 @@ public class Uploader {
 
 	private final EventBus              eventBus;
 	private final IUploadJobFactory     uploadJobFactory;
+	private final Configuration         configuration;
 	private       int                   runningUploads;
 	private       IUploadService        uploadService;
 	private       UploadFinishProcessor consumer;
@@ -48,9 +51,10 @@ public class Uploader {
 	private int maxUploads = DEFAULT_MAX_UPLOADS;
 
 	@Inject
-	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory) {
+	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory, final Configuration configuration) {
 		this.eventBus = eventBus;
 		this.uploadJobFactory = uploadJobFactory;
+		this.configuration = configuration;
 	}
 
 	private void createConsumer() {
@@ -161,6 +165,10 @@ public class Uploader {
 
 					if (upload.isPauseOnFinish()) {
 						uploadService.setRunning(false);
+					}
+
+					if (upload.getStatus().isFailed() && configuration.getBoolean(STOP_ON_ERROR, false)) {
+						uploadService.stopUploading();
 					}
 				}
 				final long leftUploads = uploadService.countUnprocessed();

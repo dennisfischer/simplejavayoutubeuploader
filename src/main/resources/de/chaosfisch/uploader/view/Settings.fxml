@@ -30,6 +30,7 @@
         <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
     </rowConstraints>
     <Label text="%label.homedir" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <CheckBox fx:id="enddirCheckbox" mnemonicParsing="false" onAction="#toggleEnddirTitle" text="%enddircheckbox.label"
@@ -47,4 +48,6 @@
               GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4"/>
     <TextField fx:id="enddirTitle" onKeyTyped="#enddirTitleTyped" prefWidth="-1.0" GridPane.columnIndex="1"
                GridPane.columnSpan="1" GridPane.rowIndex="0"/>
+    <CheckBox fx:id="stopQueueOnError" onAction="#toggleStopQueueOnError" mnemonicParsing="false"
+              text="%checkbox.stopQueueOnError" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
 </GridPane>

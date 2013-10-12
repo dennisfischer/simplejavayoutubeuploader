@@ -675,8 +675,8 @@ public class UploadController {
 	}
 
 	private void initControls() {
-		extendedSettingsGrid.add(started, 1, 10, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(release, 1, 11, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(started, 1, 11, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
 		uploadTagsScrollpane.setContent(uploadTags);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
