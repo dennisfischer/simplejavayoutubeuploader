@@ -145,7 +145,7 @@ public class Playlist implements Serializable {
 
 		final Playlist playlist = (Playlist) obj;
 
-		return !(null != pkey ? !pkey.equals(playlist.pkey) : null != playlist.pkey);
+		return null != pkey && pkey.equals(playlist.pkey);
 	}
 
 	@Override

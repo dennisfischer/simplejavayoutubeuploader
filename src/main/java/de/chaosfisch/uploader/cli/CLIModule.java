@@ -11,10 +11,16 @@
 package de.chaosfisch.uploader.cli;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.Multibinder;
+import de.chaosfisch.uploader.cli.controller.AccountController;
+import de.chaosfisch.uploader.cli.controller.Controller;
 
 public class CLIModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(ICLIUtil.class).to(CLIUtil.class);
+
+		final Multibinder<Controller> controllerMultibinder = Multibinder.newSetBinder(binder(), Controller.class);
+		controllerMultibinder.addBinding().to(AccountController.class);
 	}
 }

@@ -22,6 +22,7 @@ import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.DBConverter;
 import de.chaosfisch.uploader.UploaderModule;
+import de.chaosfisch.uploader.cli.controller.Controller;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public final class CLIUploader {
 	private static final Logger   LOGGER   = LoggerFactory.getLogger(CLIUploader.class);
@@ -47,6 +49,8 @@ public final class CLIUploader {
 	private ResourceBundle      resources;
 	@Inject
 	private ICLIUtil            cliUtil;
+	@Inject
+	private Set<Controller>     controllerSet;
 
 	private boolean running = true;
 

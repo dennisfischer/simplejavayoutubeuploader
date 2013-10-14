@@ -13,8 +13,8 @@ package de.chaosfisch.uploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-	public static final String VERSION = "3.1.0.7";
-	public static final int    RELEASE = 19;
+	public static final String VERSION = "3.1.0.8";
+	public static final int    RELEASE = 20;
 	public static final String BASEURL = "http://dev.chaosfisch.com/nightly/jupidator/update.xml";
 	public static final String HOME;
 	public static final String DATA_DIR;
