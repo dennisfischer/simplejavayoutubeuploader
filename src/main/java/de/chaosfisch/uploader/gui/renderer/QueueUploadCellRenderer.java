@@ -31,6 +31,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
@@ -45,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -78,8 +80,76 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 	}
 
 	@Override
-	public ListCell<Upload> call(final ListView<Upload> arg0) {
+	public ListCell<Upload> call(final ListView<Upload> uploadListView) {
 		return new QueueUploadCell();
+	}
+
+	private EventHandler<MouseEvent> createDragDetectedHandler(final ListCell<Upload> cell) {
+		return new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent event) {
+				final Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+				final ClipboardContent content = new ClipboardContent();
+				content.putString(String.valueOf(cell.getIndex()));
+				db.setContent(content);
+			}
+		};
+	}
+
+	private EventHandler<DragEvent> createDragOverHandler(final ListCell<Upload> cell, final ListView<Upload> listView) {
+		return new EventHandler<DragEvent>() {
+			@Override
+			public void handle(final DragEvent event) {
+				final Dragboard dragboard = event.getDragboard();
+				if (dragboard.hasString()) {
+					final String value = dragboard.getString();
+					try {
+						final int index = Integer.parseInt(value);
+						if (index != cell.getIndex() && -1 != index && (index < listView.getItems()
+								.size() - 1 || -1 != cell.getIndex())) {
+							event.acceptTransferModes(TransferMode.MOVE);
+						}
+					} catch (NumberFormatException ignored) {
+					}
+				}
+			}
+		};
+	}
+
+	private EventHandler<DragEvent> createDragDroppedHandler(final ListCell<Upload> cell, final ListView<Upload> listView) {
+		return new EventHandler<DragEvent>() {
+			@Override
+			public void handle(final DragEvent event) {
+				final Dragboard db = event.getDragboard();
+				int myIndex = cell.getIndex();
+				if (0 > myIndex || myIndex >= listView.getItems().size()) {
+					myIndex = listView.getItems().size() - 1;
+				}
+				final int incomingIndex = Integer.parseInt(db.getString());
+				listView.getItems().add(myIndex, listView.getItems().remove(incomingIndex));
+				listView.getSelectionModel().select(myIndex);
+				updateUploadOrder(incomingIndex, myIndex);
+
+				event.setDropCompleted(true);
+			}
+
+			void updateUploadOrder(final int from, final int to) {
+				int index_from = from;
+				int index_to = to;
+
+				if (from > to) {
+					index_from = to;
+					index_to = from;
+				}
+
+				final List<Upload> items = listView.getItems().subList(index_from, index_to + 1);
+				int i = index_to;
+				for (final Upload upload : items) {
+					upload.setOrder(i--);
+					uploadService.update(upload);
+				}
+			}
+		};
 	}
 
 	public class QueueUploadCell extends ListCell<Upload> {
@@ -90,10 +160,17 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		@Override
 		protected void updateItem(final Upload item, final boolean empty) {
 			super.updateItem(item, empty);
-			if (null == item) {
+			if (isEmpty()) {
+				if (null != upload) {
+					eventBus.unregister(this);
+					upload = null;
+				}
 				return;
 			} else if (null == upload) {
 				eventBus.register(this);
+				setOnDragDetected(createDragDetectedHandler(this));
+				setOnDragOver(createDragOverHandler(this, getListView()));
+				setOnDragDropped(createDragDroppedHandler(this, getListView()));
 			}
 
 			upload = item;
@@ -194,7 +271,7 @@ public class QueueUploadCellRenderer implements Callback<ListView<Upload>, ListC
 		}
 
 		private String getDateString(final DateTime dateTime, final String dateFormat) {
-			return null == dateTime ? resources.getString("queuecell.label.now") : dateTime.toString(dateFormat);
+			return null == dateTime ? resources.getString("queuecell.label.not_set") : dateTime.toString(dateFormat);
 		}
 
 		@Subscribe

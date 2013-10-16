@@ -60,17 +60,7 @@ class UploadDaoImpl implements IUploadDao {
 			}
 		}
 
-		Collections.sort(result, new Comparator<Upload>() {
-			@Override
-			public int compare(final Upload o1, final Upload o2) {
-				final boolean o1Null = null == o1.getDateTimeOfStart();
-				final boolean o2Null = null == o2.getDateTimeOfStart();
-				if (o1Null || o2Null) {
-					return o1Null && o2Null ? 0 : o1Null ? -1 : 1;
-				}
-				return o1.getDateTimeOfStart().compareTo(o2.getDateTimeOfStart());
-			}
-		});
+		sortList(result);
 
 		return result.isEmpty() ? null : result.get(0);
 	}
@@ -108,6 +98,20 @@ class UploadDaoImpl implements IUploadDao {
 		return -1 == delay ? -1 : delay < time ? 0 : delay - System.currentTimeMillis();
 	}
 
+	private void sortList(final List<Upload> list) {
+		Collections.sort(list, new Comparator<Upload>() {
+			@Override
+			public int compare(final Upload o1, final Upload o2) {
+				final boolean o1Null = null == o1.getDateTimeOfStart();
+				final boolean o2Null = null == o2.getDateTimeOfStart();
+				if (o1Null || o2Null) {
+					return o1Null && o2Null ? Integer.compare(o2.getOrder(), o1.getOrder()) : o1Null ? 1 : -1;
+				}
+				return o1.getDateTimeOfStart().compareTo(o2.getDateTimeOfStart());
+			}
+		});
+	}
+
 	@Override
 	public void setUploads(final List<Upload> uploads) {
 		this.uploads.clear();
@@ -116,6 +120,7 @@ class UploadDaoImpl implements IUploadDao {
 
 	@Override
 	public List<Upload> getUploads() {
+		sortList(uploads);
 		return uploads;
 	}
 

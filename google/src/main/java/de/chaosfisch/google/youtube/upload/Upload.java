@@ -39,6 +39,7 @@ public class Upload implements Serializable {
 	private transient Calendar dateOfStart;
 	@Deprecated
 	private transient Calendar dateOfRelease;
+	private           int      order;
 	private           DateTime dateTimeOfRelease;
 	private           boolean  pauseOnFinish;
 	private           String   videoid;
@@ -52,6 +53,14 @@ public class Upload implements Serializable {
 	private Metadata     metadata;
 	private Account      account;
 	private final List<Playlist> playlists = new ArrayList<>(0);
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(final int order) {
+		this.order = order;
+	}
 
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;

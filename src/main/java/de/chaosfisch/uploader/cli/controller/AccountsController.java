@@ -20,18 +20,18 @@ import de.chaosfisch.uploader.cli.ICLIUtil;
 
 import java.util.List;
 
-public class AccountController implements Controller {
+public class AccountsController implements Controller {
 
-	private static final String CMD_ACCOUNT = "accounts";
-	private static final String CMD_ADD     = "add";
-	private static final String CMD_UPDATE  = "update";
-	private static final String CMD_LIST    = "list";
-	private static final String CMD_REMOVE  = "remove";
+	private static final String CMD_ACCOUNTS = "accounts";
+	private static final String CMD_ADD      = "add";
+	private static final String CMD_UPDATE   = "update";
+	private static final String CMD_LIST     = "list";
+	private static final String CMD_REMOVE   = "remove";
 	private final IAccountService accountService;
 	private final ICLIUtil        cliUtil;
 
 	@Inject
-	public AccountController(final EventBus eventBus, final IAccountService accountService, final ICLIUtil cliUtil) {
+	public AccountsController(final EventBus eventBus, final IAccountService accountService, final ICLIUtil cliUtil) {
 		this.accountService = accountService;
 		this.cliUtil = cliUtil;
 		eventBus.register(this);
@@ -39,7 +39,7 @@ public class AccountController implements Controller {
 
 	@Subscribe
 	public void onCLIEvent(final CLIEvent event) {
-		if (CMD_ACCOUNT.equals(event.getKey())) {
+		if (CMD_ACCOUNTS.equals(event.getKey())) {
 			switch (event.getValue()) {
 				case CMD_ADD:
 					addAccount();
@@ -83,9 +83,15 @@ public class AccountController implements Controller {
 	}
 
 	private void listAccounts() {
+		final List<Account> accounts = accountService.getAll();
+		if (accounts.isEmpty()) {
+			cliUtil.printPrompt("No accounts existing");
+			return;
+		}
+
 		cliUtil.printPrompt("Existing accounts:");
 		int i = 1;
-		for (final Account account : accountService.getAll()) {
+		for (final Account account : accounts) {
 			cliUtil.printPrompt(String.format("\t [%d] %s", i, account.getName()));
 			i++;
 		}
