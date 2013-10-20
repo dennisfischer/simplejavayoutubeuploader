@@ -10,10 +10,12 @@
 
 package de.chaosfisch.uploader.persistence.dao;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
@@ -60,29 +62,34 @@ class PersistenceService implements IPersistenceService {
 
 	@Override
 	public void saveToStorage() {
-		data.playlists = new ArrayList<>(playlistDao.getPlaylists());
-		data.accounts = new ArrayList<>(accountDao.getAccounts());
-		data.uploads = new ArrayList<>(uploadDao.getUploads());
-		data.templates = new ArrayList<>(templateDao.getTemplates());
-		data.version++;
+		final Data dataToSave = new Data();
+		dataToSave.playlists = new ArrayList<>(playlistDao.getPlaylists());
+		dataToSave.accounts = new ArrayList<>(accountDao.getAccounts());
+		dataToSave.uploads = new ArrayList<>(uploadDao.getUploads());
+		dataToSave.templates = new ArrayList<>(templateDao.getTemplates());
+		dataToSave.version = ++data.version;
 
-		final File storageFile = new File(storage + String.format("/data-%07d.data", data.version));
+		final File storageFile = new File(storage + String.format("/data-%07d.data", dataToSave.version));
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
+					if (null == masterPassword) {
+						objectOutputStream.writeObject(dataToSave);
+					} else {
+						final Cipher cipher = makeCipher(masterPassword, false);
+						objectOutputStream.writeObject(new SealedObject(dataToSave, cipher));
+					}
 
-		try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
-			if (null == masterPassword) {
-				objectOutputStream.writeObject(data);
-			} else {
-				final Cipher cipher = makeCipher(masterPassword, false);
-				objectOutputStream.writeObject(new SealedObject(data, cipher));
+					if (null == getData()) {
+						throw new Exception("File was corrupted during write.");
+					}
+				} catch (Exception e) {
+					LOGGER.error("Couldn't save data", e);
+					storageFile.delete();
+				}
 			}
-
-			if (null == getData()) {
-				throw new Exception("File was corrupted during write.");
-			}
-		} catch (Exception e) {
-			LOGGER.error("Couldn't save data", e);
-			storageFile.delete();
-		}
+		}).start();
 	}
 
 	@Override
@@ -166,7 +173,7 @@ class PersistenceService implements IPersistenceService {
 			return false;
 		}
 		try {
-			final XStream xStream = new XStream();
+			final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 			final Data loadedData;
 			if (null == masterPassword) {
 				try (FileInputStream fileInputStream = new FileInputStream(file)) {
@@ -204,7 +211,7 @@ class PersistenceService implements IPersistenceService {
 				.format(new Date())));
 		try {
 			Files.createParentDirs(backupFile);
-			final XStream xStream = new XStream();
+			final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 			if (null == masterPassword) {
 				try (FileOutputStream fileOutputStream = new FileOutputStream(backupFile)) {
 					xStream.toXML(data, fileOutputStream);

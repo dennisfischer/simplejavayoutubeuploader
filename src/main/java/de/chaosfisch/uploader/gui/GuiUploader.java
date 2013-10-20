@@ -74,6 +74,10 @@ public class GUIUploader extends GuiceApplication {
 
 	@Override
 	public void start(final Stage primaryStage) {
+		StyleManager.getInstance()
+				.addUserAgentStylesheet(getClass().getResource("/de/chaosfisch/uploader/resources/style.css")
+						.toExternalForm());
+
 		final boolean useMasterPassword = configuration.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
 		if (useMasterPassword) {
 			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
@@ -130,9 +134,7 @@ public class GUIUploader extends GuiceApplication {
 	private void initApplication(final Stage primaryStage) {
 
 		try {
-			StyleManager.getInstance()
-					.addUserAgentStylesheet(getClass().getResource("/de/chaosfisch/uploader/resources/style.css")
-							.toExternalForm());
+
 			final Parent parent = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
 					.getRoot();
 

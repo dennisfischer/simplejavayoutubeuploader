@@ -84,8 +84,10 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		webView.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 			@Override
 			public void changed(final ObservableValue<? extends Worker.State> observableValue, final Worker.State state, final Worker.State state2) {
+				logger.info("Browser at {}", webView.getEngine().getLocation());
+
 				if (Worker.State.SUCCEEDED == state2) {
-					if (webView.getEngine().getLocation().startsWith("http://www.youtube.com/my_videos")) {
+					if (webView.getEngine().getLocation().contains("youtube.com/my_videos")) {
 						startOAuthFlow(webEngine);
 					}
 				}
