@@ -76,7 +76,7 @@ public class QueueCommandController {
 	private static final int    MAX_UPLOAD_SPEED = 10000;
 
 	private final ListSpinner<Integer>           numberOfUploads     = new ListSpinner<Integer>(1, 5).withValue(1)
-			.withAlignment(Pos.CENTER_RIGHT)
+			.withAlignment(Pos.CENTER)
 			.withPostfix(" Upload(s)")
 			.withPrefix("max. ")
 			.withArrowPosition(ArrowPosition.LEADING);

@@ -65,7 +65,7 @@
                     <Insets left="10.0"/>
                 </StackPane.margin>
             </MenuBar>
-            <Label fx:id="title" text="%application.title" textFill="WHITE"/>
+            <Label fx:id="title" text="%application.title"/>
             <Button id="closeDialogButton" styleClass="imageButton"
                     StackPane.alignment="CENTER_RIGHT"
                     onAction="#closeControlAction"/>
@@ -118,7 +118,7 @@
                    GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
             <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" spacing="10.0"
                   StackPane.alignment="CENTER_RIGHT">
-                <Label fx:id="busyProgressLabel" alignment="CENTER_RIGHT" text="" textFill="WHITE">
+                <Label fx:id="busyProgressLabel" alignment="CENTER_RIGHT" styleClass="whiteTextFill">
                     <labelFor>
                         <ProgressBar fx:id="busyProgressBar" prefWidth="-1.0" progress="0.0"/>
                     </labelFor>

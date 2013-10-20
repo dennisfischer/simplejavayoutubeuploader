@@ -23,9 +23,9 @@ import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Upload implements Serializable {
 
@@ -52,7 +52,7 @@ public class Upload implements Serializable {
 	private Permissions  permissions;
 	private Metadata     metadata;
 	private Account      account;
-	private final List<Playlist> playlists = new ArrayList<>(0);
+	private final List<Playlist> playlists = new CopyOnWriteArrayList<>();
 
 	public int getOrder() {
 		return order;
@@ -246,7 +246,7 @@ public class Upload implements Serializable {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return new ArrayList<>(playlists);
+		return new CopyOnWriteArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {

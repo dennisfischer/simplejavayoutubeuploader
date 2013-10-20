@@ -13,9 +13,9 @@
 }
 
 .tooltip {
-    -fx-background: rgba(30, 30, 30);
+    -fx-background: #1E1E1E;
     -fx-text-fill: white;
-    -fx-background-color: rgba(30, 30, 30, 0.8);
+    -fx-background-color: #1E1E1E;
     -fx-background-radius: 6px;
     -fx-background-insets: 0;
     -fx-padding: 0.667em 0.75em 0.667em 0.75em; /* 10px */
@@ -120,7 +120,7 @@
     -fx-border-width: 1px;
     -fx-border-style: dashed;
     -fx-border-color: black;
-    -fx-background-color: null;
+    -fx-background-color: transparent;
     -fx-background-image: url("images/playlist-dropzone.png");
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
@@ -162,4 +162,8 @@
 
 #minimizeDialogButton {
     -fx-graphic: url("images/minimize_control.png");
+}
+
+.whiteTextFill {
+    -fx-text-fill: #ffffff;
 }

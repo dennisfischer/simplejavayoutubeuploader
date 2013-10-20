@@ -16,8 +16,8 @@ package de.chaosfisch.google.account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static de.chaosfisch.google.http.PersistentCookieStore.SerializableCookie;
 
@@ -27,7 +27,7 @@ public class Account implements Serializable {
 	private String id;
 	private String name;
 	private String refreshToken;
-	private final List<Playlist> playlists = new ArrayList<>(0);
+	private final List<Playlist> playlists = new CopyOnWriteArrayList<>();
 	private List<SerializableCookie> serializeableCookies;
 
 	public String getId() {
@@ -55,7 +55,7 @@ public class Account implements Serializable {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return new ArrayList<>(playlists);
+		return new CopyOnWriteArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {

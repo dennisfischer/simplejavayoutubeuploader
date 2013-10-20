@@ -70,26 +70,21 @@ class PersistenceService implements IPersistenceService {
 		dataToSave.version = ++data.version;
 
 		final File storageFile = new File(storage + String.format("/data-%07d.data", dataToSave.version));
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
-					if (null == masterPassword) {
-						objectOutputStream.writeObject(dataToSave);
-					} else {
-						final Cipher cipher = makeCipher(masterPassword, false);
-						objectOutputStream.writeObject(new SealedObject(dataToSave, cipher));
-					}
-
-					if (null == getData()) {
-						throw new Exception("File was corrupted during write.");
-					}
-				} catch (Exception e) {
-					LOGGER.error("Couldn't save data", e);
-					storageFile.delete();
-				}
+		try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
+			if (null == masterPassword) {
+				objectOutputStream.writeObject(dataToSave);
+			} else {
+				final Cipher cipher = makeCipher(masterPassword, false);
+				objectOutputStream.writeObject(new SealedObject(dataToSave, cipher));
 			}
-		}).start();
+
+			if (null == getData()) {
+				throw new Exception("File was corrupted during write.");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Couldn't save data", e);
+			storageFile.delete();
+		}
 	}
 
 	@Override

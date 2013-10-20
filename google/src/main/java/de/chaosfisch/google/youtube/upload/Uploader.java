@@ -211,7 +211,7 @@ public class Uploader {
 				runStarttimeChecker();
 			}
 		};
-		if (-1 != delay) {
+		if (-1 != delay && (0 == runningUploads || canAddJob())) {
 			task = timer.schedule(timerTask, delay, TimeUnit.MILLISECONDS);
 		}
 	}
