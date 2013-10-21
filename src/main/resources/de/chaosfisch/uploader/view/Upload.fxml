@@ -108,11 +108,11 @@
                     <Label disable="false" text="%label.defaultdir" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <Label disable="false" text="%label.enddir" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <Label text="%label.permissions" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                    <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                    <Label text="%label.comments" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-                    <Label text="%label.license" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-                    <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
-                    <Label text="%label.release" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+                    <Label text="%label.visibility" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                    <Label text="%label.comments" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+                    <Label text="%label.license" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+                    <Label text="%label.starttime" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+                    <Label text="%label.release" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
                     <Button fx:id="saveTemplate" maxWidth="-1.0" mnemonicParsing="false" onAction="#saveTemplate"
                             GridPane.columnIndex="3" GridPane.rowIndex="0"/>
                     <Button fx:id="removeTemplate" mnemonicParsing="false" onAction="#removeTemplate"
@@ -129,11 +129,11 @@
                     <CheckBox fx:id="uploadCommentvote" mnemonicParsing="false" text="%checkbox.commentvote"
                               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                     <ChoiceBox fx:id="uploadVisibility" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                               GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
-                    <ChoiceBox fx:id="uploadComment" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
                                GridPane.columnSpan="2147483647" GridPane.rowIndex="8"/>
-                    <ChoiceBox fx:id="uploadLicense" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                    <ChoiceBox fx:id="uploadComment" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
                                GridPane.columnSpan="2147483647" GridPane.rowIndex="9"/>
+                    <ChoiceBox fx:id="uploadLicense" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                               GridPane.columnSpan="2147483647" GridPane.rowIndex="10"/>
                     <Button fx:id="openDefaultdir" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false"
                             onAction="#openDefaultdir" styleClass="searchFile" text="%button.defaultdir"
                             GridPane.columnIndex="4" GridPane.rowIndex="1"/>
@@ -142,19 +142,19 @@
                             GridPane.columnIndex="4" GridPane.rowIndex="2"/>
                     <CheckBox fx:id="uploadEmbed" mnemonicParsing="false" text="%checkbox.embed"
                               GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                    <Label disable="false" text="%label.thumbnail" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+                    <Label disable="false" text="%label.thumbnail" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
                     <TextField fx:id="uploadThumbnail" disable="false" prefWidth="-1.0" GridPane.columnIndex="1"
-                               GridPane.columnSpan="3" GridPane.rowIndex="10"/>
+                               GridPane.columnSpan="3" GridPane.rowIndex="11"/>
                     <Button fx:id="openThumbnail" contentDisplay="GRAPHIC_ONLY" disable="false" mnemonicParsing="false"
                             onAction="#openThumbnail" styleClass="searchFile" text="Button" GridPane.columnIndex="4"
-                            GridPane.rowIndex="10"/>
-                    <Label text="%label.message" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+                            GridPane.rowIndex="11"/>
+                    <Label text="%label.message" GridPane.columnIndex="0" GridPane.rowIndex="14"/>
                     <CheckBox fx:id="uploadFacebook" mnemonicParsing="false" text="%checkbox.facebook"
-                              GridPane.columnIndex="0" GridPane.rowIndex="14"/>
-                    <CheckBox fx:id="uploadTwitter" mnemonicParsing="false" text="%checkbox.twitter"
                               GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+                    <CheckBox fx:id="uploadTwitter" mnemonicParsing="false" text="%checkbox.twitter"
+                              GridPane.columnIndex="0" GridPane.rowIndex="16"/>
                     <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="-1.0" prefWidth="-1.0"
-                                GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="13"
+                                GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="14"
                                 GridPane.rowSpan="2147483647">
                         <TextArea fx:id="uploadMessage" minHeight="-1.0" minWidth="-1.0" prefWidth="-1.0"
                                   wrapText="true"/>
@@ -163,6 +163,11 @@
                               GridPane.columnIndex="2" GridPane.rowIndex="5"/>
                     <CheckBox fx:id="uploadPublicStatsViewable" mnemonicParsing="false"
                               text="%checkbox.publicStatsViewable" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <CheckBox fx:id="uploadGplus" mnemonicParsing="false" text="%checkbox.gplus"
+                              GridPane.columnIndex="0" GridPane.rowIndex="17"/>
+                    <Label text="%label.threed" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                    <ChoiceBox fx:id="uploadThreeD" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                               GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
@@ -187,6 +192,7 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                         vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                         vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
@@ -206,10 +212,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0"
                                         vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
-                    <CheckBox fx:id="uploadGplus" mnemonicParsing="false" text="%checkbox.gplus"
-                              GridPane.columnIndex="0" GridPane.rowIndex="16"/>
                 </GridPane>
             </TitledPane>
         </expandedPane>

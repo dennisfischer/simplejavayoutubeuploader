@@ -233,6 +233,7 @@ public class AbstractMetadataService implements IMetadataService {
 		params.put("allow_embedding", boolConverter(permissions.isEmbed()));
 		params.put("self_racy", boolConverter(permissions.isAgeRestricted()));
 		params.put("allow_public_stats", boolConverter(permissions.isPublicStatsViewable()));
+		params.put("threed_type", permissions.getThreedD().name().toLowerCase());
 		return params;
 	}
 

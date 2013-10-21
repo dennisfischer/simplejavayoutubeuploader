@@ -31,6 +31,7 @@ import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.metadata.*;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.ThreeD;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.services.ExtendedPlaceholders;
 import de.chaosfisch.uploader.gui.renderer.AccountStringConverter;
@@ -99,6 +100,9 @@ public class UploadController {
 
 	@FXML
 	public CheckBox uploadGplus;
+
+	@FXML
+	public ChoiceBox<ThreeD> uploadThreeD;
 
 	@FXML
 	private ResourceBundle resources;
@@ -254,6 +258,7 @@ public class UploadController {
 
 	private final ObservableList<File>       filesList          = FXCollections.observableArrayList();
 	private final ObservableList<Category>   categoriesList     = FXCollections.observableArrayList();
+	private final ObservableList<ThreeD>     threedList         = FXCollections.observableArrayList();
 	private final ObservableList<Account>    accountsList       = FXCollections.observableArrayList();
 	private final ObservableList<Template>   templatesList      = FXCollections.observableArrayList();
 	private final ObservableList<Visibility> visibilityList     = FXCollections.observableArrayList();
@@ -556,6 +561,8 @@ public class UploadController {
 		assert null != uploadVisibility : "fx:id=\"uploadVisibility\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadAgeRestricted : "fx:id=\"uploadAgeRestricted\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != uploadPublicStatsViewable : "fx:id=\"uploadPublicStatsViewable\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadThreeD : "fx:id=\"uploadThreeD\" was not injected: check your FXML file 'Upload.fxml'.";
+		assert null != uploadGplus : "fx:id=\"uploadGplus\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x2 : "fx:id=\"x2\" was not injected: check your FXML file 'Upload.fxml'.";
 		assert null != x5 : "fx:id=\"x5\" was not injected: check your FXML file 'Upload.fxml'.";
 		initControls();
@@ -669,14 +676,15 @@ public class UploadController {
 		commentsList.addAll(Comment.values());
 		licensesList.addAll(License.values());
 		categoriesList.addAll(Category.values());
+		threedList.addAll(ThreeD.values());
 
 		accountsList.addAll(accountService.getAll());
 		templatesList.addAll(templateService.getAll());
 	}
 
 	private void initControls() {
-		extendedSettingsGrid.add(started, 1, 11, GridPane.REMAINING, 1);
-		extendedSettingsGrid.add(release, 1, 12, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(started, 1, 12, GridPane.REMAINING, 1);
+		extendedSettingsGrid.add(release, 1, 13, GridPane.REMAINING, 1);
 		uploadTagsScrollpane.setContent(uploadTags);
 		playlistSourceScrollpane.setContent(playlistSourcezone);
 		playlistDropScrollpane.setContent(playlistTargetzone);
@@ -766,6 +774,7 @@ public class UploadController {
 		uploadLicense.setItems(licensesList);
 		playlistTargetzone.setItems(playlistTargetList);
 		playlistSourcezone.setItems(playlistSourceList);
+		uploadThreeD.setItems(threedList);
 	}
 
 	private void initDragEventHandlers() {
@@ -876,6 +885,7 @@ public class UploadController {
 		permissions.setVisibility(uploadVisibility.getValue());
 		permissions.setAgeRestricted(uploadAgeRestricted.isSelected());
 		permissions.setPublicStatsViewable(uploadPublicStatsViewable.isSelected());
+		permissions.setThreedD(uploadThreeD.getValue());
 	}
 
 	private Template toTemplate(final Template template) {
@@ -989,6 +999,7 @@ public class UploadController {
 		uploadVisibility.setValue(permissions.getVisibility());
 		uploadPublicStatsViewable.setSelected(permissions.isPublicStatsViewable());
 		uploadAgeRestricted.setSelected(permissions.isAgeRestricted());
+		uploadThreeD.setValue(permissions.getThreedD());
 	}
 
 	private void fromTemplate(final Template template) {
@@ -1061,7 +1072,7 @@ public class UploadController {
 	private void initSelection() {
 
 		final ChoiceBox<?>[] controls = new ChoiceBox[] {uploadVisibility, uploadComment, uploadLicense, uploadAccount,
-														 uploadCategory, templates};
+														 uploadCategory, templates, uploadThreeD};
 
 		for (final ChoiceBox<?> comboBox : controls) {
 			comboBox.getSelectionModel().selectFirst();

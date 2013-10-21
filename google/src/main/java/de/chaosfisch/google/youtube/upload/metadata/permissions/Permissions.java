@@ -22,6 +22,7 @@ public class Permissions implements Serializable {
 	private boolean    ageRestricted;
 	private boolean    publicStatsViewable;
 	private Visibility visibility;
+	private ThreeD     threedD;
 	private int        version;
 
 	public Comment getComment() {
@@ -86,5 +87,13 @@ public class Permissions implements Serializable {
 
 	public void setPublicStatsViewable(final boolean publicStatsViewable) {
 		this.publicStatsViewable = publicStatsViewable;
+	}
+
+	public ThreeD getThreedD() {
+		return threedD;
+	}
+
+	public void setThreedD(final ThreeD threedD) {
+		this.threedD = threedD;
 	}
 }
