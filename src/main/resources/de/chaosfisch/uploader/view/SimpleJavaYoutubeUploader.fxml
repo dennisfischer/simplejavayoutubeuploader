@@ -65,7 +65,7 @@
                     <Insets left="10.0"/>
                 </StackPane.margin>
             </MenuBar>
-            <Label fx:id="title" text="%application.title"/>
+            <Label fx:id="title" text="%application.title" styleClass="whiteTextFill"/>
             <Button id="closeDialogButton" styleClass="imageButton"
                     StackPane.alignment="CENTER_RIGHT"
                     onAction="#closeControlAction"/>

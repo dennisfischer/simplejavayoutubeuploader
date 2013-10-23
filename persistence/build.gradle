@@ -9,6 +9,8 @@
  */
 
 
+
+
 apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -19,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.inject:guice:3.0'
+    compile 'com.google.inject:guice:3.0', 'com.esotericsoftware.kryo:kryo:+'
     compile project(':google'), project(':template')
 }
 

@@ -22,8 +22,8 @@ public class Permissions implements Serializable {
 	private boolean    ageRestricted;
 	private boolean    publicStatsViewable;
 	private Visibility visibility;
-	private ThreeD     threedD;
-	private int        version;
+	private ThreeD threedD = ThreeD.DEFAULT;
+	private int version;
 
 	public Comment getComment() {
 		return comment;

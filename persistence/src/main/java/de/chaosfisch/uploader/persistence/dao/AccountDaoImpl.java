@@ -17,13 +17,13 @@ import de.chaosfisch.google.account.events.AccountAdded;
 import de.chaosfisch.google.account.events.AccountRemoved;
 import de.chaosfisch.google.account.events.AccountUpdated;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class AccountDaoImpl implements IAccountDao {
 
-	private final List<Account> accounts = new ArrayList<>(10);
+	private final List<Account> accounts = new CopyOnWriteArrayList<>();
 
 	@Inject
 	private EventBus            eventBus;

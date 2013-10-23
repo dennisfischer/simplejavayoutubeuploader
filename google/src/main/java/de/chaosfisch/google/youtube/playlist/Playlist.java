@@ -40,6 +40,10 @@ public class Playlist implements Serializable {
 		int TITLE_MAX_LENGTH = 60;
 	}
 
+	private Playlist() {
+
+	}
+
 	public Playlist(final String title, final Account account) {
 		setTitle(title);
 		setAccount(account);

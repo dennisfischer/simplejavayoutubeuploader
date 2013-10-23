@@ -42,6 +42,10 @@ public class Template implements Serializable {
 		String NAME = "NAME";
 	}
 
+	private Template() {
+
+	}
+
 	public Template(final String name) {
 		setName(name);
 	}

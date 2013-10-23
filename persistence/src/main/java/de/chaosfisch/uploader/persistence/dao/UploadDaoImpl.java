@@ -19,10 +19,11 @@ import de.chaosfisch.google.youtube.upload.events.UploadRemoved;
 import de.chaosfisch.google.youtube.upload.events.UploadUpdated;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class UploadDaoImpl implements IUploadDao {
 
-	private final List<Upload> uploads = new ArrayList<>(10);
+	private final List<Upload> uploads = new CopyOnWriteArrayList<>();
 
 	@Inject
 	private EventBus            eventBus;
@@ -99,7 +100,9 @@ class UploadDaoImpl implements IUploadDao {
 	}
 
 	private void sortList(final List<Upload> list) {
-		Collections.sort(list, new Comparator<Upload>() {
+		final Upload[] uploads = new Upload[list.size()];
+		list.toArray(uploads);
+		Arrays.sort(uploads, new Comparator<Upload>() {
 			@Override
 			public int compare(final Upload o1, final Upload o2) {
 				final boolean o1Null = null == o1.getDateTimeOfStart();
@@ -110,6 +113,8 @@ class UploadDaoImpl implements IUploadDao {
 				return o1.getDateTimeOfStart().compareTo(o2.getDateTimeOfStart());
 			}
 		});
+		list.clear();
+		list.addAll(Arrays.asList(uploads));
 	}
 
 	@Override

@@ -10,6 +10,11 @@
 
 package de.chaosfisch.uploader.persistence.dao;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -20,13 +25,17 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.uploader.template.Template;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,6 +53,42 @@ class PersistenceService implements IPersistenceService {
 	private final String       storage;
 	private Data data = new Data();
 	private String masterPassword;
+	private final Serializer<File> fileSerializer = new Serializer<File>() {
+		@Override
+		public void write(final Kryo kryo, final Output output, final File object) {
+			output.writeString(null == object ? null : object.getAbsolutePath());
+		}
+
+		@Override
+		public File read(final Kryo kryo, final Input input, final Class type) {
+			final String path = input.readString();
+			return null == path ? null : new File(path);
+		}
+	};
+
+	private final Serializer<DateTime> dateTimeSerializer = new Serializer<DateTime>() {
+		@Override
+		public void write(final Kryo kryo, final Output output, final DateTime object) {
+			output.writeLong(null == object ? 0 : object.getMillis());
+		}
+
+		@Override
+		public DateTime read(final Kryo kryo, final Input input, final Class type) {
+			final long milis = input.readLong();
+			return 0 == milis ? null : new DateTime(milis);
+		}
+	};
+
+	private ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>() {
+		@Override
+		protected Kryo initialValue() {
+			final Kryo kryo = new Kryo();
+			kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
+			kryo.register(File.class, fileSerializer);
+			kryo.register(DateTime.class, dateTimeSerializer);
+			return kryo;
+		}
+	};
 
 	//Arbitrarily selected 8-byte salt sequence:
 	private static final byte[] salt = {(byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7, (byte) 0x5b, (byte) 0xd7,
@@ -56,35 +101,35 @@ class PersistenceService implements IPersistenceService {
 		this.templateDao = templateDao;
 		this.uploadDao = uploadDao;
 		this.storage = storage;
-
-		cleanStorage();
 	}
 
 	@Override
 	public void saveToStorage() {
-		final Data dataToSave = new Data();
-		dataToSave.playlists = new ArrayList<>(playlistDao.getPlaylists());
-		dataToSave.accounts = new ArrayList<>(accountDao.getAccounts());
-		dataToSave.uploads = new ArrayList<>(uploadDao.getUploads());
-		dataToSave.templates = new ArrayList<>(templateDao.getTemplates());
-		dataToSave.version = ++data.version;
+		final Data storageData = new Data();
+		storageData.playlists = playlistDao.getPlaylists();
+		storageData.accounts = accountDao.getAccounts();
+		storageData.uploads = uploadDao.getUploads();
+		storageData.templates = templateDao.getTemplates();
+		storageData.version = ++data.version;
 
-		final File storageFile = new File(storage + String.format("/data-%07d.data", dataToSave.version));
-		try (final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(storageFile))) {
-			if (null == masterPassword) {
-				objectOutputStream.writeObject(dataToSave);
-			} else {
-				final Cipher cipher = makeCipher(masterPassword, false);
-				objectOutputStream.writeObject(new SealedObject(dataToSave, cipher));
-			}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final File storageFile = new File(storage + String.format("/data-%07d.data", storageData.version));
+				try (final Output output = new Output(new FileOutputStream(storageFile))) {
 
-			if (null == getData()) {
-				throw new Exception("File was corrupted during write.");
+					if (null == masterPassword) {
+						kryo.get().writeObject(output, storageData);
+					} else {
+						final Cipher cipher = makeCipher(masterPassword, false);
+						kryo.get().writeObject(output, new SealedObject(storageData, cipher));
+					}
+				} catch (Exception e) {
+					LOGGER.error("Couldn't save data", e);
+					storageFile.delete();
+				}
 			}
-		} catch (Exception e) {
-			LOGGER.error("Couldn't save data", e);
-			storageFile.delete();
-		}
+		}).start();
 	}
 
 	@Override
@@ -97,6 +142,7 @@ class PersistenceService implements IPersistenceService {
 			loadTemplates(data);
 			loadUploads(data);
 		} catch (Exception e) {
+			LOGGER.error("Data load error", e);
 			return false;
 		}
 
@@ -111,18 +157,19 @@ class PersistenceService implements IPersistenceService {
 
 		final Data loadedData;
 
-		try (final ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(storageFile))) {
+		try (final Input input = new Input(new FileInputStream(storageFile))) {
 			if (null == masterPassword) {
-				loadedData = (Data) objectInputStream.readObject();
+				loadedData = kryo.get().readObject(input, Data.class);
 			} else {
 				final Cipher cipher = makeCipher(masterPassword, true);
-				loadedData = (Data) ((SealedObject) objectInputStream.readObject()).getObject(cipher);
+				loadedData = (Data) kryo.get().readObject(input, SealedObject.class).getObject(cipher);
 			}
 			return loadedData;
 		}
 	}
 
-	void cleanStorage() {
+	@Override
+	public void cleanStorage() {
 		getStorageFile(true);
 	}
 

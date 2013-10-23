@@ -21,10 +21,11 @@ import de.chaosfisch.google.youtube.playlist.events.PlaylistUpdated;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class PlaylistDaoImpl implements IPlaylistDao {
 
-	private final List<Playlist> playlists = new ArrayList<>(10);
+	private final List<Playlist> playlists = new CopyOnWriteArrayList<>();
 
 	@Inject
 	private EventBus            eventBus;

@@ -17,13 +17,13 @@ import de.chaosfisch.uploader.template.events.TemplateAdded;
 import de.chaosfisch.uploader.template.events.TemplateRemoved;
 import de.chaosfisch.uploader.template.events.TemplateUpdated;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class TemplateDaoImpl implements ITemplateDao {
 
-	private final List<Template> templates = new ArrayList<>(10);
+	private final List<Template> templates = new CopyOnWriteArrayList<>();
 	@Inject
 	private EventBus            eventBus;
 	@Inject
