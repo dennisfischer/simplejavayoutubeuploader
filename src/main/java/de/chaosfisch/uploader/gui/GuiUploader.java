@@ -101,6 +101,7 @@ public class GUIUploader extends GuiceApplication {
 			}
 			Platform.exit();
 		} else {
+			persistenceService.cleanStorage();
 			updateDatabase();
 			Platform.setImplicitExit(false);
 			initApplication(primaryStage);
