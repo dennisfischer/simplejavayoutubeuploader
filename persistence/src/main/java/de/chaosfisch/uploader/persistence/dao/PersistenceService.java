@@ -39,10 +39,13 @@ import java.io.FilenameFilter;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class PersistenceService implements IPersistenceService {
-	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-[0-9]+.data");
+	private static final Pattern STORAGE_PATTERN = Pattern.compile("data-([0-9]+)\\.data");
+	private static final Pattern BACKUP_PATTERN  = Pattern.compile("(.*)\\.xml");
 	private static final int     ITERATIONS      = 42;
 	private static final Logger  LOGGER          = LoggerFactory.getLogger(PersistenceService.class);
 
@@ -51,6 +54,8 @@ class PersistenceService implements IPersistenceService {
 	private final ITemplateDao templateDao;
 	private final IUploadDao   uploadDao;
 	private final String       storage;
+
+	private int version;
 	private Data data = new Data();
 	private String masterPassword;
 	private final Serializer<File> fileSerializer = new Serializer<File>() {
@@ -101,6 +106,13 @@ class PersistenceService implements IPersistenceService {
 		this.templateDao = templateDao;
 		this.uploadDao = uploadDao;
 		this.storage = storage;
+		final Timer timer = new Timer(true);
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				generateBackup();
+			}
+		}, TimeUnit.MINUTES.toMillis(10), TimeUnit.MINUTES.toMillis(10));
 	}
 
 	@Override
@@ -110,12 +122,11 @@ class PersistenceService implements IPersistenceService {
 		storageData.accounts = accountDao.getAccounts();
 		storageData.uploads = uploadDao.getUploads();
 		storageData.templates = templateDao.getTemplates();
-		storageData.version = ++data.version;
 
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				final File storageFile = new File(storage + String.format("/data-%07d.data", storageData.version));
+				final File storageFile = new File(storage + String.format("/data-%07d.data", ++version));
 				try (final Output output = new Output(new FileOutputStream(storageFile))) {
 
 					if (null == masterPassword) {
@@ -143,6 +154,15 @@ class PersistenceService implements IPersistenceService {
 			loadUploads(data);
 		} catch (Exception e) {
 			LOGGER.error("Data load error", e);
+
+			LOGGER.info("Trying to use latest backup");
+			final File backupFile = getNewestBackupFile();
+			if (null != backupFile) {
+				loadBackup(backupFile);
+				return true;
+			} else {
+				LOGGER.warn("Backup not existing!");
+			}
 			return false;
 		}
 
@@ -177,6 +197,27 @@ class PersistenceService implements IPersistenceService {
 		return getStorageFile(false);
 	}
 
+	File getNewestBackupFile() {
+		final File backupDir = new File(storage + "/backups/");
+		final List<File> list = Arrays.asList(backupDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(final File dir, final String name) {
+				return BACKUP_PATTERN.matcher(name).matches(); // or something else
+			}
+		}));
+		if (list.isEmpty()) {
+			return null;
+		}
+		Collections.sort(list, new Comparator<File>() {
+			@Override
+			public int compare(final File o1, final File o2) {
+				return o1.getAbsolutePath().compareToIgnoreCase(o2.getAbsolutePath());
+			}
+		});
+
+		return list.get(list.size() - 1);
+	}
+
 	File getStorageFile(final boolean cleanup) {
 		final File storageDir = new File(storage);
 		final List<File> list = Arrays.asList(storageDir.listFiles(new FilenameFilter() {
@@ -196,6 +237,10 @@ class PersistenceService implements IPersistenceService {
 		});
 
 		final File storageFile = list.get(list.size() - 1);
+		final Matcher matcher = STORAGE_PATTERN.matcher(storageFile.getAbsolutePath());
+		if (matcher.find()) {
+			version = Integer.parseInt(matcher.group(1));
+		}
 
 		if (cleanup) {
 			for (final File file : list) {
@@ -236,7 +281,7 @@ class PersistenceService implements IPersistenceService {
 			loadUploads(loadedData);
 			saveToStorage();
 		} catch (Exception e) {
-			LOGGER.error("Couldn't create backup!", e);
+			LOGGER.error("Couldn't load backup!", e);
 			return false;
 		}
 		return true;
@@ -252,6 +297,7 @@ class PersistenceService implements IPersistenceService {
 		final File backupFile = new File(storage + String.format("/backups/%s.xml", new SimpleDateFormat("dd-MM-yyyy HH-mm-ss")
 				.format(new Date())));
 		try {
+			LOGGER.info("Creating backup {}", backupFile);
 			Files.createParentDirs(backupFile);
 			final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()));
 			if (null == masterPassword) {

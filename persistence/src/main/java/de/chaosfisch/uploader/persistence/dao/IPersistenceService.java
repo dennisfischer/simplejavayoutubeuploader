@@ -42,6 +42,5 @@ public interface IPersistenceService {
 		List<Template> templates = new ArrayList<>(0);
 		List<Playlist> playlists = new ArrayList<>(0);
 		List<Account>  accounts  = new ArrayList<>(0);
-		int version;
 	}
 }
