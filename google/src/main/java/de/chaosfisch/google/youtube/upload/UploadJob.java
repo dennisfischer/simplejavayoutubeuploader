@@ -41,10 +41,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,18 +105,19 @@ public class UploadJob implements Callable<Upload> {
 		}
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
-				.withMaxDelay(30000)
+		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS
+				.toMillis(3), 2)
+				.withMaxDelay(TimeUnit.MINUTES.toMillis(1))
 				.withMaxRetries(10)
 				.retryOn(IOException.class)
 				.retryOn(RuntimeException.class)
+				.retryOn(UploadResponseException.class)
 				.abortIf(new Predicate<Throwable>() {
 					@Override
 					public boolean apply(@Nullable final Throwable input) {
 						return input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input).getStatus();
 					}
 				})
-				.retryOn(UploadResponseException.class)
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class)
 				.abortOn(UploadFinishedException.class);
@@ -238,7 +236,9 @@ public class UploadJob implements Callable<Upload> {
 			@Override
 			public void run(final RetryContext retryContext) throws IOException, UploadResponseException, UploadFinishedException {
 				if (null != upload.getUploadurl() || null != retryContext.getLastThrowable()) {
-					LOGGER.info("#############RETRY#############");
+					if (0 < retryContext.getRetryCount()) {
+						LOGGER.info("############ RETRY " + retryContext.getRetryCount() + " ############");
+					}
 					resumeinfo();
 				}
 				uploadChunks();

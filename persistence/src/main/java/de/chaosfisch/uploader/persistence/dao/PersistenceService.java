@@ -123,7 +123,7 @@ class PersistenceService implements IPersistenceService {
 		storageData.uploads = uploadDao.getUploads();
 		storageData.templates = templateDao.getTemplates();
 
-		new Thread(new Runnable() {
+		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final File storageFile = new File(storage + String.format("/data-%07d.data", ++version));
@@ -140,7 +140,9 @@ class PersistenceService implements IPersistenceService {
 					storageFile.delete();
 				}
 			}
-		}).start();
+		}, "Persistence");
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	@Override
