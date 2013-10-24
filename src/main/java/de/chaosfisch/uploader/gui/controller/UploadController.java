@@ -833,17 +833,13 @@ public class UploadController {
 
 		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
 				.getTags(), uploadLicense.getValue());
+		final Permissions permissions = upload.getPermissions();
+		final Social social = upload.getSocial();
+		final Monetization monetization = upload.getMonetization();
 
-		final Permissions permissions = null == upload.getPermissions() ? new Permissions() : upload.getPermissions();
-		final Social social = null == upload.getSocial() ? new Social() : upload.getSocial();
-
+		monetization.setPartner(monetizePartner.isSelected());
 		toPermissions(permissions);
 		toSocial(social);
-
-		final Monetization monetization = null == upload.getMonetization() ?
-										  new Monetization() :
-										  upload.getMonetization();
-		monetization.setPartner(monetizePartner.isSelected());
 
 		upload.setMetadata(metadata);
 		upload.setPermissions(permissions);
@@ -892,18 +888,13 @@ public class UploadController {
 		final Metadata metadata = new Metadata(uploadTitle.getText(), uploadCategory.getValue(), uploadDescription.getText(), uploadTags
 				.getTags(), uploadLicense.getValue());
 
-		final Permissions permissions = null == template.getPermissions() ?
-										new Permissions() :
-										template.getPermissions();
-		final Social social = null == template.getSocial() ? new Social() : template.getSocial();
+		final Permissions permissions = template.getPermissions();
+		final Social social = template.getSocial();
+		final Monetization monetization = template.getMonetization();
 
+		monetization.setPartner(monetizePartner.isSelected());
 		toPermissions(permissions);
 		toSocial(social);
-
-		final Monetization monetization = null == template.getMonetization() ?
-										  new Monetization() :
-										  template.getMonetization();
-		monetization.setPartner(monetizePartner.isSelected());
 
 		template.setMetadata(metadata);
 		template.setPermissions(permissions);

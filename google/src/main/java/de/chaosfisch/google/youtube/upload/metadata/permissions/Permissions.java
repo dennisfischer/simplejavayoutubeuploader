@@ -14,16 +14,17 @@ import java.io.Serializable;
 
 public class Permissions implements Serializable {
 
-	private static final long serialVersionUID = -4202788983688840206L;
-	private Comment    comment;
-	private boolean    commentvote;
-	private boolean    embed;
-	private boolean    rate;
-	private boolean    ageRestricted;
-	private boolean    publicStatsViewable;
-	private Visibility visibility;
-	private ThreeD threedD = ThreeD.DEFAULT;
-	private int version;
+	private static final long       serialVersionUID = -4202788983688840206L;
+	private              Visibility visibility       = Visibility.PUBLIC;
+	private              ThreeD     threedD          = ThreeD.DEFAULT;
+	private              Comment    comment          = Comment.ALLOWED;
+	private              boolean    commentvote      = true;
+	private              boolean    embed            = true;
+	private              boolean    rate             = true;
+
+	private boolean ageRestricted;
+	private boolean publicStatsViewable;
+	private int     version;
 
 	public Comment getComment() {
 		return comment;

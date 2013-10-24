@@ -17,13 +17,13 @@ import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
-	private static final long serialVersionUID = -6095318226028745525L;
-	private Category category;
-	private String   title;
-	private String   description;
-	private String   keywords;
-	private License  license;
-	private int      version;
+	private static final long     serialVersionUID = -6095318226028745525L;
+	private              Category category         = Category.ANIMALS;
+	private              License  license          = License.YOUTUBE;
+	private String title;
+	private String description;
+	private String keywords;
+	private int    version;
 
 	public Metadata() {
 		this("", Category.ANIMALS, "", "");

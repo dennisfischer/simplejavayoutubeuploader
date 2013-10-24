@@ -189,20 +189,16 @@ public class UploadPartnerController {
 	}
 
 	public Upload toUpload(final Upload upload) {
-		final Monetization monetization = null == upload.getMonetization() ?
-										  new Monetization() :
-										  upload.getMonetization();
+		final Monetization monetization = upload.getMonetization();
 
 		toMonetization(monetization);
-
 		upload.setMonetization(monetization);
+
 		return upload;
 	}
 
 	public Template toTemplate(final Template template) {
-		final Monetization monetization = null == template.getMonetization() ?
-										  new Monetization() :
-										  template.getMonetization();
+		final Monetization monetization = template.getMonetization();
 
 		toMonetization(monetization);
 		template.setMonetization(monetization);

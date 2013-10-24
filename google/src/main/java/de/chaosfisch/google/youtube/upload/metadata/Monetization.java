@@ -18,29 +18,30 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 import java.io.Serializable;
 
 public class Monetization implements Serializable {
-	private static final long serialVersionUID = -2575407439740776825L;
-	private boolean     instreamDefaults;
-	private boolean     claim;
-	private boolean     overlay;
-	private boolean     trueview;
-	private boolean     instream;
-	private boolean     product;
-	private Syndication syndication;
-	private String      title;
-	private String      description;
-	private String      customId;
-	private String      notes;
-	private String      tmsid;
-	private String      isan;
-	private String      eidr;
-	private String      titleepisode;
-	private String      seasonNb;
-	private String      episodeNb;
-	private ClaimType   claimtype;
-	private ClaimOption claimoption;
-	private Asset       asset;
-	private boolean     partner;
-	private int         version;
+	private static final long        serialVersionUID = -2575407439740776825L;
+	private              Syndication syndication      = Syndication.GLOBAL;
+	private              ClaimType   claimtype        = ClaimType.AUDIO_VISUAL;
+	private              ClaimOption claimoption      = ClaimOption.MONETIZE;
+	private              Asset       asset            = Asset.WEB;
+
+	private boolean instreamDefaults;
+	private boolean claim;
+	private boolean overlay;
+	private boolean trueview;
+	private boolean instream;
+	private boolean product;
+	private String  title;
+	private String  description;
+	private String  customId;
+	private String  notes;
+	private String  tmsid;
+	private String  isan;
+	private String  eidr;
+	private String  titleepisode;
+	private String  seasonNb;
+	private String  episodeNb;
+	private boolean partner;
+	private int     version;
 
 	public boolean isInstreamDefaults() {
 		return instreamDefaults;

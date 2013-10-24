@@ -12,10 +12,6 @@ package de.chaosfisch.uploader.gui.controller;
 
 import com.cathive.fx.guice.FXMLController;
 import com.google.inject.Inject;
-import de.chaosfisch.google.youtube.upload.metadata.Metadata;
-import de.chaosfisch.google.youtube.upload.metadata.Monetization;
-import de.chaosfisch.google.youtube.upload.metadata.Social;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.*;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
@@ -119,46 +115,9 @@ public class ViewController {
 	private final Configuration       configuration;
 	private final IPersistenceService persistenceService;
 
-	public static final Template standardTemplate;
-	private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
+	public static final  Template standardTemplate = new Template("default");
+	private static final Logger   logger           = LoggerFactory.getLogger(ViewController.class);
 
-	static {
-		final Permissions permissions = new Permissions();
-		permissions.setEmbed(true);
-		permissions.setCommentvote(true);
-		permissions.setComment(Comment.ALLOWED);
-		permissions.setRate(true);
-		permissions.setVisibility(Visibility.PUBLIC);
-
-		final Social social = new Social();
-		social.setFacebook(false);
-		social.setTwitter(false);
-		social.setMessage("");
-
-		final Monetization monetization = new Monetization();
-		monetization.setClaim(false);
-		monetization.setOverlay(false);
-		monetization.setTrueview(false);
-		monetization.setProduct(false);
-		monetization.setInstream(false);
-		monetization.setInstreamDefaults(false);
-		monetization.setPartner(false);
-		monetization.setClaimtype(ClaimType.AUDIO_VISUAL);
-		monetization.setClaimoption(ClaimOption.MONETIZE);
-		monetization.setAsset(Asset.WEB);
-		monetization.setSyndication(Syndication.GLOBAL);
-
-		final Metadata metadata = new Metadata();
-		standardTemplate = new Template("default");
-		standardTemplate.setPermissions(permissions);
-		standardTemplate.setSocial(social);
-		standardTemplate.setMonetization(monetization);
-		standardTemplate.setMetadata(metadata);
-		standardTemplate.setThumbnail(null);
-		standardTemplate.setDefaultdir(new File(ApplicationData.HOME));
-	}
-
-	@SuppressWarnings("WeakerAccess")
 	@Inject
 	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final Configuration configuration, final IPersistenceService persistenceService) {
 		this.desktopUtil = desktopUtil;

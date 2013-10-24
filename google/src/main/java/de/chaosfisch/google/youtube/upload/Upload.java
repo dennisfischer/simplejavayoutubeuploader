@@ -26,33 +26,36 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Upload implements Serializable {
 
-	private static final long serialVersionUID = 6768248403657209980L;
-	private String id;
-	private File   file;
-	private String mimetype = "application/octet-stream";
-	private           String   uploadurl;
-	private           DateTime dateTimeOfStart;
 	@Deprecated
 	private transient Calendar dateOfStart;
 	@Deprecated
 	private transient Calendar dateOfRelease;
-	private           int      order;
-	private           DateTime dateTimeOfRelease;
-	private           boolean  pauseOnFinish;
-	private           String   videoid;
-	private           File     enddir;
-	private           File     thumbnail;
 
-	private Social       social;
-	private Status       status;
-	private Monetization monetization;
-	private Permissions  permissions;
-	private Metadata     metadata;
-	private Account      account;
-	private final List<Playlist> playlists = new ArrayList<>(0);
+	private static final long                           serialVersionUID = 6768248403657209980L;
+	private final        CopyOnWriteArrayList<Playlist> playlists        = new CopyOnWriteArrayList<>();
+	private              Social                         social           = new Social();
+	private              Status                         status           = new Status();
+	private              Monetization                   monetization     = new Monetization();
+	private              Permissions                    permissions      = new Permissions();
+	private              Metadata                       metadata         = new Metadata();
+	private              String                         mimetype         = "application/octet-stream";
+
+	private String   id;
+	private File     file;
+	private String   uploadurl;
+	private DateTime dateTimeOfStart;
+	private int      order;
+	private DateTime dateTimeOfRelease;
+	private boolean  pauseOnFinish;
+	private String   videoid;
+	private File     enddir;
+	private File     thumbnail;
+
+	private Account account;
 
 	public int getOrder() {
 		return order;

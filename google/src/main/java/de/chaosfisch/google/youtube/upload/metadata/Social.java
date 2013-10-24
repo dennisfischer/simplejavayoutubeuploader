@@ -14,11 +14,11 @@ import java.io.Serializable;
 
 public class Social implements Serializable {
 
-	private static final long serialVersionUID = 1996880624554193297L;
+	private static final long   serialVersionUID = 1996880624554193297L;
+	private              String message          = "";
 	private boolean facebook;
 	private boolean twitter;
 	private boolean gplus;
-	private String  message;
 	private int     version;
 
 	public boolean isFacebook() {

@@ -22,21 +22,24 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Template implements Serializable {
 	private static final long serialVersionUID = 8931231976635700898L;
+
+	private final CopyOnWriteArrayList<Playlist> playlists    = new CopyOnWriteArrayList<>();
+	private       File                           defaultdir   = new File(System.getProperty("user.home"));
+	private       Social                         social       = new Social();
+	private       Monetization                   monetization = new Monetization();
+	private       Permissions                    permissions  = new Permissions();
+	private       Metadata                       metadata     = new Metadata();
+
 	private String id;
-	private File   defaultdir;
 	private File   enddir;
 	private File   thumbnail;
 	private String name;
 
-	private Social       social;
-	private Monetization monetization;
-	private Permissions  permissions;
-	private Metadata     metadata;
-	private Account      account;
-	private final List<Playlist> playlists = new ArrayList<>(0);
+	private Account account;
 
 	public interface Validation {
 		String NAME = "NAME";
