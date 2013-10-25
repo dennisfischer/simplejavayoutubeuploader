@@ -16,7 +16,7 @@ import de.chaosfisch.uploader.cli.controller.AccountsController;
 import de.chaosfisch.uploader.cli.controller.Controller;
 import de.chaosfisch.uploader.cli.controller.UploadsController;
 
-public class CLIModule extends AbstractModule {
+class CLIModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(ICLIUtil.class).to(CLIUtil.class);

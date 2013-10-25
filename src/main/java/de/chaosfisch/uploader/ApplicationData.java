@@ -16,7 +16,6 @@ public final class ApplicationData {
 	public static final String VERSION = "3.1.0.10";
 	public static final int    RELEASE = 22;
 	public static final String BASEURL = "http://dev.chaosfisch.com/nightly/jupidator/update.xml";
-	public static final String HOME;
 	public static final String DATA_DIR;
 
 	static {
@@ -25,8 +24,7 @@ public final class ApplicationData {
 			userHome += "/Library/Application Support/";
 		}
 		System.setProperty("user.home", userHome);
-		HOME = System.getProperty("user.home") + '/';
-		DATA_DIR = HOME + "/SimpleJavaYoutubeUploader";
+		DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
 	}
 
 	private ApplicationData() {

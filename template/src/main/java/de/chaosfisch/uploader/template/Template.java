@@ -27,12 +27,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Template implements Serializable {
 	private static final long serialVersionUID = 8931231976635700898L;
 
-	private final CopyOnWriteArrayList<Playlist> playlists    = new CopyOnWriteArrayList<>();
-	private       File                           defaultdir   = new File(System.getProperty("user.home"));
-	private       Social                         social       = new Social();
-	private       Monetization                   monetization = new Monetization();
-	private       Permissions                    permissions  = new Permissions();
-	private       Metadata                       metadata     = new Metadata();
+	private final List<Playlist> playlists    = new CopyOnWriteArrayList<>();
+	private       File           defaultdir   = new File(System.getProperty("user.home"));
+	private       Social         social       = new Social();
+	private       Monetization   monetization = new Monetization();
+	private       Permissions    permissions  = new Permissions();
+	private       Metadata       metadata     = new Metadata();
 
 	private String id;
 	private File   enddir;

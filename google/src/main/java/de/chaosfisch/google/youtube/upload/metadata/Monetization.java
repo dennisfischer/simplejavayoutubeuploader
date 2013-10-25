@@ -41,7 +41,9 @@ public class Monetization implements Serializable {
 	private String  seasonNb;
 	private String  episodeNb;
 	private boolean partner;
-	private int     version;
+
+	@Deprecated
+	private transient int version;
 
 	public boolean isInstreamDefaults() {
 		return instreamDefaults;
@@ -209,13 +211,5 @@ public class Monetization implements Serializable {
 
 	public void setPartner(final boolean partner) {
 		this.partner = partner;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 }

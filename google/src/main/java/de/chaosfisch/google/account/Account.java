@@ -16,6 +16,7 @@ package de.chaosfisch.google.account;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -55,7 +56,7 @@ public class Account implements Serializable {
 	}
 
 	public List<Playlist> getPlaylists() {
-		return new CopyOnWriteArrayList<>(playlists);
+		return new ArrayList<>(playlists);
 	}
 
 	public void setPlaylists(final List<Playlist> playlists) {

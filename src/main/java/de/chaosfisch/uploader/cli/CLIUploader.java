@@ -20,7 +20,6 @@ import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.uploader.ApplicationData;
-import de.chaosfisch.uploader.DBConverter;
 import de.chaosfisch.uploader.UploaderModule;
 import de.chaosfisch.uploader.cli.controller.Controller;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
@@ -117,8 +116,7 @@ public final class CLIUploader {
 	}
 
 	private void updateDatabase() {
-		if (15 > configuration.getInt("version", 0)) {
-			injector.getInstance(DBConverter.class).run();
+		if (23 > configuration.getInt("version", 0)) {
 			configuration.setProperty("version", ApplicationData.RELEASE);
 		}
 	}

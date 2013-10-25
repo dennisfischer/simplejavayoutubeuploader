@@ -19,7 +19,9 @@ public class Social implements Serializable {
 	private boolean facebook;
 	private boolean twitter;
 	private boolean gplus;
-	private int     version;
+
+	@Deprecated
+	private transient int version;
 
 	public boolean isFacebook() {
 		return facebook;
@@ -43,14 +45,6 @@ public class Social implements Serializable {
 
 	public void setMessage(final String message) {
 		this.message = message;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 
 	public boolean isGplus() {

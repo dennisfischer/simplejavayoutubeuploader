@@ -24,7 +24,9 @@ public class Permissions implements Serializable {
 
 	private boolean ageRestricted;
 	private boolean publicStatsViewable;
-	private int     version;
+
+	@Deprecated
+	private transient int version;
 
 	public Comment getComment() {
 		return comment;
@@ -64,14 +66,6 @@ public class Permissions implements Serializable {
 
 	public void setVisibility(final Visibility visibility) {
 		this.visibility = visibility;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 
 	public boolean isAgeRestricted() {

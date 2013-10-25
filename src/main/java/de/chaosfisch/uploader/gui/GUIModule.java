@@ -16,7 +16,7 @@ import de.chaosfisch.uploader.gui.controller.UploadController;
 import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import javafx.stage.FileChooser;
 
-public class GUIModule extends AbstractModule {
+class GUIModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(FileChooser.class).in(Singleton.class);

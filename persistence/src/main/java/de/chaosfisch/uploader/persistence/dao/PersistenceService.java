@@ -40,6 +40,7 @@ import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,8 +56,8 @@ class PersistenceService implements IPersistenceService {
 	private final IUploadDao   uploadDao;
 	private final String       storage;
 
-	private int version;
-	private Data data = new Data();
+	private AtomicInteger version = new AtomicInteger();
+	private Data          data    = new Data();
 	private String masterPassword;
 	private final Serializer<File> fileSerializer = new Serializer<File>() {
 		@Override
@@ -84,7 +85,7 @@ class PersistenceService implements IPersistenceService {
 		}
 	};
 
-	private ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>() {
+	private final ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>() {
 		@Override
 		protected Kryo initialValue() {
 			final Kryo kryo = new Kryo();
@@ -126,7 +127,7 @@ class PersistenceService implements IPersistenceService {
 		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				final File storageFile = new File(storage + String.format("/data-%07d.data", ++version));
+				final File storageFile = new File(storage + String.format("/data-%07d.data", version.incrementAndGet()));
 				try (final Output output = new Output(new FileOutputStream(storageFile))) {
 
 					if (null == masterPassword) {
@@ -241,7 +242,7 @@ class PersistenceService implements IPersistenceService {
 		final File storageFile = list.get(list.size() - 1);
 		final Matcher matcher = STORAGE_PATTERN.matcher(storageFile.getAbsolutePath());
 		if (matcher.find()) {
-			version = Integer.parseInt(matcher.group(1));
+			version.set(Integer.parseInt(matcher.group(1)));
 		}
 
 		if (cleanup) {

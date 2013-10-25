@@ -23,7 +23,9 @@ public class Metadata implements Serializable {
 	private String title;
 	private String description;
 	private String keywords;
-	private int    version;
+
+	@Deprecated
+	private transient int version;
 
 	public Metadata() {
 		this("", Category.ANIMALS, "", "");
@@ -106,13 +108,5 @@ public class Metadata implements Serializable {
 
 	void setLicense(final License license) {
 		this.license = license;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 }
