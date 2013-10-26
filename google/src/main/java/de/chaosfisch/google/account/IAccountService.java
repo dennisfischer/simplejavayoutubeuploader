@@ -42,5 +42,5 @@ public interface IAccountService {
 	 */
 	boolean verifyAccount(final Account account);
 
-	String getRefreshToken(final String code) throws AuthenticationIOException;
+	String getRefreshToken(final String code) throws AuthenticationException;
 }

@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -156,7 +157,7 @@ public class AbstractMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) {
+	public void activateBrowserfeatures(final Upload upload) throws UnirestException {
 
 		// Create a local instance of cookie store
 		// Populate cookies if needed

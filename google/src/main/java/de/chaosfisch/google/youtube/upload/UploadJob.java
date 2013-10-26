@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.youtube.upload.events.UploadJobProgressEvent;
@@ -171,11 +172,10 @@ public class UploadJob implements Callable<Upload> {
 	}
 
 	private RetryRunnable metadata() {
-
 		return new RetryRunnable() {
 
 			@Override
-			public void run(final RetryContext retryContext) throws IOException, MetaBadRequestException {
+			public void run(final RetryContext retryContext) throws IOException, MetaBadRequestException, UnirestException {
 				fileSize = fileToUpload.length();
 				totalBytesUploaded = 0;
 				start = 0;
@@ -195,10 +195,11 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, IOException {
+	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, UnirestException, IOException {
 		// Upload atomData and fetch uploadUrl
 		final String atomData = metadataService.atomBuilder(upload);
-		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
+		final HttpResponse<String> response;
+		response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
 				.header("GData-Version", GDATAConfig.GDATA_V2)
 				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
@@ -234,7 +235,7 @@ public class UploadJob implements Callable<Upload> {
 		return new RetryRunnable() {
 
 			@Override
-			public void run(final RetryContext retryContext) throws IOException, UploadResponseException, UploadFinishedException {
+			public void run(final RetryContext retryContext) throws IOException, UploadResponseException, UploadFinishedException, UnirestException {
 				if (null != upload.getUploadurl() || null != retryContext.getLastThrowable()) {
 					if (0 < retryContext.getRetryCount()) {
 						LOGGER.info("############ RETRY " + retryContext.getRetryCount() + " ############");
@@ -315,7 +316,7 @@ public class UploadJob implements Callable<Upload> {
 		}
 	}
 
-	private void resumeinfo() throws UploadFinishedException, UploadResponseException, IOException {
+	private void resumeinfo() throws UploadFinishedException, UploadResponseException, UnirestException, IOException {
 		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
 				.header("GData-Version", GDATAConfig.GDATA_V2)
 				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)

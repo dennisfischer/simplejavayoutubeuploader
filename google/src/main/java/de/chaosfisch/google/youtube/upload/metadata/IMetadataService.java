@@ -10,6 +10,7 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.upload.Upload;
 
@@ -18,5 +19,5 @@ public interface IMetadataService {
 
 	void updateMetaData(String atomData, String videoId, Account account) throws MetaBadRequestException, MetaIOException;
 
-	void activateBrowserfeatures(Upload upload);
+	void activateBrowserfeatures(Upload upload) throws UnirestException;
 }

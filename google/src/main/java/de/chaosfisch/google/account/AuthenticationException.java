@@ -10,16 +10,14 @@
 
 package de.chaosfisch.google.account;
 
-import java.io.IOException;
-
-class AuthenticationIOException extends IOException {
+class AuthenticationException extends Exception {
 	private static final long serialVersionUID = -5334150826953275047L;
 
-	public AuthenticationIOException(final Exception e) {
+	public AuthenticationException(final Exception e) {
 		super(e);
 	}
 
-	public AuthenticationIOException(final String msg) {
+	public AuthenticationException(final String msg) {
 		super(msg);
 	}
 }

@@ -13,11 +13,11 @@ package de.chaosfisch.google.account;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.GDATAConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class AbstractAccountService implements IAccountService {
@@ -28,18 +28,18 @@ public abstract class AbstractAccountService implements IAccountService {
 	private static final String                  TOKEN_TEST_URL    = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
 	private static final Logger                  LOGGER            = LoggerFactory.getLogger(AbstractAccountService.class);
 
-	private Token getAuthToken(final Account account) throws AuthenticationIOException {
+	private Token getAuthToken(final Account account) throws AuthenticationException {
 		return getAuthToken(account, false);
 	}
 
-	private Token getAuthToken(final Account account, final boolean uncached) throws AuthenticationIOException {
+	private Token getAuthToken(final Account account, final boolean uncached) throws AuthenticationException {
 		if (uncached || !authtokens.containsKey(account) || !authtokens.get(account).isValid()) {
 			authtokens.put(account, _receiveToken(account));
 		}
 		return authtokens.get(account);
 	}
 
-	private Token _receiveToken(final Account account) throws AuthenticationIOException {
+	private Token _receiveToken(final Account account) throws AuthenticationException {
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
@@ -56,7 +56,7 @@ public abstract class AbstractAccountService implements IAccountService {
 					.getObject()
 					.getInt("expires_in"));
 		} catch (final Exception e) {
-			throw new AuthenticationIOException(e);
+			throw new AuthenticationException(e);
 		}
 	}
 
@@ -71,7 +71,7 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public String getRefreshToken(final String code) throws AuthenticationIOException {
+	public String getRefreshToken(final String code) throws AuthenticationException {
 
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
@@ -89,7 +89,7 @@ public abstract class AbstractAccountService implements IAccountService {
 
 			return response.getBody().getObject().getString("refresh_token");
 		} catch (Exception e) {
-			throw new AuthenticationIOException(e);
+			throw new AuthenticationException(e);
 		}
 	}
 
@@ -99,19 +99,19 @@ public abstract class AbstractAccountService implements IAccountService {
 			getAuthToken(account, true);
 			_testExtended(account);
 			return true;
-		} catch (IOException e) {
+		} catch (AuthenticationException | UnirestException e) {
 			return false;
 		}
 	}
 
-	private void _testExtended(final Account account) throws AuthenticationIOException {
+	private void _testExtended(final Account account) throws AuthenticationException, UnirestException {
 		final HttpResponse<String> response = Unirest.get(TOKEN_TEST_URL)
 				.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
 				.header("Authorization", getAuthentication(account).getHeader())
 				.asString();
 
 		if (SC_OK != response.getCode()) {
-			throw new AuthenticationIOException(String.format("Code %d during token test;\n%s", response.getCode(), response
+			throw new AuthenticationException(String.format("Code %d during token test;\n%s", response.getCode(), response
 					.getBody()));
 		}
 	}
