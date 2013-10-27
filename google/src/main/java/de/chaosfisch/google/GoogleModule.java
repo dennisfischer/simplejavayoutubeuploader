@@ -18,24 +18,13 @@ import com.google.api.services.youtube.YouTube;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.utils.ClientFactory;
 import de.chaosfisch.google.processors.ProcessorsModule;
 import de.chaosfisch.google.youtube.upload.IUploadJobFactory;
 
 public class GoogleModule extends AbstractModule {
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void configure() {
-
-		try {
-			ClientFactory.getAsyncHttpClient().shutdown();
-			Unirest.setAsyncHttpClient(null);
-		} catch (InterruptedException ignored) {
-
-		}
-
 		install(new FactoryModuleBuilder().build(IUploadJobFactory.class));
 		install(new ProcessorsModule());
 		bind(HttpTransport.class).toInstance(new NetHttpTransport());
