@@ -9,27 +9,13 @@
  */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = "3.1.0.10";
+version = "v3.1.0.11";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 configurations {
@@ -104,11 +90,13 @@ task copyTask(type: Copy) {
 task distribute(type: Zip) {
     new File("$buildDir/SimpleJavaYoutubeUploader.vmoptions").createNewFile()
     baseName 'simple-java-youtube-uploader'
-    from(jar)
-    from("$buildDir/launch4j")
-    from("$buildDir/SimpleJavaYoutubeUploader.vmoptions")
-    into("lib") {
-        from(project.configurations.runtime)
+    into(version) {
+        from(jar)
+        from("$buildDir/launch4j")
+        from("$buildDir/SimpleJavaYoutubeUploader.vmoptions")
+        into("lib") {
+            from(project.configurations.runtime)
+        }
     }
 }
 

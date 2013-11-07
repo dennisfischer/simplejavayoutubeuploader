@@ -9,6 +9,4 @@
  */
 
 
-
-
 include 'persistence', 'google', 'util', 'template'

@@ -56,8 +56,8 @@ class PersistenceService implements IPersistenceService {
 	private final IUploadDao   uploadDao;
 	private final String       storage;
 
-	private AtomicInteger version = new AtomicInteger();
-	private Data          data    = new Data();
+	private final AtomicInteger version = new AtomicInteger();
+	private       Data          data    = new Data();
 	private String masterPassword;
 	private final Serializer<File> fileSerializer = new Serializer<File>() {
 		@Override
@@ -202,6 +202,9 @@ class PersistenceService implements IPersistenceService {
 
 	File getNewestBackupFile() {
 		final File backupDir = new File(storage + "/backups/");
+		if (!backupDir.isDirectory()) {
+			return null;
+		}
 		final List<File> list = Arrays.asList(backupDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(final File dir, final String name) {
@@ -223,6 +226,9 @@ class PersistenceService implements IPersistenceService {
 
 	File getStorageFile(final boolean cleanup) {
 		final File storageDir = new File(storage);
+		if (!storageDir.isDirectory()) {
+			return null;
+		}
 		final List<File> list = Arrays.asList(storageDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(final File dir, final String name) {

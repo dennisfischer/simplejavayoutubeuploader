@@ -10,6 +10,7 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -20,8 +21,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -102,7 +103,7 @@ public class AbstractMetadataService implements IMetadataService {
 						.getVisibility())));
 
 		// convert metadata with xstream
-		final XStream xStream = new XStream(new XppDriver() {
+		final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()) {
 			@Override
 			public HierarchicalStreamWriter createWriter(final Writer out) {
 				return new PrettyPrintWriter(out) {

@@ -47,7 +47,7 @@ public class UploaderModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named(IPersistenceService.PERSISTENCE_FOLDER))
-				.toInstance(ApplicationData.DATA_DIR);
+				.toInstance(String.format("%s/%s", ApplicationData.DATA_DIR, ApplicationData.VERSION));
 
 		try {
 			final String configFile = ApplicationData.DATA_DIR + "/config.properties";
