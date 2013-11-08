@@ -14,7 +14,7 @@ import de.chaosfisch.util.TextUtil;
 
 public enum ActionOnFinish {
 
-	NOTHING("queuefinishedlist.donothing"), CLOSE("queuefinishedlist.closeapplication"), SHUTDOWN("queuefinishedlist.shutdown"), SLEEP("queuefinishedlist.hibernate"), CUSTOM("queuefinishedlist.custom");
+	NOTHING("queuefinishedlist.donothing"), CLOSE("queuefinishedlist.closeapplication"), SHUTDOWN("queuefinishedlist.shutdown"), SLEEP("queuefinishedlist.hibernate"), CLEAR("queuefinishedlist.clear"), CUSTOM("queuefinishedlist.custom");
 
 	private final String i18n;
 	private String command = "";

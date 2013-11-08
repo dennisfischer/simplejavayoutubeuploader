@@ -220,6 +220,10 @@ public class QueueCommandController {
 				logger.info("Custom command: {}", action.getCommand());
 				computerUtil.customCommand(action.getCommand());
 				break;
+			case CLEAR:
+				logger.info("Clearing queue");
+				clearQueue(null);
+				break;
 		}
 	}
 }

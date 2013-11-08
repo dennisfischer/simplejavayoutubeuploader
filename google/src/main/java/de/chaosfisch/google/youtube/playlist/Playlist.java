@@ -37,7 +37,7 @@ public class Playlist implements Serializable {
 		String TITLE_SIZE = "TITLE_SIZE";
 		String ACCOUNT    = "ACCOUNT";
 
-		int TITLE_MAX_LENGTH = 60;
+		int TITLE_MAX_LENGTH = 150;
 	}
 
 	private Playlist() {
