@@ -90,9 +90,6 @@ public class ViewController {
 	private MenuItem menuOpen;
 
 	@FXML
-	private MenuItem migrateDatabase;
-
-	@FXML
 	private MenuItem openDocumentation;
 
 	@FXML
@@ -186,14 +183,7 @@ public class ViewController {
 	@FXML
 	public void menuExportBackup(final ActionEvent actionEvent) {
 		persistenceService.generateBackup();
-		desktopUtil.openDirectory(ApplicationData.DATA_DIR + "/backups");
-	}
-
-	@FXML
-	void migrateDatabase(final ActionEvent event) {
-		configuration.setProperty("version", 0);
-
-		dialogHelper.showErrorDialog(resources.getString("dialog.migratedatabase.title"), resources.getString("dialog.migratedatabase.text"));
+		desktopUtil.openDirectory(String.format("%s/%s/backups", ApplicationData.DATA_DIR, ApplicationData.VERSION));
 	}
 
 	@FXML
@@ -270,7 +260,6 @@ public class ViewController {
 		assert null != menuImportBackup : "fx:id=\"menuImportBackup\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuExportBackup : "fx:id=\"menuExportBackup\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != menuOpen : "fx:id=\"menuOpen\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
-		assert null != migrateDatabase : "fx:id=\"migrateDatabase\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openDocumentation : "fx:id=\"openDocumentation\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openFAQ : "fx:id=\"openFAQ\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
 		assert null != openLogs : "fx:id=\"openLogs\" was not injected: check your FXML file 'SimpleJavaYoutubeUploader.fxml'.";
@@ -343,7 +332,6 @@ public class ViewController {
 			 InputStream addTemplateStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/page_add.png");
 			 InputStream closeStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/cancel.png");
 			 InputStream openStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/folder_explore.png");
-			 InputStream databaseStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/database_refresh.png");
 			 InputStream documentationStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/book.png");
 			 InputStream faqStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/help.png");
 			 InputStream logsStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/report.png")
@@ -353,7 +341,6 @@ public class ViewController {
 			menuAddTemplate.setGraphic(new ImageView(new Image(addTemplateStream)));
 			menuClose.setGraphic(new ImageView(new Image(closeStream)));
 			menuOpen.setGraphic(new ImageView(new Image(openStream)));
-			migrateDatabase.setGraphic(new ImageView(new Image(databaseStream)));
 			openDocumentation.setGraphic(new ImageView(new Image(documentationStream)));
 			openFAQ.setGraphic(new ImageView(new Image(faqStream)));
 			openLogs.setGraphic(new ImageView(new Image(logsStream)));

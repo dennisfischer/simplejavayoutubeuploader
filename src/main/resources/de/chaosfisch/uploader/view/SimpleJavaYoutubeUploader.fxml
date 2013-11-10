@@ -54,8 +54,6 @@
                               text="%menu.addPlaylist" fx:id="menuAddPlaylist"/>
                 </Menu>
                 <Menu mnemonicParsing="false" text="%menu.help">
-                    <MenuItem mnemonicParsing="false" onAction="#migrateDatabase" text="%menu.migratedatabase"
-                              fx:id="migrateDatabase"/>
                     <MenuItem mnemonicParsing="false" onAction="#openDocumentation" text="%menu.documentation"
                               fx:id="openDocumentation"/>
                     <MenuItem mnemonicParsing="false" onAction="#openFAQ" text="%menu.faq" fx:id="openFAQ"/>
