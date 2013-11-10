@@ -198,8 +198,7 @@ public class UploadJob implements Callable<Upload> {
 	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, UnirestException, IOException {
 		// Upload atomData and fetch uploadUrl
 		final String atomData = metadataService.atomBuilder(upload);
-		final HttpResponse<String> response;
-		response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
+		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
 				.header("GData-Version", GDATAConfig.GDATA_V2)
 				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
@@ -213,8 +212,8 @@ public class UploadJob implements Callable<Upload> {
 			throw new MetaBadRequestException(atomData, response.getCode());
 		}
 		// Check if uploadurl is available
-		if (response.getHeaders().containsKey("Location")) {
-			return response.getHeaders().get("Location");
+		if (response.getHeaders().containsKey("location")) {
+			return response.getHeaders().get("location");
 		} else {
 			throw new MetaBadRequestException("Location missing", response.getCode());
 		}
@@ -331,13 +330,13 @@ public class UploadJob implements Callable<Upload> {
 			throw new UploadResponseException(response.getCode());
 		}
 
-		if (!response.getHeaders().containsKey("Range")) {
+		if (!response.getHeaders().containsKey("range")) {
 			LOGGER.info("PUT to {} did not return Range-header.", upload.getUploadurl());
 			totalBytesUploaded = 0;
 		} else {
-			LOGGER.info("Range header is: {}", response.getHeaders().get("Range"));
+			LOGGER.info("Range header is: {}", response.getHeaders().get("range"));
 
-			final String[] parts = RANGE_HEADER_PATTERN.split(response.getHeaders().get("Range"));
+			final String[] parts = RANGE_HEADER_PATTERN.split(response.getHeaders().get("range"));
 			if (1 < parts.length) {
 				totalBytesUploaded = Long.parseLong(parts[1]) + 1;
 			} else {
@@ -348,8 +347,8 @@ public class UploadJob implements Callable<Upload> {
 			start = totalBytesUploaded;
 			LOGGER.info("Next byte to upload is {}.", start);
 		}
-		if (response.getHeaders().containsKey("Location")) {
-			upload.setUploadurl(response.getHeaders().get("Location"));
+		if (response.getHeaders().containsKey("location")) {
+			upload.setUploadurl(response.getHeaders().get("location"));
 			uploadService.update(upload);
 		}
 	}
