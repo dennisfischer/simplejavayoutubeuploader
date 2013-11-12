@@ -10,12 +10,9 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import java.io.Serializable;
+public class Social {
 
-public class Social implements Serializable {
-
-	private static final long   serialVersionUID = 1996880624554193297L;
-	private              String message          = "";
+	private String message = "";
 	private boolean facebook;
 	private boolean twitter;
 	private boolean gplus;

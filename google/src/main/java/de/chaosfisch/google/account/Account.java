@@ -15,16 +15,14 @@ package de.chaosfisch.google.account;
 
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static de.chaosfisch.google.http.PersistentCookieStore.SerializableCookie;
 
-public class Account implements Serializable {
+public class Account {
 
-	private static final long serialVersionUID = 5650306344672785865L;
 	private String id;
 	private String name;
 	private String refreshToken;

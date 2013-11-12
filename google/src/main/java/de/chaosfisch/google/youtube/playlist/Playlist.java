@@ -16,11 +16,8 @@ package de.chaosfisch.google.youtube.playlist;
 import com.google.common.base.Strings;
 import de.chaosfisch.google.account.Account;
 
-import java.io.Serializable;
+public class Playlist {
 
-public class Playlist implements Serializable {
-
-	private static final long serialVersionUID = 2910991664117922235L;
 	private String  id;
 	private String  pkey;
 	private boolean private_;

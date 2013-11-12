@@ -10,7 +10,6 @@
 
 package de.chaosfisch.google.http;
 
-import java.io.Serializable;
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
@@ -72,9 +71,7 @@ public class PersistentCookieStore implements CookieStore {
 		return store.removeAll();
 	}
 
-	public static class SerializableCookie implements Serializable {
-		private static final long serialVersionUID = -2567907871765156956L;
-
+	public static class SerializableCookie {
 		private final String  name;
 		private final String  value;
 		private final String  comment;

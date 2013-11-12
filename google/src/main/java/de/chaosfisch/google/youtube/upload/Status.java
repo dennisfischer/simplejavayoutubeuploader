@@ -10,12 +10,8 @@
 
 package de.chaosfisch.google.youtube.upload;
 
-import java.io.Serializable;
+public class Status {
 
-public class Status implements Serializable {
-
-	private static final long serialVersionUID = -6609560404674546724L;
-	private int     id;
 	private boolean aborted;
 	private boolean archived;
 	private boolean failed;
@@ -25,14 +21,8 @@ public class Status implements Serializable {
 
 	@Deprecated
 	private transient int version;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
+	@Deprecated
+	private transient int id;
 
 	public boolean isArchived() {
 		return archived;

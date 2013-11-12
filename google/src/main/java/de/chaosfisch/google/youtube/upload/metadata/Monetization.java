@@ -15,14 +15,11 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimOption;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.ClaimType;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 
-import java.io.Serializable;
-
-public class Monetization implements Serializable {
-	private static final long        serialVersionUID = -2575407439740776825L;
-	private              Syndication syndication      = Syndication.GLOBAL;
-	private              ClaimType   claimtype        = ClaimType.AUDIO_VISUAL;
-	private              ClaimOption claimoption      = ClaimOption.MONETIZE;
-	private              Asset       asset            = Asset.WEB;
+public class Monetization {
+	private Syndication syndication = Syndication.GLOBAL;
+	private ClaimType   claimtype   = ClaimType.AUDIO_VISUAL;
+	private ClaimOption claimoption = ClaimOption.MONETIZE;
+	private Asset       asset       = Asset.WEB;
 
 	private boolean instreamDefaults;
 	private boolean claim;

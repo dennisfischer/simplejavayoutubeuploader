@@ -10,17 +10,14 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import java.io.Serializable;
+public class Permissions {
 
-public class Permissions implements Serializable {
-
-	private static final long       serialVersionUID = -4202788983688840206L;
-	private              Visibility visibility       = Visibility.PUBLIC;
-	private              ThreeD     threedD          = ThreeD.DEFAULT;
-	private              Comment    comment          = Comment.ALLOWED;
-	private              boolean    commentvote      = true;
-	private              boolean    embed            = true;
-	private              boolean    rate             = true;
+	private Visibility visibility  = Visibility.PUBLIC;
+	private ThreeD     threedD     = ThreeD.DEFAULT;
+	private Comment    comment     = Comment.ALLOWED;
+	private boolean    commentvote = true;
+	private boolean    embed       = true;
+	private boolean    rate        = true;
 
 	private boolean ageRestricted;
 	private boolean publicStatsViewable;

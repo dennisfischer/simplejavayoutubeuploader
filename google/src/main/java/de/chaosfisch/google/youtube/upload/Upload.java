@@ -22,27 +22,25 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import org.joda.time.DateTime;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Upload implements Serializable {
+public class Upload {
 
 	@Deprecated
 	private transient Calendar dateOfStart;
 	@Deprecated
 	private transient Calendar dateOfRelease;
 
-	private static final long                           serialVersionUID = 6768248403657209980L;
-	private final        CopyOnWriteArrayList<Playlist> playlists        = new CopyOnWriteArrayList<>();
-	private              Social                         social           = new Social();
-	private              Status                         status           = new Status();
-	private              Monetization                   monetization     = new Monetization();
-	private              Permissions                    permissions      = new Permissions();
-	private              Metadata                       metadata         = new Metadata();
-	private              String                         mimetype         = "application/octet-stream";
+	private final CopyOnWriteArrayList<Playlist> playlists    = new CopyOnWriteArrayList<>();
+	private       Social                         social       = new Social();
+	private       Status                         status       = new Status();
+	private       Monetization                   monetization = new Monetization();
+	private       Permissions                    permissions  = new Permissions();
+	private       Metadata                       metadata     = new Metadata();
+	private       String                         mimetype     = "application/octet-stream";
 
 	private String   id;
 	private File     file;
