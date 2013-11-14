@@ -362,7 +362,7 @@ public class UploadJob implements Callable<Upload> {
 
 	String parseVideoId(final String atomData) {
 		LOGGER.info(atomData);
-		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)<\\/yt:videoid>");
+		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)</yt:videoid>");
 		final Matcher matcher = pattern.matcher(atomData);
 
 		if (matcher.find()) {
