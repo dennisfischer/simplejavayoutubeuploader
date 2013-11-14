@@ -40,20 +40,25 @@ public final class SimpleJavaYoutubeUploader {
 		loadVMOptions();
 		logVMInfo();
 
-		final Path launcherUpdatePath = Paths.get("launcher");
+		final Path launcherUpdatePath = Paths.get("")
+				.toAbsolutePath()
+				.resolve(ApplicationData.VERSION)
+				.resolve("launcher/");
+		LOGGER.info(launcherUpdatePath.toString());
 		if (Files.exists(launcherUpdatePath)) {
-			System.out.println("Launcher exists");
+			LOGGER.info("Launcher update exists");
 			final Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
 						Thread.sleep(5000);
 
-						Directories.copyDirectory(launcherUpdatePath, Paths.get("").toAbsolutePath().getParent());
+						LOGGER.info("Copying launcher");
+						Directories.copyDirectory(launcherUpdatePath, Paths.get("").toAbsolutePath());
+						LOGGER.info("Deleting existing launcher update");
 						Directories.delete(launcherUpdatePath);
-					} catch (InterruptedException ignored) {
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (InterruptedException | IOException e) {
+						LOGGER.error("Exception in updating launcher", e);
 					}
 				}
 			});
