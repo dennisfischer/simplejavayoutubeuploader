@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.gui.renderer;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import de.chaosfisch.google.account.Account;
@@ -35,7 +36,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
 import javafx.stage.StageStyle;
-import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,8 @@ public class DialogHelper {
 			public void onInput(final InputDialogController controller, final String input) {
 				try {
 					controller.input.getStyleClass().remove("input-invalid");
-					final Template template = (Template) SerializationUtils.clone(ViewController.standardTemplate);
+					final Gson gson = new Gson();
+					final Template template = gson.fromJson(gson.toJson(ViewController.standardTemplate), Template.class);
 					template.setName(input);
 					template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 					templateService.insert(template);

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="jupidator">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/jupidator.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

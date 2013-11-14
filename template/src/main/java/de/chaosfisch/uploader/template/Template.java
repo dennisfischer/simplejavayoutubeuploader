@@ -19,14 +19,11 @@ import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Template implements Serializable {
-	private static final long serialVersionUID = 8931231976635700898L;
-
+public class Template {
 	private final List<Playlist> playlists    = new CopyOnWriteArrayList<>();
 	private       File           defaultdir   = new File(System.getProperty("user.home"));
 	private       Social         social       = new Social();

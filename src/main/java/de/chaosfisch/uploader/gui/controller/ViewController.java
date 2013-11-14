@@ -37,7 +37,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,18 +108,16 @@ public class ViewController {
 	private final DesktopUtil         desktopUtil;
 	private final DialogHelper        dialogHelper;
 	private final UploadController    uploadController;
-	private final Configuration       configuration;
 	private final IPersistenceService persistenceService;
 
 	public static final  Template standardTemplate = new Template("default");
 	private static final Logger   logger           = LoggerFactory.getLogger(ViewController.class);
 
 	@Inject
-	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final Configuration configuration, final IPersistenceService persistenceService) {
+	public ViewController(final DesktopUtil desktopUtil, final DialogHelper dialogHelper, final UploadController uploadController, final IPersistenceService persistenceService) {
 		this.desktopUtil = desktopUtil;
 		this.dialogHelper = dialogHelper;
 		this.uploadController = uploadController;
-		this.configuration = configuration;
 		this.persistenceService = persistenceService;
 	}
 
