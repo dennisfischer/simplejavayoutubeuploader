@@ -20,7 +20,6 @@ import com.sun.javafx.css.StyleManager;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
-import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.UploaderModule;
 import de.chaosfisch.uploader.gui.controller.ConfirmDialogController;
 import de.chaosfisch.uploader.gui.controller.InputDialogController;
@@ -101,7 +100,6 @@ public class GUIUploader extends GuiceApplication {
 			Platform.exit();
 		} else {
 			persistenceService.cleanStorage();
-			updateDatabase();
 			Platform.setImplicitExit(false);
 			initApplication(primaryStage);
 
@@ -116,12 +114,6 @@ public class GUIUploader extends GuiceApplication {
 					dialogHelper.showAccountPermissionsDialog(account);
 				}
 			}
-		}
-	}
-
-	private void updateDatabase() {
-		if (23 > configuration.getInt("version", 0)) {
-			configuration.setProperty("version", ApplicationData.RELEASE);
 		}
 	}
 

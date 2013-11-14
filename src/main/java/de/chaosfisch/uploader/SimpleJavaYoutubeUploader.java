@@ -12,13 +12,16 @@ package de.chaosfisch.uploader;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import de.chaosfisch.uploader.cli.CLIUploader;
 import de.chaosfisch.uploader.gui.GUIUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -37,8 +40,25 @@ public final class SimpleJavaYoutubeUploader {
 		loadVMOptions();
 		logVMInfo();
 
-		new ApplicationUpdater();
+		final Path launcherUpdatePath = Paths.get("launcher");
+		if (Files.exists(launcherUpdatePath)) {
+			System.out.println("Launcher exists");
+			final Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(5000);
 
+						Directories.copyDirectory(launcherUpdatePath, Paths.get("").toAbsolutePath().getParent());
+						Directories.delete(launcherUpdatePath);
+					} catch (InterruptedException ignored) {
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			thread.start();
+		}
 		if (-1 == Arrays.binarySearch(args, COMMANDLINE_ARGUMENT)) {
 			GUIUploader.initialize(args);
 		} else {
@@ -70,7 +90,7 @@ public final class SimpleJavaYoutubeUploader {
 		}
 		try {
 			final Properties custom = new Properties();
-			custom.load(Files.newReader(file, Charsets.UTF_8));
+			custom.load(com.google.common.io.Files.newReader(file, Charsets.UTF_8));
 			for (final Map.Entry<Object, Object> entry : custom.entrySet()) {
 				if (!Strings.isNullOrEmpty(entry.getValue().toString())) {
 					System.setProperty(entry.getKey().toString(), entry.getValue().toString());

@@ -100,7 +100,6 @@ public final class CLIUploader {
 			}
 			System.exit(0);
 		} else {
-			updateDatabase();
 
 			uploadService.resetUnfinishedUploads();
 			uploadService.startStarttimeCheck();
@@ -112,12 +111,6 @@ public final class CLIUploader {
 					LOGGER.warn("Account is invalid: {}", account.getName());
 				}
 			}
-		}
-	}
-
-	private void updateDatabase() {
-		if (23 > configuration.getInt("version", 0)) {
-			configuration.setProperty("version", ApplicationData.RELEASE);
 		}
 	}
 
