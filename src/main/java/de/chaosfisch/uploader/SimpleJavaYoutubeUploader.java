@@ -17,6 +17,7 @@ import de.chaosfisch.uploader.gui.GUIUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,6 +38,7 @@ public final class SimpleJavaYoutubeUploader {
 	}
 
 	public static void main(final String[] args) {
+		Toolkit.getDefaultToolkit();
 		loadVMOptions();
 		logVMInfo();
 

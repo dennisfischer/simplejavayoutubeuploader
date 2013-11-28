@@ -256,8 +256,7 @@ public class AbstractMetadataService implements IMetadataService {
 		final Metadata metadata = upload.getMetadata();
 		final Monetization monetization = upload.getMonetization();
 		if (monetization.isClaim() && License.YOUTUBE == upload.getMetadata().getLicense()) {
-			params.put("enable_monetization", boolConverter(true));
-			params.put("monetization_style", "ads");
+			params.put("video_monetization_style", "ads");
 			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
 				params.put("enable_overlay_ads", boolConverter(monetization.isOverlay()));
 				params.put("trueview_instream", boolConverter(monetization.isTrueview()));

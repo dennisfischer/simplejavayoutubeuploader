@@ -207,6 +207,9 @@ public class UploadJob implements Callable<Upload> {
 				.body(atomData)
 				.asString();
 
+		LOGGER.info("fetchUploadUrl response code: {}", response.getCode());
+		LOGGER.info("fetchUploadUrl response headers: {}", response.getHeaders());
+		LOGGER.info("fetchUploadUrl response: {}", response.getBody());
 		// Check the response code for any problematic codes.
 		if (SC_BAD_REQUEST == response.getCode()) {
 			throw new MetaBadRequestException(atomData, response.getCode());

@@ -11,17 +11,13 @@
 
 
 
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = "v3.2.0.1";
+version = "v3.2.0.3";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 configurations {
@@ -37,6 +33,7 @@ dependencies {
             'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile project('google'), project('persistence'), project('template'), project('util')
+    compile files('libs/JNativeHook.jar')
 
     testCompile 'junit:junit:4.10'
 

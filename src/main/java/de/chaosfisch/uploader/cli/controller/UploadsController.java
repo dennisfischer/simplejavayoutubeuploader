@@ -15,9 +15,15 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.IUploadService;
 import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.youtube.upload.metadata.Category;
+import de.chaosfisch.google.youtube.upload.metadata.License;
+import de.chaosfisch.google.youtube.upload.metadata.Metadata;
 import de.chaosfisch.uploader.cli.CLIEvent;
 import de.chaosfisch.uploader.cli.ICLIUtil;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class UploadsController implements Controller {
@@ -31,6 +37,7 @@ public class UploadsController implements Controller {
 	private static final String CMD_START   = "start";
 	private static final String CMD_STOP    = "stop";
 	private static final String CMD_CLEAR   = "clear";
+	private static final String CMD_HELP    = "help";
 	private final IUploadService uploadService;
 	private final ICLIUtil       cliUtil;
 
@@ -73,20 +80,33 @@ public class UploadsController implements Controller {
 		}
 	}
 
-	private void clearUpload() {
+	private void helpAccount() {
+		cliUtil.printPrompt("Available \"accounts\" commands:");
+		//	cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_ABORT, "Aborts a running upload."));
+		//	cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_ADD, "Adds a upload."));
+		//	cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_CLEAR, "Clears list of finished uploads."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_HELP, "Shows this help document."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_LIST, "Lists all added uploads."));
+		//cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_REMOVE, "Deletes an existing account."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_START, "Starts upload queue processing."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_STOP, "Stops upload queue processing."));
+		//cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_UPDATE, "Updates an existing upload."));
+	}
 
+	private void clearUpload() {
 	}
 
 	private void stopUpload() {
-
+		uploadService.stopUploading();
+		cliUtil.printPrompt("Upload queue processing stopped!");
 	}
 
 	private void startUpload() {
-
+		uploadService.startUploading();
+		cliUtil.printPrompt("Uploading queue processing started!");
 	}
 
 	private void abortUpload() {
-
 	}
 
 	private void updateUpload() {
@@ -107,32 +127,70 @@ public class UploadsController implements Controller {
 		cliUtil.printPrompt("Existing uploads:");
 		int i = 1;
 		for (final Upload upload : uploads) {
-			cliUtil.printPrompt(String.format("\t [%d] %s", i, upload.getMetadata().getTitle()));
+			cliUtil.printPrompt(String.format("\t\t[%d]\t%s\t[%s]", i, upload.getMetadata()
+					.getTitle(), upload.getStatus().isRunning() ?
+								 "Running" :
+								 upload.getStatus().isFailed() ?
+								 "Failed" :
+								 upload.getStatus().isAborted() ?
+								 "Aborted" :
+								 upload.getStatus().isArchived() ? "Finished" : "Waiting"));
 			i++;
 		}
 	}
 
 	private void addUpload() {
-		cliUtil.printPrompt("TESTING!!!!");
+		final Upload upload = new Upload();
+		cliUtil.printPrompt("Add new account:");
 
-		final Thread thread = new Thread(new Runnable() {
-			int i;
+		final String filePath = cliUtil.promptInput("Path to video:");
+		if (!Files.exists(Paths.get(filePath))) {
+			cliUtil.printPrompt(String.format("File \"%s\" doesn't exist!", filePath));
+			return;
+		}
 
-			@Override
-			public void run() {
-				do {
+		final String title = cliUtil.promptInput("Title:");
+		final Category category = getUploadCategory();
+		final String description = getUploadDescription();
+		final String keywords = getUploadKeywords();
 
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException ignored) {
+		final Metadata metadata = new Metadata(title, category, description, keywords, License.YOUTUBE);
+		upload.setFile(new File(filePath));
+	}
 
-					}
+	private String getUploadKeywords() {
+		return cliUtil.promptInput("Keywords:");
+	}
 
-					System.out.printf("\r %d", i++);
-				} while (Thread.currentThread().isAlive());
+	public String getUploadDescription() {
+		return cliUtil.promptInput("Description:");
+	}
+
+	public Category getUploadCategory() {
+		listCategories();
+		final String number = cliUtil.promptInput("Which category should be used?");
+		try {
+			final int id = Integer.parseInt(number);
+			final Category[] categories = Category.values();
+			final int size = categories.length;
+			if (0 < id && id <= size) {
+				return categories[id - 1];
+			} else {
+				cliUtil.printPrompt("Category doesn't exist!");
 			}
-		});
-		thread.setDaemon(true);
-		thread.start();
+		} catch (NumberFormatException e) {
+			cliUtil.printPrompt(String.format("Invalid number entered: %s", number));
+		}
+
+		return null;
+	}
+
+	private void listCategories() {
+		cliUtil.printPrompt("Existing categories:");
+		int i = 1;
+		for (final Category category : Category.values()) {
+			cliUtil.printPrompt(String.format("\t [%d] %s", i, category.toString()));
+			i++;
+		}
 	}
 }

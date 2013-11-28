@@ -27,4 +27,6 @@ public interface ICLIUtil {
 	void listenToCommands();
 
 	void parseCommand(String command);
+
+	String promptInput(String msg, String defaultValue);
 }

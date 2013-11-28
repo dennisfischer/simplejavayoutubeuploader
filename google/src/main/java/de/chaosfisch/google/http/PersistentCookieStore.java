@@ -43,6 +43,7 @@ public class PersistentCookieStore implements CookieStore {
 
 	@Override
 	public void add(final URI uri, final HttpCookie cookie) {
+		store.remove(uri, cookie);
 		store.add(uri, cookie);
 	}
 
@@ -128,6 +129,11 @@ public class PersistentCookieStore implements CookieStore {
 			cookie.setSecure(secure);
 			cookie.setVersion(version);
 			return cookie;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%s: %s", name, value);
 		}
 	}
 }

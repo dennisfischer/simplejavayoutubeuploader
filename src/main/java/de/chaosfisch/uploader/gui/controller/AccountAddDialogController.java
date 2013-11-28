@@ -20,6 +20,8 @@ import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.http.PersistentCookieStore;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
@@ -29,6 +31,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
@@ -137,6 +142,23 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			final Joiner joiner = Joiner.on(" ").skipNulls();
 			final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
 			webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
+			webEngine.documentProperty().addListener(new InvalidationListener() {
+				@Override
+				public void invalidated(final Observable observable) {
+					final Document doc = webEngine.getDocument();
+
+					final Element accountList = doc.getElementById("account-list");
+
+					if (null != accountList) {
+						final NodeList accounts = accountList.getElementsByTagName("li");
+						if (null != accounts && 1 < accounts.getLength()) {
+							for (int i = 1; i < accounts.getLength(); i++) {
+								accountList.removeChild(accounts.item(i));
+							}
+						}
+					}
+				}
+			});
 		} catch (UnsupportedEncodingException ignored) {
 		}
 	}

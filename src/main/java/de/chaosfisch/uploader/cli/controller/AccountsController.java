@@ -10,23 +10,30 @@
 
 package de.chaosfisch.uploader.cli.controller;
 
+import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.uploader.cli.CLIEvent;
 import de.chaosfisch.uploader.cli.ICLIUtil;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class AccountsController implements Controller {
 
 	private static final String CMD_ACCOUNTS = "accounts";
 	private static final String CMD_ADD      = "add";
-	private static final String CMD_UPDATE   = "update";
 	private static final String CMD_LIST     = "list";
 	private static final String CMD_REMOVE   = "remove";
+	private static final String CMD_HELP     = "help";
 	private final IAccountService accountService;
 	private final ICLIUtil        cliUtil;
 
@@ -50,15 +57,19 @@ public class AccountsController implements Controller {
 				case CMD_REMOVE:
 					removeAccount();
 					break;
-				case CMD_UPDATE:
-					updateAccount();
+				case CMD_HELP:
+					helpAccount();
 					break;
 			}
 		}
 	}
 
-	private void updateAccount() {
-		//To change body of created methods use File | Settings | File Templates.
+	private void helpAccount() {
+		cliUtil.printPrompt("Available \"accounts\" commands:");
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_ADD, "Adds one or more accounts."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_HELP, "Shows this help document."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_LIST, "Lists all added accounts."));
+		cliUtil.printPrompt(String.format("\t\t%s:\t\t %s", CMD_REMOVE, "Deletes one existing account."));
 	}
 
 	private void removeAccount() {
@@ -79,7 +90,26 @@ public class AccountsController implements Controller {
 	}
 
 	private void addAccount() {
-		//To change body of created methods use File | Settings | File Templates.
+		final String path = cliUtil.promptInput("Enter path to account file:");
+		final File file = new File(path);
+
+		try {
+			importAccounts(file);
+		} catch (FileNotFoundException e) {
+			cliUtil.printPrompt(String.format("File \"%s\" doesn't exist!", file.getAbsolutePath()));
+		}
+	}
+
+	private void importAccounts(final File accountFile) throws FileNotFoundException {
+		final Gson gson = new Gson();
+		final Type listAccountType = new TypeToken<List<Account>>() {
+		}.getType();
+		final List<Account> accounts = gson.fromJson(Files.newReader(accountFile, Charsets.UTF_8), listAccountType);
+
+		for (final Account account : accounts) {
+			accountService.insert(account);
+			cliUtil.printInfo(String.format("Added %s", account.getName()));
+		}
 	}
 
 	private void listAccounts() {

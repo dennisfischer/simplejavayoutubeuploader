@@ -67,6 +67,14 @@ public class CLIUtil implements ICLIUtil {
 	}
 
 	@Override
+	public String promptInput(final String msg, final String defaultValue) {
+		printPrompt(msg);
+		printInput();
+		final String command = readCommand();
+		return command.isEmpty() ? defaultValue : command;
+	}
+
+	@Override
 	public void listenToCommands() {
 		printInput();
 		parseCommand(readCommand());

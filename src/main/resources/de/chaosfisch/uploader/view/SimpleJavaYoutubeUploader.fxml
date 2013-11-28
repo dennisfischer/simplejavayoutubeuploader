@@ -20,9 +20,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0"
-            prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.gui.controller.ViewController">
+<AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="1000.0" prefHeight="-1.0" prefWidth="-1.0"
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
+            fx:controller="de.chaosfisch.uploader.gui.controller.ViewController">
     <GridPane id="grid_pane" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -63,21 +63,17 @@
                     <Insets left="10.0"/>
                 </StackPane.margin>
             </MenuBar>
-            <Label fx:id="title" text="%application.title" styleClass="whiteTextFill"/>
-            <Button id="closeDialogButton" styleClass="imageButton"
-                    StackPane.alignment="CENTER_RIGHT"
-                    onAction="#closeControlAction"/>
-
-            <Button id="maximizeDialogButton" styleClass="imageButton" StackPane.alignment="CENTER_RIGHT"
-                    onAction="#maximizeControlAction">
-
+            <Label fx:id="title" styleClass="whiteTextFill" text="%application.title"/>
+            <Button id="closeDialogButton" onAction="#closeControlAction" styleClass="imageButton"
+                    StackPane.alignment="CENTER_RIGHT"/>
+            <Button id="maximizeDialogButton" onAction="#maximizeControlAction" styleClass="imageButton"
+                    StackPane.alignment="CENTER_RIGHT">
                 <StackPane.margin>
                     <Insets right="20.0"/>
                 </StackPane.margin>
             </Button>
-            <Button id="minimizeDialogButton" styleClass="imageButton" StackPane.alignment="CENTER_RIGHT"
-                    onAction="#minimizeControlAction">
-
+            <Button id="minimizeDialogButton" onAction="#minimizeControlAction" styleClass="imageButton"
+                    StackPane.alignment="CENTER_RIGHT">
                 <StackPane.margin>
                     <Insets right="40.0"/>
                 </StackPane.margin>
@@ -114,8 +110,7 @@
         </AnchorPane>
         <StackPane id="StackPane" minHeight="24.0" styleClass="menu-bar" GridPane.columnIndex="0"
                    GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-            <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" spacing="10.0"
-                  StackPane.alignment="CENTER_RIGHT">
+            <HBox id="HBox" alignment="CENTER" maxWidth="-Infinity" spacing="10.0" StackPane.alignment="CENTER_RIGHT">
                 <Label fx:id="busyProgressLabel" alignment="CENTER_RIGHT" styleClass="whiteTextFill">
                     <labelFor>
                         <ProgressBar fx:id="busyProgressBar" prefWidth="-1.0" progress="0.0"/>
@@ -126,6 +121,8 @@
                     <Image url="@../resources/images/resize_control.png"/>
                 </ImageView>
             </HBox>
+            <ToggleButton fx:id="serverModeToggle" alignment="CENTER_LEFT" mnemonicParsing="false"
+                          styleClass="serverModeToggle" text="" textAlignment="LEFT" StackPane.alignment="CENTER_LEFT"/>
         </StackPane>
     </GridPane>
 </AnchorPane>

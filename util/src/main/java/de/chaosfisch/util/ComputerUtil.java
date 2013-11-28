@@ -42,7 +42,18 @@ public final class ComputerUtil {
 		} catch (final IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		System.exit(0);
+		final Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(30000);
+				} catch (InterruptedException ignored) {
+				}
+				System.exit(0);
+			}
+		}, "Exitmanager");
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	/** Sends this system to shutdown mode */

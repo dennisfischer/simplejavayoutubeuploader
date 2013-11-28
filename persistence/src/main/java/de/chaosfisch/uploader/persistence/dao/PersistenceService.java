@@ -354,7 +354,12 @@ class PersistenceService implements IPersistenceService {
 
 		for (final Upload upload : uploads) {
 			if (null != upload.getAccount()) {
-				upload.setAccount(accountDao.getAccounts().get(accountDao.getAccounts().indexOf(upload.getAccount())));
+				if (accountDao.getAccounts().contains(upload.getAccount())) {
+					upload.setAccount(accountDao.getAccounts()
+							.get(accountDao.getAccounts().indexOf(upload.getAccount())));
+				} else {
+					upload.setAccount(null);
+				}
 			}
 			for (final Playlist playlist : data.playlists) {
 				if (upload.getPlaylists().contains(playlist)) {
@@ -370,8 +375,12 @@ class PersistenceService implements IPersistenceService {
 		final List<Template> templates = data.templates;
 		for (final Template template : templates) {
 			if (null != template.getAccount()) {
-				template.setAccount(accountDao.getAccounts()
-						.get(accountDao.getAccounts().indexOf(template.getAccount())));
+				if (accountDao.getAccounts().contains(template.getAccount())) {
+					template.setAccount(accountDao.getAccounts()
+							.get(accountDao.getAccounts().indexOf(template.getAccount())));
+				} else {
+					template.setAccount(null);
+				}
 			}
 			for (final Playlist playlist : data.playlists) {
 				if (template.getPlaylists().contains(playlist)) {
