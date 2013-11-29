@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.sun.webpane.webkit.dom.HTMLAnchorElementImpl;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -147,13 +148,16 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 				public void invalidated(final Observable observable) {
 					final Document doc = webEngine.getDocument();
 
-					final Element accountList = doc.getElementById("account-list");
+					if (null != doc) {
+						final Element accountList = doc.getElementById("account-list");
 
-					if (null != accountList) {
-						final NodeList accounts = accountList.getElementsByTagName("li");
-						if (null != accounts && 1 < accounts.getLength()) {
-							for (int i = 1; i < accounts.getLength(); i++) {
-								accountList.removeChild(accounts.item(i));
+						if (null != accountList) {
+							final NodeList accounts = accountList.getElementsByTagName("li");
+							if (null != accounts && 1 < accounts.getLength()) {
+								final HTMLAnchorElementImpl button = (HTMLAnchorElementImpl) accounts.item(0)
+										.getChildNodes()
+										.item(1);
+								webEngine.load(button.getHref());
 							}
 						}
 					}
