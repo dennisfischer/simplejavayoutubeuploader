@@ -41,7 +41,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
         </padding>
         <rowConstraints>
-            <RowConstraints maxHeight="-1.0" minHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-1.0" minHeight="200.0" vgrow="SOMETIMES"/>
         </rowConstraints>
         <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0"
                    GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">

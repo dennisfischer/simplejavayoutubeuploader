@@ -16,11 +16,13 @@ import com.google.inject.Inject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.sun.webpane.webkit.dom.HTMLButtonElementImpl;
 import com.sun.webpane.webkit.dom.HTMLInputElementImpl;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.http.PersistentCookieStore;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
@@ -30,8 +32,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
@@ -44,10 +44,6 @@ import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageBuilder;
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -93,17 +89,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private ProgressIndicator loading;
 
 	private final IAccountService accountService;
-	private final WebView webView = new WebView();
-	private int selectedOption;
-
-	{
-		final Scene scene = SceneBuilder.create().root(webView).build();
-		final Stage stage = StageBuilder.create().scene(scene).build();
-		stage.initStyle(StageStyle.DECORATED);
-		stage.initModality(Modality.NONE);
-		stage.requestFocus();
-		stage.show();
-	}
+	private final WebView webView        = new WebView();
+	private       int     selectedOption = -1;
+	private boolean initialized;
 
 	@FXML
 	void onLogin(final ActionEvent event) {
@@ -116,25 +104,39 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		final CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
 		CookieHandler.setDefault(cmrCookieMan);
 
+		if (webView.getEngine().getLocation().contains("accounts.google.com/ServiceLoginAuth")) {
+			webView.getEngine().load("http://www.youtube.com/my_videos");
+		}
+
+		if (initialized) {
+			return;
+		}
 		webView.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 			@Override
 			public void changed(final ObservableValue<? extends Worker.State> observableValue, final Worker.State state, final Worker.State state2) {
 				LOGGER.info("Browser at {}", webView.getEngine().getLocation());
 
 				if (Worker.State.SUCCEEDED == state2) {
+					step1.setVisible(false);
+					loading.setVisible(true);
+
 					final String location = webView.getEngine().getLocation();
-					if (location.contains("accounts.google.com/ServiceLogin?")) {
-						handleStep1();
-					} else if (location.contains("accounts.google.com/ServiceLoginAuth")) {
+					if (location.contains("accounts.google.com/ServiceLoginAuth")) {
 						loading.setVisible(false);
 						step1.setVisible(true);
+					} else if (location.contains("accounts.google.com/ServiceLogin")) {
+						handleStep1();
 					} else if (location.contains("accounts.google.com/SecondFactor")) {
 						loading.setVisible(false);
 						step2.setVisible(true);
 					} else if (location.contains("youtube.com/my_videos")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
-					} else if (location.contains("youtube.com/channel_switcher")) {
+					} else if (location.contains("youtube.com/channel_switcher") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
 						handleStep3();
+					} else if (location.contains("accounts.google.com/o/oauth2/auth")) {
+						handleStep4();
+					} else if (location.contains("youtube.com/signin?action_prompt_identity=true")) {
+						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
 					} else if (location.endsWith("youtube.com/")) {
 						copyCookies = new ArrayList<>(persistentCookieStore.getSerializeableCookies());
 						persistentCookieStore.removeAll();
@@ -147,8 +149,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		webView.getEngine().titleProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> observableValue, final String oldTitle, final String newTitle) {
-
-				System.out.println(newTitle);
 				if (null != newTitle) {
 					final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(newTitle);
 					if (matcher.matches()) {
@@ -183,6 +183,30 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		});
 
 		webView.getEngine().load("http://www.youtube.com/my_videos");
+
+		initialized = true;
+	}
+
+	private void handleStep4() {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException ignored) {
+				}
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						((HTMLButtonElementImpl) webView.getEngine()
+								.getDocument()
+								.getElementById("submit_approve_access")).click();
+					}
+				});
+			}
+		}, "Auth-Handle-Step4");
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	@FXML
@@ -201,6 +225,16 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private void handleStep3() {
 
 		final WebEngine engine = webView.getEngine();
+
+		if (-1 != selectedOption) {
+			step3.setVisible(false);
+			loading.setVisible(true);
+
+			final String secondUrl = (String) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]/li[" + (selectedOption + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+			engine.load(secondUrl);
+			return;
+		}
+
 		final int length = (int) engine.executeScript("document.getElementsByClassName(\"channel-switcher-button\").length");
 		if (1 < length) {
 			loading.setVisible(false);
@@ -244,8 +278,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	}
 
 	private void handleStep1() {
-		step1.setVisible(false);
-		loading.setVisible(true);
 		final Document document = webView.getEngine().getDocument();
 		((HTMLInputElementImpl) document.getElementById("Email")).setValue(username.getText());
 		((HTMLInputElementImpl) document.getElementById("Passwd")).setValue(password.getText());
