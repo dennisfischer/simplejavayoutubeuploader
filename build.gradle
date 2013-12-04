@@ -11,6 +11,8 @@
 
 
 
+
+
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -33,7 +35,6 @@ dependencies {
             'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
     compile project('google'), project('persistence'), project('template'), project('util')
-    compile files('libs/JNativeHook.jar')
 
     testCompile 'junit:junit:4.10'
 

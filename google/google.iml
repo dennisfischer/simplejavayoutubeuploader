@@ -26,7 +26,6 @@
     <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
     <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.1" level="project" />
     <orderEntry type="library" exported="" name="httpasyncclient-4.0-beta4" level="project" />
     <orderEntry type="module" module-name="util" exported="" />
     <orderEntry type="library" exported="" name="asyncretry" level="project" />
@@ -44,6 +43,7 @@
     <orderEntry type="library" exported="" name="httpcore-nio-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="commons-configuration-1.10" level="project" />
     <orderEntry type="library" exported="" name="unirest-java-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
   </component>
 </module>
 

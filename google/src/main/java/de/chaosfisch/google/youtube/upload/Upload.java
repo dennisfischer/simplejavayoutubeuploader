@@ -86,6 +86,9 @@ public class Upload {
 	}
 
 	public Upload(final Account account, final File file) {
+		if (null == account) {
+			throw new IllegalArgumentException(Validation.ACCOUNT);
+		}
 		setAccount(account);
 		setFile(file);
 	}
@@ -240,9 +243,6 @@ public class Upload {
 	}
 
 	public void setAccount(final Account account) {
-		if (null == account) {
-			throw new IllegalArgumentException(Validation.ACCOUNT);
-		}
 		this.account = account;
 	}
 

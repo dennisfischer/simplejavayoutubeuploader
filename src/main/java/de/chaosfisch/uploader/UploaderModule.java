@@ -25,10 +25,12 @@ import de.chaosfisch.google.enddir.EnddirServiceImpl;
 import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
+import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
 import de.chaosfisch.google.youtube.upload.Uploader;
 import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
+import de.chaosfisch.services.ExportPostProcessor;
 import de.chaosfisch.services.PlaceholderPreProcessor;
 import de.chaosfisch.uploader.persistence.PersistenceModule;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
@@ -65,6 +67,9 @@ public class UploaderModule extends AbstractModule {
 
 		final Multibinder<UploadPreProcessor> preProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPreProcessor.class);
 		preProcessorMultibinder.addBinding().to(PlaceholderPreProcessor.class);
+
+		final Multibinder<UploadPostProcessor> uploadPostProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPostProcessor.class);
+		uploadPostProcessorMultibinder.addBinding().to(ExportPostProcessor.class);
 
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 				.toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));
