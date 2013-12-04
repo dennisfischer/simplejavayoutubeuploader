@@ -32,10 +32,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -68,13 +65,22 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private URL location;
 
 	@FXML
-	private PasswordField password;
-
-	@FXML
-	private TextField username;
-
-	@FXML
 	private TextField code;
+
+	@FXML
+	private Label codeCount;
+
+	@FXML
+	private Button continueButton;
+
+	@FXML
+	private ProgressIndicator loading;
+
+	@FXML
+	private Button loginButton;
+
+	@FXML
+	private PasswordField password;
 
 	@FXML
 	private GridPane step1;
@@ -86,21 +92,37 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	private VBox step3;
 
 	@FXML
-	private ProgressIndicator loading;
+	private TextField username;
 
-	private final IAccountService accountService;
-	private final WebView webView        = new WebView();
-	private       int     selectedOption = -1;
-	private boolean initialized;
+	@Override
+	@FXML
+	public void closeDialog(final ActionEvent actionEvent) {
+		account = null;
+		super.closeDialog(actionEvent);
+	}
+
+	@FXML
+	void continueSecondFactor(final ActionEvent event) {
+		final Document document = webView.getEngine().getDocument();
+		final HTMLInputElementImpl persistentCookie = (HTMLInputElementImpl) document.getElementById("PersistentCookie");
+		if (null != persistentCookie) {
+			persistentCookie.setChecked(true);
+		}
+		((HTMLInputElementImpl) document.getElementById("smsUserPin")).setValue(code.getText());
+		((HTMLInputElementImpl) document.getElementById("smsVerifyPin")).click();
+		step2.setVisible(false);
+		loading.setVisible(true);
+	}
 
 	@FXML
 	void onLogin(final ActionEvent event) {
 		step1.setVisible(false);
 		loading.setVisible(true);
+
 		final PersistentCookieStore persistentCookieStore = new PersistentCookieStore();
-	/*	if (null != account) {
+		if (null != account) {
 			persistentCookieStore.setSerializeableCookies(account.getSerializeableCookies());
-		}   */
+		}
 		final CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
 		CookieHandler.setDefault(cmrCookieMan);
 
@@ -115,7 +137,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			@Override
 			public void changed(final ObservableValue<? extends Worker.State> observableValue, final Worker.State state, final Worker.State state2) {
 				LOGGER.info("Browser at {}", webView.getEngine().getLocation());
-
 				if (Worker.State.SUCCEEDED == state2) {
 					step1.setVisible(false);
 					loading.setVisible(true);
@@ -129,6 +150,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 					} else if (location.contains("accounts.google.com/SecondFactor")) {
 						loading.setVisible(false);
 						step2.setVisible(true);
+						codeCount.setText(String.format(resources.getString("accountDialog.code.text"), ++count));
 					} else if (location.contains("youtube.com/my_videos")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
 					} else if (location.contains("youtube.com/channel_switcher") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
@@ -153,7 +175,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 					final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(newTitle);
 					if (matcher.matches()) {
 						try {
-							final Account account = null;
 							final Account modifiedAccount = null != account ? account : new Account();
 							modifiedAccount.setRefreshToken(accountService.getRefreshToken(matcher.group(1)));
 							modifiedAccount.setSerializeableCookies(copyCookies);
@@ -172,6 +193,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 								} else {
 									accountService.insert(modifiedAccount);
 								}
+								account = null;
 								closeDialog(null);
 							}
 						} catch (Exception e) {
@@ -187,39 +209,65 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		initialized = true;
 	}
 
-	private void handleStep4() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException ignored) {
-				}
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						((HTMLButtonElementImpl) webView.getEngine()
-								.getDocument()
-								.getElementById("submit_approve_access")).click();
-					}
-				});
-			}
-		}, "Auth-Handle-Step4");
-		thread.setDaemon(true);
-		thread.start();
+	@FXML
+	void initialize() {
+		assert null != code : "fx:id=\"code\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != codeCount : "fx:id=\"codeCount\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != continueButton : "fx:id=\"continueButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != loading : "fx:id=\"loading\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != loginButton : "fx:id=\"loginButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != password : "fx:id=\"password\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step1 : "fx:id=\"step1\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step2 : "fx:id=\"step2\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step3 : "fx:id=\"step3\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != username : "fx:id=\"username\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != view : "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 	}
 
-	@FXML
-	public void continueSecondFactor(final ActionEvent actionEvent) {
-		final Document document = webView.getEngine().getDocument();
-		final HTMLInputElementImpl persistentCookie = (HTMLInputElementImpl) document.getElementById("PersistentCookie");
-		if (null != persistentCookie) {
-			persistentCookie.setChecked(true);
+	private final IAccountService accountService;
+	private final        WebView webView        = new WebView();
+	private static final int     WAIT_TIME      = 2000;
+	private              int     selectedOption = -1;
+	private boolean initialized;
+	private Account account;
+	private int     count;
+
+	@Inject
+	public AccountAddDialogController(final IAccountService accountService) {
+		this.accountService = accountService;
+	}
+
+	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
+	private static final String[] SCOPES              = {"https://www.googleapis.com/auth/youtube",
+														 "https://www.googleapis.com/auth/youtube.readonly",
+														 "https://www.googleapis.com/auth/youtube.upload",
+														 "https://www.googleapis.com/auth/youtubepartner",
+														 "https://www.googleapis.com/auth/userinfo.profile",
+														 "https://www.googleapis.com/auth/userinfo.email"};
+	private static final String   OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
+	private static final String   USERINFO_URL        = "https://www.googleapis.com/oauth2/v1/userinfo";
+	private static final Logger   LOGGER              = LoggerFactory.getLogger(AccountAddController.class);
+
+	private List<PersistentCookieStore.SerializableCookie> copyCookies;
+
+	public void initAuth(final Account account) {
+		this.account = account;
+	}
+
+	private void startOAuthFlow(final WebEngine webEngine) {
+		try {
+			final Joiner joiner = Joiner.on(" ").skipNulls();
+			final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
+			webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
+		} catch (UnsupportedEncodingException ignored) {
 		}
-		((HTMLInputElementImpl) document.getElementById("smsUserPin")).setValue(code.getText());
-		((HTMLInputElementImpl) document.getElementById("smsVerifyPin")).click();
-		step2.setVisible(false);
-		loading.setVisible(true);
+	}
+
+	private void handleStep1() {
+		final Document document = webView.getEngine().getDocument();
+		((HTMLInputElementImpl) document.getElementById("Email")).setValue(username.getText());
+		((HTMLInputElementImpl) document.getElementById("Passwd")).setValue(password.getText());
+		((HTMLInputElementImpl) document.getElementById("signIn")).click();
 	}
 
 	private void handleStep3() {
@@ -277,50 +325,25 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		}
 	}
 
-	private void handleStep1() {
-		final Document document = webView.getEngine().getDocument();
-		((HTMLInputElementImpl) document.getElementById("Email")).setValue(username.getText());
-		((HTMLInputElementImpl) document.getElementById("Passwd")).setValue(password.getText());
-		((HTMLInputElementImpl) document.getElementById("signIn")).click();
-	}
-
-	@Inject
-	public AccountAddDialogController(final IAccountService accountService) {
-		this.accountService = accountService;
-	}
-
-	@FXML
-	void initialize() {
-		assert null != password : "fx:id=\"password\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != username : "fx:id=\"username\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != view : "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step1 : "fx:id=\"step1\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step2 : "fx:id=\"step2\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step3 : "fx:id=\"step3\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-	}
-
-	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
-	private static final String[] SCOPES              = {"https://www.googleapis.com/auth/youtube",
-														 "https://www.googleapis.com/auth/youtube.readonly",
-														 "https://www.googleapis.com/auth/youtube.upload",
-														 "https://www.googleapis.com/auth/youtubepartner",
-														 "https://www.googleapis.com/auth/userinfo.profile",
-														 "https://www.googleapis.com/auth/userinfo.email"};
-	private static final String   OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
-	private static final String   USERINFO_URL        = "https://www.googleapis.com/oauth2/v1/userinfo";
-	private static final Logger   LOGGER              = LoggerFactory.getLogger(AccountAddController.class);
-
-	private List<PersistentCookieStore.SerializableCookie> copyCookies;
-
-	public void initWebView(final Account account) {
-	}
-
-	private void startOAuthFlow(final WebEngine webEngine) {
-		try {
-			final Joiner joiner = Joiner.on(" ").skipNulls();
-			final String scope = URLEncoder.encode(joiner.join(SCOPES), Charsets.UTF_8.toString());
-			webEngine.load(String.format(OAUTH_URL, scope, GDATAConfig.REDIRECT_URI, "code", GDATAConfig.CLIENT_ID));
-		} catch (UnsupportedEncodingException ignored) {
-		}
+	private void handleStep4() {
+		final Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(WAIT_TIME);
+				} catch (InterruptedException ignored) {
+				}
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						((HTMLButtonElementImpl) webView.getEngine()
+								.getDocument()
+								.getElementById("submit_approve_access")).click();
+					}
+				});
+			}
+		}, "Auth-Handle-Step4");
+		thread.setDaemon(true);
+		thread.start();
 	}
 }

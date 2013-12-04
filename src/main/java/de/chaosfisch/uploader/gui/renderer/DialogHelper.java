@@ -195,7 +195,7 @@ public class DialogHelper {
 		try {
 			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/AccountAddDialog.fxml"), resources);
 			final Parent parent = result.getRoot();
-			((AccountAddDialogController) result.getController()).initWebView(account);
+			((AccountAddDialogController) result.getController()).initAuth(account);
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
 			final Stage stage = StageBuilder.create().scene(scene).build();
@@ -203,7 +203,7 @@ public class DialogHelper {
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.requestFocus();
 			stage.showAndWait();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("Couldn't load AccountAddDialog", e);
 		}
 	}

@@ -27,7 +27,7 @@
         <RowConstraints minHeight="-1.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <StackPane id="StackPane" styleClass="menu-bar" GridPane.columnIndex="0" GridPane.rowIndex="0">
-        <Label id="title" text="YouTube Account Verification" textFill="WHITE"/>
+        <Label id="title" text="%accountDialog.title" textFill="WHITE"/>
         <Button id="closeDialogButton" onAction="#closeDialog" styleClass="imageButton"
                 StackPane.alignment="CENTER_RIGHT"/>
     </StackPane>
@@ -60,29 +60,29 @@
                 <RowConstraints maxHeight="22.0" prefHeight="22.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="21.0" prefHeight="21.0" vgrow="SOMETIMES"/>
             </rowConstraints>
-            <TextField fx:id="username" prefWidth="-1.0" promptText="Username..." GridPane.columnIndex="0"
-                       GridPane.rowIndex="0"/>
-            <PasswordField fx:id="password" prefWidth="-1.0" promptText="Password..." GridPane.columnIndex="0"
-                           GridPane.rowIndex="1"/>
-            <Button alignment="CENTER_RIGHT" cancelButton="false" contentDisplay="RIGHT" defaultButton="false"
-                    maxHeight="-1.0" maxWidth="-1.0" minWidth="-1.0" mnemonicParsing="false" onAction="#onLogin"
-                    text="Login" underline="false" wrapText="false" GridPane.columnIndex="0" GridPane.halignment="RIGHT"
-                    GridPane.rowIndex="2"/>
+            <TextField fx:id="username" prefWidth="-1.0" promptText="%accountDialog.username.promptText"
+                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <PasswordField fx:id="password" prefWidth="-1.0" promptText="%accountDialog.password.promptText"
+                           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button fx:id="loginButton" alignment="CENTER_RIGHT" cancelButton="false" contentDisplay="RIGHT"
+                    defaultButton="false" maxHeight="-1.0" maxWidth="-1.0" minWidth="-1.0" mnemonicParsing="false"
+                    onAction="#onLogin" text="%accountDialog.login.text" underline="false" wrapText="false"
+                    GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
         </GridPane>
-        <GridPane fx:id="step2" alignment="CENTER" hgap="5.0" vgap="5.0" visible="false" GridPane.columnIndex="1"
-                  GridPane.rowIndex="0">
-            <Label text="2-Step-Authentication" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <TextField fx:id="code" prefWidth="-1.0" promptText="Code..." GridPane.columnIndex="0"
-                       GridPane.rowIndex="1"/>
-            <Button id="continueSecondFactor" mnemonicParsing="false" onAction="#continueSecondFactor" text="Continue"
-                    textAlignment="LEFT" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
+        <GridPane fx:id="step2" alignment="CENTER" hgap="5.0" padding="$x1" vgap="5.0" visible="false"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label disable="false" text="%accountDialog.twoStepAuth" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="code" prefWidth="-1.0" promptText="%accountDialog.code.promptText"
+                       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Button id="continueSecondFactor" fx:id="continueButton" defaultButton="false" disable="false"
+                    mnemonicParsing="false" onAction="#continueSecondFactor" text="%accountDialog.continue.text"
+                    textAlignment="LEFT" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3"/>
+            <Label fx:id="codeCount" text="" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
             </columnConstraints>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
-            </padding>
             <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
