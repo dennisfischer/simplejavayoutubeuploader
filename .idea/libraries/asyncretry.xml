@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="asyncretry">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/google/lib/asyncretry.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

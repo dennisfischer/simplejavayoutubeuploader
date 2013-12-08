@@ -28,36 +28,36 @@ import java.util.concurrent.ScheduledExecutorService;
 
 class ThumbnailPostProcessor implements UploadPostProcessor {
 
-	private final IThumbnailService thumbnailService;
-	private static final Logger LOGGER = LoggerFactory.getLogger(ThumbnailPostProcessor.class);
+    private final IThumbnailService thumbnailService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThumbnailPostProcessor.class);
 
-	@Inject
-	public ThumbnailPostProcessor(final IThumbnailService thumbnailService) {
-		this.thumbnailService = thumbnailService;
-	}
+    @Inject
+    public ThumbnailPostProcessor(final IThumbnailService thumbnailService) {
+        this.thumbnailService = thumbnailService;
+    }
 
-	@Override
-	public Upload process(final Upload upload) {
-		if (null != upload.getThumbnail()) {
-			final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
-					.withMaxDelay(30000)
-					.withMaxRetries(10)
-					.retryOn(ThumbnailIOException.class)
-					.abortOn(FileNotFoundException.class);
-			try {
-				executor.doWithRetry(new RetryRunnable() {
-					@Override
-					public void run(final RetryContext retryContext) throws FileNotFoundException, ThumbnailIOException {
-						thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount());
-					}
-				});
-			} catch (Exception e) {
-				LOGGER.error("Thumbnail IOException", e);
-			} finally {
-				schedueler.shutdown();
-			}
-		}
-		return upload;
-	}
+    @Override
+    public Upload process(final Upload upload) {
+        if (null != upload.getThumbnail()) {
+            final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
+            final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
+                    .withMaxDelay(30000)
+                    .withMaxRetries(10)
+                    .retryOn(ThumbnailIOException.class)
+                    .abortOn(FileNotFoundException.class);
+            try {
+                executor.doWithRetry(new RetryRunnable() {
+                    @Override
+                    public void run(final RetryContext retryContext) throws FileNotFoundException, ThumbnailIOException {
+                        thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount());
+                    }
+                });
+            } catch (final Exception e) {
+                LOGGER.error("Thumbnail IOException", e);
+            } finally {
+                schedueler.shutdown();
+            }
+        }
+        return upload;
+    }
 }

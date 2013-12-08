@@ -20,31 +20,31 @@ import java.io.*;
 
 public class ThumbnailServiceImpl implements IThumbnailService {
 
-	private final YouTubeProvider youTubeProvider;
+    private final YouTubeProvider youTubeProvider;
 
-	@Inject
-	public ThumbnailServiceImpl(final YouTubeProvider youTubeProvider) {
-		this.youTubeProvider = youTubeProvider;
-	}
+    @Inject
+    public ThumbnailServiceImpl(final YouTubeProvider youTubeProvider) {
+        this.youTubeProvider = youTubeProvider;
+    }
 
-	@Override
-	public void upload(final File thumbnail, final String videoid, final Account account) throws FileNotFoundException, ThumbnailIOException {
-		if (!thumbnail.exists()) {
-			throw new FileNotFoundException(thumbnail.getName());
-		}
+    @Override
+    public void upload(final File thumbnail, final String videoid, final Account account) throws FileNotFoundException, ThumbnailIOException {
+        if (!thumbnail.exists()) {
+            throw new FileNotFoundException(thumbnail.getName());
+        }
 
-		try (InputStream inputStream = new BufferedInputStream(new FileInputStream(thumbnail))) {
+        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(thumbnail))) {
 
-			final InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
-			mediaContent.setLength(thumbnail.length());
+            final InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
+            mediaContent.setLength(thumbnail.length());
 
-			final YouTube.Thumbnails.Set upload = youTubeProvider.setAccount(account)
-					.get()
-					.thumbnails()
-					.set(videoid, mediaContent);
-			upload.execute();
-		} catch (IOException e) {
-			throw new ThumbnailIOException(e);
-		}
-	}
+            final YouTube.Thumbnails.Set upload = youTubeProvider.setAccount(account)
+                    .get()
+                    .thumbnails()
+                    .set(videoid, mediaContent);
+            upload.execute();
+        } catch (final IOException e) {
+            throw new ThumbnailIOException(e);
+        }
+    }
 }

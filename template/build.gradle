@@ -8,10 +8,7 @@
  * Contributors: Dennis Fischer
  */
 
-
 apply plugin: 'java'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
@@ -20,4 +17,9 @@ repositories {
 
 dependencies {
     compile project(':google')
+}
+
+compileJava {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 }

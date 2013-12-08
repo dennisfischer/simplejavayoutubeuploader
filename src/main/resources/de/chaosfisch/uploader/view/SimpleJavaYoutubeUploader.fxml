@@ -9,7 +9,6 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
-
 <?scenebuilder-classpath-element ../../../../../lib/jfxtras-labs-2.2-r1.jar?>
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
@@ -122,7 +121,8 @@
                 </ImageView>
             </HBox>
             <ToggleButton fx:id="serverModeToggle" alignment="CENTER_LEFT" mnemonicParsing="false"
-                          styleClass="serverModeToggle" text="" textAlignment="LEFT" StackPane.alignment="CENTER_LEFT"/>
+                          styleClass="serverModeToggle" text="" textAlignment="LEFT" visible="false"
+                          StackPane.alignment="CENTER_LEFT"/>
         </StackPane>
     </GridPane>
 </AnchorPane>

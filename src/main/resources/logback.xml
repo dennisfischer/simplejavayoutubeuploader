@@ -27,7 +27,7 @@
         </encoder>
         <file>${user.home}/SimpleJavaYoutubeUploader/applog.html</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${user.home}/SimpleJavaYoutubeUploader/applog.html.%i</fileNamePattern>
+            <fileNamePattern>${user.home}/SimpleJavaYoutubeUploader/applog-%i.html</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>3</maxIndex>
         </rollingPolicy>

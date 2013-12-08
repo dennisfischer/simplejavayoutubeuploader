@@ -9,7 +9,6 @@
   ~
   ~ Contributors: Dennis Fischer
   -->
-
 <?scenebuilder-classpath-element ../../../../../lib/jfxtras-labs-2.2-r1.jar?>
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <?scenebuilder-stylesheet ../resources/style.css?>
@@ -32,6 +31,7 @@
         <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-1.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
@@ -57,15 +57,19 @@
                GridPane.columnSpan="1" GridPane.rowIndex="0"/>
     <CheckBox fx:id="stopQueueOnError" mnemonicParsing="false" onAction="#toggleStopQueueOnError"
               text="%checkbox.stopQueueOnError" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5"/>
-    <Separator prefWidth="-1.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
-    <CheckBox mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="0" GridPane.columnSpan="2"
-              GridPane.rowIndex="7"/>
-    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-    <TextField prefWidth="-1.0" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
-    <TextField prefWidth="-1.0" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
-    <TextField prefWidth="-1.0" GridPane.columnIndex="2" GridPane.rowIndex="10"/>
-    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
-    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
-    <Separator orientation="VERTICAL" prefHeight="-1.0" style="" GridPane.columnIndex="0" GridPane.halignment="CENTER"
-               GridPane.rowIndex="8" GridPane.rowSpan="3" GridPane.valignment="CENTER"/>
+    <Separator prefWidth="-1.0" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
+               GridPane.rowIndex="7"/>
+    <CheckBox mnemonicParsing="false" text="CheckBox" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2"
+              GridPane.rowIndex="8"/>
+    <Label text="Label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+    <TextField prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
+    <TextField prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="10"/>
+    <TextField prefWidth="-1.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="11"/>
+    <Label text="Label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+    <Label text="Label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+    <Separator orientation="VERTICAL" prefHeight="-1.0" style="" visible="false" GridPane.columnIndex="0"
+               GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="3" GridPane.valignment="CENTER"/>
+    <CheckBox fx:id="createJsonLogfilesCheckbox" mnemonicParsing="false" onAction="#toggleJson"
+              text="%checkbox.jsonLogs" GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
+              GridPane.rowIndex="6"/>
 </GridPane>

@@ -15,11 +15,13 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.util.DateTimeTypeConverter;
+import org.apache.commons.configuration.Configuration;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,43 +31,51 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ExportPostProcessor implements UploadPostProcessor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExportPostProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportPostProcessor.class);
+    public static final String JSON_LOGFILES = "json_logfiles_export";
 
-	@Override
-	public Upload process(final Upload upload) {
-		LOGGER.info("Running export postprocessor");
-		final Gson gson = new GsonBuilder().setPrettyPrinting()
-				.addSerializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(final FieldAttributes f) {
-						return f.getDeclaringClass().isAssignableFrom(Account.class);
-					}
+    @Inject
+    private Configuration config;
 
-					@Override
-					public boolean shouldSkipClass(final Class<?> clazz) {
-						return clazz.isAssignableFrom(Account.class);
-					}
-				})
-				.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
-				.serializeNulls()
-				.create();
+    @Override
+    public Upload process(final Upload upload) {
+        if (!config.getBoolean(ExportPostProcessor.JSON_LOGFILES, false)) {
+            return upload;
+        }
 
-		try {
-			final Upload copy = gson.fromJson(gson.toJson(upload), Upload.class);
+        LOGGER.info("Running export postprocessor");
+        final Gson gson = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(final FieldAttributes f) {
+                        return f.getDeclaringClass().isAssignableFrom(Account.class);
+                    }
 
-			try {
-				Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
-				Files.write(Paths.get(String.format("%s/uploads/%s.json", ApplicationData.DATA_DIR, copy.getVideoid())), gson
-						.toJson(copy)
-						.getBytes(Charsets.UTF_8));
-			} catch (IOException e) {
-				LOGGER.warn("Couldn't write json log.", e);
-			}
-			LOGGER.info("Finished export postprocessor");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+                    @Override
+                    public boolean shouldSkipClass(final Class<?> clazz) {
+                        return clazz.isAssignableFrom(Account.class);
+                    }
+                })
+                .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
+                .serializeNulls()
+                .create();
 
-		return upload;
-	}
+        try {
+            final Upload copy = gson.fromJson(gson.toJson(upload), Upload.class);
+
+            try {
+                Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
+                Files.write(Paths.get(String.format("%s/uploads/%s.json", ApplicationData.DATA_DIR, copy.getVideoid())), gson
+                        .toJson(copy)
+                        .getBytes(Charsets.UTF_8));
+            } catch (final IOException e) {
+                LOGGER.warn("Couldn't write json log.", e);
+            }
+            LOGGER.info("Finished export postprocessor");
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+
+        return upload;
+    }
 }

@@ -8,15 +8,9 @@
  * Contributors: Dennis Fischer
  */
 
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 
 repositories {
@@ -44,5 +38,7 @@ dependencies {
 compileJava {
     //add required JavaFX libs to compile classpath
     sourceSets.main.compileClasspath += configurations.providedCompile
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 }
 

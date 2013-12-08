@@ -18,61 +18,65 @@ import java.io.IOException;
 
 public final class ComputerUtil {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerUtil.class);
 
-	/** Sends this system to hibernation mode */
-	public void hibernateComputer() {
-		final String command;
-		if (PlatformUtil.isWindows()) {
-			command = "rundll32 powrprof.dll,SetSuspendState";
-		} else if (PlatformUtil.isLinux()) {
-			command = "pm-hibernate";
-		} else if (PlatformUtil.isMac()) {
-			command = "osascript -e 'tell application \"Finder\" to sleep'";
-		} else {
-			return;
-		}
+    /**
+     * Sends this system to hibernation mode
+     */
+    public void hibernateComputer() {
+        final String command;
+        if (PlatformUtil.isWindows()) {
+            command = "rundll32 powrprof.dll,SetSuspendState";
+        } else if (PlatformUtil.isLinux()) {
+            command = "pm-hibernate";
+        } else if (PlatformUtil.isMac()) {
+            command = "osascript -e 'tell application \"Finder\" to sleep'";
+        } else {
+            return;
+        }
 
-		execute(command);
-	}
+        execute(command);
+    }
 
-	private void execute(final String command) {
-		try {
-			Runtime.getRuntime().exec(command);
-		} catch (final IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(30000);
-				} catch (InterruptedException ignored) {
-				}
-				System.exit(0);
-			}
-		}, "Exitmanager");
-		thread.setDaemon(true);
-		thread.start();
-	}
+    private void execute(final String command) {
+        try {
+            Runtime.getRuntime().exec(command);
+        } catch (final IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        final Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(30000);
+                } catch (final InterruptedException ignored) {
+                }
+                System.exit(0);
+            }
+        }, "Exitmanager");
+        thread.setDaemon(true);
+        thread.start();
+    }
 
-	/** Sends this system to shutdown mode */
-	public void shutdownComputer() {
-		final String command;
-		if (PlatformUtil.isWindows()) {
-			command = "shutdown -t 60 -s -f";
-		} else if (PlatformUtil.isLinux()) {
-			command = "shutdown -t 60 -h -f";
-		} else if (PlatformUtil.isMac()) {
-			command = "osascript -e 'tell application\"Finder\" to shut down'";
-		} else {
-			return;
-		}
+    /**
+     * Sends this system to shutdown mode
+     */
+    public void shutdownComputer() {
+        final String command;
+        if (PlatformUtil.isWindows()) {
+            command = "shutdown -t 60 -s -f";
+        } else if (PlatformUtil.isLinux()) {
+            command = "shutdown -t 60 -h -f";
+        } else if (PlatformUtil.isMac()) {
+            command = "osascript -e 'tell application\"Finder\" to shut down'";
+        } else {
+            return;
+        }
 
-		execute(command);
-	}
+        execute(command);
+    }
 
-	public void customCommand(final String command) {
-		execute(command);
-	}
+    public void customCommand(final String command) {
+        execute(command);
+    }
 }

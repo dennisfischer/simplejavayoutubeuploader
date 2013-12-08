@@ -21,44 +21,44 @@ import java.net.URI;
 
 public final class DesktopUtil {
 
-	private static final Logger LOOGER = LoggerFactory.getLogger(DesktopUtil.class);
-	private final Desktop desktop;
+    private static final Logger LOOGER = LoggerFactory.getLogger(DesktopUtil.class);
+    private final Desktop desktop;
 
-	@Inject
-	private DesktopUtil() {
-		desktop = Desktop.getDesktop();
-	}
+    @Inject
+    private DesktopUtil() {
+        desktop = Desktop.getDesktop();
+    }
 
-	public boolean openBrowser(final String url) {
-		if (!desktop.isSupported(Desktop.Action.BROWSE)) {
-			return false;
-		}
-		try {
-			final URI address = URI.create(url);
-			desktop.browse(address);
-			return true;
-		} catch (IOException e) {
-			LOOGER.error("Browser IOException at {}", url, e);
-			return false;
-		}
-	}
+    public boolean openBrowser(final String url) {
+        if (!desktop.isSupported(Desktop.Action.BROWSE)) {
+            return false;
+        }
+        try {
+            final URI address = URI.create(url);
+            desktop.browse(address);
+            return true;
+        } catch (final IOException e) {
+            LOOGER.error("Browser IOException at {}", url, e);
+            return false;
+        }
+    }
 
-	public boolean openDirectory(final String dirString) {
-		final File dir = new File(dirString);
+    public boolean openDirectory(final String dirString) {
+        final File dir = new File(dirString);
 
-		if (!dir.isDirectory()) {
-			return false;
-		}
+        if (!dir.isDirectory()) {
+            return false;
+        }
 
-		if (!desktop.isSupported(Desktop.Action.OPEN)) {
-			return false;
-		}
-		try {
-			desktop.open(dir);
-			return true;
-		} catch (IOException e) {
-			LOOGER.error("Directory IOException at {}", dir.getAbsolutePath(), e);
-			return false;
-		}
-	}
+        if (!desktop.isSupported(Desktop.Action.OPEN)) {
+            return false;
+        }
+        try {
+            desktop.open(dir);
+            return true;
+        } catch (final IOException e) {
+            LOOGER.error("Directory IOException at {}", dir.getAbsolutePath(), e);
+            return false;
+        }
+    }
 }
