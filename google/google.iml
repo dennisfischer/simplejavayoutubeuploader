@@ -4,9 +4,9 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
@@ -44,7 +44,6 @@
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev88-1.17.0-rc" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
   </component>
 </module>
 

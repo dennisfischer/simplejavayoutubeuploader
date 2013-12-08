@@ -7,12 +7,6 @@
  *
  * Contributors: Dennis Fischer
  */
-
-
-
-
-
-
 def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
@@ -32,7 +26,7 @@ dependencies {
             'com.cathive.fx:fx-guice:+', 'com.google.guava:guava:15+',
             'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
             'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
-    compile project('google'), project('persistence'), project('template'), project('util')
+    compile project(':google'), project(':persistence'), project(':template'), project(':util')
 
     testCompile 'junit:junit:4.10'
 
@@ -51,6 +45,7 @@ compileJava {
     sourceSets.main.compileClasspath += configurations.providedCompile
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
+    getBuildDir().mkdirs()
 }
 
 jar {
@@ -86,7 +81,7 @@ task copyTask(type: Copy) {
 task distribute(type: Zip) {
     file("$buildDir/SimpleJavaYoutubeUploader.vmoptions").createNewFile()
     baseName 'simple-java-youtube-uploader'
-    from("$jar")
+    from("$jar.destinationDir$File.separator${jar.archiveName}")
     from("$buildDir/SimpleJavaYoutubeUploader.vmoptions")
     into("lib") {
         from(project.configurations.runtime)
@@ -95,3 +90,4 @@ task distribute(type: Zip) {
 
 distribute.dependsOn javaFXPackager
 javaFXPackager.dependsOn copyTask
+copyTask.dependsOn build

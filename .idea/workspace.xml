@@ -9,104 +9,53 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added upload to Json export again.&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_services_youtube_v3_rev88_1_17_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxrt.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\google_api_services_youtube_v3_rev78_1_17_0_rc.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/AbstractAccountService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/AbstractAccountService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/AccountAddDialogController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/AccountAddDialogController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/cli/controller/AccountsController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/cli/controller/AccountsController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/ComputerUtil.java" afterPath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/ComputerUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/DateTimeTypeConverter.java" afterPath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/DateTimeTypeConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/DesktopUtil.java" afterPath="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/DesktopUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/DialogHelper.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/DialogHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/EnddirPostProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/EnddirPostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/enddir/EnddirServiceImpl.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/enddir/EnddirServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExportPostProcessor.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExportPostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/ExtendedGDataPostProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/ExtendedGDataPostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/GUIUploader.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/GUIUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/MetadataUpdatePostProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/MetadataUpdatePostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/PersistenceService.java" afterPath="$PROJECT_DIR$/persistence/src/main/java/de/chaosfisch/uploader/persistence/dao/PersistenceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/PlaylistAddController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/PlaylistAddController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/PlaylistGridCell.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/PlaylistGridCell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/PlaylistPostProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/PlaylistPostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/PlaylistPreProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/PlaylistPreProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/QueueCommandController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/QueueCommandController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/QueueUploadCellRenderer.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/QueueUploadCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/SettingsController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/SettingsController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Status.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Status.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/ThumbnailPostProcessor.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/ThumbnailPostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/ThumbnailServiceImpl.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/thumbnail/ThumbnailServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/UploadController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Uploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/cli/controller/UploadsController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/cli/controller/UploadsController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/ViewController.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/ViewController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application.properties" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_de.properties" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_de.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_it.properties" afterPath="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_it.properties" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Idea v13 + Added option to toggle json file creation, cleanup.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__aopalliance_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__aopalliance_1_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__asm_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__asm_3_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__cglib_2_2_1_v20090111.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__cglib_2_2_1_v20090111.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_codec_1_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_codec_1_6.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_configuration_1_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_configuration_1_10.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_lang_2_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_lang_2_6.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_logging_1_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_logging_1_1_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__fx_guice_2_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__fx_guice_2_1_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_client_1_17_0_rc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_services_youtube_v3_rev88_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_services_youtube_v3_rev88_1_17_0_rc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_1_17_0_rc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_gson_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_gson_1_17_0_rc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__google_oauth_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_oauth_client_1_17_0_rc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__gson_2_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__gson_2_2_2.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guava_15_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guava_15_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_3_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_assistedinject_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_assistedinject_3_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_multibindings_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_multibindings_3_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__hamcrest_core_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__hamcrest_core_1_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__httpasyncclient_4_0_beta4.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpasyncclient_4_0_beta4.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__httpclient_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpclient_4_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_4_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_nio_4_3_beta2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_nio_4_3_beta2.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__httpmime_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpmime_4_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_inject_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_inject_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxtras_labs_2_2_r5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxtras_labs_2_2_r5.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__joda_time_2_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__joda_time_2_3.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__json_20090211.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__json_20090211.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__jsr305_1_3_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jsr305_1_3_9.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_4_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_4_10.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__kryo_2_22.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__kryo_2_22.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_classic_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_classic_1_0_9.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_core_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_core_1_0_9.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__slf4j_api_1_7_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__slf4j_api_1_7_5.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__unirest_java_1_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__unirest_java_1_3_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__xmlpull_1_1_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xmlpull_1_1_3_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__xpp3_min_1_1_4c.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xpp3_min_1_1_4c.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__xstream_1_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xstream_1_4_3.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/build.gradle" afterPath="$PROJECT_DIR$/google/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/build.gradle" afterPath="$PROJECT_DIR$/persistence/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/build.gradle" afterPath="$PROJECT_DIR$/template/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/build.gradle" afterPath="$PROJECT_DIR$/util/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/persistence.iml" afterPath="$PROJECT_DIR$/persistence/persistence.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/template.iml" afterPath="$PROJECT_DIR$/template/template.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/util.iml" afterPath="$PROJECT_DIR$/util/util.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\aopalliance_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__aopalliance_1_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\asm_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__asm_3_1.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\asyncretry.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__asyncretry.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\cglib_2_2_1_v20090111.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__cglib_2_2_1_v20090111.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\commons_codec_1_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_codec_1_6.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\commons_configuration_1_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_configuration_1_10.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\commons_lang_2_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_lang_2_6.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\commons_logging_1_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_logging_1_1_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\fx_guice_2_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__fx_guice_2_1_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\google_api_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_client_1_17_0_rc.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\google_http_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_1_17_0_rc.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\google_http_client_gson_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_http_client_gson_1_17_0_rc.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\google_oauth_client_1_17_0_rc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_oauth_client_1_17_0_rc.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\gson_2_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__gson_2_2_2.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\guava_15_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guava_15_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\guice_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_3_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\guice_assistedinject_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_assistedinject_3_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\guice_multibindings_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_multibindings_3_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\hamcrest_core_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__hamcrest_core_1_1.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\httpasyncclient_4_0_beta4.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpasyncclient_4_0_beta4.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\httpclient_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpclient_4_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\httpcore_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_4_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\httpcore_nio_4_3_beta2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_nio_4_3_beta2.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\httpmime_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpmime_4_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\javax_inject_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_inject_1.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\jfxtras_labs_2_2_r5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxtras_labs_2_2_r5.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\joda_time_2_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__joda_time_2_3.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\json_20090211.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__json_20090211.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\jsr305_1_3_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jsr305_1_3_9.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\junit_4_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_4_10.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\kryo_2_22.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__kryo_2_22.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\logback_classic_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_classic_1_0_9.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\logback_core_1_0_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__logback_core_1_0_9.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\slf4j_api_1_7_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__slf4j_api_1_7_5.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\unirest_java_1_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__unirest_java_1_3_0.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\xmlpull_1_1_3_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xmlpull_1_1_3_1.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\xpp3_min_1_1_4c.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xpp3_min_1_1_4c.xml" />
-      <change type="MOVED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\xstream_1_4_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__xstream_1_4_3.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -190,7 +139,17 @@
     <favorites_list name="simple-java-youtube-uploader" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="73" column="1" selection-start="2675" selection-end="2675" vertical-scroll-proportion="0.41571194" vertical-offset="851" max-vertical-offset="1530">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -224,6 +183,108 @@
         <entry key=":persistence/simplejavayoutubeuploader/" value="false" />
         <entry key="simplejavayoutubeuploader/" value="true" />
       </map>
+    </option>
+    <option name="recentTasks">
+      <list>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="distribute" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="clean" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="distZip" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="distTar" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="copyTask" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="compileTestJava" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="compileJava" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+      </list>
     </option>
     <option name="availableProjects">
       <map>
@@ -292,11 +353,6 @@
                 <option name="name" value="check" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="compileTestJava" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
                 <option name="description" value="Assembles the outputs of this project." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="assemble" />
@@ -305,11 +361,6 @@
                 <option name="description" value="Deletes the build directory." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="clean" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Generates Javadoc API documentation for the main source code." />
@@ -324,6 +375,11 @@
                 <option name="description" value="Bundles the project as a JVM application with libs and OS specific scripts." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="distZip" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes source set 'main:resources'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles a jar archive containing the main classes." />
@@ -351,14 +407,19 @@
                 <option name="name" value="classes" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Compiles source set 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="processTestResources" />
+                <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Compiles source set 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="processResources" />
+                <option name="name" value="compileTestJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes source set 'test:resources'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Creates OS specific scripts to run the project as a JVM application." />
@@ -420,12 +481,12 @@
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="description" value="Compiles source set 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/google" />
                 <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
+                <option name="description" value="Compiles source set 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/google" />
                 <option name="name" value="compileTestJava" />
               </ExternalTaskPojo>
@@ -440,12 +501,12 @@
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes source set 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/google" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Processes source set 'test:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/google" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
@@ -501,12 +562,12 @@
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="description" value="Compiles source set 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/persistence" />
                 <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
+                <option name="description" value="Compiles source set 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/persistence" />
                 <option name="name" value="compileTestJava" />
               </ExternalTaskPojo>
@@ -521,12 +582,12 @@
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes source set 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/persistence" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Processes source set 'test:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/persistence" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
@@ -582,12 +643,12 @@
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="description" value="Compiles source set 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/template" />
                 <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
+                <option name="description" value="Compiles source set 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/template" />
                 <option name="name" value="compileTestJava" />
               </ExternalTaskPojo>
@@ -602,12 +663,12 @@
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes source set 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/template" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Processes source set 'test:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/template" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
@@ -663,12 +724,12 @@
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="description" value="Compiles source set 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/util" />
                 <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
+                <option name="description" value="Compiles source set 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/util" />
                 <option name="name" value="compileTestJava" />
               </ExternalTaskPojo>
@@ -683,12 +744,12 @@
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes source set 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/util" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Processes source set 'test:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/util" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
@@ -731,7 +792,6 @@
         <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/style.css" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" />
         <option value="$PROJECT_DIR$/src/main/resources/logback.xml" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/Test.java" />
         <option value="$PROJECT_DIR$/src/main/java/Test.java" />
         <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application.properties" />
@@ -739,6 +799,7 @@
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/SettingsController.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExportPostProcessor.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -993,156 +1054,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="util" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simplejavayoutubeuploader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chaosfisch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="services" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="Problems" />
         <subPane subId="Project Files">
@@ -1216,6 +1127,128 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="template" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1227,7 +1260,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="true" />
@@ -1238,7 +1271,7 @@
     <property name="FullScreen" value="false" />
     <property name="SearchEverywhereHistory" value="" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="C:/Program Files (x86)/Oracle/JavaFX Scene Builder 1.1/JavaFX Scene Builder 1.1.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../migration-v3.2.0.0" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
@@ -1301,43 +1334,7 @@
       <recent name="org.chaosfisch" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="false" name="simplejavayoutubeuploader [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="simplejavayoutubeuploader [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="run" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Gradle.simplejavayoutubeuploader [distribute]">
     <configuration default="false" name="simplejavayoutubeuploader [distribute]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -1533,16 +1530,12 @@
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [clean]" />
-      <item index="1" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [run]" />
-      <item index="2" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [distribute]" />
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [distribute]" />
     </list>
     <recent_temporary>
-      <list size="3">
+      <list size="1">
         <item index="0" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [distribute]" />
-        <item index="1" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [run]" />
-        <item index="2" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [clean]" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
@@ -1583,7 +1576,9 @@
       <workItem from="1386403687774" duration="270000" />
       <workItem from="1386488872522" duration="489000" />
       <workItem from="1386489372644" duration="13000" />
-      <workItem from="1386489396415" duration="365000" />
+      <workItem from="1386489396415" duration="497000" />
+      <workItem from="1386492461170" duration="56000" />
+      <workItem from="1386492809901" duration="2547000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -2231,7 +2226,11 @@
       <created>1386164000494</created>
       <updated>1386164000494</updated>
     </task>
-    <option name="localTasksCounter" value="157" />
+    <task id="LOCAL-00157" summary="Idea v13 + Added option to toggle json file creation, cleanup.">
+      <created>1386489800707</created>
+      <updated>1386489800707</updated>
+    </task>
+    <option name="localTasksCounter" value="158" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers>
       <GitHub shared="false" url="">
@@ -2250,7 +2249,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3942000" />
+    <option name="totallyTimeSpent" value="6677000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -2281,21 +2280,22 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30333334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30237582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18036287" sideWeight="0.6948775" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919957" sideWeight="0.5477778" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3975501" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3034557" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32293987" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17784877" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29175946" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17784877" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31848553" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32870865" sideWeight="0.6837416" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17864583" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29805616" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16400427" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29805616" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6959911" order="2" side_tool="false" content_ui="combo" />
@@ -2304,7 +2304,6 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17769477" sideWeight="0.701559" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29175946" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.73608017" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850778" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3790497" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -2328,7 +2327,6 @@
       <TodoPanelSettings />
     </option>
     <confirmRemoveEmptyChangelist value="2" />
-    <MESSAGE value="Fixed starttime and saving bug and converted colors to hex values" />
     <MESSAGE value="Added 3D options, without LAYOUT option." />
     <MESSAGE value="v3.1.0.10 version infos" />
     <MESSAGE value="Optimized persistence. Fixed template display bug on playlist refresh." />
@@ -2353,7 +2351,8 @@
     <MESSAGE value="Rewritten authentication dialog. 100% finished. Needs polishing!" />
     <MESSAGE value="Polished authentication dialog" />
     <MESSAGE value="Added upload to Json export again." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added upload to Json export again." />
+    <MESSAGE value="Idea v13 + Added option to toggle json file creation, cleanup." />
+    <option name="LAST_COMMIT_MESSAGE" value="Idea v13 + Added option to toggle json file creation, cleanup." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
@@ -2372,16 +2371,12 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="114" selection-start="5007" selection-end="5007" vertical-scroll-proportion="0.0" vertical-offset="199" max-vertical-offset="1122">
-          <folding />
-        </state>
+        <state line="58" column="114" selection-start="5007" selection-end="5007" vertical-scroll-proportion="0.0" vertical-offset="199" max-vertical-offset="1122" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="113" selection-start="5006" selection-end="5006" vertical-scroll-proportion="0.0" vertical-offset="199" max-vertical-offset="1122">
-          <folding />
-        </state>
+        <state line="58" column="113" selection-start="5006" selection-end="5006" vertical-scroll-proportion="0.0" vertical-offset="199" max-vertical-offset="1122" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
@@ -2429,11 +2424,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application_de.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="273" column="0" selection-start="12857" selection-end="12857" vertical-scroll-proportion="0.75598085" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
       <provider editor-type-id="ResourceBundle">
         <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="273" column="0" selection-start="12857" selection-end="12857" vertical-scroll-proportion="0.75598085" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/AccountAddDialogController.java">
@@ -2464,11 +2459,6 @@
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/AbstractAccountService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="33" selection-start="2688" selection-end="2688" vertical-scroll-proportion="0.0" vertical-offset="667" max-vertical-offset="1836" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/template/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/persistence/build.gradle">
@@ -2546,22 +2536,6 @@
         <state line="45" column="26" selection-start="2184" selection-end="2184" vertical-scroll-proportion="0.86538464" vertical-offset="0" max-vertical-offset="1700" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="923" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LICENSE.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="30" selection-start="1255" selection-end="1255" vertical-scroll-proportion="0.472" vertical-offset="12" max-vertical-offset="11560" />
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider editor-type-id="text-editor">
         <state line="9" column="0" selection-start="357" selection-end="357" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255" />
@@ -2585,19 +2559,12 @@
         <state line="20" column="29" selection-start="558" selection-end="558" vertical-scroll-proportion="0.22666667" vertical-offset="0" max-vertical-offset="900" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="86" column="10" selection-start="2810" selection-end="2810" vertical-scroll-proportion="0.7217295" vertical-offset="675" max-vertical-offset="1598">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application.properties">
-      <provider editor-type-id="text-editor">
-        <state line="280" column="33" selection-start="12151" selection-end="12206" vertical-scroll-proportion="0.0" vertical-offset="3977" max-vertical-offset="4862" />
-      </provider>
       <provider selected="true" editor-type-id="ResourceBundle">
         <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state line="280" column="33" selection-start="12151" selection-end="12206" vertical-scroll-proportion="0.0" vertical-offset="3977" max-vertical-offset="4862" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java">
@@ -2609,21 +2576,77 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/Settings.fxml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="92" selection-start="4952" selection-end="4962" vertical-scroll-proportion="0.8526544" vertical-offset="182" max-vertical-offset="1105">
-          <folding />
-        </state>
+        <state line="57" column="92" selection-start="4952" selection-end="4962" vertical-scroll-proportion="0.8526544" vertical-offset="182" max-vertical-offset="1105" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/services/ExportPostProcessor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="0" selection-start="1503" selection-end="1503" vertical-scroll-proportion="0.33152762" vertical-offset="0" max-vertical-offset="1037">
-          <folding />
-        </state>
+        <state line="44" column="0" selection-start="1503" selection-end="1503" vertical-scroll-proportion="0.33152762" vertical-offset="0" max-vertical-offset="1037" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/SettingsController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="167" column="27" selection-start="5858" selection-end="5858" vertical-scroll-proportion="0.17118093" vertical-offset="2035" max-vertical-offset="2958">
+        <state line="167" column="27" selection-start="5858" selection-end="5858" vertical-scroll-proportion="0.17118093" vertical-offset="2035" max-vertical-offset="2958" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="19" selection-start="408" selection-end="408" vertical-scroll-proportion="0.16346154" vertical-offset="0" max-vertical-offset="624">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../gradle/gradle-1.9/src/core/org/gradle/api/Project.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="661" column="9" selection-start="29088" selection-end="29088" vertical-scroll-proportion="0.82371795" vertical-offset="10043" max-vertical-offset="24548">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="0.05448718" vertical-offset="0" max-vertical-offset="624">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="595">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE.md">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="30" selection-start="1255" selection-end="1255" vertical-scroll-proportion="0.68948245" vertical-offset="12" max-vertical-offset="11560">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_45/src.zip!/java/io/Win32FileSystem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="413" column="0" selection-start="14941" selection-end="14941" vertical-scroll-proportion="0.0" vertical-offset="6320" max-vertical-offset="9945">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../gradle/gradle-1.7/lib/gradle-core-1.7.jar!/org/gradle/api/internal/file/AbstractFileResolver.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="0" selection-start="2199" selection-end="2199" vertical-scroll-proportion="0.83653843" vertical-offset="192" max-vertical-offset="816">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="1" selection-start="2675" selection-end="2675" vertical-scroll-proportion="0.41571194" vertical-offset="851" max-vertical-offset="1530">
           <folding />
         </state>
       </provider>
@@ -2686,6 +2709,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
