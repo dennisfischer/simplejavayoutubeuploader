@@ -824,10 +824,13 @@ public class UploadController {
                 null :
                 new File(uploadThumbnail.getText()));
 
+
+        upload.setDateTimeOfStart(null);
+        upload.setDateTimeOfRelease(null);
         if (null != started.getValue()) {
             upload.setDateTimeOfStart(new DateTime(started.getValue()));
         }
-        if (null != release.getValue()) {
+        if (uploadVisibility.getValue().equals(Visibility.SCHEDULED) && null != release.getValue()) {
             upload.setDateTimeOfRelease(new DateTime(release.getValue()));
         }
 
