@@ -13,18 +13,18 @@ package de.chaosfisch.uploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-	public static final String VERSION = "v3.2.0.3";
-	public static final String DATA_DIR;
+    public static final String VERSION = "v3.2.0.4";
+    public static final String DATA_DIR;
 
-	static {
-		String userHome = System.getProperty("user.home");
-		if (PlatformUtil.isMac()) {
-			userHome += "/Library/Application Support/";
-		}
-		System.setProperty("user.home", userHome);
-		DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
-	}
+    static {
+        String userHome = System.getProperty("user.home");
+        if (PlatformUtil.isMac()) {
+            userHome += "/Library/Application Support/";
+        }
+        System.setProperty("user.home", userHome);
+        DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
+    }
 
-	private ApplicationData() {
-	}
+    private ApplicationData() {
+    }
 }

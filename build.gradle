@@ -11,7 +11,7 @@ def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 apply plugin: 'application'
-version = "v3.2.0.3";
+version = "v3.2.0.4";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 configurations {

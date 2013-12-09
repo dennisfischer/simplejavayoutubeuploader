@@ -157,7 +157,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
                         handleStep3();
                     } else if (location.contains("accounts.google.com/o/oauth2/auth")) {
                         handleStep4();
-                    } else if (location.contains("youtube.com/signin?action_prompt_identity=true")) {
+                    } else if (location.contains("youtube.com/signin?") && location.contains("action_prompt_identity=true")) {
                         webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
                     } else if (location.endsWith("youtube.com/")) {
                         copyCookies = new ArrayList<>(persistentCookieStore.getSerializeableCookies());
