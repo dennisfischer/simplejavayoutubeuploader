@@ -43,8 +43,8 @@
     <orderEntry type="library" exported="" name="Gradle: google-api-client-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.6" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev88-1.17.0-rc" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev89-1.17.0-rc" level="project" />
   </component>
 </module>
 

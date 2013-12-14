@@ -291,9 +291,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
             webView.getEngine().load("https://www.youtube.com");
         }
         for (int i = 0; i < length; i++) {
-            final String name = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/a/span/span[2]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
-            final String image = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/a/span/span[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
-            final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+            final String name = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a/span/div[2]/div[1]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
+            final String image = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a/span/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
+            final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 
             final int tmpI = i;
             step3.getChildren()
