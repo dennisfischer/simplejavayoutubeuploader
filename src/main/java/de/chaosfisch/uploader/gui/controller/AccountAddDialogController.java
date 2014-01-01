@@ -227,8 +227,8 @@ public class AccountAddDialogController extends UndecoratedDialogController {
     private final IAccountService accountService;
     private final WebView webView = new WebView();
     private static final int WAIT_TIME = 2000;
-    private int selectedOption = -1;
-    private boolean initialized;
+	private String selectedOption = null;
+	private boolean initialized;
     private Account account;
     private int count;
 
@@ -274,13 +274,18 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 
         final WebEngine engine = webView.getEngine();
 
-        if (-1 != selectedOption) {
-            step3.setVisible(false);
+		if (null != selectedOption) {
+			step3.setVisible(false);
             loading.setVisible(true);
-
-            final String secondUrl = (String) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]/li[" + (selectedOption + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
-            engine.load(secondUrl);
-            return;
+			final int itemCount = (int) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\").length");
+			for (int i = 0; i < itemCount; i++) {
+				final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+				if (url.contains(selectedOption)) {
+					engine.load(url);
+					break;
+				}
+			}
+			return;
         }
 
         final int length = (int) engine.executeScript("document.getElementsByClassName(\"channel-switcher-button\").length");
@@ -295,7 +300,6 @@ public class AccountAddDialogController extends UndecoratedDialogController {
             final String image = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a/span/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
             final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 
-            final int tmpI = i;
             step3.getChildren()
                     .add(HBoxBuilder.create()
                             .alignment(Pos.CENTER_LEFT)
@@ -305,9 +309,11 @@ public class AccountAddDialogController extends UndecoratedDialogController {
                                 public void handle(final MouseEvent mouseEvent) {
                                     step3.setVisible(false);
                                     loading.setVisible(true);
-                                    selectedOption = tmpI;
-                                    engine.load(url);
-                                }
+									final int pageIdStartIndex = url.indexOf("pageid=") + 7;
+									final int pageIdEndIndex = -1 == url.indexOf("&", pageIdStartIndex) ? url.length() : url.indexOf("&", pageIdStartIndex);
+									selectedOption = !url.contains("pageid=") ? "none" : url.substring(pageIdStartIndex, pageIdEndIndex);
+									engine.load(url);
+								}
                             })
                             .onMouseEntered(new EventHandler<MouseEvent>() {
                                 @Override

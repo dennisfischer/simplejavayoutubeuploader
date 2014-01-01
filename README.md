@@ -7,4 +7,4 @@ This repository is for developers only. If you're looking for the application - 
 
 Building:
 Just download or checkout this repository. It can be opened with IntelliJ Idea or directly build with gradle.
-Building is simple! Just execute ```gradlw build``` or directly create a full zip archive with ```gradlew distribute```
+Building is simple! Just execute ```gradlew build``` or directly create a full zip archive with ```gradlew distribute```

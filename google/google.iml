@@ -14,37 +14,37 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="util" exported="" />
     <orderEntry type="library" exported="" name="Gradle: asyncretry" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: xstream-1.4.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: unirest-java-1.3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: guava-15.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: guice-3.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-client-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guice-assistedinject-3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: xpp3_min-1.1.4c" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: commons-codec-1.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guice-multibindings-3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: commons-configuration-1.10" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xmlpull-1.1.3.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: xpp3_min-1.1.4c" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: httpcore-4.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: commons-codec-1.6" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: httpclient-4.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: httpcore-nio-4.3-beta2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: httpasyncclient-4.0-beta4" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: httpmime-4.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: json-20090211" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: xstream-1.4.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jsr305-1.3.9" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: httpmime-4.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: httpcore-4.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: unirest-java-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: httpasyncclient-4.0-beta4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-oauth-client-1.17.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-client-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: httpcore-nio-4.3-beta2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: json-20090211" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guice-3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guava-15.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: commons-configuration-1.10" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: httpclient-4.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev89-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev91-1.17.0-rc" level="project" />
   </component>
 </module>
 

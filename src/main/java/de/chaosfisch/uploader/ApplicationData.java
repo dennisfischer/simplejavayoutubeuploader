@@ -13,8 +13,8 @@ package de.chaosfisch.uploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-    public static final String VERSION = "v3.2.0.5";
-    public static final String DATA_DIR;
+	public static final String VERSION = "v3.2.0.6";
+	public static final String DATA_DIR;
 
     static {
         String userHome = System.getProperty("user.home");
