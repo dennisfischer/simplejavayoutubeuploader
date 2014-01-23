@@ -44,7 +44,7 @@
     <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev91-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev92-1.17.0-rc" level="project" />
   </component>
 </module>
 
