@@ -11,8 +11,8 @@
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
 public final class PermissionStringConverter {
-	private static final String ALLOWED   = "allowed";
-	private static final String DENIED    = "denied";
+	private static final String ALLOWED = "allowed";
+	private static final String DENIED = "denied";
 	private static final String MODERATED = "moderated";
 
 	private PermissionStringConverter() {
@@ -22,9 +22,7 @@ public final class PermissionStringConverter {
 	 * Converts a boolean to a proper gdata.youtube xml element True:Allowed
 	 * False:Denied
 	 *
-	 * @param value
-	 * 		the param that should be converted
-	 *
+	 * @param value the param that should be converted
 	 * @return the PermissionString identified by the given value
 	 */
 	public static String convertBoolean(final boolean value) {
@@ -35,9 +33,7 @@ public final class PermissionStringConverter {
 	 * Converts a integer to a proper gdata.youtube xml element 1:Allowed
 	 * 2:Moderated 3:Denied
 	 *
-	 * @param value
-	 * 		the param that should be converted
-	 *
+	 * @param value the param that should be converted
 	 * @return the PermissionString identified by the given value
 	 */
 	public static String convertInteger(final int value) {

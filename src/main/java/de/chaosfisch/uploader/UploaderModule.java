@@ -32,8 +32,6 @@ import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.services.ExportPostProcessor;
 import de.chaosfisch.services.PlaceholderPreProcessor;
-import de.chaosfisch.uploader.persistence.PersistenceModule;
-import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
 import de.chaosfisch.util.TextUtil;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -48,9 +46,6 @@ public class UploaderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(String.class).annotatedWith(Names.named(IPersistenceService.PERSISTENCE_FOLDER))
-				.toInstance(String.format("%s/%s", ApplicationData.DATA_DIR, ApplicationData.VERSION));
-
 		try {
 			final String configFile = ApplicationData.DATA_DIR + "/config.properties";
 			if (!Files.exists(Paths.get(configFile))) {
@@ -62,7 +57,6 @@ public class UploaderModule extends AbstractModule {
 		} catch (IOException | ConfigurationException e) {
 			throw new RuntimeException(e);
 		}
-		install(new PersistenceModule());
 		install(new GoogleModule());
 
 		final Multibinder<UploadPreProcessor> preProcessorMultibinder = Multibinder.newSetBinder(binder(), UploadPreProcessor.class);
@@ -84,12 +78,7 @@ public class UploaderModule extends AbstractModule {
 		bindListener(Matchers.any(), new TypeListener() {
 			@Override
 			public <I> void hear(@SuppressWarnings("unused") final TypeLiteral<I> type, final TypeEncounter<I> encounter) {
-				encounter.register(new InjectionListener<I>() {
-					@Override
-					public void afterInjection(final I injectee) {
-						eventBus.register(injectee);
-					}
-				});
+				encounter.register((InjectionListener<I>) eventBus::register);
 			}
 		});
 

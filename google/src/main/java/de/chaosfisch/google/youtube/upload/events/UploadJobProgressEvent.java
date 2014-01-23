@@ -13,14 +13,14 @@ package de.chaosfisch.google.youtube.upload.events;
 import de.chaosfisch.google.youtube.upload.Upload;
 
 public class UploadJobProgressEvent {
-	private       long    diffBytes;
-	private       long    diffTime;
-	private final long    fileSize;
-	private       Upload  upload;
-	private       long    time;
-	private       long    totalBytesUploaded;
-	public        boolean failed;
-	public        boolean done;
+	private long diffBytes;
+	private long diffTime;
+	private final long fileSize;
+	private Upload upload;
+	private long time;
+	private long totalBytesUploaded;
+	public boolean failed;
+	public boolean done;
 
 	public UploadJobProgressEvent(final Upload upload, final long fileSize) {
 		this.upload = upload;

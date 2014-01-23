@@ -16,7 +16,7 @@ import de.chaosfisch.google.youtube.upload.Upload;
 public class Metadata {
 
 	private Category category = Category.ANIMALS;
-	private License  license  = License.YOUTUBE;
+	private License license = License.YOUTUBE;
 	private String title;
 	private String description;
 	private String keywords;

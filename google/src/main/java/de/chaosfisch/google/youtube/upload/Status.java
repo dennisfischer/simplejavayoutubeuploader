@@ -12,63 +12,63 @@ package de.chaosfisch.google.youtube.upload;
 
 public class Status {
 
-    private boolean aborted;
-    private boolean archived;
-    private boolean failed;
-    private boolean running;
-    private boolean locked;
-    private String status;
+	private boolean aborted;
+	private boolean archived;
+	private boolean failed;
+	private boolean running;
+	private boolean locked;
+	private String status;
 
-    @Deprecated
-    private transient int version;
-    @Deprecated
-    private transient int id;
+	@Deprecated
+	private transient int version;
+	@Deprecated
+	private transient int id;
 
-    public boolean isArchived() {
-        return archived;
-    }
+	public boolean isArchived() {
+		return archived;
+	}
 
-    public void setArchived(final boolean archived) {
-        this.archived = archived;
-    }
+	public void setArchived(final boolean archived) {
+		this.archived = archived;
+	}
 
-    public boolean isFailed() {
-        return failed;
-    }
+	public boolean isFailed() {
+		return failed;
+	}
 
-    public void setFailed(final boolean failed) {
-        this.failed = failed;
-    }
+	public void setFailed(final boolean failed) {
+		this.failed = failed;
+	}
 
-    public boolean isRunning() {
-        return running;
-    }
+	public boolean isRunning() {
+		return running;
+	}
 
-    public void setRunning(final boolean running) {
-        this.running = running;
-    }
+	public void setRunning(final boolean running) {
+		this.running = running;
+	}
 
-    public boolean isLocked() {
-        return locked;
-    }
+	public boolean isLocked() {
+		return locked;
+	}
 
-    public void setLocked(final boolean locked) {
-        this.locked = locked;
-    }
+	public void setLocked(final boolean locked) {
+		this.locked = locked;
+	}
 
-    public String getStatus() {
-        return status;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public void setStatus(final String status) {
-        this.status = status;
-    }
+	public void setStatus(final String status) {
+		this.status = status;
+	}
 
-    public boolean isAborted() {
-        return aborted;
-    }
+	public boolean isAborted() {
+		return aborted;
+	}
 
-    public void setAborted(final boolean aborted) {
-        this.aborted = aborted;
-    }
+	public void setAborted(final boolean aborted) {
+		this.aborted = aborted;
+	}
 }

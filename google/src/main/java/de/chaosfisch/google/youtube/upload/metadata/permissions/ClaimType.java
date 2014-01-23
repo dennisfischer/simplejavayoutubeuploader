@@ -10,19 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum ClaimType {
-	AUDIO_VISUAL("claimtype.audiovisual"), VISUAL("claimtype.visual"), AUDIO("claimtype.audio");
-
-	private final String i18n;
-
-	ClaimType(final String i18n) {
-		this.i18n = i18n;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
-	}
+	AUDIO_VISUAL, VISUAL, AUDIO
 }

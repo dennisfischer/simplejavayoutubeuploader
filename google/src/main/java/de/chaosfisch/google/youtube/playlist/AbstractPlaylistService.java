@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public abstract class AbstractPlaylistService implements IPlaylistService {
-	private static final Logger logger            = LoggerFactory.getLogger(AbstractPlaylistService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractPlaylistService.class);
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
-	private static final long   MAX_PLAYLISTS     = 50L;
+	private static final long MAX_PLAYLISTS = 50L;
 	private final IAccountService accountService;
 	private final YouTubeProvider youTubeProvider;
 

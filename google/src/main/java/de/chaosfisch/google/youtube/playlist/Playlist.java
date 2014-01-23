@@ -18,21 +18,21 @@ import de.chaosfisch.google.account.Account;
 
 public class Playlist {
 
-	private String  id;
-	private String  pkey;
+	private String id;
+	private String pkey;
 	private boolean private_;
-	private String  title;
-	private String  url;
-	private String  thumbnail;
-	private long    number;
-	private String  summary;
+	private String title;
+	private String url;
+	private String thumbnail;
+	private long number;
+	private String summary;
 	private boolean hidden;
 	private Account account;
 
 	public interface Validation {
-		String TITLE      = "TITLE";
+		String TITLE = "TITLE";
 		String TITLE_SIZE = "TITLE_SIZE";
-		String ACCOUNT    = "ACCOUNT";
+		String ACCOUNT = "ACCOUNT";
 
 		int TITLE_MAX_LENGTH = 150;
 	}

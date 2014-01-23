@@ -13,7 +13,7 @@ package de.chaosfisch.google.account;
 public class Authentication {
 
 	private final boolean valid;
-	private final String  header;
+	private final String header;
 
 	public Authentication() {
 		valid = false;

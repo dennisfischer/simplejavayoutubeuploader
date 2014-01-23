@@ -14,31 +14,30 @@ apply plugin: 'java'
 
 
 repositories {
-    mavenCentral()
-    maven { url "http://maven.mashape.com/releases" }
+	mavenCentral()
+	maven { url "http://maven.mashape.com/releases" }
 }
 
 configurations {
-    //we do not want to have jfxrt.jar in the classpath when creating the jar,
-    //therefore a seperate configuration is required
-    providedCompile
+	//we do not want to have jfxrt.jar in the classpath when creating the jar,
+	//therefore a seperate configuration is required
+	providedCompile
 }
 
 dependencies {
-    compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:1.3.0',
-            'com.google.guava:guava:15+', 'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
-            'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',
-            'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+',
-            'joda-time:joda-time:+'
-    compile project(':util')
-    compile files('/lib/asyncretry.jar')
-    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+	compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:1.3.0',
+			'com.google.guava:guava:15+', 'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
+			'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+',
+			'com.google.inject.extensions:guice-multibindings:3.0',
+			'org.slf4j:slf4j-api:+'
+	compile files('/lib/asyncretry.jar')
+	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 compileJava {
-    //add required JavaFX libs to compile classpath
-    sourceSets.main.compileClasspath += configurations.providedCompile
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+	//add required JavaFX libs to compile classpath
+	sourceSets.main.compileClasspath += configurations.providedCompile
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 }
 

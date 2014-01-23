@@ -31,7 +31,7 @@ public class VideoEntry {
 	public AppControl appControl;
 
 	@XStreamAlias("app:edited")
-	public String        appEdited;
+	public String appEdited;
 	public YoutubeAuthor author;
 
 	@XStreamAlias("category")
@@ -39,7 +39,7 @@ public class VideoEntry {
 	public List<Category> categories;
 
 	@XStreamAlias("gd:comments")
-	public GDataComments  comments;
+	public GDataComments comments;
 	public YoutubeContent content;
 
 	@Deprecated
@@ -48,7 +48,7 @@ public class VideoEntry {
 
 	@XStreamAlias("georss:where")
 	public YoutubeGeoRss geoRssWhere;
-	public String        id;
+	public String id;
 
 	@XStreamAlias("link")
 	@XStreamImplicit
@@ -72,8 +72,8 @@ public class VideoEntry {
 
 	@XStreamAlias("yt:statistics")
 	public YoutubeStatistics statistics;
-	public String            title;
-	public String            updated;
+	public String title;
+	public String updated;
 
 	@XStreamAlias("xmlns")
 	@XStreamAsAttribute

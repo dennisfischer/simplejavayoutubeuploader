@@ -16,15 +16,15 @@ public final class ApplicationData {
 	public static final String VERSION = "v3.2.0.6";
 	public static final String DATA_DIR;
 
-    static {
-        String userHome = System.getProperty("user.home");
-        if (PlatformUtil.isMac()) {
-            userHome += "/Library/Application Support/";
-        }
-        System.setProperty("user.home", userHome);
-        DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
-    }
+	static {
+		String userHome = System.getProperty("user.home");
+		if (PlatformUtil.isMac()) {
+			userHome += "/Library/Application Support/";
+		}
+		System.setProperty("user.home", userHome);
+		DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
+	}
 
-    private ApplicationData() {
-    }
+	private ApplicationData() {
+	}
 }

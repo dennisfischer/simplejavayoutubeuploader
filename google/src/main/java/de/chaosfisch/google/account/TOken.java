@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 class Token {
 	private final String token;
-	private final long   livetime;
+	private final long livetime;
 
 	public Token(final String token, final long livetime) {
 		this(token, livetime, TimeUnit.SECONDS);

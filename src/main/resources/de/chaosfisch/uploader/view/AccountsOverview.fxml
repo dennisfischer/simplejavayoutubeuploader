@@ -13,7 +13,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.HBox?>
 <HBox id="HBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/2.2"
-      fx:controller="de.chaosfisch.uploader.gui.controller.AccountOverviewController">
-    <ListView fx:id="accountListView" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
+	  xmlns="http://javafx.com/javafx/2.2"
+	  fx:controller="de.chaosfisch.uploader.gui.controller.AccountOverviewController">
+	<ListView fx:id="accountListView" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
 </HBox>

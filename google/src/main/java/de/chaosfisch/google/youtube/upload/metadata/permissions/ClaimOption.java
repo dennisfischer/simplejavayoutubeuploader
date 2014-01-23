@@ -10,19 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum ClaimOption {
-	MONETIZE("claimoptions.monetize"), TRACK("claimoptions.track"), BLOCK("claimoptions.block");
-
-	private final String i18n;
-
-	ClaimOption(final String i18n) {
-		this.i18n = i18n;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
-	}
+	MONETIZE, TRACK, BLOCK
 }

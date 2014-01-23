@@ -10,19 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum ThreeD {
-	DEFAULT("threed.default"), OFF("threed.off"), CONVERTED("threed.converted"); //, LAYOUT("threed.layout");
-
-	private final String i18n;
-
-	ThreeD(final String i18n) {
-		this.i18n = i18n;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
-	}
+	DEFAULT, OFF, CONVERTED //, LAYOUT("threed.layout");
 }

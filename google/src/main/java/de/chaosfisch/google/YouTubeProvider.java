@@ -15,7 +15,8 @@ import com.google.api.client.auth.oauth2.CredentialRefreshListener;
 import com.google.api.client.auth.oauth2.TokenErrorResponse;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.*;
+import com.google.api.client.http.HttpBackOffIOExceptionHandler;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTube;
@@ -33,9 +34,9 @@ public class YouTubeProvider implements Provider<YouTube> {
 	private Account account;
 	private final Map<Account, YouTube> services = new HashMap<>(1);
 	private final HttpTransport httpTransport;
-	private final JsonFactory   jsonFactory;
-	private static final Logger                   LOGGER      = LoggerFactory.getLogger(YouTubeProvider.class);
-	private final        Map<Account, Credential> credentials = new HashMap<>(1);
+	private final JsonFactory jsonFactory;
+	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubeProvider.class);
+	private final Map<Account, Credential> credentials = new HashMap<>(1);
 
 	@Inject
 	public YouTubeProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
@@ -47,17 +48,9 @@ public class YouTubeProvider implements Provider<YouTube> {
 	public YouTube get() {
 		if (!services.containsKey(account)) {
 			final Credential credential = getCredential(account);
-			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
-				@Override
-				public void initialize(final HttpRequest request) throws IOException {
-					request.setInterceptor(new HttpExecuteInterceptor() {
-						@Override
-						public void intercept(final HttpRequest request) throws IOException {
-							credential.intercept(request);
-						}
-					});
-					request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(new ExponentialBackOff()));
-				}
+			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, request -> {
+				request.setInterceptor(credential::intercept);
+				request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(new ExponentialBackOff()));
 			}).setApplicationName("simple-java-youtube-uploader").build());
 		}
 		return services.get(account);

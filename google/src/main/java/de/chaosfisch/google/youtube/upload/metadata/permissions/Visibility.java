@@ -10,19 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum Visibility {
-	PUBLIC("visibilitylist.public"), UNLISTED("visibilitylist.unlisted"), PRIVATE("visibilitylist.private"), SCHEDULED("visibilitylist.scheduled");
-
-	private final String i18n;
-
-	Visibility(final String i18n) {
-		this.i18n = i18n;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
-	}
+	PUBLIC, UNLISTED, PRIVATE, SCHEDULED
 }

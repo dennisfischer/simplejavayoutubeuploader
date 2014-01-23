@@ -10,19 +10,6 @@
 
 package de.chaosfisch.google.youtube.upload.metadata.permissions;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum Syndication {
-	GLOBAL("label.monetizeContentSyndicationGlobal"), MONETIZED_ONLY("label.monetizeContentSyndicationMonetizedOnly");
-
-	private final String i18n;
-
-	Syndication(final String i18n) {
-		this.i18n = i18n;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
-	}
+	GLOBAL, MONETIZED_ONLY
 }

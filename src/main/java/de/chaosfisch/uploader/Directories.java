@@ -21,17 +21,13 @@ public final class Directories {
 
 	/**
 	 * Copies a directory.
-	 * <p/>
+	 * <p>
 	 * NOTE: This method is not thread-safe.
-	 * <p/>
+	 * <p>
 	 *
-	 * @param source
-	 * 		the directory to copy from
-	 * @param target
-	 * 		the directory to copy into
-	 *
-	 * @throws IOException
-	 * 		if an I/O error occurs
+	 * @param source the directory to copy from
+	 * @param target the directory to copy into
+	 * @throws IOException if an I/O error occurs
 	 */
 	public static void copyDirectory(final Path source, final Path target) throws IOException {
 		Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {

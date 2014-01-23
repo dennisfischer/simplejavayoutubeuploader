@@ -10,22 +10,13 @@
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
-import de.chaosfisch.util.TextUtil;
-
 public enum License {
-	YOUTUBE("licenselist.youtube", "youtube"), CREATIVE_COMMONS("licenselist.cc", "cc");
+	YOUTUBE("youtube"), CREATIVE_COMMONS("cc");
 
-	private final String i18n;
 	private final String metaIdentifier;
 
-	License(final String i18n, final String metaIdentifier) {
-		this.i18n = i18n;
+	License(final String metaIdentifier) {
 		this.metaIdentifier = metaIdentifier;
-	}
-
-	@Override
-	public String toString() {
-		return TextUtil.getString(i18n);
 	}
 
 	public String getMetaIdentifier() {

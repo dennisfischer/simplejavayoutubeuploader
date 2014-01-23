@@ -17,8 +17,8 @@ import java.io.File;
 public interface IEnddirService {
 
 	String RENAME_PROPERTY = "enddir_rename";
-	String TITLE_PROPERTY  = "enddir_title";
-	String TITLE_DEFAULT   = "{title}";
+	String TITLE_PROPERTY = "enddir_title";
+	String TITLE_DEFAULT = "{title}";
 
 	void moveFileByUpload(File fileToMove, Upload upload);
 }

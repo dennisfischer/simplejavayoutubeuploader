@@ -27,9 +27,7 @@ public interface IAccountService {
 	/**
 	 * Returns a valid AuthHeader
 	 *
-	 * @param account
-	 * 		Account to use
-	 *
+	 * @param account Account to use
 	 * @return AuthHeader
 	 */
 	Authentication getAuthentication(Account account);
@@ -37,8 +35,7 @@ public interface IAccountService {
 	/**
 	 * Verifies the account
 	 *
-	 * @param account
-	 * 		Account to check
+	 * @param account Account to check
 	 */
 	boolean verifyAccount(final Account account);
 

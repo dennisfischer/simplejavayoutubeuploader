@@ -22,31 +22,31 @@ import java.io.IOException;
 
 class EnddirPostProcessor implements UploadPostProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EnddirPostProcessor.class);
-    private final IEnddirService enddirService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(EnddirPostProcessor.class);
+	private final IEnddirService enddirService;
 
-    @Inject
-    public EnddirPostProcessor(final IEnddirService enddirService) {
-        this.enddirService = enddirService;
-    }
+	@Inject
+	public EnddirPostProcessor(final IEnddirService enddirService) {
+		this.enddirService = enddirService;
+	}
 
-    @Override
-    public Upload process(final Upload upload) {
-        if (null != upload.getEnddir()) {
-            try {
-                if (!upload.getEnddir().exists()) {
-                    Files.createParentDirs(upload.getEnddir());
-                }
-                if (!upload.getEnddir().isDirectory()) {
-                    throw new IOException("Enddir not a directory!");
-                }
+	@Override
+	public Upload process(final Upload upload) {
+		if (null != upload.getEnddir()) {
+			try {
+				if (!upload.getEnddir().exists()) {
+					Files.createParentDirs(upload.getEnddir());
+				}
+				if (!upload.getEnddir().isDirectory()) {
+					throw new IOException("Enddir not a directory!");
+				}
 
-                LOGGER.debug("Moving file to {}", upload.getEnddir().toString());
-                enddirService.moveFileByUpload(upload.getFile(), upload);
-            } catch (final IOException e) {
-                LOGGER.error("Enddir IOException", e);
-            }
-        }
-        return upload;
-    }
+				LOGGER.debug("Moving file to {}", upload.getEnddir().toString());
+				enddirService.moveFileByUpload(upload.getFile(), upload);
+			} catch (final IOException e) {
+				LOGGER.error("Enddir IOException", e);
+			}
+		}
+		return upload;
+	}
 }

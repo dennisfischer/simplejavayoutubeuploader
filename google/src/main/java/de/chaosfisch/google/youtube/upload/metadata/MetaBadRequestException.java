@@ -12,9 +12,9 @@ package de.chaosfisch.google.youtube.upload.metadata;
 
 public class MetaBadRequestException extends Exception {
 	private static final long serialVersionUID = -2086228006554387997L;
-	private static final int  SC_BAD_REQUEST   = 400;
+	private static final int SC_BAD_REQUEST = 400;
 	private final String atomData;
-	private final int    statusCode;
+	private final int statusCode;
 
 	public MetaBadRequestException(final Exception e) {
 		super(e);

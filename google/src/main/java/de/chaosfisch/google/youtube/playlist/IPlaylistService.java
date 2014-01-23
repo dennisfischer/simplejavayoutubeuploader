@@ -36,10 +36,8 @@ public interface IPlaylistService {
 	 * Adds the specified video to the playlist.
 	 * This change will be published on YouTube.
 	 *
-	 * @param playlist
-	 * 		the playlist used
-	 * @param videoId
-	 * 		for the added video
+	 * @param playlist the playlist used
+	 * @param videoId  for the added video
 	 */
 	void addVideoToPlaylist(Playlist playlist, String videoId) throws PlaylistIOException;
 
@@ -47,16 +45,14 @@ public interface IPlaylistService {
 	 * Adds this playlist to the account specified inside the playlist object.
 	 * This change will be published on YouTube.
 	 *
-	 * @param playlist
-	 * 		the playlist to be added
+	 * @param playlist the playlist to be added
 	 */
 	void addYoutubePlaylist(Playlist playlist) throws PlaylistIOException;
 
 	/**
 	 * Synchronizes given accounts and playlists with YouTube.
 	 *
-	 * @param accounts
-	 * 		to be synced
+	 * @param accounts to be synced
 	 */
 	void synchronizePlaylists(List<Account> accounts) throws PlaylistIOException;
 }

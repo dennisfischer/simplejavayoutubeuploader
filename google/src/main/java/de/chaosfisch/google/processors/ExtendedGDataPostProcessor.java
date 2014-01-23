@@ -19,21 +19,21 @@ import org.slf4j.LoggerFactory;
 
 class ExtendedGDataPostProcessor implements UploadPostProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedGDataPostProcessor.class);
-    private final IMetadataService metadataService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedGDataPostProcessor.class);
+	private final IMetadataService metadataService;
 
-    @Inject
-    ExtendedGDataPostProcessor(final IMetadataService metadataService) {
-        this.metadataService = metadataService;
-    }
+	@Inject
+	ExtendedGDataPostProcessor(final IMetadataService metadataService) {
+		this.metadataService = metadataService;
+	}
 
-    @Override
-    public Upload process(final Upload upload) {
-        try {
-            metadataService.activateBrowserfeatures(upload);
-        } catch (final Exception e) {
-            LOGGER.error("Exception", e);
-        }
-        return upload;
-    }
+	@Override
+	public Upload process(final Upload upload) {
+		try {
+			metadataService.activateBrowserfeatures(upload);
+		} catch (final Exception e) {
+			LOGGER.error("Exception", e);
+		}
+		return upload;
+	}
 }

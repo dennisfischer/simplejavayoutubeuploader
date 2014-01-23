@@ -13,9 +13,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <VBox id="VBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml">
-    <padding>
-        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-    </padding>
-    <fx:include source="QueueOverview.fxml" VBox.vgrow="ALWAYS"/>
-    <fx:include source="QueueCommand.fxml" VBox.vgrow="NEVER"/>
+	<padding>
+		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+	</padding>
+	<fx:include source="QueueOverview.fxml" VBox.vgrow="ALWAYS"/>
+	<fx:include source="QueueCommand.fxml" VBox.vgrow="NEVER"/>
 </VBox>

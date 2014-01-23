@@ -17,9 +17,9 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Syndication;
 
 public class Monetization {
 	private Syndication syndication = Syndication.GLOBAL;
-	private ClaimType   claimtype   = ClaimType.AUDIO_VISUAL;
+	private ClaimType claimtype = ClaimType.AUDIO_VISUAL;
 	private ClaimOption claimoption = ClaimOption.MONETIZE;
-	private Asset       asset       = Asset.WEB;
+	private Asset asset = Asset.WEB;
 
 	private boolean instreamDefaults;
 	private boolean claim;
@@ -27,16 +27,16 @@ public class Monetization {
 	private boolean trueview;
 	private boolean instream;
 	private boolean product;
-	private String  title;
-	private String  description;
-	private String  customId;
-	private String  notes;
-	private String  tmsid;
-	private String  isan;
-	private String  eidr;
-	private String  titleepisode;
-	private String  seasonNb;
-	private String  episodeNb;
+	private String title;
+	private String description;
+	private String customId;
+	private String notes;
+	private String tmsid;
+	private String isan;
+	private String eidr;
+	private String titleepisode;
+	private String seasonNb;
+	private String episodeNb;
 	private boolean partner;
 
 	@Deprecated
