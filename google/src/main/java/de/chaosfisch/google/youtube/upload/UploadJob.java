@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -16,11 +16,7 @@ import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
 import com.google.common.util.concurrent.RateLimiter;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -32,6 +28,7 @@ import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -70,7 +67,7 @@ public class UploadJob implements Callable<Upload> {
 	private final Set<UploadPostProcessor> uploadPostProcessors;
 	private final EventBus eventBus;
 	private final IUploadService uploadService;
-	private final RateLimiter rateLimiter;
+	private RateLimiter rateLimiter;
 
 	private UploadJobProgressEvent uploadProgress;
 	private Upload upload;
@@ -79,9 +76,7 @@ public class UploadJob implements Callable<Upload> {
 	private Credential credential;
 
 	@Inject
-	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
-		this.upload = upload;
-		this.rateLimiter = rateLimiter;
+	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
 		this.uploadPreProcessors = uploadPreProcessors;
 		this.uploadPostProcessors = uploadPostProcessors;
 		this.eventBus = eventBus;
@@ -91,8 +86,16 @@ public class UploadJob implements Callable<Upload> {
 		this.eventBus.register(this);
 	}
 
+	public void setUpload(final Upload upload) {
+		this.upload = upload;
+	}
+
 	@Override
 	public Upload call() throws Exception {
+
+		if (null == rateLimiter || null == upload) {
+			throw new IllegalArgumentException("Rate limiter or upload missing for uploadJob");
+		}
 
 		if (null == upload.getUploadurl()) {
 			for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
@@ -282,9 +285,15 @@ public class UploadJob implements Callable<Upload> {
 				case SC_OK:
 				case SC_CREATED:
 					//FILE UPLOADED
-					final InputSupplier<InputStream> supplier = request::getInputStream;
-					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
+					final StringBuilder response = new StringBuilder(request.getContentLength());
+					try (final BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), Charsets.UTF_8))) {
+						String read;
+						while (null != (read = reader.readLine())) {
+							response.append(read);
+						}
 
+						handleSuccessfulUpload(response.toString());
+					}
 					break;
 				case SC_RESUME_INCOMPLETE:
 					// OK, the chunk completed succesfully
@@ -387,6 +396,10 @@ public class UploadJob implements Callable<Upload> {
 		}
 		os.flush();
 		return numRead;
+	}
+
+	public void setRateLimiter(final RateLimiter rateLimiter) {
+		this.rateLimiter = rateLimiter;
 	}
 
 	private class TokenInputStream extends BufferedInputStream {

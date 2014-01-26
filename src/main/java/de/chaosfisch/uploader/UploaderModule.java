@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -10,43 +10,10 @@
 
 package de.chaosfisch.uploader;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import de.chaosfisch.google.GoogleModule;
-import de.chaosfisch.google.enddir.EnddirServiceImpl;
-import de.chaosfisch.google.enddir.IEnddirService;
-import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
-import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
-import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
-import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
-import de.chaosfisch.google.youtube.upload.Uploader;
-import de.chaosfisch.google.youtube.upload.metadata.AbstractMetadataService;
-import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.services.ExportPostProcessor;
-import de.chaosfisch.services.PlaceholderPreProcessor;
-import de.chaosfisch.util.TextUtil;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+public class UploaderModule {
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ResourceBundle;
-
-public class UploaderModule extends AbstractModule {
-
-	@Override
 	protected void configure() {
-		try {
+	/*	try {
 			final String configFile = ApplicationData.DATA_DIR + "/config.properties";
 			if (!Files.exists(Paths.get(configFile))) {
 				Files.createFile(Paths.get(configFile));
@@ -89,6 +56,6 @@ public class UploaderModule extends AbstractModule {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
 		bind(IEnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
-		bind(Uploader.class).in(Singleton.class);
+		bind(Uploader.class).in(Singleton.class);*/
 	}
 }

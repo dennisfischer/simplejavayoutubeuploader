@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -12,10 +12,10 @@ package de.chaosfisch.google.youtube.thumbnail;
 
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.youtube.YouTube;
-import com.google.inject.Inject;
 import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.Account;
 
+import javax.inject.Inject;
 import java.io.*;
 
 public class ThumbnailServiceImpl implements IThumbnailService {

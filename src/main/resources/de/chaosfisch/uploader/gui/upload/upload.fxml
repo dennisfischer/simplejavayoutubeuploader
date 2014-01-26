@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2014 Dennis Fischer.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Public License v3.0+
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.gnu.org/licenses/gpl.html
+  ~
+  ~ Contributors: Dennis Fischer
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<columnConstraints>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"
+						   xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="175.0"
+						   xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+						   xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+						   xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+						   xmlns:fx="http://javafx.com/fxml/1"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+						   xmlns:fx="http://javafx.com/fxml/1"/>
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="-Infinity"/>
+		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+	</rowConstraints>
+	<children>
+		<Label text="Ein ultra langer Uploadtitel der 100 Zeichen lang sein darf oder auch nicht mir egal! Hauptsache 100"
+			   GridPane.columnSpan="5"/>
+		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+			<image>
+				<Image url="@lock.png"/>
+			</image>
+		</ImageView>
+		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+			<image>
+				<Image url="@money.png"/>
+			</image>
+		</ImageView>
+		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+			<image>
+				<Image url="@clock.png"/>
+			</image>
+		</ImageView>
+		<Label text="Do, 29.01.2014 um 13:30 Uhr" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+		<Separator orientation="VERTICAL" GridPane.columnIndex="5" GridPane.rowSpan="2"/>
+		<Label text="Uploadstart:" GridPane.columnIndex="6"/>
+		<Label text="Uploadende:" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+		<Label text="Do, 29.01.2013 um 12:20 Uhr" GridPane.columnIndex="7"/>
+		<Label text="Do, 29.01.2013 um 13:10 Uhr" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+		<ProgressBar maxWidth="1.7976931348623157E308" progress="0.52" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+		<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
+		<ToggleButton mnemonicParsing="false" text="Nach diesem Upload stoppen!" GridPane.columnIndex="8"
+					  GridPane.rowIndex="1"/>
+	</children>
+	<padding>
+		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+	</padding>
+</GridPane>

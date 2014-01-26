@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
 
 package de.chaosfisch.google.processors;
 
-import com.google.inject.Inject;
 import de.chaosfisch.google.youtube.upload.Upload;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.google.youtube.upload.metadata.IMetadataService;
@@ -18,6 +17,8 @@ import de.chaosfisch.google.youtube.upload.metadata.MetaBadRequestException;
 import de.chaosfisch.google.youtube.upload.metadata.MetaIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 class MetadataUpdatePostProcessor implements UploadPostProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataUpdatePostProcessor.class);

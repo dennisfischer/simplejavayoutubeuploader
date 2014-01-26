@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
 package de.chaosfisch.services;
 
 import com.google.common.io.Files;
-import com.google.inject.name.Named;
 import de.chaosfisch.google.youtube.playlist.Playlist;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;

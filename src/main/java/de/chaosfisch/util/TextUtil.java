@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -10,17 +10,15 @@
 
 package de.chaosfisch.util;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ResourceBundle;
 
 public final class TextUtil {
 
 	@Inject
 	@Named("i18n-resources")
-
-	private static ResourceBundle resources;
+	static ResourceBundle resources;
 
 	private TextUtil() {
 	}

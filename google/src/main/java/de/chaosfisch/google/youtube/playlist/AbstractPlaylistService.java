@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -11,14 +11,13 @@
 package de.chaosfisch.google.youtube.playlist;
 
 import com.google.api.services.youtube.model.*;
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractPlaylistService implements IPlaylistService {
@@ -28,8 +27,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	private final IAccountService accountService;
 	private final YouTubeProvider youTubeProvider;
 
-	@Inject
-	protected AbstractPlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
+	public AbstractPlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
 		this.accountService = accountService;
 		this.youTubeProvider = youTubeProvider;
 	}
@@ -119,7 +117,7 @@ public abstract class AbstractPlaylistService implements IPlaylistService {
 	}
 
 	List<Playlist> parsePlaylistListResponse(final Account account, final PlaylistListResponse response) {
-		final List<Playlist> list = Lists.newArrayListWithExpectedSize(response.getItems().size());
+		final ArrayList<Playlist> list = new ArrayList<>(response.getItems().size());
 		for (final com.google.api.services.youtube.model.Playlist entry : response.getItems()) {
 			final Playlist playlist = findByPkey(entry.getId());
 			if (null == playlist) {
