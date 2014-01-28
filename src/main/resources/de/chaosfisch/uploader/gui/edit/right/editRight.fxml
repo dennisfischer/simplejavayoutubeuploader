@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2014 Dennis Fischer.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Public License v3.0+
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.gnu.org/licenses/gpl.html
+  ~
+  ~ Contributors: Dennis Fischer
+  -->
+
+<?import de.chaosfisch.uploader.gui.project.ProjectView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<Accordion fx:controller="de.chaosfisch.uploader.gui.edit.right.EditRightPresenter" fx:id="mainFrame" minHeight="0.0"
+		   minWidth="450.0"
+		   xmlns:fx="http://javafx.com/fxml">
+	<panes>
+		<TitledPane text="Weitere Einstellungen">
+			<content>
+				<GridPane hgap="5.0" vgap="5.0">
+					<children>
+						<Label text="Sichtbarkeit:"/>
+						<Label text="Lizenz:" GridPane.rowIndex="1"/>
+						<Label text="Kommentare:" GridPane.rowIndex="2"/>
+						<Label text="3D:" GridPane.rowIndex="3"/>
+						<Label text="Berechtigungen:" GridPane.rowIndex="4"/>
+						<Label text="Uploadstart:" GridPane.rowIndex="6"/>
+						<Label text="Thumbnail:" GridPane.rowIndex="7"/>
+						<Label text="Projekt:" GridPane.rowIndex="10"/>
+
+
+						<ComboBox GridPane.columnIndex="1" GridPane.columnSpan="3" maxWidth="Infinity"
+								  fx:id="visibility"/>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="3"
+								  maxWidth="Infinity" fx:id="license"/>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="3"
+								  maxWidth="Infinity" fx:id="comments"/>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"
+								  maxWidth="Infinity" fx:id="threed"/>
+
+
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Bewerten"
+									  GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="rate"/>
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Alters-beschränkt"
+									  GridPane.columnIndex="2" GridPane.rowIndex="4" fx:id="ageRestriction"/>
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Einbetten"
+									  GridPane.columnIndex="3" GridPane.rowIndex="4" fx:id="embed"/>
+
+
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false"
+									  text="Kommentare bewerten" GridPane.columnIndex="1" GridPane.rowIndex="5"
+									  fx:id="rateComments"/>
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Statistiken"
+									  GridPane.columnIndex="2" GridPane.rowIndex="5" fx:id="statistics"/>
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Abonennten"
+									  GridPane.columnIndex="3" GridPane.rowIndex="5" fx:id="subscribers"/>
+
+
+						<DatePicker maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="6"
+									fx:id="releaseDatepicker"/>
+						<ComboBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.rowIndex="6"
+								  GridPane.columnSpan="2" fx:id="releaseTimepicker"/>
+
+
+						<TextField GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"
+								   fx:id="thumbnailPath"/>
+						<Button maxWidth="Infinity" GridPane.rowIndex="7" GridPane.columnIndex="3" text="Öffnen"
+								onAction="#openThumbnail"/>
+						<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1"
+								   GridPane.rowIndex="8" fx:id="thumbnailImage"/>
+
+
+						<Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="9"/>
+						<ProjectView GridPane.columnIndex="1" GridPane.columnSpan="3"
+									 GridPane.rowIndex="10"/>
+					</children>
+					<columnConstraints>
+						<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity"/>
+						<ColumnConstraints hgrow="SOMETIMES"/>
+						<ColumnConstraints hgrow="SOMETIMES"/>
+						<ColumnConstraints hgrow="SOMETIMES"/>
+					</columnConstraints>
+					<padding>
+						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+					</padding>
+					<rowConstraints>
+						<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+						<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+						<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+						<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+						<RowConstraints maxHeight="-Infinity"/>
+						<RowConstraints maxHeight="-Infinity"/>
+						<RowConstraints maxHeight="-Infinity"/>
+						<RowConstraints maxHeight="-Infinity"/>
+						<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+						<RowConstraints vgrow="NEVER"/>
+						<RowConstraints maxHeight="-Infinity"/>
+					</rowConstraints>
+				</GridPane>
+			</content>
+		</TitledPane>
+	</panes>
+</Accordion>

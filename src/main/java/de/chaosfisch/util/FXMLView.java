@@ -11,7 +11,11 @@
 package de.chaosfisch.util;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.Region;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -19,7 +23,7 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public abstract class FXMLView {
+public abstract class FXMLView extends Region {
 
 	public static final String DEFAULT_ENDING = "view";
 	private static Callback<Class<?>, Object> controllerFactory;
@@ -54,10 +58,19 @@ public abstract class FXMLView {
 		final URL resource = clazz.getResource(conventionalName);
 		final String bundleName = getBundleName();
 		final ResourceBundle bundle = getResourceBundle(bundleName);
-		loader = loadAsynchronously(resource, bundle, conventionalName);
+		loader = loadAsynchronously(resource, bundle);
+
+		getChildren().add(loader.getRoot());
 	}
 
-	FXMLLoader loadAsynchronously(final URL resource, final ResourceBundle bundle, final String conventionalName) throws IllegalStateException {
+	@Override
+	protected void layoutChildren() {
+		for (final Node node : getChildren()) {
+			layoutInArea(node, 0, 0, getWidth(), getHeight(), 0, HPos.LEFT, VPos.TOP);
+		}
+	}
+
+	FXMLLoader loadAsynchronously(final URL resource, final ResourceBundle bundle) throws IllegalStateException {
 		final FXMLLoader loader = new FXMLLoader(resource, bundle);
 		if (null != controllerFactory) {
 			loader.setControllerFactory(controllerFactory::call);

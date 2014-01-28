@@ -42,6 +42,6 @@ public class MainPresenter {
 	Lazy<UploadsView> uploadsViewLazy;
 
 	public void initialize() {
-		mainFrame.setCenter(uploadsViewLazy.get().getView());
+		mainFrame.setCenter(editViewLazy.get().getView());
 	}
 }

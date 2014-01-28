@@ -9,5 +9,5 @@
   -->
 
 <?import javafx.scene.control.TitledPane?>
-<TitledPane text="Partner" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane text="Partner" xmlns="http://javafx.com/javafx/8">
 </TitledPane>

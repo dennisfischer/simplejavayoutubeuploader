@@ -10,17 +10,18 @@
   ~ Contributors: Dennis Fischer
   -->
 
+<?import de.chaosfisch.uploader.gui.edit.left.EditLeftView?>
+<?import de.chaosfisch.uploader.gui.edit.right.EditRightView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.*?>
 <SplitPane dividerPositions="0.5" focusTraversable="true" xmlns:fx="http://javafx.com/fxml/1"
 		   xmlns="http://javafx.com/javafx/2.2">
 	<items>
-		<fx:include source="edit-left.fxml"/>
+		<EditLeftView/>
 		<GridPane hgap="5.0" vgap="5.0">
 			<children>
-				<fx:include source="edit-right.fxml" GridPane.columnIndex="0" GridPane.rowIndex="0"
-							GridPane.columnSpan="3"/>
+				<EditRightView GridPane.columnSpan="3" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 				<Button mnemonicParsing="false" text="Ok, nächster Upload!" GridPane.columnIndex="2"
 						GridPane.rowIndex="1"/>
 				<Button mnemonicParsing="false" text="Ok, Ich bin fertig!" GridPane.columnIndex="1"

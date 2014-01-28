@@ -26,7 +26,7 @@
 		</ScrollPane>
 		<HBox alignment="CENTER" layoutX="268.0" layoutY="42.0" minHeight="100.0"
 			  style="-fx-border-style: dotted; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/8"
-			  xmlns:fx="http://javafx.com/fxml/1">
+				>
 			<children>
 				<Label layoutX="268.0" layoutY="42.0" text="Drag files or Click to get started!"/>
 			</children>

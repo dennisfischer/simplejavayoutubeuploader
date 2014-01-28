@@ -48,8 +48,6 @@ public class UploaderModule {
 				encounter.register((InjectionListener<I>) eventBus::register);
 			}
 		});
-
-		requestStaticInjection(TextUtil.class);
 	}
 
 	private void mapServices() {

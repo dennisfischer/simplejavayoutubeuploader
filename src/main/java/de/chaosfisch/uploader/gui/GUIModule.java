@@ -13,11 +13,14 @@ package de.chaosfisch.uploader.gui;
 import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.uploader.gui.edit.EditView;
+import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
+import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
+import de.chaosfisch.uploader.gui.edit.right.EditRightPresenter;
 import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.uploads.UploadsView;
 
 @Module(
-		injects = MainPresenter.class
+		injects = {MainPresenter.class, EditRightPresenter.class}
 )
 public class GUIModule {
 	@Provides
@@ -28,5 +31,15 @@ public class GUIModule {
 	@Provides
 	UploadsView provideUploadsView() {
 		return new UploadsView();
+	}
+
+	@Provides
+	EditMonetizationView provideEditMonetizationView() {
+		return new EditMonetizationView();
+	}
+
+	@Provides
+	EditPartnerView provideEditPartnerView() {
+		return new EditPartnerView();
 	}
 }

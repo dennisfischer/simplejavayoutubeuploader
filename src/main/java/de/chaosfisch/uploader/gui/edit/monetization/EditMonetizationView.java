@@ -8,10 +8,9 @@
  * Contributors: Dennis Fischer
  */
 
-package de.chaosfisch.uploader;
+package de.chaosfisch.uploader.gui.edit.monetization;
 
-public enum ActionOnFinish {
+import de.chaosfisch.util.FXMLView;
 
-	NOTHING, CLOSE, SHUTDOWN, SLEEP, CLEAR, CUSTOM
-
+public class EditMonetizationView extends FXMLView {
 }

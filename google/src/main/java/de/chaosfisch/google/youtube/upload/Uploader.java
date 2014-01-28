@@ -15,7 +15,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.RateLimiter;
 import de.chaosfisch.google.youtube.upload.events.UploadEvent;
-import de.chaosfisch.google.youtube.upload.events.UploadFinishedEvent;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +174,7 @@ public class Uploader {
 				if ((!uploadService.getRunning() || 0 == leftUploads) && 0 == runningUploads) {
 					uploadService.setRunning(false);
 					logger.info("All uploads finished");
-					eventBus.post(new UploadFinishedEvent());
+					//eventBus.post(new UploadFinishedEvent());
 				}
 			}
 		}

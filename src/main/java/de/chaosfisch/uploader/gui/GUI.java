@@ -12,15 +12,20 @@ package de.chaosfisch.uploader.gui;
 
 
 import dagger.ObjectGraph;
+import de.chaosfisch.util.FXMLView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.controlsfx.dialog.Dialogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.lang.reflect.Field;
 
 public class GUI extends Application {
 
@@ -42,6 +47,7 @@ public class GUI extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		final ObjectGraph objectGraph = ObjectGraph.create(new GUIModule());
+		FXMLView.setControllerFactory(getControllerFactory(objectGraph));
 
 		final FXMLLoader loader = new FXMLLoader();
 		loader.setControllerFactory(objectGraph::get);
@@ -53,5 +59,27 @@ public class GUI extends Application {
 		stage.setScene(scene);
 		stage.setTitle("JavaFX Memory Visualizer");
 		stage.show();
+	}
+
+	private Callback<Class<?>, Object> getControllerFactory(final ObjectGraph objectGraph) {
+		return aClass -> {
+			boolean inject = false;
+			if (0 < aClass.getDeclaredAnnotationsByType(Inject.class).length) {
+				inject = true;
+			} else {
+				final Field[] fields = aClass.getDeclaredFields();
+				for (final Field field : fields) {
+					if (0 < field.getDeclaredAnnotationsByType(Inject.class).length) {
+						inject = true;
+						break;
+					}
+				}
+			}
+			try {
+				return inject ? objectGraph.get(aClass) : aClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				return null;
+			}
+		};
 	}
 }

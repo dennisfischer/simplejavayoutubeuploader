@@ -14,23 +14,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"
-						   xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
+						   xmlns="http://javafx.com/javafx/8"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="175.0"
-						   xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
-		<ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"/>
+						   xmlns="http://javafx.com/javafx/8"/>
+		<ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8"/>
 		<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-						   xmlns:fx="http://javafx.com/fxml/1"/>
+				/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-						   xmlns:fx="http://javafx.com/fxml/1"/>
+				/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-						   xmlns:fx="http://javafx.com/fxml/1"/>
+				/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-						   xmlns:fx="http://javafx.com/fxml/1"/>
+				/>
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity"/>
