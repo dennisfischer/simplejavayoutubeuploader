@@ -14,7 +14,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import org.controlsfx.control.*?>
 <Accordion minHeight="0.0" minWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<panes>
 		<TitledPane text="Weitere Einstellungen">
@@ -23,50 +22,28 @@
 					<children>
 						<Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="9"/>
 						<Label text="Sichtbarkeit:"/>
-						<SegmentedButton GridPane.columnIndex="1" GridPane.columnSpan="3" styleClass="dark">
-							<buttons>
-								<ToggleButton text="Öffentlich"/>
-								<ToggleButton text="Nicht gelistet"/>
-								<ToggleButton text="Privat"/>
-							</buttons>
-						</SegmentedButton>
+						<ComboBox GridPane.columnIndex="1" GridPane.columnSpan="3" maxWidth="Infinity"/>
 						<Label text="Lizenz:" GridPane.rowIndex="1"/>
-						<SegmentedButton GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="3"
-										 styleClass="dark">
-							<buttons>
-								<ToggleButton text="YouTube"/>
-								<ToggleButton text="Creative Commons"/>
-							</buttons>
-						</SegmentedButton>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="3"
+								  maxWidth="Infinity"/>
 						<Label text="Kommentare:" GridPane.rowIndex="2"/>
-						<SegmentedButton GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="3"
-										 styleClass="dark">
-							<buttons>
-								<ToggleButton text="Erlaubt"/>
-								<ToggleButton text="Moderiert"/>
-								<ToggleButton text="Gesperrt"/>
-							</buttons>
-						</SegmentedButton>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="3"
+								  maxWidth="Infinity"/>
 						<Label text="3D:" GridPane.rowIndex="3"/>
-						<SegmentedButton GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"
-										 styleClass="dark">
-							<buttons>
-								<ToggleButton text="Keine Einstellung"/>
-								<ToggleButton text="3D deaktivieren"/>
-								<ToggleButton text="In 3D umwandeln"/>
-								<ToggleButton text="In 3D"/>
-							</buttons>
-						</SegmentedButton>
+						<ComboBox GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"
+								  maxWidth="Infinity"/>
 						<Label text="Berechtigungen:" GridPane.rowIndex="4"/>
 						<Label text="Uploadstart:" GridPane.rowIndex="6"/>
 						<Label text="Thumbnail:" GridPane.rowIndex="7"/>
 						<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1"
 								   GridPane.rowIndex="8"/>
-						<DatePicker maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2"
-									GridPane.rowIndex="6"/>
+						<DatePicker maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+						<ComboBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.rowIndex="6"
+								  GridPane.columnSpan="2"/>
 						<TextField GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"/>
+						<Button maxWidth="Infinity" GridPane.rowIndex="7" GridPane.columnIndex="3" text="Öffnen"/>
 						<Label text="Projekt:" GridPane.rowIndex="10"/>
-						<ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="3"
+						<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.columnSpan="3"
 								  GridPane.rowIndex="10"/>
 						<HBox spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11">
 							<children>
@@ -75,17 +52,17 @@
 								<Button mnemonicParsing="false" text="Löschen"/>
 							</children>
 						</HBox>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Alters-beschränkt"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Alters-beschränkt"
 									  GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Statistiken"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Statistiken"
 									  GridPane.columnIndex="2" GridPane.rowIndex="5"/>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bewerten"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Bewerten"
 									  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false"
 									  text="Kommentare bewerten" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Einbetten"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Einbetten"
 									  GridPane.columnIndex="3" GridPane.rowIndex="4"/>
-						<ToggleButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Abonennten"
+						<ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Abonennten"
 									  GridPane.columnIndex="3" GridPane.rowIndex="5"/>
 					</children>
 					<columnConstraints>
@@ -115,48 +92,7 @@
 				</GridPane>
 			</content>
 		</TitledPane>
-		<TitledPane text="Monetarisierung">
-			<content>
-				<GridPane hgap="5.0" vgap="5.0" xmlns:fx="http://javafx.com/fxml">
-					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-										   xmlns:fx="http://javafx.com/fxml/1"/>
-					</columnConstraints>
-					<rowConstraints>
-						<RowConstraints maxHeight="-Infinity" vgrow="NEVER"/>
-						<RowConstraints maxHeight="-Infinity" vgrow="NEVER" xmlns="http://javafx.com/javafx/8"
-										xmlns:fx="http://javafx.com/fxml/1"/>
-						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-					</rowConstraints>
-					<children>
-						<ToggleButton mnemonicParsing="false" text="Monetarisieren" maxWidth="Infinity"/>
-						<ToggleButton mnemonicParsing="false" text="Overlay-in-video ads" GridPane.rowIndex="1"
-									  maxWidth="Infinity"/>
-						<ToggleButton mnemonicParsing="false" text="Trueview-Instream ads" GridPane.columnIndex="1"
-									  GridPane.rowIndex="1" maxWidth="Infinity"/>
-						<ToggleButton mnemonicParsing="false" text="Product placement" GridPane.columnIndex="2"
-									  GridPane.rowIndex="1"/>
-						<Label text="Syndication:" GridPane.rowIndex="3"/>
-
-						<SegmentedButton GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2"
-										 styleClass="dark">
-							<buttons>
-								<ToggleButton mnemonicParsing="false" text="Everywhere"/>
-								<ToggleButton mnemonicParsing="false" text="Monetized Platforms only!"/>
-							</buttons>
-						</SegmentedButton>
-
-					</children>
-					<padding>
-						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-					</padding>
-				</GridPane>
-			</content>
-		</TitledPane>
-		<TitledPane text="Partner">
-		</TitledPane>
+		<fx:include source="edit-monetization.fxml"/>
+		<fx:include source="edit-partner.fxml"/>
 	</panes>
 </Accordion>

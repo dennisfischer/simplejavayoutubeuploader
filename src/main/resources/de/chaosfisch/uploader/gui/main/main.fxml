@@ -12,44 +12,25 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
-			prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-	<center>
-		<VBox spacing="5.0">
-			<padding>
-				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-			</padding>
-			<children>
-				<ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
-					<content>
-						<ListView/>
-					</content>
-				</ScrollPane>
-				<HBox alignment="CENTER" layoutX="268.0" layoutY="42.0" minHeight="100.0"
-					  style="-fx-border-style: dotted; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/8"
-					  xmlns:fx="http://javafx.com/fxml/1">
-					<children>
-						<Label layoutX="268.0" layoutY="42.0" text="Drag files or Click to get started!"/>
-					</children>
-				</HBox>
-			</children>
-		</VBox>
-	</center>
+			prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:id="mainFrame"
+			fx:controller="de.chaosfisch.uploader.gui.main.MainPresenter">
 	<bottom>
 		<HBox prefHeight="30.0" spacing="5.0">
 			<padding>
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
 			</padding>
 			<children>
-				<Button mnemonicParsing="false" text="Start"/>
-				<Button mnemonicParsing="false" text="Stop"/>
-				<ComboBox promptText="Action after Uploading...?"/>
+				<Button mnemonicParsing="false" text="Start" fx:id="startButton"/>
+				<Button mnemonicParsing="false" text="Stop" fx:id="stopButton"/>
+				<ComboBox promptText="Action after Uploading...?" fx:id="actionOnFinishList"/>
 			</children>
 		</HBox>
 	</bottom>
 	<top>
-		<MenuBar xmlns:fx="http://javafx.com/fxml">
+		<MenuBar xmlns:fx="http://javafx.com/fxml" useSystemMenuBar="true">
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>

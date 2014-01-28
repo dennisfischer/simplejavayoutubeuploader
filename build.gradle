@@ -9,32 +9,47 @@
  */
 
 
+
+
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'apt'
+
 version = "v3.3.0.0";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
+buildscript {
+	dependencies {
+		repositories {
+			mavenCentral()
+			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		}
+		classpath 'com.jimdo.gradle:gradle-apt-plugin:0.3-SNAPSHOT'
+	}
+}
+
 configurations {
-	providedCompile
+	provided
 }
 
 dependencies {
 	compile 'ch.qos.logback:logback-classic:1.0.9',
 			'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+',
-			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.4'
-	providedCompile 'com.squareup.dagger:dagger-compiler:+'
+			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.4',
+			'org.javafxdata:datafx-core:+', 'org.javafxdata:datafx-controller:+'
 	compile project(':google')
+	provided 'com.squareup.dagger:dagger-compiler:+'
+	apt 'com.squareup.dagger:dagger-compiler:+'
 }
 
 repositories {
 	mavenCentral()
-	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 	maven { url "http://maven.mashape.com/releases" }
 }
 
 
 compileJava {
-	//add required JavaFX libs to compile classpath
+	sourceSets.main.compileClasspath += configurations.provided
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 	getBuildDir().mkdirs()

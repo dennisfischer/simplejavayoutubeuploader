@@ -9,18 +9,35 @@
  */
 
 
-apply plugin: 'java'
 
+
+apply plugin: 'java'
+apply plugin: 'apt'
+
+buildscript {
+	dependencies {
+		repositories {
+			mavenCentral()
+			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		}
+		classpath 'com.jimdo.gradle:gradle-apt-plugin:0.3-SNAPSHOT'
+	}
+}
 
 repositories {
 	mavenCentral()
 	maven { url "http://maven.mashape.com/releases" }
 }
 
-configurations {
-	providedCompile
-}
 
+configurations {
+	provided
+}
+compileJava {
+	sourceSets.main.compileClasspath += configurations.provided
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
 
 dependencies {
 	compile 'com.thoughtworks.xstream:xstream:1.4.3', 'com.mashape.unirest:unirest-java:1.3.0',
@@ -28,11 +45,7 @@ dependencies {
 			'com.google.guava:guava:+', 'com.squareup.dagger:dagger:+',
 			'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+'
 	compile files('/lib/asyncretry.jar')
-	providedCompile 'com.squareup.dagger:dagger-compiler:+'
-}
-
-compileJava {
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	provided 'com.squareup.dagger:dagger-compiler:+'
+	apt 'com.squareup.dagger:dagger-compiler:+'
 }
 

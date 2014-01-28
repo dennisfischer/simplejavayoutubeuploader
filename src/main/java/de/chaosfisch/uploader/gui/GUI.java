@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.gui;
 
 
+import dagger.ObjectGraph;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +41,13 @@ public class GUI extends Application {
 
 	@Override
 	public void start(final Stage stage) throws Exception {
-		final Parent root = FXMLLoader.load(getClass().getResource("/de/chaosfisch/uploader/gui/edit/edit.fxml"));
+		final ObjectGraph objectGraph = ObjectGraph.create(new GUIModule());
+
+		final FXMLLoader loader = new FXMLLoader();
+		loader.setControllerFactory(objectGraph::get);
+		loader.setLocation(getClass().getResource("/de/chaosfisch/uploader/gui/main/main.fxml"));
+
+		final Parent root = loader.load();
 		final Scene scene = new Scene(root, 1000, 500);
 		scene.getStylesheets().add(getClass().getResource("/de/chaosfisch/uploader/gui/style.css").toExternalForm());
 		stage.setScene(scene);

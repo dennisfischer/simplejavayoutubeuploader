@@ -38,6 +38,16 @@
  * Contributors: Dennis Fischer
  */
 
+/*
+ * Copyright (c) 2014 Dennis Fischer.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0+
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ * Contributors: Dennis Fischer
+ */
+
 .toggle-button:focused {
 	-fx-background-color: rgba(23, 134, 248, 0.2), -fx-focus-color, -fx-body-color;
 }
@@ -49,7 +59,7 @@
 
 .toggle-button:selected {
 	-fx-label-padding: 0px 0px 0px 0px;
-	-fx-graphic: url("upload/accept.png");
+	-fx-graphic: url("uploads/accept.png");
 	-fx-background-color: -fx-shadow-highlight-color, linear-gradient(to bottom, derive(-fx-color, -90%) 0%, derive(-fx-color, -60%) 100%), linear-gradient(to bottom, derive(-fx-color, -60%) 0%, derive(-fx-color, -35%) 50%, derive(-fx-color, -30%) 98%, derive(-fx-color, -50%) 100%), linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0.3) 100%);
 	-fx-background-insets: 0 0 -1 0, 0, 1, 1;
 	-fx-text-fill: -fx-light-text-color;

@@ -60,8 +60,8 @@
 		<Label text="Uploadende:" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
 		<Label text="Do, 29.01.2013 um 12:20 Uhr" GridPane.columnIndex="7"/>
 		<Label text="Do, 29.01.2013 um 13:10 Uhr" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
-		<ProgressBar maxWidth="1.7976931348623157E308" progress="0.52" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
-		<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
+		<ProgressBar maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+		<Button maxWidth="Infinity" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
 		<ToggleButton mnemonicParsing="false" text="Nach diesem Upload stoppen!" GridPane.columnIndex="8"
 					  GridPane.rowIndex="1"/>
 	</children>

@@ -22,9 +22,9 @@
 		<Label text="Tags:" GridPane.rowIndex="5"/>
 		<Label text="Account:" GridPane.rowIndex="7"/>
 		<Label text="Playlist(s):" GridPane.rowIndex="8"/>
-		<ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"/>
+		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1"/>
 		<TextField GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-		<ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 		<ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="3"
 					GridPane.rowSpan="2">
 			<content>
@@ -37,8 +37,8 @@
 				<TextArea/>
 			</content>
 		</ScrollPane>
-		<ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-		<ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
 	</children>
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
