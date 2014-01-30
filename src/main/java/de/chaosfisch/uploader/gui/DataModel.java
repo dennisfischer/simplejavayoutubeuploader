@@ -65,4 +65,8 @@ public class DataModel {
 	public void removeUploads(final List<UploadModel> uploadsToRemove) {
 		uploads.removeAll(uploadsToRemove);
 	}
+
+	public void addUpload(final UploadModel model) {
+		uploads.add(model);
+	}
 }

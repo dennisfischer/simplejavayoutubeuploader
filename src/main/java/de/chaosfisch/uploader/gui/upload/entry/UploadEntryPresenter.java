@@ -15,6 +15,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ToggleButton;
+import javafx.util.StringConverter;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UploadEntryPresenter {
 	@FXML
@@ -48,10 +52,11 @@ public class UploadEntryPresenter {
 
 	private void bindModel() {
 		unbindModel();
+		final LocalDateTimeStringConverter dateTimeStringConverter = new LocalDateTimeStringConverter("EEE, dd.MM.yyyy 'um' HH:mm");
+		release.textProperty().bindBidirectional(uploadModel.releaseProperty(), dateTimeStringConverter);
+		start.textProperty().bindBidirectional(uploadModel.startProperty(), dateTimeStringConverter);
+		end.textProperty().bindBidirectional(uploadModel.endProperty(), dateTimeStringConverter);
 		title.textProperty().bind(uploadModel.titleProperty());
-		release.textProperty().bind(uploadModel.releaseProperty().asString());
-		start.textProperty().bind(uploadModel.startProperty().asString());
-		end.textProperty().bind(uploadModel.endProperty().asString());
 		stopAfter.selectedProperty().bindBidirectional(uploadModel.stopAfterProperty());
 		progress.progressProperty().bind(uploadModel.progressProperty());
 	}
@@ -63,5 +68,24 @@ public class UploadEntryPresenter {
 		end.textProperty().unbind();
 		stopAfter.selectedProperty().unbind();
 		progress.progressProperty().unbind();
+	}
+
+	private static class LocalDateTimeStringConverter extends StringConverter<LocalDateTime> {
+
+		DateTimeFormatter dateTimeFormatter;
+
+		public LocalDateTimeStringConverter(final String format) {
+			dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+		}
+
+		@Override
+		public String toString(final LocalDateTime localDateTime) {
+			return null == localDateTime ? "" : localDateTime.format(dateTimeFormatter);
+		}
+
+		@Override
+		public LocalDateTime fromString(final String string) {
+			return null != string && string.isEmpty() ? null : LocalDateTime.parse(string, dateTimeFormatter);
+		}
 	}
 }

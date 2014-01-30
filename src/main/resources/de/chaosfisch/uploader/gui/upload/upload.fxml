@@ -27,9 +27,12 @@
 				<ListView fx:id="uploads"/>
 			</content>
 		</ScrollPane>
-		<HBox alignment="CENTER" layoutX="268.0" layoutY="42.0" minHeight="100.0"
-			  style="-fx-border-style: dotted; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/8">
-			<children>
+		<HBox fx:id="dropzone" alignment="CENTER" layoutX="268.0" layoutY="42.0" minHeight="100.0"
+			  onMouseClicked="#openFiles"
+			  onDragEntered="#filesDragEntered" onDragExited="#filesDragExited" onDragOver="#filesDragOver"
+			  onDragDropped="#filesDragDropped" onMouseEntered="#mouseEntered" style="-fx-border-style: dotted;"
+			  xmlns="http://javafx.com/javafx/8">
+		<children>
 				<Label layoutX="268.0" layoutY="42.0" text="Drag files or Click to get started!"/>
 			</children>
 		</HBox>

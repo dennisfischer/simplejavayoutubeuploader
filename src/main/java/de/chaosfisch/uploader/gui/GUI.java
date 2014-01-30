@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class GUI extends Application {
 
@@ -64,9 +65,13 @@ public class GUI extends Application {
 	private Callback<Class<?>, Object> getControllerFactory(final ObjectGraph objectGraph) {
 		return aClass -> {
 			boolean inject = false;
-			if (0 < aClass.getDeclaredAnnotationsByType(Inject.class).length) {
-				inject = true;
-			} else {
+			for (final Method method : aClass.getDeclaredMethods()) {
+				if (0 < method.getDeclaredAnnotationsByType(Inject.class).length) {
+					inject = true;
+					break;
+				}
+			}
+			if (!inject) {
 				final Field[] fields = aClass.getDeclaredFields();
 				for (final Field field : fields) {
 					if (0 < field.getDeclaredAnnotationsByType(Inject.class).length) {
