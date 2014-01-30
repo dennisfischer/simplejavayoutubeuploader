@@ -1,13 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
-
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 
 
@@ -29,16 +28,16 @@ buildscript {
 }
 
 configurations {
-	provided
+	providedCompile
 }
 
 dependencies {
+	providedCompile 'com.squareup.dagger:dagger-compiler:+'
 	compile 'ch.qos.logback:logback-classic:1.0.9',
 			'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+',
 			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.4',
 			'org.javafxdata:datafx-core:+', 'org.javafxdata:datafx-controller:+'
 	compile project(':google')
-	provided 'com.squareup.dagger:dagger-compiler:+'
 	apt 'com.squareup.dagger:dagger-compiler:+'
 }
 
@@ -49,7 +48,7 @@ repositories {
 
 
 compileJava {
-	sourceSets.main.compileClasspath += configurations.provided
+	sourceSets.main.compileClasspath += configurations.providedCompile
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 	getBuildDir().mkdirs()

@@ -24,11 +24,11 @@
     <orderEntry type="library" exported="" name="Gradle: datafx-controller-2.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jackson-core-asl-1.9.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jackson-mapper-asl-1.9.9" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-compiler-1.2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javawriter-2.3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: guava-15.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
   </component>
 </module>
 

@@ -8,6 +8,26 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
+package de.chaosfisch.uploader.gui.models;
 
+import javafx.beans.property.SimpleStringProperty;
 
-include 'google'
+public class ProjectModel {
+	private final SimpleStringProperty name = new SimpleStringProperty();
+
+	public ProjectModel(final String name) {
+		this.name.set(name);
+	}
+
+	public String getName() {
+		return name.get();
+	}
+
+	public void setName(final String name) {
+		this.name.set(name);
+	}
+
+	public SimpleStringProperty nameProperty() {
+		return name;
+	}
+}

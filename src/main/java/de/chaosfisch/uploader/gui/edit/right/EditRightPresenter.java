@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.uploader.gui.edit.right;
 
@@ -23,54 +23,54 @@ import javax.inject.Inject;
 public class EditRightPresenter {
 
 	@FXML
-	public ComboBox visibility;
+	private ComboBox visibility;
 
 	@FXML
-	public ComboBox license;
+	private ComboBox license;
 
 	@FXML
-	public ComboBox comments;
+	private ComboBox comments;
 
 	@FXML
-	public ComboBox threed;
+	private ComboBox threed;
 
 	@FXML
-	public ImageView thumbnailImage;
+	private ImageView thumbnailImage;
 
 	@FXML
-	public DatePicker releaseDatepicker;
+	private DatePicker releaseDatepicker;
 
 	@FXML
-	public ComboBox releaseTimepicker;
+	private ComboBox releaseTimepicker;
 
 	@FXML
-	public TextField thumbnailPath;
+	private TextField thumbnailPath;
 
 	@FXML
-	public ToggleButton ageRestriction;
+	private ToggleButton ageRestriction;
 
 	@FXML
-	public ToggleButton statistics;
+	private ToggleButton statistics;
 
 	@FXML
-	public ToggleButton rate;
+	private ToggleButton rate;
 
 	@FXML
-	public ToggleButton rateComments;
+	private ToggleButton rateComments;
 
 	@FXML
-	public ToggleButton embed;
+	private ToggleButton embed;
 
 	@FXML
-	public ToggleButton subscribers;
+	private ToggleButton subscribers;
 
 	@FXML
-	public Accordion mainFrame;
+	private Accordion mainFrame;
 
 	@Inject
-	Lazy<EditPartnerView> editPartnerViewLazy;
+	protected Lazy<EditPartnerView> editPartnerViewLazy;
 	@Inject
-	Lazy<EditMonetizationView> editMonetizationViewLazy;
+	protected Lazy<EditMonetizationView> editMonetizationViewLazy;
 
 	@FXML
 	public void openThumbnail(final ActionEvent actionEvent) {

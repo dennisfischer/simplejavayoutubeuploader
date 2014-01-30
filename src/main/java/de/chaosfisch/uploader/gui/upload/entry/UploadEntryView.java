@@ -8,6 +8,9 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
+package de.chaosfisch.uploader.gui.upload.entry;
 
+import de.chaosfisch.util.FXMLView;
 
-include 'google'
+public class UploadEntryView extends FXMLView {
+}

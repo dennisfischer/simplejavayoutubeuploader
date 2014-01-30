@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  ~ Copyright (c) 2014 Dennis Fischer.
-  ~ All rights reserved. This program and the accompanying materials
-  ~ are made available under the terms of the GNU Public License v3.0+
-  ~ which accompanies this distribution, and is available at
-  ~ http://www.gnu.org/licenses/gpl.html
-  ~
-  ~ Contributors: Dennis Fischer
-  -->
+<!--***********************************************************************************************
+  * Copyright (c) 2014 Dennis Fischer.                                                            *
+  * All rights reserved. This program and the accompanying materials                              *
+  * are made available under the terms of the GNU Public License v3.0+                            *
+  * which accompanies this distribution, and is available at                                      *
+  * http://www.gnu.org/licenses/gpl.html                                                          *
+  *                                                                                               *
+  * Contributors: Dennis Fischer                                                                  *
+  ***********************************************************************************************-->
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8">
+<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8"
+		  fx:controller="de.chaosfisch.uploader.gui.upload.entry.UploadEntryPresenter"
+		  xmlns:fx="http://javafx.com/fxml">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
@@ -25,20 +27,16 @@
 		<ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8"/>
 		<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
 				/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-				/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-				/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-				/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity"/>
 		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
 	</rowConstraints>
 	<children>
-		<Label text="Ein ultra langer Uploadtitel der 100 Zeichen lang sein darf oder auch nicht mir egal! Hauptsache 100"
-			   GridPane.columnSpan="5"/>
+		<Label fx:id="title" GridPane.columnSpan="5"/>
 		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
 			<image>
 				<Image url="@lock.png"/>
@@ -54,15 +52,17 @@
 				<Image url="@clock.png"/>
 			</image>
 		</ImageView>
-		<Label text="Do, 29.01.2014 um 13:30 Uhr" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+		<Label fx:id="release" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 		<Separator orientation="VERTICAL" GridPane.columnIndex="5" GridPane.rowSpan="2"/>
 		<Label text="Uploadstart:" GridPane.columnIndex="6"/>
 		<Label text="Uploadende:" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
-		<Label text="Do, 29.01.2013 um 12:20 Uhr" GridPane.columnIndex="7"/>
-		<Label text="Do, 29.01.2013 um 13:10 Uhr" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
-		<ProgressBar maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+		<Label fx:id="start" GridPane.columnIndex="7"/>
+		<Label fx:id="end" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+		<ProgressBar fx:id="progress" maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4"
+					 GridPane.rowIndex="1"/>
 		<Button maxWidth="Infinity" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
-		<ToggleButton mnemonicParsing="false" text="Nach diesem Upload stoppen!" GridPane.columnIndex="8"
+		<ToggleButton mnemonicParsing="false" fx:id="stopAfter" text="Nach diesem Upload stoppen!"
+					  GridPane.columnIndex="8"
 					  GridPane.rowIndex="1"/>
 	</children>
 	<padding>
