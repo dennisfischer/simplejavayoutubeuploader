@@ -16,7 +16,8 @@
 <?import javafx.scene.layout.*?>
 <GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8"
 		  fx:controller="de.chaosfisch.uploader.gui.upload.entry.UploadEntryPresenter"
-		  xmlns:fx="http://javafx.com/fxml">
+		  xmlns:fx="http://javafx.com/fxml"
+		  style="-fx-border-bottom: 1px; -fx-border-color: transparent transparent gainsboro transparent;">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
@@ -60,6 +61,8 @@
 		<Label fx:id="end" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
 		<ProgressBar fx:id="progress" maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4"
 					 GridPane.rowIndex="1"/>
+		<Label fx:id="progressLabel" alignment="CENTER" maxWidth="Infinity" GridPane.columnIndex="4"
+			   GridPane.rowIndex="1"/>
 		<Button maxWidth="Infinity" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
 		<ToggleButton mnemonicParsing="false" fx:id="stopAfter" text="Nach diesem Upload stoppen!"
 					  GridPane.columnIndex="8"

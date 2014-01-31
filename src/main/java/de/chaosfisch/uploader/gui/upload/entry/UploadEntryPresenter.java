@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.gui.upload.entry;
 
 import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.uploader.gui.models.UploadModel;
+import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -24,6 +25,9 @@ import java.time.format.DateTimeFormatter;
 public class UploadEntryPresenter {
 	@FXML
 	public ProgressBar progress;
+
+	@FXML
+	public Label progressLabel;
 
 	@FXML
 	private Label title;
@@ -60,28 +64,32 @@ public class UploadEntryPresenter {
 		title.textProperty().bind(uploadModel.titleProperty());
 		stopAfter.selectedProperty().bindBidirectional(uploadModel.stopAfterProperty());
 		progress.progressProperty().bind(uploadModel.progressProperty());
-		uploadModel.statusProperty().addListener((observableValue, oldStatus, newStatus) -> {
-			statusChange(newStatus);
+		progress.visibleProperty().bind(uploadModel.statusProperty().isEqualTo(Status.RUNNING));
 
+		progressLabel.textProperty().bind(new StringBinding() {
+			{
+				bind(uploadModel.statusProperty());
+				bind(uploadModel.progressProperty());
+			}
+
+			@Override
+			protected String computeValue() {
+				switch (uploadModel.getStatus()) {
+					case ABORTED:
+						return "Aborted by user!";
+					case FINISHED:
+						return "Upload finished!";
+					case FAILED:
+						return "Upload failed!";
+					case RUNNING:
+						return String.format("%.2f%%", uploadModel.getProgress());
+					case WAITING:
+						return "Wating for start";
+					default:
+						return "Illegal status received!";
+				}
+			}
 		});
-		statusChange(uploadModel.getStatus());
-	}
-
-	private void statusChange(final Status status) {
-		progress.setVisible(Status.RUNNING == status);
-
-		switch (status) {
-			case ABORTED:
-				break;
-			case FINISHED:
-				break;
-			case FAILED:
-				break;
-			case RUNNING:
-				break;
-			case WAITING:
-				break;
-		}
 	}
 
 	private void unbindModel() {
