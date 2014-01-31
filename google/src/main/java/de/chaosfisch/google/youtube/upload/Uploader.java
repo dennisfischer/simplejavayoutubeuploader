@@ -27,18 +27,17 @@ import java.util.concurrent.*;
 
 public class Uploader {
 
+	public static final String STOP_ON_ERROR = "stopOnError";
 	private static final int ENQUEUE_WAIT_TIME = 10000;
 	private static final int DEFAULT_MAX_UPLOADS = 1;
+	private int maxUploads = DEFAULT_MAX_UPLOADS;
 	private static final int ONE_KILOBYTE = 1024;
 	private static final Logger logger = LoggerFactory.getLogger(Uploader.class);
-	public static final String STOP_ON_ERROR = "stopOnError";
-
 	private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+	private final CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(executorService);
 	private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 	private final RateLimiter rateLimitter = RateLimiter.create(Double.MAX_VALUE);
-	private final CompletionService<Upload> jobCompletionService = new ExecutorCompletionService<>(executorService);
 	private final HashMap<Upload, Future<Upload>> futures = Maps.newHashMapWithExpectedSize(10);
-
 	private final EventBus eventBus;
 	private final IUploadJobFactory uploadJobFactory;
 	private final Configuration configuration;
@@ -46,8 +45,6 @@ public class Uploader {
 	private IUploadService uploadService;
 	private UploadFinishProcessor consumer;
 	private ScheduledFuture<?> task;
-
-	private int maxUploads = DEFAULT_MAX_UPLOADS;
 
 	@Inject
 	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory, final Configuration configuration) {
@@ -124,16 +121,11 @@ public class Uploader {
 		if (canAddJob()) {
 			final Upload polled = uploadService.fetchNextUpload();
 			if (null != polled) {
-				if (null == polled.getAccount()) {
-					polled.setStatus(Status.LOCKED);
-					uploadService.update(polled);
-				} else {
-					createConsumer();
-					polled.setStatus(Status.RUNNING);
-					uploadService.update(polled);
-					futures.put(polled, jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter)));
-					runningUploads++;
-				}
+				createConsumer();
+				polled.setStatus(Status.RUNNING);
+				uploadService.update(polled);
+				futures.put(polled, jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter)));
+				runningUploads++;
 			}
 		}
 	}
@@ -144,6 +136,37 @@ public class Uploader {
 
 	public void setMaxSpeed(final int maxSpeed) {
 		rateLimitter.setRate(0 == maxSpeed ? Double.MAX_VALUE : maxSpeed * ONE_KILOBYTE);
+	}
+
+	public void runStarttimeChecker() {
+		logger.debug("Running starttime checker");
+		final long delay = uploadService.getStarttimeDelay();
+		logger.debug("Delay to upload is {}", delay);
+		final TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				if (0 < uploadService.countReadyStarttime()) {
+					Uploader.this.run();
+				}
+				runStarttimeChecker();
+			}
+		};
+		if (-1 != delay && (0 == runningUploads || canAddJob())) {
+			task = timer.schedule(timerTask, delay, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	@Subscribe
+	public void onUploadEvent(final UploadEvent uploadEvent) {
+		if (null != task && !task.isCancelled()) {
+			task.cancel(false);
+		}
+		runStarttimeChecker();
+	}
+
+	public void stopStarttimeChecker() {
+		timer.shutdownNow();
+		executorService.shutdownNow();
 	}
 
 	private class UploadFinishProcessor extends Thread {
@@ -192,36 +215,5 @@ public class Uploader {
 				runningUploads--;
 			}
 		}
-	}
-
-	public void runStarttimeChecker() {
-		logger.debug("Running starttime checker");
-		final long delay = uploadService.getStarttimeDelay();
-		logger.debug("Delay to upload is {}", delay);
-		final TimerTask timerTask = new TimerTask() {
-			@Override
-			public void run() {
-				if (0 < uploadService.countReadyStarttime()) {
-					Uploader.this.run();
-				}
-				runStarttimeChecker();
-			}
-		};
-		if (-1 != delay && (0 == runningUploads || canAddJob())) {
-			task = timer.schedule(timerTask, delay, TimeUnit.MILLISECONDS);
-		}
-	}
-
-	@Subscribe
-	public void onUploadEvent(final UploadEvent uploadEvent) {
-		if (null != task && !task.isCancelled()) {
-			task.cancel(false);
-		}
-		runStarttimeChecker();
-	}
-
-	public void stopStarttimeChecker() {
-		timer.shutdownNow();
-		executorService.shutdownNow();
 	}
 }

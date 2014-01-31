@@ -11,5 +11,5 @@
 package de.chaosfisch.google.youtube.upload;
 
 public enum Status {
-	ABORTED, ARCHIVED, FAILED, RUNNING, WAITING, LOCKED
+	ABORTED, FINISHED, FAILED, RUNNING, WAITING
 }

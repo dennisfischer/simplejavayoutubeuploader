@@ -73,15 +73,13 @@ public class UploadEntryPresenter {
 		switch (status) {
 			case ABORTED:
 				break;
-			case ARCHIVED:
+			case FINISHED:
 				break;
 			case FAILED:
 				break;
 			case RUNNING:
 				break;
 			case WAITING:
-				break;
-			case LOCKED:
 				break;
 		}
 	}

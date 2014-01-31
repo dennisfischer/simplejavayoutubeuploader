@@ -130,7 +130,7 @@ public class UploadJob implements Callable<Upload> {
 		} catch (final InterruptedException ignored) {
 			upload.setStatus(Status.ABORTED);
 		} catch (final Exception e) {
-			if (Status.ARCHIVED != upload.getStatus()) {
+			if (Status.FINISHED != upload.getStatus()) {
 				LOGGER.error("Upload error", e);
 				upload.setStatus(Status.FAILED);
 			}
@@ -139,7 +139,7 @@ public class UploadJob implements Callable<Upload> {
 			eventBus.unregister(this);
 		}
 
-		if (Status.ARCHIVED == upload.getStatus()) {
+		if (Status.FINISHED == upload.getStatus()) {
 			LOGGER.info("Starting postprocessing");
 			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
 				try {
@@ -347,7 +347,7 @@ public class UploadJob implements Callable<Upload> {
 
 	private void handleSuccessfulUpload(final String body) throws UploadFinishedException {
 		upload.setVideoid(parseVideoId(body));
-		upload.setStatus(Status.ARCHIVED);
+		upload.setStatus(Status.FINISHED);
 		uploadService.update(upload);
 		throw new UploadFinishedException();
 	}
