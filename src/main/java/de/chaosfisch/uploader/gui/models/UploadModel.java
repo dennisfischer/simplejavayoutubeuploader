@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.gui.models;
 
 
+import de.chaosfisch.google.youtube.upload.Status;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,6 +26,7 @@ public class UploadModel {
 	private final SimpleObjectProperty<LocalDateTime> end = new SimpleObjectProperty<>();
 	private final SimpleObjectProperty<LocalDateTime> release = new SimpleObjectProperty<>();
 	private final SimpleBooleanProperty stopAfter = new SimpleBooleanProperty();
+	private final SimpleObjectProperty<Status> status = new SimpleObjectProperty<>();
 
 	public String getTitle() {
 		return title.get();
@@ -96,5 +98,17 @@ public class UploadModel {
 
 	public void setRelease(final LocalDateTime release) {
 		this.release.set(release);
+	}
+
+	public Status getStatus() {
+		return status.get();
+	}
+
+	public SimpleObjectProperty<Status> statusProperty() {
+		return status;
+	}
+
+	public void setStatus(final Status status) {
+		this.status.set(status);
 	}
 }

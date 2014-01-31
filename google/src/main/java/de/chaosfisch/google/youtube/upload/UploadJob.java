@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.youtube.upload;
 
@@ -128,18 +128,18 @@ public class UploadJob implements Callable<Upload> {
 			// Schritt 3: Chunkupload
 			executor.doWithRetry(upload()).get();
 		} catch (final InterruptedException ignored) {
-			upload.getStatus().setAborted(true);
+			upload.setStatus(Status.ABORTED);
 		} catch (final Exception e) {
-			if (!upload.getStatus().isArchived()) {
+			if (Status.ARCHIVED != upload.getStatus()) {
 				LOGGER.error("Upload error", e);
-				upload.getStatus().setFailed(true);
+				upload.setStatus(Status.FAILED);
 			}
 		} finally {
 			schedueler.shutdownNow();
 			eventBus.unregister(this);
 		}
 
-		if (upload.getStatus().isArchived()) {
+		if (Status.ARCHIVED == upload.getStatus()) {
 			LOGGER.info("Starting postprocessing");
 			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
 				try {
@@ -150,7 +150,6 @@ public class UploadJob implements Callable<Upload> {
 			}
 		}
 
-		upload.getStatus().setRunning(false);
 		uploadService.update(upload);
 		return upload;
 	}
@@ -348,7 +347,7 @@ public class UploadJob implements Callable<Upload> {
 
 	private void handleSuccessfulUpload(final String body) throws UploadFinishedException {
 		upload.setVideoid(parseVideoId(body));
-		upload.getStatus().setArchived(true);
+		upload.setStatus(Status.ARCHIVED);
 		uploadService.update(upload);
 		throw new UploadFinishedException();
 	}
@@ -416,7 +415,7 @@ public class UploadJob implements Callable<Upload> {
 
 			if (Thread.currentThread().isInterrupted()) {
 				LOGGER.error("Upload aborted / stopped.");
-				upload.getStatus().setAborted(true);
+				upload.setStatus(Status.ABORTED);
 				throw new CancellationException("Thread cancled");
 			}
 

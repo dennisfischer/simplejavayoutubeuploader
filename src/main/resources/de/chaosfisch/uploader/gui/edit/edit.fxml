@@ -15,7 +15,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.*?>
-<SplitPane dividerPositions="0.5" focusTraversable="true" xmlns:fx="http://javafx.com/fxml/1"
+<SplitPane dividerPositions="0.5" focusTraversable="true"
 		   xmlns="http://javafx.com/javafx/2.2">
 	<items>
 		<EditLeftView/>

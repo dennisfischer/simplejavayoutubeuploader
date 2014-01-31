@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.gui.upload.entry;
 
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.uploader.gui.models.UploadModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -59,6 +60,30 @@ public class UploadEntryPresenter {
 		title.textProperty().bind(uploadModel.titleProperty());
 		stopAfter.selectedProperty().bindBidirectional(uploadModel.stopAfterProperty());
 		progress.progressProperty().bind(uploadModel.progressProperty());
+		uploadModel.statusProperty().addListener((observableValue, oldStatus, newStatus) -> {
+			statusChange(newStatus);
+
+		});
+		statusChange(uploadModel.getStatus());
+	}
+
+	private void statusChange(final Status status) {
+		progress.setVisible(Status.RUNNING == status);
+
+		switch (status) {
+			case ABORTED:
+				break;
+			case ARCHIVED:
+				break;
+			case FAILED:
+				break;
+			case RUNNING:
+				break;
+			case WAITING:
+				break;
+			case LOCKED:
+				break;
+		}
 	}
 
 	private void unbindModel() {
@@ -72,7 +97,7 @@ public class UploadEntryPresenter {
 
 	private static class LocalDateTimeStringConverter extends StringConverter<LocalDateTime> {
 
-		DateTimeFormatter dateTimeFormatter;
+		final DateTimeFormatter dateTimeFormatter;
 
 		public LocalDateTimeStringConverter(final String format) {
 			dateTimeFormatter = DateTimeFormatter.ofPattern(format);

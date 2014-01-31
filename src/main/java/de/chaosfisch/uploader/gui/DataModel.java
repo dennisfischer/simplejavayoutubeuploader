@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.gui;
 
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.uploader.gui.models.ProjectModel;
 import de.chaosfisch.uploader.gui.models.UploadModel;
 import javafx.collections.FXCollections;
@@ -35,6 +36,7 @@ public class DataModel {
 		uploadModel1.setRelease(LocalDateTime.now());
 		uploadModel1.setStart(LocalDateTime.now());
 		uploadModel1.setStopAfter(false);
+		uploadModel1.setStatus(Status.WAITING);
 		uploads.addAll(uploadModel1);
 	}
 
@@ -62,8 +64,8 @@ public class DataModel {
 		return selectedUploads;
 	}
 
-	public void removeUploads(final List<UploadModel> uploadsToRemove) {
-		uploads.removeAll(uploadsToRemove);
+	public void removeUpload(final UploadModel uploadModel) {
+		uploads.remove(uploadModel);
 	}
 
 	public void addUpload(final UploadModel model) {

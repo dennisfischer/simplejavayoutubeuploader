@@ -36,7 +36,7 @@ public class Upload {
 
 	private final CopyOnWriteArrayList<Playlist> playlists = new CopyOnWriteArrayList<>();
 	private Social social = new Social();
-	private Status status = new Status();
+	private Status status = Status.WAITING;
 	private Monetization monetization = new Monetization();
 	private Permissions permissions = new Permissions();
 	private Metadata metadata = new Metadata();

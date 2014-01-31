@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.youtube.upload;
 
@@ -125,11 +125,11 @@ public class Uploader {
 			final Upload polled = uploadService.fetchNextUpload();
 			if (null != polled) {
 				if (null == polled.getAccount()) {
-					polled.getStatus().setLocked(true);
+					polled.setStatus(Status.LOCKED);
 					uploadService.update(polled);
 				} else {
 					createConsumer();
-					polled.getStatus().setRunning(true);
+					polled.setStatus(Status.RUNNING);
 					uploadService.update(polled);
 					futures.put(polled, jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter)));
 					runningUploads++;
@@ -163,7 +163,7 @@ public class Uploader {
 						uploadService.setRunning(false);
 					}
 
-					if (upload.getStatus().isFailed() && configuration.getBoolean(STOP_ON_ERROR, false)) {
+					if (Status.FAILED == upload.getStatus() && configuration.getBoolean(STOP_ON_ERROR, false)) {
 						uploadService.stopUploading();
 					}
 				}

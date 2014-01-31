@@ -28,7 +28,7 @@
 		<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
 				/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+		<ColumnConstraints hgrow="SOMETIMES" minWidth="150" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
 	</columnConstraints>
 	<rowConstraints>
@@ -39,17 +39,17 @@
 		<Label fx:id="title" GridPane.columnSpan="5"/>
 		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
 			<image>
-				<Image url="@lock.png"/>
+				<Image url="@monetized_disabled.png"/>
 			</image>
 		</ImageView>
-		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="1">
 			<image>
-				<Image url="@money.png"/>
+				<Image url="@monetized.png"/>
 			</image>
 		</ImageView>
 		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
 			<image>
-				<Image url="@clock.png"/>
+				<Image url="@scheduled.png"/>
 			</image>
 		</ImageView>
 		<Label fx:id="release" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
