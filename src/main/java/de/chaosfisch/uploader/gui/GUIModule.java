@@ -13,6 +13,7 @@ package de.chaosfisch.uploader.gui;
 import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.uploader.gui.edit.EditView;
+import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.edit.right.EditRightPresenter;
@@ -24,7 +25,7 @@ import de.chaosfisch.uploader.gui.upload.UploadView;
 import javax.inject.Singleton;
 
 @Module(
-		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class}
+		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class}
 )
 public class GUIModule {
 	@Provides

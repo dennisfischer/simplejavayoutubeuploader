@@ -13,7 +13,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" minWidth="450.0" vgap="5.0" xmlns="http://javafx.com/javafx/8">
+<GridPane hgap="5.0" minWidth="450.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+		  fx:controller="de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter">
 	<children>
 		<Label text="Datei:"/>
 		<Label text="Titel:" GridPane.rowIndex="1"/>
@@ -22,23 +23,24 @@
 		<Label text="Tags:" GridPane.rowIndex="5"/>
 		<Label text="Account:" GridPane.rowIndex="7"/>
 		<Label text="Playlist(s):" GridPane.rowIndex="8"/>
-		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1"/>
-		<TextField GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		<ComboBox maxWidth="Infinity" fx:id="files" GridPane.columnIndex="1"/>
+		<TextField GridPane.columnIndex="1" fx:id="title" GridPane.rowIndex="1"/>
+		<ComboBox maxWidth="Infinity" fx:id="categories" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 		<ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="3"
 					GridPane.rowSpan="2">
 			<content>
-				<TextArea/>
+				<TextArea fx:id="description"/>
 			</content>
 		</ScrollPane>
 		<ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="5"
 					GridPane.rowSpan="2">
 			<content>
-				<TextArea/>
+				<TextArea fx:id="tags"/>
 			</content>
 		</ScrollPane>
-		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-		<ComboBox maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+		<ComboBox maxWidth="Infinity" fx:id="accounts" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+		<Label fx:id="playlists" style="-fx-text-fill: royalblue; -fx-underline: true; -fx-cursor: hand;"
+			   onMouseClicked="#selectPlaylist" text="Keine Playlists" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
 	</children>
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>

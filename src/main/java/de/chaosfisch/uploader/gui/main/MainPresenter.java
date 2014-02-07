@@ -43,7 +43,7 @@ public class MainPresenter {
 	private ComboBox actionOnFinishList;
 
 	public void initialize() {
-		mainFrame.setCenter(uploadsViewLazy.get().getView());
+		mainFrame.setCenter(editViewLazy.get().getView());
 	}
 
 	@FXML

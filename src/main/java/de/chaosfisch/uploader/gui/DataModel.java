@@ -11,8 +11,10 @@
 package de.chaosfisch.uploader.gui;
 
 import de.chaosfisch.google.youtube.upload.Status;
-import de.chaosfisch.uploader.gui.models.ProjectModel;
-import de.chaosfisch.uploader.gui.models.UploadModel;
+import de.chaosfisch.uploader.gui.models.*;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -21,12 +23,23 @@ import java.util.List;
 
 public class DataModel {
 
-	private final ObservableList<UploadModel> uploads = FXCollections.observableArrayList();
-	private final ObservableList<ProjectModel> projects = FXCollections.observableArrayList();
-	private ObservableList<UploadModel> selectedUploads;
+	private final SimpleListProperty<UploadModel> uploads = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<ProjectModel> projects = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<AccountModel> accounts = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<CategoryModel> categories = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<String> files = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<UploadModel> selectedUploads = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<PlaylistModel> selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleObjectProperty<AccountModel> selectedAccount = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<CategoryModel> selectedCategory = new SimpleObjectProperty<>();
+	private final SimpleStringProperty selectedFile = new SimpleStringProperty();
 
 
 	public DataModel() {
+		initSampleData();
+	}
+
+	private void initSampleData() {
 		projects.addAll(new ProjectModel("Test 1"), new ProjectModel("Projekt 2"), new ProjectModel("Und 3"));
 
 		final UploadModel uploadModel1 = new UploadModel();
@@ -70,6 +83,57 @@ public class DataModel {
 		uploadModel5.setStopAfter(false);
 		uploadModel5.setStatus(Status.FINISHED);
 		uploads.addAll(uploadModel1, uploadModel2, uploadModel3, uploadModel4, uploadModel5);
+
+
+		final CategoryModel category1 = new CategoryModel();
+		category1.setName("Kategorie 1");
+		final CategoryModel category2 = new CategoryModel();
+		category2.setName("Kategorie 2");
+		final CategoryModel category3 = new CategoryModel();
+		category3.setName("Kategorie 3");
+		final CategoryModel category4 = new CategoryModel();
+		category4.setName("Kategorie 4");
+		categories.addAll(category1, category2, category3, category4);
+
+		final AccountModel accountModel = new AccountModel();
+		accountModel.setName("Account 1");
+		final ObservableList<PlaylistModel> playlists = FXCollections.observableArrayList();
+		final PlaylistModel model1 = new PlaylistModel();
+		model1.setTitle("Playlist 1");
+		final PlaylistModel model2 = new PlaylistModel();
+		model2.setTitle("Playlist 2");
+		final PlaylistModel model3 = new PlaylistModel();
+		model3.setTitle("Playlist 3");
+		final PlaylistModel model4 = new PlaylistModel();
+		model4.setTitle("Playlist 4");
+		final PlaylistModel model5 = new PlaylistModel();
+		model5.setTitle("Playlist 5");
+		final PlaylistModel model6 = new PlaylistModel();
+		model6.setTitle("Playlist 6");
+		final PlaylistModel model7 = new PlaylistModel();
+		model7.setTitle("Playlist 7");
+		final PlaylistModel model8 = new PlaylistModel();
+		model8.setTitle("Playlist 8");
+		final PlaylistModel model9 = new PlaylistModel();
+		model9.setTitle("Playlist 9");
+		final PlaylistModel model10 = new PlaylistModel();
+		model10.setTitle("Playlist 10");
+		final PlaylistModel model11 = new PlaylistModel();
+		model11.setTitle("Playlist 11");
+		playlists.addAll(model1);
+		playlists.addAll(model2);
+		playlists.addAll(model3);
+		playlists.addAll(model4);
+		playlists.addAll(model5);
+		playlists.addAll(model6);
+		playlists.addAll(model7);
+		playlists.addAll(model8);
+		playlists.addAll(model9);
+		playlists.addAll(model10);
+		playlists.addAll(model11);
+
+		accountModel.setPlaylists(playlists);
+		accounts.addAll(accountModel);
 	}
 
 	public void addUploads(final List<UploadModel> uploads) {
@@ -80,27 +144,131 @@ public class DataModel {
 		this.projects.addAll(projects);
 	}
 
-	public ObservableList<UploadModel> uploadObservableList() {
-		return uploads;
-	}
-
-	public ObservableList<ProjectModel> projectObservableList() {
-		return projects;
-	}
-
-	public ObservableList<UploadModel> getSelectedUploads() {
-		return selectedUploads;
-	}
-
-	public void setSelectedUploads(final ObservableList<UploadModel> selectedUploads) {
-		this.selectedUploads = selectedUploads;
-	}
-
 	public void removeUpload(final UploadModel uploadModel) {
 		uploads.remove(uploadModel);
 	}
 
 	public void addUpload(final UploadModel model) {
 		uploads.add(model);
+	}
+
+	public ObservableList<UploadModel> getUploads() {
+		return uploads.get();
+	}
+
+	public void setUploads(final ObservableList<UploadModel> uploads) {
+		this.uploads.set(uploads);
+	}
+
+	public SimpleListProperty<UploadModel> uploadsProperty() {
+		return uploads;
+	}
+
+	public ObservableList<ProjectModel> getProjects() {
+		return projects.get();
+	}
+
+	public void setProjects(final ObservableList<ProjectModel> projects) {
+		this.projects.set(projects);
+	}
+
+	public SimpleListProperty<ProjectModel> projectsProperty() {
+		return projects;
+	}
+
+	public ObservableList<AccountModel> getAccounts() {
+		return accounts.get();
+	}
+
+	public void setAccounts(final ObservableList<AccountModel> accounts) {
+		this.accounts.set(accounts);
+	}
+
+	public SimpleListProperty<AccountModel> accountsProperty() {
+		return accounts;
+	}
+
+	public ObservableList<CategoryModel> getCategories() {
+		return categories.get();
+	}
+
+	public void setCategories(final ObservableList<CategoryModel> categories) {
+		this.categories.set(categories);
+	}
+
+	public SimpleListProperty<CategoryModel> categoriesProperty() {
+		return categories;
+	}
+
+	public ObservableList<UploadModel> getSelectedUploads() {
+		return selectedUploads.get();
+	}
+
+	public void setSelectedUploads(final ObservableList<UploadModel> selectedUploads) {
+		this.selectedUploads.set(selectedUploads);
+	}
+
+	public SimpleListProperty<UploadModel> selectedUploadsProperty() {
+		return selectedUploads;
+	}
+
+	public ObservableList<String> getFiles() {
+		return files.get();
+	}
+
+	public void setFiles(final ObservableList<String> files) {
+		this.files.set(files);
+	}
+
+	public SimpleListProperty<String> filesProperty() {
+		return files;
+	}
+
+	public ObservableList<PlaylistModel> getSelectedPlaylists() {
+		return selectedPlaylists.get();
+	}
+
+	public void setSelectedPlaylists(final ObservableList<PlaylistModel> selectedPlaylists) {
+		this.selectedPlaylists.set(selectedPlaylists);
+	}
+
+	public SimpleListProperty<PlaylistModel> selectedPlaylistsProperty() {
+		return selectedPlaylists;
+	}
+
+	public String getSelectedFile() {
+		return selectedFile.get();
+	}
+
+	public void setSelectedFile(final String selectedFile) {
+		this.selectedFile.set(selectedFile);
+	}
+
+	public SimpleStringProperty selectedFileProperty() {
+		return selectedFile;
+	}
+
+	public CategoryModel getSelectedCategory() {
+		return selectedCategory.get();
+	}
+
+	public void setSelectedCategory(final CategoryModel selectedCategory) {
+		this.selectedCategory.set(selectedCategory);
+	}
+
+	public SimpleObjectProperty<CategoryModel> selectedCategoryProperty() {
+		return selectedCategory;
+	}
+
+	public AccountModel getSelectedAccount() {
+		return selectedAccount.get();
+	}
+
+	public void setSelectedAccount(final AccountModel selectedAccount) {
+		this.selectedAccount.set(selectedAccount);
+	}
+
+	public SimpleObjectProperty<AccountModel> selectedAccountProperty() {
+		return selectedAccount;
 	}
 }

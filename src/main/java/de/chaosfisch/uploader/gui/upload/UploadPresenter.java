@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.gui.upload;
 
+import de.chaosfisch.google.youtube.upload.Status;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.models.UploadModel;
 import javafx.fxml.FXML;
@@ -44,7 +45,7 @@ public class UploadPresenter {
 		uploads.setCellFactory(new UploadCellFactory());
 		uploads.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		dataModel.setSelectedUploads(uploads.getSelectionModel().getSelectedItems());
-		uploads.setItems(dataModel.uploadObservableList());
+		uploads.itemsProperty().bindBidirectional(dataModel.uploadsProperty());
 	}
 
 	@FXML
@@ -87,6 +88,7 @@ public class UploadPresenter {
 		}
 		for (final File file : files) {
 			final UploadModel model = new UploadModel();
+			model.setStatus(Status.WAITING);
 			model.setTitle(file.getName());
 			dataModel.addUpload(model);
 		}

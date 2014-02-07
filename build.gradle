@@ -10,6 +10,8 @@
 
 
 
+
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
@@ -35,14 +37,14 @@ dependencies {
 	providedCompile 'com.squareup.dagger:dagger-compiler:+'
 	compile 'ch.qos.logback:logback-classic:1.0.9',
 			'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+',
-			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.4',
-			'org.javafxdata:datafx-core:+', 'org.javafxdata:datafx-controller:+'
+			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.5-SNAPSHOT'
 	compile project(':google')
 	apt 'com.squareup.dagger:dagger-compiler:+'
 }
 
 repositories {
 	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 	maven { url "http://maven.mashape.com/releases" }
 }
 

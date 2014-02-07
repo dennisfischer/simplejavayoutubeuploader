@@ -14,7 +14,7 @@ import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.models.ProjectModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
 
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ProjectPresenter {
 	@FXML
-	public ChoiceBox<ProjectModel> projects;
+	public ComboBox<ProjectModel> projects;
 
 	@Inject
 	protected DataModel dataModel;
@@ -78,10 +78,11 @@ public class ProjectPresenter {
 	@FXML
 	public void deleteProject() {
 		projects.getItems().remove(projects.getSelectionModel().getSelectedItem());
+		projects.setValue(null);
 	}
 
 	@FXML
 	public void initialize() {
-		projects.setItems(dataModel.projectObservableList());
+		projects.itemsProperty().bindBidirectional(dataModel.projectsProperty());
 	}
 }

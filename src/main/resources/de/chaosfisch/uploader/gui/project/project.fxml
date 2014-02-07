@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox fx:controller="de.chaosfisch.uploader.gui.project.ProjectPresenter" xmlns:fx="http://javafx.com/fxml">
 	<children>
-		<ChoiceBox maxWidth="Infinity" fx:id="projects"/>
+		<ComboBox maxWidth="Infinity" fx:id="projects"/>
 		<HBox spacing="5.0">
 			<padding>
 				<Insets top="5" bottom="5" right="5"/>

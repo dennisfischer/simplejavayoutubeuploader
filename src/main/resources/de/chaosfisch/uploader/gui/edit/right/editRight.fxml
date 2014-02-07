@@ -16,8 +16,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <Accordion fx:controller="de.chaosfisch.uploader.gui.edit.right.EditRightPresenter" fx:id="mainFrame" minHeight="0.0"
-		   minWidth="450.0"
-		   xmlns:fx="http://javafx.com/fxml">
+		   minWidth="450.0" xmlns:fx="http://javafx.com/fxml">
 	<panes>
 		<TitledPane text="Weitere Einstellungen">
 			<content>
