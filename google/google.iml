@@ -44,7 +44,7 @@
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev94-1.17.0-rc" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: C__Program_Files_Java_jdk1_8_0_jre_lib_jfxrt_jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
   </component>
 </module>
 

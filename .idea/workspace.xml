@@ -9,32 +9,15 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added gradle wrapper and updated readme">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__C__Program_Files_Java_jdk1_8_0_jre_lib_jfxrt_jar.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__aopalliance_1_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__asm_3_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__cglib_2_2_1_v20090111.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__fx_guice_2_1_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__gson_2_2_2.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_assistedinject_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__guice_multibindings_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__hamcrest_core_1_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxtras_labs_2_2_r5.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__joda_time_2_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_4_10.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__google_api_services_youtube_v3_rev92_1_17_0_rc.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__jfxrt.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__kryo_2_22.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__slf4j_api_1_7_5.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_clean.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/QueueUploadCellRenderer.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/QueueUploadCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Fixed Starttime display bug. Fixed sf #43 socketException not handled.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__jfxrt.xml" />
+      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__C__Program_Files_Java_jdk1_8_0_jre_lib_jfxrt_jar.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/build.gradle" afterPath="$PROJECT_DIR$/google/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/build.gradle" afterPath="$PROJECT_DIR$/util/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/persistence.iml" afterPath="$PROJECT_DIR$/persistence/persistence.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/util.iml" afterPath="$PROJECT_DIR$/util/util.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
@@ -122,10 +105,64 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Upload.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Upload.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="4" selection-start="777" selection-end="777" vertical-scroll-proportion="0.26020408" vertical-offset="0" max-vertical-offset="3638">
+            <state line="21" column="4" selection-start="777" selection-end="777" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3638">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="43" column="29" selection-start="1560" selection-end="1560" vertical-scroll-proportion="0.15454546" vertical-offset="510" max-vertical-offset="1496">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/google/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="43" selection-start="1281" selection-end="1281" vertical-scroll-proportion="-11.64" vertical-offset="151" max-vertical-offset="714">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/persistence/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="25" column="29" selection-start="655" selection-end="655" vertical-scroll-proportion="-11.56" vertical-offset="0" max-vertical-offset="425">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/template/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="-1.36" vertical-offset="0" max-vertical-offset="374">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="43" selection-start="791" selection-end="791" vertical-scroll-proportion="-11.96" vertical-offset="7" max-vertical-offset="595">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/settings.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="3" selection-start="317" selection-end="317" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="119">
               <folding />
             </state>
           </provider>
@@ -165,6 +202,38 @@
         <entry key=":persistence/simplejavayoutubeuploader/" value="false" />
         <entry key="simplejavayoutubeuploader/" value="true" />
       </map>
+    </option>
+    <option name="recentTasks">
+      <list>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="distribute" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
+                  <option value="clean" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+      </list>
     </option>
     <option name="availableProjects">
       <map>
@@ -650,7 +719,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="1391772119650" />
+        <entry key="$PROJECT_DIR$" value="1391773925078" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -700,86 +769,86 @@
               <option name="name" value="template" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-core-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/messaging" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-plugins-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-reporting-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/announce" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ivy-2.2.0.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/tooling-api" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-publish-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-language-jvm-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/maven" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/sonar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-launcher-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/resources" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/core-impl" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/javascript" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ant-launcher-1.9.2.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ear" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/cli" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ide" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-language-base-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-build-init-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/build-init" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/antlr" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-build-comparison-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/jacoco" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/plugins" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-jacoco-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-cpp-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ivy-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ide-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/signing" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-base-services-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-core-impl-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-open-api-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-resources-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/jetty" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/internal-integ-testing" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/publish" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/ant-antlr-1.9.2.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-scala-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-maven-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/build-comparison" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ivy" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/groovy-all-1.8.6.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/cpp" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-ui-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-base-services-groovy-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/scala" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/internal-testing" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ant-1.9.2.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/reporting" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-tooling-api-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/code-quality" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-native-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-code-quality-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/launcher" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-messaging-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ear-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/osgi" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/language-jvm" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-sonar-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-announce-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-osgi-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/base-services" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/language-base" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/wrapper" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-wrapper-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/diagnostics" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ui" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-jetty-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-javascript-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/base-services-groovy" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-signing-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/core" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-docs-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-antlr-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/open-api" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-diagnostics-1.9.jar" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/native" />
-                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-cli-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-language-base-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/native" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/reporting" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-diagnostics-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/language-jvm" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-launcher-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-cli-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/groovy-all-1.8.6.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-build-comparison-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/ivy" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/ide" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-language-jvm-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-core-impl-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-cpp-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/sonar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-publish-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/internal-testing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/cpp" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-scala-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/ui" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-jetty-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-ivy-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/base-services" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/javascript" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-native-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-jacoco-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/signing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-osgi-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-ear-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-tooling-api-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-open-api-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/wrapper" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/osgi" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/build-comparison" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-ide-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-wrapper-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/ant-1.9.2.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/code-quality" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/resources" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-build-init-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/core-impl" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/diagnostics" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/build-init" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-reporting-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/ear" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-antlr-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/launcher" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-ui-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/announce" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-maven-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/ant-launcher-1.9.2.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/plugins" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/open-api" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-signing-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-base-services-groovy-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-base-services-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/core" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-announce-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/jacoco" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/jetty" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/scala" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-core-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-javascript-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-code-quality-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/tooling-api" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/cli" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-resources-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-plugins-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/maven" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/publish" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-docs-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/antlr" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/ivy-2.2.0.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/gradle-sonar-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/gradle-messaging-1.9.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/lib/plugins/ant-antlr-1.9.2.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/internal-integ-testing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/messaging" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/language-base" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-1.9/src/base-services-groovy" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -802,10 +871,8 @@
         <option value="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/InstantTypeConverter.java" />
         <option value="$PROJECT_DIR$/util/src/main/java/de/chaosfisch/util/DateTimeTypeConverter.java" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/AbstractAccountService.java" />
-        <option value="$PROJECT_DIR$/util/build.gradle" />
         <option value="$PROJECT_DIR$/template/build.gradle" />
         <option value="$PROJECT_DIR$/persistence/build.gradle" />
-        <option value="$PROJECT_DIR$/google/build.gradle" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Status.java" />
         <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml" />
         <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/style.css" />
@@ -823,9 +890,12 @@
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/AccountAddDialogController.java" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationData.java" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/QueueUploadCellRenderer.java" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java" />
+        <option value="$PROJECT_DIR$/google/build.gradle" />
+        <option value="$PROJECT_DIR$/util/build.gradle" />
+        <option value="$PROJECT_DIR$/settings.gradle" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -1125,6 +1195,62 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="template" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="persistence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane">
@@ -1184,11 +1310,11 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="options.lastSelected" value="editor" />
+    <property name="options.lastSelected" value="reference.settingsdialog.project.gradle" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -1263,7 +1389,7 @@
       <recent name="org.chaosfisch" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SimpleJavaYoutubeUploader">
+  <component name="RunManager" selected="Gradle.simplejavayoutubeuploader [distribute]">
     <configuration default="false" name="simplejavayoutubeuploader [distribute]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -1582,7 +1708,7 @@
       <workItem from="1388242149087" duration="421000" />
       <workItem from="1388571440131" duration="599000" />
       <workItem from="1388577803709" duration="45000" />
-      <workItem from="1391771951313" duration="1620000" />
+      <workItem from="1391771951313" duration="2302000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -2254,7 +2380,11 @@
       <created>1387020037934</created>
       <updated>1387020037934</updated>
     </task>
-    <option name="localTasksCounter" value="163" />
+    <task id="LOCAL-00163" summary="Fixed Starttime display bug. Fixed sf #43 socketException not handled.">
+      <created>1391773602148</created>
+      <updated>1391773602148</updated>
+    </task>
+    <option name="localTasksCounter" value="164" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers>
       <GitHub shared="false" url="">
@@ -2273,7 +2403,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19064000" />
+    <option name="totallyTimeSpent" value="19746000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -2352,7 +2482,6 @@
       <TodoPanelSettings />
     </option>
     <confirmRemoveEmptyChangelist value="2" />
-    <MESSAGE value="Fixed async retry bug - used correct command order." />
     <MESSAGE value="Removed version fields from POJOs, removed DBConverter, changed persistence version field to atomic integer." />
     <MESSAGE value="Updated unirest version" />
     <MESSAGE value="Removed unirest &lt; 1.2.8 bug workaround" />
@@ -2377,7 +2506,8 @@
     <MESSAGE value="Fixed upload visibility scheduling bug #33 sf" />
     <MESSAGE value="Fixed authentication - hangs on account selection. #34 sf" />
     <MESSAGE value="Added gradle wrapper and updated readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added gradle wrapper and updated readme" />
+    <MESSAGE value="Fixed Starttime display bug. Fixed sf #43 socketException not handled." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Starttime display bug. Fixed sf #43 socketException not handled." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
@@ -2435,16 +2565,6 @@
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/account/AbstractAccountService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="33" selection-start="2688" selection-end="2688" vertical-scroll-proportion="0.0" vertical-offset="667" max-vertical-offset="1836" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/persistence/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="29" selection-start="656" selection-end="656" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/google/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="29" selection-start="1491" selection-end="1491" vertical-scroll-proportion="1.021858" vertical-offset="0" max-vertical-offset="714" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Status.java">
@@ -2507,11 +2627,6 @@
         <state line="29" column="77" selection-start="1313" selection-end="1313" vertical-scroll-proportion="0.5477778" vertical-offset="0" max-vertical-offset="900" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="29" selection-start="558" selection-end="558" vertical-scroll-proportion="0.22666667" vertical-offset="0" max-vertical-offset="900" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/resources/application.properties">
       <provider selected="true" editor-type-id="ResourceBundle">
         <state />
@@ -2533,16 +2648,6 @@
     <entry file="file://$PROJECT_DIR$/../gradle/gradle-1.9/src/core/org/gradle/api/Project.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="661" column="9" selection-start="29088" selection-end="29088" vertical-scroll-proportion="0.82371795" vertical-offset="10043" max-vertical-offset="24548" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/template/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="0.05448718" vertical-offset="0" max-vertical-offset="624" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/settings.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="595" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE.md">
@@ -2644,13 +2749,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="2" selection-start="446" selection-end="446" vertical-scroll-proportion="0.18545455" vertical-offset="0" max-vertical-offset="1530">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="118" column="47" selection-start="4985" selection-end="4985" vertical-scroll-proportion="0.79826087" vertical-offset="816" max-vertical-offset="7089">
@@ -2681,7 +2779,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/Upload.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="4" selection-start="777" selection-end="777" vertical-scroll-proportion="0.26020408" vertical-offset="0" max-vertical-offset="3638">
+        <state line="21" column="4" selection-start="777" selection-end="777" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3638">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="43" selection-start="1281" selection-end="1281" vertical-scroll-proportion="-11.64" vertical-offset="151" max-vertical-offset="714">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/persistence/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="29" selection-start="655" selection-end="655" vertical-scroll-proportion="-11.56" vertical-offset="0" max-vertical-offset="425">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="-1.36" vertical-offset="0" max-vertical-offset="374">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="43" selection-start="791" selection-end="791" vertical-scroll-proportion="-11.96" vertical-offset="7" max-vertical-offset="595">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="3" selection-start="317" selection-end="317" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="563">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="29" selection-start="1560" selection-end="1560" vertical-scroll-proportion="0.15454546" vertical-offset="510" max-vertical-offset="1496">
           <folding />
         </state>
       </provider>

@@ -7,8 +7,6 @@
  *
  * Contributors: Dennis Fischer
  */
-def javaFxHome = "${System.properties['java.home']}";
-
 apply plugin: 'java'
 apply plugin: 'application'
 version = "v3.2.0.7";
@@ -30,7 +28,7 @@ dependencies {
 
 	testCompile 'junit:junit:4.10'
 
-	providedCompile files("$javaFxHome/lib/jfxrt.jar")
+	providedCompile files("$javaFxHome/jre/lib/jfxrt.jar")
 }
 
 repositories {
@@ -54,7 +52,7 @@ jar {
 
 task javaFXPackager(type: Exec) {
 	commandLine = [
-			'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
+			"$javaFxHome/bin/javafxpackager.exe",
 			'-createjar',
 			'-srcdir',
 			sourceSets.main.output.classesDir,
