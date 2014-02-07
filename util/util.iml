@@ -12,15 +12,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
     <orderEntry type="library" exported="" name="Gradle: joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guice-3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: C__Program_Files_Java_jdk1_8_0_jre_lib_jfxrt_jar" level="project" />
   </component>
 </module>
 

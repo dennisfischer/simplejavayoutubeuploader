@@ -20,6 +20,8 @@ import de.chaosfisch.google.youtube.upload.metadata.Monetization;
 import de.chaosfisch.google.youtube.upload.metadata.Social;
 import de.chaosfisch.google.youtube.upload.metadata.permissions.Permissions;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -133,8 +135,8 @@ public class Upload {
     }
 
     public void setDateTimeOfStart(final DateTime dateTimeOfStart) {
-        if (null == dateTimeOfStart || dateTimeOfStart.isBeforeNow()) {
-            this.dateTimeOfStart = null;
+		if (null == dateTimeOfStart || dateTimeOfStart.isBefore(Instant.now().minus(Duration.standardSeconds(5)))) {
+			this.dateTimeOfStart = null;
         } else {
             this.dateTimeOfStart = dateTimeOfStart;
         }

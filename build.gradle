@@ -11,81 +11,81 @@ def javaFxHome = "${System.properties['java.home']}";
 
 apply plugin: 'java'
 apply plugin: 'application'
-version = "v3.2.0.6";
+version = "v3.2.0.7";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 configurations {
-    //we do not want to have jfxrt.jar in the classpath when creating the jar,
-    //therefore a seperate configuration is required
-    providedCompile
+	//we do not want to have jfxrt.jar in the classpath when creating the jar,
+	//therefore a seperate configuration is required
+	providedCompile
 }
 
 dependencies {
-    compile 'ch.qos.logback:logback-classic:1.0.9', 'org.jfxtras:jfxtras-labs:2.2+',
-            'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
-            'com.cathive.fx:fx-guice:+', 'com.google.guava:guava:15+',
-            'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
-            'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
-    compile project(':google'), project(':persistence'), project(':template'), project(':util')
+	compile 'ch.qos.logback:logback-classic:1.0.9', 'org.jfxtras:jfxtras-labs:2.2+',
+			'com.thoughtworks.xstream:xstream:1.4.3', 'com.google.code.gson:gson:2.2.2',
+			'com.cathive.fx:fx-guice:+', 'com.google.guava:guava:15+',
+			'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
+			'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
+	compile project(':google'), project(':persistence'), project(':template'), project(':util')
 
-    testCompile 'junit:junit:4.10'
+	testCompile 'junit:junit:4.10'
 
-    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 repositories {
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "http://maven.mashape.com/releases" }
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+	maven { url "http://maven.mashape.com/releases" }
 }
 
 
 compileJava {
-    //add required JavaFX libs to compile classpath
-    sourceSets.main.compileClasspath += configurations.providedCompile
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-    getBuildDir().mkdirs()
+	//add required JavaFX libs to compile classpath
+	sourceSets.main.compileClasspath += configurations.providedCompile
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	getBuildDir().mkdirs()
 }
 
 jar {
-    archiveName = "SimpleJavaYoutubeUploader.jar"
+	archiveName = "SimpleJavaYoutubeUploader.jar"
 }
 
 task javaFXPackager(type: Exec) {
-    commandLine = [
-            'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
-            '-createjar',
-            '-srcdir',
-            sourceSets.main.output.classesDir,
-            '-outdir',
-            jar.destinationDir,
-            '-outfile',
-            jar.archiveName,
-            '-appclass',
-            mainClassName,
-            '-nocss2bin',
-            '-classpath',
-            configurations.runtime.collect { "lib/" + it.name }.join(' '),
-            '-manifestAttrs',
-            'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
-                    'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
-    ]
+	commandLine = [
+			'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
+			'-createjar',
+			'-srcdir',
+			sourceSets.main.output.classesDir,
+			'-outdir',
+			jar.destinationDir,
+			'-outfile',
+			jar.archiveName,
+			'-appclass',
+			mainClassName,
+			'-nocss2bin',
+			'-classpath',
+			configurations.runtime.collect { "lib/" + it.name }.join(' '),
+			'-manifestAttrs',
+			'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
+					'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
+	]
 }
 
 task copyTask(type: Copy) {
-    from sourceSets.main.output.resourcesDir
-    into sourceSets.main.output.classesDir
+	from sourceSets.main.output.resourcesDir
+	into sourceSets.main.output.classesDir
 }
 
 task distribute(type: Zip) {
-    file("$buildDir/SimpleJavaYoutubeUploader.vmoptions").createNewFile()
-    baseName 'simple-java-youtube-uploader'
-    from("$jar.destinationDir$File.separator${jar.archiveName}")
-    from("$buildDir/SimpleJavaYoutubeUploader.vmoptions")
-    into("lib") {
-        from(project.configurations.runtime)
-    }
+	file("$buildDir/SimpleJavaYoutubeUploader.vmoptions").createNewFile()
+	baseName 'simple-java-youtube-uploader'
+	from("$jar.destinationDir$File.separator${jar.archiveName}")
+	from("$buildDir/SimpleJavaYoutubeUploader.vmoptions")
+	into("lib") {
+		from(project.configurations.runtime)
+	}
 }
 
 distribute.dependsOn javaFXPackager

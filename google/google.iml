@@ -14,7 +14,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="util" exported="" />
     <orderEntry type="library" exported="" name="Gradle: asyncretry" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-client-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guice-assistedinject-3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xpp3_min-1.1.4c" level="project" />
@@ -44,7 +43,8 @@
     <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev92-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev94-1.17.0-rc" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: C__Program_Files_Java_jdk1_8_0_jre_lib_jfxrt_jar" level="project" />
   </component>
 </module>
 

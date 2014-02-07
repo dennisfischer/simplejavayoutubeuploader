@@ -15,11 +15,13 @@
     <orderEntry type="module" module-name="google" exported="" />
     <orderEntry type="module" module-name="template" exported="" />
     <orderEntry type="library" exported="" name="Gradle: guice-3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: kryo-2.22" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: kryo-2.23.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: minlog-1.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: objenesis-2.1" level="project" />
   </component>
 </module>
 
