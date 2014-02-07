@@ -256,8 +256,8 @@ public class AbstractMetadataService implements IMetadataService {
         final Metadata metadata = upload.getMetadata();
         final Monetization monetization = upload.getMonetization();
         if (monetization.isClaim() && License.YOUTUBE == upload.getMetadata().getLicense()) {
-            params.put("video_monetization_style", "ads");
-            if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
+			params.put("claim_style", "ads");
+			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
                 params.put("enable_overlay_ads", boolConverter(monetization.isOverlay()));
                 params.put("trueview_instream", boolConverter(monetization.isTrueview()));
                 params.put("instream", boolConverter(monetization.isInstream()));
@@ -266,18 +266,18 @@ public class AbstractMetadataService implements IMetadataService {
                 params.put("allow_syndication", boolConverter(Syndication.GLOBAL == monetization.getSyndication()));
             }
             if (monetization.isPartner()) {
-                params.put("claim_type", ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ?
-                        "B" :
-                        ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
+				//     params.put("claim_type", ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ?
+				//           "B" :
+				//         ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
 
-                final String toFind = ClaimOption.MONETIZE == monetization.getClaimoption() ?
+				final String toFind = ClaimOption.MONETIZE == monetization.getClaimoption() ?
                         "Monetize in all countries" :
                         ClaimOption.TRACK == monetization.getClaimoption() ?
                                 "Track in all countries" :
                                 "Block in all countries";
 
-                final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
-                final Matcher matcher = pattern.matcher(content);
+				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\sdata-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
+				final Matcher matcher = pattern.matcher(content);
 
                 String usagePolicy = null;
                 int position = 0;
@@ -287,9 +287,9 @@ public class AbstractMetadataService implements IMetadataService {
                         usagePolicy = matcher.group(1);
                     }
                 }
-                params.put("usage_policy", usagePolicy);
+				params.put("claim_usage_policy", usagePolicy);
 
-                final String assetName = monetization.getAsset().name().toLowerCase(Locale.getDefault());
+				final String assetName = monetization.getAsset().name().toLowerCase(Locale.getDefault());
 
                 params.put("asset_type", assetName);
                 params.put(assetName + "_custom_id", monetization.getCustomId().isEmpty() ?
@@ -297,23 +297,28 @@ public class AbstractMetadataService implements IMetadataService {
                         monetization.getCustomId());
 
                 params.put(assetName + "_notes", monetization.getNotes());
-                params.put(assetName + "_tms_id", monetization.getTmsid());
-                params.put(assetName + "_isan", monetization.getIsan());
-                params.put(assetName + "_eidr", monetization.getEidr());
 
-                if (Asset.TV != monetization.getAsset()) {
+
+				if (Asset.TV != monetization.getAsset()) {
                     // WEB + MOVIE ONLY
                     params.put(assetName + "_title", !monetization.getTitle().isEmpty() ?
                             monetization.getTitle() :
                             metadata.getTitle());
                     params.put(assetName + "_description", monetization.getDescription());
-                } else {
+				} else if (Asset.MOVIE == monetization.getAsset()) {
+					params.put("movie_tms_id", monetization.getTmsid());
+					params.put("movie_isan", monetization.getIsan());
+					params.put("movie_eidr", monetization.getEidr());
+				} else {
                     // TV ONLY
-                    params.put("show_title", monetization.getTitle());
-                    params.put("episode_title", monetization.getTitleepisode());
-                    params.put("season_nb", monetization.getSeasonNb());
-                    params.put("episode_nb", monetization.getEpisodeNb());
-                }
+					params.put("tv_tms_id", monetization.getTmsid());
+					params.put("tv_isan", monetization.getIsan());
+					params.put("tv_eidr", monetization.getEidr());
+					params.put("tv_show_title", monetization.getTitle());
+					params.put("tv_episode_title", monetization.getTitleepisode());
+					params.put("tv_season_nb", monetization.getSeasonNb());
+					params.put("tv_episode_nb", monetization.getEpisodeNb());
+				}
             }
         }
 

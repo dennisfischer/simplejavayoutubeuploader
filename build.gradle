@@ -7,6 +7,7 @@
  *
  * Contributors: Dennis Fischer
  */
+def javaFxHome = "C:/Program Files/Java/jdk1.7.0_51/";
 apply plugin: 'java'
 apply plugin: 'application'
 version = "v3.2.0.7";
