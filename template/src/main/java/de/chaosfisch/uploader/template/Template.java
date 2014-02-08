@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Template {
-	private final List<Playlist> playlists    = new CopyOnWriteArrayList<>();
-	private       File           defaultdir   = new File(System.getProperty("user.home"));
-	private       Social         social       = new Social();
-	private       Monetization   monetization = new Monetization();
-	private       Permissions    permissions  = new Permissions();
-	private       Metadata       metadata     = new Metadata();
+	private final List<Playlist> playlists = new CopyOnWriteArrayList<>();
+	private File defaultdir = new File(System.getProperty("user.home"));
+	private Social social = new Social();
+	private Monetization monetization = new Monetization();
+	private Permissions permissions = new Permissions();
+	private Metadata metadata = new Metadata();
 
 	private String id;
-	private File   enddir;
-	private File   thumbnail;
+	private File enddir;
+	private File thumbnail;
 	private String name;
 
 	private Account account;

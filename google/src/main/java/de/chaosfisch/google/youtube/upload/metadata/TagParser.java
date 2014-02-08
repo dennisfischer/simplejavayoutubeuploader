@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -19,10 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class TagParser {
-	public static final  char TAG_DELIMITER       = ',';
-	private static final int  MAX_TAG_LENGTH      = 30;
-	private static final int  MIN_TAG_LEGNTH      = 2;
-	private static final int  MAX_TAG_BODY_LENGTH = 500;
+	public static final char TAG_DELIMITER = ',';
+	private static final int MAX_TAG_LENGTH = 30;
+	private static final int MIN_TAG_LEGNTH = 2;
+	private static final int MAX_TAG_BODY_LENGTH = 500;
 
 	private TagParser() {
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@ import java.util.List;
 @XStreamAlias("feed")
 class Feed {
 	public YoutubeAuthor author;
-	public String        category;
-	public String        generator;
-	public String        id;
+	public String category;
+	public String generator;
+	public String id;
 
 	@XStreamAlias("openSearch:itemsPerPage")
 	public Integer itemsPerPage;
@@ -31,21 +31,21 @@ class Feed {
 	@XStreamAlias("link")
 	@XStreamImplicit
 	public List<Feedlink> links;
-	public URL            logo;
+	public URL logo;
 
 	@XStreamAlias("media:group")
 	public MediaGroup mediaGroup;
 	@XStreamAlias("yt:playlistId")
-	public String     playlistId;
+	public String playlistId;
 
 	@XStreamAlias("openSearch:startIndex")
 	public Integer startIndex;
-	public String  subtitle;
-	public String  title;
+	public String subtitle;
+	public String title;
 
 	@XStreamAlias("openSearch:totalResults")
 	public Integer totalResults;
-	public String  updated;
+	public String updated;
 
 	@XStreamAlias("entry")
 	@XStreamImplicit

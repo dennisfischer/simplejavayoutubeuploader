@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -24,9 +24,9 @@ import org.apache.commons.configuration.Configuration;
 
 public class TagTextArea extends StackPane {
 
-	public static final String               OLD_TAG_INPUT = "old_tags";
-	private final       SimpleStringProperty tags          = new SimpleStringProperty();
-	private final       WebView              webView       = new WebView();
+	public static final String OLD_TAG_INPUT = "old_tags";
+	private final SimpleStringProperty tags = new SimpleStringProperty();
+	private final WebView webView = new WebView();
 	private final boolean useOldTags;
 
 	@Inject

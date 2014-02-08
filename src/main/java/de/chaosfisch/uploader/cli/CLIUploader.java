@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -32,24 +32,24 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public final class CLIUploader {
-	private static final Logger   LOGGER   = LoggerFactory.getLogger(CLIUploader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CLIUploader.class);
 	private static final Injector injector = Guice.createInjector(new UploaderModule(), new CLIModule());
 
 	@Inject
 	private IPersistenceService persistenceService;
 	@Inject
-	private IUploadService      uploadService;
+	private IUploadService uploadService;
 	@Inject
-	private IAccountService     accountService;
+	private IAccountService accountService;
 	@Inject
-	private Configuration       configuration;
+	private Configuration configuration;
 	@Inject
 	@Named("i18n-resources")
-	private ResourceBundle      resources;
+	private ResourceBundle resources;
 	@Inject
-	private ICLIUtil            cliUtil;
+	private ICLIUtil cliUtil;
 	@Inject
-	private Set<Controller>     controllerSet;
+	private Set<Controller> controllerSet;
 
 	private boolean running = true;
 

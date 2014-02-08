@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -104,9 +104,9 @@ public class UploadPartnerController {
 	private CheckBox monetizeTrueview;
 
 	private final ObservableList<ClaimOption> claimOptionsList = FXCollections.observableArrayList();
-	private final ObservableList<ClaimType>   claimTypesList   = FXCollections.observableArrayList();
-	private final ObservableList<Asset>       assetList        = FXCollections.observableArrayList();
-	private final ObservableList<Syndication> syndicationList  = FXCollections.observableArrayList();
+	private final ObservableList<ClaimType> claimTypesList = FXCollections.observableArrayList();
+	private final ObservableList<Asset> assetList = FXCollections.observableArrayList();
+	private final ObservableList<Syndication> syndicationList = FXCollections.observableArrayList();
 
 	@FXML
 	void initialize() {
@@ -152,15 +152,15 @@ public class UploadPartnerController {
 
 	public void fromUpload(final Upload upload) {
 		final Monetization monetization = null == upload.getMonetization() ?
-										  new Monetization() :
-										  upload.getMonetization();
+				new Monetization() :
+				upload.getMonetization();
 		fromMonetization(monetization);
 	}
 
 	public void fromTemplate(final Template template) {
 		final Monetization monetization = null == template.getMonetization() ?
-										  new Monetization() :
-										  template.getMonetization();
+				new Monetization() :
+				template.getMonetization();
 		fromMonetization(monetization);
 	}
 
@@ -235,7 +235,7 @@ public class UploadPartnerController {
 
 	private final class ClaimOptionChangeListener implements ChangeListener<ClaimOption> {
 		final CheckBox[] controls = {monetizeOverlay, monetizeTrueview, monetizeProduct, monetizeInstream,
-									 monetizeInstreamDefaults};
+				monetizeInstreamDefaults};
 
 		@Override
 		public void changed(final ObservableValue<? extends ClaimOption> observable, final ClaimOption oldValue, final ClaimOption newValue) {

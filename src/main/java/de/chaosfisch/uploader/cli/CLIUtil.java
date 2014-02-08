@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CLIUtil implements ICLIUtil {
-	private static final String  INFO_LINE       = "# %-55s #%n";
-	private static final String  PROMPT_LINE     = "$> %s%n";
-	private static final String  INPUT_LINE      = "$> ";
+	private static final String INFO_LINE = "# %-55s #%n";
+	private static final String PROMPT_LINE = "$> %s%n";
+	private static final String INPUT_LINE = "$> ";
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("^(\\w+) (\\w+)$", Pattern.MULTILINE);
 
 	private final Scanner scanner = new Scanner(System.in);

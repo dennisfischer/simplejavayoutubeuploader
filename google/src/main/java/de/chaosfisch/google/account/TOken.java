@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 class Token {
 	private final String token;
-	private final long   livetime;
+	private final long livetime;
 
 	public Token(final String token, final long livetime) {
 		this(token, livetime, TimeUnit.SECONDS);

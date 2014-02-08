@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -21,23 +21,23 @@ import org.slf4j.LoggerFactory;
 
 public class PlaylistPostProcessor implements UploadPostProcessor {
 
-    private final IPlaylistService playlistService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPostProcessor.class);
+	private final IPlaylistService playlistService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPostProcessor.class);
 
-    @Inject
-    public PlaylistPostProcessor(final IPlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
+	@Inject
+	public PlaylistPostProcessor(final IPlaylistService playlistService) {
+		this.playlistService = playlistService;
+	}
 
-    @Override
-    public Upload process(final Upload upload) {
-        for (final Playlist playlist : upload.getPlaylists()) {
-            try {
-                playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
-            } catch (final PlaylistIOException e) {
-                LOGGER.error("Failed adding video {} to playlist {}", upload.getVideoid(), playlist.getTitle(), e);
-            }
-        }
-        return upload;
-    }
+	@Override
+	public Upload process(final Upload upload) {
+		for (final Playlist playlist : upload.getPlaylists()) {
+			try {
+				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
+			} catch (final PlaylistIOException e) {
+				LOGGER.error("Failed adding video {} to playlist {}", upload.getVideoid(), playlist.getTitle(), e);
+			}
+		}
+		return upload;
+	}
 }

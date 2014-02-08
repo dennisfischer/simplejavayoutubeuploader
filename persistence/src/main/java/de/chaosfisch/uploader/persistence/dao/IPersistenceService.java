@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface IPersistenceService {
 	String PERSISTENCE_FOLDER = "PERSISTENCE_FOLDER";
-	String MASTER_PASSWORD    = "master_password";
+	String MASTER_PASSWORD = "master_password";
 
 	void saveToStorage();
 
@@ -38,9 +38,9 @@ public interface IPersistenceService {
 
 	class Data implements Serializable {
 		private static final long serialVersionUID = -7729985568529356434L;
-		List<Upload>   uploads   = new ArrayList<>(0);
+		List<Upload> uploads = new ArrayList<>(0);
 		List<Template> templates = new ArrayList<>(0);
 		List<Playlist> playlists = new ArrayList<>(0);
-		List<Account>  accounts  = new ArrayList<>(0);
+		List<Account> accounts = new ArrayList<>(0);
 	}
 }

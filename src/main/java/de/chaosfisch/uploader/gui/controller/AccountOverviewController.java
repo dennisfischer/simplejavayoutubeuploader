@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class AccountOverviewController {
 	private final ObservableList<Account> accountItems = FXCollections.observableArrayList();
 
 	@Inject
-	private IAccountService         accountService;
+	private IAccountService accountService;
 	@Inject
 	private AccountListCellRenderer accountListCellRenderer;
 

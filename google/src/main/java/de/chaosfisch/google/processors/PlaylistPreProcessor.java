@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -23,25 +23,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistPreProcessor implements UploadPreProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPreProcessor.class);
-    private final IPlaylistService playlistService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPreProcessor.class);
+	private final IPlaylistService playlistService;
 
-    @Inject
-    public PlaylistPreProcessor(final IPlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
+	@Inject
+	public PlaylistPreProcessor(final IPlaylistService playlistService) {
+		this.playlistService = playlistService;
+	}
 
-    @Override
-    public Upload process(final Upload upload) {
+	@Override
+	public Upload process(final Upload upload) {
 
-        final List<Account> accountList = new ArrayList<>(1);
-        accountList.add(upload.getAccount());
-        try {
-            playlistService.synchronizePlaylists(accountList);
-        } catch (final PlaylistIOException e) {
-            LOGGER.error("Failed updating playlists.", e);
-        }
+		final List<Account> accountList = new ArrayList<>(1);
+		accountList.add(upload.getAccount());
+		try {
+			playlistService.synchronizePlaylists(accountList);
+		} catch (final PlaylistIOException e) {
+			LOGGER.error("Failed updating playlists.", e);
+		}
 
-        return upload;
-    }
+		return upload;
+	}
 }

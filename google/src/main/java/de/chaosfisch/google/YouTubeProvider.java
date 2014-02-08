@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -33,9 +33,9 @@ public class YouTubeProvider implements Provider<YouTube> {
 	private Account account;
 	private final Map<Account, YouTube> services = new HashMap<>(1);
 	private final HttpTransport httpTransport;
-	private final JsonFactory   jsonFactory;
-	private static final Logger                   LOGGER      = LoggerFactory.getLogger(YouTubeProvider.class);
-	private final        Map<Account, Credential> credentials = new HashMap<>(1);
+	private final JsonFactory jsonFactory;
+	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubeProvider.class);
+	private final Map<Account, Credential> credentials = new HashMap<>(1);
 
 	@Inject
 	public YouTubeProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {

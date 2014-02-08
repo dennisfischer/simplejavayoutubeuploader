@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -66,13 +66,13 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 		monetization.setSeasonNb(extendedPlaceholders.replace(monetization.getSeasonNb()));
 		monetization.setEpisodeNb(extendedPlaceholders.replace(monetization.getEpisodeNb()));
 		upload.setThumbnail(null == upload.getThumbnail() ?
-							null :
-							new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));
+				null :
+				new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));
 
 		if (config.getBoolean(IEnddirService.RENAME_PROPERTY, false)) {
 			upload.setEnddir(null == upload.getEnddir() ?
-							 null :
-							 new File(extendedPlaceholders.replace(upload.getEnddir().getAbsolutePath())));
+					null :
+					new File(extendedPlaceholders.replace(upload.getEnddir().getAbsolutePath())));
 		}
 
 		return upload;

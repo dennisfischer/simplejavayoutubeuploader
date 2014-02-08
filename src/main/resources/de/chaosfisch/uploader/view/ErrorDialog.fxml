@@ -2,7 +2,7 @@
 
 <?scenebuilder-preview-i18n-resource ../resources/application_de.properties?>
 <!--
-  ~ Copyright (c) 2013 Dennis Fischer.
+  ~ Copyright (c) 2014 Dennis Fischer.
   ~ All rights reserved. This program and the accompanying materials
   ~ are made available under the terms of the GNU Public License v3.0+
   ~ which accompanies this distribution, and is available at
@@ -14,26 +14,24 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <VBox id="VBox" fx:id="view" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="450.0"
-      prefHeight="98.0" prefWidth="248.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.gui.controller.ErrorDialogController">
-    <StackPane id="StackPane" styleClass="menu-bar">
-        <Label fx:id="title" textFill="WHITE"/>
-        <Button onAction="#closeDialog" id="closeDialogButton" styleClass="imageButton"
-                StackPane.alignment="CENTER_RIGHT"/>
-    </StackPane>
-    <Label fx:id="message" maxWidth="400.0" wrapText="true">
-        <VBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-        </VBox.margin>
-    </Label>
-    <HBox id="HBox" alignment="CENTER_RIGHT" maxHeight="-Infinity" spacing="5.0">
-        <Button mnemonicParsing="false" onAction="#onAccept" text="%errorDialog.accept"/>
-        <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
-        </padding>
-    </HBox>
+	  prefHeight="98.0" prefWidth="248.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1"
+	  xmlns="http://javafx.com/javafx/2.2" fx:controller="de.chaosfisch.uploader.gui.controller.ErrorDialogController">
+	<StackPane id="StackPane" styleClass="menu-bar">
+		<Label fx:id="title" textFill="WHITE"/>
+		<Button onAction="#closeDialog" id="closeDialogButton" styleClass="imageButton"
+				StackPane.alignment="CENTER_RIGHT"/>
+	</StackPane>
+	<Label fx:id="message" maxWidth="400.0" wrapText="true">
+		<VBox.margin>
+			<Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+		</VBox.margin>
+	</Label>
+	<HBox id="HBox" alignment="CENTER_RIGHT" maxHeight="-Infinity" spacing="5.0">
+		<Button mnemonicParsing="false" onAction="#onAccept" text="%errorDialog.accept"/>
+		<padding>
+			<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
+		</padding>
+	</HBox>
 </VBox>

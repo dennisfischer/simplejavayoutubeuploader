@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -73,17 +73,17 @@ public class PersistentCookieStore implements CookieStore {
 	}
 
 	public static class SerializableCookie {
-		private final String  name;
-		private final String  value;
-		private final String  comment;
-		private final String  commentUrl;
-		private final String  domain;
+		private final String name;
+		private final String value;
+		private final String comment;
+		private final String commentUrl;
+		private final String domain;
 		private final boolean discard;
-		private final String  path;
-		private final String  portList;
-		private final long    maxAge;
+		private final String path;
+		private final String portList;
+		private final long maxAge;
 		private final boolean secure;
-		private final int     version;
+		private final int version;
 
 		private SerializableCookie() {
 			name = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -25,24 +25,28 @@ import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
 	private final ResourceBundle resourceBundle;
-	private final Pattern        numberPattern;
-	private final Pattern        playlistPattern;
-	/** The file for the {file} placeholder */
-	private       File           file;
+	private final Pattern numberPattern;
+	private final Pattern playlistPattern;
+	/**
+	 * The file for the {file} placeholder
+	 */
+	private File file;
 
-	/** Custom user defined placeholders */
+	/**
+	 * Custom user defined placeholders
+	 */
 	private final HashMap<String, String> map = new HashMap<>(10);
 
-	/** The playlist for the {playlist} and {number} placeholders */
+	/**
+	 * The playlist for the {playlist} and {number} placeholders
+	 */
 	private List<Playlist> playlists;
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
 	 *
-	 * @param file
-	 * 		for {file}
-	 * @param playlists
-	 * 		for {playlist(i)} and {number(i)(j)}
+	 * @param file      for {file}
+	 * @param playlists for {playlist(i)} and {number(i)(j)}
 	 */
 	public ExtendedPlaceholders(final File file, final List<Playlist> playlists, final ResourceBundle resourceBundle) {
 		this.file = file;
@@ -60,10 +64,8 @@ public class ExtendedPlaceholders {
 	/**
 	 * Registers a new custom placeholder
 	 *
-	 * @param placeholder
-	 * 		the placeholder
-	 * @param replacement
-	 * 		the replacement
+	 * @param placeholder the placeholder
+	 * @param replacement the replacement
 	 */
 	public void register(final String placeholder, final String replacement) {
 		map.put(placeholder, replacement);
@@ -72,9 +74,7 @@ public class ExtendedPlaceholders {
 	/**
 	 * Replaces all placeholders
 	 *
-	 * @param input
-	 * 		the string to be parsed
-	 *
+	 * @param input the string to be parsed
 	 * @return the parsed string
 	 */
 	public String replace(String input) {
@@ -146,38 +146,37 @@ public class ExtendedPlaceholders {
 	/**
 	 * Fills the number with X zeros
 	 *
-	 * @param number
-	 * 		to be "filled"
-	 * @param width
-	 * 		the number of characters
-	 *
+	 * @param number to be "filled"
+	 * @param width  the number of characters
 	 * @return the filled number string
 	 */
 	private String zeroFill(final long number, final int width) {
 		return String.format(String.format("%%0%dd", width), number);
 	}
 
-	/** @return the file */
+	/**
+	 * @return the file
+	 */
 	public final File getFile() {
 		return file;
 	}
 
 	/**
-	 * @param file
-	 * 		the file to set
+	 * @param file the file to set
 	 */
 	public final void setFile(final File file) {
 		this.file = file;
 	}
 
-	/** @return the playlists */
+	/**
+	 * @return the playlists
+	 */
 	public final List<Playlist> getPlaylists() {
 		return playlists;
 	}
 
 	/**
-	 * @param playlists
-	 * 		the playlists to set
+	 * @param playlists the playlists to set
 	 */
 	public final void setPlaylists(final List<Playlist> playlists) {
 		this.playlists = playlists;

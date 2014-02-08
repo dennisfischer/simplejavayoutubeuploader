@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -25,13 +25,9 @@ public final class Directories {
 	 * NOTE: This method is not thread-safe.
 	 * <p/>
 	 *
-	 * @param source
-	 * 		the directory to copy from
-	 * @param target
-	 * 		the directory to copy into
-	 *
-	 * @throws IOException
-	 * 		if an I/O error occurs
+	 * @param source the directory to copy from
+	 * @param target the directory to copy into
+	 * @throws IOException if an I/O error occurs
 	 */
 	public static void copyDirectory(final Path source, final Path target) throws IOException {
 		Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {

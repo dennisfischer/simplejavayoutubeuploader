@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2014 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class QueueOverviewController {
 	private ListView<Upload> queueListView;
 
 	private final ObservableList<Upload> uploads = FXCollections.observableArrayList();
-	private final IUploadService          uploadService;
+	private final IUploadService uploadService;
 	private final QueueUploadCellRenderer queueUploadCellRenderer;
 
 	@Inject
