@@ -9,19 +9,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added bottom border and status depending label to uploadEntry">
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__controlsfx_8_0_5_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__dagger_1_2_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__dagger_compiler_1_2_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__gson_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__guava_15_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__guava_16_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__javawriter_2_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__slf4j_api_1_7_5.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added bottom border and status depending label to uploadEntry" />
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -1862,7 +1850,7 @@
       <workItem from="1391286603329" duration="2829000" />
       <workItem from="1391289465232" duration="208000" />
       <workItem from="1391771857984" duration="35000" />
-      <workItem from="1391882610078" duration="110000" />
+      <workItem from="1391882610078" duration="139000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -2593,7 +2581,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="83324000" />
+    <option name="totallyTimeSpent" value="83353000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
