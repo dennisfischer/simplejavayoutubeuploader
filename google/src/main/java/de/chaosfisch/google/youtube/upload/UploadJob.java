@@ -206,7 +206,7 @@ public class UploadJob implements Callable<Upload> {
 				.header("GData-Version", GDATAConfig.GDATA_V2)
 				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Slug", fileToUpload.getName())
+				.header("Slug", "video-file")
 				.header("Authorization", getAuthHeader())
 				.body(atomData)
 				.asString();
