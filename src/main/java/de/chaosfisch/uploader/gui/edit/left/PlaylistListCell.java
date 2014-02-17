@@ -20,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class PlaylistListCell extends ListCell<PlaylistModel> {
-	public static final int MAX_IMAGE_HEIGHT = 60;
+	private static final int MAX_IMAGE_HEIGHT = 60;
 	private static final int MAX_NODE_HEIGHT = 100;
 	private VBox node;
 
@@ -45,11 +45,8 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 		setGraphic(node);
 	}
 
-	private ImageView getImageView() {
-		final ImageView imageView = new ImageView(new Image(null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm() : getItem().getThumbnail(), true));
-		imageView.setFitHeight(MAX_IMAGE_HEIGHT);
-		imageView.setPreserveRatio(true);
-		return imageView;
+	private Label getLabel() {
+		return new Label(getItem().getTitle());
 	}
 
 	private ImageView getRemoveButton() {
@@ -61,7 +58,18 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 		return delete;
 	}
 
-	private Label getLabel() {
-		return new Label(getItem().getTitle());
+	private ImageView getImageView() {
+		final ImageView imageView = new ImageView(getImage());
+		imageView.setFitHeight(MAX_IMAGE_HEIGHT);
+		imageView.setPreserveRatio(true);
+		return imageView;
+	}
+
+	private Image getImage() {
+		return new Image(getImageLocation(), true);
+	}
+
+	private String getImageLocation() {
+		return null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm() : getItem().getThumbnail();
 	}
 }

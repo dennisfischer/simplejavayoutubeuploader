@@ -56,4 +56,9 @@ public class AccountModel {
 	public void setPlaylists(final ObservableList<PlaylistModel> playlists) {
 		this.playlists.set(playlists);
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

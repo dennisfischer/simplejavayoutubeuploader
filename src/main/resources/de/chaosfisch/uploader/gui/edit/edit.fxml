@@ -18,8 +18,8 @@
 <SplitPane dividerPositions="0.5" focusTraversable="true"
 		   xmlns="http://javafx.com/javafx/2.2">
 	<items>
-		<EditLeftView/>
-		<GridPane hgap="5.0" vgap="5.0">
+		<EditLeftView minWidth="500"/>
+		<GridPane hgap="5.0" vgap="5.0" minWidth="500">
 			<children>
 				<EditRightView GridPane.columnSpan="3" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 				<Button mnemonicParsing="false" text="Ok, nächster Upload!" GridPane.columnIndex="2"
