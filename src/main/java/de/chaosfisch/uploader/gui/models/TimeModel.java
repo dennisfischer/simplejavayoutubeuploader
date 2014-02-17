@@ -8,18 +8,28 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google.youtube.upload.metadata;
+package de.chaosfisch.uploader.gui.models;
 
-public enum License {
-	YOUTUBE("youtube"), CREATIVE_COMMONS("cc");
+import javafx.beans.property.SimpleStringProperty;
 
-	private final String metaIdentifier;
+public class TimeModel {
 
-	License(final String metaIdentifier) {
-		this.metaIdentifier = metaIdentifier;
+	public SimpleStringProperty time = new SimpleStringProperty();
+
+	public String getTime() {
+		return time.get();
 	}
 
-	public String getMetaIdentifier() {
-		return metaIdentifier;
+	public SimpleStringProperty timeProperty() {
+		return time;
+	}
+
+	public void setTime(final String time) {
+		this.time.set(time);
+	}
+
+	@Override
+	public String toString() {
+		return getTime();
 	}
 }

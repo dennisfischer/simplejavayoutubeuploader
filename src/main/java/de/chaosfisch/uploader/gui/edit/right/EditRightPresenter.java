@@ -18,6 +18,7 @@ import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
+import de.chaosfisch.uploader.gui.models.TimeModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,6 +33,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 public class EditRightPresenter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EditRightPresenter.class);
+
 
 	@Inject
 	protected Lazy<EditPartnerView>      editPartnerViewLazy;
@@ -52,7 +56,7 @@ public class EditRightPresenter {
 	@FXML
 	private   DatePicker                 releaseDatepicker;
 	@FXML
-	private   ComboBox                   releaseTimepicker;
+	private   ComboBox<TimeModel>        releaseTimepicker;
 	@FXML
 	private   TextField                  thumbnailPath;
 	@FXML
@@ -69,8 +73,6 @@ public class EditRightPresenter {
 	private   ToggleButton               subscribers;
 	@FXML
 	private   Accordion                  mainFrame;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(EditRightPresenter.class);
 
 	@FXML
 	public void openThumbnail(final ActionEvent actionEvent) {
@@ -92,17 +94,17 @@ public class EditRightPresenter {
 		selectData();
 	}
 
-	private void selectData() {
-		visibility.getSelectionModel().selectFirst();
-		comments.getSelectionModel().selectFirst();
-		license.getSelectionModel().selectFirst();
-		threed.getSelectionModel().selectFirst();
-	}
-
 	private void bindData() {
 		visibility.itemsProperty().bindBidirectional(dataModel.visibilitiesProperty());
 		comments.itemsProperty().bindBidirectional(dataModel.commentsProperty());
 		license.itemsProperty().bindBidirectional(dataModel.licensesProperty());
 		threed.itemsProperty().bindBidirectional(dataModel.threeDsProperty());
+	}
+
+	private void selectData() {
+		visibility.getSelectionModel().selectFirst();
+		comments.getSelectionModel().selectFirst();
+		license.getSelectionModel().selectFirst();
+		threed.getSelectionModel().selectFirst();
 	}
 }

@@ -10,7 +10,9 @@
   * Contributors: Dennis Fischer                                                                  *
   ***********************************************************************************************-->
 
+<?import de.chaosfisch.uploader.gui.models.*?>
 <?import de.chaosfisch.uploader.gui.project.ProjectView?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
@@ -62,8 +64,60 @@
 						<DatePicker maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="6"
 									fx:id="releaseDatepicker"/>
 						<ComboBox maxWidth="Infinity" GridPane.columnIndex="2" GridPane.rowIndex="6"
-								  GridPane.columnSpan="2" fx:id="releaseTimepicker"/>
-
+								  GridPane.columnSpan="2" fx:id="releaseTimepicker">
+							<items>
+								<FXCollections fx:factory="observableArrayList">
+									<TimeModel time="00:00"/>
+									<TimeModel time="00:30"/>
+									<TimeModel time="01:00"/>
+									<TimeModel time="01:30"/>
+									<TimeModel time="02:00"/>
+									<TimeModel time="02:30"/>
+									<TimeModel time="03:00"/>
+									<TimeModel time="03:30"/>
+									<TimeModel time="04:00"/>
+									<TimeModel time="04:30"/>
+									<TimeModel time="05:00"/>
+									<TimeModel time="05:30"/>
+									<TimeModel time="06:00"/>
+									<TimeModel time="06:30"/>
+									<TimeModel time="07:00"/>
+									<TimeModel time="07:30"/>
+									<TimeModel time="08:00"/>
+									<TimeModel time="08:30"/>
+									<TimeModel time="09:00"/>
+									<TimeModel time="09:30"/>
+									<TimeModel time="10:00"/>
+									<TimeModel time="10:30"/>
+									<TimeModel time="11:00"/>
+									<TimeModel time="11:30"/>
+									<TimeModel time="12:00"/>
+									<TimeModel time="12:30"/>
+									<TimeModel time="13:00"/>
+									<TimeModel time="13:30"/>
+									<TimeModel time="14:00"/>
+									<TimeModel time="14:30"/>
+									<TimeModel time="15:00"/>
+									<TimeModel time="15:30"/>
+									<TimeModel time="16:00"/>
+									<TimeModel time="16:30"/>
+									<TimeModel time="17:00"/>
+									<TimeModel time="17:30"/>
+									<TimeModel time="18:00"/>
+									<TimeModel time="18:30"/>
+									<TimeModel time="19:00"/>
+									<TimeModel time="19:30"/>
+									<TimeModel time="20:00"/>
+									<TimeModel time="20:30"/>
+									<TimeModel time="21:00"/>
+									<TimeModel time="21:30"/>
+									<TimeModel time="22:00"/>
+									<TimeModel time="22:30"/>
+									<TimeModel time="23:30"/>
+									<TimeModel time="23:00"/>
+								</FXCollections>
+							</items>
+						</ComboBox>
 
 						<TextField GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"
 								   fx:id="thumbnailPath"/>
