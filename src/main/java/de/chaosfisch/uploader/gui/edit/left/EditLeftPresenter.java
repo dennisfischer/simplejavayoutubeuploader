@@ -14,18 +14,12 @@ import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.models.AccountModel;
 import de.chaosfisch.uploader.gui.models.CategoryModel;
 import de.chaosfisch.uploader.gui.models.PlaylistModel;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.util.Duration;
-import org.controlsfx.control.CheckListView;
-import org.controlsfx.control.PopOver;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
 
@@ -49,7 +43,10 @@ public class EditLeftPresenter {
 	public ComboBox<AccountModel> accounts;
 
 	@FXML
-	public Label playlists;
+	public ComboBox<PlaylistModel> playlists;
+
+	@FXML
+	public ListView<PlaylistModel> selectedPlaylists;
 
 	@Inject
 	protected DataModel dataModel;
@@ -71,34 +68,24 @@ public class EditLeftPresenter {
 		accounts.valueProperty().bindBidirectional(dataModel.selectedAccountProperty());
 		files.valueProperty().bindBidirectional(dataModel.selectedFileProperty());
 		categories.valueProperty().bindBidirectional(dataModel.selectedCategoryProperty());
+		accounts.valueProperty().addListener((observableValue, oldAccount, newAccount) -> {
+			playlists.itemsProperty().unbind();
+			playlists.itemsProperty().bind(newAccount.playlistsProperty());
+		});
+
+		playlists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldPlaylist, newPlaylist) -> {
+			if (null != newPlaylist) {
+				selectedPlaylists.getItems().add(newPlaylist);
+				playlists.getItems().remove(newPlaylist);
+				playlists.setValue(null);
+			}
+		});
+
+		selectedPlaylists.setCellFactory(new PlaylistListCellFactory());
+		selectedPlaylists.itemsProperty().bindBidirectional(dataModel.selectedPlaylistsProperty());
+		selectedPlaylists.getItems().addListener((ListChangeListener<PlaylistModel>) change -> {
+			change.next();
+			playlists.getItems().addAll(change.getRemoved());
+		});
 	}
-
-	@FXML
-	public void selectPlaylist(final MouseEvent mouseEvent) {
-		final ObservableList<PlaylistModel> playlists = null == accounts.getValue() ? FXCollections.observableArrayList() : accounts.getValue().getPlaylists();
-		final CheckListView<PlaylistModel> checkListView = new CheckListView<>(playlists);
-
-
-		final ScrollPane scrollPane = new ScrollPane(checkListView);
-		scrollPane.setFitToHeight(true);
-		scrollPane.setFitToWidth(true);
-		scrollPane.setMinWidth(500);
-		final HBox hBox = new HBox(scrollPane);
-		hBox.setPadding(new Insets(10));
-		double height = playlists.size() * 15;
-		if (350 < height) {
-			height = 350;
-		}
-		scrollPane.setMinHeight(height);
-		final PopOver popOver = new PopOver(hBox);
-		popOver.setDetachedTitle("Title for PopOver");
-		popOver.setCornerRadius(10);
-		popOver.setArrowLocation(PopOver.ArrowLocation.BOTTOM_CENTER);
-		final Label label = (Label) mouseEvent.getSource();
-		final Point2D point2D = label.localToScreen(260, 15);
-
-		popOver.show((Node) mouseEvent.getSource(), point2D.getX(), point2D.getY(), Duration.millis(250));
-		popOver.detach();
-	}
-
 }

@@ -8,41 +8,16 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.uploader.gui.models;
+package de.chaosfisch.uploader.gui.edit.left;
 
-import javafx.beans.property.SimpleStringProperty;
+import de.chaosfisch.uploader.gui.models.PlaylistModel;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
 
-public class PlaylistModel {
-
-	private final SimpleStringProperty title = new SimpleStringProperty();
-	private final SimpleStringProperty thumbnail = new SimpleStringProperty();
-
-	public String getTitle() {
-		return title.get();
-	}
-
-	public SimpleStringProperty titleProperty() {
-		return title;
-	}
-
-	public void setTitle(final String title) {
-		this.title.set(title);
-	}
-
-	public String getThumbnail() {
-		return thumbnail.get();
-	}
-
-	public SimpleStringProperty thumbnailProperty() {
-		return thumbnail;
-	}
-
-	public void setThumbnail(final String thumbnail) {
-		this.thumbnail.set(thumbnail);
-	}
-
+public class PlaylistListCellFactory implements Callback<ListView<PlaylistModel>, ListCell<PlaylistModel>> {
 	@Override
-	public String toString() {
-		return getTitle();
+	public ListCell<PlaylistModel> call(final ListView<PlaylistModel> playlistModelListView) {
+		return new PlaylistListCell();
 	}
 }

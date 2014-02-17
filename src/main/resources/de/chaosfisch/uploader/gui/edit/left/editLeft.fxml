@@ -39,8 +39,10 @@
 			</content>
 		</ScrollPane>
 		<ComboBox maxWidth="Infinity" fx:id="accounts" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-		<Label fx:id="playlists" style="-fx-text-fill: royalblue; -fx-underline: true; -fx-cursor: hand;"
-			   onMouseClicked="#selectPlaylist" text="Keine Playlists" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+		<ComboBox maxWidth="Infinity" fx:id="playlists" promptText="Add Playlist..." GridPane.columnIndex="1"
+				  GridPane.rowIndex="8"/>
+		<ListView fx:id="selectedPlaylists" maxHeight="100" orientation="HORIZONTAL" GridPane.rowIndex="9"
+				  GridPane.columnIndex="1"/>
 	</children>
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
@@ -57,6 +59,7 @@
 		<RowConstraints vgrow="SOMETIMES"/>
 		<RowConstraints maxHeight="-Infinity" vgrow="NEVER"/>
 		<RowConstraints vgrow="SOMETIMES"/>
+		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
 		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
 		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
 		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>

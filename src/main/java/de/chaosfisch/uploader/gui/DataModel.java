@@ -128,9 +128,6 @@ public class DataModel {
 		playlists.addAll(model6);
 		playlists.addAll(model7);
 		playlists.addAll(model8);
-		playlists.addAll(model9);
-		playlists.addAll(model10);
-		playlists.addAll(model11);
 
 		accountModel.setPlaylists(playlists);
 		accounts.addAll(accountModel);
