@@ -10,26 +10,17 @@
   * Contributors: Dennis Fischer                                                                  *
   ***********************************************************************************************-->
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
-			prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:id="mainFrame"
+			prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 			fx:controller="de.chaosfisch.uploader.gui.main.MainPresenter">
-	<bottom>
-		<HBox prefHeight="30.0" spacing="5.0">
-			<padding>
-				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-			</padding>
-			<children>
-				<Button mnemonicParsing="false" text="Start" fx:id="startButton"/>
-				<Button mnemonicParsing="false" text="Stop" fx:id="stopButton"/>
-				<ComboBox promptText="Action after Uploading...?" fx:id="actionOnFinishList"/>
-				<Button mnemonicParsing="false" text="Löschen" onAction="#removeUploads"/>
-			</children>
-		</HBox>
-	</bottom>
+	<center>
+		<TabPane>
+			<Tab closable="false" text="Queue" onSelectionChanged="#initUploadsTab"/>
+			<Tab closable="false" text="Upload" onSelectionChanged="#initEditTab"/>
+		</TabPane>
+	</center>
 	<top>
 		<MenuBar xmlns:fx="http://javafx.com/fxml" useSystemMenuBar="true">
 			<menus>

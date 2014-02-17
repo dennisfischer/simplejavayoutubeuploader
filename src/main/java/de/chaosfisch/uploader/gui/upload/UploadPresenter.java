@@ -10,12 +10,15 @@
 
 package de.chaosfisch.uploader.gui.upload;
 
-import de.chaosfisch.google.youtube.upload.Status;
+import de.chaosfisch.google.upload.Status;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.models.UploadModel;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.DragEvent;
@@ -31,14 +34,18 @@ import java.util.List;
 
 public class UploadPresenter {
 
-	@FXML
-	public ListView<UploadModel> uploads;
-
-	@FXML
-	public HBox dropzone;
-
 	@Inject
-	protected DataModel dataModel;
+	protected DataModel             dataModel;
+	@FXML
+	private   ListView<UploadModel> uploads;
+	@FXML
+	private   HBox                  dropzone;
+	@FXML
+	private   Button                startButton;
+	@FXML
+	private   Button                stopButton;
+	@FXML
+	private   ComboBox              actionOnFinishList;
 
 	@FXML
 	public void initialize() {
@@ -54,11 +61,33 @@ public class UploadPresenter {
 		handleInsertedFiles(fileChooser.showOpenMultipleDialog(null));
 	}
 
+	private void handleInsertedFiles(final List<File> files) {
+		if (null == files) {
+			return;
+		}
+		for (final File file : files) {
+			final UploadModel model = new UploadModel();
+			model.setStatus(Status.WAITING);
+			model.setTitle(file.getName());
+			dataModel.addUpload(model);
+		}
+	}
+
+	@FXML
+	public void removeUploads(final ActionEvent actionEvent) {
+		// @BUG had to add workaround by converting observable list to array
+		// otherwise only one element is removed and not N selected elements
+		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads().size()];
+		dataModel.getSelectedUploads().toArray(uploads);
+		for (final UploadModel upload : uploads) {
+			dataModel.removeUpload(upload);
+		}
+	}
+
 	@FXML
 	public void mouseEntered(final MouseEvent mouseEvent) {
 		((Node) mouseEvent.getSource()).setCursor(Cursor.HAND);
 	}
-
 
 	@FXML
 	public void filesDragDropped(final DragEvent event) {
@@ -80,18 +109,6 @@ public class UploadPresenter {
 			event.acceptTransferModes(TransferMode.COPY);
 		}
 		event.consume();
-	}
-
-	private void handleInsertedFiles(final List<File> files) {
-		if (null == files) {
-			return;
-		}
-		for (final File file : files) {
-			final UploadModel model = new UploadModel();
-			model.setStatus(Status.WAITING);
-			model.setTitle(file.getName());
-			dataModel.addUpload(model);
-		}
 	}
 
 	@FXML

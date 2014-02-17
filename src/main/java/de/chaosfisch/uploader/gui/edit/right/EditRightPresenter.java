@@ -11,10 +11,10 @@
 package de.chaosfisch.uploader.gui.edit.right;
 
 import dagger.Lazy;
-import de.chaosfisch.google.youtube.upload.metadata.License;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.ThreeD;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
+import de.chaosfisch.google.upload.metadata.License;
+import de.chaosfisch.google.upload.permissions.Comment;
+import de.chaosfisch.google.upload.permissions.ThreeD;
+import de.chaosfisch.google.upload.permissions.Visibility;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;

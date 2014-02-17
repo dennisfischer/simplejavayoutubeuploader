@@ -10,10 +10,10 @@
 
 package de.chaosfisch.uploader.gui.edit.left;
 
+import de.chaosfisch.google.account.AccountModel;
+import de.chaosfisch.google.category.CategoryModel;
+import de.chaosfisch.google.playlist.PlaylistModel;
 import de.chaosfisch.uploader.gui.DataModel;
-import de.chaosfisch.uploader.gui.models.AccountModel;
-import de.chaosfisch.uploader.gui.models.CategoryModel;
-import de.chaosfisch.uploader.gui.models.PlaylistModel;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -57,11 +57,6 @@ public class EditLeftPresenter {
 		selectData();
 	}
 
-	private void selectData() {
-		categories.getSelectionModel().selectFirst();
-		accounts.getSelectionModel().selectFirst();
-	}
-
 	private void bindData() {
 		categories.itemsProperty().bindBidirectional(dataModel.categoriesProperty());
 		accounts.itemsProperty().bindBidirectional(dataModel.accountsProperty());
@@ -87,5 +82,10 @@ public class EditLeftPresenter {
 			change.next();
 			playlists.getItems().addAll(change.getRemoved());
 		});
+	}
+
+	private void selectData() {
+		categories.getSelectionModel().selectFirst();
+		accounts.getSelectionModel().selectFirst();
 	}
 }

@@ -10,7 +10,7 @@
 
 package de.chaosfisch.uploader.gui.edit.left;
 
-import de.chaosfisch.uploader.gui.models.PlaylistModel;
+import de.chaosfisch.google.playlist.PlaylistModel;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -21,7 +21,7 @@ import javafx.scene.layout.VBox;
 
 public class PlaylistListCell extends ListCell<PlaylistModel> {
 	private static final int MAX_IMAGE_HEIGHT = 60;
-	private static final int MAX_NODE_HEIGHT = 100;
+	private static final int MAX_NODE_HEIGHT  = 100;
 	private VBox node;
 
 	@Override
@@ -45,19 +45,6 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 		setGraphic(node);
 	}
 
-	private Label getLabel() {
-		return new Label(getItem().getTitle());
-	}
-
-	private ImageView getRemoveButton() {
-		final ImageView delete = new ImageView(new Image(getClass().getResourceAsStream("/de/chaosfisch/uploader/gui/edit/left/remove.png")));
-		delete.getStyleClass().add("image_remove");
-		delete.setOnMouseClicked(mouseEvent -> {
-			getListView().getItems().remove(getItem());
-		});
-		return delete;
-	}
-
 	private ImageView getImageView() {
 		final ImageView imageView = new ImageView(getImage());
 		imageView.setFitHeight(MAX_IMAGE_HEIGHT);
@@ -71,5 +58,18 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 
 	private String getImageLocation() {
 		return null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm() : getItem().getThumbnail();
+	}
+
+	private ImageView getRemoveButton() {
+		final ImageView delete = new ImageView(new Image(getClass().getResourceAsStream("/de/chaosfisch/uploader/gui/edit/left/remove.png")));
+		delete.getStyleClass().add("image_remove");
+		delete.setOnMouseClicked(mouseEvent -> {
+			getListView().getItems().remove(getItem());
+		});
+		return delete;
+	}
+
+	private Label getLabel() {
+		return new Label(getItem().getTitle());
 	}
 }

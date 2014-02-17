@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.gui.models;
 
 
-import de.chaosfisch.google.youtube.upload.Status;
+import de.chaosfisch.google.upload.Status;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,13 +20,13 @@ import javafx.beans.property.SimpleStringProperty;
 import java.time.LocalDateTime;
 
 public class UploadModel {
-	private final SimpleStringProperty title = new SimpleStringProperty();
-	private final SimpleFloatProperty progress = new SimpleFloatProperty();
-	private final SimpleObjectProperty<LocalDateTime> start = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> end = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> release = new SimpleObjectProperty<>();
-	private final SimpleBooleanProperty stopAfter = new SimpleBooleanProperty();
-	private final SimpleObjectProperty<Status> status = new SimpleObjectProperty<>();
+	private final SimpleStringProperty                title     = new SimpleStringProperty();
+	private final SimpleFloatProperty                 progress  = new SimpleFloatProperty();
+	private final SimpleObjectProperty<LocalDateTime> start     = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<LocalDateTime> end       = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<LocalDateTime> release   = new SimpleObjectProperty<>();
+	private final SimpleBooleanProperty               stopAfter = new SimpleBooleanProperty();
+	private final SimpleObjectProperty<Status>        status    = new SimpleObjectProperty<>();
 
 	public String getTitle() {
 		return title.get();

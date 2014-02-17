@@ -11,7 +11,7 @@
 package de.chaosfisch.services;
 
 import com.google.common.io.Files;
-import de.chaosfisch.google.youtube.playlist.Playlist;
+import de.chaosfisch.google.playlist.PlaylistModel;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,22 +25,25 @@ import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
 	private final ResourceBundle resourceBundle;
-	private final Pattern numberPattern;
-	private final Pattern playlistPattern;
-	/**
-	 * The file for the {file} placeholder
-	 */
-	private File file;
-
+	private final Pattern        numberPattern;
+	private final Pattern        playlistPattern;
 	/**
 	 * Custom user defined placeholders
 	 */
 	private final HashMap<String, String> map = new HashMap<>(10);
-
+	/**
+	 * The file for the {file} placeholder
+	 */
+	private File                file;
 	/**
 	 * The playlist for the {playlist} and {number} placeholders
 	 */
-	private List<Playlist> playlists;
+	private List<PlaylistModel> playlists;
+
+	@Inject
+	public ExtendedPlaceholders(@Named("i18n-resources") final ResourceBundle resourceBundle) {
+		this(null, null, resourceBundle);
+	}
 
 	/**
 	 * Creates a new instance of Extendedplaceholders
@@ -48,17 +51,12 @@ public class ExtendedPlaceholders {
 	 * @param file      for {file}
 	 * @param playlists for {playlist(i)} and {number(i)(j)}
 	 */
-	public ExtendedPlaceholders(final File file, final List<Playlist> playlists, final ResourceBundle resourceBundle) {
+	public ExtendedPlaceholders(final File file, final List<PlaylistModel> playlists, final ResourceBundle resourceBundle) {
 		this.file = file;
 		this.playlists = playlists;
 		this.resourceBundle = resourceBundle;
 		numberPattern = Pattern.compile(resourceBundle.getString("autotitle.numberPattern"));
 		playlistPattern = Pattern.compile(resourceBundle.getString("autotitle.playlistPattern"));
-	}
-
-	@Inject
-	public ExtendedPlaceholders(@Named("i18n-resources") final ResourceBundle resourceBundle) {
-		this(null, null, resourceBundle);
 	}
 
 	/**
@@ -91,7 +89,7 @@ public class ExtendedPlaceholders {
 				final int zeros = null == matcher.group(3) ? 1 : Integer.parseInt(matcher.group(3));
 
 				if (containsPlaylist(playlist)) {
-					sb.append(zeroFill(playlists.get(playlist).getNumber() + 1 + number, zeros));
+					sb.append(zeroFill(playlists.get(playlist).getItemCount() + 1 + number, zeros));
 				} else {
 					appendMissingPlaylist(sb, playlist);
 				}
@@ -125,24 +123,6 @@ public class ExtendedPlaceholders {
 		return input;
 	}
 
-	public String replaceFileTag(final String input, final File file) {
-		final String fileName = file.getAbsolutePath();
-		return input.replaceAll(resourceBundle.getString("autotitle.file"), Files.getNameWithoutExtension(fileName));
-	}
-
-	private int getPlaylist(final Matcher matcher, final StringBuffer sb) {
-		matcher.appendReplacement(sb, "");
-		return null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
-	}
-
-	private void appendMissingPlaylist(final StringBuffer sb, final int playlist) {
-		sb.append(String.format("{NO-PLAYLIST-%d}", playlist + 1));
-	}
-
-	private boolean containsPlaylist(final int playlist) {
-		return -1 != playlist && playlists.size() > playlist;
-	}
-
 	/**
 	 * Fills the number with X zeros
 	 *
@@ -152,6 +132,24 @@ public class ExtendedPlaceholders {
 	 */
 	private String zeroFill(final long number, final int width) {
 		return String.format(String.format("%%0%dd", width), number);
+	}
+
+	private boolean containsPlaylist(final int playlist) {
+		return -1 != playlist && playlists.size() > playlist;
+	}
+
+	private void appendMissingPlaylist(final StringBuffer sb, final int playlist) {
+		sb.append(String.format("{NO-PLAYLIST-%d}", playlist + 1));
+	}
+
+	private int getPlaylist(final Matcher matcher, final StringBuffer sb) {
+		matcher.appendReplacement(sb, "");
+		return null == matcher.group(1) ? 0 : Integer.parseInt(matcher.group(1)) - 1;
+	}
+
+	public String replaceFileTag(final String input, final File file) {
+		final String fileName = file.getAbsolutePath();
+		return input.replaceAll(resourceBundle.getString("autotitle.file"), Files.getNameWithoutExtension(fileName));
 	}
 
 	/**
@@ -171,14 +169,14 @@ public class ExtendedPlaceholders {
 	/**
 	 * @return the playlists
 	 */
-	public final List<Playlist> getPlaylists() {
+	public final List<PlaylistModel> getPlaylists() {
 		return playlists;
 	}
 
 	/**
 	 * @param playlists the playlists to set
 	 */
-	public final void setPlaylists(final List<Playlist> playlists) {
+	public final void setPlaylists(final List<PlaylistModel> playlists) {
 		this.playlists = playlists;
 	}
 }

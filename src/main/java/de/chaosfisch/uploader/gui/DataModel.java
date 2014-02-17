@@ -10,12 +10,17 @@
 
 package de.chaosfisch.uploader.gui;
 
-import de.chaosfisch.google.youtube.upload.Status;
-import de.chaosfisch.google.youtube.upload.metadata.License;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.ThreeD;
-import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
-import de.chaosfisch.uploader.gui.models.*;
+import de.chaosfisch.google.account.AccountModel;
+import de.chaosfisch.google.category.CategoryModel;
+import de.chaosfisch.google.category.ICategoryService;
+import de.chaosfisch.google.playlist.PlaylistModel;
+import de.chaosfisch.google.upload.Status;
+import de.chaosfisch.google.upload.metadata.License;
+import de.chaosfisch.google.upload.permissions.Comment;
+import de.chaosfisch.google.upload.permissions.ThreeD;
+import de.chaosfisch.google.upload.permissions.Visibility;
+import de.chaosfisch.uploader.gui.models.UploadModel;
+import de.chaosfisch.uploader.project.ProjectModel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,10 +47,15 @@ public class DataModel {
 	private final SimpleObjectProperty<AccountModel>  selectedAccount  = new SimpleObjectProperty<>();
 	private final SimpleObjectProperty<CategoryModel> selectedCategory = new SimpleObjectProperty<>();
 	private final SimpleStringProperty                selectedFile     = new SimpleStringProperty();
+	private final ICategoryService categoryService;
+//	private final IPlaylistService playlistService;
 
 
-	public DataModel() {
+	public DataModel(final ICategoryService categoryService) {
+		this.categoryService = categoryService;
 		initSampleData();
+		initBindings();
+		initData();
 	}
 
 	private void initSampleData() {
@@ -93,17 +103,6 @@ public class DataModel {
 		uploadModel5.setStatus(Status.FINISHED);
 		uploads.addAll(uploadModel1, uploadModel2, uploadModel3, uploadModel4, uploadModel5);
 
-
-		final CategoryModel category1 = new CategoryModel();
-		category1.setName("Kategorie 1");
-		final CategoryModel category2 = new CategoryModel();
-		category2.setName("Kategorie 2");
-		final CategoryModel category3 = new CategoryModel();
-		category3.setName("Kategorie 3");
-		final CategoryModel category4 = new CategoryModel();
-		category4.setName("Kategorie 4");
-		categories.addAll(category1, category2, category3, category4);
-
 		final AccountModel accountModel = new AccountModel();
 		accountModel.setName("Account 1");
 		final ObservableList<PlaylistModel> playlists = FXCollections.observableArrayList();
@@ -140,6 +139,17 @@ public class DataModel {
 
 		accountModel.setPlaylists(playlists);
 		accounts.addAll(accountModel);
+	}
+
+	private void initData() {
+		final Thread categoryThread = new Thread(categoryService::refresh, "Category_Loader");
+		categoryThread.setDaemon(true);
+		categoryThread.start();
+	}
+
+	private void initBindings() {
+		categories.bind(categoryService.categoryModelsProperty());
+		//	projects.bind(projectService.projectModelsProperty());
 	}
 
 	public void addUploads(final List<UploadModel> uploads) {

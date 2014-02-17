@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2013 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.account;
 
@@ -14,7 +14,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import de.chaosfisch.google.GDATAConfig;
+import de.chaosfisch.google.GDataConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,30 +22,30 @@ import java.util.HashMap;
 
 public abstract class AbstractAccountService implements IAccountService {
 
-	private static final int SC_OK = 200;
-	private final HashMap<Account, Token> authtokens = new HashMap<>(3);
-	private static final String REFRESH_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
-	private static final String TOKEN_TEST_URL = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccountService.class);
+	private static final int                          SC_OK             = 200;
+	private final        HashMap<AccountModel, Token> authtokens        = new HashMap<>(3);
+	private static final String                       REFRESH_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
+	private static final String                       TOKEN_TEST_URL    = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
+	private static final Logger                       LOGGER            = LoggerFactory.getLogger(AbstractAccountService.class);
 
-	private Token getAuthToken(final Account account) throws AuthenticationException {
+	private Token getAuthToken(final AccountModel account) throws AuthenticationException {
 		return getAuthToken(account, false);
 	}
 
-	private Token getAuthToken(final Account account, final boolean uncached) throws AuthenticationException {
+	private Token getAuthToken(final AccountModel account, final boolean uncached) throws AuthenticationException {
 		if (uncached || !authtokens.containsKey(account) || !authtokens.get(account).isValid()) {
 			authtokens.put(account, _receiveToken(account));
 		}
 		return authtokens.get(account);
 	}
 
-	private Token _receiveToken(final Account account) throws AuthenticationException {
+	private Token _receiveToken(final AccountModel account) throws AuthenticationException {
 		try {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
 					.field("grant_type", "refresh_token")
-					.field("client_id", GDATAConfig.CLIENT_ID)
-					.field("client_secret", GDATAConfig.CLIENT_SECRET)
+					.field("client_id", GDataConfig.CLIENT_ID)
+					.field("client_secret", GDataConfig.CLIENT_SECRET)
 					.field("refresh_token", account.getRefreshToken())
 					.asJson();
 			if (SC_OK != response.getCode()) {
@@ -61,7 +61,7 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public Authentication getAuthentication(final Account account) {
+	public Authentication getAuthentication(final AccountModel account) {
 		try {
 			return new Authentication(getAuthToken(account).getToken());
 		} catch (final Exception e) {
@@ -77,9 +77,9 @@ public abstract class AbstractAccountService implements IAccountService {
 			final HttpResponse<JsonNode> response = Unirest.post(REFRESH_TOKEN_URL)
 					.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
 					.field("grant_type", "authorization_code")
-					.field("client_id", GDATAConfig.CLIENT_ID)
-					.field("client_secret", GDATAConfig.CLIENT_SECRET)
-					.field("redirect_uri", GDATAConfig.REDIRECT_URI)
+					.field("client_id", GDataConfig.CLIENT_ID)
+					.field("client_secret", GDataConfig.CLIENT_SECRET)
+					.field("redirect_uri", GDataConfig.REDIRECT_URI)
 					.field("code", code)
 					.asJson();
 
@@ -94,7 +94,7 @@ public abstract class AbstractAccountService implements IAccountService {
 	}
 
 	@Override
-	public boolean verifyAccount(final Account account) {
+	public boolean verifyAccount(final AccountModel account) {
 		try {
 			getAuthToken(account, true);
 			_testExtended(account);
@@ -104,7 +104,7 @@ public abstract class AbstractAccountService implements IAccountService {
 		}
 	}
 
-	private void _testExtended(final Account account) throws AuthenticationException, UnirestException {
+	private void _testExtended(final AccountModel account) throws AuthenticationException, UnirestException {
 		final HttpResponse<String> response = Unirest.get(TOKEN_TEST_URL)
 				.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
 				.header("Authorization", getAuthentication(account).getHeader())

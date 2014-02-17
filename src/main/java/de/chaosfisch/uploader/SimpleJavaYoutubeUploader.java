@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader;
 
+import com.mashape.unirest.http.Unirest;
 import de.chaosfisch.uploader.gui.GUI;
 import de.chaosfisch.util.Directories;
 import javafx.application.Application;
@@ -24,8 +25,8 @@ import java.time.LocalDateTime;
 
 public final class SimpleJavaYoutubeUploader {
 
-	public static final int LAUNCHER_UPDATE_DELAY = 5000;
-	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
+	public static final  int    LAUNCHER_UPDATE_DELAY = 5000;
+	private static final Logger LOGGER                = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	private SimpleJavaYoutubeUploader() {
 	}
@@ -34,6 +35,12 @@ public final class SimpleJavaYoutubeUploader {
 		logVMInfo();
 		updateLauncher();
 		Application.launch(GUI.class, args);
+		try {
+			Unirest.shutdown();
+		} catch (final IOException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 
 	private static void updateLauncher() {

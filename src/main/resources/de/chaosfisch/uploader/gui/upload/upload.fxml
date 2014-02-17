@@ -11,9 +11,7 @@
   ***********************************************************************************************-->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <VBox spacing="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
@@ -32,8 +30,20 @@
 			  onDragEntered="#filesDragEntered" onDragExited="#filesDragExited" onDragOver="#filesDragOver"
 			  onDragDropped="#filesDragDropped" onMouseEntered="#mouseEntered" style="-fx-border-style: dotted;"
 			  xmlns="http://javafx.com/javafx/8">
-		<children>
+			<children>
 				<Label layoutX="268.0" layoutY="42.0" text="Drag files or Click to get started!"/>
+			</children>
+		</HBox>
+
+		<HBox prefHeight="30.0" spacing="5.0">
+			<padding>
+				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+			</padding>
+			<children>
+				<Button mnemonicParsing="false" text="Start" fx:id="startButton"/>
+				<Button mnemonicParsing="false" text="Stop" fx:id="stopButton"/>
+				<ComboBox promptText="Action after Uploading...?" fx:id="actionOnFinishList"/>
+				<Button mnemonicParsing="false" text="Löschen" onAction="#removeUploads"/>
 			</children>
 		</HBox>
 	</children>

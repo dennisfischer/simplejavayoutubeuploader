@@ -15,9 +15,9 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.chaosfisch.google.account.Account;
-import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.google.account.AccountModel;
+import de.chaosfisch.google.upload.Upload;
+import de.chaosfisch.google.upload.UploadPostProcessor;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.util.DateTimeTypeConverter;
 import org.apache.commons.configuration.Configuration;
@@ -31,9 +31,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public class ExportPostProcessor implements UploadPostProcessor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExportPostProcessor.class);
-	public static final String JSON_LOGFILES = "json_logfiles_export";
-
+	public static final  String JSON_LOGFILES = "json_logfiles_export";
+	private static final Logger LOGGER        = LoggerFactory.getLogger(ExportPostProcessor.class);
 	@Inject
 	Configuration config;
 
@@ -48,12 +47,12 @@ public class ExportPostProcessor implements UploadPostProcessor {
 				.addSerializationExclusionStrategy(new ExclusionStrategy() {
 					@Override
 					public boolean shouldSkipField(final FieldAttributes f) {
-						return f.getDeclaringClass().isAssignableFrom(Account.class);
+						return f.getDeclaringClass().isAssignableFrom(AccountModel.class);
 					}
 
 					@Override
 					public boolean shouldSkipClass(final Class<?> clazz) {
-						return clazz.isAssignableFrom(Account.class);
+						return clazz.isAssignableFrom(AccountModel.class);
 					}
 				})
 				.registerTypeAdapter(LocalDateTime.class, new DateTimeTypeConverter())

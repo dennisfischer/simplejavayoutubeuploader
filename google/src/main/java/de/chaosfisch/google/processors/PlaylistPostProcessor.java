@@ -1,29 +1,29 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.processors;
 
-import de.chaosfisch.google.youtube.playlist.IPlaylistService;
-import de.chaosfisch.google.youtube.playlist.Playlist;
-import de.chaosfisch.google.youtube.playlist.PlaylistIOException;
-import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.google.playlist.IPlaylistService;
+import de.chaosfisch.google.playlist.PlaylistModel;
+import de.chaosfisch.google.upload.Upload;
+import de.chaosfisch.google.upload.UploadPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 public class PlaylistPostProcessor implements UploadPostProcessor {
 
-	private final IPlaylistService playlistService;
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPostProcessor.class);
+	private final IPlaylistService playlistService;
 
 	@Inject
 	public PlaylistPostProcessor(final IPlaylistService playlistService) {
@@ -31,13 +31,9 @@ public class PlaylistPostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
-		for (final Playlist playlist : upload.getPlaylists()) {
-			try {
-				playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
-			} catch (final PlaylistIOException e) {
-				LOGGER.error("Failed adding video {} to playlist {}", upload.getVideoid(), playlist.getTitle(), e);
-			}
+	public Upload process(final Upload upload) throws IOException {
+		for (final PlaylistModel playlist : upload.getPlaylists()) {
+			playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
 		}
 		return upload;
 	}

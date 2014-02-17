@@ -14,12 +14,15 @@ package de.chaosfisch.uploader.gui.main;
 import dagger.Lazy;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.EditView;
-import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.uploader.gui.upload.UploadView;
-import javafx.event.ActionEvent;
+import de.chaosfisch.util.FXMLView;
+import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
 
 import javax.inject.Inject;
@@ -27,33 +30,49 @@ import javax.inject.Singleton;
 
 @Singleton
 public class MainPresenter {
+
+	private static final int PROGRESS_INDICATOR_MAX_WIDTH  = 50;
+	private static final int PROGRESS_INDICATOR_MAX_HEIGHT = 50;
 	@Inject
-	protected Lazy<EditView> editViewLazy;
+	protected DataModel        dataModel;
+	@Inject
+	protected Lazy<EditView>   editViewLazy;
 	@Inject
 	protected Lazy<UploadView> uploadsViewLazy;
-	@Inject
-	protected DataModel dataModel;
-	@FXML
-	private BorderPane mainFrame;
-	@FXML
-	private Button startButton;
-	@FXML
-	private Button stopButton;
-	@FXML
-	private ComboBox actionOnFinishList;
 
-	public void initialize() {
-		mainFrame.setCenter(editViewLazy.get().getView());
+	@FXML
+	public void initEditTab(final Event event) {
+		initTabLazy((Tab) event.getSource(), editViewLazy);
 	}
 
-	@FXML
-	public void removeUploads(final ActionEvent actionEvent) {
-		// @BUG had to add workaround by converting observable list to array
-		// otherwise only one element is removed and not N selected elements
-		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads().size()];
-		dataModel.getSelectedUploads().toArray(uploads);
-		for (final UploadModel upload : uploads) {
-			dataModel.removeUpload(upload);
+	private void initTabLazy(final Tab tab, final Lazy<? extends FXMLView> lazyView) {
+		if (null == tab.getContent()) {
+			final ProgressIndicator progressIndicator = getLoadingIndicator();
+
+			final BorderPane borderPane = new BorderPane(progressIndicator);
+			BorderPane.setAlignment(progressIndicator, Pos.CENTER);
+			tab.setContent(borderPane);
+			final Thread thread = new Thread(() -> {
+				final Node content = lazyView.get().getView();
+				Platform.runLater(() -> tab.setContent(content));
+			});
+			thread.setDaemon(true);
+			thread.start();
+
+			tab.setOnSelectionChanged(null);
 		}
 	}
+
+	private ProgressIndicator getLoadingIndicator() {
+		final ProgressIndicator progressIndicator = new ProgressIndicator(-1);
+		progressIndicator.setMaxSize(PROGRESS_INDICATOR_MAX_WIDTH, PROGRESS_INDICATOR_MAX_HEIGHT);
+		return progressIndicator;
+	}
+
+	@FXML
+	public void initUploadsTab(final Event event) {
+		initTabLazy((Tab) event.getSource(), uploadsViewLazy);
+	}
+
+
 }

@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google;
 
@@ -20,7 +20,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTube;
-import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.AccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +31,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class YouTubeProvider implements Provider<YouTube> {
-	private Account account;
-	private final Map<Account, YouTube> services = new HashMap<>(1);
+	private static final Logger                     LOGGER   = LoggerFactory.getLogger(YouTubeProvider.class);
+	private final        Map<AccountModel, YouTube> services = new HashMap<>(1);
 	private final HttpTransport httpTransport;
-	private final JsonFactory jsonFactory;
-	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubeProvider.class);
-	private final Map<Account, Credential> credentials = new HashMap<>(1);
+	private final JsonFactory   jsonFactory;
+	private final Map<AccountModel, Credential> credentials = new HashMap<>(1);
+	private AccountModel account;
 
 	@Inject
 	public YouTubeProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
@@ -56,16 +56,11 @@ public class YouTubeProvider implements Provider<YouTube> {
 		return services.get(account);
 	}
 
-	public YouTubeProvider setAccount(final Account account) {
-		this.account = account;
-		return this;
-	}
-
-	public Credential getCredential(final Account account) {
+	public Credential getCredential(final AccountModel account) {
 		if (!credentials.containsKey(account)) {
 			final Credential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
 					.setTransport(httpTransport)
-					.setClientSecrets(GDATAConfig.CLIENT_ID, GDATAConfig.CLIENT_SECRET)
+					.setClientSecrets(GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET)
 					.addRefreshListener(new CredentialRefreshListener() {
 						@Override
 						public void onTokenResponse(final Credential credential, final TokenResponse tokenResponse) throws IOException {
@@ -82,5 +77,10 @@ public class YouTubeProvider implements Provider<YouTube> {
 			credentials.put(account, credential);
 		}
 		return credentials.get(account);
+	}
+
+	public YouTubeProvider setAccount(final AccountModel account) {
+		this.account = account;
+		return this;
 	}
 }

@@ -11,11 +11,11 @@
 package de.chaosfisch.services;
 
 import de.chaosfisch.google.enddir.IEnddirService;
-import de.chaosfisch.google.youtube.upload.Upload;
-import de.chaosfisch.google.youtube.upload.UploadPreProcessor;
-import de.chaosfisch.google.youtube.upload.metadata.Metadata;
-import de.chaosfisch.google.youtube.upload.metadata.Monetization;
-import de.chaosfisch.google.youtube.upload.metadata.Social;
+import de.chaosfisch.google.upload.Upload;
+import de.chaosfisch.google.upload.UploadPreProcessor;
+import de.chaosfisch.google.upload.metadata.Metadata;
+import de.chaosfisch.google.upload.metadata.Monetization;
+import de.chaosfisch.google.upload.metadata.Social;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

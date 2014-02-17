@@ -1,17 +1,17 @@
-/*
- * Copyright (c) 2013 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.enddir;
 
 import com.google.common.io.Files;
-import de.chaosfisch.google.youtube.upload.Upload;
+import de.chaosfisch.google.upload.Upload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class EnddirServiceImpl implements IEnddirService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(EnddirServiceImpl.class);
-	private static final String VALID_FILE_NAMES = "[^a-zA-Z0-9\\._]+";
+	private static final Logger  LOGGER                   = LoggerFactory.getLogger(EnddirServiceImpl.class);
+	private static final String  VALID_FILE_NAMES         = "[^a-zA-Z0-9\\._]+";
 	private static final Pattern VALID_FILE_NAMES_PATTERN = Pattern.compile(VALID_FILE_NAMES);
 
 	@Override

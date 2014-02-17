@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.gui.project;
 
 import de.chaosfisch.uploader.gui.DataModel;
-import de.chaosfisch.uploader.gui.models.ProjectModel;
+import de.chaosfisch.uploader.project.ProjectModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
