@@ -11,73 +11,98 @@
 package de.chaosfisch.uploader.gui.edit.right;
 
 import dagger.Lazy;
+import de.chaosfisch.google.youtube.upload.metadata.License;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.ThreeD;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
+import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.net.MalformedURLException;
 
 public class EditRightPresenter {
 
-	@FXML
-	private ComboBox visibility;
-
-	@FXML
-	private ComboBox license;
-
-	@FXML
-	private ComboBox comments;
-
-	@FXML
-	private ComboBox threed;
-
-	@FXML
-	private ImageView thumbnailImage;
-
-	@FXML
-	private DatePicker releaseDatepicker;
-
-	@FXML
-	private ComboBox releaseTimepicker;
-
-	@FXML
-	private TextField thumbnailPath;
-
-	@FXML
-	private ToggleButton ageRestriction;
-
-	@FXML
-	private ToggleButton statistics;
-
-	@FXML
-	private ToggleButton rate;
-
-	@FXML
-	private ToggleButton rateComments;
-
-	@FXML
-	private ToggleButton embed;
-
-	@FXML
-	private ToggleButton subscribers;
-
-	@FXML
-	private Accordion mainFrame;
-
 	@Inject
-	protected Lazy<EditPartnerView> editPartnerViewLazy;
+	protected Lazy<EditPartnerView>      editPartnerViewLazy;
 	@Inject
 	protected Lazy<EditMonetizationView> editMonetizationViewLazy;
+	@Inject
+	protected DataModel                  dataModel;
+	@FXML
+	private   ComboBox<Visibility>       visibility;
+	@FXML
+	private   ComboBox<License>          license;
+	@FXML
+	private   ComboBox<Comment>          comments;
+	@FXML
+	private   ComboBox<ThreeD>           threed;
+	@FXML
+	private   ImageView                  thumbnailImage;
+	@FXML
+	private   DatePicker                 releaseDatepicker;
+	@FXML
+	private   ComboBox                   releaseTimepicker;
+	@FXML
+	private   TextField                  thumbnailPath;
+	@FXML
+	private   ToggleButton               ageRestriction;
+	@FXML
+	private   ToggleButton               statistics;
+	@FXML
+	private   ToggleButton               rate;
+	@FXML
+	private   ToggleButton               rateComments;
+	@FXML
+	private   ToggleButton               embed;
+	@FXML
+	private   ToggleButton               subscribers;
+	@FXML
+	private   Accordion                  mainFrame;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EditRightPresenter.class);
 
 	@FXML
 	public void openThumbnail(final ActionEvent actionEvent) {
-
+		final FileChooser fileChooser = new FileChooser();
+		final File file = fileChooser.showOpenDialog(null);
+		if (null != file) {
+			thumbnailPath.setText(file.getAbsolutePath());
+			try {
+				thumbnailImage.setImage(new Image(file.toURI().toURL().toExternalForm(), true));
+			} catch (final MalformedURLException e) {
+				LOGGER.warn("Loading thumbnail preview failed", e);
+			}
+		}
 	}
 
 	public void initialize() {
 		mainFrame.getPanes().add((TitledPane) editMonetizationViewLazy.get().getView());
+		bindData();
+		selectData();
+	}
+
+	private void selectData() {
+		visibility.getSelectionModel().selectFirst();
+		comments.getSelectionModel().selectFirst();
+		license.getSelectionModel().selectFirst();
+		threed.getSelectionModel().selectFirst();
+	}
+
+	private void bindData() {
+		visibility.itemsProperty().bindBidirectional(dataModel.visibilitiesProperty());
+		comments.itemsProperty().bindBidirectional(dataModel.commentsProperty());
+		license.itemsProperty().bindBidirectional(dataModel.licensesProperty());
+		threed.itemsProperty().bindBidirectional(dataModel.threeDsProperty());
 	}
 }

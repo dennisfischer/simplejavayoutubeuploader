@@ -30,7 +30,9 @@ import java.lang.reflect.Method;
 
 public class GUI extends Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GUI.class);
+	public static final  int    MIN_HEIGHT = 600;
+	public static final  int    MIN_WIDTH  = 1100;
+	private static final Logger LOGGER     = LoggerFactory.getLogger(GUI.class);
 
 	@Override
 	public void init() throws Exception {
@@ -55,10 +57,10 @@ public class GUI extends Application {
 		loader.setLocation(getClass().getResource("/de/chaosfisch/uploader/gui/main/main.fxml"));
 
 		final Parent root = loader.load();
-		final Scene scene = new Scene(root, 1000, 500);
+		final Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
 		scene.getStylesheets().add(getClass().getResource("/de/chaosfisch/uploader/gui/style.css").toExternalForm());
 		stage.setScene(scene);
-		stage.setTitle("JavaFX Memory Visualizer");
+		stage.setTitle("Simple Java YouTube Uploader");
 		stage.show();
 	}
 

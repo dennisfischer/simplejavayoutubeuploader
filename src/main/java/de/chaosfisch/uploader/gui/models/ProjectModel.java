@@ -19,15 +19,20 @@ public class ProjectModel {
 		this.name.set(name);
 	}
 
+	public SimpleStringProperty nameProperty() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 	public String getName() {
 		return name.get();
 	}
 
 	public void setName(final String name) {
 		this.name.set(name);
-	}
-
-	public SimpleStringProperty nameProperty() {
-		return name;
 	}
 }

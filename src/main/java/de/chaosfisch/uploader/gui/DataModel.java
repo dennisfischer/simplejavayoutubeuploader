@@ -11,6 +11,10 @@
 package de.chaosfisch.uploader.gui;
 
 import de.chaosfisch.google.youtube.upload.Status;
+import de.chaosfisch.google.youtube.upload.metadata.License;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Comment;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.ThreeD;
+import de.chaosfisch.google.youtube.upload.metadata.permissions.Visibility;
 import de.chaosfisch.uploader.gui.models.*;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -23,16 +27,21 @@ import java.util.List;
 
 public class DataModel {
 
-	private final SimpleListProperty<UploadModel> uploads = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<ProjectModel> projects = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<AccountModel> accounts = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<CategoryModel> categories = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<String> files = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<UploadModel> selectedUploads = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<UploadModel>   uploads           = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<ProjectModel>  projects          = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<AccountModel>  accounts          = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<CategoryModel> categories        = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<String>        files             = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<UploadModel>   selectedUploads   = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleListProperty<PlaylistModel> selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleObjectProperty<AccountModel> selectedAccount = new SimpleObjectProperty<>();
+	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility.values()));
+	private final SimpleListProperty<Comment>       comments          = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
+	private final SimpleListProperty<ThreeD>        threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
+	private final SimpleListProperty<License>       licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));
+
+	private final SimpleObjectProperty<AccountModel>  selectedAccount  = new SimpleObjectProperty<>();
 	private final SimpleObjectProperty<CategoryModel> selectedCategory = new SimpleObjectProperty<>();
-	private final SimpleStringProperty selectedFile = new SimpleStringProperty();
+	private final SimpleStringProperty                selectedFile     = new SimpleStringProperty();
 
 
 	public DataModel() {
@@ -267,5 +276,53 @@ public class DataModel {
 
 	public SimpleObjectProperty<AccountModel> selectedAccountProperty() {
 		return selectedAccount;
+	}
+
+	public ObservableList<Visibility> getVisibilities() {
+		return visibilities.get();
+	}
+
+	public void setVisibilities(final ObservableList<Visibility> visibilities) {
+		this.visibilities.set(visibilities);
+	}
+
+	public SimpleListProperty<Visibility> visibilitiesProperty() {
+		return visibilities;
+	}
+
+	public ObservableList<Comment> getComments() {
+		return comments.get();
+	}
+
+	public void setComments(final ObservableList<Comment> comments) {
+		this.comments.set(comments);
+	}
+
+	public SimpleListProperty<Comment> commentsProperty() {
+		return comments;
+	}
+
+	public ObservableList<ThreeD> getThreeDs() {
+		return threeDs.get();
+	}
+
+	public void setThreeDs(final ObservableList<ThreeD> threeDs) {
+		this.threeDs.set(threeDs);
+	}
+
+	public SimpleListProperty<ThreeD> threeDsProperty() {
+		return threeDs;
+	}
+
+	public ObservableList<License> getLicenses() {
+		return licenses.get();
+	}
+
+	public void setLicenses(final ObservableList<License> licenses) {
+		this.licenses.set(licenses);
+	}
+
+	public SimpleListProperty<License> licensesProperty() {
+		return licenses;
 	}
 }

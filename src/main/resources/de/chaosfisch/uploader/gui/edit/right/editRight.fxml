@@ -70,7 +70,7 @@
 						<Button maxWidth="Infinity" GridPane.rowIndex="7" GridPane.columnIndex="3" text="Öffnen"
 								onAction="#openThumbnail"/>
 						<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1"
-								   GridPane.rowIndex="8" fx:id="thumbnailImage"/>
+								   GridPane.rowIndex="8" fitHeight="100" fx:id="thumbnailImage"/>
 
 
 						<Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="9"/>
