@@ -14,6 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.google.category.GoogleCategoryService;
 import de.chaosfisch.google.category.ICategoryService;
+import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
@@ -52,13 +53,13 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	DataModel provideDataModel(ICategoryService iCategoryService) {
+	DataModel provideDataModel(final ICategoryService iCategoryService) {
 		return new DataModel(iCategoryService);
 	}
 
 	@Provides
 	@Singleton
 	ICategoryService provideCategoryService() {
-		return new GoogleCategoryService();
+		return new GoogleCategoryService(ApplicationData.DATA_DIR);
 	}
 }
