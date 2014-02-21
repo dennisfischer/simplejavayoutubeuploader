@@ -23,23 +23,18 @@ import de.chaosfisch.google.upload.permissions.Permissions;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Upload {
 
 	private final CopyOnWriteArrayList<PlaylistModel> playlists = new CopyOnWriteArrayList<>();
-	@Deprecated
-	private transient Calendar dateOfStart;
-	@Deprecated
-	private transient Calendar dateOfRelease;
+
 	private Social       social       = new Social();
 	private Status       status       = Status.WAITING;
 	private Monetization monetization = new Monetization();
 	private Permissions  permissions  = new Permissions();
 	private Metadata     metadata     = new Metadata();
-	private String       mimetype     = "application/octet-stream";
 
 	private String        id;
 	private File          file;
@@ -94,14 +89,6 @@ public class Upload {
 			throw new IllegalArgumentException(Validation.FILE);
 		}
 		this.file = file;
-	}
-
-	public String getMimetype() {
-		return mimetype;
-	}
-
-	public void setMimetype(final String mimetype) {
-		this.mimetype = mimetype;
 	}
 
 	public String getUploadurl() {

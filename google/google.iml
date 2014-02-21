@@ -41,6 +41,7 @@
     <orderEntry type="library" exported="" name="Gradle: httpasyncclient-4.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: httpmime-4.3.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-compiler-1.2.1" level="project" />
+    <orderEntry type="library" name="annotations" level="application" />
   </component>
 </module>
 

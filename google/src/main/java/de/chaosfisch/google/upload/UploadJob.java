@@ -268,7 +268,7 @@ public class UploadJob implements Callable<Upload> {
 		request.setDoOutput(true);
 		request.setFixedLengthStreamingMode(chunk);
 		//Properties
-		request.setRequestProperty("Content-Type", upload.getMimetype());
+		request.setRequestProperty("Content-Type", "application/octet-stream");
 		request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
 		request.setRequestProperty("Authorization", getAuthHeader());
 		request.setRequestProperty("GData-Version", GDataConfig.GDATA_V2);

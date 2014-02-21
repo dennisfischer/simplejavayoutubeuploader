@@ -17,7 +17,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
 import de.chaosfisch.google.GDataConfig;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -38,7 +37,7 @@ public class GoogleCategoryService implements ICategoryService {
 	private final        SimpleListProperty<CategoryModel> categoryModels      = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final        Gson                              gson                = new GsonBuilder().create();
 	private final String dataLocation;
-	private       String currentETag;
+	private String currentETag = "";
 
 
 	public GoogleCategoryService(final String dataLocation) {
@@ -47,7 +46,7 @@ public class GoogleCategoryService implements ICategoryService {
 	}
 
 	private void loadCategories() {
-		try (FileReader fileReader = new FileReader(dataLocation + "/cache/categories.json")) {
+		try (final FileReader fileReader = new FileReader(dataLocation + "/cache/categories.json")) {
 			processCategoryFeed(gson.fromJson(fileReader, CategoryFeed.class));
 		} catch (final IOException | JsonSyntaxException e) {
 			LOGGER.info("Category cache file not existing!");
@@ -80,13 +79,9 @@ public class GoogleCategoryService implements ICategoryService {
 
 	@Override
 	public void refresh() {
-		final GetRequest request = Unirest.get(String.format(CATEGORY_URL, Locale.getDefault().getCountry(), Locale.getDefault().getCountry(), GDataConfig.ACCESS_KEY));
-
-		if (null != currentETag) {
-			request.header("If-None-Match", currentETag);
-		}
-
-		request.header("Accept-Encoding", "gzip")
+		Unirest.get(String.format(CATEGORY_URL, Locale.getDefault().getCountry(), Locale.getDefault().getCountry(), GDataConfig.ACCESS_KEY))
+				.header("If-None-Match", currentETag)
+				.header("Accept-Encoding", "gzip")
 				.asStringAsync(new Callback<String>() {
 					@Override
 					public void completed(final HttpResponse<String> response) {
@@ -112,11 +107,6 @@ public class GoogleCategoryService implements ICategoryService {
 				});
 	}
 
-	@Override
-	public SimpleListProperty<CategoryModel> categoryModelsProperty() {
-		return categoryModels;
-	}
-
 	private void cacheFeed(final CategoryFeed categoryFeed) {
 		try (final FileWriter fileWriter = new FileWriter(dataLocation + "/cache/categories.json")) {
 			gson.toJson(categoryFeed, fileWriter);
@@ -124,6 +114,11 @@ public class GoogleCategoryService implements ICategoryService {
 		} catch (final IOException e) {
 			LOGGER.warn("Couldn't write cache file!", e);
 		}
+	}
+
+	@Override
+	public SimpleListProperty<CategoryModel> categoryModelsProperty() {
+		return categoryModels;
 	}
 
 	public ObservableList<CategoryModel> getCategoryModels() {

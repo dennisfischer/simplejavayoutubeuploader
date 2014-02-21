@@ -10,12 +10,12 @@
 
 package de.chaosfisch.services;
 
-import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.upload.Upload;
 import de.chaosfisch.google.upload.UploadPreProcessor;
 import de.chaosfisch.google.upload.metadata.Metadata;
 import de.chaosfisch.google.upload.metadata.Monetization;
 import de.chaosfisch.google.upload.metadata.Social;
+import de.chaosfisch.services.enddir.IEnddirService;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

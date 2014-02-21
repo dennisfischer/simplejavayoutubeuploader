@@ -17,9 +17,6 @@ public class Social {
 	private boolean twitter;
 	private boolean gplus;
 
-	@Deprecated
-	private transient int version;
-
 	public boolean isFacebook() {
 		return facebook;
 	}

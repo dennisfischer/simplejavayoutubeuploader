@@ -21,9 +21,6 @@ public class Metadata {
 	private String description;
 	private String keywords;
 
-	@Deprecated
-	private transient int version;
-
 	public Metadata() {
 		this("", Category.ANIMALS, "", "");
 	}

@@ -39,9 +39,6 @@ public class Monetization {
 	private String  episodeNb;
 	private boolean partner;
 
-	@Deprecated
-	private transient int version;
-
 	public boolean isInstreamDefaults() {
 		return instreamDefaults;
 	}

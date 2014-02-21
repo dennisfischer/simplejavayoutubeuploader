@@ -14,6 +14,7 @@ import com.google.api.services.youtube.model.*;
 import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.account.IAccountService;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public abstract class PlaylistService implements IPlaylistService {
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
-	private final SimpleMapProperty<AccountModel, PlaylistModel> playlistModels = new SimpleMapProperty<>(FXCollections.observableHashMap());
+	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModels = new SimpleMapProperty<>(FXCollections.observableHashMap());
 	private final IAccountService accountService;
 	private final YouTubeProvider youTubeProvider;
 

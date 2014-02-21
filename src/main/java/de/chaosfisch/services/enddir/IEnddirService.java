@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google.enddir;
+package de.chaosfisch.services.enddir;
 
 import de.chaosfisch.google.upload.Upload;
 

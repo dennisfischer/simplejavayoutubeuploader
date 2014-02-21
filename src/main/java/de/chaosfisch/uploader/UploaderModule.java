@@ -53,7 +53,7 @@ public class UploaderModule {
 	private void mapServices() {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
 		bind(IEnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
-		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
+		bind(IThumbnailService.class).to(YouTubeThumnbailService.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);*/
 	}
 }

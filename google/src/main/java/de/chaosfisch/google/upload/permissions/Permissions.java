@@ -22,9 +22,6 @@ public class Permissions {
 	private boolean ageRestricted;
 	private boolean publicStatsViewable;
 
-	@Deprecated
-	private transient int version;
-
 	public Comment getComment() {
 		return comment;
 	}

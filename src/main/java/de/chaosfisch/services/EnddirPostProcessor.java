@@ -8,12 +8,12 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google.processors;
+package de.chaosfisch.services;
 
 import com.google.common.io.Files;
-import de.chaosfisch.google.enddir.IEnddirService;
 import de.chaosfisch.google.upload.Upload;
 import de.chaosfisch.google.upload.UploadPostProcessor;
+import de.chaosfisch.services.enddir.IEnddirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

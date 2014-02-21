@@ -18,12 +18,12 @@ import de.chaosfisch.google.account.AccountModel;
 import javax.inject.Inject;
 import java.io.*;
 
-public class ThumbnailServiceImpl implements IThumbnailService {
+public class YouTubeThumnbailService implements IThumbnailService {
 
 	private final YouTubeProvider youTubeProvider;
 
 	@Inject
-	public ThumbnailServiceImpl(final YouTubeProvider youTubeProvider) {
+	public YouTubeThumnbailService(final YouTubeProvider youTubeProvider) {
 		this.youTubeProvider = youTubeProvider;
 	}
 
