@@ -23,9 +23,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class YouTubeThumnbailService implements IThumbnailService {
-	@Inject
 	private final IAccountService accountService;
 
+	@Inject
 	public YouTubeThumnbailService(final IAccountService accountService) {
 		this.accountService = accountService;
 	}

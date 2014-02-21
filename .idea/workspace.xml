@@ -9,14 +9,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added ETag file caching for categories.">
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__google_api_services_youtube_v3_rev94_1_17_0_rc.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__controlsfx_8_0_5_SNAPSHOT.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__controlsfx_8_0_5_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added ETag file caching for categories.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/YouTubeThumnbailService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/YouTubeThumnbailService.java" />
     </list>
-    <list default="true" id="82d840de-dc2b-4e9d-90af-89c1e405e3de" name="Optimized thumbnail upload (cherry picked from commit 19d3e01)" comment="Optimized thumbnail upload&#10;(cherry picked from commit 19d3e01)" />
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -99,37 +94,7 @@
     <favorites_list name="simple-java-youtube-uploader" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="GDataConfig.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/GDataConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="22" selection-start="955" selection-end="955" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ThumbnailIOException.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/ThumbnailIOException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="13" selection-start="956" selection-end="956" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="YouTubeThumnbailService.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/YouTubeThumnbailService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="13" selection-start="1778" selection-end="1778" vertical-scroll-proportion="0.35849056" vertical-offset="305" max-vertical-offset="884">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -2087,7 +2052,7 @@
       <workItem from="1392912181651" duration="325000" />
       <workItem from="1392917162076" duration="784000" />
       <workItem from="1392980311103" duration="224000" />
-      <workItem from="1392988952487" duration="266000" />
+      <workItem from="1392988952487" duration="346000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -2846,7 +2811,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="119918000" />
+    <option name="totallyTimeSpent" value="119998000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -2873,7 +2838,7 @@
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.45680344" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45680344" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32829374" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -2891,7 +2856,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32870865" sideWeight="0.6837416" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21778488" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21778488" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33261338" sideWeight="0.5085197" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -3270,26 +3235,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/GDataConfig.java">
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/YouTubeThumnbailService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="22" selection-start="955" selection-end="955" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
-          <folding />
+        <state line="27" column="11" selection-start="1407" selection-end="1407" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="884">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/ThumbnailIOException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="13" selection-start="956" selection-end="956" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289">
+        <state line="12" column="13" selection-start="956" selection-end="956" vertical-scroll-proportion="0.075555556" vertical-offset="0" max-vertical-offset="900">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/thumbnail/YouTubeThumnbailService.java">
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/GDataConfig.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="13" selection-start="1778" selection-end="1778" vertical-scroll-proportion="0.35849056" vertical-offset="305" max-vertical-offset="884">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state line="12" column="22" selection-start="955" selection-end="955" vertical-scroll-proportion="0.075555556" vertical-offset="0" max-vertical-offset="900">
+          <folding />
         </state>
       </provider>
     </entry>
