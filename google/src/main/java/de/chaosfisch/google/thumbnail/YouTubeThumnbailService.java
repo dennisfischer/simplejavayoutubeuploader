@@ -10,21 +10,24 @@
 
 package de.chaosfisch.google.thumbnail;
 
-import com.google.api.client.http.InputStreamContent;
-import com.google.api.services.youtube.YouTube;
-import de.chaosfisch.google.YouTubeProvider;
+import com.google.common.io.Files;
 import de.chaosfisch.google.account.AccountModel;
+import de.chaosfisch.google.account.IAccountService;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class YouTubeThumnbailService implements IThumbnailService {
-
-	private final YouTubeProvider youTubeProvider;
-
 	@Inject
-	public YouTubeThumnbailService(final YouTubeProvider youTubeProvider) {
-		this.youTubeProvider = youTubeProvider;
+	private final IAccountService accountService;
+
+	public YouTubeThumnbailService(final IAccountService accountService) {
+		this.accountService = accountService;
 	}
 
 	@Override
@@ -33,16 +36,19 @@ public class YouTubeThumnbailService implements IThumbnailService {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		try (InputStream inputStream = new BufferedInputStream(new FileInputStream(thumbnail))) {
+		try {
+			final URL url = new URL("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + videoid + "&uploadType=media");
+			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/octet-stream");
+			connection.setRequestProperty("Authorization", accountService.getAuthentication(account).getHeader());
 
-			final InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
-			mediaContent.setLength(thumbnail.length());
-
-			final YouTube.Thumbnails.Set upload = youTubeProvider.setAccount(account)
-					.get()
-					.thumbnails()
-					.set(videoid, mediaContent);
-			upload.execute();
+			final OutputStream outputStream = connection.getOutputStream();
+			outputStream.write(Files.toByteArray(thumbnail));
+			outputStream.flush();
+			outputStream.close();
 		} catch (final IOException e) {
 			throw new ThumbnailIOException(e);
 		}
