@@ -10,22 +10,25 @@
 
 package de.chaosfisch.google.youtube.thumbnail;
 
-import com.google.api.client.http.InputStreamContent;
-import com.google.api.services.youtube.YouTube;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
-import de.chaosfisch.google.YouTubeProvider;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.account.Account;
+import de.chaosfisch.google.account.IAccountService;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ThumbnailServiceImpl implements IThumbnailService {
 
-	private final YouTubeProvider youTubeProvider;
-
 	@Inject
-	public ThumbnailServiceImpl(final YouTubeProvider youTubeProvider) {
-		this.youTubeProvider = youTubeProvider;
-	}
+	IAccountService accountService;
 
 	@Override
 	public void upload(final File thumbnail, final String videoid, final Account account) throws FileNotFoundException, ThumbnailIOException {
@@ -33,17 +36,28 @@ public class ThumbnailServiceImpl implements IThumbnailService {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		try (InputStream inputStream = new BufferedInputStream(new FileInputStream(thumbnail))) {
+		try {
+			final HttpResponse<String> response = Unirest.post("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + videoid + "&uploadType=resumable")
+					.header("Authorization", accountService.getAuthentication(account).getHeader())
+					.header("Content-Type", "application/octet-stream")
+					.asString();
 
-			final InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
-			mediaContent.setLength(thumbnail.length());
+			final URL url = new URL(response.getHeaders().get("location"));
+			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "image/png");
+			connection.setRequestProperty("Authorization", accountService.getAuthentication(account).getHeader());
 
-			final YouTube.Thumbnails.Set upload = youTubeProvider.setAccount(account)
-					.get()
-					.thumbnails()
-					.set(videoid, mediaContent);
-			upload.execute();
-		} catch (final IOException e) {
+			final OutputStream outputStream = connection.getOutputStream();
+			outputStream.write(Files.toByteArray(thumbnail));
+			outputStream.flush();
+			outputStream.close();
+			System.out.println(connection.getResponseMessage());
+			System.out.println(connection.getResponseCode());
+
+		} catch (final UnirestException | IOException e) {
 			throw new ThumbnailIOException(e);
 		}
 	}

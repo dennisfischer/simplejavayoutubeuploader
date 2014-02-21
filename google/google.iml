@@ -42,9 +42,9 @@
     <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.17.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev94-1.17.0-rc" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
     <orderEntry type="library" exported="" name="Gradle: guava-16.0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev95-1.17.0-rc" level="project" />
   </component>
 </module>
 
