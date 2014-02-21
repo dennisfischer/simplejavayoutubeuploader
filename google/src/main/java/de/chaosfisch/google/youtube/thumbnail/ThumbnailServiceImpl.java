@@ -12,9 +12,6 @@ package de.chaosfisch.google.youtube.thumbnail;
 
 import com.google.common.io.Files;
 import com.google.inject.Inject;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 
@@ -37,27 +34,19 @@ public class ThumbnailServiceImpl implements IThumbnailService {
 		}
 
 		try {
-			final HttpResponse<String> response = Unirest.post("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + videoid + "&uploadType=resumable")
-					.header("Authorization", accountService.getAuthentication(account).getHeader())
-					.header("Content-Type", "application/octet-stream")
-					.asString();
-
-			final URL url = new URL(response.getHeaders().get("location"));
+			final URL url = new URL("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + videoid + "&uploadType=media");
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setUseCaches(false);
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "image/png");
+			connection.setRequestProperty("Content-Type", "application/octet-stream");
 			connection.setRequestProperty("Authorization", accountService.getAuthentication(account).getHeader());
 
 			final OutputStream outputStream = connection.getOutputStream();
 			outputStream.write(Files.toByteArray(thumbnail));
 			outputStream.flush();
 			outputStream.close();
-			System.out.println(connection.getResponseMessage());
-			System.out.println(connection.getResponseCode());
-
-		} catch (final UnirestException | IOException e) {
+		} catch (final IOException e) {
 			throw new ThumbnailIOException(e);
 		}
 	}
