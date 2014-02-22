@@ -44,9 +44,9 @@ public class ProjectPresenter {
 
 		final List<Dialogs.CommandLink> links = Arrays.asList(
 				new Dialogs.CommandLink("Neues leeres Projekt erstellen",
-						"Dies erstellt ein neues leeres Projekt in dem alle Informationen noch nicht gesetzt sind."),
+										"Dies erstellt ein neues leeres Projekt in dem alle Informationen noch nicht gesetzt sind."),
 				new Dialogs.CommandLink("Projekt aus bestehenden Daten erstellen",
-						"Dies erstellt ein neues Projekt aus den Informationen die bereits eingegeben wurden.")
+										"Dies erstellt ein neues Projekt aus den Informationen die bereits eingegeben wurden.")
 		);
 		final Action response = Dialogs.create()
 				.owner(null)

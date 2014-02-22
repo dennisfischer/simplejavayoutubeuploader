@@ -8,19 +8,16 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google.account;
+package de.chaosfisch.google.auth;
 
-import java.util.List;
+public class AuthenticationException extends Exception {
+	private static final long serialVersionUID = -5334150826953275047L;
 
-public interface IAccountService {
+	public AuthenticationException(final Exception e) {
+		super(e);
+	}
 
-	List<AccountModel> getAll();
-
-	AccountModel get(String id);
-
-	void insert(AccountModel account);
-
-	void update(AccountModel account);
-
-	void delete(AccountModel account);
+	public AuthenticationException(final String msg) {
+		super(msg);
+	}
 }

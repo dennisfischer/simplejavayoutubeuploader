@@ -25,9 +25,10 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import de.chaosfisch.google.GDataConfig;
 import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.account.PersistentCookieStore;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
-import de.chaosfisch.google.http.PersistentCookieStore;
+import de.chaosfisch.google.auth.GoogleAuthProvider;
 import de.chaosfisch.google.upload.Upload;
 import de.chaosfisch.google.upload.permissions.*;
 import org.apache.http.client.CookieStore;
@@ -53,19 +54,22 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	private static final Logger LOGGER               = LoggerFactory.getLogger(AbstractMetadataService.class);
-	private static final String METADATA_UPDATE_URL  = "http://gdata.youtube.com/feeds/api/users/default/uploads";
-	private static final String VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
-	private static final int    SC_OK                = 200;
-	private static final int    MONETIZE_PARAMS_SIZE = 20;
-	private static final char   MODIFIED_SEPERATOR   = ',';
-	private static final int    METADATA_PARAMS_SIZE = 40;
-
-	private final IAccountService accountService;
+	public static final  int    DEFAULT_CONNECTION_TIMEOUT = 600000;
+	public static final  int    DEFAULT_SOCKET_TIMEOUT     = 600000;
+	private static final Logger LOGGER                     = LoggerFactory.getLogger(AbstractMetadataService.class);
+	private static final String METADATA_UPDATE_URL        = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String VIDEO_EDIT_URL             = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
+	private static final int    SC_OK                      = 200;
+	private static final int    MONETIZE_PARAMS_SIZE       = 20;
+	private static final char   MODIFIED_SEPERATOR         = ',';
+	private static final int    METADATA_PARAMS_SIZE       = 40;
+	private final IAccountService    accountService;
+	private final GoogleAuthProvider googleAuthProvider;
 
 	@Inject
-	public AbstractMetadataService(final IAccountService accountService) {
+	public AbstractMetadataService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
 		this.accountService = accountService;
+		this.googleAuthProvider = googleAuthProvider;
 	}
 
 	@Override
@@ -97,7 +101,7 @@ public class AbstractMetadataService implements IMetadataService {
 				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(permissions.getComment()
-						.ordinal())));
+																										  .ordinal())));
 		videoEntry.accessControl
 				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(Visibility.PUBLIC == permissions
 						.getVisibility())));
@@ -142,7 +146,8 @@ public class AbstractMetadataService implements IMetadataService {
 					.header("GData-Version", GDataConfig.GDATA_V2)
 					.header("X-GData-Key", "key=" + GDataConfig.DEVELOPER_KEY)
 					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-					.header("Authorization", accountService.getAuthentication(account).getHeader())
+					.header("Authorization", String.format("Bearer %s", googleAuthProvider.getCredential(account)
+							.getAccessToken()))
 					.body(atomData)
 					.asString();
 
@@ -166,7 +171,8 @@ public class AbstractMetadataService implements IMetadataService {
 		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount()
 				.getSerializableCookies()) {
 			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
-					.getName(), serializableCookie.getCookie().getValue());
+																		   .getName(), serializableCookie.getCookie()
+																		   .getValue());
 			cookie.setDomain(serializableCookie.getCookie().getDomain());
 			cookieStore.addCookie(cookie);
 		}
@@ -183,8 +189,8 @@ public class AbstractMetadataService implements IMetadataService {
 		changeMetadata(response.getBody(), upload);
 
 		final RequestConfig clientConfig = RequestConfig.custom()
-				.setConnectTimeout(600000)
-				.setSocketTimeout(600000)
+				.setConnectTimeout(DEFAULT_CONNECTION_TIMEOUT)
+				.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT)
 				.build();
 		Unirest.setHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
 	}

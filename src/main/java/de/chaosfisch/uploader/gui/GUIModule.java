@@ -12,8 +12,8 @@ package de.chaosfisch.uploader.gui;
 
 import dagger.Module;
 import dagger.Provides;
-import de.chaosfisch.google.category.GoogleCategoryService;
 import de.chaosfisch.google.category.ICategoryService;
+import de.chaosfisch.google.category.YouTubeCategoryService;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
@@ -60,6 +60,6 @@ public class GUIModule {
 	@Provides
 	@Singleton
 	ICategoryService provideCategoryService() {
-		return new GoogleCategoryService(ApplicationData.DATA_DIR);
+		return new YouTubeCategoryService(ApplicationData.DATA_DIR);
 	}
 }

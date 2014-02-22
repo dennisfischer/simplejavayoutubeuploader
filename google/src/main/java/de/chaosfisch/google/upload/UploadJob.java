@@ -21,10 +21,11 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.google.GDataConfig;
-import de.chaosfisch.google.YouTubeProvider;
+import de.chaosfisch.google.auth.GoogleAuthProvider;
 import de.chaosfisch.google.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.google.upload.metadata.IMetadataService;
 import de.chaosfisch.google.upload.metadata.MetaBadRequestException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
 
 public class UploadJob implements Callable<Upload> {
 
+	private static final int     DEFAULT_TIME_LEFT              = 60;
 	private static final int     SC_OK                          = 200;
 	private static final int     SC_CREATED                     = 201;
 	private static final int     SC_MULTIPLE_CHOICES            = 300;
@@ -53,35 +55,32 @@ public class UploadJob implements Callable<Upload> {
 	private static final String  METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final Pattern RANGE_HEADER_PATTERN           = Pattern.compile("-");
 	private static final int     SC_500                         = 500;
-
-	/**
-	 * File that is uploaded
-	 */
-	private File fileToUpload;
-	private long start;
-	private long bytesToUpload;
-	private long totalBytesUploaded;
-	private long fileSize;
-
 	private final Set<UploadPreProcessor>  uploadPreProcessors;
 	private final Set<UploadPostProcessor> uploadPostProcessors;
 	private final EventBus                 eventBus;
 	private final IUploadService           uploadService;
+	private final GoogleAuthProvider       googleAuthProvider;
+	private final IMetadataService         metadataService;
+	/**
+	 * File that is uploaded
+	 */
+	private       File                     fileToUpload;
+	private       long                     start;
+	private       long                     bytesToUpload;
+	private       long                     totalBytesUploaded;
+	private       long                     fileSize;
 	private       RateLimiter              rateLimiter;
-
-	private       UploadJobProgressEvent uploadProgress;
-	private       Upload                 upload;
-	private final YouTubeProvider        youTubeProvider;
-	private final IMetadataService       metadataService;
-	private       Credential             credential;
+	private       UploadJobProgressEvent   uploadProgress;
+	private       Upload                   upload;
+	private       Credential               credential;
 
 	@Inject
-	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
+	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final GoogleAuthProvider googleAuthProvider, final IMetadataService metadataService) {
 		this.uploadPreProcessors = uploadPreProcessors;
 		this.uploadPostProcessors = uploadPostProcessors;
 		this.eventBus = eventBus;
 		this.uploadService = uploadService;
-		this.youTubeProvider = youTubeProvider;
+		this.googleAuthProvider = googleAuthProvider;
 		this.metadataService = metadataService;
 		this.eventBus.register(this);
 	}
@@ -109,13 +108,14 @@ public class UploadJob implements Callable<Upload> {
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
 		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS
-				.toMillis(3), 2)
+																										 .toMillis(3), 2)
 				.withMaxDelay(TimeUnit.MINUTES.toMillis(1))
 				.withMaxRetries(10)
 				.retryOn(IOException.class)
 				.retryOn(RuntimeException.class)
 				.retryOn(UploadResponseException.class)
-				.abortIf(input -> input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input).getStatus())
+				.abortIf(input -> input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input)
+						.getStatus())
 				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class)
 				.abortOn(UploadFinishedException.class);
@@ -216,10 +216,11 @@ public class UploadJob implements Callable<Upload> {
 
 	private String getAuthHeader() throws IOException {
 		if (null == credential) {
-			credential = youTubeProvider.getCredential(upload.getAccount());
+			credential = googleAuthProvider.getCredential(upload.getAccount());
 		}
 
-		if (null == credential.getAccessToken() || null != credential.getExpiresInSeconds() && 60 >= credential.getExpiresInSeconds()) {
+		if (null == credential.getAccessToken() || null != credential.getExpiresInSeconds() && DEFAULT_TIME_LEFT >= credential
+				.getExpiresInSeconds()) {
 			credential.refreshToken();
 		}
 		return String.format("Bearer %s", credential.getAccessToken());
@@ -401,6 +402,28 @@ public class UploadJob implements Callable<Upload> {
 		this.rateLimiter = rateLimiter;
 	}
 
+	private static class UploadResponseException extends Exception {
+		private static final long serialVersionUID = 9064482080311824304L;
+		private final int status;
+
+		public UploadResponseException(final int status) {
+			super(String.format("Upload response exception: %d", status));
+			this.status = status;
+		}
+
+		private int getStatus() {
+			return status;
+		}
+	}
+
+	private static class UploadFinishedException extends Exception {
+		private static final long serialVersionUID = -5907578118391546810L;
+
+		public UploadFinishedException() {
+			super("Upload finished!");
+		}
+	}
+
 	private class TokenInputStream extends BufferedInputStream {
 
 		public TokenInputStream(final InputStream inputStream) {
@@ -408,7 +431,7 @@ public class UploadJob implements Callable<Upload> {
 		}
 
 		@Override
-		public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
+		public synchronized int read(@NotNull final byte[] b, final int off, final int len) throws IOException {
 			if (0 < rateLimiter.getRate()) {
 				rateLimiter.acquire(b.length);
 			}
@@ -432,28 +455,6 @@ public class UploadJob implements Callable<Upload> {
 			}
 
 			return bytes;
-		}
-	}
-
-	private static class UploadResponseException extends Exception {
-		private static final long serialVersionUID = 9064482080311824304L;
-		private final int status;
-
-		public UploadResponseException(final int status) {
-			super(String.format("Upload response exception: %d", status));
-			this.status = status;
-		}
-
-		private int getStatus() {
-			return status;
-		}
-	}
-
-	private static class UploadFinishedException extends Exception {
-		private static final long serialVersionUID = -5907578118391546810L;
-
-		public UploadFinishedException() {
-			super("Upload finished!");
 		}
 	}
 }

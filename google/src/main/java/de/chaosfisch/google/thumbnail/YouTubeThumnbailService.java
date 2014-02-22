@@ -10,24 +10,24 @@
 
 package de.chaosfisch.google.thumbnail;
 
-import com.google.common.io.Files;
+import com.google.api.client.http.InputStreamContent;
 import de.chaosfisch.google.account.AccountModel;
-import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.auth.GoogleAuthProvider;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.InputStream;
+import java.nio.file.Files;
+
 
 public class YouTubeThumnbailService implements IThumbnailService {
-	private final IAccountService accountService;
+	private final GoogleAuthProvider googleAuthProvider;
 
 	@Inject
-	public YouTubeThumnbailService(final IAccountService accountService) {
-		this.accountService = accountService;
+	public YouTubeThumnbailService(final GoogleAuthProvider googleAuthProvider) {
+		this.googleAuthProvider = googleAuthProvider;
 	}
 
 	@Override
@@ -36,19 +36,11 @@ public class YouTubeThumnbailService implements IThumbnailService {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		try {
-			final URL url = new URL("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + videoid + "&uploadType=media");
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/octet-stream");
-			connection.setRequestProperty("Authorization", accountService.getAuthentication(account).getHeader());
-
-			final OutputStream outputStream = connection.getOutputStream();
-			outputStream.write(Files.toByteArray(thumbnail));
-			outputStream.flush();
-			outputStream.close();
+		try (final InputStream is = Files.newInputStream(thumbnail.toPath())) {
+			googleAuthProvider.setAccount(account)
+					.get()
+					.thumbnails()
+					.set(videoid, new InputStreamContent("application/octet-stream", is));
 		} catch (final IOException e) {
 			throw new ThumbnailIOException(e);
 		}

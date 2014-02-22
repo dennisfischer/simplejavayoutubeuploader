@@ -39,7 +39,8 @@ public class DataModel {
 	private final SimpleListProperty<String>        files             = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleListProperty<UploadModel>   selectedUploads   = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleListProperty<PlaylistModel> selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility.values()));
+	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility
+																																		   .values()));
 	private final SimpleListProperty<Comment>       comments          = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
 	private final SimpleListProperty<ThreeD>        threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
 	private final SimpleListProperty<License>       licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));

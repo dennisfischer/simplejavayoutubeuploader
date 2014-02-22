@@ -11,9 +11,9 @@
 package de.chaosfisch.google.playlist;
 
 import com.google.api.services.youtube.model.*;
-import de.chaosfisch.google.YouTubeProvider;
 import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.account.IAccountService;
+import de.chaosfisch.google.auth.GoogleAuthProvider;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
@@ -29,13 +29,14 @@ public abstract class PlaylistService implements IPlaylistService {
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
-	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModels = new SimpleMapProperty<>(FXCollections.observableHashMap());
-	private final IAccountService accountService;
-	private final YouTubeProvider youTubeProvider;
+	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModels = new SimpleMapProperty<>(FXCollections
+																																	  .observableHashMap());
+	private final IAccountService    accountService;
+	private final GoogleAuthProvider googleAuthProvider;
 
-	public PlaylistService(final IAccountService accountService, final YouTubeProvider youTubeProvider) {
+	public PlaylistService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
 		this.accountService = accountService;
-		this.youTubeProvider = youTubeProvider;
+		this.googleAuthProvider = googleAuthProvider;
 	}
 
 
@@ -53,7 +54,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-		youTubeProvider.setAccount(null) //TODO playlist.getAccount())
+		googleAuthProvider.setAccount(null) //TODO playlist.getAccount())
 				.get()
 				.playlistItems()
 				.insert("snippet,status", playlistItem)
@@ -77,7 +78,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-		youTubeProvider.setAccount(null)//TODO playlist.getAccount())
+		googleAuthProvider.setAccount(null)//TODO playlist.getAccount())
 				.get()
 				.playlists()
 				.insert("snippet,status", youTubePlaylist)
@@ -90,7 +91,7 @@ public abstract class PlaylistService implements IPlaylistService {
 	public void synchronizePlaylists(final List<AccountModel> accounts) throws IOException {
 		logger.info("Synchronizing playlists.");
 		for (final AccountModel account : accounts) {
-			final PlaylistListResponse response = youTubeProvider.setAccount(account)
+			final PlaylistListResponse response = googleAuthProvider.setAccount(account)
 					.get()
 					.playlists()
 					.list("id,snippet,contentDetails")
@@ -106,14 +107,16 @@ public abstract class PlaylistService implements IPlaylistService {
 			for (final PlaylistModel playlist : accountPlaylists) {
 				delete(playlist);
 			}
-			account.getPlaylists().addAll(playlists);
+			account.getPlaylists()
+					.addAll(playlists);
 			accountService.update(account);
 		}
 		logger.info("Playlists synchronized");
 	}
 
 	List<PlaylistModel> parsePlaylistListResponse(final AccountModel account, final PlaylistListResponse response) {
-		final ArrayList<PlaylistModel> list = new ArrayList<>(response.getItems().size());
+		final ArrayList<PlaylistModel> list = new ArrayList<>(response.getItems()
+																	  .size());
 		for (final Playlist entry : response.getItems()) {
 			final PlaylistModel playlist = findByPkey(entry.getId());
 			if (null == playlist) {
@@ -125,27 +128,37 @@ public abstract class PlaylistService implements IPlaylistService {
 		return list;
 	}
 
-	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
-		playlist.setTitle(entry.getSnippet().getTitle());
-		playlist.setItemCount(entry.getContentDetails().getItemCount());
-		//TODO	playlist.setSummary(entry.getSnippet().getDescription());
-		final String thumbnailUrl = entry.getSnippet().getThumbnails().getHigh().getUrl();
-		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
-		//TODO	playlist.setAccount(account);
-		update(playlist);
-		return playlist;
-	}
-
 	PlaylistModel _createNewPlaylist(final AccountModel account, final Playlist entry) {
 		final PlaylistModel playlist = new PlaylistModel();//TODO account);
-		playlist.setTitle(entry.getSnippet().getTitle());
+		playlist.setTitle(entry.getSnippet()
+								  .getTitle());
 		playlist.setYoutubeId(entry.getId());
-		playlist.setItemCount(entry.getContentDetails().getItemCount());
+		playlist.setItemCount(entry.getContentDetails()
+									  .getItemCount());
 		//TODO	playlist.setSummary(entry.getSnippet().getDescription());
-		final String thumbnailUrl = entry.getSnippet().getThumbnails().getHigh().getUrl();
+		final String thumbnailUrl = entry.getSnippet()
+				.getThumbnails()
+				.getHigh()
+				.getUrl();
 		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
 		playlist.setHidden(false);
 		insert(playlist);
+		return playlist;
+	}
+
+	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
+		playlist.setTitle(entry.getSnippet()
+								  .getTitle());
+		playlist.setItemCount(entry.getContentDetails()
+									  .getItemCount());
+		//TODO	playlist.setSummary(entry.getSnippet().getDescription());
+		final String thumbnailUrl = entry.getSnippet()
+				.getThumbnails()
+				.getHigh()
+				.getUrl();
+		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
+		//TODO	playlist.setAccount(account);
+		update(playlist);
 		return playlist;
 	}
 }

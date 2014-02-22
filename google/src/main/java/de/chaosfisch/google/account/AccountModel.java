@@ -21,7 +21,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import static de.chaosfisch.google.http.PersistentCookieStore.SerializableCookie;
+import static de.chaosfisch.google.account.PersistentCookieStore.SerializableCookie;
 
 public class AccountModel {
 

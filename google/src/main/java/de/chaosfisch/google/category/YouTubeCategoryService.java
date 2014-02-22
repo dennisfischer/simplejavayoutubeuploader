@@ -30,9 +30,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
 
-public class GoogleCategoryService implements ICategoryService {
+public class YouTubeCategoryService implements ICategoryService {
 	private static final String                            CATEGORY_URL        = "https://www.googleapis.com/youtube/v3/videoCategories?part=id,snippet&hl=%s&regionCode=%s&key=%s";
-	private static final Logger                            LOGGER              = LoggerFactory.getLogger(GoogleCategoryService.class);
+	private static final Logger                            LOGGER              = LoggerFactory.getLogger(YouTubeCategoryService.class);
 	private static final int                               NOT_MODIFIED_HEADER = 304;
 	private final        SimpleListProperty<CategoryModel> categoryModels      = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final        Gson                              gson                = new GsonBuilder().create();
@@ -40,7 +40,7 @@ public class GoogleCategoryService implements ICategoryService {
 	private String currentETag = "";
 
 
-	public GoogleCategoryService(final String dataLocation) {
+	public YouTubeCategoryService(final String dataLocation) {
 		this.dataLocation = dataLocation;
 		loadCategories();
 	}
@@ -79,7 +79,8 @@ public class GoogleCategoryService implements ICategoryService {
 
 	@Override
 	public void refresh() {
-		Unirest.get(String.format(CATEGORY_URL, Locale.getDefault().getCountry(), Locale.getDefault().getCountry(), GDataConfig.ACCESS_KEY))
+		Unirest.get(String.format(CATEGORY_URL, Locale.getDefault().getCountry(), Locale.getDefault()
+				.getCountry(), GDataConfig.ACCESS_KEY))
 				.header("If-None-Match", currentETag)
 				.header("Accept-Encoding", "gzip")
 				.asStringAsync(new Callback<String>() {

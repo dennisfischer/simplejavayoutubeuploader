@@ -8,18 +8,23 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google;
+package de.chaosfisch.google.auth;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.CredentialRefreshListener;
 import com.google.api.client.auth.oauth2.TokenErrorResponse;
 import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTube;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import de.chaosfisch.google.GDataConfig;
 import de.chaosfisch.google.account.AccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,19 +32,23 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class YouTubeProvider implements Provider<YouTube> {
-	private static final Logger                     LOGGER   = LoggerFactory.getLogger(YouTubeProvider.class);
-	private final        Map<AccountModel, YouTube> services = new HashMap<>(1);
+public class GoogleAuthProvider implements Provider<YouTube> {
+	private static final Logger LOGGER         = LoggerFactory.getLogger(GoogleAuthProvider.class);
+	private static final int    SC_OK          = 200;
+	private static final String TOKEN_TEST_URL = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
+
 	private final HttpTransport httpTransport;
 	private final JsonFactory   jsonFactory;
 	private final Map<AccountModel, Credential> credentials = new HashMap<>(1);
+	private final Map<AccountModel, YouTube>    services    = new HashMap<>(1);
 	private AccountModel account;
 
 	@Inject
-	public YouTubeProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
+	public GoogleAuthProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
 		this.httpTransport = httpTransport;
 		this.jsonFactory = jsonFactory;
 	}
@@ -76,10 +85,28 @@ public class YouTubeProvider implements Provider<YouTube> {
 			credential.setRefreshToken(account.getRefreshToken());
 			credentials.put(account, credential);
 		}
+
 		return credentials.get(account);
 	}
 
-	public YouTubeProvider setAccount(final AccountModel account) {
+	public boolean verifyAccount(final AccountModel account) throws UnirestException {
+		final HttpResponse<String> response = Unirest.get(TOKEN_TEST_URL)
+				.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8;")
+				.header("Authorization", getCredential(account).getAccessToken())
+				.asString();
+		return SC_OK == response.getCode();
+	}
+
+	public String getRefreshToken(final String code) throws AuthenticationException {
+		try {
+			return new GoogleAuthorizationCodeFlow(httpTransport, jsonFactory, GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET, Collections
+					.emptyList()).newTokenRequest(code).execute().getRefreshToken();
+		} catch (final Exception e) {
+			throw new AuthenticationException(e);
+		}
+	}
+
+	public GoogleAuthProvider setAccount(final AccountModel account) {
 		this.account = account;
 		return this;
 	}

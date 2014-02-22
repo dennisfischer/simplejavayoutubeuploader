@@ -57,7 +57,8 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 	}
 
 	private String getImageLocation() {
-		return null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm() : getItem().getThumbnail();
+		return null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png")
+				.toExternalForm() : getItem().getThumbnail();
 	}
 
 	private ImageView getRemoveButton() {

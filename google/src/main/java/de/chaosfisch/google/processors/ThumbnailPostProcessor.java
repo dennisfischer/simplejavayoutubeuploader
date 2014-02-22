@@ -26,8 +26,12 @@ import java.util.concurrent.ScheduledExecutorService;
 
 class ThumbnailPostProcessor implements UploadPostProcessor {
 
+	private static final int    DEFAULT_BACKOFF     = 5000;
+	private static final int    DEFAULT_EXPONENT    = 2;
+	private static final int    DEFAULT_MAX_DELAY   = 30000;
+	private static final int    DEFAULT_MAX_RETRIES = 10;
+	private static final Logger LOGGER              = LoggerFactory.getLogger(ThumbnailPostProcessor.class);
 	private final IThumbnailService thumbnailService;
-	private static final Logger LOGGER = LoggerFactory.getLogger(ThumbnailPostProcessor.class);
 
 	@Inject
 	public ThumbnailPostProcessor(final IThumbnailService thumbnailService) {
@@ -38,13 +42,14 @@ class ThumbnailPostProcessor implements UploadPostProcessor {
 	public Upload process(final Upload upload) {
 		if (null != upload.getThumbnail()) {
 			final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(5000, 2)
-					.withMaxDelay(30000)
-					.withMaxRetries(10)
+			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(DEFAULT_BACKOFF, DEFAULT_EXPONENT)
+					.withMaxDelay(DEFAULT_MAX_DELAY)
+					.withMaxRetries(DEFAULT_MAX_RETRIES)
 					.retryOn(ThumbnailIOException.class)
 					.abortOn(FileNotFoundException.class);
 			try {
-				executor.doWithRetry(retryContext -> thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount()));
+				executor.doWithRetry(retryContext -> thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload
+						.getAccount()));
 			} catch (final Exception e) {
 				LOGGER.error("Thumbnail IOException", e);
 			} finally {

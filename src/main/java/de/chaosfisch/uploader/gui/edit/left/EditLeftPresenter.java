@@ -68,13 +68,15 @@ public class EditLeftPresenter {
 			playlists.itemsProperty().bind(newAccount.playlistsProperty());
 		});
 
-		playlists.getSelectionModel().selectedItemProperty().addListener((observableValue, oldPlaylist, newPlaylist) -> {
-			if (null != newPlaylist) {
-				selectedPlaylists.getItems().add(newPlaylist);
-				playlists.getItems().remove(newPlaylist);
-				playlists.setValue(null);
-			}
-		});
+		playlists.getSelectionModel()
+				.selectedItemProperty()
+				.addListener((observableValue, oldPlaylist, newPlaylist) -> {
+					if (null != newPlaylist) {
+						selectedPlaylists.getItems().add(newPlaylist);
+						playlists.getItems().remove(newPlaylist);
+						playlists.setValue(null);
+					}
+				});
 
 		selectedPlaylists.setCellFactory(new PlaylistListCellFactory());
 		selectedPlaylists.itemsProperty().bindBidirectional(dataModel.selectedPlaylistsProperty());

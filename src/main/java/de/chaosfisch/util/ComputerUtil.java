@@ -18,7 +18,8 @@ import java.io.IOException;
 
 public final class ComputerUtil {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerUtil.class);
+	private static final Logger LOGGER            = LoggerFactory.getLogger(ComputerUtil.class);
+	public static final  int    DEFAULT_WAIT_TIME = 30000;
 
 	/**
 	 * Sends this system to hibernation mode
@@ -46,7 +47,7 @@ public final class ComputerUtil {
 		}
 		final Thread thread = new Thread(() -> {
 			try {
-				Thread.sleep(30000);
+				Thread.sleep(DEFAULT_WAIT_TIME);
 			} catch (final InterruptedException ignored) {
 			}
 			System.exit(0);
