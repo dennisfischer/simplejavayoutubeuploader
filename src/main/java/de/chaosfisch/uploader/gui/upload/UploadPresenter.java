@@ -13,7 +13,6 @@ package de.chaosfisch.uploader.gui.upload;
 import de.chaosfisch.google.upload.Status;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.models.UploadModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -74,7 +73,7 @@ public class UploadPresenter {
 	}
 
 	@FXML
-	public void removeUploads(final ActionEvent actionEvent) {
+	public void removeUploads() {
 		// @BUG had to add workaround by converting observable list to array
 		// otherwise only one element is removed and not N selected elements
 		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads().size()];

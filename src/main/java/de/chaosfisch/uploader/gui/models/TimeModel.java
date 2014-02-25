@@ -14,7 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class TimeModel {
 
-	public SimpleStringProperty time = new SimpleStringProperty();
+	private final SimpleStringProperty time = new SimpleStringProperty();
 
 	public String getTime() {
 		return time.get();

@@ -25,7 +25,7 @@ import java.util.concurrent.*;
 
 public class Uploader {
 
-	public static final  String                          STOP_ON_ERROR        = "stopOnError";
+	private static final String                          STOP_ON_ERROR        = "stopOnError";
 	private static final int                             ENQUEUE_WAIT_TIME    = 10000;
 	private static final int                             DEFAULT_MAX_UPLOADS  = 1;
 	private              int                             maxUploads           = DEFAULT_MAX_UPLOADS;
@@ -51,6 +51,30 @@ public class Uploader {
 		this.configuration = configuration;
 	}
 
+	public void setMaxUploads(final int maxUploads) {
+		this.maxUploads = maxUploads;
+		if (canAddJob()) {
+			startNextUpload();
+		}
+	}
+
+	private void startNextUpload() {
+		if (canAddJob()) {
+			final Upload nextUpload = uploadService.fetchNextUpload();
+			if (null != nextUpload) {
+				createConsumer();
+				markUploadRunning(nextUpload);
+				futures.put(nextUpload, jobCompletionService.submit(uploadJobFactory.create(nextUpload, rateLimitter)));
+				runningUploads++;
+			}
+		}
+	}
+
+	private void markUploadRunning(final Upload nextUpload) {
+		nextUpload.setStatus(Status.RUNNING);
+		uploadService.update(nextUpload);
+	}
+
 	private void createConsumer() {
 		if (null != consumer && consumer.isAlive()) {
 			return;
@@ -60,26 +84,8 @@ public class Uploader {
 		consumer.start();
 	}
 
-	public void setMaxUploads(final int maxUploads) {
-		this.maxUploads = maxUploads;
-		if (canAddJob()) {
-			enqueueUpload();
-		}
-	}
-
 	private boolean canAddJob() {
 		return uploadService.getRunning() && maxUploads > runningUploads;
-	}
-
-	void shutdown(final boolean force) {
-		uploadService.setRunning(false);
-
-		if (force) {
-			for (final Map.Entry<Upload, Future<Upload>> job : futures.entrySet()) {
-				job.getValue().cancel(true);
-				futures.remove(job.getKey());
-			}
-		}
 	}
 
 	public void run() {
@@ -90,7 +96,7 @@ public class Uploader {
 
 		final Thread thread = new Thread(() -> {
 			while (canAddJob() && hasJobs()) {
-				enqueueUpload();
+				startNextUpload();
 
 				try {
 					Thread.sleep(ENQUEUE_WAIT_TIME);
@@ -111,21 +117,19 @@ public class Uploader {
 		shutdown(false);
 	}
 
-	public void abort(final Upload upload) {
-		futures.get(upload).cancel(true);
-	}
+	void shutdown(final boolean force) {
+		uploadService.setRunning(false);
 
-	private void enqueueUpload() {
-		if (canAddJob()) {
-			final Upload polled = uploadService.fetchNextUpload();
-			if (null != polled) {
-				createConsumer();
-				polled.setStatus(Status.RUNNING);
-				uploadService.update(polled);
-				futures.put(polled, jobCompletionService.submit(uploadJobFactory.create(polled, rateLimitter)));
-				runningUploads++;
+		if (force) {
+			for (final Map.Entry<Upload, Future<Upload>> job : futures.entrySet()) {
+				job.getValue().cancel(true);
+				futures.remove(job.getKey());
 			}
 		}
+	}
+
+	public void abort(final Upload upload) {
+		futures.get(upload).cancel(true);
 	}
 
 	public void setUploadService(final IUploadService uploadService) {
@@ -177,21 +181,11 @@ public class Uploader {
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
 				final Upload upload = getUpload();
-				futures.remove(upload);
-				if (null != upload) {
-					logger.info("Running uploads: {}", runningUploads);
-
-					if (upload.isPauseOnFinish()) {
-						uploadService.setRunning(false);
-					}
-
-					if (Status.FAILED == upload.getStatus() && configuration.getBoolean(STOP_ON_ERROR, false)) {
-						uploadService.stopUploading();
-					}
-				}
+				removeUpload(upload);
+				updateQueueStatus(upload);
 				final long leftUploads = uploadService.countUnprocessed();
 				logger.info("Left uploads: {}", leftUploads);
-				enqueueUpload();
+				startNextUpload();
 
 				if ((!uploadService.getRunning() || 0 == leftUploads) && 0 == runningUploads) {
 					uploadService.setRunning(false);
@@ -205,13 +199,30 @@ public class Uploader {
 			try {
 				final Future<Upload> uploadJobFuture = jobCompletionService.take();
 				final Upload upload = uploadJobFuture.get();
-				logger.info("Upload finished: {}; {}", upload.getMetadata().getTitle(), upload.getVideoid());
+				logger.info("Upload finished: {}", upload);
 				return upload;
 			} catch (ExecutionException | CancellationException | InterruptedException e) {
 				Thread.currentThread().interrupt();
 				return null;
 			} finally {
 				runningUploads--;
+			}
+		}
+
+		private void updateQueueStatus(final Upload upload) {
+			if (Status.FAILED == upload.getStatus() && configuration.getBoolean(STOP_ON_ERROR, false)) {
+				uploadService.stopUploading();
+			}
+		}
+
+		private void removeUpload(final Upload upload) {
+			futures.remove(upload);
+			if (null != upload) {
+				logger.info("Running uploads: {}", runningUploads);
+
+				if (upload.isPauseOnFinish()) {
+					uploadService.setRunning(false);
+				}
 			}
 		}
 	}

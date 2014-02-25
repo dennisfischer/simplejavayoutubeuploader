@@ -30,8 +30,8 @@ import java.lang.reflect.Method;
 
 public class GUI extends Application {
 
-	public static final  int    MIN_HEIGHT = 600;
-	public static final  int    MIN_WIDTH  = 1100;
+	private static final int    MIN_HEIGHT = 600;
+	private static final int    MIN_WIDTH  = 1100;
 	private static final Logger LOGGER     = LoggerFactory.getLogger(GUI.class);
 
 	@Override

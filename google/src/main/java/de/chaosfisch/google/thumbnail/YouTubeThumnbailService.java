@@ -31,14 +31,13 @@ public class YouTubeThumnbailService implements IThumbnailService {
 	}
 
 	@Override
-	public void upload(final File thumbnail, final String videoid, final AccountModel account) throws FileNotFoundException, ThumbnailIOException {
+	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws FileNotFoundException, ThumbnailIOException {
 		if (!thumbnail.exists()) {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
 		try (final InputStream is = Files.newInputStream(thumbnail.toPath())) {
-			googleAuthProvider.setAccount(account)
-					.get()
+			googleAuthProvider.getYouTubeService(accountModel)
 					.thumbnails()
 					.set(videoid, new InputStreamContent("application/octet-stream", is));
 		} catch (final IOException e) {

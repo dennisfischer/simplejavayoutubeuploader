@@ -19,9 +19,9 @@ public interface IThumbnailService {
 	/**
 	 * Uploads a thumbnail via the YouTube webpage. This may fail!
 	 *
-	 * @param thumbnail the thumbnail file
-	 * @param videoid   the matching videoid
-	 * @param account   the matching videoid
+	 * @param thumbnail    the thumbnail file
+	 * @param videoid      the matching videoid
+	 * @param accountModel the matching videoid
 	 */
-	void upload(File thumbnail, String videoid, AccountModel account) throws FileNotFoundException, ThumbnailIOException;
+	void upload(File thumbnail, String videoid, AccountModel accountModel) throws FileNotFoundException, ThumbnailIOException;
 }

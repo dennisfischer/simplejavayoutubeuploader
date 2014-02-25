@@ -54,8 +54,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-		googleAuthProvider.setAccount(null) //TODO playlist.getAccount())
-				.get()
+		googleAuthProvider.getYouTubeService(null) //TODO playlist.getAccount())
 				.playlistItems()
 				.insert("snippet,status", playlistItem)
 				.execute();
@@ -78,8 +77,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-		googleAuthProvider.setAccount(null)//TODO playlist.getAccount())
-				.get()
+		googleAuthProvider.getYouTubeService(null)//TODO playlist.getAccount())
 				.playlists()
 				.insert("snippet,status", youTubePlaylist)
 				.execute();
@@ -91,8 +89,7 @@ public abstract class PlaylistService implements IPlaylistService {
 	public void synchronizePlaylists(final List<AccountModel> accounts) throws IOException {
 		logger.info("Synchronizing playlists.");
 		for (final AccountModel account : accounts) {
-			final PlaylistListResponse response = googleAuthProvider.setAccount(account)
-					.get()
+			final PlaylistListResponse response = googleAuthProvider.getYouTubeService(account)
 					.playlists()
 					.list("id,snippet,contentDetails")
 					.setMaxResults(MAX_PLAYLISTS)

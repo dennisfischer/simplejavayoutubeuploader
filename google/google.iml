@@ -39,8 +39,8 @@
     <orderEntry type="library" exported="" name="Gradle: httpmime-4.3.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-compiler-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev95-1.17.0-rc" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-1.2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" name="annotations" level="application" />
   </component>
 </module>

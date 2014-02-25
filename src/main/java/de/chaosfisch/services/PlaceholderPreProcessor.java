@@ -12,9 +12,6 @@ package de.chaosfisch.services;
 
 import de.chaosfisch.google.upload.Upload;
 import de.chaosfisch.google.upload.UploadPreProcessor;
-import de.chaosfisch.google.upload.metadata.Metadata;
-import de.chaosfisch.google.upload.metadata.Monetization;
-import de.chaosfisch.google.upload.metadata.Social;
 import de.chaosfisch.services.enddir.IEnddirService;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -27,9 +24,9 @@ import java.util.ResourceBundle;
 
 public class PlaceholderPreProcessor implements UploadPreProcessor {
 
-	private final ResourceBundle resources;
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderPreProcessor.class);
-	private final Configuration config;
+	private final ResourceBundle resources;
+	private final Configuration  config;
 
 	@Inject
 	public PlaceholderPreProcessor(@Named("i18n-resources") final ResourceBundle resources, final Configuration config) {
@@ -41,30 +38,27 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 	public Upload process(final Upload upload) {
 		LOGGER.info("Replacing placeholders");
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), upload.getPlaylists(), resources);
-		final Metadata metadata = upload.getMetadata();
-		metadata.setTitle(extendedPlaceholders.replace(metadata.getTitle()));
-		metadata.setDescription(extendedPlaceholders.replace(metadata.getDescription()));
-		metadata.setKeywords(extendedPlaceholders.replace(metadata.getKeywords()));
+		upload.setMetadataTitle(extendedPlaceholders.replace(upload.getMetadataTitle()));
+		upload.setMetadataDescription(extendedPlaceholders.replace(upload.getMetadataDescription()));
+		upload.setMetadataKeywords(extendedPlaceholders.replace(upload.getMetadataKeywords()));
 
 		extendedPlaceholders.setFile(upload.getFile());
 		extendedPlaceholders.setPlaylists(upload.getPlaylists());
-		extendedPlaceholders.register("{title}", upload.getMetadata().getTitle());
-		extendedPlaceholders.register("{description}", upload.getMetadata().getDescription());
+		extendedPlaceholders.register("{title}", upload.getMetadataTitle());
+		extendedPlaceholders.register("{description}", upload.getMetadataDescription());
 
-		final Social social = upload.getSocial();
-		social.setMessage(extendedPlaceholders.replace(social.getMessage()));
+		upload.setSocialMessage(extendedPlaceholders.replace(upload.getSocialMessage()));
 
-		final Monetization monetization = upload.getMonetization();
-		monetization.setTitle(extendedPlaceholders.replace(monetization.getTitle()));
-		monetization.setDescription(extendedPlaceholders.replace(monetization.getDescription()));
-		monetization.setCustomId(extendedPlaceholders.replace(monetization.getCustomId()));
-		monetization.setNotes(extendedPlaceholders.replace(monetization.getNotes()));
+		upload.setMonetizationTitle(extendedPlaceholders.replace(upload.getMonetizationTitle()));
+		upload.setMonetizationDescription(extendedPlaceholders.replace(upload.getMonetizationDescription()));
+		upload.setMonetizationCustomId(extendedPlaceholders.replace(upload.getMonetizationCustomId()));
+		upload.setMonetizationNotes(extendedPlaceholders.replace(upload.getMonetizationNotes()));
 
-		monetization.setTmsid(extendedPlaceholders.replace(monetization.getTmsid()));
-		monetization.setIsan(extendedPlaceholders.replace(monetization.getEidr()));
-		monetization.setTitleepisode(extendedPlaceholders.replace(monetization.getTitleepisode()));
-		monetization.setSeasonNb(extendedPlaceholders.replace(monetization.getSeasonNb()));
-		monetization.setEpisodeNb(extendedPlaceholders.replace(monetization.getEpisodeNb()));
+		upload.setMonetizationTmsid(extendedPlaceholders.replace(upload.getMonetizationTmsid()));
+		upload.setMonetizationIsan(extendedPlaceholders.replace(upload.getMonetizationEidr()));
+		upload.setMonetizationTitleepisode(extendedPlaceholders.replace(upload.getMonetizationTitleepisode()));
+		upload.setMonetizationSeasonNb(extendedPlaceholders.replace(upload.getMonetizationSeasonNb()));
+		upload.setMonetizationEpisodeNb(extendedPlaceholders.replace(upload.getMonetizationEpisodeNb()));
 		upload.setThumbnail(null == upload.getThumbnail() ?
 									null :
 									new File(extendedPlaceholders.replace(upload.getThumbnail().getAbsolutePath())));

@@ -12,7 +12,6 @@ package de.chaosfisch.uploader.gui.project;
 
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.project.ProjectModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import org.controlsfx.control.action.Action;
@@ -31,16 +30,16 @@ public class ProjectPresenter {
 
 
 	@FXML
-	public void saveProject(final ActionEvent actionEvent) {
+	public void saveProject() {
 
 	}
 
 	@FXML
-	public void resetProject(final ActionEvent actionEvent) {
+	public void resetProject() {
 	}
 
 	@FXML
-	public void createProject(final ActionEvent actionEvent) {
+	public void createProject() {
 
 		final List<Dialogs.CommandLink> links = Arrays.asList(
 				new Dialogs.CommandLink("Neues leeres Projekt erstellen",

@@ -19,7 +19,7 @@ import java.io.IOException;
 public final class ComputerUtil {
 
 	private static final Logger LOGGER            = LoggerFactory.getLogger(ComputerUtil.class);
-	public static final  int    DEFAULT_WAIT_TIME = 30000;
+	private static final int    DEFAULT_WAIT_TIME = 30000;
 
 	/**
 	 * Sends this system to hibernation mode

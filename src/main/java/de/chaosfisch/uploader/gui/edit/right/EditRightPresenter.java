@@ -19,7 +19,6 @@ import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.models.TimeModel;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -75,7 +74,7 @@ public class EditRightPresenter {
 	private   Accordion                  mainFrame;
 
 	@FXML
-	public void openThumbnail(final ActionEvent actionEvent) {
+	public void openThumbnail() {
 		final FileChooser fileChooser = new FileChooser();
 		final File file = fileChooser.showOpenDialog(null);
 		if (null != file) {

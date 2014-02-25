@@ -15,10 +15,12 @@ package de.chaosfisch.google.upload;
 
 import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.playlist.PlaylistModel;
+import de.chaosfisch.google.upload.metadata.License;
 import de.chaosfisch.google.upload.metadata.Metadata;
 import de.chaosfisch.google.upload.metadata.Monetization;
 import de.chaosfisch.google.upload.metadata.Social;
-import de.chaosfisch.google.upload.permissions.Permissions;
+import de.chaosfisch.google.upload.permissions.*;
+import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -48,6 +50,7 @@ public class Upload {
 	private File          thumbnail;
 
 	private AccountModel account;
+	private String       monetizationTitleepisode;
 
 	public Upload() {
 	}
@@ -243,6 +246,212 @@ public class Upload {
 		final Upload upload = (Upload) obj;
 
 		return !(null != id ? !id.equals(upload.id) : null != upload.id);
+	}
+
+	@NonNls
+	@Override
+	public String toString() {
+		return "Upload{" + "id='" + id + '\'' + ", file=" + file + ", uploadurl='" + uploadurl + '\'' + ", videoid='" + videoid + '\'' + '}';
+	}
+
+	public String getMetadataTitle() {
+		return metadata.getTitle();
+	}
+
+	public void setMetadataTitle(final String metadataTitle) {
+		metadata.setTitle(metadataTitle);
+	}
+
+	public String getMetadataDescription() {
+		return metadata.getDescription();
+	}
+
+	public void setMetadataDescription(final String metadataDescription) {
+		metadata.setDescription(metadataDescription);
+	}
+
+	public String getMetadataKeywords() {
+		return metadata.getKeywords();
+	}
+
+	public void setMetadataKeywords(final String metadataKeywords) {
+		metadata.setKeywords(metadataKeywords);
+	}
+
+	public String getSocialMessage() {
+		return social.getMessage();
+	}
+
+	public void setSocialMessage(final String socialMessage) {
+		social.setMessage(socialMessage);
+	}
+
+	public String getMonetizationTitle() {
+		return monetization.getTitle();
+	}
+
+	public void setMonetizationTitle(final String monetizationTitle) {
+		monetization.setTitle(monetizationTitle);
+	}
+
+	public String getMonetizationDescription() {
+		return monetization.getDescription();
+	}
+
+	public void setMonetizationDescription(final String monetizationDescription) {
+		monetization.setDescription(monetizationDescription);
+	}
+
+	public String getMonetizationCustomId() {
+		return monetization.getCustomId();
+	}
+
+	public void setMonetizationCustomId(final String monetizationCustomId) {
+		monetization.setCustomId(monetizationCustomId);
+	}
+
+	public String getMonetizationNotes() {
+		return monetization.getNotes();
+	}
+
+	public void setMonetizationNotes(final String monetizationNotes) {
+		monetization.setNotes(monetizationNotes);
+	}
+
+	public String getMonetizationTmsid() {
+		return monetization.getTmsid();
+	}
+
+	public void setMonetizationTmsid(final String monetizationTmsid) {
+		monetization.setTmsid(monetizationTmsid);
+	}
+
+	public String getMonetizationEidr() {
+		return monetization.getEidr();
+	}
+
+	public String getMonetizationTitleepisode() {
+		return monetization.getTitleepisode();
+	}
+
+	public void setMonetizationTitleepisode(final String monetizationTitleepisode) {
+		monetization.setTitleepisode(monetizationTitleepisode);
+	}
+
+	public String getMonetizationSeasonNb() {
+		return monetization.getSeasonNb();
+	}
+
+	public void setMonetizationSeasonNb(final String monetizationSeasonNb) {
+		monetization.setSeasonNb(monetizationSeasonNb);
+	}
+
+	public String getMonetizationEpisodeNb() {
+		return monetization.getEpisodeNb();
+	}
+
+	public void setMonetizationEpisodeNb(final String monetizationEpisodeNb) {
+		monetization.setEpisodeNb(monetizationEpisodeNb);
+	}
+
+	public Visibility getPermissionsVisibility() {
+		return permissions.getVisibility();
+	}
+
+	public boolean isSocialFacebook() {
+		return social.isFacebook();
+	}
+
+	public boolean isSocialTwitter() {
+		return social.isTwitter();
+	}
+
+	public boolean isSocialGplus() {
+		return social.isGplus();
+	}
+
+	public boolean isMonetizationClaim() {
+		return monetization.isClaim();
+	}
+
+	public License getMetadataLicense() {
+		return metadata.getLicense();
+	}
+
+	public boolean isMonetizationPartner() {
+		return monetization.isPartner();
+	}
+
+	public ClaimOption getMonetizationClaimoption() {
+		return monetization.getClaimoption();
+	}
+
+	public boolean isMonetizationOverlay() {
+		return monetization.isOverlay();
+	}
+
+	public boolean isMonetizationTrueview() {
+		return monetization.isTrueview();
+	}
+
+	public boolean isMonetizationInstream() {
+		return monetization.isInstream();
+	}
+
+	public boolean isMonetizationInstreamDefaults() {
+		return monetization.isInstreamDefaults();
+	}
+
+	public boolean isMonetizationProduct() {
+		return monetization.isProduct();
+	}
+
+	public Syndication getMonetizationSyndication() {
+		return monetization.getSyndication();
+	}
+
+	public ClaimType getMonetizationClaimtype() {
+		return monetization.getClaimtype();
+	}
+
+	public Asset getMonetizationAsset() {
+		return monetization.getAsset();
+	}
+
+	public String getMonetizationIsan() {
+		return monetization.getIsan();
+	}
+
+	public void setMonetizationIsan(final String monetizationIsan) {
+		monetization.setIsan(monetizationIsan);
+	}
+
+	public boolean isPermissionsEmbed() {
+		return permissions.isEmbed();
+	}
+
+	public boolean isPermissionsRate() {
+		return permissions.isRate();
+	}
+
+	public boolean isPermissionsCommentvote() {
+		return permissions.isCommentvote();
+	}
+
+	public Comment getPermissionsComment() {
+		return permissions.getComment();
+	}
+
+	public boolean isPermissionsAgeRestricted() {
+		return permissions.isAgeRestricted();
+	}
+
+	public boolean isPermissionsPublicStatsViewable() {
+		return permissions.isPublicStatsViewable();
+	}
+
+	public ThreeD getPermissionsThreedD() {
+		return permissions.getThreedD();
 	}
 
 	public interface Validation {

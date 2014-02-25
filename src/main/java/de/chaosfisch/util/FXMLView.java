@@ -25,16 +25,16 @@ import java.util.ResourceBundle;
 
 public abstract class FXMLView extends Region {
 
-	public static final String DEFAULT_ENDING = "view";
+	private static final String DEFAULT_ENDING = "view";
 	private static Callback<Class<?>, Object> controllerFactory;
 
 	private FXMLLoader loader;
 
-	public FXMLView() {
+	protected FXMLView() {
 		init(getClass(), getFXMLName());
 	}
 
-	static String stripEnding(final String clazz) {
+	private static String stripEnding(final String clazz) {
 		if (!clazz.endsWith(DEFAULT_ENDING)) {
 			return clazz;
 		}
@@ -42,7 +42,7 @@ public abstract class FXMLView extends Region {
 		return clazz.substring(0, viewIndex);
 	}
 
-	static ResourceBundle getResourceBundle(final String name) {
+	private static ResourceBundle getResourceBundle(final String name) {
 		try {
 			return ResourceBundle.getBundle(name);
 		} catch (final MissingResourceException ex) {

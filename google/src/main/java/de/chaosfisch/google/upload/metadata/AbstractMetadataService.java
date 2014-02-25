@@ -24,7 +24,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import de.chaosfisch.google.GDataConfig;
 import de.chaosfisch.google.account.AccountModel;
-import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.account.PersistentCookieStore;
 import de.chaosfisch.google.atom.VideoEntry;
 import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
@@ -54,8 +53,8 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	public static final  int    DEFAULT_CONNECTION_TIMEOUT = 600000;
-	public static final  int    DEFAULT_SOCKET_TIMEOUT     = 600000;
+	private static final int    DEFAULT_CONNECTION_TIMEOUT = 600000;
+	private static final int    DEFAULT_SOCKET_TIMEOUT     = 600000;
 	private static final Logger LOGGER                     = LoggerFactory.getLogger(AbstractMetadataService.class);
 	private static final String METADATA_UPDATE_URL        = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String VIDEO_EDIT_URL             = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
@@ -63,12 +62,10 @@ public class AbstractMetadataService implements IMetadataService {
 	private static final int    MONETIZE_PARAMS_SIZE       = 20;
 	private static final char   MODIFIED_SEPERATOR         = ',';
 	private static final int    METADATA_PARAMS_SIZE       = 40;
-	private final IAccountService    accountService;
 	private final GoogleAuthProvider googleAuthProvider;
 
 	@Inject
-	public AbstractMetadataService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
-		this.accountService = accountService;
+	public AbstractMetadataService(final GoogleAuthProvider googleAuthProvider) {
 		this.googleAuthProvider = googleAuthProvider;
 	}
 
@@ -82,29 +79,28 @@ public class AbstractMetadataService implements IMetadataService {
 		videoEntry.mediaGroup.category = new ArrayList<>(1);
 		videoEntry.mediaGroup.category.add(metadata.getCategory().toCategory());
 		videoEntry.mediaGroup.license = metadata.getLicense().getMetaIdentifier();
-		videoEntry.mediaGroup.title = metadata.getTitle();
-		videoEntry.mediaGroup.description = metadata.getDescription();
+		videoEntry.mediaGroup.title = upload.getMetadataTitle();
+		videoEntry.mediaGroup.description = upload.getMetadataDescription();
 		videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
 				.skipNulls()
-				.join(TagParser.parse(metadata.getKeywords()));
-		final Permissions permissions = upload.getPermissions();
+				.join(TagParser.parse(upload.getMetadataKeywords()));
 
-		if (Visibility.PRIVATE == permissions.getVisibility() || Visibility.SCHEDULED == permissions.getVisibility()) {
+		if (Visibility.PRIVATE == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
 
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(permissions.isEmbed())));
+				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(upload.isPermissionsEmbed())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(permissions.isRate())));
+				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(upload.isPermissionsRate())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
+				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(upload.isPermissionsCommentvote())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(permissions.getComment()
+				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(upload.getPermissionsComment()
 																										  .ordinal())));
 		videoEntry.accessControl
-				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(Visibility.PUBLIC == permissions
-						.getVisibility())));
+				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(Visibility.PUBLIC == upload
+						.getPermissionsVisibility())));
 
 		// convert metadata with xstream
 		final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()) {
@@ -221,60 +217,60 @@ public class AbstractMetadataService implements IMetadataService {
 		}
 	}
 
-	private String extractor(final String input, final String search, final String end) {
-		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
-				.length())));
-	}
+	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
+		final Map<String, Object> params = new HashMap<>(4);
 
-	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
-		final Permissions permissions = upload.getPermissions();
+		if (null != upload.getDateTimeOfRelease()) {
+			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
+				final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+				dateTimeFormatter.withZone(ZoneOffset.UTC);
+				params.put("publish_time", upload.getDateTimeOfRelease().format(dateTimeFormatter));
+				params.put("publish_timezone", "UTC");
+				params.put("time_published", "0");
+				params.put("privacy", "scheduled");
+			}
+		}
 
-		params.put("allow_comments", boolConverter(!(Comment.DENIED == permissions.getComment())));
-		params.put("allow_comments_detail", Comment.ALLOWED == permissions.getComment() ? "all" : "approval");
-		params.put("allow_comment_ratings", boolConverter(permissions.isCommentvote()));
-		params.put("allow_ratings", boolConverter(permissions.isRate()));
-		params.put("allow_embedding", boolConverter(permissions.isEmbed()));
-		params.put("self_racy", boolConverter(permissions.isAgeRestricted()));
-		params.put("allow_public_stats", boolConverter(permissions.isPublicStatsViewable()));
-		params.put("threed_type", permissions.getThreedD().name().toLowerCase());
 		return params;
 	}
 
-	private Map<String, Object> getMetadataMetadata(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(4);
-		final Metadata metadata = upload.getMetadata();
-		params.put("title", metadata.getTitle());
-		params.put("description", Strings.nullToEmpty(metadata.getDescription()));
-		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
-				.skipNulls()
-				.join(TagParser.parse(metadata.getKeywords(), true)));
-		params.put("reuse", License.YOUTUBE == metadata.getLicense() ? "all_rights_reserved" : "creative_commons");
+	private Map<String, Object> getMetadataSocial(final Upload upload) {
+		final Map<String, Object> params = new HashMap<>(3);
+		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
+			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
+				params.put("creator_share_custom_message", upload.getSocialMessage());
+				params.put("creator_share_facebook", boolConverter(upload.isSocialFacebook()));
+				params.put("creator_share_twitter", boolConverter(upload.isSocialTwitter()));
+				params.put("creator_share_gplus", boolConverter(upload.isSocialGplus()));
+			}
+		}
 		return params;
+	}
+
+	private String boolConverter(final boolean flag) {
+		return flag ? "yes" : "no";
 	}
 
 	private Map<String, Object> getMetadataMonetization(final String content, final Upload upload) {
 		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
-		final Metadata metadata = upload.getMetadata();
-		final Monetization monetization = upload.getMonetization();
-		if (monetization.isClaim() && License.YOUTUBE == upload.getMetadata().getLicense()) {
+		if (upload.isMonetizationClaim() && License.YOUTUBE == upload.getMetadataLicense()) {
 			params.put("video_monetization_style", "ads");
-			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
-				params.put("enable_overlay_ads", boolConverter(monetization.isOverlay()));
-				params.put("trueview_instream", boolConverter(monetization.isTrueview()));
-				params.put("instream", boolConverter(monetization.isInstream()));
-				params.put("long_ads_checkbox", boolConverter(monetization.isInstreamDefaults()));
-				params.put("paid_product", boolConverter(monetization.isProduct()));
-				params.put("allow_syndication", boolConverter(Syndication.GLOBAL == monetization.getSyndication()));
+			if (!upload.isMonetizationPartner() || ClaimOption.MONETIZE == upload.getMonetizationClaimoption()) {
+				params.put("enable_overlay_ads", boolConverter(upload.isMonetizationOverlay()));
+				params.put("trueview_instream", boolConverter(upload.isMonetizationTrueview()));
+				params.put("instream", boolConverter(upload.isMonetizationInstream()));
+				params.put("long_ads_checkbox", boolConverter(upload.isMonetizationInstreamDefaults()));
+				params.put("paid_product", boolConverter(upload.isMonetizationProduct()));
+				params.put("allow_syndication", boolConverter(Syndication.GLOBAL == upload.getMonetizationSyndication()));
 			}
-			if (monetization.isPartner()) {
-				params.put("claim_type", ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ?
+			if (upload.isMonetizationPartner()) {
+				params.put("claim_type", ClaimType.AUDIO_VISUAL == upload.getMonetizationClaimtype() ?
 						"B" :
-						ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
+						ClaimType.VISUAL == upload.getMonetizationClaimtype() ? "V" : "A");
 
-				final String toFind = ClaimOption.MONETIZE == monetization.getClaimoption() ?
+				final String toFind = ClaimOption.MONETIZE == upload.getMonetizationClaimoption() ?
 						"Monetize in all countries" :
-						ClaimOption.TRACK == monetization.getClaimoption() ?
+						ClaimOption.TRACK == upload.getMonetizationClaimoption() ?
 								"Track in all countries" :
 								"Block in all countries";
 
@@ -291,30 +287,30 @@ public class AbstractMetadataService implements IMetadataService {
 				}
 				params.put("usage_policy", usagePolicy);
 
-				final String assetName = monetization.getAsset().name().toLowerCase(Locale.getDefault());
+				final String assetName = upload.getMonetizationAsset().name().toLowerCase(Locale.getDefault());
 
 				params.put("asset_type", assetName);
-				params.put(assetName + "_custom_id", monetization.getCustomId().isEmpty() ?
+				params.put(assetName + "_custom_id", upload.getMonetizationCustomId().isEmpty() ?
 						upload.getVideoid() :
-						monetization.getCustomId());
+						upload.getMonetizationCustomId());
 
-				params.put(assetName + "_notes", monetization.getNotes());
-				params.put(assetName + "_tms_id", monetization.getTmsid());
-				params.put(assetName + "_isan", monetization.getIsan());
-				params.put(assetName + "_eidr", monetization.getEidr());
+				params.put(assetName + "_notes", upload.getMonetizationNotes());
+				params.put(assetName + "_tms_id", upload.getMonetizationTmsid());
+				params.put(assetName + "_isan", upload.getMonetizationIsan());
+				params.put(assetName + "_eidr", upload.getMonetizationEidr());
 
-				if (Asset.TV != monetization.getAsset()) {
+				if (Asset.TV != upload.getMonetizationAsset()) {
 					// WEB + MOVIE ONLY
-					params.put(assetName + "_title", !monetization.getTitle().isEmpty() ?
-							monetization.getTitle() :
-							metadata.getTitle());
-					params.put(assetName + "_description", monetization.getDescription());
+					params.put(assetName + "_title", !upload.getMonetizationTitle().isEmpty() ?
+							upload.getMonetizationTitle() :
+							upload.getMetadataTitle());
+					params.put(assetName + "_description", upload.getMonetizationDescription());
 				} else {
 					// TV ONLY
-					params.put("show_title", monetization.getTitle());
-					params.put("episode_title", monetization.getTitleepisode());
-					params.put("season_nb", monetization.getSeasonNb());
-					params.put("episode_nb", monetization.getEpisodeNb());
+					params.put("show_title", upload.getMonetizationTitle());
+					params.put("episode_title", upload.getMonetizationTitleepisode());
+					params.put("season_nb", upload.getMonetizationSeasonNb());
+					params.put("episode_nb", upload.getMonetizationEpisodeNb());
 				}
 			}
 		}
@@ -322,40 +318,33 @@ public class AbstractMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, Object> getMetadataSocial(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(3);
-		final Permissions permissions = upload.getPermissions();
-		if (Visibility.PUBLIC == permissions.getVisibility() || Visibility.SCHEDULED == permissions.getVisibility()) {
-
-			final Social social = upload.getSocial();
-			if (null != social.getMessage() && !social.getMessage().isEmpty()) {
-				params.put("creator_share_custom_message", social.getMessage());
-				params.put("creator_share_facebook", boolConverter(social.isFacebook()));
-				params.put("creator_share_twitter", boolConverter(social.isTwitter()));
-				params.put("creator_share_gplus", boolConverter(social.isGplus()));
-			}
-		}
+	private Map<String, Object> getMetadataMetadata(final Upload upload) {
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(4);
+		params.put("title", upload.getMetadataTitle());
+		params.put("description", Strings.nullToEmpty(upload.getMetadataDescription()));
+		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
+				.skipNulls()
+				.join(TagParser.parse(upload.getMetadataKeywords(), true)));
+		params.put("reuse", License.YOUTUBE == upload.getMetadataLicense() ? "all_rights_reserved" : "creative_commons");
 		return params;
 	}
 
-	private String boolConverter(final boolean flag) {
-		return flag ? "yes" : "no";
+	private Map<String, Object> getMetadataPermissions(final Upload upload) {
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
+
+		params.put("allow_comments", boolConverter(!(Comment.DENIED == upload.getPermissionsComment())));
+		params.put("allow_comments_detail", Comment.ALLOWED == upload.getPermissionsComment() ? "all" : "approval");
+		params.put("allow_comment_ratings", boolConverter(upload.isPermissionsCommentvote()));
+		params.put("allow_ratings", boolConverter(upload.isPermissionsRate()));
+		params.put("allow_embedding", boolConverter(upload.isPermissionsEmbed()));
+		params.put("self_racy", boolConverter(upload.isPermissionsAgeRestricted()));
+		params.put("allow_public_stats", boolConverter(upload.isPermissionsPublicStatsViewable()));
+		params.put("threed_type", upload.getPermissionsThreedD().name().toLowerCase());
+		return params;
 	}
 
-	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(4);
-
-		if (null != upload.getDateTimeOfRelease()) {
-			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
-				final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-				dateTimeFormatter.withZone(ZoneOffset.UTC);
-				params.put("publish_time", upload.getDateTimeOfRelease().format(dateTimeFormatter));
-				params.put("publish_timezone", "UTC");
-				params.put("time_published", "0");
-				params.put("privacy", "scheduled");
-			}
-		}
-
-		return params;
+	private String extractor(final String input, final String search, final String end) {
+		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
+				.length())));
 	}
 }

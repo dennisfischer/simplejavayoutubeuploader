@@ -64,15 +64,20 @@ public class YouTubeCategoryService implements ICategoryService {
 		}
 		currentETag = categoryFeed.getEtag();
 		for (final CategoryItem item : categoryFeed.getItems()) {
-			if (item.getSnippet().isAssignable()) {
-				final CategoryModel categoryModel = new CategoryModel();
-				categoryModel.setName(item.getSnippet().getTitle());
-				categoryModel.setYoutubeId(Integer.parseInt(item.getId()));
-				if (!categoryModels.contains(categoryModel)) {
-					categoryModels.add(categoryModel);
-				} else {
-					categoryModels.set(categoryModels.indexOf(categoryModel), categoryModel);
-				}
+			final CategorySnippet snippet = item.getSnippet();
+			addOrUpdateCategory(item.getId(), snippet);
+		}
+	}
+
+	private void addOrUpdateCategory(final String id, final CategorySnippet snippet) {
+		if (snippet.isAssignable()) {
+			final CategoryModel categoryModel = new CategoryModel();
+			categoryModel.setName(snippet.getTitle());
+			categoryModel.setYoutubeId(Integer.parseInt(id));
+			if (!categoryModels.contains(categoryModel)) {
+				categoryModels.add(categoryModel);
+			} else {
+				categoryModels.set(categoryModels.indexOf(categoryModel), categoryModel);
 			}
 		}
 	}

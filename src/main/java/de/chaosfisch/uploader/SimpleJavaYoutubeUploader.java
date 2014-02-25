@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 
 public final class SimpleJavaYoutubeUploader {
 
-	public static final  int    LAUNCHER_UPDATE_DELAY = 5000;
+	private static final int    LAUNCHER_UPDATE_DELAY = 5000;
 	private static final Logger LOGGER                = LoggerFactory.getLogger(SimpleJavaYoutubeUploader.class);
 
 	private SimpleJavaYoutubeUploader() {

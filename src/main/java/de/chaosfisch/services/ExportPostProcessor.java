@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public class ExportPostProcessor implements UploadPostProcessor {
-	public static final  String JSON_LOGFILES = "json_logfiles_export";
+	private static final String JSON_LOGFILES = "json_logfiles_export";
 	private static final Logger LOGGER        = LoggerFactory.getLogger(ExportPostProcessor.class);
 	@Inject
 	Configuration config;

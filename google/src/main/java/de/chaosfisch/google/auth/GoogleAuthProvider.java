@@ -30,13 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GoogleAuthProvider implements Provider<YouTube> {
+public class GoogleAuthProvider {
 	private static final Logger LOGGER         = LoggerFactory.getLogger(GoogleAuthProvider.class);
 	private static final int    SC_OK          = 200;
 	private static final String TOKEN_TEST_URL = "https://www.googleapis.com/youtube/v3/activities?part=id&mine=true&maxResults=0";
@@ -45,7 +44,6 @@ public class GoogleAuthProvider implements Provider<YouTube> {
 	private final JsonFactory   jsonFactory;
 	private final Map<AccountModel, Credential> credentials = new HashMap<>(1);
 	private final Map<AccountModel, YouTube>    services    = new HashMap<>(1);
-	private AccountModel account;
 
 	@Inject
 	public GoogleAuthProvider(final HttpTransport httpTransport, final JsonFactory jsonFactory) {
@@ -53,16 +51,15 @@ public class GoogleAuthProvider implements Provider<YouTube> {
 		this.jsonFactory = jsonFactory;
 	}
 
-	@Override
-	public YouTube get() {
-		if (!services.containsKey(account)) {
-			final Credential credential = getCredential(account);
-			services.put(account, new YouTube.Builder(httpTransport, jsonFactory, request -> {
+	public YouTube getYouTubeService(final AccountModel accountModel) {
+		if (!services.containsKey(accountModel)) {
+			final Credential credential = getCredential(accountModel);
+			services.put(accountModel, new YouTube.Builder(httpTransport, jsonFactory, request -> {
 				request.setInterceptor(credential::intercept);
 				request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(new ExponentialBackOff()));
 			}).setApplicationName("simple-java-youtube-uploader").build());
 		}
-		return services.get(account);
+		return services.get(accountModel);
 	}
 
 	public Credential getCredential(final AccountModel account) {
@@ -104,10 +101,5 @@ public class GoogleAuthProvider implements Provider<YouTube> {
 		} catch (final Exception e) {
 			throw new AuthenticationException(e);
 		}
-	}
-
-	public GoogleAuthProvider setAccount(final AccountModel account) {
-		this.account = account;
-		return this;
 	}
 }
