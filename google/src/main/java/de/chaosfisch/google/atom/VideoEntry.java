@@ -13,10 +13,9 @@ package de.chaosfisch.google.atom;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import de.chaosfisch.google.atom.gdata.GDataComments;
-import de.chaosfisch.google.atom.gdata.GDataRating;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import de.chaosfisch.google.atom.media.MediaGroup;
-import de.chaosfisch.google.atom.youtube.*;
+import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,54 +25,62 @@ public class VideoEntry {
 	@XStreamAlias("yt:accessControl")
 	@XStreamImplicit
 	public final List<YoutubeAccessControl> accessControl = new ArrayList<>(10);
-
+	@XStreamAlias("media:group")
+	public final MediaGroup                 mediaGroup    = new MediaGroup();
 	@XStreamAlias("app:control")
-	public AppControl appControl;
-
+	@XStreamOmitField
+	public Object appControl;
 	@XStreamAlias("app:edited")
-	public String        appEdited;
-	public YoutubeAuthor author;
-
+	@XStreamOmitField
+	public Object appEdited;
+	@XStreamOmitField
+	public Object author;
 	@XStreamAlias("category")
 	@XStreamImplicit
-	public List<Category> categories;
-
+	@XStreamOmitField
+	public Object categories;
 	@XStreamAlias("gd:comments")
-	public GDataComments  comments;
-	public YoutubeContent content;
-
+	@XStreamOmitField
+	public Object comments;
+	@XStreamOmitField
+	public Object content;
 	@Deprecated
 	@XStreamAlias("gd:rating")
-	public GDataRating gdRating;
-
+	@XStreamOmitField
+	public Object gdRating;
 	@XStreamAlias("georss:where")
-	public YoutubeGeoRss geoRssWhere;
-	public String        id;
-
+	@XStreamOmitField
+	public Object geoRssWhere;
+	@XStreamOmitField
+	public Object id;
 	@XStreamAlias("link")
 	@XStreamImplicit
-	public List<Feedlink> links;
-
+	@XStreamOmitField
+	public Object links;
 	@XStreamAlias("yt:location")
-	public String location;
-
-	@XStreamAlias("media:group")
-	public final MediaGroup mediaGroup = new MediaGroup();
-
+	@XStreamOmitField
+	public Object location;
 	@XStreamAlias("yt:countHint")
-	public Integer playlistCountHint;
+	@XStreamOmitField
+	public Object playlistCountHint;
 
 	@XStreamAlias("yt:playlistId")
-	public String playlistId;
+	@XStreamOmitField
+	public Object playlistId;
 
 	@XStreamAlias("summary")
-	public String playlistSummary;
-	public String published;
+	@XStreamOmitField
+	public Object playlistSummary;
+	@XStreamOmitField
+	public Object published;
 
 	@XStreamAlias("yt:statistics")
-	public YoutubeStatistics statistics;
-	public String            title;
-	public String            updated;
+	@XStreamOmitField
+	public Object statistics;
+	@XStreamOmitField
+	public Object title;
+	@XStreamOmitField
+	public Object updated;
 
 	@XStreamAlias("xmlns")
 	@XStreamAsAttribute
@@ -88,29 +95,37 @@ public class VideoEntry {
 	public String xmlnsYt = "http://gdata.youtube.com/schemas/2007";
 
 	@XStreamAlias("yt:availability")
-	public YoutubeAvailability ytAvailability;
+	@XStreamOmitField
+	public Object ytAvailability;
 
 	@XStreamAlias("yt:episode")
-	public YoutubeEpisode ytEpisode;
+	@XStreamOmitField
+	public Object ytEpisode;
 
 	@XStreamAlias("yt:firstReleased")
-	public String ytFirstReleased;
+	@XStreamOmitField
+	public Object ytFirstReleased;
 
 	@XStreamAlias("yt:hd")
+	@XStreamOmitField
 	public Object ytHD;
 
 	@XStreamAlias("yt:noembed")
+	@XStreamOmitField
 	public Object ytNoEmbed;
 
 	@XStreamAlias("yt:position")
-	public Integer ytPosition;
+	@XStreamOmitField
+	public Object ytPosition;
 
 	@XStreamAlias("yt:private")
 	public Object ytPrivate;
 
 	@XStreamAlias("yt:rating")
-	public YoutubeRating ytRating;
+	@XStreamOmitField
+	public Object ytRating;
 
 	@XStreamAlias("yt:recorded")
-	public String ytRecorded;
+	@XStreamOmitField
+	public Object ytRecorded;
 }
