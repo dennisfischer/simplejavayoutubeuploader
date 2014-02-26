@@ -54,7 +54,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-		googleAuthProvider.getYouTubeService(null) //TODO playlist.getAccount())
+		googleAuthProvider.getYouTubeService(playlist.getAccount())
 				.playlistItems()
 				.insert("snippet,status", playlistItem)
 				.execute();
@@ -68,7 +68,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
 		final PlaylistSnippet playlistSnippet = new PlaylistSnippet();
 		playlistSnippet.setTitle(playlist.getTitle());
-		playlistSnippet.setDescription("");//TODO playlist.getSummary());
+		playlistSnippet.setDescription(playlist.getDescription());
 
 		final PlaylistStatus playlistStatus = new PlaylistStatus();
 		playlistStatus.setPrivacyStatus(playlist.getPrivacyStatus() ? "private" : "public");
@@ -77,7 +77,7 @@ public abstract class PlaylistService implements IPlaylistService {
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-		googleAuthProvider.getYouTubeService(null)//TODO playlist.getAccount())
+		googleAuthProvider.getYouTubeService(playlist.getAccount())
 				.playlists()
 				.insert("snippet,status", youTubePlaylist)
 				.execute();
@@ -104,8 +104,7 @@ public abstract class PlaylistService implements IPlaylistService {
 			for (final PlaylistModel playlist : accountPlaylists) {
 				delete(playlist);
 			}
-			account.getPlaylists()
-					.addAll(playlists);
+			account.getPlaylists().addAll(playlists);
 			accountService.update(account);
 		}
 		logger.info("Playlists synchronized");
@@ -126,35 +125,27 @@ public abstract class PlaylistService implements IPlaylistService {
 	}
 
 	PlaylistModel _createNewPlaylist(final AccountModel account, final Playlist entry) {
-		final PlaylistModel playlist = new PlaylistModel();//TODO account);
-		playlist.setTitle(entry.getSnippet()
-								  .getTitle());
+		final PlaylistModel playlist = new PlaylistModel();
 		playlist.setYoutubeId(entry.getId());
-		playlist.setItemCount(entry.getContentDetails()
-									  .getItemCount());
-		//TODO	playlist.setSummary(entry.getSnippet().getDescription());
-		final String thumbnailUrl = entry.getSnippet()
-				.getThumbnails()
-				.getHigh()
-				.getUrl();
-		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
-		playlist.setHidden(false);
+		setPlaylistModelInfos(account, entry, playlist);
 		insert(playlist);
 		return playlist;
 	}
 
-	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
-		playlist.setTitle(entry.getSnippet()
-								  .getTitle());
-		playlist.setItemCount(entry.getContentDetails()
-									  .getItemCount());
-		//TODO	playlist.setSummary(entry.getSnippet().getDescription());
+	private void setPlaylistModelInfos(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
+		playlist.setTitle(entry.getSnippet().getTitle());
+		playlist.setItemCount(entry.getContentDetails().getItemCount());
+		playlist.setAccount(account);
+		playlist.setDescription(entry.getSnippet().getDescription());
 		final String thumbnailUrl = entry.getSnippet()
 				.getThumbnails()
 				.getHigh()
 				.getUrl();
 		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
-		//TODO	playlist.setAccount(account);
+	}
+
+	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
+		setPlaylistModelInfos(account, entry, playlist);
 		update(playlist);
 		return playlist;
 	}

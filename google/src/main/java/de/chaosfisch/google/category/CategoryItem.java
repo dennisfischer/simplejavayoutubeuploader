@@ -47,12 +47,4 @@ class CategoryItem {
 	public void setSnippet(final CategorySnippet snippet) {
 		this.snippet = snippet;
 	}
-
-/*	public boolean isAssignable() {
-		return snippet.isAssignable();
-	}
-
-	public String getTitle() {
-		return snippet.getTitle();
-	}*/
 }

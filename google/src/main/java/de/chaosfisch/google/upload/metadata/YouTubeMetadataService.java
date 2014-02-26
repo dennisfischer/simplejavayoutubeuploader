@@ -25,8 +25,9 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import de.chaosfisch.google.GDataConfig;
 import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.account.PersistentCookieStore;
+import de.chaosfisch.google.atom.MediaCategory;
 import de.chaosfisch.google.atom.VideoEntry;
-import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
+import de.chaosfisch.google.atom.YoutubeAccessControl;
 import de.chaosfisch.google.auth.GoogleAuthProvider;
 import de.chaosfisch.google.upload.Upload;
 import de.chaosfisch.google.upload.permissions.*;
@@ -51,11 +52,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AbstractMetadataService implements IMetadataService {
+public class YouTubeMetadataService implements IMetadataService {
 
 	private static final int    DEFAULT_CONNECTION_TIMEOUT = 600000;
 	private static final int    DEFAULT_SOCKET_TIMEOUT     = 600000;
-	private static final Logger LOGGER                     = LoggerFactory.getLogger(AbstractMetadataService.class);
+	private static final Logger LOGGER                     = LoggerFactory.getLogger(YouTubeMetadataService.class);
 	private static final String METADATA_UPDATE_URL        = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 	private static final String VIDEO_EDIT_URL             = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
 	private static final int    SC_OK                      = 200;
@@ -65,7 +66,7 @@ public class AbstractMetadataService implements IMetadataService {
 	private final GoogleAuthProvider googleAuthProvider;
 
 	@Inject
-	public AbstractMetadataService(final GoogleAuthProvider googleAuthProvider) {
+	public YouTubeMetadataService(final GoogleAuthProvider googleAuthProvider) {
 		this.googleAuthProvider = googleAuthProvider;
 	}
 
@@ -74,11 +75,11 @@ public class AbstractMetadataService implements IMetadataService {
 		// create atom xml metadata - create object first, then convert with
 		// xstream
 
-		final Metadata metadata = upload.getMetadata();
 		final VideoEntry videoEntry = new VideoEntry();
 		videoEntry.mediaGroup.category = new ArrayList<>(1);
-		videoEntry.mediaGroup.category.add(metadata.getCategory().toCategory());
-		videoEntry.mediaGroup.license = metadata.getLicense().getMetaIdentifier();
+		videoEntry.mediaGroup.category.add(new MediaCategory(upload.getCategoryTerm(), upload.getCategoryLabel(), upload
+				.getCategoryScheme()));
+		videoEntry.mediaGroup.license = upload.getMetadataLicenseIdentifier();
 		videoEntry.mediaGroup.title = upload.getMetadataTitle();
 		videoEntry.mediaGroup.description = upload.getMetadataDescription();
 		videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
@@ -164,8 +165,7 @@ public class AbstractMetadataService implements IMetadataService {
 		// Create a local instance of cookie store
 		// Populate cookies if needed
 		final CookieStore cookieStore = new BasicCookieStore();
-		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount()
-				.getSerializableCookies()) {
+		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccountSerializableCookies()) {
 			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
 																		   .getName(), serializableCookie.getCookie()
 																		   .getValue());
@@ -217,38 +217,34 @@ public class AbstractMetadataService implements IMetadataService {
 		}
 	}
 
-	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(4);
+	private String extractor(final String input, final String search, final String end) {
+		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
+				.length())));
+	}
 
-		if (null != upload.getDateTimeOfRelease()) {
-			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
-				final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-				dateTimeFormatter.withZone(ZoneOffset.UTC);
-				params.put("publish_time", upload.getDateTimeOfRelease().format(dateTimeFormatter));
-				params.put("publish_timezone", "UTC");
-				params.put("time_published", "0");
-				params.put("privacy", "scheduled");
-			}
-		}
+	private Map<String, Object> getMetadataPermissions(final Upload upload) {
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
 
+		params.put("allow_comments", boolConverter(!(Comment.DENIED == upload.getPermissionsComment())));
+		params.put("allow_comments_detail", Comment.ALLOWED == upload.getPermissionsComment() ? "all" : "approval");
+		params.put("allow_comment_ratings", boolConverter(upload.isPermissionsCommentvote()));
+		params.put("allow_ratings", boolConverter(upload.isPermissionsRate()));
+		params.put("allow_embedding", boolConverter(upload.isPermissionsEmbed()));
+		params.put("self_racy", boolConverter(upload.isPermissionsAgeRestricted()));
+		params.put("allow_public_stats", boolConverter(upload.isPermissionsPublicStatsViewable()));
+		params.put("threed_type", upload.getPermissionsThreedD().name().toLowerCase());
 		return params;
 	}
 
-	private Map<String, Object> getMetadataSocial(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(3);
-		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
-			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
-				params.put("creator_share_custom_message", upload.getSocialMessage());
-				params.put("creator_share_facebook", boolConverter(upload.isSocialFacebook()));
-				params.put("creator_share_twitter", boolConverter(upload.isSocialTwitter()));
-				params.put("creator_share_gplus", boolConverter(upload.isSocialGplus()));
-			}
-		}
+	private Map<String, Object> getMetadataMetadata(final Upload upload) {
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(4);
+		params.put("title", upload.getMetadataTitle());
+		params.put("description", Strings.nullToEmpty(upload.getMetadataDescription()));
+		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
+				.skipNulls()
+				.join(TagParser.parse(upload.getMetadataKeywords(), true)));
+		params.put("reuse", License.YOUTUBE == upload.getMetadataLicense() ? "all_rights_reserved" : "creative_commons");
 		return params;
-	}
-
-	private String boolConverter(final boolean flag) {
-		return flag ? "yes" : "no";
 	}
 
 	private Map<String, Object> getMetadataMonetization(final String content, final Upload upload) {
@@ -318,33 +314,37 @@ public class AbstractMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, Object> getMetadataMetadata(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(4);
-		params.put("title", upload.getMetadataTitle());
-		params.put("description", Strings.nullToEmpty(upload.getMetadataDescription()));
-		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
-				.skipNulls()
-				.join(TagParser.parse(upload.getMetadataKeywords(), true)));
-		params.put("reuse", License.YOUTUBE == upload.getMetadataLicense() ? "all_rights_reserved" : "creative_commons");
+	private Map<String, Object> getMetadataSocial(final Upload upload) {
+		final Map<String, Object> params = new HashMap<>(3);
+		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
+			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
+				params.put("creator_share_custom_message", upload.getSocialMessage());
+				params.put("creator_share_facebook", boolConverter(upload.isSocialFacebook()));
+				params.put("creator_share_twitter", boolConverter(upload.isSocialTwitter()));
+				params.put("creator_share_gplus", boolConverter(upload.isSocialGplus()));
+			}
+		}
 		return params;
 	}
 
-	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
-
-		params.put("allow_comments", boolConverter(!(Comment.DENIED == upload.getPermissionsComment())));
-		params.put("allow_comments_detail", Comment.ALLOWED == upload.getPermissionsComment() ? "all" : "approval");
-		params.put("allow_comment_ratings", boolConverter(upload.isPermissionsCommentvote()));
-		params.put("allow_ratings", boolConverter(upload.isPermissionsRate()));
-		params.put("allow_embedding", boolConverter(upload.isPermissionsEmbed()));
-		params.put("self_racy", boolConverter(upload.isPermissionsAgeRestricted()));
-		params.put("allow_public_stats", boolConverter(upload.isPermissionsPublicStatsViewable()));
-		params.put("threed_type", upload.getPermissionsThreedD().name().toLowerCase());
-		return params;
+	private String boolConverter(final boolean flag) {
+		return flag ? "yes" : "no";
 	}
 
-	private String extractor(final String input, final String search, final String end) {
-		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
-				.length())));
+	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
+		final Map<String, Object> params = new HashMap<>(4);
+
+		if (null != upload.getDateTimeOfRelease()) {
+			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
+				final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+				dateTimeFormatter.withZone(ZoneOffset.UTC);
+				params.put("publish_time", upload.getDateTimeOfRelease().format(dateTimeFormatter));
+				params.put("publish_timezone", "UTC");
+				params.put("time_published", "0");
+				params.put("privacy", "scheduled");
+			}
+		}
+
+		return params;
 	}
 }

@@ -15,10 +15,10 @@ import de.chaosfisch.google.account.AccountModel;
 import de.chaosfisch.google.auth.GoogleAuthProvider;
 
 import javax.inject.Inject;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 
 
@@ -36,7 +36,7 @@ public class YouTubeThumnbailService implements IThumbnailService {
 			throw new FileNotFoundException(thumbnail.getName());
 		}
 
-		try (final InputStream is = Files.newInputStream(thumbnail.toPath())) {
+		try (final BufferedInputStream is = new BufferedInputStream(Files.newInputStream(thumbnail.toPath()))) {
 			googleAuthProvider.getYouTubeService(accountModel)
 					.thumbnails()
 					.set(videoid, new InputStreamContent("application/octet-stream", is));

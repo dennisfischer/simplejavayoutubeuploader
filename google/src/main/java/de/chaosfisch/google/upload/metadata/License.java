@@ -19,7 +19,7 @@ public enum License {
 		this.metaIdentifier = metaIdentifier;
 	}
 
-	public String getMetaIdentifier() {
+	public String getIdentifier() {
 		return metaIdentifier;
 	}
 }

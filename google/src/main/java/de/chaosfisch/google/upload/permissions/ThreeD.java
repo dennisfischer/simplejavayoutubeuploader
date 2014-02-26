@@ -11,5 +11,5 @@
 package de.chaosfisch.google.upload.permissions;
 
 public enum ThreeD {
-	DEFAULT, OFF, CONVERTED //, LAYOUT("threed.layout");
+	DEFAULT, OFF, CONVERTED, LAYOUT
 }

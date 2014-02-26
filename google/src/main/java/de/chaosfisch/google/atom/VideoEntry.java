@@ -14,8 +14,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import de.chaosfisch.google.atom.media.MediaGroup;
-import de.chaosfisch.google.atom.youtube.YoutubeAccessControl;
 
 import java.util.ArrayList;
 import java.util.List;

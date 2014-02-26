@@ -11,13 +11,9 @@
 package de.chaosfisch.google.auth;
 
 class AuthenticationException extends Exception {
-	private static final long serialVersionUID = -5334150826953275047L;
+	private static final long serialVersionUID = 1118663680146826424L;
 
 	public AuthenticationException(final Exception e) {
 		super(e);
-	}
-
-	public AuthenticationException(final String msg) {
-		super(msg);
 	}
 }

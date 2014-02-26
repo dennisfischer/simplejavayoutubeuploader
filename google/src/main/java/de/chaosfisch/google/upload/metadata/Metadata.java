@@ -11,38 +11,34 @@
 package de.chaosfisch.google.upload.metadata;
 
 import com.google.common.base.Charsets;
+import de.chaosfisch.google.category.CategoryModel;
 import de.chaosfisch.google.upload.Upload;
 
 public class Metadata {
 
-	private Category category = Category.ANIMALS;
-	private License  license  = License.YOUTUBE;
+	private CategoryModel category;
+	private License license = License.YOUTUBE;
 	private String title;
 	private String description;
 	private String keywords;
 
-	public Metadata() {
-		this("", Category.ANIMALS, "", "");
-	}
-
-	private Metadata(final String title, final Category category, final String description, final String keywords) {
+	private Metadata(final String title, final CategoryModel category, final String description, final String keywords) {
 		this(title, category, description, keywords, License.YOUTUBE);
 	}
 
-	public Metadata(final String title, final Category category, final String description, final String keywords, final License license) {
+	public Metadata(final String title, final CategoryModel category, final String description, final String keywords, final License license) {
 		setTitle(title);
 		setCategory(category);
 		setDescription(description);
 		setKeywords(keywords);
-		//noinspection CallToSimpleSetterFromWithinClass
-		setLicense(license);
+		this.license = license;
 	}
 
-	public Category getCategory() {
+	public CategoryModel getCategory() {
 		return category;
 	}
 
-	void setCategory(final Category category) {
+	void setCategory(final CategoryModel category) {
 		if (null == category) {
 			throw new IllegalArgumentException(Upload.Validation.CATEGORY);
 		}
@@ -102,5 +98,21 @@ public class Metadata {
 
 	void setLicense(final License license) {
 		this.license = license;
+	}
+
+	public String getCategoryTerm() {
+		return "autos";
+	}
+
+	public String getCategoryLabel() {
+		return "autos";
+	}
+
+	public String getCategoryScheme() {
+		return "autos";
+	}
+
+	public String getLicenseIdentifier() {
+		return license.getIdentifier();
 	}
 }

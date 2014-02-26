@@ -13,21 +13,20 @@
  */
 package de.chaosfisch.google.playlist;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
+import de.chaosfisch.google.account.AccountModel;
+import javafx.beans.property.*;
 
 public class PlaylistModel {
 
-	private final SimpleIntegerProperty id            = new SimpleIntegerProperty();
-	private final SimpleIntegerProperty accountId     = new SimpleIntegerProperty();
-	private final SimpleStringProperty  youtubeId     = new SimpleStringProperty();
-	private final SimpleStringProperty  title         = new SimpleStringProperty();
-	private final SimpleStringProperty  thumbnail     = new SimpleStringProperty();
-	private final SimpleBooleanProperty privacyStatus = new SimpleBooleanProperty();
-	private final SimpleLongProperty    itemCount     = new SimpleLongProperty();
-	private final SimpleBooleanProperty hidden        = new SimpleBooleanProperty();
+	private final SimpleIntegerProperty              id            = new SimpleIntegerProperty();
+	private final SimpleStringProperty               youtubeId     = new SimpleStringProperty();
+	private final SimpleStringProperty               title         = new SimpleStringProperty();
+	private final SimpleStringProperty               thumbnail     = new SimpleStringProperty();
+	private final SimpleBooleanProperty              privacyStatus = new SimpleBooleanProperty();
+	private final SimpleLongProperty                 itemCount     = new SimpleLongProperty();
+	private final SimpleBooleanProperty              hidden        = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty               description   = new SimpleStringProperty();
+	private final SimpleObjectProperty<AccountModel> account       = new SimpleObjectProperty<>();
 
 	@Override
 	public int hashCode() {
@@ -72,15 +71,15 @@ public class PlaylistModel {
 	}
 
 	public int getAccountId() {
-		return accountId.get();
+		return account.get().getId();
 	}
 
-	public void setAccountId(final int accountId) {
-		this.accountId.set(accountId);
+	public AccountModel getAccount() {
+		return account.get();
 	}
 
-	public SimpleIntegerProperty accountIdProperty() {
-		return accountId;
+	public void setAccount(final AccountModel account) {
+		this.account.set(account);
 	}
 
 	public String getYoutubeId() {
@@ -147,7 +146,23 @@ public class PlaylistModel {
 		return hidden;
 	}
 
-/*
+	public String getDescription() {
+		return description.get();
+	}
+
+	public void setDescription(final String description) {
+		this.description.set(description);
+	}
+
+	public SimpleStringProperty descriptionProperty() {
+		return description;
+	}
+
+	public SimpleObjectProperty<AccountModel> accountProperty() {
+		return account;
+	}
+
+	/*
 if (Strings.isNullOrEmpty(title)) {
 	throw new IllegalArgumentException(Validation.TITLE);
 }

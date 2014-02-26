@@ -12,15 +12,8 @@ package de.chaosfisch.google.upload.metadata;
 
 public class MetaBadRequestException extends Exception {
 	private static final long serialVersionUID = -2086228006554387997L;
-	private static final int  SC_BAD_REQUEST   = 400;
 	private final String atomData;
 	private final int    statusCode;
-
-	public MetaBadRequestException(final Exception e) {
-		super(e);
-		atomData = "empty";
-		statusCode = SC_BAD_REQUEST;
-	}
 
 	public MetaBadRequestException(final String atomData, final int statusCode) {
 		super("Code: " + statusCode + "; Data: " + atomData);

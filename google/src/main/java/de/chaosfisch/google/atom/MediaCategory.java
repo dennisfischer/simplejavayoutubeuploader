@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.google.atom.media;
+package de.chaosfisch.google.atom;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -19,13 +19,13 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 @XStreamAlias("media:category")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {"category"})
 public class MediaCategory {
-	private final String category;
+	private final   String category;
 	@XStreamAsAttribute
-	protected     String label;
+	protected final String label;
 	@XStreamAsAttribute
-	protected     String scheme;
+	protected final String scheme;
 	@XStreamAsAttribute
-	protected     String term;
+	protected final String term;
 
 	public MediaCategory(final String term, final String label, final String scheme) {
 		this.term = term;

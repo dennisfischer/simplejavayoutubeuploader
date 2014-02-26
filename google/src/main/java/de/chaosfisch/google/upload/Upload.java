@@ -14,12 +14,14 @@
 package de.chaosfisch.google.upload;
 
 import de.chaosfisch.google.account.AccountModel;
+import de.chaosfisch.google.account.PersistentCookieStore;
 import de.chaosfisch.google.playlist.PlaylistModel;
 import de.chaosfisch.google.upload.metadata.License;
 import de.chaosfisch.google.upload.metadata.Metadata;
 import de.chaosfisch.google.upload.metadata.Monetization;
 import de.chaosfisch.google.upload.metadata.Social;
 import de.chaosfisch.google.upload.permissions.*;
+import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
@@ -36,7 +38,7 @@ public class Upload {
 	private Status       status       = Status.WAITING;
 	private Monetization monetization = new Monetization();
 	private Permissions  permissions  = new Permissions();
-	private Metadata     metadata     = new Metadata();
+	private Metadata metadata;
 
 	private String        id;
 	private File          file;
@@ -50,7 +52,6 @@ public class Upload {
 	private File          thumbnail;
 
 	private AccountModel account;
-	private String       monetizationTitleepisode;
 
 	public Upload() {
 	}
@@ -452,6 +453,26 @@ public class Upload {
 
 	public ThreeD getPermissionsThreedD() {
 		return permissions.getThreedD();
+	}
+
+	public String getCategoryTerm() {
+		return metadata.getCategoryTerm();
+	}
+
+	public String getCategoryLabel() {
+		return metadata.getCategoryLabel();
+	}
+
+	public String getCategoryScheme() {
+		return metadata.getCategoryScheme();
+	}
+
+	public String getMetadataLicenseIdentifier() {
+		return metadata.getLicenseIdentifier();
+	}
+
+	public ObservableList<PersistentCookieStore.SerializableCookie> getAccountSerializableCookies() {
+		return account.getSerializableCookies();
 	}
 
 	public interface Validation {
