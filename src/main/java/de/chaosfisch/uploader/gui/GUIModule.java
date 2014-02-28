@@ -12,9 +12,10 @@ package de.chaosfisch.uploader.gui;
 
 import dagger.Module;
 import dagger.Provides;
-import de.chaosfisch.google.category.ICategoryService;
-import de.chaosfisch.google.category.YouTubeCategoryService;
 import de.chaosfisch.uploader.ApplicationData;
+import de.chaosfisch.uploader.gui.account.AccountPresenter;
+import de.chaosfisch.uploader.gui.account.AccountView;
+import de.chaosfisch.uploader.gui.account.entry.EntryView;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
@@ -24,13 +25,25 @@ import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.project.ProjectPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
+import de.chaosfisch.youtube.category.ICategoryService;
+import de.chaosfisch.youtube.category.YouTubeCategoryService;
 
 import javax.inject.Singleton;
 
 @Module(
-		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class}
+		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class}
 )
 public class GUIModule {
+	@Provides
+	AccountView provideAccountView() {
+		return new AccountView();
+	}
+
+	@Provides
+	EntryView provideEntryView() {
+		return new EntryView();
+	}
+
 	@Provides
 	EditView provideEditView() {
 		return new EditView();

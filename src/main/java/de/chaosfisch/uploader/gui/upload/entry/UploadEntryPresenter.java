@@ -10,8 +10,8 @@
 
 package de.chaosfisch.uploader.gui.upload.entry;
 
-import de.chaosfisch.google.upload.Status;
 import de.chaosfisch.uploader.gui.models.UploadModel;
+import de.chaosfisch.youtube.upload.Status;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

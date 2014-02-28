@@ -11,14 +11,14 @@
 package de.chaosfisch.uploader.gui.edit.right;
 
 import dagger.Lazy;
-import de.chaosfisch.google.upload.metadata.License;
-import de.chaosfisch.google.upload.permissions.Comment;
-import de.chaosfisch.google.upload.permissions.ThreeD;
-import de.chaosfisch.google.upload.permissions.Visibility;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.models.TimeModel;
+import de.chaosfisch.youtube.upload.metadata.License;
+import de.chaosfisch.youtube.upload.permissions.Comment;
+import de.chaosfisch.youtube.upload.permissions.ThreeD;
+import de.chaosfisch.youtube.upload.permissions.Visibility;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;

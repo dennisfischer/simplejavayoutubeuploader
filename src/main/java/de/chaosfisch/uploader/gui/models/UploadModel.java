@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.gui.models;
 
 
-import de.chaosfisch.google.upload.Status;
+import de.chaosfisch.youtube.upload.Status;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: asyncretry">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/google/lib/asyncretry.jar!/" />
+      <root url="jar://$PROJECT_DIR$/api/lib/asyncretry.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

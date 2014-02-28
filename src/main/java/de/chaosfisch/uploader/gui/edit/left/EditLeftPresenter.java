@@ -10,10 +10,10 @@
 
 package de.chaosfisch.uploader.gui.edit.left;
 
-import de.chaosfisch.google.account.AccountModel;
-import de.chaosfisch.google.category.CategoryModel;
-import de.chaosfisch.google.playlist.PlaylistModel;
 import de.chaosfisch.uploader.gui.DataModel;
+import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.category.CategoryModel;
+import de.chaosfisch.youtube.playlist.PlaylistModel;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;

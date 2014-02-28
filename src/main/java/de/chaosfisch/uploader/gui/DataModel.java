@@ -10,17 +10,17 @@
 
 package de.chaosfisch.uploader.gui;
 
-import de.chaosfisch.google.account.AccountModel;
-import de.chaosfisch.google.category.CategoryModel;
-import de.chaosfisch.google.category.ICategoryService;
-import de.chaosfisch.google.playlist.PlaylistModel;
-import de.chaosfisch.google.upload.Status;
-import de.chaosfisch.google.upload.metadata.License;
-import de.chaosfisch.google.upload.permissions.Comment;
-import de.chaosfisch.google.upload.permissions.ThreeD;
-import de.chaosfisch.google.upload.permissions.Visibility;
 import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.uploader.project.ProjectModel;
+import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.category.CategoryModel;
+import de.chaosfisch.youtube.category.ICategoryService;
+import de.chaosfisch.youtube.playlist.PlaylistModel;
+import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.metadata.License;
+import de.chaosfisch.youtube.upload.permissions.Comment;
+import de.chaosfisch.youtube.upload.permissions.ThreeD;
+import de.chaosfisch.youtube.upload.permissions.Visibility;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -140,7 +140,18 @@ public class DataModel {
 		playlists.addAll(model8);
 
 		accountModel.setPlaylists(playlists);
+
+		final AccountModel accountModel2 = new AccountModel();
+		accountModel2.setName("Account 2");
+		final AccountModel accountModel3 = new AccountModel();
+		accountModel3.setName("Account 3");
+		final AccountModel accountModel4 = new AccountModel();
+		accountModel4.setName("Account 4");
+
 		accounts.addAll(accountModel);
+		accounts.addAll(accountModel2);
+		accounts.addAll(accountModel3);
+		accounts.addAll(accountModel4);
 	}
 
 	private void initData() {

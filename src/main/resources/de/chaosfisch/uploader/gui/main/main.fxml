@@ -19,6 +19,7 @@
 		<TabPane>
 			<Tab closable="false" text="Queue" onSelectionChanged="#initUploadsTab"/>
 			<Tab closable="false" text="Upload" onSelectionChanged="#initEditTab"/>
+			<Tab closable="false" text="Accounts" onSelectionChanged="#initAccountTab"/>
 		</TabPane>
 	</center>
 	<top>

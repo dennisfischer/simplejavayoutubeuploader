@@ -13,6 +13,7 @@ package de.chaosfisch.uploader.gui.main;
 
 import dagger.Lazy;
 import de.chaosfisch.uploader.gui.DataModel;
+import de.chaosfisch.uploader.gui.account.AccountView;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.upload.UploadView;
 import de.chaosfisch.util.FXMLView;
@@ -34,11 +35,13 @@ public class MainPresenter {
 	private static final int PROGRESS_INDICATOR_MAX_WIDTH  = 50;
 	private static final int PROGRESS_INDICATOR_MAX_HEIGHT = 50;
 	@Inject
-	protected DataModel        dataModel;
+	protected DataModel         dataModel;
 	@Inject
-	protected Lazy<EditView>   editViewLazy;
+	protected Lazy<EditView>    editViewLazy;
 	@Inject
-	protected Lazy<UploadView> uploadsViewLazy;
+	protected Lazy<UploadView>  uploadsViewLazy;
+	@Inject
+	protected Lazy<AccountView> accountViewLazy;
 
 	@FXML
 	public void initEditTab(final Event event) {
@@ -74,5 +77,8 @@ public class MainPresenter {
 		initTabLazy((Tab) event.getSource(), uploadsViewLazy);
 	}
 
-
+	@FXML
+	public void initAccountTab(final Event event) {
+		initTabLazy((Tab) event.getSource(), accountViewLazy);
+	}
 }

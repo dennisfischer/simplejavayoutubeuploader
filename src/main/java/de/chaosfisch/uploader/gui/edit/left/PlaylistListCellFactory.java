@@ -10,7 +10,7 @@
 
 package de.chaosfisch.uploader.gui.edit.left;
 
-import de.chaosfisch.google.playlist.PlaylistModel;
+import de.chaosfisch.youtube.playlist.PlaylistModel;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
