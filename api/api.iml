@@ -44,8 +44,8 @@
     <orderEntry type="library" scope="TEST" name="Gradle: objenesis-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: annotations-12.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: guava-15.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: mapdb-0.9.10" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
   </component>
 </module>

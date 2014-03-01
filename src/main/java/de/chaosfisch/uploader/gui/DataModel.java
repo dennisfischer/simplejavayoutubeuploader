@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.gui;
 
 import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.uploader.project.ProjectModel;
+import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
@@ -57,6 +58,17 @@ public class DataModel {
 		initSampleData();
 		initBindings();
 		initData();
+	}
+
+	private void initBindings() {
+		categories.bind(categoryService.categoryModelsProperty());
+		//	projects.bind(projectService.projectModelsProperty());
+	}
+
+	private void initData() {
+		final Thread categoryThread = new Thread(() -> categoryService.refresh(YouTubeFactory.getDefault()), "Category_Loader");
+		categoryThread.setDaemon(true);
+		categoryThread.start();
 	}
 
 	private void initSampleData() {
@@ -152,17 +164,6 @@ public class DataModel {
 		accounts.addAll(accountModel2);
 		accounts.addAll(accountModel3);
 		accounts.addAll(accountModel4);
-	}
-
-	private void initData() {
-		final Thread categoryThread = new Thread(categoryService::refresh, "Category_Loader");
-		categoryThread.setDaemon(true);
-		categoryThread.start();
-	}
-
-	private void initBindings() {
-		categories.bind(categoryService.categoryModelsProperty());
-		//	projects.bind(projectService.projectModelsProperty());
 	}
 
 	public void addUploads(final List<UploadModel> uploads) {

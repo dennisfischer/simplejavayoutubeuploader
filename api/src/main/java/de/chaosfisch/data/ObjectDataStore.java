@@ -11,19 +11,19 @@
 package de.chaosfisch.data;
 
 import org.mapdb.DB;
-import org.mapdb.HTreeMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class ObjectDataStore<T extends UniqueObject<E>, E> implements IDataStore<T, E> {
 
-	private final HTreeMap<String, E> hashMap;
-	private final DB                  db;
-	private final Class<T>            clazz;
+	private final Map<String, E> hashMap;
+	private final DB             db;
+	private final Class<T>       clazz;
 
-	public ObjectDataStore(final DB db, final HTreeMap<String, E> hashMap, final Class<T> clazz) {
+	public ObjectDataStore(final DB db, final Map<String, E> hashMap, final Class<T> clazz) {
 		this.db = db;
 		this.hashMap = hashMap;
 		this.clazz = clazz;
@@ -41,22 +41,6 @@ public class ObjectDataStore<T extends UniqueObject<E>, E> implements IDataStore
 		return transformDTOs(values);
 	}
 
-	@Override
-	public Collection<T> load(final Predicate<? super E> predicate) {
-		final Collection<E> values = hashMap.values();
-		values.removeIf(predicate.negate());
-		return transformDTOs(values);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public T loadOne(final Predicate<? super E> predicate) {
-		final Collection<E> values = hashMap.values();
-		values.removeIf(predicate.negate());
-		final Collection<T> transformDTOs = transformDTOs(values);
-		return transformDTOs.isEmpty() ? null : (T) transformDTOs.toArray()[0];
-	}
-
 	private Collection<T> transformDTOs(final Collection<E> values) {
 		final Collection<T> result = new ArrayList<>(values.size());
 		values.forEach(t -> result.add(transformDTO(t)));
@@ -72,6 +56,22 @@ public class ObjectDataStore<T extends UniqueObject<E>, E> implements IDataStore
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public Collection<T> load(final Predicate<? super E> predicate) {
+		final Collection<E> values = hashMap.values();
+		values.removeIf(predicate.negate());
+		return transformDTOs(values);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T loadOne(final Predicate<? super E> predicate) {
+		final Collection<E> values = hashMap.values();
+		values.removeIf(predicate.negate());
+		final Collection<T> transformDTOs = transformDTOs(values);
+		return transformDTOs.isEmpty() ? null : (T) transformDTOs.toArray()[0];
 	}
 
 

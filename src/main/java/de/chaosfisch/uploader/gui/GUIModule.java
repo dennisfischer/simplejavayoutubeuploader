@@ -84,7 +84,6 @@ public class GUIModule {
 				.compressionEnable()
 				.make();
 		db.compact();
-
 		return db;
 	}
 
