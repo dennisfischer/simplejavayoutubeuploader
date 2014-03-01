@@ -475,6 +475,10 @@ public class Upload {
 		return account.getSerializableCookies();
 	}
 
+	public String getPermissionsVisibilityIdentifier() {
+		return permissions.getVisibilityIdentifier();
+	}
+
 	public interface Validation {
 		int MAX_THUMBNAIL_SIZE   = 2097152;
 		int MAX_TITLE_SIZE       = 100;

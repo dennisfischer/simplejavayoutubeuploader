@@ -8,36 +8,18 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.category;
+package de.chaosfisch.data;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.function.Predicate;
 
-class CategoryFeed {
-	private String             kind;
-	private String             etag;
-	private List<CategoryItem> items;
+public interface IDataStore<T extends UniqueObject<E>, E> {
 
-	public String getKind() {
-		return kind;
-	}
+	void store(T o);
 
-	public void setKind(final String kind) {
-		this.kind = kind;
-	}
+	Collection<T> loadAll();
 
-	public String getEtag() {
-		return etag;
-	}
+	Collection<T> load(Predicate<? super E> predicate);
 
-	public void setEtag(final String etag) {
-		this.etag = etag;
-	}
-
-	public List<CategoryItem> getItems() {
-		return items;
-	}
-
-	public void setItems(final List<CategoryItem> items) {
-		this.items = items;
-	}
+	T loadOne(Predicate<? super E> predicate);
 }

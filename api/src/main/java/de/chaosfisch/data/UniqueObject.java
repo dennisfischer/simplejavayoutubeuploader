@@ -8,34 +8,13 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.category;
+package de.chaosfisch.data;
 
-class CategorySnippet {
-	private String  channelid;
-	private String  title;
-	private boolean assignable;
+public interface UniqueObject<T> {
 
-	public String getChannelid() {
-		return channelid;
-	}
+	String uniqueId();
 
-	public void setChannelid(final String channelid) {
-		this.channelid = channelid;
-	}
+	T toDTO();
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(final String title) {
-		this.title = title;
-	}
-
-	public boolean isAssignable() {
-		return assignable;
-	}
-
-	public void setAssignable(final boolean assignable) {
-		this.assignable = assignable;
-	}
+	void fromDTO(T o);
 }

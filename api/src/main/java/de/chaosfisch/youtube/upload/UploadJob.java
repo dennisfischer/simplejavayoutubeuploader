@@ -14,6 +14,7 @@ import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.services.youtube.model.Video;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.RateLimiter;
@@ -189,29 +190,8 @@ public class UploadJob implements Callable<Upload> {
 
 	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, UnirestException, IOException {
 		// Upload atomData and fetch uploadUrl
-		final String atomData = metadataService.atomBuilder(upload);
-		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
-				.header("GData-Version", GDataConfig.GDATA_V2)
-				.header("X-GData-Key", "key=" + GDataConfig.DEVELOPER_KEY)
-				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Slug", fileToUpload.getName())
-				.header("Authorization", getAuthHeader())
-				.body(atomData)
-				.asString();
-
-		LOGGER.info("fetchUploadUrl response code: {}", response.getCode());
-		LOGGER.info("fetchUploadUrl response headers: {}", response.getHeaders());
-		LOGGER.info("fetchUploadUrl response: {}", response.getBody());
-		// Check the response code for any problematic codes.
-		if (SC_BAD_REQUEST == response.getCode()) {
-			throw new MetaBadRequestException(atomData, response.getCode());
-		}
-		// Check if uploadurl is available
-		if (response.getHeaders().containsKey("location")) {
-			return response.getHeaders().get("location");
-		} else {
-			throw new MetaBadRequestException("Location missing", response.getCode());
-		}
+		final Video video = metadataService.buildVideoEntry(upload);
+		return "";//TODO fix fetchUploadUrl;
 	}
 
 	private String getAuthHeader() throws IOException {

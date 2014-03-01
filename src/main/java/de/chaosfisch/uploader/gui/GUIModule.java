@@ -12,6 +12,7 @@ package de.chaosfisch.uploader.gui;
 
 import dagger.Module;
 import dagger.Provides;
+import de.chaosfisch.data.ObjectDataStore;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.account.AccountPresenter;
 import de.chaosfisch.uploader.gui.account.AccountView;
@@ -25,15 +26,20 @@ import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.project.ProjectPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
+import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.category.YouTubeCategoryService;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
 
 import javax.inject.Singleton;
+import java.io.File;
 
 @Module(
 		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class}
 )
 public class GUIModule {
+
 	@Provides
 	AccountView provideAccountView() {
 		return new AccountView();
@@ -72,7 +78,19 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	ICategoryService provideCategoryService() {
-		return new YouTubeCategoryService(ApplicationData.DATA_DIR);
+	DB provideDB() {
+		final DB db = DBMaker.newFileDB(new File(String.format("%s/%s/database.mapdb", ApplicationData.DATA_DIR, ApplicationData.VERSION)))
+				.closeOnJvmShutdown()
+				.compressionEnable()
+				.make();
+		db.compact();
+
+		return db;
+	}
+
+	@Provides
+	@Singleton
+	ICategoryService provideCategoryService(final DB db) {
+		return new YouTubeCategoryService(new ObjectDataStore<>(db, db.getHashMap("categories"), CategoryModel.class));
 	}
 }

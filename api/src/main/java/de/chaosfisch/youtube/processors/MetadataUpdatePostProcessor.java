@@ -33,7 +33,7 @@ class MetadataUpdatePostProcessor implements UploadPostProcessor {
 	public Upload process(final Upload upload) {
 
 		try {
-			metadataService.updateMetaData(metadataService.atomBuilder(upload), upload.getVideoid(), upload.getAccount());
+			metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getVideoid(), upload.getAccount());
 		} catch (final MetaBadRequestException e) {
 			LOGGER.error("Metdata invalid", e);
 		} catch (final MetaIOException e) {

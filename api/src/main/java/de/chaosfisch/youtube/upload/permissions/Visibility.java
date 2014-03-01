@@ -11,5 +11,16 @@
 package de.chaosfisch.youtube.upload.permissions;
 
 public enum Visibility {
-	PUBLIC, UNLISTED, PRIVATE, SCHEDULED
+	PUBLIC("public"), UNLISTED("unlisted"), PRIVATE("private"), SCHEDULED("private");
+	private final String identifier;
+
+
+	Visibility(final String identifier) {
+		this.identifier = identifier;
+	}
+
+
+	public String getIdentifier() {
+		return identifier;
+	}
 }

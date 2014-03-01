@@ -85,4 +85,8 @@ public class Permissions {
 	public void setThreedD(final ThreeD threedD) {
 		this.threedD = threedD;
 	}
+
+	public String getVisibilityIdentifier() {
+		return visibility.getIdentifier();
+	}
 }

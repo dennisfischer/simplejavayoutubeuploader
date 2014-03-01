@@ -10,11 +10,12 @@
 
 package de.chaosfisch.youtube.category;
 
+import com.google.api.services.youtube.YouTube;
 import javafx.beans.property.SimpleListProperty;
 
 public interface ICategoryService {
 
-	void refresh();
+	void refresh(YouTube youTube);
 
 	SimpleListProperty<CategoryModel> categoryModelsProperty();
 }

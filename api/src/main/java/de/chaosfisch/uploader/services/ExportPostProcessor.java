@@ -10,14 +10,6 @@
 
 package de.chaosfisch.uploader.services;
 
-import com.google.common.base.Charsets;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import de.chaosfisch.uploader.ApplicationData;
-import de.chaosfisch.util.DateTimeTypeConverter;
-import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.upload.Upload;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import org.apache.commons.configuration.Configuration;
@@ -25,10 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 
 public class ExportPostProcessor implements UploadPostProcessor {
 	private static final String JSON_LOGFILES = "json_logfiles_export";
@@ -41,7 +29,7 @@ public class ExportPostProcessor implements UploadPostProcessor {
 		if (!config.getBoolean(ExportPostProcessor.JSON_LOGFILES, false)) {
 			return upload;
 		}
-
+/*
 		LOGGER.info("Running export postprocessor");
 		final Gson gson = new GsonBuilder().setPrettyPrinting()
 				.addSerializationExclusionStrategy(new ExclusionStrategy() {
@@ -74,7 +62,7 @@ public class ExportPostProcessor implements UploadPostProcessor {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-
+*/
 		return upload;
 	}
 }

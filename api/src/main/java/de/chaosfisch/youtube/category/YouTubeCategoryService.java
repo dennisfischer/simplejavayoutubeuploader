@@ -10,115 +10,57 @@
 
 package de.chaosfisch.youtube.category;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.async.Callback;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import de.chaosfisch.youtube.GDataConfig;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.VideoCategoryListResponse;
+import com.google.api.services.youtube.model.VideoCategorySnippet;
+import de.chaosfisch.data.IDataStore;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Locale;
 
 public class YouTubeCategoryService implements ICategoryService {
-	private static final String                            CATEGORY_URL        = "https://www.googleapis.com/youtube/v3/videoCategories?part=id,snippet&hl=%s&regionCode=%s&key=%s";
-	private static final Logger                            LOGGER              = LoggerFactory.getLogger(YouTubeCategoryService.class);
-	private static final int                               NOT_MODIFIED_HEADER = 304;
-	private final        SimpleListProperty<CategoryModel> categoryModels      = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final        Gson                              gson                = new GsonBuilder().create();
-	private final String dataLocation;
-	private String currentETag = "";
+	private final SimpleListProperty<CategoryModel> categoryModels = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final IDataStore<CategoryModel, CategoryModel.CategoryDTO> dataStore;
 
-
-	public YouTubeCategoryService(final String dataLocation) {
-		this.dataLocation = dataLocation;
+	@Inject
+	public YouTubeCategoryService(final IDataStore<CategoryModel, CategoryModel.CategoryDTO> dataStore) {
+		this.dataStore = dataStore;
 		loadCategories();
 	}
 
 	private void loadCategories() {
-		try (final FileReader fileReader = new FileReader(dataLocation + "/cache/categories.json")) {
-			processCategoryFeed(gson.fromJson(fileReader, CategoryFeed.class));
-		} catch (final IOException | JsonSyntaxException e) {
-			LOGGER.info("Category cache file not existing!");
-			final File directory = new File(dataLocation + "/cache");
-			if (!directory.isDirectory()) {
-				LOGGER.info("Creating cache directory!");
-				directory.mkdirs();
-			}
+		categoryModels.addAll(dataStore.loadAll());
+	}
+
+	@Override
+	public void refresh(final YouTube youTube) {
+		try {
+			final VideoCategoryListResponse videoCategoryListResponse = youTube.videoCategories().list("id,snippet")
+					.setHl(Locale.getDefault().getCountry())
+					.setRegionCode(Locale.getDefault().getCountry()).execute();
+
+			videoCategoryListResponse.getItems().forEach(t -> addOrUpdateCategory(t.getId(), t.getSnippet()));
+		} catch (final IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private void processCategoryFeed(final CategoryFeed categoryFeed) {
-		if (null == categoryFeed) {
-			return;
-		}
-		currentETag = categoryFeed.getEtag();
-		for (final CategoryItem item : categoryFeed.getItems()) {
-			final CategorySnippet snippet = item.getSnippet();
-			addOrUpdateCategory(item.getId(), snippet);
-		}
-	}
-
-	private void addOrUpdateCategory(final String id, final CategorySnippet snippet) {
-		if (snippet.isAssignable()) {
+	private void addOrUpdateCategory(final String id, final VideoCategorySnippet snippet) {
+		if (snippet.getAssignable()) {
 			final CategoryModel categoryModel = new CategoryModel();
 			categoryModel.setName(snippet.getTitle());
 			categoryModel.setYoutubeId(Integer.parseInt(id));
+
+			dataStore.store(categoryModel);
 			if (!categoryModels.contains(categoryModel)) {
 				categoryModels.add(categoryModel);
 			} else {
 				categoryModels.set(categoryModels.indexOf(categoryModel), categoryModel);
 			}
-		}
-	}
-
-	@Override
-	public void refresh() {
-		Unirest.get(String.format(CATEGORY_URL, Locale.getDefault().getCountry(), Locale.getDefault()
-				.getCountry(), GDataConfig.ACCESS_KEY))
-				.header("If-None-Match", currentETag)
-				.header("Accept-Encoding", "gzip")
-				.asStringAsync(new Callback<String>() {
-					@Override
-					public void completed(final HttpResponse<String> response) {
-						if (NOT_MODIFIED_HEADER == response.getCode()) {
-							LOGGER.info("Categories up to date!");
-							return;
-						}
-						LOGGER.info("Category refresh succeeded");
-						final CategoryFeed categoryFeed = gson.fromJson(response.getBody(), CategoryFeed.class);
-						processCategoryFeed(categoryFeed);
-						cacheFeed(categoryFeed);
-					}
-
-					@Override
-					public void failed(final UnirestException e) {
-						LOGGER.warn("Failed refreshing categories!", e);
-					}
-
-					@Override
-					public void cancelled() {
-						LOGGER.info("Category refresh canceled");
-					}
-				});
-	}
-
-	private void cacheFeed(final CategoryFeed categoryFeed) {
-		try (final FileWriter fileWriter = new FileWriter(dataLocation + "/cache/categories.json")) {
-			gson.toJson(categoryFeed, fileWriter);
-			LOGGER.info("Wrote category cache file!");
-		} catch (final IOException e) {
-			LOGGER.warn("Couldn't write cache file!", e);
 		}
 	}
 

@@ -11,7 +11,7 @@
 package de.chaosfisch.youtube.upload.metadata;
 
 public enum License {
-	YOUTUBE("youtube"), CREATIVE_COMMONS("cc");
+	YOUTUBE("youtube"), CREATIVE_COMMONS("creativeCommon");
 
 	private final String metaIdentifier;
 
