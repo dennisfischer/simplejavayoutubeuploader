@@ -455,18 +455,6 @@ public class Upload {
 		return permissions.getThreedD();
 	}
 
-	public String getCategoryTerm() {
-		return metadata.getCategoryTerm();
-	}
-
-	public String getCategoryLabel() {
-		return metadata.getCategoryLabel();
-	}
-
-	public String getCategoryScheme() {
-		return metadata.getCategoryScheme();
-	}
-
 	public String getMetadataLicenseIdentifier() {
 		return metadata.getLicenseIdentifier();
 	}
@@ -477,6 +465,10 @@ public class Upload {
 
 	public String getPermissionsVisibilityIdentifier() {
 		return permissions.getVisibilityIdentifier();
+	}
+
+	public String getCategoryId() {
+		return metadata.getCategoryId();
 	}
 
 	public interface Validation {

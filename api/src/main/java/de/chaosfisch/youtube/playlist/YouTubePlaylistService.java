@@ -10,6 +10,7 @@
 
 package de.chaosfisch.youtube.playlist;
 
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.IAccountService;
@@ -24,8 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PlaylistService implements IPlaylistService {
-	private static final Logger logger            = LoggerFactory.getLogger(PlaylistService.class);
+public abstract class YouTubePlaylistService implements IPlaylistService {
+	private static final Logger logger = LoggerFactory.getLogger(YouTubePlaylistService.class);
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
@@ -34,7 +35,7 @@ public abstract class PlaylistService implements IPlaylistService {
 	private final IAccountService    accountService;
 	private final GoogleAuthProvider googleAuthProvider;
 
-	public PlaylistService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
+	public YouTubePlaylistService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
 		this.accountService = accountService;
 		this.googleAuthProvider = googleAuthProvider;
 	}
@@ -89,16 +90,22 @@ public abstract class PlaylistService implements IPlaylistService {
 	public void synchronizePlaylists(final List<AccountModel> accounts) throws IOException {
 		logger.info("Synchronizing playlists.");
 		for (final AccountModel account : accounts) {
-			final PlaylistListResponse response = googleAuthProvider.getYouTubeService(account)
+			final YouTube.Playlists.List playlistsRequest = googleAuthProvider.getYouTubeService(account)
 					.playlists()
 					.list("id,snippet,contentDetails")
 					.setMaxResults(MAX_PLAYLISTS)
-					.setMine(true)
-					.execute();
+					.setMine(true);
+
+			String nextPageToken = "";
+			final List<PlaylistModel> playlists = new ArrayList<>((int) MAX_PLAYLISTS);
+			do {
+				playlistsRequest.setPageToken(nextPageToken);
+				final PlaylistListResponse response = playlistsRequest.execute();
+				playlists.addAll(parsePlaylistListResponse(account, response));
+				nextPageToken = response.getNextPageToken();
+			} while (null != nextPageToken);
 
 			logger.debug("Playlist synchronize okay.");
-
-			final List<PlaylistModel> playlists = parsePlaylistListResponse(account, response);
 			final List<PlaylistModel> accountPlaylists = account.getPlaylists();
 			accountPlaylists.removeAll(playlists);
 			for (final PlaylistModel playlist : accountPlaylists) {
@@ -124,6 +131,12 @@ public abstract class PlaylistService implements IPlaylistService {
 		return list;
 	}
 
+	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
+		setPlaylistModelInfos(account, entry, playlist);
+		update(playlist);
+		return playlist;
+	}
+
 	PlaylistModel _createNewPlaylist(final AccountModel account, final Playlist entry) {
 		final PlaylistModel playlist = new PlaylistModel();
 		playlist.setYoutubeId(entry.getId());
@@ -142,11 +155,5 @@ public abstract class PlaylistService implements IPlaylistService {
 				.getHigh()
 				.getUrl();
 		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
-	}
-
-	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
-		setPlaylistModelInfos(account, entry, playlist);
-		update(playlist);
-		return playlist;
 	}
 }

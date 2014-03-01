@@ -17,7 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 import java.io.Serializable;
 
 public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
-	private final SimpleIntegerProperty id        = new SimpleIntegerProperty();
 	private final SimpleIntegerProperty youtubeId = new SimpleIntegerProperty();
 	private final SimpleStringProperty  name      = new SimpleStringProperty();
 
@@ -25,9 +24,6 @@ public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
 		return name;
 	}
 
-	public SimpleIntegerProperty idProperty() {
-		return id;
-	}
 
 	@Override
 	public int hashCode() {
@@ -70,12 +66,11 @@ public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
 
 	@Override
 	public CategoryDTO toDTO() {
-		return new CategoryDTO(getId(), getName(), getYoutubeId());
+		return new CategoryDTO(getName(), getYoutubeId());
 	}
 
 	@Override
 	public void fromDTO(final CategoryDTO o) {
-		setId(o.getId());
 		setName(o.getName());
 		setYoutubeId(o.getYoutubeId());
 	}
@@ -88,28 +83,14 @@ public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
 		this.youtubeId.set(youtubeId);
 	}
 
-	public int getId() {
-		return id.get();
-	}
-
-	public void setId(final int id) {
-		this.id.set(id);
-	}
-
 	static final class CategoryDTO implements Serializable {
-		private static final long serialVersionUID = 1524311178112810768L;
-		private final int    id;
+		private static final long serialVersionUID = 8676626334279071412L;
 		private final String name;
 		private final int    youtubeId;
 
-		private CategoryDTO(final int id, final String name, final int youtubeId) {
-			this.id = id;
+		private CategoryDTO(final String name, final int youtubeId) {
 			this.name = name;
 			this.youtubeId = youtubeId;
-		}
-
-		public int getId() {
-			return id;
 		}
 
 		public String getName() {

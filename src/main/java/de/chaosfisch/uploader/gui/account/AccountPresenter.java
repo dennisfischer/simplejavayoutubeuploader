@@ -35,8 +35,9 @@ public class AccountPresenter {
 	@Inject
 	protected Provider<EntryView> entryViewProvider;
 
-	protected SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-	protected HashMap<AccountModel, EntryView> accountPanels                  = new HashMap<>(5);
+	protected final SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(FXCollections
+																													   .observableArrayList());
+	protected final HashMap<AccountModel, EntryView> accountPanels                  = new HashMap<>(5);
 
 	@FXML
 	public void initialize() {

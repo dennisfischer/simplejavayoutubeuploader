@@ -14,6 +14,11 @@ import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.googleapis.media.MediaHttpUploader;
+import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
+import com.google.api.client.http.InputStreamContent;
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
@@ -22,6 +27,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.youtube.GDataConfig;
+import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.auth.GoogleAuthProvider;
 import de.chaosfisch.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
@@ -188,9 +194,63 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private String fetchUploadUrl(final Upload upload) throws MetaBadRequestException, UnirestException, IOException {
+	private String fetchUploadUrl(final Upload upload) {
 		// Upload atomData and fetch uploadUrl
 		final Video video = metadataService.buildVideoEntry(upload);
+
+
+		try {
+			final InputStreamContent mediaContent = new InputStreamContent("video/*", new BufferedInputStream(new FileInputStream(upload.getFile())));
+			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount()).videos()
+					.insert("snippet,status", video, mediaContent);
+
+			final MediaHttpUploader uploader = videoInsert.getMediaHttpUploader();
+			uploader.setDirectUploadEnabled(false);
+
+			final MediaHttpUploaderProgressListener progressListener = uploader1 -> {
+				switch (uploader.getUploadState()) {
+					case INITIATION_STARTED:
+						System.out.println("Initiation Started");
+						break;
+					case INITIATION_COMPLETE:
+						System.out.println("Initiation Completed");
+						break;
+					case MEDIA_IN_PROGRESS:
+						System.out.println("Upload in progress");
+						System.out.println("Upload percentage: " + uploader.getProgress());
+						break;
+					case MEDIA_COMPLETE:
+						System.out.println("Upload Completed!");
+						break;
+					case NOT_STARTED:
+						System.out.println("Upload Not Started!");
+						break;
+				}
+			};
+			uploader.setProgressListener(progressListener);
+
+			// Call the API and upload the video.
+			final Video returnedVideo = videoInsert.execute();
+
+			// Print data about the newly inserted video from the API response.
+			System.out.println("\n================== Returned Video ==================\n");
+			System.out.println("  - Id: " + returnedVideo.getId());
+			System.out.println("  - Title: " + returnedVideo.getSnippet().getTitle());
+			System.out.println("  - Tags: " + returnedVideo.getSnippet().getTags());
+			System.out.println("  - Privacy Status: " + returnedVideo.getStatus().getPrivacyStatus());
+			System.out.println("  - Video Count: " + returnedVideo.getStatistics().getViewCount());
+
+		} catch (GoogleJsonResponseException e) {
+			System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : "
+									   + e.getDetails().getMessage());
+			e.printStackTrace();
+		} catch (final IOException e) {
+			System.err.println("IOException: " + e.getMessage());
+			e.printStackTrace();
+		} catch (final Throwable t) {
+			System.err.println("Throwable: " + t.getMessage());
+			t.printStackTrace();
+		}
 		return "";//TODO fix fetchUploadUrl;
 	}
 

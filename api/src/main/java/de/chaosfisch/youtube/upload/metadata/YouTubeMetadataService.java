@@ -57,7 +57,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		snippet.setTitle(upload.getMetadataTitle());
 		snippet.setDescription(upload.getMetadataDescription());
 		snippet.setTags(TagParser.parse(upload.getMetadataKeywords()));
-		snippet.setCategoryId("1");
+		snippet.setCategoryId(upload.getCategoryId());
 
 		final VideoStatus status = new VideoStatus();
 		status.setEmbeddable(upload.isPermissionsEmbed());
@@ -73,7 +73,7 @@ public class YouTubeMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void updateMetaData(final Video video, final String videoId, final AccountModel account) throws MetaBadRequestException, MetaIOException {
+	public void updateMetaData(final Video video, final String videoId, final AccountModel account) {
 		//TODO FIX updateMetaData
 	}
 

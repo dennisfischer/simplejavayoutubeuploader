@@ -100,19 +100,11 @@ public class Metadata {
 		this.license = license;
 	}
 
-	public String getCategoryTerm() {
-		return "autos";
-	}
-
-	public String getCategoryLabel() {
-		return "autos";
-	}
-
-	public String getCategoryScheme() {
-		return "autos";
-	}
-
 	public String getLicenseIdentifier() {
 		return license.getIdentifier();
+	}
+
+	public String getCategoryId() {
+		return String.valueOf(category.getYoutubeId());
 	}
 }

@@ -13,8 +13,6 @@ package de.chaosfisch.youtube.processors;
 import de.chaosfisch.youtube.upload.Upload;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.youtube.upload.metadata.MetaBadRequestException;
-import de.chaosfisch.youtube.upload.metadata.MetaIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +29,9 @@ class MetadataUpdatePostProcessor implements UploadPostProcessor {
 
 	@Override
 	public Upload process(final Upload upload) {
-
-		try {
-			metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getVideoid(), upload.getAccount());
-		} catch (final MetaBadRequestException e) {
-			LOGGER.error("Metdata invalid", e);
-		} catch (final MetaIOException e) {
-			LOGGER.error("Metadata IOException", e);
-		}
-
+		LOGGER.info("Updating metadata of {}.", upload.getVideoid());
+		metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getVideoid(), upload.getAccount());
+		LOGGER.info("Metadata of upload {} updated!", upload.getVideoid());
 		return upload;
 	}
 }
