@@ -30,7 +30,7 @@ class MetadataUpdatePostProcessor implements UploadPostProcessor {
 	@Override
 	public Upload process(final Upload upload) {
 		LOGGER.info("Updating metadata of {}.", upload.getVideoid());
-		metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getVideoid(), upload.getAccount());
+		metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getAccount());
 		LOGGER.info("Metadata of upload {} updated!", upload.getVideoid());
 		return upload;
 	}

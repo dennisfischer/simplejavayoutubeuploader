@@ -240,7 +240,7 @@ public class UploadJob implements Callable<Upload> {
 			System.out.println("  - Privacy Status: " + returnedVideo.getStatus().getPrivacyStatus());
 			System.out.println("  - Video Count: " + returnedVideo.getStatistics().getViewCount());
 
-		} catch (GoogleJsonResponseException e) {
+		} catch (final GoogleJsonResponseException e) {
 			System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : "
 									   + e.getDetails().getMessage());
 			e.printStackTrace();

@@ -10,6 +10,7 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
@@ -19,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.PersistentCookieStore;
 import de.chaosfisch.youtube.upload.Upload;
@@ -32,6 +34,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -66,6 +69,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		status.setPrivacyStatus(upload.getPermissionsVisibilityIdentifier());
 
 		final Video videoEntry = new Video();
+		videoEntry.setId(upload.getId());
 		videoEntry.setSnippet(snippet);
 		videoEntry.setStatus(status);
 
@@ -73,8 +77,13 @@ public class YouTubeMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void updateMetaData(final Video video, final String videoId, final AccountModel account) {
-		//TODO FIX updateMetaData
+	public void updateMetaData(final Video video, final AccountModel account) {
+		final YouTube youTube = YouTubeFactory.getYouTube(account);
+		try {
+			youTube.videos().update("snippet,status", video).execute();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
