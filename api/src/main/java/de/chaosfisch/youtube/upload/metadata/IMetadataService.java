@@ -11,7 +11,6 @@
 package de.chaosfisch.youtube.upload.metadata;
 
 import com.google.api.services.youtube.model.Video;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.upload.Upload;
 
@@ -22,5 +21,5 @@ public interface IMetadataService {
 
 	void updateMetaData(Video video, AccountModel account);
 
-	void activateBrowserfeatures(Upload upload) throws UnirestException;
+	void activateBrowserfeatures(Upload upload);
 }

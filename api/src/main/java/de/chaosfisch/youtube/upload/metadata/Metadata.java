@@ -22,10 +22,6 @@ public class Metadata {
 	private String description;
 	private String keywords;
 
-	private Metadata(final String title, final CategoryModel category, final String description, final String keywords) {
-		this(title, category, description, keywords, License.YOUTUBE);
-	}
-
 	public Metadata(final String title, final CategoryModel category, final String description, final String keywords, final License license) {
 		setTitle(title);
 		setCategory(category);

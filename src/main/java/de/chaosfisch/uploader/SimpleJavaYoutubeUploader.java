@@ -10,7 +10,6 @@
 
 package de.chaosfisch.uploader;
 
-import com.mashape.unirest.http.Unirest;
 import de.chaosfisch.uploader.gui.GUI;
 import de.chaosfisch.util.Directories;
 import javafx.application.Application;
@@ -35,12 +34,6 @@ public final class SimpleJavaYoutubeUploader {
 		logVMInfo();
 		updateLauncher();
 		Application.launch(GUI.class, args);
-		try {
-			Unirest.shutdown();
-		} catch (final IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
 	}
 
 	private static void updateLauncher() {

@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class TagParser {
-	public static final  char TAG_DELIMITER       = ',';
+	private static final char TAG_DELIMITER = ',';
 	private static final int  MAX_TAG_LENGTH      = 30;
 	private static final int  MIN_TAG_LEGNTH      = 2;
 	private static final int  MAX_TAG_BODY_LENGTH = 500;

@@ -22,7 +22,7 @@ public class UploadCellFactory implements Callback<ListView<UploadModel>, ListCe
 	public ListCell<UploadModel> call(final ListView<UploadModel> uploadListView) {
 		return new ListCell<UploadModel>() {
 
-			protected UploadEntryView entry;
+			UploadEntryView entry;
 
 			@Override
 			protected void updateItem(final UploadModel upload, final boolean empty) {

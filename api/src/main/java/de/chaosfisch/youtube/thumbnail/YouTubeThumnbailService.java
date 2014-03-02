@@ -14,13 +14,16 @@ import com.google.api.client.http.InputStreamContent;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 
 public class YouTubeThumnbailService implements IThumbnailService {
 
 	@Override
-	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws FileNotFoundException, ThumbnailIOException {
+	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws ThumbnailIOException {
 		try (final BufferedInputStream is = new BufferedInputStream(new FileInputStream(thumbnail))) {
 			YouTubeFactory.getYouTube(accountModel)
 					.thumbnails()

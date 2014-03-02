@@ -11,7 +11,6 @@
 package de.chaosfisch.youtube.upload;
 
 import com.google.common.collect.Maps;
-import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.RateLimiter;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -44,8 +43,7 @@ public class Uploader {
 	private       ScheduledFuture<?>    task;
 
 	@Inject
-	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory, final Configuration configuration) {
-		final EventBus eventBus1 = eventBus;
+	public Uploader(final IUploadJobFactory uploadJobFactory, final Configuration configuration) {
 		this.uploadJobFactory = uploadJobFactory;
 		this.configuration = configuration;
 	}

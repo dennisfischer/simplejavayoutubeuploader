@@ -10,7 +10,6 @@
 
 
 
-
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
@@ -62,7 +61,7 @@ jar {
 
 task javaFXPackager(type: Exec) {
 	commandLine = [
-			'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
+			'C:/Program Files/Java/jdk1.8.0/bin/javafxpackager.exe',
 			'-createjar',
 			'-srcdir',
 			sourceSets.main.output.classesDir,

@@ -146,13 +146,13 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private void uploadChunks() throws IOException, UploadResponseException, UploadFinishedException {
+	private void uploadChunks() throws IOException {
 		while (!Thread.currentThread().isInterrupted() && totalBytesUploaded != fileSize) {
 			uploadChunk();
 		}
 	}
 
-	private void uploadChunk() throws IOException, UploadResponseException, UploadFinishedException {
+	private void uploadChunk() throws IOException {
 
 		// Log operation
 		LOGGER.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);

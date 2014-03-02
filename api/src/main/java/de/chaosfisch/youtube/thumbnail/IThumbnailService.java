@@ -13,7 +13,6 @@ package de.chaosfisch.youtube.thumbnail;
 import de.chaosfisch.youtube.account.AccountModel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 public interface IThumbnailService {
 	/**
@@ -23,5 +22,5 @@ public interface IThumbnailService {
 	 * @param videoid      the matching videoid
 	 * @param accountModel the matching videoid
 	 */
-	void upload(File thumbnail, String videoid, AccountModel accountModel) throws FileNotFoundException, ThumbnailIOException;
+	void upload(File thumbnail, String videoid, AccountModel accountModel) throws ThumbnailIOException;
 }

@@ -16,20 +16,21 @@ import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.PersistentCookieStore;
 import de.chaosfisch.youtube.upload.Upload;
 import de.chaosfisch.youtube.upload.permissions.*;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -45,13 +47,13 @@ import java.util.regex.Pattern;
 
 public class YouTubeMetadataService implements IMetadataService {
 
-	private static final int    DEFAULT_CONNECTION_TIMEOUT = 600000;
-	private static final int    DEFAULT_SOCKET_TIMEOUT     = 600000;
-	private static final Logger LOGGER                     = LoggerFactory.getLogger(YouTubeMetadataService.class);
-	private static final String VIDEO_EDIT_URL             = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
-	private static final int    MONETIZE_PARAMS_SIZE       = 20;
-	private static final char   MODIFIED_SEPERATOR         = ',';
-	private static final int    METADATA_PARAMS_SIZE       = 40;
+	private static final Logger            LOGGER               = LoggerFactory.getLogger(YouTubeMetadataService.class);
+	private static final String            VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
+	private static final int               MONETIZE_PARAMS_SIZE = 20;
+	private static final char              MODIFIED_SEPERATOR   = ',';
+	private static final int               METADATA_PARAMS_SIZE = 40;
+	private final        DefaultHttpClient client               = new DefaultHttpClient();
+
 
 	@Override
 	public Video buildVideoEntry(final Upload upload) {
@@ -88,7 +90,7 @@ public class YouTubeMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) throws UnirestException {
+	public void activateBrowserfeatures(final Upload upload) {
 
 		// Create a local instance of cookie store
 		// Populate cookies if needed
@@ -101,50 +103,49 @@ public class YouTubeMetadataService implements IMetadataService {
 			cookieStore.addCookie(cookie);
 		}
 
-		final HttpClient client = HttpClientBuilder.create()
-				.useSystemProperties()
-				.setDefaultCookieStore(cookieStore)
-				.build();
-		Unirest.setHttpClient(client);
-
-		final HttpResponse<String> response = Unirest.get(String.format(VIDEO_EDIT_URL, upload.getVideoid()))
-				.asString();
-
-		changeMetadata(response.getBody(), upload);
-
-		final RequestConfig clientConfig = RequestConfig.custom()
-				.setConnectTimeout(DEFAULT_CONNECTION_TIMEOUT)
-				.setSocketTimeout(DEFAULT_SOCKET_TIMEOUT)
-				.build();
-		Unirest.setHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
+		client.setCookieStore(cookieStore);
+		final HttpGet httpGet = new HttpGet(String.format(VIDEO_EDIT_URL, upload.getVideoid()));
+		try {
+			final String body = EntityUtils.toString(client.execute(httpGet).getEntity());
+			changeMetadata(body, upload);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void changeMetadata(final String content, final Upload upload) {
 
-		final Map<String, Object> params = new HashMap<>(METADATA_PARAMS_SIZE);
+		final HashMap<String, String> params = new HashMap<>(METADATA_PARAMS_SIZE);
 
 		params.putAll(getMetadataDateOfRelease(upload));
 		params.putAll(getMetadataSocial(upload));
 		params.putAll(getMetadataMonetization(content, upload));
 		params.putAll(getMetadataPermissions(upload));
-
 		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
 
-		try {
-			final HttpResponse<String> response = Unirest.post(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
-					.getVideoid())).fields(params).asString();
+		final ArrayList<NameValuePair> nameValuePairs = new ArrayList<>(params.size());
+		params.forEach((key, value) -> {
+			nameValuePairs.add(new BasicNameValuePair(key, value));
+		});
 
-			LOGGER.info(response.getBody());
+		try {
+			final HttpPost httpPost = new HttpPost(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
+					.getVideoid()));
+			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			final String body = EntityUtils.toString(client.execute(httpPost).getEntity());
+
+			LOGGER.info(body);
 		} catch (final Exception e) {
 			LOGGER.warn("Metadata not set", e);
 		}
 	}
 
-	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(4);
+	private Map<String, String> getMetadataDateOfRelease(final Upload upload) {
+		final Map<String, String> params = new HashMap<>(4);
 
 		if (null != upload.getDateTimeOfRelease()) {
 			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
@@ -160,8 +161,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, Object> getMetadataSocial(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(3);
+	private Map<String, String> getMetadataSocial(final Upload upload) {
+		final Map<String, String> params = new HashMap<>(3);
 		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
 			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
 				params.put("creator_share_custom_message", upload.getSocialMessage());
@@ -177,8 +178,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		return flag ? "yes" : "no";
 	}
 
-	private Map<String, Object> getMetadataMonetization(final String content, final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
+	private Map<String, String> getMetadataMonetization(final String content, final Upload upload) {
+		final Map<String, String> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
 		if (upload.isMonetizationClaim() && License.YOUTUBE == upload.getMetadataLicense()) {
 			params.put("video_monetization_style", "ads");
 			if (!upload.isMonetizationPartner() || ClaimOption.MONETIZE == upload.getMonetizationClaimoption()) {
@@ -244,8 +245,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(6);
+	private Map<String, String> getMetadataPermissions(final Upload upload) {
+		final Map<String, String> params = Maps.newHashMapWithExpectedSize(6);
 
 		params.put("allow_comments", boolConverter(Comment.DENIED != upload.getPermissionsComment()));
 		params.put("allow_comments_detail", Comment.ALLOWED == upload.getPermissionsComment() ? "all" : "approval");
