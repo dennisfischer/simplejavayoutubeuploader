@@ -14,6 +14,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.CredentialRefreshListener;
 import com.google.api.client.auth.oauth2.TokenErrorResponse;
 import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpTransport;
@@ -27,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 
 public final class YouTubeFactory {
@@ -87,5 +89,10 @@ public final class YouTubeFactory {
 			}).setApplicationName("simple-java-youtube-uploader").build();
 		}
 		return youTubeDefault;
+	}
+
+	public static String getRefreshToken(final String code) throws IOException {
+		return new GoogleAuthorizationCodeFlow(httpTransport, jsonFactory, GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET, Collections
+				.emptyList()).newTokenRequest(code).execute().getRefreshToken();
 	}
 }

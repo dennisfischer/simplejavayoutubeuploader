@@ -11,6 +11,7 @@
 package de.chaosfisch.youtube.playlist;
 
 import de.chaosfisch.youtube.account.AccountModel;
+import javafx.beans.property.SimpleListProperty;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,4 +57,6 @@ public interface IPlaylistService {
 	 * @param accounts to be synced
 	 */
 	void synchronizePlaylists(List<AccountModel> accounts) throws IOException;
+
+	SimpleListProperty<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
 }

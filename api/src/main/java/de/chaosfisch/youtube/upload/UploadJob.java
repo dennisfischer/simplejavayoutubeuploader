@@ -13,25 +13,16 @@ package de.chaosfisch.youtube.upload;
 import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.function.RetryRunnable;
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
-import com.google.common.base.Charsets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.RateLimiter;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import de.chaosfisch.youtube.GDataConfig;
 import de.chaosfisch.youtube.YouTubeFactory;
-import de.chaosfisch.youtube.auth.GoogleAuthProvider;
-import de.chaosfisch.youtube.upload.events.UploadJobProgressEvent;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
-import de.chaosfisch.youtube.upload.metadata.MetaBadRequestException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,49 +36,33 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UploadJob implements Callable<Upload> {
 
-	private static final int     DEFAULT_TIME_LEFT              = 60;
-	private static final int     SC_OK                          = 200;
-	private static final int     SC_CREATED                     = 201;
-	private static final int     SC_MULTIPLE_CHOICES            = 300;
-	private static final int     SC_RESUME_INCOMPLETE           = 308;
-	private static final int     SC_BAD_REQUEST                 = 400;
-	private static final long    chunkSize                      = 10485760;
-	private static final int     DEFAULT_BUFFER_SIZE            = 65536;
-	private static final Logger  LOGGER                         = LoggerFactory.getLogger(UploadJob.class);
-	private static final String  METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
-	private static final Pattern RANGE_HEADER_PATTERN           = Pattern.compile("-");
-	private static final int     SC_500                         = 500;
+	private static final int    DEFAULT_BUFFER_SIZE = 65536;
+	private static final Logger LOGGER              = LoggerFactory.getLogger(UploadJob.class);
+	private static final int    SC_500              = 500;
 	private final Set<UploadPreProcessor>  uploadPreProcessors;
 	private final Set<UploadPostProcessor> uploadPostProcessors;
 	private final EventBus                 eventBus;
 	private final IUploadService           uploadService;
-	private final GoogleAuthProvider       googleAuthProvider;
 	private final IMetadataService         metadataService;
 	/**
 	 * File that is uploaded
 	 */
 	private       File                     fileToUpload;
-	private       long                     start;
-	private       long                     bytesToUpload;
 	private       long                     totalBytesUploaded;
 	private       long                     fileSize;
 	private       RateLimiter              rateLimiter;
 	private       UploadJobProgressEvent   uploadProgress;
 	private       Upload                   upload;
-	private       Credential               credential;
 
 	@Inject
-	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final GoogleAuthProvider googleAuthProvider, final IMetadataService metadataService) {
+	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IMetadataService metadataService) {
 		this.uploadPreProcessors = uploadPreProcessors;
 		this.uploadPostProcessors = uploadPostProcessors;
 		this.eventBus = eventBus;
 		this.uploadService = uploadService;
-		this.googleAuthProvider = googleAuthProvider;
 		this.metadataService = metadataService;
 		this.eventBus.register(this);
 	}
@@ -123,7 +98,6 @@ public class UploadJob implements Callable<Upload> {
 				.retryOn(UploadResponseException.class)
 				.abortIf(input -> input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input)
 						.getStatus())
-				.abortOn(MetaBadRequestException.class)
 				.abortOn(FileNotFoundException.class)
 				.abortOn(UploadFinishedException.class);
 
@@ -161,25 +135,48 @@ public class UploadJob implements Callable<Upload> {
 		return upload;
 	}
 
-	private void initialize() throws FileNotFoundException {
-		// Set the time uploaded started
-		upload.setDateTimeOfStart(LocalDateTime.now().minusSeconds(1));
-		uploadService.update(upload);
+	private RetryRunnable upload() {
+		return retryContext -> {
+			if (null != upload.getUploadurl() || null != retryContext.getLastThrowable()) {
+				if (0 < retryContext.getRetryCount()) {
+					LOGGER.info("############ RETRY " + retryContext.getRetryCount() + " ############");
+				}
+			}
+			uploadChunks();
+		};
+	}
 
-		// Get File and Check if existing
-		fileToUpload = upload.getFile();
-
-		if (!fileToUpload.exists()) {
-			throw new FileNotFoundException("Datei existiert nicht.");
+	private void uploadChunks() throws IOException, UploadResponseException, UploadFinishedException {
+		while (!Thread.currentThread().isInterrupted() && totalBytesUploaded != fileSize) {
+			uploadChunk();
 		}
+	}
+
+	private void uploadChunk() throws IOException, UploadResponseException, UploadFinishedException {
+
+		// Log operation
+		LOGGER.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
+
+		if (null == uploadProgress) {
+			uploadProgress = new UploadJobProgressEvent(upload, upload.getFile().length());
+			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
+		}
+
+		// Building PUT RequestImpl for chunk data
+		final URL url = URI.create(upload.getUploadurl()).toURL();
+		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		request.setRequestMethod("POST");
+		request.setDoOutput(true);
+		//Properties
+		request.setRequestProperty("Content-Type", "application/octet-stream");
+		request.connect();
+
 	}
 
 	private RetryRunnable metadata() {
 		return retryContext -> {
 			fileSize = fileToUpload.length();
 			totalBytesUploaded = 0;
-			start = 0;
-			bytesToUpload = fileSize;
 
 			if (null != upload.getUploadurl() && !upload.getUploadurl().isEmpty()) {
 				LOGGER.info("Uploadurl existing: {}", upload.getUploadurl());
@@ -200,7 +197,7 @@ public class UploadJob implements Callable<Upload> {
 
 
 		try {
-			final InputStreamContent mediaContent = new InputStreamContent("video/*", new BufferedInputStream(new FileInputStream(upload.getFile())));
+			final InputStreamContent mediaContent = new InputStreamContent("video/*", new TokenInputStream(new FileInputStream(upload.getFile())));
 			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount()).videos()
 					.insert("snippet,status", video, mediaContent);
 
@@ -231,211 +228,38 @@ public class UploadJob implements Callable<Upload> {
 
 			// Call the API and upload the video.
 			final Video returnedVideo = videoInsert.execute();
-
-			// Print data about the newly inserted video from the API response.
-			System.out.println("\n================== Returned Video ==================\n");
-			System.out.println("  - Id: " + returnedVideo.getId());
-			System.out.println("  - Title: " + returnedVideo.getSnippet().getTitle());
-			System.out.println("  - Tags: " + returnedVideo.getSnippet().getTags());
-			System.out.println("  - Privacy Status: " + returnedVideo.getStatus().getPrivacyStatus());
-			System.out.println("  - Video Count: " + returnedVideo.getStatistics().getViewCount());
-
+			metadataService.updateMetaData(metadataService.updateVideoEntry(returnedVideo, upload), upload.getAccount());
 		} catch (final GoogleJsonResponseException e) {
+			e.printStackTrace();
 			System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : "
 									   + e.getDetails().getMessage());
-			e.printStackTrace();
 		} catch (final IOException e) {
-			System.err.println("IOException: " + e.getMessage());
 			e.printStackTrace();
+			System.err.println("IOException: " + e.getMessage());
 		} catch (final Throwable t) {
-			System.err.println("Throwable: " + t.getMessage());
 			t.printStackTrace();
+			System.err.println("Throwable: " + t.getMessage());
 		}
 		return "";//TODO fix fetchUploadUrl;
 	}
 
-	private String getAuthHeader() throws IOException {
-		if (null == credential) {
-			credential = googleAuthProvider.getCredential(upload.getAccount());
-		}
+	private void initialize() throws FileNotFoundException {
+		// Set the time uploaded started
+		upload.setDateTimeOfStart(LocalDateTime.now().minusSeconds(1));
+		uploadService.update(upload);
 
-		if (null == credential.getAccessToken() || null != credential.getExpiresInSeconds() && DEFAULT_TIME_LEFT >= credential
-				.getExpiresInSeconds()) {
-			credential.refreshToken();
-		}
-		return String.format("Bearer %s", credential.getAccessToken());
-	}
+		// Get File and Check if existing
+		fileToUpload = upload.getFile();
 
-	private RetryRunnable upload() {
-		return retryContext -> {
-			if (null != upload.getUploadurl() || null != retryContext.getLastThrowable()) {
-				if (0 < retryContext.getRetryCount()) {
-					LOGGER.info("############ RETRY " + retryContext.getRetryCount() + " ############");
-				}
-				resumeinfo();
-			}
-			uploadChunks();
-		};
-	}
-
-	private void uploadChunks() throws IOException, UploadResponseException, UploadFinishedException {
-		while (!Thread.currentThread().isInterrupted() && totalBytesUploaded != fileSize) {
-			uploadChunk();
+		if (!fileToUpload.exists()) {
+			throw new FileNotFoundException("Datei existiert nicht.");
 		}
 	}
 
-	private void uploadChunk() throws IOException, UploadResponseException, UploadFinishedException {
-		// GET END SIZE
-		final long end = generateEndBytes(start, bytesToUpload);
-
-		// Log operation
-		LOGGER.debug("start={} end={} filesize={}", start, end, fileSize);
-
-		// Log operation
-		LOGGER.debug("Uploaded {} bytes so far, using PUT method.", totalBytesUploaded);
-
-		if (null == uploadProgress) {
-			uploadProgress = new UploadJobProgressEvent(upload, upload.getFile().length());
-			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
-		}
-
-		// Calculating the chunk size
-		final int chunk = (int) (end - start + 1);
-
-		// Building PUT RequestImpl for chunk data
-		final URL url = URI.create(upload.getUploadurl()).toURL();
-		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-		request.setRequestMethod("POST");
-		request.setDoOutput(true);
-		request.setFixedLengthStreamingMode(chunk);
-		//Properties
-		request.setRequestProperty("Content-Type", "application/octet-stream");
-		request.setRequestProperty("Content-Range", String.format("bytes %d-%d/%d", start, end, fileToUpload.length()));
-		request.setRequestProperty("Authorization", getAuthHeader());
-		request.setRequestProperty("GData-Version", GDataConfig.GDATA_V2);
-		request.setRequestProperty("X-GData-Key", String.format("key=%s", GDataConfig.DEVELOPER_KEY));
-		request.connect();
-
-		try (final TokenInputStream tokenInputStream = new TokenInputStream(new FileInputStream(upload.getFile()));
-			 final BufferedOutputStream throttledOutputStream = new BufferedOutputStream(request.getOutputStream())) {
-			tokenInputStream.skip(start);
-			flowChunk(tokenInputStream, throttledOutputStream, start, end);
-
-			switch (request.getResponseCode()) {
-				case SC_OK:
-				case SC_CREATED:
-					//FILE UPLOADED
-					final StringBuilder response = new StringBuilder(request.getContentLength());
-					try (final BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), Charsets.UTF_8))) {
-						String read;
-						while (null != (read = reader.readLine())) {
-							response.append(read);
-						}
-
-						handleSuccessfulUpload(response.toString());
-					}
-					break;
-				case SC_RESUME_INCOMPLETE:
-					// OK, the chunk completed succesfully
-					LOGGER.debug("responseMessage={}", request.getResponseMessage());
-					break;
-				default:
-					throw new UploadResponseException(request.getResponseCode());
-			}
-
-			bytesToUpload -= chunkSize;
-			start = end + 1;
-		}
-	}
-
-	private void resumeinfo() throws UploadFinishedException, UploadResponseException, UnirestException, IOException {
-		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
-				.header("GData-Version", GDataConfig.GDATA_V2)
-				.header("X-GData-Key", "key=" + GDataConfig.DEVELOPER_KEY)
-				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Authorization", getAuthHeader())
-				.header("Content-Range", "bytes */*")
-				.asString();
-
-		if (SC_OK <= response.getCode() && SC_MULTIPLE_CHOICES > response.getCode()) {
-			handleSuccessfulUpload(response.getBody());
-		} else if (SC_RESUME_INCOMPLETE != response.getCode()) {
-			throw new UploadResponseException(response.getCode());
-		}
-
-		if (!response.getHeaders().containsKey("range")) {
-			LOGGER.info("PUT to {} did not return Range-header.", upload.getUploadurl());
-			totalBytesUploaded = 0;
-		} else {
-			LOGGER.info("Range header is: {}", response.getHeaders().get("range"));
-
-			final String[] parts = RANGE_HEADER_PATTERN.split(response.getHeaders().get("range"));
-			if (1 < parts.length) {
-				totalBytesUploaded = Long.parseLong(parts[1]) + 1;
-			} else {
-				totalBytesUploaded = 0;
-			}
-
-			bytesToUpload = fileSize - totalBytesUploaded;
-			start = totalBytesUploaded;
-			LOGGER.info("Next byte to upload is {}.", start);
-		}
-		if (response.getHeaders().containsKey("location")) {
-			upload.setUploadurl(response.getHeaders().get("location"));
-			uploadService.update(upload);
-		}
-	}
-
-	private void handleSuccessfulUpload(final String body) throws UploadFinishedException {
-		upload.setVideoid(parseVideoId(body));
+	private void handleSuccessfulUpload() throws UploadFinishedException {
 		upload.setStatus(Status.FINISHED);
 		uploadService.update(upload);
 		throw new UploadFinishedException();
-	}
-
-	String parseVideoId(final String atomData) {
-		LOGGER.info(atomData);
-		final Pattern pattern = Pattern.compile("<yt:videoid>(.*)</yt:videoid>");
-		final Matcher matcher = pattern.matcher(atomData);
-
-		if (matcher.find()) {
-			return matcher.group(1);
-		} else {
-			return "missed";
-		}
-	}
-
-	private long generateEndBytes(final long start, final double bytesToUpload) {
-		final long end;
-		if (0 < bytesToUpload - chunkSize) {
-			end = start + chunkSize - 1;
-		} else {
-			end = start + (int) bytesToUpload - 1;
-		}
-		return end;
-	}
-
-	private void flowChunk(final InputStream inputStream, final OutputStream outputStream, final long startByte, final long endByte) throws IOException {
-
-		// Write Chunk
-		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-		long totalRead = 0;
-
-		while (!Thread.currentThread().isInterrupted() && totalRead != endByte - startByte + 1) {
-			// Upload bytes in buffer
-			final int bytesRead = flowChunk(inputStream, outputStream, buffer, 0, DEFAULT_BUFFER_SIZE);
-			// Calculate all uploadinformation
-			totalRead += bytesRead;
-		}
-	}
-
-	int flowChunk(final InputStream is, final OutputStream os, final byte[] buf, final int off, final int len) throws IOException {
-		final int numRead;
-		if (0 <= (numRead = is.read(buf, off, len))) {
-			os.write(buf, 0, numRead);
-		}
-		os.flush();
-		return numRead;
 	}
 
 	public void setRateLimiter(final RateLimiter rateLimiter) {

@@ -12,12 +12,13 @@ package de.chaosfisch.youtube.playlist;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
+import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.IAccountService;
-import de.chaosfisch.youtube.auth.GoogleAuthProvider;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,20 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class YouTubePlaylistService implements IPlaylistService {
-	private static final Logger logger = LoggerFactory.getLogger(YouTubePlaylistService.class);
+	private static final Logger logger            = LoggerFactory.getLogger(YouTubePlaylistService.class);
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
-	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModels = new SimpleMapProperty<>(FXCollections
-																																	  .observableHashMap());
-	private final IAccountService    accountService;
-	private final GoogleAuthProvider googleAuthProvider;
+	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModelsProperty = new SimpleMapProperty<>(FXCollections
+																																			  .observableHashMap());
+	private final IAccountService accountService;
 
-	public YouTubePlaylistService(final IAccountService accountService, final GoogleAuthProvider googleAuthProvider) {
+	public YouTubePlaylistService(final IAccountService accountService) {
 		this.accountService = accountService;
-		this.googleAuthProvider = googleAuthProvider;
 	}
-
 
 	@Override
 	public void addVideoToPlaylist(final PlaylistModel playlist, final String videoId) throws IOException {
@@ -55,13 +53,12 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-		googleAuthProvider.getYouTubeService(playlist.getAccount())
+		YouTubeFactory.getYouTube(playlist.getAccount())
 				.playlistItems()
 				.insert("snippet,status", playlistItem)
 				.execute();
 
 		logger.debug("Video added to playlist!");
-
 	}
 
 	@Override
@@ -78,7 +75,7 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-		googleAuthProvider.getYouTubeService(playlist.getAccount())
+		YouTubeFactory.getYouTube(playlist.getAccount())
 				.playlists()
 				.insert("snippet,status", youTubePlaylist)
 				.execute();
@@ -90,7 +87,7 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 	public void synchronizePlaylists(final List<AccountModel> accounts) throws IOException {
 		logger.info("Synchronizing playlists.");
 		for (final AccountModel account : accounts) {
-			final YouTube.Playlists.List playlistsRequest = googleAuthProvider.getYouTubeService(account)
+			final YouTube.Playlists.List playlistsRequest = YouTubeFactory.getYouTube(account)
 					.playlists()
 					.list("id,snippet,contentDetails")
 					.setMaxResults(MAX_PLAYLISTS)
@@ -115,6 +112,12 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 			accountService.update(account);
 		}
 		logger.info("Playlists synchronized");
+	}
+
+	@Override
+	public SimpleListProperty<PlaylistModel> playlistModelsProperty(final AccountModel accountModel) {
+		return playlistModelsProperty.getOrDefault(accountModel, playlistModelsProperty.put(accountModel, new SimpleListProperty<>(FXCollections
+																																		   .observableArrayList())));
 	}
 
 	List<PlaylistModel> parsePlaylistListResponse(final AccountModel account, final PlaylistListResponse response) {
@@ -155,5 +158,13 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 				.getHigh()
 				.getUrl();
 		playlist.setThumbnail(thumbnailUrl.equals(DEFAULT_THUMBNAIL) ? null : thumbnailUrl);
+	}
+
+	public ObservableMap<AccountModel, SimpleListProperty<PlaylistModel>> getPlaylistModelsProperty() {
+		return playlistModelsProperty.get();
+	}
+
+	public void setPlaylistModelsProperty(final ObservableMap<AccountModel, SimpleListProperty<PlaylistModel>> playlistModelsProperty) {
+		this.playlistModelsProperty.set(playlistModelsProperty);
 	}
 }

@@ -85,20 +85,6 @@ public class PersistentCookieStore implements CookieStore {
 		private final boolean secure;
 		private final int     version;
 
-		private SerializableCookie() {
-			name = null;
-			value = null;
-			comment = null;
-			commentUrl = null;
-			domain = null;
-			discard = false;
-			path = null;
-			portList = null;
-			maxAge = 0;
-			secure = false;
-			version = 0;
-		}
-
 		public SerializableCookie(final HttpCookie cookie) {
 			name = cookie.getName();
 			value = cookie.getValue();

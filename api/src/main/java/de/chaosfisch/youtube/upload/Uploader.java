@@ -36,7 +36,6 @@ public class Uploader {
 	private final        ScheduledExecutorService        timer                = Executors.newSingleThreadScheduledExecutor();
 	private final        RateLimiter                     rateLimitter         = RateLimiter.create(Double.MAX_VALUE);
 	private final        HashMap<Upload, Future<Upload>> futures              = Maps.newHashMapWithExpectedSize(10);
-	private final EventBus              eventBus;
 	private final IUploadJobFactory     uploadJobFactory;
 	private final Configuration         configuration;
 	private       int                   runningUploads;
@@ -46,7 +45,7 @@ public class Uploader {
 
 	@Inject
 	public Uploader(final EventBus eventBus, final IUploadJobFactory uploadJobFactory, final Configuration configuration) {
-		this.eventBus = eventBus;
+		final EventBus eventBus1 = eventBus;
 		this.uploadJobFactory = uploadJobFactory;
 		this.configuration = configuration;
 	}
@@ -190,7 +189,6 @@ public class Uploader {
 				if ((!uploadService.getRunning() || 0 == leftUploads) && 0 == runningUploads) {
 					uploadService.setRunning(false);
 					logger.info("All uploads finished");
-					//eventBus.post(new UploadFinishedEvent());
 				}
 			}
 		}

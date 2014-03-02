@@ -18,6 +18,8 @@ import de.chaosfisch.youtube.upload.Upload;
 public interface IMetadataService {
 	Video buildVideoEntry(Upload upload);
 
+	Video updateVideoEntry(Video video, Upload upload);
+
 	void updateMetaData(Video video, AccountModel account);
 
 	void activateBrowserfeatures(Upload upload) throws UnirestException;

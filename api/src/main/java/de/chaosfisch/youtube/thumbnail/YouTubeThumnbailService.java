@@ -11,33 +11,18 @@
 package de.chaosfisch.youtube.thumbnail;
 
 import com.google.api.client.http.InputStreamContent;
+import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.auth.GoogleAuthProvider;
 
-import javax.inject.Inject;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
 
 
 public class YouTubeThumnbailService implements IThumbnailService {
-	private final GoogleAuthProvider googleAuthProvider;
-
-	@Inject
-	public YouTubeThumnbailService(final GoogleAuthProvider googleAuthProvider) {
-		this.googleAuthProvider = googleAuthProvider;
-	}
 
 	@Override
 	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws FileNotFoundException, ThumbnailIOException {
-		if (!thumbnail.exists()) {
-			throw new FileNotFoundException(thumbnail.getName());
-		}
-
-		try (final BufferedInputStream is = new BufferedInputStream(Files.newInputStream(thumbnail.toPath()))) {
-			googleAuthProvider.getYouTubeService(accountModel)
+		try (final BufferedInputStream is = new BufferedInputStream(new FileInputStream(thumbnail))) {
+			YouTubeFactory.getYouTube(accountModel)
 					.thumbnails()
 					.set(videoid, new InputStreamContent("application/octet-stream", is));
 		} catch (final IOException e) {

@@ -15,7 +15,6 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -56,24 +55,26 @@ public class YouTubeMetadataService implements IMetadataService {
 
 	@Override
 	public Video buildVideoEntry(final Upload upload) {
-		final VideoSnippet snippet = new VideoSnippet();
+		return updateVideoEntry(new Video(), upload);
+	}
+
+	@Override
+	public Video updateVideoEntry(final Video video, final Upload upload) {
+		final VideoSnippet snippet = null != video.getSnippet() ? video.getSnippet() : new VideoSnippet();
 		snippet.setTitle(upload.getMetadataTitle());
 		snippet.setDescription(upload.getMetadataDescription());
 		snippet.setTags(TagParser.parse(upload.getMetadataKeywords()));
 		snippet.setCategoryId(upload.getCategoryId());
 
-		final VideoStatus status = new VideoStatus();
+		final VideoStatus status = null != video.getStatus() ? video.getStatus() : new VideoStatus();
 		status.setEmbeddable(upload.isPermissionsEmbed());
 		status.setLicense(upload.getMetadataLicenseIdentifier());
 		status.setPublicStatsViewable(upload.isPermissionsPublicStatsViewable());
 		status.setPrivacyStatus(upload.getPermissionsVisibilityIdentifier());
 
-		final Video videoEntry = new Video();
-		videoEntry.setId(upload.getId());
-		videoEntry.setSnippet(snippet);
-		videoEntry.setStatus(status);
-
-		return videoEntry;
+		video.setSnippet(snippet);
+		video.setStatus(status);
+		return video;
 	}
 
 	@Override
@@ -125,10 +126,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		params.putAll(getMetadataDateOfRelease(upload));
 		params.putAll(getMetadataSocial(upload));
 		params.putAll(getMetadataMonetization(content, upload));
-		params.putAll(getMetadataMetadata(upload));
 		params.putAll(getMetadataPermissions(upload));
 
-		System.out.println(Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
@@ -245,33 +244,20 @@ public class YouTubeMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, Object> getMetadataMetadata(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(4);
-		params.put("title", upload.getMetadataTitle());
-		params.put("description", Strings.nullToEmpty(upload.getMetadataDescription()));
-		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
-				.skipNulls()
-				.join(TagParser.parse(upload.getMetadataKeywords(), true)));
-		params.put("reuse", License.YOUTUBE == upload.getMetadataLicense() ? "all_rights_reserved" : "creative_commons");
-		return params;
-	}
-
 	private Map<String, Object> getMetadataPermissions(final Upload upload) {
-		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(7);
+		final Map<String, Object> params = Maps.newHashMapWithExpectedSize(6);
 
-		params.put("allow_comments", boolConverter(!(Comment.DENIED == upload.getPermissionsComment())));
+		params.put("allow_comments", boolConverter(Comment.DENIED != upload.getPermissionsComment()));
 		params.put("allow_comments_detail", Comment.ALLOWED == upload.getPermissionsComment() ? "all" : "approval");
 		params.put("allow_comment_ratings", boolConverter(upload.isPermissionsCommentvote()));
 		params.put("allow_ratings", boolConverter(upload.isPermissionsRate()));
-		params.put("allow_embedding", boolConverter(upload.isPermissionsEmbed()));
 		params.put("self_racy", boolConverter(upload.isPermissionsAgeRestricted()));
-		params.put("allow_public_stats", boolConverter(upload.isPermissionsPublicStatsViewable()));
 		params.put("threed_type", upload.getPermissionsThreedD().name().toLowerCase());
 		return params;
 	}
 
 	private String extractor(final String input, final String search, final String end) {
-		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
-				.length())));
+		final int beginIndex = input.indexOf(search) + search.length();
+		return String.format("%s", input.substring(beginIndex, input.indexOf(end, beginIndex)));
 	}
 }
