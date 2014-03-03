@@ -37,7 +37,7 @@ import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.*;
 
-public class UploadJob implements Callable<Upload> {
+public class UploadJob implements Callable<UploadModel> {
 
 	private static final int    DEFAULT_BUFFER_SIZE = 65536;
 	private static final Logger LOGGER              = LoggerFactory.getLogger(UploadJob.class);
@@ -55,7 +55,7 @@ public class UploadJob implements Callable<Upload> {
 	private       long                     fileSize;
 	private       RateLimiter              rateLimiter;
 	private       UploadJobProgressEvent   uploadProgress;
-	private       Upload                   upload;
+	private       UploadModel              upload;
 
 	@Inject
 	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IMetadataService metadataService) {
@@ -67,12 +67,12 @@ public class UploadJob implements Callable<Upload> {
 		this.eventBus.register(this);
 	}
 
-	public void setUpload(final Upload upload) {
+	public void setUpload(final UploadModel upload) {
 		this.upload = upload;
 	}
 
 	@Override
-	public Upload call() throws Exception {
+	public UploadModel call() throws Exception {
 
 		if (null == rateLimiter || null == upload) {
 			throw new IllegalArgumentException("Rate limiter or upload missing for uploadJob");
@@ -191,7 +191,7 @@ public class UploadJob implements Callable<Upload> {
 		};
 	}
 
-	private String fetchUploadUrl(final Upload upload) {
+	private String fetchUploadUrl(final UploadModel upload) {
 		// Upload atomData and fetch uploadUrl
 		final Video video = metadataService.buildVideoEntry(upload);
 

@@ -10,9 +10,9 @@
 
 package de.chaosfisch.uploader.gui.upload;
 
-import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.uploader.gui.upload.entry.UploadEntryPresenter;
 import de.chaosfisch.uploader.gui.upload.entry.UploadEntryView;
+import de.chaosfisch.youtube.upload.UploadModel;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;

@@ -12,10 +12,8 @@ package de.chaosfisch.youtube.processors;
 
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.playlist.IPlaylistService;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPreProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistPreProcessor implements UploadPreProcessor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPreProcessor.class);
 	private final IPlaylistService playlistService;
 
 	@Inject
@@ -32,13 +29,11 @@ public class PlaylistPreProcessor implements UploadPreProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) throws IOException {
+	public UploadModel process(final UploadModel upload) throws IOException {
 
 		final List<AccountModel> accountList = new ArrayList<>(1);
 		accountList.add(upload.getAccount());
 		playlistService.synchronizePlaylists(accountList);
-
-
 		return upload;
 	}
 }

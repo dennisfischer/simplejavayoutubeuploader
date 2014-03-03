@@ -42,7 +42,7 @@ public abstract class AbstractUploadService implements IUploadService {
 	}
 
 	@Override
-	public void abort(final Upload upload) {
+	public void abort(final UploadModel upload) {
 		uploader.abort(upload);
 	}
 

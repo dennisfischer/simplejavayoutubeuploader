@@ -10,17 +10,15 @@
 
 package de.chaosfisch.youtube.processors;
 
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 class ExtendedGDataPostProcessor implements UploadPostProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedGDataPostProcessor.class);
 	private final IMetadataService metadataService;
 
 	@Inject
@@ -29,12 +27,8 @@ class ExtendedGDataPostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
-		try {
-			metadataService.activateBrowserfeatures(upload);
-		} catch (final Exception e) {
-			LOGGER.error("Exception", e);
-		}
+	public UploadModel process(final UploadModel upload) throws IOException {
+		metadataService.activateBrowserfeatures(upload);
 		return upload;
 	}
 }

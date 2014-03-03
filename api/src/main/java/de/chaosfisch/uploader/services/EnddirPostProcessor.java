@@ -12,7 +12,7 @@ package de.chaosfisch.uploader.services;
 
 import com.google.common.io.Files;
 import de.chaosfisch.uploader.enddir.IEnddirService;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ class EnddirPostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
+	public UploadModel process(final UploadModel upload) {
 		if (null != upload.getEnddir()) {
 			try {
 				if (!upload.getEnddir().exists()) {

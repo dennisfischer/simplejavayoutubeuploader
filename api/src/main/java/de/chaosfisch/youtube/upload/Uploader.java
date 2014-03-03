@@ -24,17 +24,17 @@ import java.util.concurrent.*;
 
 public class Uploader {
 
-	private static final String                          STOP_ON_ERROR        = "stopOnError";
-	private static final int                             ENQUEUE_WAIT_TIME    = 10000;
-	private static final int                             DEFAULT_MAX_UPLOADS  = 1;
-	private              int                             maxUploads           = DEFAULT_MAX_UPLOADS;
-	private static final int                             ONE_KILOBYTE         = 1024;
-	private static final Logger                          logger               = LoggerFactory.getLogger(Uploader.class);
-	private final        ExecutorService                 executorService      = Executors.newFixedThreadPool(10);
-	private final        CompletionService<Upload>       jobCompletionService = new ExecutorCompletionService<>(executorService);
-	private final        ScheduledExecutorService        timer                = Executors.newSingleThreadScheduledExecutor();
-	private final        RateLimiter                     rateLimitter         = RateLimiter.create(Double.MAX_VALUE);
-	private final        HashMap<Upload, Future<Upload>> futures              = Maps.newHashMapWithExpectedSize(10);
+	private static final String                                    STOP_ON_ERROR        = "stopOnError";
+	private static final int                                       ENQUEUE_WAIT_TIME    = 10000;
+	private static final int                                       DEFAULT_MAX_UPLOADS  = 1;
+	private              int                                       maxUploads           = DEFAULT_MAX_UPLOADS;
+	private static final int                                       ONE_KILOBYTE         = 1024;
+	private static final Logger                                    logger               = LoggerFactory.getLogger(Uploader.class);
+	private final        ExecutorService                           executorService      = Executors.newFixedThreadPool(10);
+	private final        CompletionService<UploadModel>            jobCompletionService = new ExecutorCompletionService<>(executorService);
+	private final        ScheduledExecutorService                  timer                = Executors.newSingleThreadScheduledExecutor();
+	private final        RateLimiter                               rateLimitter         = RateLimiter.create(Double.MAX_VALUE);
+	private final        HashMap<UploadModel, Future<UploadModel>> futures              = Maps.newHashMapWithExpectedSize(10);
 	private final IUploadJobFactory     uploadJobFactory;
 	private final Configuration         configuration;
 	private       int                   runningUploads;
@@ -57,7 +57,7 @@ public class Uploader {
 
 	private void startNextUpload() {
 		if (canAddJob()) {
-			final Upload nextUpload = uploadService.fetchNextUpload();
+			final UploadModel nextUpload = uploadService.fetchNextUpload();
 			if (null != nextUpload) {
 				createConsumer();
 				markUploadRunning(nextUpload);
@@ -67,7 +67,7 @@ public class Uploader {
 		}
 	}
 
-	private void markUploadRunning(final Upload nextUpload) {
+	private void markUploadRunning(final UploadModel nextUpload) {
 		nextUpload.setStatus(Status.RUNNING);
 		uploadService.update(nextUpload);
 	}
@@ -118,14 +118,14 @@ public class Uploader {
 		uploadService.setRunning(false);
 
 		if (force) {
-			for (final Map.Entry<Upload, Future<Upload>> job : futures.entrySet()) {
+			for (final Map.Entry<UploadModel, Future<UploadModel>> job : futures.entrySet()) {
 				job.getValue().cancel(true);
 				futures.remove(job.getKey());
 			}
 		}
 	}
 
-	public void abort(final Upload upload) {
+	public void abort(final UploadModel upload) {
 		futures.get(upload).cancel(true);
 	}
 
@@ -177,7 +177,7 @@ public class Uploader {
 		@Override
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
-				final Upload upload = getUpload();
+				final UploadModel upload = getUpload();
 				removeUpload(upload);
 				updateQueueStatus(upload);
 				final long leftUploads = uploadService.countUnprocessed();
@@ -191,10 +191,10 @@ public class Uploader {
 			}
 		}
 
-		private Upload getUpload() {
+		private UploadModel getUpload() {
 			try {
-				final Future<Upload> uploadJobFuture = jobCompletionService.take();
-				final Upload upload = uploadJobFuture.get();
+				final Future<UploadModel> uploadJobFuture = jobCompletionService.take();
+				final UploadModel upload = uploadJobFuture.get();
 				logger.info("Upload finished: {}", upload);
 				return upload;
 			} catch (ExecutionException | CancellationException | InterruptedException e) {
@@ -205,18 +205,18 @@ public class Uploader {
 			}
 		}
 
-		private void updateQueueStatus(final Upload upload) {
+		private void updateQueueStatus(final UploadModel upload) {
 			if (Status.FAILED == upload.getStatus() && configuration.getBoolean(STOP_ON_ERROR, false)) {
 				uploadService.stopUploading();
 			}
 		}
 
-		private void removeUpload(final Upload upload) {
+		private void removeUpload(final UploadModel upload) {
 			futures.remove(upload);
 			if (null != upload) {
 				logger.info("Running uploads: {}", runningUploads);
 
-				if (upload.isPauseOnFinish()) {
+				if (upload.getStopAfter()) {
 					uploadService.setRunning(false);
 				}
 			}

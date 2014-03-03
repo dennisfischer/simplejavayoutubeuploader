@@ -10,83 +10,117 @@
 
 package de.chaosfisch.youtube.upload.permissions;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
 public class Permissions {
 
-	private Visibility visibility  = Visibility.PUBLIC;
-	private ThreeD     threedD     = ThreeD.DEFAULT;
-	private Comment    comment     = Comment.ALLOWED;
-	private boolean    commentvote = true;
-	private boolean    embed       = true;
-	private boolean    rate        = true;
-
-	private boolean ageRestricted;
-	private boolean publicStatsViewable;
-
-	public Comment getComment() {
-		return comment;
-	}
-
-	public void setComment(final Comment comment) {
-		this.comment = comment;
-	}
-
-	public boolean isCommentvote() {
-		return commentvote;
-	}
-
-	public void setCommentvote(final boolean commentvote) {
-		this.commentvote = commentvote;
-	}
-
-	public boolean isEmbed() {
-		return embed;
-	}
-
-	public void setEmbed(final boolean embed) {
-		this.embed = embed;
-	}
-
-	public boolean isRate() {
-		return rate;
-	}
-
-	public void setRate(final boolean rate) {
-		this.rate = rate;
-	}
+	private final SimpleObjectProperty<Visibility> visibility          = new SimpleObjectProperty<>(Visibility.PUBLIC);
+	private final SimpleObjectProperty<ThreeD>     threedD             = new SimpleObjectProperty<>(ThreeD.DEFAULT);
+	private final SimpleObjectProperty<Comment>    comment             = new SimpleObjectProperty<>(Comment.ALLOWED);
+	private final SimpleBooleanProperty            commentvote         = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            embed               = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            rate                = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            ageRestricted       = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty            publicStatsViewable = new SimpleBooleanProperty();
 
 	public Visibility getVisibility() {
-		return visibility;
+		return visibility.get();
 	}
 
 	public void setVisibility(final Visibility visibility) {
-		this.visibility = visibility;
+		this.visibility.set(visibility);
 	}
 
-	public boolean isAgeRestricted() {
-		return ageRestricted;
-	}
-
-	public void setAgeRestricted(final boolean ageRestricted) {
-		this.ageRestricted = ageRestricted;
-	}
-
-	public boolean isPublicStatsViewable() {
-		return publicStatsViewable;
-	}
-
-	public void setPublicStatsViewable(final boolean publicStatsViewable) {
-		this.publicStatsViewable = publicStatsViewable;
+	public SimpleObjectProperty<Visibility> visibilityProperty() {
+		return visibility;
 	}
 
 	public ThreeD getThreedD() {
-		return threedD;
+		return threedD.get();
 	}
 
 	public void setThreedD(final ThreeD threedD) {
-		this.threedD = threedD;
+		this.threedD.set(threedD);
+	}
+
+	public SimpleObjectProperty<ThreeD> threedDProperty() {
+		return threedD;
+	}
+
+	public Comment getComment() {
+		return comment.get();
+	}
+
+	public void setComment(final Comment comment) {
+		this.comment.set(comment);
+	}
+
+	public SimpleObjectProperty<Comment> commentProperty() {
+		return comment;
+	}
+
+	public boolean getCommentvote() {
+		return commentvote.get();
+	}
+
+	public void setCommentvote(final boolean commentvote) {
+		this.commentvote.set(commentvote);
+	}
+
+	public SimpleBooleanProperty commentvoteProperty() {
+		return commentvote;
+	}
+
+	public boolean getEmbed() {
+		return embed.get();
+	}
+
+	public void setEmbed(final boolean embed) {
+		this.embed.set(embed);
+	}
+
+	public SimpleBooleanProperty embedProperty() {
+		return embed;
+	}
+
+	public boolean getRate() {
+		return rate.get();
+	}
+
+	public void setRate(final boolean rate) {
+		this.rate.set(rate);
+	}
+
+	public SimpleBooleanProperty rateProperty() {
+		return rate;
+	}
+
+	public boolean getAgeRestricted() {
+		return ageRestricted.get();
+	}
+
+	public void setAgeRestricted(final boolean ageRestricted) {
+		this.ageRestricted.set(ageRestricted);
+	}
+
+	public SimpleBooleanProperty ageRestrictedProperty() {
+		return ageRestricted;
+	}
+
+	public boolean getPublicStatsViewable() {
+		return publicStatsViewable.get();
+	}
+
+	public void setPublicStatsViewable(final boolean publicStatsViewable) {
+		this.publicStatsViewable.set(publicStatsViewable);
+	}
+
+	public SimpleBooleanProperty publicStatsViewableProperty() {
+		return publicStatsViewable;
 	}
 
 	public String getVisibilityIdentifier() {
-		return visibility.getIdentifier();
+		return visibility.get().getIdentifier();
 	}
 }

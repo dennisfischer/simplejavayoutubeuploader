@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.enddir;
 
 import com.google.common.io.Files;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class EnddirServiceImpl implements IEnddirService {
 	private static final Pattern VALID_FILE_NAMES_PATTERN = Pattern.compile(VALID_FILE_NAMES);
 
 	@Override
-	public void moveFileByUpload(final File fileToMove, final Upload upload) {
+	public void moveFileByUpload(final File fileToMove, final UploadModel upload) {
 
 		final String fileName = getFileName(fileToMove, upload.getEnddir());
 

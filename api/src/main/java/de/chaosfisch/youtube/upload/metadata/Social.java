@@ -10,42 +10,61 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Social {
 
-	private String message = "";
-	private boolean facebook;
-	private boolean twitter;
-	private boolean gplus;
-
-	public boolean isFacebook() {
-		return facebook;
-	}
-
-	public void setFacebook(final boolean facebook) {
-		this.facebook = facebook;
-	}
-
-	public boolean isTwitter() {
-		return twitter;
-	}
-
-	public void setTwitter(final boolean twitter) {
-		this.twitter = twitter;
-	}
+	private final SimpleStringProperty  message  = new SimpleStringProperty();
+	private final SimpleBooleanProperty facebook = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty twitter  = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty gplus    = new SimpleBooleanProperty();
 
 	public String getMessage() {
-		return message;
+		return message.get();
 	}
 
 	public void setMessage(final String message) {
-		this.message = message;
+		this.message.set(message);
 	}
 
-	public boolean isGplus() {
-		return gplus;
+	public SimpleStringProperty messageProperty() {
+		return message;
+	}
+
+	public boolean getFacebook() {
+		return facebook.get();
+	}
+
+	public void setFacebook(final boolean facebook) {
+		this.facebook.set(facebook);
+	}
+
+	public SimpleBooleanProperty facebookProperty() {
+		return facebook;
+	}
+
+	public boolean getTwitter() {
+		return twitter.get();
+	}
+
+	public void setTwitter(final boolean twitter) {
+		this.twitter.set(twitter);
+	}
+
+	public SimpleBooleanProperty twitterProperty() {
+		return twitter;
+	}
+
+	public boolean getGplus() {
+		return gplus.get();
 	}
 
 	public void setGplus(final boolean gplus) {
-		this.gplus = gplus;
+		this.gplus.set(gplus);
+	}
+
+	public SimpleBooleanProperty gplusProperty() {
+		return gplus;
 	}
 }

@@ -14,196 +14,283 @@ import de.chaosfisch.youtube.upload.permissions.Asset;
 import de.chaosfisch.youtube.upload.permissions.ClaimOption;
 import de.chaosfisch.youtube.upload.permissions.ClaimType;
 import de.chaosfisch.youtube.upload.permissions.Syndication;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class Monetization {
-	private Syndication syndication = Syndication.GLOBAL;
-	private ClaimType   claimtype   = ClaimType.AUDIO_VISUAL;
-	private ClaimOption claimoption = ClaimOption.MONETIZE;
-	private Asset       asset       = Asset.WEB;
+	private final SimpleObjectProperty<Syndication> syndication = new SimpleObjectProperty<>(Syndication.GLOBAL);
+	private final SimpleObjectProperty<ClaimType>   claimType   = new SimpleObjectProperty<>(ClaimType.AUDIO_VISUAL);
+	private final SimpleObjectProperty<ClaimOption> claimOption = new SimpleObjectProperty<>(ClaimOption.MONETIZE);
+	private final SimpleObjectProperty<Asset>       asset       = new SimpleObjectProperty<>(Asset.WEB);
 
-	private boolean instreamDefaults;
-	private boolean claim;
-	private boolean overlay;
-	private boolean trueview;
-	private boolean instream;
-	private boolean product;
-	private String  title;
-	private String  description;
-	private String  customId;
-	private String  notes;
-	private String  tmsid;
-	private String  isan;
-	private String  eidr;
-	private String  titleepisode;
-	private String  seasonNb;
-	private String  episodeNb;
-	private boolean partner;
-
-	public boolean isInstreamDefaults() {
-		return instreamDefaults;
-	}
-
-	public void setInstreamDefaults(final boolean instreamDefaults) {
-		this.instreamDefaults = instreamDefaults;
-	}
-
-	public boolean isClaim() {
-		return claim;
-	}
-
-	public void setClaim(final boolean claim) {
-		this.claim = claim;
-	}
-
-	public boolean isOverlay() {
-		return overlay;
-	}
-
-	public void setOverlay(final boolean overlay) {
-		this.overlay = overlay;
-	}
-
-	public boolean isTrueview() {
-		return trueview;
-	}
-
-	public void setTrueview(final boolean trueview) {
-		this.trueview = trueview;
-	}
-
-	public boolean isInstream() {
-		return instream;
-	}
-
-	public void setInstream(final boolean instream) {
-		this.instream = instream;
-	}
-
-	public boolean isProduct() {
-		return product;
-	}
-
-	public void setProduct(final boolean product) {
-		this.product = product;
-	}
+	private final SimpleBooleanProperty instreamDefaults = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty claim            = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty overlay          = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty trueview         = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty instream         = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty product          = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty partner          = new SimpleBooleanProperty();
+	private final SimpleStringProperty  title            = new SimpleStringProperty();
+	private final SimpleStringProperty  description      = new SimpleStringProperty();
+	private final SimpleStringProperty  customId         = new SimpleStringProperty();
+	private final SimpleStringProperty  notes            = new SimpleStringProperty();
+	private final SimpleStringProperty  tmsid            = new SimpleStringProperty();
+	private final SimpleStringProperty  isan             = new SimpleStringProperty();
+	private final SimpleStringProperty  eidr             = new SimpleStringProperty();
+	private final SimpleStringProperty  episodeTitle     = new SimpleStringProperty();
+	private final SimpleStringProperty  seasonNumber     = new SimpleStringProperty();
+	private final SimpleStringProperty  episodeNumber    = new SimpleStringProperty();
 
 	public Syndication getSyndication() {
-		return syndication;
+		return syndication.get();
 	}
 
 	public void setSyndication(final Syndication syndication) {
-		this.syndication = syndication;
+		this.syndication.set(syndication);
 	}
 
-	public String getTitle() {
-		return title;
+	public SimpleObjectProperty<Syndication> syndicationProperty() {
+		return syndication;
 	}
 
-	public void setTitle(final String title) {
-		this.title = title;
+	public ClaimType getClaimType() {
+		return claimType.get();
 	}
 
-	public String getDescription() {
-		return description;
+	public void setClaimType(final ClaimType claimType) {
+		this.claimType.set(claimType);
 	}
 
-	public void setDescription(final String description) {
-		this.description = description;
+	public SimpleObjectProperty<ClaimType> claimTypeProperty() {
+		return claimType;
 	}
 
-	public String getCustomId() {
-		return customId;
+	public ClaimOption getClaimOption() {
+		return claimOption.get();
 	}
 
-	public void setCustomId(final String customId) {
-		this.customId = customId;
+	public void setClaimOption(final ClaimOption claimOption) {
+		this.claimOption.set(claimOption);
 	}
 
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(final String notes) {
-		this.notes = notes;
-	}
-
-	public String getTmsid() {
-		return tmsid;
-	}
-
-	public void setTmsid(final String tmsid) {
-		this.tmsid = tmsid;
-	}
-
-	public String getIsan() {
-		return isan;
-	}
-
-	public void setIsan(final String isan) {
-		this.isan = isan;
-	}
-
-	public String getEidr() {
-		return eidr;
-	}
-
-	public void setEidr(final String eidr) {
-		this.eidr = eidr;
-	}
-
-	public String getTitleepisode() {
-		return titleepisode;
-	}
-
-	public void setTitleepisode(final String titleepisode) {
-		this.titleepisode = titleepisode;
-	}
-
-	public String getSeasonNb() {
-		return seasonNb;
-	}
-
-	public void setSeasonNb(final String seasonNb) {
-		this.seasonNb = seasonNb;
-	}
-
-	public String getEpisodeNb() {
-		return episodeNb;
-	}
-
-	public void setEpisodeNb(final String episodeNb) {
-		this.episodeNb = episodeNb;
-	}
-
-	public ClaimType getClaimtype() {
-		return claimtype;
-	}
-
-	public void setClaimtype(final ClaimType claimtype) {
-		this.claimtype = claimtype;
-	}
-
-	public ClaimOption getClaimoption() {
-		return claimoption;
-	}
-
-	public void setClaimoption(final ClaimOption claimoption) {
-		this.claimoption = claimoption;
+	public SimpleObjectProperty<ClaimOption> claimOptionProperty() {
+		return claimOption;
 	}
 
 	public Asset getAsset() {
-		return asset;
+		return asset.get();
 	}
 
 	public void setAsset(final Asset asset) {
-		this.asset = asset;
+		this.asset.set(asset);
 	}
 
-	public boolean isPartner() {
-		return partner;
+	public SimpleObjectProperty<Asset> assetProperty() {
+		return asset;
+	}
+
+	public boolean getInstreamDefaults() {
+		return instreamDefaults.get();
+	}
+
+	public void setInstreamDefaults(final boolean instreamDefaults) {
+		this.instreamDefaults.set(instreamDefaults);
+	}
+
+	public SimpleBooleanProperty instreamDefaultsProperty() {
+		return instreamDefaults;
+	}
+
+	public boolean getClaim() {
+		return claim.get();
+	}
+
+	public void setClaim(final boolean claim) {
+		this.claim.set(claim);
+	}
+
+	public SimpleBooleanProperty claimProperty() {
+		return claim;
+	}
+
+	public boolean getOverlay() {
+		return overlay.get();
+	}
+
+	public void setOverlay(final boolean overlay) {
+		this.overlay.set(overlay);
+	}
+
+	public SimpleBooleanProperty overlayProperty() {
+		return overlay;
+	}
+
+	public boolean getTrueview() {
+		return trueview.get();
+	}
+
+	public void setTrueview(final boolean trueview) {
+		this.trueview.set(trueview);
+	}
+
+	public SimpleBooleanProperty trueviewProperty() {
+		return trueview;
+	}
+
+	public boolean getInstream() {
+		return instream.get();
+	}
+
+	public void setInstream(final boolean instream) {
+		this.instream.set(instream);
+	}
+
+	public SimpleBooleanProperty instreamProperty() {
+		return instream;
+	}
+
+	public boolean getProduct() {
+		return product.get();
+	}
+
+	public void setProduct(final boolean product) {
+		this.product.set(product);
+	}
+
+	public SimpleBooleanProperty productProperty() {
+		return product;
+	}
+
+	public boolean getPartner() {
+		return partner.get();
 	}
 
 	public void setPartner(final boolean partner) {
-		this.partner = partner;
+		this.partner.set(partner);
+	}
+
+	public SimpleBooleanProperty partnerProperty() {
+		return partner;
+	}
+
+	public String getTitle() {
+		return title.get();
+	}
+
+	public void setTitle(final String title) {
+		this.title.set(title);
+	}
+
+	public SimpleStringProperty titleProperty() {
+		return title;
+	}
+
+	public String getDescription() {
+		return description.get();
+	}
+
+	public void setDescription(final String description) {
+		this.description.set(description);
+	}
+
+	public SimpleStringProperty descriptionProperty() {
+		return description;
+	}
+
+	public String getCustomId() {
+		return customId.get();
+	}
+
+	public void setCustomId(final String customId) {
+		this.customId.set(customId);
+	}
+
+	public SimpleStringProperty customIdProperty() {
+		return customId;
+	}
+
+	public String getNotes() {
+		return notes.get();
+	}
+
+	public void setNotes(final String notes) {
+		this.notes.set(notes);
+	}
+
+	public SimpleStringProperty notesProperty() {
+		return notes;
+	}
+
+	public String getTmsid() {
+		return tmsid.get();
+	}
+
+	public void setTmsid(final String tmsid) {
+		this.tmsid.set(tmsid);
+	}
+
+	public SimpleStringProperty tmsidProperty() {
+		return tmsid;
+	}
+
+	public String getIsan() {
+		return isan.get();
+	}
+
+	public void setIsan(final String isan) {
+		this.isan.set(isan);
+	}
+
+	public SimpleStringProperty isanProperty() {
+		return isan;
+	}
+
+	public String getEidr() {
+		return eidr.get();
+	}
+
+	public void setEidr(final String eidr) {
+		this.eidr.set(eidr);
+	}
+
+	public SimpleStringProperty eidrProperty() {
+		return eidr;
+	}
+
+	public String getEpisodeTitle() {
+		return episodeTitle.get();
+	}
+
+	public void setEpisodeTitle(final String episodeTitle) {
+		this.episodeTitle.set(episodeTitle);
+	}
+
+	public SimpleStringProperty episodeTitleProperty() {
+		return episodeTitle;
+	}
+
+	public String getSeasonNumber() {
+		return seasonNumber.get();
+	}
+
+	public void setSeasonNumber(final String seasonNumber) {
+		this.seasonNumber.set(seasonNumber);
+	}
+
+	public SimpleStringProperty seasonNumberProperty() {
+		return seasonNumber;
+	}
+
+	public String getEpisodeNumber() {
+		return episodeNumber.get();
+	}
+
+	public void setEpisodeNumber(final String episodeNumber) {
+		this.episodeNumber.set(episodeNumber);
+	}
+
+	public SimpleStringProperty episodeNumberProperty() {
+		return episodeNumber;
 	}
 }

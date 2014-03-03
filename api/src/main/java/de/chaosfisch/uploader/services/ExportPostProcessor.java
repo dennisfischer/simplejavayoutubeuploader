@@ -10,7 +10,7 @@
 
 package de.chaosfisch.uploader.services;
 
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class ExportPostProcessor implements UploadPostProcessor {
 	Configuration config;
 
 	@Override
-	public Upload process(final Upload upload) {
+	public UploadModel process(final UploadModel upload) {
 		if (!config.getBoolean(ExportPostProcessor.JSON_LOGFILES, false)) {
 			return upload;
 		}

@@ -12,14 +12,16 @@ package de.chaosfisch.youtube.upload.metadata;
 
 import com.google.api.services.youtube.model.Video;
 import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
+
+import java.io.IOException;
 
 public interface IMetadataService {
-	Video buildVideoEntry(Upload upload);
+	Video buildVideoEntry(UploadModel upload);
 
-	Video updateVideoEntry(Video video, Upload upload);
+	Video updateVideoEntry(Video video, UploadModel upload);
 
-	void updateMetaData(Video video, AccountModel account);
+	void updateMetaData(Video video, AccountModel account) throws IOException;
 
-	void activateBrowserfeatures(Upload upload);
+	void activateBrowserfeatures(UploadModel upload) throws IOException;
 }

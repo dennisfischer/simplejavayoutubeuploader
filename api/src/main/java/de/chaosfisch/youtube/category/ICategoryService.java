@@ -13,9 +13,11 @@ package de.chaosfisch.youtube.category;
 import com.google.api.services.youtube.YouTube;
 import javafx.beans.property.SimpleListProperty;
 
+import java.io.IOException;
+
 public interface ICategoryService {
 
-	void refresh(YouTube youTube);
+	void refresh(YouTube youTube) throws IOException;
 
 	SimpleListProperty<CategoryModel> categoryModelsProperty();
 }

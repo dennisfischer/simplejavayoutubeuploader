@@ -23,13 +23,12 @@ import java.io.IOException;
 public class YouTubeThumnbailService implements IThumbnailService {
 
 	@Override
-	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws ThumbnailIOException {
+	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws IOException {
 		try (final BufferedInputStream is = new BufferedInputStream(new FileInputStream(thumbnail))) {
 			YouTubeFactory.getYouTube(accountModel)
 					.thumbnails()
-					.set(videoid, new InputStreamContent("application/octet-stream", is));
-		} catch (final IOException e) {
-			throw new ThumbnailIOException(e);
+					.set(videoid, new InputStreamContent("application/octet-stream", is))
+					.execute();
 		}
 	}
 }

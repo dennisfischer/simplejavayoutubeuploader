@@ -11,8 +11,8 @@
 package de.chaosfisch.uploader.gui.upload;
 
 import de.chaosfisch.uploader.gui.DataModel;
-import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.UploadModel;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -67,7 +67,7 @@ public class UploadPresenter {
 		for (final File file : files) {
 			final UploadModel model = new UploadModel();
 			model.setStatus(Status.WAITING);
-			model.setTitle(file.getName());
+			model.setMetadataTitle(file.getName());
 			dataModel.addUpload(model);
 		}
 	}

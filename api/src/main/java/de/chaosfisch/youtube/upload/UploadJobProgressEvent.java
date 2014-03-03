@@ -11,16 +11,16 @@
 package de.chaosfisch.youtube.upload;
 
 public class UploadJobProgressEvent {
-	private       long    diffBytes;
-	private       long    diffTime;
-	private final long    fileSize;
-	private       Upload  upload;
-	private       long    time;
-	private       long    totalBytesUploaded;
-	public        boolean failed;
-	public        boolean done;
+	private       long        diffBytes;
+	private       long        diffTime;
+	private final long        fileSize;
+	private       UploadModel upload;
+	private       long        time;
+	private       long        totalBytesUploaded;
+	public        boolean     failed;
+	public        boolean     done;
 
-	public UploadJobProgressEvent(final Upload upload, final long fileSize) {
+	public UploadJobProgressEvent(final UploadModel upload, final long fileSize) {
 		this.upload = upload;
 		this.fileSize = fileSize;
 	}
@@ -37,7 +37,7 @@ public class UploadJobProgressEvent {
 		return fileSize;
 	}
 
-	public Upload getUpload() {
+	public UploadModel getUpload() {
 		return upload;
 	}
 
@@ -59,7 +59,7 @@ public class UploadJobProgressEvent {
 		time += diffTime;
 	}
 
-	public void setUpload(final Upload upload) {
+	public void setUpload(final UploadModel upload) {
 		this.upload = upload;
 	}
 }

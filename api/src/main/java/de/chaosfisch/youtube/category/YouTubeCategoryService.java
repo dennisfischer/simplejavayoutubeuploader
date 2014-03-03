@@ -37,16 +37,17 @@ public class YouTubeCategoryService implements ICategoryService {
 	}
 
 	@Override
-	public void refresh(final YouTube youTube) {
-		try {
-			final VideoCategoryListResponse videoCategoryListResponse = youTube.videoCategories().list("id,snippet")
-					.setHl(Locale.getDefault().getCountry())
-					.setRegionCode(Locale.getDefault().getCountry()).execute();
+	public void refresh(final YouTube youTube) throws IOException {
+		final VideoCategoryListResponse videoCategoryListResponse = youTube.videoCategories().list("id,snippet")
+				.setHl(Locale.getDefault().getCountry())
+				.setRegionCode(Locale.getDefault().getCountry()).execute();
 
-			videoCategoryListResponse.getItems().forEach(t -> addOrUpdateCategory(t.getId(), t.getSnippet()));
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+		videoCategoryListResponse.getItems().forEach(t -> addOrUpdateCategory(t.getId(), t.getSnippet()));
+	}
+
+	@Override
+	public SimpleListProperty<CategoryModel> categoryModelsProperty() {
+		return categoryModels;
 	}
 
 	private void addOrUpdateCategory(final String id, final VideoCategorySnippet snippet) {
@@ -62,11 +63,6 @@ public class YouTubeCategoryService implements ICategoryService {
 				categoryModels.set(categoryModels.indexOf(categoryModel), categoryModel);
 			}
 		}
-	}
-
-	@Override
-	public SimpleListProperty<CategoryModel> categoryModelsProperty() {
-		return categoryModels;
 	}
 
 	public ObservableList<CategoryModel> getCategoryModels() {

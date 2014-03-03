@@ -10,13 +10,14 @@
 
 package de.chaosfisch.youtube.processors;
 
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 class MetadataUpdatePostProcessor implements UploadPostProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataUpdatePostProcessor.class);
@@ -28,7 +29,7 @@ class MetadataUpdatePostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
+	public UploadModel process(final UploadModel upload) throws IOException {
 		LOGGER.info("Updating metadata of {}.", upload.getVideoid());
 		metadataService.updateMetaData(metadataService.buildVideoEntry(upload), upload.getAccount());
 		LOGGER.info("Metadata of upload {} updated!", upload.getVideoid());

@@ -10,7 +10,6 @@
 
 package de.chaosfisch.uploader.gui;
 
-import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.uploader.project.ProjectModel;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
@@ -18,6 +17,7 @@ import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.permissions.Comment;
 import de.chaosfisch.youtube.upload.permissions.ThreeD;
@@ -28,6 +28,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -66,7 +67,13 @@ public class DataModel {
 	}
 
 	private void initData() {
-		final Thread categoryThread = new Thread(() -> categoryService.refresh(YouTubeFactory.getDefault()), "Category_Loader");
+		final Thread categoryThread = new Thread(() -> {
+			try {
+				categoryService.refresh(YouTubeFactory.getDefault());
+			} catch (IOException e) {
+				//TODO HANDLE
+			}
+		}, "Category_Loader");
 		categoryThread.setDaemon(true);
 		categoryThread.start();
 	}
@@ -75,44 +82,44 @@ public class DataModel {
 		projects.addAll(new ProjectModel("Test 1"), new ProjectModel("Projekt 2"), new ProjectModel("Und 3"));
 
 		final UploadModel uploadModel1 = new UploadModel();
-		uploadModel1.setTitle("Test");
-		uploadModel1.setEnd(LocalDateTime.now());
+		uploadModel1.setMetadataTitle("Test");
+		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
 		final float progress = 0.7f;
 		uploadModel1.setProgress(progress);
-		uploadModel1.setRelease(LocalDateTime.now());
-		uploadModel1.setStart(LocalDateTime.now());
+		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
+		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
 		uploadModel1.setStopAfter(false);
 		uploadModel1.setStatus(Status.WAITING);
 		final UploadModel uploadModel2 = new UploadModel();
-		uploadModel2.setTitle("Test");
-		uploadModel2.setEnd(LocalDateTime.now());
+		uploadModel1.setMetadataTitle("Test");
+		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
 		uploadModel2.setProgress(progress);
-		uploadModel2.setRelease(LocalDateTime.now());
-		uploadModel2.setStart(LocalDateTime.now());
+		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
+		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
 		uploadModel2.setStopAfter(false);
 		uploadModel2.setStatus(Status.FAILED);
 		final UploadModel uploadModel3 = new UploadModel();
-		uploadModel3.setTitle("Test");
-		uploadModel3.setEnd(LocalDateTime.now());
+		uploadModel1.setMetadataTitle("Test");
+		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
 		uploadModel3.setProgress(progress);
-		uploadModel3.setRelease(LocalDateTime.now());
-		uploadModel3.setStart(LocalDateTime.now());
+		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
+		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
 		uploadModel3.setStopAfter(false);
 		uploadModel3.setStatus(Status.RUNNING);
 		final UploadModel uploadModel4 = new UploadModel();
-		uploadModel4.setTitle("Test");
-		uploadModel4.setEnd(LocalDateTime.now());
+		uploadModel1.setMetadataTitle("Test");
+		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
 		uploadModel4.setProgress(progress);
-		uploadModel4.setRelease(LocalDateTime.now());
-		uploadModel4.setStart(LocalDateTime.now());
+		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
+		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
 		uploadModel4.setStopAfter(false);
 		uploadModel4.setStatus(Status.ABORTED);
 		final UploadModel uploadModel5 = new UploadModel();
-		uploadModel5.setTitle("Test");
-		uploadModel5.setEnd(LocalDateTime.now());
+		uploadModel1.setMetadataTitle("Test");
+		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
 		uploadModel5.setProgress(progress);
-		uploadModel5.setRelease(LocalDateTime.now());
-		uploadModel5.setStart(LocalDateTime.now());
+		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
+		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
 		uploadModel5.setStopAfter(false);
 		uploadModel5.setStatus(Status.FINISHED);
 		uploads.addAll(uploadModel1, uploadModel2, uploadModel3, uploadModel4, uploadModel5);

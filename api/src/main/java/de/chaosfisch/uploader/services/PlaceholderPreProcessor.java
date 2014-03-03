@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.services;
 
 import de.chaosfisch.uploader.enddir.IEnddirService;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPreProcessor;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
@@ -35,12 +35,12 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
+	public UploadModel process(final UploadModel upload) {
 		LOGGER.info("Replacing placeholders");
 		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), upload.getPlaylists(), resources);
 		upload.setMetadataTitle(extendedPlaceholders.replace(upload.getMetadataTitle()));
 		upload.setMetadataDescription(extendedPlaceholders.replace(upload.getMetadataDescription()));
-		upload.setMetadataKeywords(extendedPlaceholders.replace(upload.getMetadataKeywords()));
+		upload.setMetadataTags(extendedPlaceholders.replace(upload.getMetadataTags()));
 
 		extendedPlaceholders.setFile(upload.getFile());
 		extendedPlaceholders.setPlaylists(upload.getPlaylists());

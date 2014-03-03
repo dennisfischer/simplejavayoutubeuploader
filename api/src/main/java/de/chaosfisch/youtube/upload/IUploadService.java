@@ -16,17 +16,17 @@ import java.util.List;
 
 public interface IUploadService {
 
-	List<Upload> getAll();
+	List<UploadModel> getAll();
 
-	Upload get(String id);
+	UploadModel get(String id);
 
-	void insert(Upload upload);
+	void insert(UploadModel upload);
 
-	void update(Upload upload);
+	void update(UploadModel upload);
 
-	void delete(Upload upload);
+	void delete(UploadModel upload);
 
-	Upload fetchNextUpload();
+	UploadModel fetchNextUpload();
 
 	int count();
 
@@ -44,9 +44,9 @@ public interface IUploadService {
 
 	void stopStarttimeCheck();
 
-	List<Upload> fetchByArchived(boolean archived);
+	List<UploadModel> fetchByArchived(boolean archived);
 
-	void abort(Upload upload);
+	void abort(UploadModel upload);
 
 	long getStarttimeDelay();
 

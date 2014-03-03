@@ -12,17 +12,14 @@ package de.chaosfisch.youtube.processors;
 
 import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
 public class PlaylistPostProcessor implements UploadPostProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistPostProcessor.class);
 	private final IPlaylistService playlistService;
 
 	@Inject
@@ -31,7 +28,7 @@ public class PlaylistPostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) throws IOException {
+	public UploadModel process(final UploadModel upload) throws IOException {
 		for (final PlaylistModel playlist : upload.getPlaylists()) {
 			playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
 		}

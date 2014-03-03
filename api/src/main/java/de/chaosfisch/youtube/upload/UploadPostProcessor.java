@@ -13,5 +13,5 @@ package de.chaosfisch.youtube.upload;
 import java.io.IOException;
 
 public interface UploadPostProcessor {
-	Upload process(Upload upload) throws IOException;
+	UploadModel process(UploadModel upload) throws IOException;
 }

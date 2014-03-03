@@ -10,8 +10,8 @@
 
 package de.chaosfisch.uploader.gui.upload.entry;
 
-import de.chaosfisch.uploader.gui.models.UploadModel;
 import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.UploadModel;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -58,10 +58,10 @@ public class UploadEntryPresenter {
 	private void bindModel() {
 		unbindModel();
 		final LocalDateTimeStringConverter dateTimeStringConverter = new LocalDateTimeStringConverter("EEE, dd.MM.yyyy 'um' HH:mm");
-		release.textProperty().bindBidirectional(uploadModel.releaseProperty(), dateTimeStringConverter);
-		start.textProperty().bindBidirectional(uploadModel.startProperty(), dateTimeStringConverter);
-		end.textProperty().bindBidirectional(uploadModel.endProperty(), dateTimeStringConverter);
-		title.textProperty().bind(uploadModel.titleProperty());
+		release.textProperty().bindBidirectional(uploadModel.dateTimeOfReleaseProperty(), dateTimeStringConverter);
+		start.textProperty().bindBidirectional(uploadModel.dateTimeOfStartProperty(), dateTimeStringConverter);
+		end.textProperty().bindBidirectional(uploadModel.dateTimeOfEndProperty(), dateTimeStringConverter);
+		title.textProperty().bind(uploadModel.metadataProperty().get().titleProperty());
 		stopAfter.selectedProperty().bindBidirectional(uploadModel.stopAfterProperty());
 		progress.progressProperty().bind(uploadModel.progressProperty());
 		progress.visibleProperty().bind(uploadModel.statusProperty().isEqualTo(Status.RUNNING));

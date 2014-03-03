@@ -10,7 +10,6 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
-import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
@@ -19,7 +18,7 @@ import com.google.common.collect.Maps;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.PersistentCookieStore;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.permissions.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -56,16 +55,16 @@ public class YouTubeMetadataService implements IMetadataService {
 
 
 	@Override
-	public Video buildVideoEntry(final Upload upload) {
+	public Video buildVideoEntry(final UploadModel upload) {
 		return updateVideoEntry(new Video(), upload);
 	}
 
 	@Override
-	public Video updateVideoEntry(final Video video, final Upload upload) {
+	public Video updateVideoEntry(final Video video, final UploadModel upload) {
 		final VideoSnippet snippet = null != video.getSnippet() ? video.getSnippet() : new VideoSnippet();
 		snippet.setTitle(upload.getMetadataTitle());
 		snippet.setDescription(upload.getMetadataDescription());
-		snippet.setTags(TagParser.parse(upload.getMetadataKeywords()));
+		snippet.setTags(TagParser.parse(upload.getMetadataTags()));
 		snippet.setCategoryId(upload.getCategoryId());
 
 		final VideoStatus status = null != video.getStatus() ? video.getStatus() : new VideoStatus();
@@ -80,20 +79,15 @@ public class YouTubeMetadataService implements IMetadataService {
 	}
 
 	@Override
-	public void updateMetaData(final Video video, final AccountModel account) {
-		final YouTube youTube = YouTubeFactory.getYouTube(account);
-		try {
-			youTube.videos().update("snippet,status", video).execute();
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+	public void updateMetaData(final Video video, final AccountModel account) throws IOException {
+		YouTubeFactory.getYouTube(account)
+				.videos()
+				.update("snippet,status", video)
+				.execute();
 	}
 
 	@Override
-	public void activateBrowserfeatures(final Upload upload) {
-
-		// Create a local instance of cookie store
-		// Populate cookies if needed
+	public void activateBrowserfeatures(final UploadModel upload) throws IOException {
 		final CookieStore cookieStore = new BasicCookieStore();
 		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccountSerializableCookies()) {
 			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
@@ -105,16 +99,11 @@ public class YouTubeMetadataService implements IMetadataService {
 
 		client.setCookieStore(cookieStore);
 		final HttpGet httpGet = new HttpGet(String.format(VIDEO_EDIT_URL, upload.getVideoid()));
-		try {
-			final String body = EntityUtils.toString(client.execute(httpGet).getEntity());
-			changeMetadata(body, upload);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+		final String body = EntityUtils.toString(client.execute(httpGet).getEntity());
+		changeMetadata(body, upload);
 	}
 
-	private void changeMetadata(final String content, final Upload upload) {
-
+	private void changeMetadata(final String content, final UploadModel upload) throws IOException {
 		final HashMap<String, String> params = new HashMap<>(METADATA_PARAMS_SIZE);
 
 		params.putAll(getMetadataDateOfRelease(upload));
@@ -131,20 +120,16 @@ public class YouTubeMetadataService implements IMetadataService {
 			nameValuePairs.add(new BasicNameValuePair(key, value));
 		});
 
-		try {
-			final HttpPost httpPost = new HttpPost(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
-					.getVideoid()));
-			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		final HttpPost httpPost = new HttpPost(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
+				.getVideoid()));
+		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-			final String body = EntityUtils.toString(client.execute(httpPost).getEntity());
+		final String body = EntityUtils.toString(client.execute(httpPost).getEntity());
 
-			LOGGER.info(body);
-		} catch (final Exception e) {
-			LOGGER.warn("Metadata not set", e);
-		}
+		LOGGER.info(body);
 	}
 
-	private Map<String, String> getMetadataDateOfRelease(final Upload upload) {
+	private Map<String, String> getMetadataDateOfRelease(final UploadModel upload) {
 		final Map<String, String> params = new HashMap<>(4);
 
 		if (null != upload.getDateTimeOfRelease()) {
@@ -161,7 +146,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, String> getMetadataSocial(final Upload upload) {
+	private Map<String, String> getMetadataSocial(final UploadModel upload) {
 		final Map<String, String> params = new HashMap<>(3);
 		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
 			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
@@ -178,7 +163,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		return flag ? "yes" : "no";
 	}
 
-	private Map<String, String> getMetadataMonetization(final String content, final Upload upload) {
+	private Map<String, String> getMetadataMonetization(final String content, final UploadModel upload) {
 		final Map<String, String> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
 		if (upload.isMonetizationClaim() && License.YOUTUBE == upload.getMetadataLicense()) {
 			params.put("video_monetization_style", "ads");
@@ -245,7 +230,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		return params;
 	}
 
-	private Map<String, String> getMetadataPermissions(final Upload upload) {
+	private Map<String, String> getMetadataPermissions(final UploadModel upload) {
 		final Map<String, String> params = Maps.newHashMapWithExpectedSize(6);
 
 		params.put("allow_comments", boolConverter(Comment.DENIED != upload.getPermissionsComment()));

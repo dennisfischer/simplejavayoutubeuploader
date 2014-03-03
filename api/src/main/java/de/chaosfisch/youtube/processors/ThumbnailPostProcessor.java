@@ -13,14 +13,14 @@ package de.chaosfisch.youtube.processors;
 import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import de.chaosfisch.youtube.thumbnail.IThumbnailService;
-import de.chaosfisch.youtube.thumbnail.ThumbnailIOException;
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.UploadPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -39,13 +39,13 @@ class ThumbnailPostProcessor implements UploadPostProcessor {
 	}
 
 	@Override
-	public Upload process(final Upload upload) {
+	public UploadModel process(final UploadModel upload) {
 		if (null != upload.getThumbnail()) {
 			final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
 			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(DEFAULT_BACKOFF, DEFAULT_EXPONENT)
 					.withMaxDelay(DEFAULT_MAX_DELAY)
 					.withMaxRetries(DEFAULT_MAX_RETRIES)
-					.retryOn(ThumbnailIOException.class)
+					.retryOn(IOException.class)
 					.abortOn(FileNotFoundException.class);
 			try {
 				executor.doWithRetry(retryContext -> thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload

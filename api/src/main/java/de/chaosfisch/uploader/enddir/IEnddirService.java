@@ -10,7 +10,7 @@
 
 package de.chaosfisch.uploader.enddir;
 
-import de.chaosfisch.youtube.upload.Upload;
+import de.chaosfisch.youtube.upload.UploadModel;
 
 import java.io.File;
 
@@ -20,5 +20,5 @@ public interface IEnddirService {
 	String TITLE_PROPERTY  = "enddir_title";
 	String TITLE_DEFAULT   = "{title}";
 
-	void moveFileByUpload(File fileToMove, Upload upload);
+	void moveFileByUpload(File fileToMove, UploadModel upload);
 }
