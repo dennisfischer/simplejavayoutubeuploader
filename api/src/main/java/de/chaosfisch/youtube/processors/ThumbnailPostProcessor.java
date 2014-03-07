@@ -14,7 +14,7 @@ import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
 import de.chaosfisch.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-class ThumbnailPostProcessor implements UploadPostProcessor {
+class ThumbnailPostProcessor implements UploadeJobPostProcessor {
 
 	private static final int    DEFAULT_BACKOFF     = 5000;
 	private static final int    DEFAULT_EXPONENT    = 2;
@@ -42,14 +42,17 @@ class ThumbnailPostProcessor implements UploadPostProcessor {
 	public UploadModel process(final UploadModel upload) {
 		if (null != upload.getThumbnail()) {
 			final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(DEFAULT_BACKOFF, DEFAULT_EXPONENT)
+			final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(DEFAULT_BACKOFF,
+																									 DEFAULT_EXPONENT)
 					.withMaxDelay(DEFAULT_MAX_DELAY)
 					.withMaxRetries(DEFAULT_MAX_RETRIES)
 					.retryOn(IOException.class)
 					.abortOn(FileNotFoundException.class);
 			try {
-				executor.doWithRetry(retryContext -> thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload
-						.getAccount()));
+				executor.doWithRetry(retryContext -> thumbnailService.upload(upload.getThumbnail(),
+																			 upload.getVideoid(),
+																			 upload
+																					 .getAccount()));
 			} catch (final Exception e) {
 				LOGGER.error("Thumbnail IOException", e);
 			} finally {

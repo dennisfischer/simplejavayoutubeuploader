@@ -13,6 +13,7 @@
  */
 package de.chaosfisch.youtube.upload;
 
+import de.chaosfisch.data.UniqueObject;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.PersistentCookieStore;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
@@ -28,7 +29,7 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.time.LocalDateTime;
 
-public class UploadModel {
+public class UploadModel implements UniqueObject<UploadDTO> {
 
 	private final SimpleStringProperty                id                = new SimpleStringProperty();
 	private final SimpleListProperty<PlaylistModel>   playlists         = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -504,6 +505,21 @@ public class UploadModel {
 
 	public String getCategoryId() {
 		return metadata.get().getCategoryId();
+	}
+
+	@Override
+	public String uniqueId() {
+		return id.get();
+	}
+
+	@Override
+	public UploadDTO toDTO() {
+		return null;
+	}
+
+	@Override
+	public void fromDTO(final UploadDTO o) {
+
 	}
 
 	public interface Validation {

@@ -23,11 +23,12 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class YouTubeCategoryService implements ICategoryService {
-	private final SimpleListProperty<CategoryModel> categoryModels = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final IDataStore<CategoryModel, CategoryModel.CategoryDTO> dataStore;
+	private final SimpleListProperty<CategoryModel> categoryModels = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
+	private final IDataStore<CategoryModel, CategoryDTO> dataStore;
 
 	@Inject
-	public YouTubeCategoryService(final IDataStore<CategoryModel, CategoryModel.CategoryDTO> dataStore) {
+	public YouTubeCategoryService(final IDataStore<CategoryModel, CategoryDTO> dataStore) {
 		this.dataStore = dataStore;
 		loadCategories();
 	}

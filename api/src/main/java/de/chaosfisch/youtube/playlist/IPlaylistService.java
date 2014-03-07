@@ -18,45 +18,57 @@ import java.util.List;
 
 public interface IPlaylistService {
 
-	List<PlaylistModel> getAll(AccountModel account);
+	/**
+	 * Retrieves a single PlaylistModel using it's youtubeId
+	 *
+	 * @param youtubeId of the PlaylistModel
+	 * @return PlaylistModel playlistModel
+	 */
+	PlaylistModel get(String youtubeId);
 
-	PlaylistModel get(String id);
+	/**
+	 * Stores (inserts/updates) a single PlaylistModel
+	 *
+	 * @param playlistModel to store
+	 */
+	void store(PlaylistModel playlistModel);
 
-	void insert(PlaylistModel playlist);
-
-	void update(PlaylistModel playlist);
-
-	void delete(PlaylistModel playlist);
-
-	List<PlaylistModel> findByHidden(AccountModel account, boolean hidden);
-
-	PlaylistModel findByPkey(String playlistKey);
-
-	List<PlaylistModel> fetchUnhiddenByAccount(AccountModel account);
+	/**
+	 * Removes (deletes) a single PlaylistModel
+	 *
+	 * @param playlistModel to remove
+	 */
+	void remove(PlaylistModel playlistModel);
 
 	/**
 	 * Adds the specified video to the playlist.
 	 * This change will be published on YouTube.
 	 *
-	 * @param playlist the playlist used
-	 * @param videoId  for the added video
+	 * @param playlistModel the playlist used
+	 * @param videoId       for the added video
 	 */
-	void addVideoToPlaylist(PlaylistModel playlist, String videoId) throws IOException;
+	void addVideoToPlaylist(PlaylistModel playlistModel, String videoId) throws IOException;
 
 	/**
 	 * Adds this playlist to the account specified inside the playlist object.
 	 * This change will be published on YouTube.
 	 *
-	 * @param playlist the playlist to be added
+	 * @param playlistModel the playlist to be added
 	 */
-	void addYoutubePlaylist(PlaylistModel playlist) throws IOException;
+	void addYoutubePlaylist(PlaylistModel playlistModel) throws IOException;
 
 	/**
 	 * Synchronizes given accounts and playlists with YouTube.
 	 *
-	 * @param accounts to be synced
+	 * @param accountModels to be synced
 	 */
-	void synchronizePlaylists(List<AccountModel> accounts) throws IOException;
+	void synchronizePlaylists(List<AccountModel> accountModels) throws IOException;
 
+	/**
+	 * Returns a list property of PlaylistModels
+	 *
+	 * @param accountModel owning the PlaylistModels
+	 * @return SimpleListProperty<PlaylistModel> playlistModels
+	 */
 	SimpleListProperty<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
 }

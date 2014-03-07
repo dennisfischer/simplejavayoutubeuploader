@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.upload.job;
 
 import com.blogspot.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.blogspot.nurkiewicz.asyncretry.RetryExecutor;
@@ -22,6 +22,9 @@ import com.google.api.services.youtube.model.Video;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.RateLimiter;
 import de.chaosfisch.youtube.YouTubeFactory;
+import de.chaosfisch.youtube.upload.IUploadService;
+import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -42,25 +45,25 @@ public class UploadJob implements Callable<UploadModel> {
 	private static final int    DEFAULT_BUFFER_SIZE = 65536;
 	private static final Logger LOGGER              = LoggerFactory.getLogger(UploadJob.class);
 	private static final int    SC_500              = 500;
-	private final Set<UploadPreProcessor>  uploadPreProcessors;
-	private final Set<UploadPostProcessor> uploadPostProcessors;
-	private final EventBus                 eventBus;
-	private final IUploadService           uploadService;
-	private final IMetadataService         metadataService;
+	private final Set<UploadJobPreProcessor>   uploadPreProcessors;
+	private final Set<UploadeJobPostProcessor> uploadeJobPostProcessors;
+	private final EventBus                     eventBus;
+	private final IUploadService               uploadService;
+	private final IMetadataService             metadataService;
 	/**
 	 * File that is uploaded
 	 */
-	private       File                     fileToUpload;
-	private       long                     totalBytesUploaded;
-	private       long                     fileSize;
-	private       RateLimiter              rateLimiter;
-	private       UploadJobProgressEvent   uploadProgress;
-	private       UploadModel              upload;
+	private       File                         fileToUpload;
+	private       long                         totalBytesUploaded;
+	private       long                         fileSize;
+	private       RateLimiter                  rateLimiter;
+	private       UploadJobProgressEvent       uploadProgress;
+	private       UploadModel                  upload;
 
 	@Inject
-	public UploadJob(final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IMetadataService metadataService) {
+	public UploadJob(final Set<UploadJobPreProcessor> uploadPreProcessors, final Set<UploadeJobPostProcessor> uploadeJobPostProcessors, final EventBus eventBus, final IUploadService uploadService, final IMetadataService metadataService) {
 		this.uploadPreProcessors = uploadPreProcessors;
-		this.uploadPostProcessors = uploadPostProcessors;
+		this.uploadeJobPostProcessors = uploadeJobPostProcessors;
 		this.eventBus = eventBus;
 		this.uploadService = uploadService;
 		this.metadataService = metadataService;
@@ -79,7 +82,7 @@ public class UploadJob implements Callable<UploadModel> {
 		}
 
 		if (null == upload.getUploadurl()) {
-			for (final UploadPreProcessor preProcessor : uploadPreProcessors) {
+			for (final UploadJobPreProcessor preProcessor : uploadPreProcessors) {
 				try {
 					upload = preProcessor.process(upload);
 				} catch (final Exception e) {
@@ -90,7 +93,8 @@ public class UploadJob implements Callable<UploadModel> {
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
 		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS
-																										 .toMillis(3), 2)
+																										 .toMillis(3),
+																								 2)
 				.withMaxDelay(TimeUnit.MINUTES.toMillis(1))
 				.withMaxRetries(10)
 				.retryOn(IOException.class)
@@ -122,7 +126,7 @@ public class UploadJob implements Callable<UploadModel> {
 
 		if (Status.FINISHED == upload.getStatus()) {
 			LOGGER.info("Starting postprocessing");
-			for (final UploadPostProcessor postProcessor : uploadPostProcessors) {
+			for (final UploadeJobPostProcessor postProcessor : uploadeJobPostProcessors) {
 				try {
 					upload = postProcessor.process(upload);
 				} catch (final Exception e) {
@@ -131,7 +135,7 @@ public class UploadJob implements Callable<UploadModel> {
 			}
 		}
 
-		uploadService.update(upload);
+		uploadService.store(upload);
 		return upload;
 	}
 
@@ -184,7 +188,7 @@ public class UploadJob implements Callable<UploadModel> {
 			}
 
 			upload.setUploadurl(fetchUploadUrl(upload));
-			uploadService.update(upload);
+			uploadService.store(upload);
 
 			// Log operation
 			LOGGER.info("Uploadurl received: {}", upload.getUploadurl());
@@ -197,7 +201,9 @@ public class UploadJob implements Callable<UploadModel> {
 
 
 		try {
-			final InputStreamContent mediaContent = new InputStreamContent("video/*", new TokenInputStream(new FileInputStream(upload.getFile())));
+			final InputStreamContent mediaContent = new InputStreamContent("video/*",
+																		   new TokenInputStream(new FileInputStream(
+																				   upload.getFile())));
 			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount()).videos()
 					.insert("snippet,status", video, mediaContent);
 
@@ -228,7 +234,8 @@ public class UploadJob implements Callable<UploadModel> {
 
 			// Call the API and upload the video.
 			final Video returnedVideo = videoInsert.execute();
-			metadataService.updateMetaData(metadataService.updateVideoEntry(returnedVideo, upload), upload.getAccount());
+			metadataService.updateMetaData(metadataService.updateVideoEntry(returnedVideo, upload),
+										   upload.getAccount());
 		} catch (final GoogleJsonResponseException e) {
 			e.printStackTrace();
 			System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : "
@@ -246,7 +253,7 @@ public class UploadJob implements Callable<UploadModel> {
 	private void initialize() throws FileNotFoundException {
 		// Set the time uploaded started
 		upload.setDateTimeOfStart(LocalDateTime.now().minusSeconds(1));
-		uploadService.update(upload);
+		uploadService.store(upload);
 
 		// Get File and Check if existing
 		fileToUpload = upload.getFile();
@@ -258,7 +265,7 @@ public class UploadJob implements Callable<UploadModel> {
 
 	private void handleSuccessfulUpload() throws UploadFinishedException {
 		upload.setStatus(Status.FINISHED);
-		uploadService.update(upload);
+		uploadService.store(upload);
 		throw new UploadFinishedException();
 	}
 

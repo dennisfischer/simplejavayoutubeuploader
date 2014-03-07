@@ -11,14 +11,14 @@
 package de.chaosfisch.uploader.services;
 
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public class ExportPostProcessor implements UploadPostProcessor {
+public class ExportPostProcessor implements UploadeJobPostProcessor {
 	private static final String JSON_LOGFILES = "json_logfiles_export";
 	private static final Logger LOGGER        = LoggerFactory.getLogger(ExportPostProcessor.class);
 	@Inject

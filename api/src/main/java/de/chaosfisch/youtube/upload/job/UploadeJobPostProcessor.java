@@ -8,10 +8,12 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.upload.job;
+
+import de.chaosfisch.youtube.upload.UploadModel;
 
 import java.io.IOException;
 
-public interface UploadPreProcessor {
+public interface UploadeJobPostProcessor {
 	UploadModel process(UploadModel upload) throws IOException;
 }

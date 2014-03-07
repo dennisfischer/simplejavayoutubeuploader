@@ -8,53 +8,11 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.upload.job;
 
-import javafx.beans.property.SimpleBooleanProperty;
+import com.google.common.util.concurrent.RateLimiter;
+import de.chaosfisch.youtube.upload.UploadModel;
 
-import java.util.List;
-
-public interface IUploadService {
-
-	List<UploadModel> getAll();
-
-	UploadModel get(String id);
-
-	void store(UploadModel upload);
-
-	void remove(UploadModel upload);
-
-	UploadModel fetchNextUpload();
-
-	int count();
-
-	int countUnprocessed();
-
-	long countReadyStarttime();
-
-	void resetUnfinishedUploads();
-
-	void startUploading();
-
-	void stopUploading();
-
-	void startStarttimeCheck();
-
-	void stopStarttimeCheck();
-
-	List<UploadModel> fetchByArchived(boolean archived);
-
-	void abort(UploadModel upload);
-
-	long getStarttimeDelay();
-
-	SimpleBooleanProperty runningProperty();
-
-	boolean getRunning();
-
-	void setRunning(boolean running);
-
-	void setMaxUploads(int maxUploads);
-
-	void setMaxSpeed(int maxSpeed);
+public interface IUploadJobFactory {
+	UploadJob create(UploadModel upload, RateLimiter rateLimiter);
 }

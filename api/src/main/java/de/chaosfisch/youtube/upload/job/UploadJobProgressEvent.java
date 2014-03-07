@@ -8,7 +8,9 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.upload.job;
+
+import de.chaosfisch.youtube.upload.UploadModel;
 
 public class UploadJobProgressEvent {
 	private       long        diffBytes;

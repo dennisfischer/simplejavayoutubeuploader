@@ -8,53 +8,31 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.processors;
 
-import javafx.beans.property.SimpleBooleanProperty;
+import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.playlist.IPlaylistService;
+import de.chaosfisch.youtube.upload.UploadModel;
+import de.chaosfisch.youtube.upload.job.UploadJobPreProcessor;
 
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public interface IUploadService {
+public class PlaylistJobPreProcessor implements UploadJobPreProcessor {
+	private final IPlaylistService playlistService;
 
-	List<UploadModel> getAll();
+	@Inject
+	public PlaylistJobPreProcessor(final IPlaylistService playlistService) {
+		this.playlistService = playlistService;
+	}
 
-	UploadModel get(String id);
-
-	void store(UploadModel upload);
-
-	void remove(UploadModel upload);
-
-	UploadModel fetchNextUpload();
-
-	int count();
-
-	int countUnprocessed();
-
-	long countReadyStarttime();
-
-	void resetUnfinishedUploads();
-
-	void startUploading();
-
-	void stopUploading();
-
-	void startStarttimeCheck();
-
-	void stopStarttimeCheck();
-
-	List<UploadModel> fetchByArchived(boolean archived);
-
-	void abort(UploadModel upload);
-
-	long getStarttimeDelay();
-
-	SimpleBooleanProperty runningProperty();
-
-	boolean getRunning();
-
-	void setRunning(boolean running);
-
-	void setMaxUploads(int maxUploads);
-
-	void setMaxSpeed(int maxSpeed);
+	@Override
+	public UploadModel process(final UploadModel upload) throws IOException {
+		final List<AccountModel> accountList = new ArrayList<>(1);
+		accountList.add(upload.getAccount());
+		playlistService.synchronizePlaylists(accountList);
+		return upload;
+	}
 }

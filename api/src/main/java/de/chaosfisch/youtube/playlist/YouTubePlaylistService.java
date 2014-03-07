@@ -31,8 +31,9 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
-	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModelsProperty = new SimpleMapProperty<>(FXCollections
-																																			  .observableHashMap());
+	private final SimpleMapProperty<AccountModel, SimpleListProperty<PlaylistModel>> playlistModelsProperty = new SimpleMapProperty<>(
+			FXCollections
+					.observableHashMap());
 	private final IAccountService accountService;
 
 	public YouTubePlaylistService(final IAccountService accountService) {
@@ -40,20 +41,20 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	@Override
-	public void addVideoToPlaylist(final PlaylistModel playlist, final String videoId) throws IOException {
+	public void addVideoToPlaylist(final PlaylistModel playlistModel, final String videoId) throws IOException {
 
 		final ResourceId resourceId = new ResourceId();
 		resourceId.setKind("youtube#video");
 		resourceId.setVideoId(videoId);
 
 		final PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
-		playlistItemSnippet.setPlaylistId(playlist.getYoutubeId());
+		playlistItemSnippet.setPlaylistId(playlistModel.getYoutubeId());
 		playlistItemSnippet.setResourceId(resourceId);
 
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-		YouTubeFactory.getYouTube(playlist.getAccount())
+		YouTubeFactory.getYouTube(playlistModel.getAccount())
 				.playlistItems()
 				.insert("snippet,status", playlistItem)
 				.execute();
@@ -62,20 +63,20 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	@Override
-	public void addYoutubePlaylist(final PlaylistModel playlist) throws IOException {
-		logger.debug("Adding playlist {} to youtube.", playlist.getTitle());
+	public void addYoutubePlaylist(final PlaylistModel playlistModel) throws IOException {
+		logger.debug("Adding playlist {} to youtube.", playlistModel.getTitle());
 		final PlaylistSnippet playlistSnippet = new PlaylistSnippet();
-		playlistSnippet.setTitle(playlist.getTitle());
-		playlistSnippet.setDescription(playlist.getDescription());
+		playlistSnippet.setTitle(playlistModel.getTitle());
+		playlistSnippet.setDescription(playlistModel.getDescription());
 
 		final PlaylistStatus playlistStatus = new PlaylistStatus();
-		playlistStatus.setPrivacyStatus(playlist.getPrivacyStatus() ? "private" : "public");
+		playlistStatus.setPrivacyStatus(playlistModel.getPrivacyStatus() ? "private" : "public");
 
 		final Playlist youTubePlaylist = new Playlist();
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-		YouTubeFactory.getYouTube(playlist.getAccount())
+		YouTubeFactory.getYouTube(playlistModel.getAccount())
 				.playlists()
 				.insert("snippet,status", youTubePlaylist)
 				.execute();
@@ -84,9 +85,9 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	@Override
-	public void synchronizePlaylists(final List<AccountModel> accounts) throws IOException {
+	public void synchronizePlaylists(final List<AccountModel> accountModels) throws IOException {
 		logger.info("Synchronizing playlists.");
-		for (final AccountModel account : accounts) {
+		for (final AccountModel account : accountModels) {
 			final YouTube.Playlists.List playlistsRequest = YouTubeFactory.getYouTube(account)
 					.playlists()
 					.list("id,snippet,contentDetails")
@@ -106,25 +107,26 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 			final List<PlaylistModel> accountPlaylists = account.getPlaylists();
 			accountPlaylists.removeAll(playlists);
 			for (final PlaylistModel playlist : accountPlaylists) {
-				delete(playlist);
+				remove(playlist);
 			}
 			account.getPlaylists().addAll(playlists);
-			accountService.update(account);
+			accountService.store(account);
 		}
 		logger.info("Playlists synchronized");
 	}
 
 	@Override
 	public SimpleListProperty<PlaylistModel> playlistModelsProperty(final AccountModel accountModel) {
-		return playlistModelsProperty.getOrDefault(accountModel, playlistModelsProperty.put(accountModel, new SimpleListProperty<>(FXCollections
-																																		   .observableArrayList())));
+		return playlistModelsProperty.getOrDefault(accountModel,
+												   playlistModelsProperty.put(accountModel,
+																			  new SimpleListProperty<>(FXCollections.observableArrayList())));
 	}
 
 	List<PlaylistModel> parsePlaylistListResponse(final AccountModel account, final PlaylistListResponse response) {
 		final ArrayList<PlaylistModel> list = new ArrayList<>(response.getItems()
 																	  .size());
 		for (final Playlist entry : response.getItems()) {
-			final PlaylistModel playlist = findByPkey(entry.getId());
+			final PlaylistModel playlist = get(entry.getId());
 			if (null == playlist) {
 				list.add(_createNewPlaylist(account, entry));
 			} else {
@@ -136,7 +138,7 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 
 	PlaylistModel _updateExistingPlaylist(final AccountModel account, final Playlist entry, final PlaylistModel playlist) {
 		setPlaylistModelInfos(account, entry, playlist);
-		update(playlist);
+		store(playlist);
 		return playlist;
 	}
 
@@ -144,7 +146,7 @@ public abstract class YouTubePlaylistService implements IPlaylistService {
 		final PlaylistModel playlist = new PlaylistModel();
 		playlist.setYoutubeId(entry.getId());
 		setPlaylistModelInfos(account, entry, playlist);
-		insert(playlist);
+		store(playlist);
 		return playlist;
 	}
 

@@ -12,7 +12,7 @@ package de.chaosfisch.uploader.services;
 
 import de.chaosfisch.uploader.enddir.IEnddirService;
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPreProcessor;
+import de.chaosfisch.youtube.upload.job.UploadJobPreProcessor;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,14 @@ import javax.inject.Named;
 import java.io.File;
 import java.util.ResourceBundle;
 
-public class PlaceholderPreProcessor implements UploadPreProcessor {
+public class PlaceholderJobPreProcessor implements UploadJobPreProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderPreProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderJobPreProcessor.class);
 	private final ResourceBundle resources;
 	private final Configuration  config;
 
 	@Inject
-	public PlaceholderPreProcessor(@Named("i18n-resources") final ResourceBundle resources, final Configuration config) {
+	public PlaceholderJobPreProcessor(@Named("i18n-resources") final ResourceBundle resources, final Configuration config) {
 		this.resources = resources;
 		this.config = config;
 	}
@@ -37,7 +37,9 @@ public class PlaceholderPreProcessor implements UploadPreProcessor {
 	@Override
 	public UploadModel process(final UploadModel upload) {
 		LOGGER.info("Replacing placeholders");
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(), upload.getPlaylists(), resources);
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(),
+																				   upload.getPlaylists(),
+																				   resources);
 		upload.setMetadataTitle(extendedPlaceholders.replace(upload.getMetadataTitle()));
 		upload.setMetadataDescription(extendedPlaceholders.replace(upload.getMetadataDescription()));
 		upload.setMetadataTags(extendedPlaceholders.replace(upload.getMetadataTags()));

@@ -17,7 +17,18 @@ import java.io.IOException;
 
 public interface ICategoryService {
 
+	/**
+	 * Refreshes the internal category storage
+	 *
+	 * @param youTube the YouTube instance to use
+	 * @throws IOException if request to YouTube fails.
+	 */
 	void refresh(YouTube youTube) throws IOException;
 
+	/**
+	 * Returns the list property for CategoryModel
+	 *
+	 * @return SimpleListProperty<CategoryModel> categoryModels
+	 */
 	SimpleListProperty<CategoryModel> categoryModelsProperty();
 }

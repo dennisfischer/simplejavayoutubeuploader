@@ -11,7 +11,7 @@
 package de.chaosfisch.youtube.processors;
 
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.io.IOException;
 
-class MetadataUpdatePostProcessor implements UploadPostProcessor {
+class MetadataUpdatePostProcessor implements UploadeJobPostProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataUpdatePostProcessor.class);
 	private final IMetadataService metadataService;
 

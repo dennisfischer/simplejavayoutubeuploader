@@ -13,12 +13,12 @@ package de.chaosfisch.youtube.processors;
 import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-public class PlaylistPostProcessor implements UploadPostProcessor {
+public class PlaylistPostProcessor implements UploadeJobPostProcessor {
 
 	private final IPlaylistService playlistService;
 

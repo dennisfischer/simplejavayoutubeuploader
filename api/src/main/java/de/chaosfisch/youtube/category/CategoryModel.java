@@ -14,9 +14,7 @@ import de.chaosfisch.data.UniqueObject;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.io.Serializable;
-
-public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
+public class CategoryModel implements UniqueObject<CategoryDTO> {
 	private final SimpleIntegerProperty youtubeId = new SimpleIntegerProperty();
 	private final SimpleStringProperty  name      = new SimpleStringProperty();
 
@@ -81,24 +79,5 @@ public class CategoryModel implements UniqueObject<CategoryModel.CategoryDTO> {
 
 	public void setYoutubeId(final int youtubeId) {
 		this.youtubeId.set(youtubeId);
-	}
-
-	static final class CategoryDTO implements Serializable {
-		private static final long serialVersionUID = 8676626334279071412L;
-		private final String name;
-		private final int    youtubeId;
-
-		private CategoryDTO(final String name, final int youtubeId) {
-			this.name = name;
-			this.youtubeId = youtubeId;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getYoutubeId() {
-			return youtubeId;
-		}
 	}
 }

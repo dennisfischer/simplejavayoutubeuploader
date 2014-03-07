@@ -8,10 +8,25 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.category;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-public interface UploadPostProcessor {
-	UploadModel process(UploadModel upload) throws IOException;
+public class CategoryDTO implements Serializable {
+	private static final long serialVersionUID = 8676626334279071412L;
+	private final String name;
+	private final int    youtubeId;
+
+	public CategoryDTO(final String name, final int youtubeId) {
+		this.name = name;
+		this.youtubeId = youtubeId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getYoutubeId() {
+		return youtubeId;
+	}
 }

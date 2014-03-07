@@ -8,10 +8,12 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.youtube.upload.job;
 
-import com.google.common.util.concurrent.RateLimiter;
+import de.chaosfisch.youtube.upload.UploadModel;
 
-public interface IUploadJobFactory {
-	UploadJob create(UploadModel upload, RateLimiter rateLimiter);
+import java.io.IOException;
+
+public interface UploadJobPreProcessor {
+	UploadModel process(UploadModel upload) throws IOException;
 }

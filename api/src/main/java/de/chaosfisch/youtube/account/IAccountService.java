@@ -14,13 +14,32 @@ import java.util.List;
 
 public interface IAccountService {
 
+	/**
+	 * Returns all accounts in the system
+	 *
+	 * @return List<AccountModel> accounts
+	 */
 	List<AccountModel> getAll();
 
-	AccountModel get(String id);
+	/**
+	 * Returns a specific account
+	 *
+	 * @param youtubeId of account
+	 * @return AccountModel accountModel
+	 */
+	AccountModel get(String youtubeId);
 
-	void insert(AccountModel account);
+	/**
+	 * Stores (inserts/updates) a single record
+	 *
+	 * @param accountModel to store
+	 */
+	void store(AccountModel accountModel);
 
-	void update(AccountModel account);
-
-	void delete(AccountModel account);
+	/**
+	 * Removed (deletes) a single record
+	 *
+	 * @param accountModel to remove
+	 */
+	void remove(AccountModel accountModel);
 }

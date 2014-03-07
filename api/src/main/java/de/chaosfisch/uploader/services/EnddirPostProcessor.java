@@ -13,14 +13,14 @@ package de.chaosfisch.uploader.services;
 import com.google.common.io.Files;
 import de.chaosfisch.uploader.enddir.IEnddirService;
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-class EnddirPostProcessor implements UploadPostProcessor {
+class EnddirPostProcessor implements UploadeJobPostProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnddirPostProcessor.class);
 	private final IEnddirService enddirService;

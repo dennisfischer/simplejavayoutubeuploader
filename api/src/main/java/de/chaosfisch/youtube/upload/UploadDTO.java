@@ -8,32 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.processors;
+package de.chaosfisch.youtube.upload;
 
-import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.playlist.IPlaylistService;
-import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPreProcessor;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PlaylistPreProcessor implements UploadPreProcessor {
-	private final IPlaylistService playlistService;
-
-	@Inject
-	public PlaylistPreProcessor(final IPlaylistService playlistService) {
-		this.playlistService = playlistService;
-	}
-
-	@Override
-	public UploadModel process(final UploadModel upload) throws IOException {
-
-		final List<AccountModel> accountList = new ArrayList<>(1);
-		accountList.add(upload.getAccount());
-		playlistService.synchronizePlaylists(accountList);
-		return upload;
-	}
+public class UploadDTO {
 }

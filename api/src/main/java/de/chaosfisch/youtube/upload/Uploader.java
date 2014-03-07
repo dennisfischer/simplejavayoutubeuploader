@@ -12,6 +12,7 @@ package de.chaosfisch.youtube.upload;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.RateLimiter;
+import de.chaosfisch.youtube.upload.job.IUploadJobFactory;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +30,16 @@ public class Uploader {
 	private static final int                                       DEFAULT_MAX_UPLOADS  = 1;
 	private              int                                       maxUploads           = DEFAULT_MAX_UPLOADS;
 	private static final int                                       ONE_KILOBYTE         = 1024;
-	private static final Logger                                    logger               = LoggerFactory.getLogger(Uploader.class);
-	private final        ExecutorService                           executorService      = Executors.newFixedThreadPool(10);
-	private final        CompletionService<UploadModel>            jobCompletionService = new ExecutorCompletionService<>(executorService);
+	private static final Logger                                    logger               = LoggerFactory.getLogger(
+			Uploader.class);
+	private final        ExecutorService                           executorService      = Executors.newFixedThreadPool(
+			10);
+	private final        CompletionService<UploadModel>            jobCompletionService = new ExecutorCompletionService<>(
+			executorService);
 	private final        ScheduledExecutorService                  timer                = Executors.newSingleThreadScheduledExecutor();
 	private final        RateLimiter                               rateLimitter         = RateLimiter.create(Double.MAX_VALUE);
-	private final        HashMap<UploadModel, Future<UploadModel>> futures              = Maps.newHashMapWithExpectedSize(10);
+	private final        HashMap<UploadModel, Future<UploadModel>> futures              = Maps.newHashMapWithExpectedSize(
+			10);
 	private final IUploadJobFactory     uploadJobFactory;
 	private final Configuration         configuration;
 	private       int                   runningUploads;
@@ -69,7 +74,7 @@ public class Uploader {
 
 	private void markUploadRunning(final UploadModel nextUpload) {
 		nextUpload.setStatus(Status.RUNNING);
-		uploadService.update(nextUpload);
+		uploadService.store(nextUpload);
 	}
 
 	private void createConsumer() {

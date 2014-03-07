@@ -13,18 +13,20 @@
  */
 package de.chaosfisch.youtube.playlist;
 
+import de.chaosfisch.data.UniqueObject;
 import de.chaosfisch.youtube.account.AccountModel;
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-public class PlaylistModel {
+public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 
-	private final SimpleIntegerProperty              id            = new SimpleIntegerProperty();
 	private final SimpleStringProperty               youtubeId     = new SimpleStringProperty();
 	private final SimpleStringProperty               title         = new SimpleStringProperty();
 	private final SimpleStringProperty               thumbnail     = new SimpleStringProperty();
 	private final SimpleBooleanProperty              privacyStatus = new SimpleBooleanProperty();
 	private final SimpleLongProperty                 itemCount     = new SimpleLongProperty();
-	private final SimpleBooleanProperty              hidden        = new SimpleBooleanProperty(false);
 	private final SimpleStringProperty               description   = new SimpleStringProperty();
 	private final SimpleObjectProperty<AccountModel> account       = new SimpleObjectProperty<>();
 
@@ -58,20 +60,8 @@ public class PlaylistModel {
 		this.title.set(title);
 	}
 
-	public int getId() {
-		return id.get();
-	}
-
-	public void setId(final int id) {
-		this.id.set(id);
-	}
-
-	public SimpleIntegerProperty idProperty() {
-		return id;
-	}
-
-	public int getAccountId() {
-		return account.get().getId();
+	public String getAccountId() {
+		return account.get().getYoutubeId();
 	}
 
 	public AccountModel getAccount() {
@@ -134,18 +124,6 @@ public class PlaylistModel {
 		return itemCount;
 	}
 
-	public boolean getHidden() {
-		return hidden.get();
-	}
-
-	public void setHidden(final boolean hidden) {
-		this.hidden.set(hidden);
-	}
-
-	public SimpleBooleanProperty hiddenProperty() {
-		return hidden;
-	}
-
 	public String getDescription() {
 		return description.get();
 	}
@@ -160,6 +138,32 @@ public class PlaylistModel {
 
 	public SimpleObjectProperty<AccountModel> accountProperty() {
 		return account;
+	}
+
+	@Override
+	public String uniqueId() {
+		return youtubeId.get();
+	}
+
+	@Override
+	public PlaylistDTO toDTO() {
+		return new PlaylistDTO(youtubeId.get(),
+							   title.get(),
+							   thumbnail.get(),
+							   privacyStatus.get(),
+							   itemCount.get(),
+							   description.get(),
+							   account.get().getYoutubeId());
+	}
+
+	@Override
+	public void fromDTO(final PlaylistDTO o) {
+		setYoutubeId(o.getYoutubeId());
+		setTitle(o.getTitle());
+		setThumbnail(o.getThumbnail());
+		setPrivacyStatus(o.isPrivacyStatus());
+		setItemCount(o.getItemCount());
+		setDescription(o.getDescription());
 	}
 
 	/*

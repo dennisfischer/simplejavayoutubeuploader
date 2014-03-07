@@ -13,25 +13,44 @@
  */
 package de.chaosfisch.youtube.account;
 
+import de.chaosfisch.data.UniqueObject;
+import de.chaosfisch.youtube.playlist.PlaylistDTO;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
+
 import static de.chaosfisch.youtube.account.PersistentCookieStore.SerializableCookie;
 
-public class AccountModel {
+public class AccountModel implements UniqueObject<AccountDTO> {
 
-	private final SimpleIntegerProperty                  id                  = new SimpleIntegerProperty();
+	private final SimpleStringProperty                   youtubeId           = new SimpleStringProperty();
 	private final SimpleStringProperty                   name                = new SimpleStringProperty();
 	private final SimpleStringProperty                   email               = new SimpleStringProperty();
 	private final SimpleStringProperty                   refreshToken        = new SimpleStringProperty();
 	private final SimpleObjectProperty<AccountType>      type                = new SimpleObjectProperty<>();
-	private final SimpleListProperty<PlaylistModel>      playlists           = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<SerializableCookie> serializableCookies = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<PlaylistModel>      playlists           = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
+	private final SimpleListProperty<SerializableCookie> serializableCookies = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
+	private final SimpleListProperty<String>             fields              = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
+
+	public ObservableList<String> getFields() {
+		return fields.get();
+	}
+
+	public void setFields(final ObservableList<String> fields) {
+		this.fields.set(fields);
+	}
+
+	public SimpleListProperty<String> fieldsProperty() {
+		return fields;
+	}
 
 	public String getEmail() {
 		return email.get();
@@ -45,16 +64,16 @@ public class AccountModel {
 		return email;
 	}
 
-	public int getId() {
-		return id.get();
+	public String getYoutubeId() {
+		return youtubeId.get();
 	}
 
-	public void setId(final int id) {
-		this.id.set(id);
+	public void setYoutubeId(final String youtubeId) {
+		this.youtubeId.set(youtubeId);
 	}
 
-	public SimpleIntegerProperty idProperty() {
-		return id;
+	public SimpleStringProperty youtubeIdProperty() {
+		return youtubeId;
 	}
 
 	public SimpleStringProperty nameProperty() {
@@ -120,5 +139,44 @@ public class AccountModel {
 
 	public void setName(final String name) {
 		this.name.set(name);
+	}
+
+	@Override
+	public String uniqueId() {
+		return youtubeId.get();
+	}
+
+	@Override
+	public AccountDTO toDTO() {
+		final ArrayList<PlaylistDTO> playlistDTOs = new ArrayList<>(playlists.getSize());
+		playlists.get().forEach(p -> playlistDTOs.add(p.toDTO()));
+		return new AccountDTO(youtubeId.get(),
+							  name.get(),
+							  email.get(),
+							  refreshToken.get(),
+							  type.get(),
+							  playlistDTOs,
+							  new ArrayList<>(fields.get()),
+							  new ArrayList<>(serializableCookies.get()));
+	}
+
+	@Override
+	public void fromDTO(final AccountDTO o) {
+		setYoutubeId(o.getYoutubeId());
+		setName(o.getName());
+		setEmail(o.getEmail());
+		setRefreshToken(o.getRefreshToken());
+		setType(o.getType());
+		playlists.clear();
+
+		o.getPlaylists().forEach(p -> {
+			final PlaylistModel playlistModel = new PlaylistModel();
+			playlistModel.fromDTO(p);
+			playlistModel.setAccount(this);
+			playlists.add(playlistModel);
+		});
+
+		fields.setAll(o.getFields());
+		serializableCookies.setAll(o.getSerializableCookies());
 	}
 }

@@ -11,13 +11,13 @@
 package de.chaosfisch.youtube.processors;
 
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.UploadPostProcessor;
+import de.chaosfisch.youtube.upload.job.UploadeJobPostProcessor;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-class ExtendedGDataPostProcessor implements UploadPostProcessor {
+class ExtendedGDataPostProcessor implements UploadeJobPostProcessor {
 
 	private final IMetadataService metadataService;
 
