@@ -22,4 +22,6 @@ public interface IDataStore<T extends UniqueObject<E>, E> {
 	Collection<T> load(Predicate<? super E> predicate);
 
 	T loadOne(Predicate<? super E> predicate);
+
+	void remove(T o);
 }

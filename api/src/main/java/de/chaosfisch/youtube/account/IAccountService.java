@@ -10,6 +10,8 @@
 
 package de.chaosfisch.youtube.account;
 
+import javafx.beans.property.SimpleListProperty;
+
 import java.util.List;
 
 public interface IAccountService {
@@ -17,7 +19,7 @@ public interface IAccountService {
 	/**
 	 * Returns all accounts in the system
 	 *
-	 * @return List<AccountModel> accounts
+	 * @return Collection<AccountModel> accounts
 	 */
 	List<AccountModel> getAll();
 
@@ -42,4 +44,6 @@ public interface IAccountService {
 	 * @param accountModel to remove
 	 */
 	void remove(AccountModel accountModel);
+
+	SimpleListProperty<AccountModel> accountModelsProperty();
 }

@@ -10,9 +10,15 @@
   * Contributors: Dennis Fischer                                                                  *
   ***********************************************************************************************-->
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TitledPane?>
-<?import org.controlsfx.control.GridView?>
-<TitledPane animated="false" fx:id="titledpane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-			fx:controller="de.chaosfisch.uploader.gui.account.entry.EntryPresenter">
-	<GridView fx:id="gridview"/>
+<?import javafx.scene.layout.FlowPane?>
+<TitledPane fx:id="titledpane" animated="false" contentDisplay="RIGHT" xmlns="http://javafx.com/javafx/8"
+			xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.chaosfisch.uploader.gui.account.entry.EntryPresenter">
+	<content>
+		<FlowPane fx:id="flowpane" hgap="5" vgap="5"/>
+	</content>
+	<graphic>
+		<Button mnemonicParsing="false" text="Delete" onAction="#deleteAccount"/>
+	</graphic>
 </TitledPane>

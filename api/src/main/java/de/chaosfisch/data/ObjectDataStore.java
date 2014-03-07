@@ -57,6 +57,12 @@ public class ObjectDataStore<T extends UniqueObject<E>, E> implements IDataStore
 		return transformDTOs.isEmpty() ? null : (T) transformDTOs.toArray()[0];
 	}
 
+	@Override
+	public void remove(final T o) {
+		hashMap.remove(o.uniqueId());
+		db.commit();
+	}
+
 	private Collection<T> transformDTOs(final Collection<E> values) {
 		final Collection<T> result = new ArrayList<>(values.size());
 		values.forEach(t -> result.add(transformDTO(t)));

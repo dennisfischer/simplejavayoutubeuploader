@@ -16,6 +16,7 @@ import de.chaosfisch.data.ObjectDataStore;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.account.AccountPresenter;
 import de.chaosfisch.uploader.gui.account.AccountView;
+import de.chaosfisch.uploader.gui.account.entry.EntryPresenter;
 import de.chaosfisch.uploader.gui.account.entry.EntryView;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
@@ -26,6 +27,9 @@ import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.project.ProjectPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
+import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.account.AccountService;
+import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.category.YouTubeCategoryService;
@@ -36,7 +40,7 @@ import javax.inject.Singleton;
 import java.io.File;
 
 @Module(
-		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class}
+		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class}
 )
 public class GUIModule {
 
@@ -72,14 +76,16 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	DataModel provideDataModel(final ICategoryService iCategoryService) {
-		return new DataModel(iCategoryService);
+	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService) {
+		return new DataModel(iCategoryService, iAccountService);
 	}
 
 	@Provides
 	@Singleton
 	DB provideDB() {
-		final DB db = DBMaker.newFileDB(new File(String.format("%s/%s/database.mapdb", ApplicationData.DATA_DIR, ApplicationData.VERSION)))
+		final DB db = DBMaker.newFileDB(new File(String.format("%s/%s/database.mapdb",
+															   ApplicationData.DATA_DIR,
+															   ApplicationData.VERSION)))
 				.closeOnJvmShutdown()
 				.compressionEnable()
 				.make();
@@ -91,5 +97,11 @@ public class GUIModule {
 	@Singleton
 	ICategoryService provideCategoryService(final DB db) {
 		return new YouTubeCategoryService(new ObjectDataStore<>(db, db.getHashMap("categories"), CategoryModel.class));
+	}
+
+	@Provides
+	@Singleton
+	IAccountService provideAccountService(final DB db) {
+		return new AccountService(new ObjectDataStore<>(db, db.getHashMap("accounts"), AccountModel.class));
 	}
 }

@@ -13,6 +13,7 @@ package de.chaosfisch.uploader.gui;
 import de.chaosfisch.uploader.project.ProjectModel;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
@@ -41,21 +42,27 @@ public class DataModel {
 	private final SimpleListProperty<String>        files             = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleListProperty<UploadModel>   selectedUploads   = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleListProperty<PlaylistModel> selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility
-																																		   .values()));
-	private final SimpleListProperty<Comment>       comments          = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
-	private final SimpleListProperty<ThreeD>        threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
-	private final SimpleListProperty<License>       licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));
+	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(
+			Visibility
+					.values()));
+	private final SimpleListProperty<Comment>       comments          = new SimpleListProperty<>(FXCollections.observableArrayList(
+			Comment.values()));
+	private final SimpleListProperty<ThreeD>        threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(
+			ThreeD.values()));
+	private final SimpleListProperty<License>       licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(
+			License.values()));
 
 	private final SimpleObjectProperty<AccountModel>  selectedAccount  = new SimpleObjectProperty<>();
 	private final SimpleObjectProperty<CategoryModel> selectedCategory = new SimpleObjectProperty<>();
 	private final SimpleStringProperty                selectedFile     = new SimpleStringProperty();
 	private final ICategoryService categoryService;
+	private final IAccountService  accountService;
 //	private final IPlaylistService playlistService;
 
 
-	public DataModel(final ICategoryService categoryService) {
+	public DataModel(final ICategoryService categoryService, final IAccountService accountService) {
 		this.categoryService = categoryService;
+		this.accountService = accountService;
 		initSampleData();
 		initBindings();
 		initData();
@@ -63,6 +70,7 @@ public class DataModel {
 
 	private void initBindings() {
 		categories.bind(categoryService.categoryModelsProperty());
+		accounts.bindBidirectional(accountService.accountModelsProperty());
 		//	projects.bind(projectService.projectModelsProperty());
 	}
 
@@ -124,53 +132,6 @@ public class DataModel {
 		uploadModel5.setStatus(Status.FINISHED);
 		uploads.addAll(uploadModel1, uploadModel2, uploadModel3, uploadModel4, uploadModel5);
 
-		final AccountModel accountModel = new AccountModel();
-		accountModel.setName("Account 1");
-		final ObservableList<PlaylistModel> playlists = FXCollections.observableArrayList();
-		final PlaylistModel model1 = new PlaylistModel();
-		model1.setTitle("Playlist 1");
-		final PlaylistModel model2 = new PlaylistModel();
-		model2.setTitle("Playlist 2");
-		final PlaylistModel model3 = new PlaylistModel();
-		model3.setTitle("Playlist 3");
-		final PlaylistModel model4 = new PlaylistModel();
-		model4.setTitle("Playlist 4");
-		final PlaylistModel model5 = new PlaylistModel();
-		model5.setTitle("Playlist 5");
-		final PlaylistModel model6 = new PlaylistModel();
-		model6.setTitle("Playlist 6");
-		final PlaylistModel model7 = new PlaylistModel();
-		model7.setTitle("Playlist 7");
-		final PlaylistModel model8 = new PlaylistModel();
-		model8.setTitle("Playlist 8");
-		final PlaylistModel model9 = new PlaylistModel();
-		model9.setTitle("Playlist 9");
-		final PlaylistModel model10 = new PlaylistModel();
-		model10.setTitle("Playlist 10");
-		final PlaylistModel model11 = new PlaylistModel();
-		model11.setTitle("Playlist 11");
-		playlists.addAll(model1);
-		playlists.addAll(model2);
-		playlists.addAll(model3);
-		playlists.addAll(model4);
-		playlists.addAll(model5);
-		playlists.addAll(model6);
-		playlists.addAll(model7);
-		playlists.addAll(model8);
-
-		accountModel.setPlaylists(playlists);
-
-		final AccountModel accountModel2 = new AccountModel();
-		accountModel2.setName("Account 2");
-		final AccountModel accountModel3 = new AccountModel();
-		accountModel3.setName("Account 3");
-		final AccountModel accountModel4 = new AccountModel();
-		accountModel4.setName("Account 4");
-
-		accounts.addAll(accountModel);
-		accounts.addAll(accountModel2);
-		accounts.addAll(accountModel3);
-		accounts.addAll(accountModel4);
 	}
 
 	public void addUploads(final List<UploadModel> uploads) {
