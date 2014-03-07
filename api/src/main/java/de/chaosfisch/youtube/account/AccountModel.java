@@ -21,12 +21,13 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import static de.chaosfisch.youtube.account.PersistentCookieStore.SerializableCookie;
 
-public class AccountModel implements UniqueObject<AccountDTO> {
+public class AccountModel implements UniqueObject<AccountDTO>, Comparable<AccountModel> {
 
 	private final SimpleStringProperty                   youtubeId           = new SimpleStringProperty();
 	private final SimpleStringProperty                   name                = new SimpleStringProperty();
@@ -128,11 +129,6 @@ public class AccountModel implements UniqueObject<AccountDTO> {
 		return serializableCookies;
 	}
 
-	@Override
-	public String toString() {
-		return getName();
-	}
-
 	public String getName() {
 		return name.get();
 	}
@@ -178,5 +174,37 @@ public class AccountModel implements UniqueObject<AccountDTO> {
 
 		fields.setAll(o.getFields());
 		serializableCookies.setAll(o.getSerializableCookies());
+	}
+
+	@Override
+	public int compareTo(@NotNull final AccountModel o) {
+		if (0 > name.get().compareTo(o.name.get())) {
+			return -1;
+		} else if (0 < name.get().compareTo(o.name.get())) {
+			return 1;
+		}
+		return 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return youtubeId.get().hashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof AccountModel)) {
+			return false;
+		}
+		final AccountModel that = (AccountModel) obj;
+		return youtubeId.get().equals(that.youtubeId.get());
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

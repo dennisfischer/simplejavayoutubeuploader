@@ -26,18 +26,18 @@ import javax.inject.Provider;
 import java.util.HashMap;
 
 public class AccountPresenter {
-	@FXML
-	public Accordion accordion;
-
+	private final SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
+	private final HashMap<AccountModel, EntryView> accountPanels                  = new HashMap<>(5);
 	@Inject
-	protected DataModel dataModel;
-
+	protected DataModel           dataModel;
 	@Inject
 	protected Provider<EntryView> entryViewProvider;
-
-	private final SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(FXCollections
-																													 .observableArrayList());
-	private final HashMap<AccountModel, EntryView> accountPanels                  = new HashMap<>(5);
+	@FXML
+	private   Accordion           accordion;
+	@FXML
+	private   TitledPane          defaultPanel;
+	private boolean defaultAdded = true;
 
 	@FXML
 	public void initialize() {
@@ -58,6 +58,10 @@ public class AccountPresenter {
 	}
 
 	private void addPanel(final AccountModel accountModel) {
+		if (defaultAdded) {
+			accordion.getPanes().remove(defaultPanel);
+			defaultAdded = false;
+		}
 		final EntryView entryView = entryViewProvider.get();
 		accountPanels.put(accountModel, entryView);
 		((EntryPresenter) entryView.getPresenter()).setAccount(accountModel);
@@ -68,6 +72,11 @@ public class AccountPresenter {
 		if (accountPanels.containsKey(accountModel)) {
 			final EntryView entryView = accountPanels.remove(accountModel);
 			accordion.getPanes().remove(entryView.getView());
+		}
+
+		if (accordion.getPanes().isEmpty()) {
+			accordion.getPanes().add(defaultPanel);
+			defaultAdded = true;
 		}
 	}
 }

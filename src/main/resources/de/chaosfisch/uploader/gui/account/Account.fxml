@@ -11,7 +11,10 @@
   ***********************************************************************************************-->
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TitledPane?>
 <Accordion xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:id="accordion"
 		   fx:controller="de.chaosfisch.uploader.gui.account.AccountPresenter">
-	<panes/>
+	<panes>
+		<TitledPane collapsible="false" expanded="true" text="No accounts existing!" fx:id="defaultPanel"/>
+	</panes>
 </Accordion>

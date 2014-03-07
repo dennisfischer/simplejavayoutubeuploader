@@ -24,10 +24,10 @@ import java.time.format.DateTimeFormatter;
 
 public class UploadEntryPresenter {
 	@FXML
-	public ProgressBar progress;
+	private ProgressBar progress;
 
 	@FXML
-	public Label progressLabel;
+	private Label progressLabel;
 
 	@FXML
 	private Label title;
@@ -57,7 +57,8 @@ public class UploadEntryPresenter {
 
 	private void bindModel() {
 		unbindModel();
-		final LocalDateTimeStringConverter dateTimeStringConverter = new LocalDateTimeStringConverter("EEE, dd.MM.yyyy 'um' HH:mm");
+		final LocalDateTimeStringConverter dateTimeStringConverter = new LocalDateTimeStringConverter(
+				"EEE, dd.MM.yyyy 'um' HH:mm");
 		release.textProperty().bindBidirectional(uploadModel.dateTimeOfReleaseProperty(), dateTimeStringConverter);
 		start.textProperty().bindBidirectional(uploadModel.dateTimeOfStartProperty(), dateTimeStringConverter);
 		end.textProperty().bindBidirectional(uploadModel.dateTimeOfEndProperty(), dateTimeStringConverter);

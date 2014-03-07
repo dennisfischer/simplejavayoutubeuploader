@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ProjectPresenter {
 	@FXML
-	public ComboBox<ProjectModel> projects;
+	private ComboBox<ProjectModel> projects;
 
 	@Inject
 	protected DataModel dataModel;

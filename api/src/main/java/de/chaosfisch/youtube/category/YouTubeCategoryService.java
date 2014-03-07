@@ -20,6 +20,7 @@ import javafx.collections.ObservableList;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
 
 public class YouTubeCategoryService implements ICategoryService {
@@ -35,6 +36,7 @@ public class YouTubeCategoryService implements ICategoryService {
 
 	private void loadCategories() {
 		categoryModels.addAll(dataStore.loadAll());
+		Collections.sort(categoryModels);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class YouTubeCategoryService implements ICategoryService {
 			categoryModel.setYoutubeId(Integer.parseInt(id));
 
 			dataStore.store(categoryModel);
-			if (!categoryModels.contains(categoryModel)) {
+			if (!categoryModels.get().contains(categoryModel)) {
 				categoryModels.add(categoryModel);
 			} else {
 				categoryModels.set(categoryModels.indexOf(categoryModel), categoryModel);

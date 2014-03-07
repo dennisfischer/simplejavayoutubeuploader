@@ -70,7 +70,7 @@ public class DataModel {
 
 	private void initBindings() {
 		categories.bind(categoryService.categoryModelsProperty());
-		accounts.bindBidirectional(accountService.accountModelsProperty());
+		accounts.bind(accountService.accountModelsProperty());
 		//	projects.bind(projectService.projectModelsProperty());
 	}
 

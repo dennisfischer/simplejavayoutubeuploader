@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.inject.Inject;
+import java.util.Collections;
 
 public class AccountService implements IAccountService {
 	private final SimpleListProperty<AccountModel> accountModels = new SimpleListProperty<>(
@@ -30,6 +31,7 @@ public class AccountService implements IAccountService {
 
 	private void loadAccounts() {
 		accountModels.addAll(dataStore.loadAll());
+		Collections.sort(accountModels);
 	}
 
 

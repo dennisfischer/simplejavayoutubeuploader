@@ -32,7 +32,7 @@ public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 
 	@Override
 	public int hashCode() {
-		return youtubeId.hashCode();
+		return youtubeId.get().hashCode();
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 			return false;
 		}
 		final PlaylistModel that = (PlaylistModel) obj;
-		return youtubeId.equals(that.youtubeId);
+		return youtubeId.get().equals(that.youtubeId.get());
 	}
 
 	@Override

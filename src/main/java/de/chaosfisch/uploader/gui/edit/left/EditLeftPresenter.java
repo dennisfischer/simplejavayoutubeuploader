@@ -24,32 +24,24 @@ import javafx.scene.control.TextField;
 import javax.inject.Inject;
 
 public class EditLeftPresenter {
-	@FXML
-	public ComboBox<String> files;
-
-	@FXML
-	public TextField title;
-
-	@FXML
-	public ComboBox<CategoryModel> categories;
-
-	@FXML
-	public TextArea description;
-
-	@FXML
-	public TextArea tags;
-
-	@FXML
-	public ComboBox<AccountModel> accounts;
-
-	@FXML
-	public ComboBox<PlaylistModel> playlists;
-
-	@FXML
-	public ListView<PlaylistModel> selectedPlaylists;
-
 	@Inject
-	protected DataModel dataModel;
+	protected DataModel               dataModel;
+	@FXML
+	private   ComboBox<String>        files;
+	@FXML
+	private   TextField               title;
+	@FXML
+	private   ComboBox<CategoryModel> categories;
+	@FXML
+	private   TextArea                description;
+	@FXML
+	private   TextArea                tags;
+	@FXML
+	private   ComboBox<AccountModel>  accounts;
+	@FXML
+	private   ComboBox<PlaylistModel> playlists;
+	@FXML
+	private   ListView<PlaylistModel> selectedPlaylists;
 
 	@FXML
 	public void initialize() {
