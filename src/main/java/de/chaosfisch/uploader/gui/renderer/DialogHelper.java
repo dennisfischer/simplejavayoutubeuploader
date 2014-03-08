@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.uploader.gui.renderer;
 
@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 public class DialogHelper {
 
 	@Inject
-	private GuiceFXMLLoader fxmlLoader;
+	private GuiceFXMLLoader  fxmlLoader;
 	@Inject
 	private ITemplateService templateService;
 
@@ -57,7 +57,7 @@ public class DialogHelper {
 	private static final Logger logger = LoggerFactory.getLogger(DialogHelper.class);
 
 	private ProgressBar busyProgressBar;
-	private Label busyProgressLabel;
+	private Label       busyProgressLabel;
 
 	public void registerBusyTask(final Task task) {
 		if (null != busyProgressBar) {
@@ -77,7 +77,8 @@ public class DialogHelper {
 				try {
 					controller.input.getStyleClass().remove("input-invalid");
 					final Gson gson = new Gson();
-					final Template template = gson.fromJson(gson.toJson(ViewController.standardTemplate), Template.class);
+					final Template template = gson.fromJson(gson.toJson(ViewController.standardTemplate),
+															Template.class);
 					template.setName(input);
 					template.setDefaultdir(new File(template.getDefaultdir().getPath()));
 					templateService.insert(template);
@@ -88,12 +89,14 @@ public class DialogHelper {
 							controller.input.getStyleClass().add("input-invalid");
 							controller.input
 									.setTooltip(TooltipBuilder.create()
-											.autoHide(true)
-											.text(resources.getString("validation.name"))
-											.build());
+														.autoHide(true)
+														.text(resources.getString("validation.name"))
+														.build());
 							controller.input
 									.getTooltip()
-									.show(controller.input, getTooltipX(controller.input), getTooltipY(controller.input));
+									.show(controller.input,
+										  getTooltipX(controller.input),
+										  getTooltipY(controller.input));
 							break;
 					}
 				}
@@ -103,7 +106,8 @@ public class DialogHelper {
 
 	public void showPlaylistAddDialog() {
 		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml"), resources);
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource(
+					"/de/chaosfisch/uploader/view/PlaylistAddDialog.fxml"), resources);
 			final Parent parent = result.getRoot();
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
@@ -119,7 +123,8 @@ public class DialogHelper {
 
 	public void showErrorDialog(final String title, final String message) {
 		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ErrorDialog.fxml"), resources);
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource(
+					"/de/chaosfisch/uploader/view/ErrorDialog.fxml"), resources);
 			final ErrorDialogController controller = result.getController();
 			controller.setTitle(title);
 			controller.setMessage(message);
@@ -142,7 +147,8 @@ public class DialogHelper {
 
 	public void showInputDialog(final String title, final String input, final Callback callback, final boolean blocking) {
 		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/InputDialog.fxml"), resources);
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource(
+					"/de/chaosfisch/uploader/view/InputDialog.fxml"), resources);
 			final Parent parent = result.getRoot();
 			final InputDialogController controller = result.getController();
 			controller.setTitle(resources.containsKey(title) ? resources.getString(title) : title);
@@ -193,7 +199,8 @@ public class DialogHelper {
 
 	public void showAccountPermissionsDialog(final Account account) {
 		try {
-			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/AccountAddDialog.fxml"), resources);
+			final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource(
+					"/de/chaosfisch/uploader/view/AccountAddDialog.fxml"), resources);
 			final Parent parent = result.getRoot();
 			((AccountAddDialogController) result.getController()).initAuth(account);
 

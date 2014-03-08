@@ -1,18 +1,19 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.uploader.gui.controller;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -58,7 +59,8 @@ import java.util.regex.Pattern;
 
 public class AccountAddDialogController extends UndecoratedDialogController {
 
-	@FXML
+	@Inject
+	@Named("i18n-resources")
 	private ResourceBundle resources;
 
 	@FXML
@@ -153,11 +155,13 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 						codeCount.setText(String.format(resources.getString("accountDialog.code.text"), ++count));
 					} else if (location.contains("youtube.com/my_videos")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
-					} else if (location.contains("youtube.com/channel_switcher") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
+					} else if (location.contains("youtube.com/channel_switcher") || location.contains(
+							"accounts.google.com/b/0/DelegateAccountSelector")) {
 						handleStep3();
 					} else if (location.contains("accounts.google.com/o/oauth2/auth")) {
 						handleStep4();
-					} else if (location.contains("youtube.com/signin?") && location.contains("action_prompt_identity=true")) {
+					} else if (location.contains("youtube.com/signin?") && location.contains(
+							"action_prompt_identity=true")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
 					} else if (location.endsWith("youtube.com/")) {
 						copyCookies = new ArrayList<>(persistentCookieStore.getSerializeableCookies());
@@ -222,31 +226,39 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		assert null != step3 : "fx:id=\"step3\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 		assert null != username : "fx:id=\"username\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 		assert null != view : "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+
+		/* NEEDED FOR DEBUG
+		Stage stage = new Stage();
+		Scene scene = new Scene(null);
+		scene.setRoot(webView);
+		stage.setScene(scene);
+		stage.show();
+		*/
 	}
 
 	private final IAccountService accountService;
-	private final WebView webView = new WebView();
-	private static final int WAIT_TIME = 2000;
-	private String selectedOption = null;
+	private final        WebView webView        = new WebView();
+	private static final int     WAIT_TIME      = 2000;
+	private              String  selectedOption = null;
 	private boolean initialized;
 	private Account account;
-	private int count;
+	private int     count;
 
 	@Inject
 	public AccountAddDialogController(final IAccountService accountService) {
 		this.accountService = accountService;
 	}
 
-	private static final Pattern OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
-	private static final String[] SCOPES = {"https://www.googleapis.com/auth/youtube",
+	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
+	private static final String[] SCOPES              = {"https://www.googleapis.com/auth/youtube",
 			"https://www.googleapis.com/auth/youtube.readonly",
 			"https://www.googleapis.com/auth/youtube.upload",
 			"https://www.googleapis.com/auth/youtubepartner",
 			"https://www.googleapis.com/auth/userinfo.profile",
 			"https://www.googleapis.com/auth/userinfo.email"};
-	private static final String OAUTH_URL = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
-	private static final String USERINFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
-	private static final Logger LOGGER = LoggerFactory.getLogger(AccountAddController.class);
+	private static final String   OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
+	private static final String   USERINFO_URL        = "https://www.googleapis.com/oauth2/v1/userinfo";
+	private static final Logger   LOGGER              = LoggerFactory.getLogger(AccountAddController.class);
 
 	private List<PersistentCookieStore.SerializableCookie> copyCookies;
 
@@ -277,9 +289,11 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		if (null != selectedOption) {
 			step3.setVisible(false);
 			loading.setVisible(true);
-			final int itemCount = (int) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\").length");
+			final int itemCount = (int) engine.executeScript(
+					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\").length");
 			for (int i = 0; i < itemCount; i++) {
-				final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+				final String url = (String) engine.executeScript(
+						"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 				if (url.contains(selectedOption)) {
 					engine.load(url);
 					break;
@@ -287,8 +301,8 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			}
 			return;
 		}
-
-		final int length = (int) engine.executeScript("document.getElementsByClassName(\"channel-switcher-button\").length");
+		final int length = (int) engine.executeScript(
+				"document.getElementsByClassName(\"channel-switcher-button\").length");
 		if (1 < length) {
 			loading.setVisible(false);
 			step3.setVisible(true);
@@ -296,39 +310,47 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			webView.getEngine().load("https://www.youtube.com");
 		}
 		for (int i = 0; i < length; i++) {
-			final String name = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a/span/div[2]/div[1]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
-			final String image = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a/span/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
-			final String url = (String) engine.executeScript("document.evaluate('//*[@id=\"channel-switcher-content\"]/ul/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+			final String name = (String) engine.executeScript(
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
+			final String image = (String) engine.executeScript(
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
+			final String url = (String) engine.executeScript(
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 
 			step3.getChildren()
 					.add(HBoxBuilder.create()
-							.alignment(Pos.CENTER_LEFT)
-							.children(new ImageView(new Image(image)), new Label(name))
-							.onMouseClicked(new EventHandler<MouseEvent>() {
-								@Override
-								public void handle(final MouseEvent mouseEvent) {
-									step3.setVisible(false);
-									loading.setVisible(true);
-									final int pageIdStartIndex = url.indexOf("pageid=") + 7;
-									final int pageIdEndIndex = -1 == url.indexOf("&", pageIdStartIndex) ? url.length() : url.indexOf("&", pageIdStartIndex);
-									selectedOption = !url.contains("pageid=") ? "none" : url.substring(pageIdStartIndex, pageIdEndIndex);
-									engine.load(url);
-								}
-							})
-							.onMouseEntered(new EventHandler<MouseEvent>() {
-								@Override
-								public void handle(final MouseEvent mouseEvent) {
-									((Node) mouseEvent.getSource()).setCursor(Cursor.HAND);
-								}
-							})
-							.onMouseExited(new EventHandler<MouseEvent>() {
-								@Override
-								public void handle(final MouseEvent mouseEvent) {
-									((Node) mouseEvent.getSource()).setCursor(Cursor.DEFAULT);
-								}
-							})
-							.build());
+								 .alignment(Pos.CENTER_LEFT)
+								 .children(new ImageView(new Image(image)), new Label(name))
+								 .onMouseClicked(new EventHandler<MouseEvent>() {
+									 @Override
+									 public void handle(final MouseEvent mouseEvent) {
+										 step3.setVisible(false);
+										 loading.setVisible(true);
+										 final int pageIdStartIndex = url.indexOf("pageid=") + 7;
+										 final int pageIdEndIndex = -1 == url.indexOf("&",
+																					  pageIdStartIndex) ? url.length() : url
+												 .indexOf("&", pageIdStartIndex);
+										 selectedOption = !url.contains("pageid=") ? "none" : url.substring(
+												 pageIdStartIndex,
+												 pageIdEndIndex);
+										 engine.load(url);
+									 }
+								 })
+								 .onMouseEntered(new EventHandler<MouseEvent>() {
+									 @Override
+									 public void handle(final MouseEvent mouseEvent) {
+										 ((Node) mouseEvent.getSource()).setCursor(Cursor.HAND);
+									 }
+								 })
+								 .onMouseExited(new EventHandler<MouseEvent>() {
+									 @Override
+									 public void handle(final MouseEvent mouseEvent) {
+										 ((Node) mouseEvent.getSource()).setCursor(Cursor.DEFAULT);
+									 }
+								 })
+								 .build());
 		}
+
 	}
 
 	private void handleStep4() {
