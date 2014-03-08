@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.youtube.upload;
 
@@ -49,17 +49,18 @@ import java.util.regex.Pattern;
 
 public class UploadJob implements Callable<Upload> {
 
-	private static final int SC_OK = 200;
-	private static final int SC_CREATED = 201;
-	private static final int SC_MULTIPLE_CHOICES = 300;
-	private static final int SC_RESUME_INCOMPLETE = 308;
-	private static final int SC_BAD_REQUEST = 400;
-	private static final long chunkSize = 10485760;
-	private static final int DEFAULT_BUFFER_SIZE = 65536;
-	private static final Logger LOGGER = LoggerFactory.getLogger(UploadJob.class);
-	private static final String METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
-	private static final Pattern RANGE_HEADER_PATTERN = Pattern.compile("-");
-	private static final int SC_500 = 500;
+	private static final int     SC_OK                          = 200;
+	private static final int     SC_CREATED                     = 201;
+	private static final int     SC_MULTIPLE_CHOICES            = 300;
+	private static final int     SC_RESUME_INCOMPLETE           = 308;
+	private static final int     SC_BAD_REQUEST                 = 400;
+	private static final long    chunkSize                      = 10485760;
+	private static final int     DEFAULT_BUFFER_SIZE            = 65536;
+	private static final Logger  LOGGER                         = LoggerFactory.getLogger(UploadJob.class);
+	private static final String  METADATA_CREATE_RESUMEABLE_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final Pattern RANGE_HEADER_PATTERN           = Pattern.compile("-");
+	private static final int     SC_500                         = 500;
+	private static final Pattern RAW_FILE_PATTERN               = Pattern.compile("[^a-zA-Z0-9.]+");
 
 	/**
 	 * File that is uploaded
@@ -70,17 +71,17 @@ public class UploadJob implements Callable<Upload> {
 	private long totalBytesUploaded;
 	private long fileSize;
 
-	private final Set<UploadPreProcessor> uploadPreProcessors;
+	private final Set<UploadPreProcessor>  uploadPreProcessors;
 	private final Set<UploadPostProcessor> uploadPostProcessors;
-	private final EventBus eventBus;
-	private final IUploadService uploadService;
-	private final RateLimiter rateLimiter;
+	private final EventBus                 eventBus;
+	private final IUploadService           uploadService;
+	private final RateLimiter              rateLimiter;
 
-	private UploadJobProgressEvent uploadProgress;
-	private Upload upload;
-	private final YouTubeProvider youTubeProvider;
-	private final IMetadataService metadataService;
-	private Credential credential;
+	private       UploadJobProgressEvent uploadProgress;
+	private       Upload                 upload;
+	private final YouTubeProvider        youTubeProvider;
+	private final IMetadataService       metadataService;
+	private       Credential             credential;
 
 	@Inject
 	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
@@ -110,7 +111,8 @@ public class UploadJob implements Callable<Upload> {
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
 		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS
-				.toMillis(3), 2)
+																										 .toMillis(3),
+																								 2)
 				.withMaxDelay(TimeUnit.MINUTES.toMillis(1))
 				.withMaxRetries(10)
 				.retryOn(IOException.class)
@@ -206,7 +208,7 @@ public class UploadJob implements Callable<Upload> {
 				.header("GData-Version", GDATAConfig.GDATA_V2)
 				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
 				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Slug", "video-file")
+				.header("Slug", RAW_FILE_PATTERN.matcher(fileToUpload.getName()).replaceAll(""))
 				.header("Authorization", getAuthHeader())
 				.body(atomData)
 				.asString();
@@ -306,7 +308,8 @@ public class UploadJob implements Callable<Upload> {
 							return request.getInputStream();
 						}
 					};
-					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
+					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier,
+																							  Charsets.UTF_8)));
 
 					break;
 				case SC_RESUME_INCOMPLETE:
