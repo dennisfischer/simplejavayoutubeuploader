@@ -13,7 +13,7 @@ package de.chaosfisch.uploader;
 import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
-	public static final String VERSION = "v3.2.0.8";
+	public static final String VERSION = "v3.2.0.9";
 	public static final String DATA_DIR;
 
 	static {

@@ -10,10 +10,12 @@
 
 
 
+
+
 def javaFxHome = "C:/Program Files/Java/jdk1.7.0_51/";
 apply plugin: 'java'
 apply plugin: 'application'
-version = "v3.2.0.8";
+version = "v3.2.0.9";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
