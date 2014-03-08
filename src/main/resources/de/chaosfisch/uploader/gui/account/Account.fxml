@@ -10,11 +10,95 @@
   * Contributors: Dennis Fischer                                                                  *
   ***********************************************************************************************-->
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <Accordion xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:id="accordion"
 		   fx:controller="de.chaosfisch.uploader.gui.account.AccountPresenter">
 	<panes>
-		<TitledPane collapsible="false" expanded="true" text="No accounts existing!" fx:id="defaultPanel"/>
+		<TitledPane collapsible="false" expanded="false" text="No accounts existing!" fx:id="defaultPanel"/>
+		<TitledPane expanded="true" text="Add account..." fx:id="addPanel">
+			<content>
+				<GridPane id="GridPane" gridLinesVisible="false" hgap="5.0" prefHeight="-1.0" prefWidth="-1.0"
+						  style="" vgap="5.0"
+						  GridPane.columnIndex="0" GridPane.rowIndex="1">
+					<columnConstraints>
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0"/>
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="250.0"/>
+					</columnConstraints>
+					<padding>
+						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
+					</padding>
+					<rowConstraints>
+						<RowConstraints maxHeight="-1.0" minHeight="200.0" vgrow="SOMETIMES"/>
+					</rowConstraints>
+					<ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true"
+							   GridPane.columnIndex="0"
+							   GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+						<Image url="@add/yt_logo.png"/>
+					</ImageView>
+					<ProgressIndicator fx:id="loading" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0"
+									   prefWidth="50.0"
+									   progress="-1.0" visible="false" GridPane.columnIndex="1"
+									   GridPane.halignment="CENTER"
+									   GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
+					<GridPane id="GridPane" fx:id="step1" alignment="CENTER" hgap="5.0" padding="$x1" vgap="5.0"
+							  visible="true"
+							  GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+						<columnConstraints>
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0"/>
+						</columnConstraints>
+						<rowConstraints>
+							<RowConstraints maxHeight="22.0" prefHeight="22.0" vgrow="SOMETIMES"/>
+							<RowConstraints maxHeight="22.0" prefHeight="22.0" vgrow="SOMETIMES"/>
+							<RowConstraints maxHeight="21.0" prefHeight="21.0" vgrow="SOMETIMES"/>
+						</rowConstraints>
+						<TextField fx:id="username" prefWidth="-1.0" promptText="Benutzername eingeben..."
+								   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+						<PasswordField fx:id="password" prefWidth="-1.0"
+									   promptText="Passwort eingeben..."
+									   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+						<Button fx:id="loginButton" alignment="CENTER_RIGHT" cancelButton="false"
+								contentDisplay="RIGHT"
+								defaultButton="false" maxHeight="-1.0" maxWidth="-1.0" minWidth="-1.0"
+								mnemonicParsing="false"
+								text="Login" underline="false"
+								wrapText="false"
+								GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
+					</GridPane>
+					<GridPane fx:id="step2" alignment="CENTER" hgap="5.0" padding="$x1" vgap="5.0" visible="false"
+							  GridPane.columnIndex="1" GridPane.rowIndex="0">
+						<Label disable="false" text="2-Step Authentication" GridPane.columnIndex="0"
+							   GridPane.rowIndex="0"/>
+						<TextField fx:id="code" prefWidth="-1.0" promptText="Code eingeben..."
+								   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+						<Button id="continueSecondFactor" fx:id="continueButton" defaultButton="false"
+								disable="false"
+								mnemonicParsing="false"
+								text="Weiter"
+								textAlignment="LEFT" GridPane.columnIndex="0" GridPane.halignment="RIGHT"
+								GridPane.rowIndex="3"/>
+						<Label fx:id="codeCount" text="" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+						<columnConstraints>
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+						</columnConstraints>
+						<rowConstraints>
+							<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+							<RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0"
+											vgrow="SOMETIMES"/>
+							<RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0"
+											vgrow="SOMETIMES"/>
+							<RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0"
+											vgrow="SOMETIMES"/>
+						</rowConstraints>
+					</GridPane>
+					<VBox id="VBox" fx:id="step3" alignment="CENTER" spacing="5.0" visible="false"
+						  GridPane.columnIndex="1"
+						  GridPane.rowIndex="0"/>
+				</GridPane>
+			</content>
+		</TitledPane>
 	</panes>
 </Accordion>

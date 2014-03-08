@@ -10,11 +10,12 @@
 
 package de.chaosfisch.uploader.gui.account.entry;
 
+import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
@@ -29,15 +30,17 @@ import javax.inject.Inject;
 import java.util.HashMap;
 
 public class EntryPresenter {
-	private static final double                       MAX_WIDTH_PANEL = 140;
-	private final        HashMap<PlaylistModel, VBox> playlistPanels  = new HashMap<>(10);
+	private static final double                            MAX_WIDTH_PANEL                 = 140;
+	private final        HashMap<PlaylistModel, VBox>      playlistPanels                  = new HashMap<>(10);
+	private final        SimpleListProperty<PlaylistModel> playlistModelSimpleListProperty = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
 	@Inject
-	protected IAccountService accountService;
+	protected DataModel    dataModel;
 	@FXML
-	private   FlowPane        flowpane;
+	private   FlowPane     flowpane;
 	@FXML
-	private   TitledPane      titledpane;
-	private   AccountModel    account;
+	private   TitledPane   titledpane;
+	private   AccountModel account;
 
 	public AccountModel getAccount() {
 		return account;
@@ -47,19 +50,17 @@ public class EntryPresenter {
 		this.account = account;
 		titledpane.textProperty().bind(account.nameProperty());
 
-		final ObservableList<PlaylistModel> playlists = account.getPlaylists();
-		playlists.addListener((ListChangeListener<PlaylistModel>) change -> {
+		playlistModelSimpleListProperty.addListener((ListChangeListener<PlaylistModel>) change -> {
 			while (change.next()) {
 				if (change.wasRemoved()) {
 					change.getRemoved().forEach(this::removePlaylistPanel);
 				} else if (change.wasAdded()) {
 					change.getAddedSubList().forEach(this::addPlaylistPanel);
-				} else {
-					System.out.println("DETECTED UNKNOWN CHANGE " + change.toString());
 				}
 			}
 		});
-		playlists.forEach(this::addPlaylistPanel);
+
+		playlistModelSimpleListProperty.set(account.getPlaylists());
 	}
 
 	private void removePlaylistPanel(final PlaylistModel playlistModel) {
@@ -91,7 +92,7 @@ public class EntryPresenter {
 				.message(String.format("Do you really want to delete %s?", account.getName()))
 				.showConfirm();
 		if (Dialog.Actions.YES == action) {
-			accountService.remove(account);
+			dataModel.remove(account);
 		}
 	}
 }

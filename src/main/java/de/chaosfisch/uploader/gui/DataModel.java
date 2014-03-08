@@ -317,4 +317,8 @@ public class DataModel {
 	public SimpleListProperty<License> licensesProperty() {
 		return licenses;
 	}
+
+	public void remove(final AccountModel account) {
+		accountService.remove(account);
+	}
 }

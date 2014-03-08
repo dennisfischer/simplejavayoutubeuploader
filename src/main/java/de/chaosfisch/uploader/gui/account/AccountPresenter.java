@@ -46,10 +46,9 @@ public class AccountPresenter {
 			while (change.next()) {
 				if (change.wasAdded()) {
 					change.getAddedSubList().forEach(this::addPanel);
+					System.out.println("added");
 				} else if (change.wasRemoved()) {
 					change.getRemoved().forEach(this::removePanel);
-				} else {
-					System.out.println("DETECTED UNKNOWN CHANGE " + change.toString());
 				}
 			}
 		});

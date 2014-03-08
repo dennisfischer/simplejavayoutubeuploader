@@ -35,6 +35,10 @@
 			<MaxFileSize>1024KB</MaxFileSize>
 		</triggeringPolicy>
 	</appender>
+
+	<logger name="ch.qos" level="OFF"/>
+	<logger name="org.slf4j" level="OFF"/>
+
 	<root level="DEBUG">
 		<appender-ref ref="HTML"/>
 		<appender-ref ref="STDOUT"/>
