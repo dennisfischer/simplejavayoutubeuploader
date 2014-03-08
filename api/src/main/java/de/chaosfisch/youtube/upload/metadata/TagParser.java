@@ -76,7 +76,7 @@ public final class TagParser {
 	public static int getLength(final List<String> tags) {
 		int length = 0;
 		for (final String tag : tags) {
-			length += tag.length() + 1;
+			length += tag.getBytes().length + 1;
 			if (CharMatcher.WHITESPACE.matchesAnyOf(tag)) {
 				length += 2;
 			}

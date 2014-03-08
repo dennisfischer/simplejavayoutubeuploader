@@ -9,18 +9,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Fixed equals bug in models, fixed array index out of bounds exception on 0 titledpanes accounts">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_codec_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_logging_1_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__controlsfx_8_0_6_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpclient_4_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__httpcore_4_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__controlsfx_8_0_5_SNAPSHOT.xml" afterPath="" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Added testcase for TagParser.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/metadata/TagParser.java" afterPath="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/metadata/TagParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/api.iml" afterPath="$PROJECT_DIR$/api/api.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java" afterPath="$PROJECT_DIR$/api/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
@@ -104,7 +95,7 @@
       <file leaf-file-name="TagParser.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/metadata/TagParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="20" selection-start="2947" selection-end="2947" vertical-scroll-proportion="0.0" vertical-offset="154" max-vertical-offset="1326">
+            <state line="82" column="9" selection-start="2941" selection-end="2941" vertical-scroll-proportion="0.0" vertical-offset="715" max-vertical-offset="1326">
               <folding />
             </state>
           </provider>
@@ -113,7 +104,7 @@
       <file leaf-file-name="TagParserTest.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="22" selection-start="2962" selection-end="2962" vertical-scroll-proportion="0.83" vertical-offset="290" max-vertical-offset="1190">
+            <state line="65" column="22" selection-start="3261" selection-end="3261" vertical-scroll-proportion="0.90417135" vertical-offset="167" max-vertical-offset="1309">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -498,7 +489,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="1394304751276" />
+        <entry key="$PROJECT_DIR$" value="1394311493063" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1934,7 +1925,7 @@
       <workItem from="1394225237181" duration="2720000" />
       <workItem from="1394262464750" duration="2437000" />
       <workItem from="1394304010718" duration="850000" />
-      <workItem from="1394309396115" duration="2080000" />
+      <workItem from="1394309396115" duration="3433000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -2734,7 +2725,11 @@
       <created>1394227950914</created>
       <updated>1394227950914</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="Added testcase for TagParser.">
+      <created>1394311494640</created>
+      <updated>1394311494640</updated>
+    </task>
+    <option name="localTasksCounter" value="196" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers>
       <GitHub shared="false" url="">
@@ -2753,7 +2748,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="198583000" />
+    <option name="totallyTimeSpent" value="199936000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -2797,7 +2792,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328541" sideWeight="0.6837416" order="7" side_tool="false" content_ui="tabs" x="651" y="57" width="617" height="926" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19062833" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19062833" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33045357" sideWeight="0.5085197" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -2869,7 +2864,6 @@
       <TodoPanelSettings />
     </option>
     <confirmRemoveEmptyChangelist value="2" />
-    <MESSAGE value="Refactored status codes - integrated different handling" />
     <MESSAGE value="Removed status locked&#10;" />
     <MESSAGE value="Added bottom border and status depending label to uploadEntry" />
     <MESSAGE value="Added Playlist Control Features" />
@@ -2894,7 +2888,8 @@
     <MESSAGE value="Added AccountDTO and PlaylistDTO and updated methods and javadoc of relating services." />
     <MESSAGE value="Added AccountService and linked data to database and gui." />
     <MESSAGE value="Fixed equals bug in models, fixed array index out of bounds exception on 0 titledpanes accounts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed equals bug in models, fixed array index out of bounds exception on 0 titledpanes accounts" />
+    <MESSAGE value="Added testcase for TagParser." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added testcase for TagParser." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
@@ -3168,14 +3163,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/metadata/TagParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="20" selection-start="2947" selection-end="2947" vertical-scroll-proportion="0.0" vertical-offset="715" max-vertical-offset="1326">
+        <state line="82" column="9" selection-start="2941" selection-end="2941" vertical-scroll-proportion="0.0" vertical-offset="715" max-vertical-offset="1326">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="22" selection-start="2962" selection-end="2962" vertical-scroll-proportion="0.83" vertical-offset="290" max-vertical-offset="1190">
+        <state line="65" column="22" selection-start="3261" selection-end="3261" vertical-scroll-proportion="0.90417135" vertical-offset="167" max-vertical-offset="1309">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
