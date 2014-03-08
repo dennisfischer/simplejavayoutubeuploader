@@ -47,7 +47,9 @@ public final class TagParser {
 		final List<String> result = new ArrayList<>(tags.size());
 
 		for (final String tag : tags) {
-			result.add(tag.trim());
+			if (!result.contains(tag.trim())) {
+				result.add(tag.trim());
+			}
 		}
 		return result;
 	}
@@ -74,11 +76,11 @@ public final class TagParser {
 	public static int getLength(final List<String> tags) {
 		int length = 0;
 		for (final String tag : tags) {
-			length += tag.length();
+			length += tag.length() + 1;
 			if (CharMatcher.WHITESPACE.matchesAnyOf(tag)) {
 				length += 2;
 			}
 		}
-		return length;
+		return 0 == length ? 0 : length - 1;
 	}
 }
