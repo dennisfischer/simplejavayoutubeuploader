@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.util;
+package de.chaosfisch.controls;
 
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -97,7 +97,8 @@ public abstract class FXMLView extends Region {
 			return;
 		}
 		final String uriToCss = uri.toExternalForm();
-		parent.getStylesheets().add(uriToCss);
+		parent.getStylesheets()
+			  .add(uriToCss);
 	}
 
 	String getStyleSheetName() {
@@ -113,13 +114,17 @@ public abstract class FXMLView extends Region {
 	}
 
 	String getConventionalName() {
-		final String clazz = getClass().getSimpleName().toLowerCase();
+		final String clazz = getClass().getSimpleName()
+									   .toLowerCase();
 		return stripEnding(clazz);
 	}
 
 	String getBundleName() {
 		final String conventionalName = getConventionalName();
-		return String.format("%s.%s", getClass().getPackage().getName(), conventionalName);
+		return String.format("%s.%s",
+							 getClass().getPackage()
+									   .getName(),
+							 conventionalName);
 	}
 
 	final String getFXMLName() {

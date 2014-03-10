@@ -10,6 +10,7 @@
   * Contributors: Dennis Fischer                                                                  *
   ***********************************************************************************************-->
 
+<?import de.chaosfisch.controls.spinner.NumberSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
@@ -44,6 +45,8 @@
 				<Button mnemonicParsing="false" text="Stop" fx:id="stopButton"/>
 				<ComboBox promptText="Action after Uploading...?" fx:id="actionOnFinishList"/>
 				<Button mnemonicParsing="false" text="Löschen" onAction="#removeUploads"/>
+				<NumberSpinner maxValue="10" minValue="1" value="1" fx:id="maxUploads"/>
+				<NumberSpinner stepWidth="10" minValue="0" value="0" fx:id="maxSpeed"/>
 			</children>
 		</HBox>
 	</children>

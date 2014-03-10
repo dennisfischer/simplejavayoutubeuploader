@@ -10,12 +10,9 @@
 
 package de.chaosfisch.youtube.upload;
 
-import javafx.beans.property.SimpleBooleanProperty;
-
 public abstract class AbstractUploadService implements IUploadService {
 
 	private final Uploader uploader;
-	private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
 	protected AbstractUploadService(final Uploader uploader) {
 		this.uploader = uploader;
@@ -44,30 +41,5 @@ public abstract class AbstractUploadService implements IUploadService {
 	@Override
 	public void abort(final UploadModel upload) {
 		uploader.abort(upload);
-	}
-
-	@Override
-	public SimpleBooleanProperty runningProperty() {
-		return running;
-	}
-
-	@Override
-	public void setRunning(final boolean running) {
-		this.running.setValue(running);
-	}
-
-	@Override
-	public boolean getRunning() {
-		return running.getValue();
-	}
-
-	@Override
-	public void setMaxUploads(final int maxUploads) {
-		uploader.setMaxUploads(maxUploads);
-	}
-
-	@Override
-	public void setMaxSpeed(final int maxSpeed) {
-		uploader.setMaxSpeed(maxSpeed);
 	}
 }

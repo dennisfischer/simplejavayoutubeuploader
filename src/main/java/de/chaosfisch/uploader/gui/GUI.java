@@ -12,7 +12,7 @@ package de.chaosfisch.uploader.gui;
 
 
 import dagger.ObjectGraph;
-import de.chaosfisch.util.FXMLView;
+import de.chaosfisch.controls.FXMLView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -39,10 +39,11 @@ public class GUI extends Application {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
 			LOGGER.error("Uncaught exception occured", e);
 			Platform.runLater(() -> {
-				Dialogs.create().owner(null)
-						.title("Exception occured!")
-						.masthead("Exception message is shown below")
-						.showException(e);
+				Dialogs.create()
+					   .owner(null)
+					   .title("Exception occured!")
+					   .masthead("Exception message is shown below")
+					   .showException(e);
 			});
 		});
 	}
@@ -58,7 +59,9 @@ public class GUI extends Application {
 
 		final Parent root = loader.load();
 		final Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
-		scene.getStylesheets().add(getClass().getResource("/de/chaosfisch/uploader/gui/style.css").toExternalForm());
+		scene.getStylesheets()
+			 .add(getClass().getResource("/de/chaosfisch/uploader/gui/style.css")
+							.toExternalForm());
 		stage.setScene(scene);
 		stage.setTitle("Simple Java YouTube Uploader");
 		stage.show();

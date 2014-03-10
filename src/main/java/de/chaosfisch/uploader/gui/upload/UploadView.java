@@ -10,7 +10,7 @@
 
 package de.chaosfisch.uploader.gui.upload;
 
-import de.chaosfisch.util.FXMLView;
+import de.chaosfisch.controls.FXMLView;
 
 public class UploadView extends FXMLView {
 }

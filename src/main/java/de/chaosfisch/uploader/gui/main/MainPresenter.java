@@ -12,11 +12,11 @@ package de.chaosfisch.uploader.gui.main;
 
 
 import dagger.Lazy;
+import de.chaosfisch.controls.FXMLView;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.account.AccountView;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.upload.UploadView;
-import de.chaosfisch.util.FXMLView;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -56,7 +56,8 @@ public class MainPresenter {
 			BorderPane.setAlignment(progressIndicator, Pos.CENTER);
 			tab.setContent(borderPane);
 			final Thread thread = new Thread(() -> {
-				final Node content = lazyView.get().getView();
+				final Node content = lazyView.get()
+											 .getView();
 				Platform.runLater(() -> tab.setContent(content));
 			});
 			thread.setDaemon(true);

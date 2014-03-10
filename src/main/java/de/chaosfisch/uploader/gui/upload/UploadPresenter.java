@@ -10,6 +10,8 @@
 
 package de.chaosfisch.uploader.gui.upload;
 
+import de.chaosfisch.controls.NumberStringFormatConverter;
+import de.chaosfisch.controls.spinner.NumberSpinner;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.youtube.upload.Status;
 import de.chaosfisch.youtube.upload.UploadModel;
@@ -30,11 +32,16 @@ import javafx.stage.FileChooser;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UploadPresenter {
 
 	@Inject
 	protected DataModel             dataModel;
+	@FXML
+	private   NumberSpinner         maxUploads;
+	@FXML
+	private   NumberSpinner         maxSpeed;
 	@FXML
 	private   ListView<UploadModel> uploads;
 	@FXML
@@ -49,9 +56,15 @@ public class UploadPresenter {
 	@FXML
 	public void initialize() {
 		uploads.setCellFactory(new UploadCellFactory());
-		uploads.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		dataModel.setSelectedUploads(uploads.getSelectionModel().getSelectedItems());
-		uploads.itemsProperty().bindBidirectional(dataModel.uploadsProperty());
+		uploads.getSelectionModel()
+			   .setSelectionMode(SelectionMode.MULTIPLE);
+		dataModel.setSelectedUploads(uploads.getSelectionModel()
+											.getSelectedItems());
+		uploads.itemsProperty()
+			   .bindBidirectional(dataModel.uploadsProperty());
+
+		maxUploads.setNumberStringConverter(new NumberStringFormatConverter("%d max Upload(s)", Pattern.compile("[^0-9]+")));
+		maxSpeed.setNumberStringConverter(new NumberStringFormatConverter("%d kByte/s", Pattern.compile("[^0-9]+")));
 	}
 
 	@FXML
@@ -76,8 +89,10 @@ public class UploadPresenter {
 	public void removeUploads() {
 		// @BUG had to add workaround by converting observable list to array
 		// otherwise only one element is removed and not N selected elements
-		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads().size()];
-		dataModel.getSelectedUploads().toArray(uploads);
+		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads()
+															   .size()];
+		dataModel.getSelectedUploads()
+				 .toArray(uploads);
 		for (final UploadModel upload : uploads) {
 			dataModel.removeUpload(upload);
 		}

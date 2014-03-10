@@ -10,9 +10,6 @@
 
 
 
-
-
-
 apply plugin: 'java'
 apply plugin: 'apt'
 
@@ -44,7 +41,6 @@ compileJava {
 dependencies {
 	compile 'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+', 'com.google.guava:guava:15.0',
 			'com.squareup.dagger:dagger:+', 'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+', 'org.mapdb:mapdb:+'
-	compile files('/lib/asyncretry.jar')
 	compile 'com.intellij:annotations:+@jar'
 	provided 'com.squareup.dagger:dagger-compiler:+'
 	apt 'com.squareup.dagger:dagger-compiler:+'

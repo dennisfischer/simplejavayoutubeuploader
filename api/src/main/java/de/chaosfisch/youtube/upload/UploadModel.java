@@ -48,18 +48,31 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 	private final SimpleObjectProperty<LocalDateTime> dateTimeOfEnd     = new SimpleObjectProperty<>();
 	private final SimpleIntegerProperty               order             = new SimpleIntegerProperty();
 	private final SimpleObjectProperty<AccountModel>  account           = new SimpleObjectProperty<>();
-	private final SimpleFloatProperty                 progress          = new SimpleFloatProperty();
+	private final SimpleDoubleProperty                progress          = new SimpleDoubleProperty();
 	private final SimpleBooleanProperty               stopAfter         = new SimpleBooleanProperty();
+	private final SimpleLongProperty                  fileSize          = new SimpleLongProperty();
 
-	public float getProgress() {
+	public long getFileSize() {
+		return fileSize.get();
+	}
+
+	public SimpleLongProperty fileSizeProperty() {
+		return fileSize;
+	}
+
+	public void setFileSize(final long fileSize) {
+		this.fileSize.set(fileSize);
+	}
+
+	public double getProgress() {
 		return progress.get();
 	}
 
-	public void setProgress(final float progress) {
+	public void setProgress(final double progress) {
 		this.progress.set(progress);
 	}
 
-	public SimpleFloatProperty progressProperty() {
+	public SimpleDoubleProperty progressProperty() {
 		return progress;
 	}
 
@@ -258,7 +271,7 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 		} else {
 			final int mod = dateTimeOfRelease.getMinute() % 30;
 			dateTimeOfRelease.plusMinutes(16 > mod ? -mod : 30 - mod)
-					.getMinute();
+							 .getMinute();
 			this.dateTimeOfRelease.set(dateTimeOfRelease);
 		}
 	}
@@ -292,219 +305,273 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 	}
 
 	public String getMetadataTitle() {
-		return metadata.get().getTitle();
+		return metadata.get()
+					   .getTitle();
 	}
 
 	public void setMetadataTitle(final String metadataTitle) {
-		metadata.get().setTitle(metadataTitle);
+		metadata.get()
+				.setTitle(metadataTitle);
 	}
 
 	public String getMetadataDescription() {
-		return metadata.get().getDescription();
+		return metadata.get()
+					   .getDescription();
 	}
 
 	public void setMetadataDescription(final String metadataDescription) {
-		metadata.get().setDescription(metadataDescription);
+		metadata.get()
+				.setDescription(metadataDescription);
 	}
 
 	public String getMetadataTags() {
-		return metadata.get().getTags();
+		return metadata.get()
+					   .getTags();
 	}
 
 	public void setMetadataTags(final String metadataTags) {
-		metadata.get().setTags(metadataTags);
+		metadata.get()
+				.setTags(metadataTags);
 	}
 
 	public String getSocialMessage() {
-		return social.get().getMessage();
+		return social.get()
+					 .getMessage();
 	}
 
 	public void setSocialMessage(final String socialMessage) {
-		social.get().setMessage(socialMessage);
+		social.get()
+			  .setMessage(socialMessage);
 	}
 
 	public String getMonetizationTitle() {
-		return monetization.get().getTitle();
+		return monetization.get()
+						   .getTitle();
 	}
 
 	public void setMonetizationTitle(final String monetizationTitle) {
-		monetization.get().setTitle(monetizationTitle);
+		monetization.get()
+					.setTitle(monetizationTitle);
 	}
 
 	public String getMonetizationDescription() {
-		return monetization.get().getDescription();
+		return monetization.get()
+						   .getDescription();
 	}
 
 	public void setMonetizationDescription(final String monetizationDescription) {
-		monetization.get().setDescription(monetizationDescription);
+		monetization.get()
+					.setDescription(monetizationDescription);
 	}
 
 	public String getMonetizationCustomId() {
-		return monetization.get().getCustomId();
+		return monetization.get()
+						   .getCustomId();
 	}
 
 	public void setMonetizationCustomId(final String monetizationCustomId) {
-		monetization.get().setCustomId(monetizationCustomId);
+		monetization.get()
+					.setCustomId(monetizationCustomId);
 	}
 
 	public String getMonetizationNotes() {
-		return monetization.get().getNotes();
+		return monetization.get()
+						   .getNotes();
 	}
 
 	public void setMonetizationNotes(final String monetizationNotes) {
-		monetization.get().setNotes(monetizationNotes);
+		monetization.get()
+					.setNotes(monetizationNotes);
 	}
 
 	public String getMonetizationTmsid() {
-		return monetization.get().getTmsid();
+		return monetization.get()
+						   .getTmsid();
 	}
 
 	public void setMonetizationTmsid(final String monetizationTmsid) {
-		monetization.get().setTmsid(monetizationTmsid);
+		monetization.get()
+					.setTmsid(monetizationTmsid);
 	}
 
 	public String getMonetizationEidr() {
-		return monetization.get().getEidr();
+		return monetization.get()
+						   .getEidr();
 	}
 
 	public String getMonetizationTitleepisode() {
-		return monetization.get().getEpisodeTitle();
+		return monetization.get()
+						   .getEpisodeTitle();
 	}
 
 	public void setMonetizationTitleepisode(final String monetizationTitleepisode) {
-		monetization.get().setEpisodeTitle(monetizationTitleepisode);
+		monetization.get()
+					.setEpisodeTitle(monetizationTitleepisode);
 	}
 
 	public String getMonetizationSeasonNb() {
-		return monetization.get().getSeasonNumber();
+		return monetization.get()
+						   .getSeasonNumber();
 	}
 
 	public void setMonetizationSeasonNb(final String monetizationSeasonNb) {
-		monetization.get().setSeasonNumber(monetizationSeasonNb);
+		monetization.get()
+					.setSeasonNumber(monetizationSeasonNb);
 	}
 
 	public String getMonetizationEpisodeNb() {
-		return monetization.get().getEpisodeNumber();
+		return monetization.get()
+						   .getEpisodeNumber();
 	}
 
 	public void setMonetizationEpisodeNb(final String monetizationEpisodeNb) {
-		monetization.get().setEpisodeNumber(monetizationEpisodeNb);
+		monetization.get()
+					.setEpisodeNumber(monetizationEpisodeNb);
 	}
 
 	public Visibility getPermissionsVisibility() {
-		return permissions.get().getVisibility();
+		return permissions.get()
+						  .getVisibility();
 	}
 
 	public boolean isSocialFacebook() {
-		return social.get().getFacebook();
+		return social.get()
+					 .getFacebook();
 	}
 
 	public boolean isSocialTwitter() {
-		return social.get().getTwitter();
+		return social.get()
+					 .getTwitter();
 	}
 
 	public boolean isSocialGplus() {
-		return social.get().getGplus();
+		return social.get()
+					 .getGplus();
 	}
 
 	public boolean isMonetizationClaim() {
-		return monetization.get().getClaim();
+		return monetization.get()
+						   .getClaim();
 	}
 
 	public License getMetadataLicense() {
-		return metadata.get().getLicense();
+		return metadata.get()
+					   .getLicense();
 	}
 
 	public boolean isMonetizationPartner() {
-		return monetization.get().getPartner();
+		return monetization.get()
+						   .getPartner();
 	}
 
 	public ClaimOption getMonetizationClaimoption() {
-		return monetization.get().getClaimOption();
+		return monetization.get()
+						   .getClaimOption();
 	}
 
 	public boolean isMonetizationOverlay() {
-		return monetization.get().getOverlay();
+		return monetization.get()
+						   .getOverlay();
 	}
 
 	public boolean isMonetizationTrueview() {
-		return monetization.get().getTrueview();
+		return monetization.get()
+						   .getTrueview();
 	}
 
 	public boolean isMonetizationInstream() {
-		return monetization.get().getInstream();
+		return monetization.get()
+						   .getInstream();
 	}
 
 	public boolean isMonetizationInstreamDefaults() {
-		return monetization.get().getInstreamDefaults();
+		return monetization.get()
+						   .getInstreamDefaults();
 	}
 
 	public boolean isMonetizationProduct() {
-		return monetization.get().getProduct();
+		return monetization.get()
+						   .getProduct();
 	}
 
 	public Syndication getMonetizationSyndication() {
-		return monetization.get().getSyndication();
+		return monetization.get()
+						   .getSyndication();
 	}
 
 	public ClaimType getMonetizationClaimtype() {
-		return monetization.get().getClaimType();
+		return monetization.get()
+						   .getClaimType();
 	}
 
 	public Asset getMonetizationAsset() {
-		return monetization.get().getAsset();
+		return monetization.get()
+						   .getAsset();
 	}
 
 	public String getMonetizationIsan() {
-		return monetization.get().getIsan();
+		return monetization.get()
+						   .getIsan();
 	}
 
 	public void setMonetizationIsan(final String monetizationIsan) {
-		monetization.get().setIsan(monetizationIsan);
+		monetization.get()
+					.setIsan(monetizationIsan);
 	}
 
 	public boolean isPermissionsEmbed() {
-		return permissions.get().getEmbed();
+		return permissions.get()
+						  .getEmbed();
 	}
 
 	public boolean isPermissionsRate() {
-		return permissions.get().getRate();
+		return permissions.get()
+						  .getRate();
 	}
 
 	public boolean isPermissionsCommentvote() {
-		return permissions.get().getCommentvote();
+		return permissions.get()
+						  .getCommentvote();
 	}
 
 	public Comment getPermissionsComment() {
-		return permissions.get().getComment();
+		return permissions.get()
+						  .getComment();
 	}
 
 	public boolean isPermissionsAgeRestricted() {
-		return permissions.get().getAgeRestricted();
+		return permissions.get()
+						  .getAgeRestricted();
 	}
 
 	public boolean isPermissionsPublicStatsViewable() {
-		return permissions.get().getPublicStatsViewable();
+		return permissions.get()
+						  .getPublicStatsViewable();
 	}
 
 	public ThreeD getPermissionsThreedD() {
-		return permissions.get().getThreedD();
+		return permissions.get()
+						  .getThreedD();
 	}
 
 	public String getMetadataLicenseIdentifier() {
-		return metadata.get().getLicenseIdentifier();
+		return metadata.get()
+					   .getLicenseIdentifier();
 	}
 
 	public ObservableList<PersistentCookieStore.SerializableCookie> getAccountSerializableCookies() {
-		return account.get().getSerializableCookies();
+		return account.get()
+					  .getSerializableCookies();
 	}
 
 	public String getPermissionsVisibilityIdentifier() {
-		return permissions.get().getVisibilityIdentifier();
+		return permissions.get()
+						  .getVisibilityIdentifier();
 	}
 
 	public String getCategoryId() {
-		return metadata.get().getCategoryId();
+		return metadata.get()
+					   .getCategoryId();
 	}
 
 	@Override

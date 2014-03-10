@@ -8,11 +8,30 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.job;
+package de.chaosfisch.controls;
 
-import com.google.common.util.concurrent.RateLimiter;
-import de.chaosfisch.youtube.upload.UploadModel;
+import javafx.util.converter.NumberStringConverter;
 
-public interface IUploadJobFactory {
-	UploadJob create(UploadModel upload, RateLimiter rateLimiter);
+import java.util.regex.Pattern;
+
+public class NumberStringFormatConverter extends NumberStringConverter {
+
+	private final String  toStringFormat;
+	private final Pattern fromStringFormat;
+
+	public NumberStringFormatConverter(final String toStringFormat, final Pattern fromStringFormat) {
+		this.toStringFormat = toStringFormat;
+		this.fromStringFormat = fromStringFormat;
+	}
+
+	@Override
+	public Number fromString(final String s) {
+		return Integer.parseInt(fromStringFormat.matcher(s)
+												.replaceAll(""));
+	}
+
+	@Override
+	public String toString(final Number number) {
+		return String.format(toStringFormat, number.intValue());
+	}
 }

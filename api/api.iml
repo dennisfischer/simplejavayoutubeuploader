@@ -12,7 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="Gradle: asyncretry" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-configuration-1.10" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javawriter-2.3.0" level="project" />

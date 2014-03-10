@@ -21,10 +21,10 @@
     <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-compiler-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: annotations-12.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-1.2.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: controlsfx-8.0.6-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: guava-15.0" level="project" />
   </component>
 </module>
