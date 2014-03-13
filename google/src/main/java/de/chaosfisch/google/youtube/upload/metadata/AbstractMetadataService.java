@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.google.youtube.upload.metadata;
 
@@ -256,7 +256,7 @@ public class AbstractMetadataService implements IMetadataService {
 		final Metadata metadata = upload.getMetadata();
 		final Monetization monetization = upload.getMonetization();
 		if (monetization.isClaim() && License.YOUTUBE == upload.getMetadata().getLicense()) {
-			params.put("claim_style", "ads");
+			params.put("video_monetization_style", "ads");
 			if (!monetization.isPartner() || ClaimOption.MONETIZE == monetization.getClaimoption()) {
 				params.put("enable_overlay_ads", boolConverter(monetization.isOverlay()));
 				params.put("trueview_instream", boolConverter(monetization.isTrueview()));
@@ -287,7 +287,7 @@ public class AbstractMetadataService implements IMetadataService {
 						usagePolicy = matcher.group(1);
 					}
 				}
-				params.put("claim_usage_policy", usagePolicy);
+				params.put("usage_policy", usagePolicy);
 
 				final String assetName = monetization.getAsset().name().toLowerCase(Locale.getDefault());
 
@@ -297,6 +297,9 @@ public class AbstractMetadataService implements IMetadataService {
 						monetization.getCustomId());
 
 				params.put(assetName + "_notes", monetization.getNotes());
+				params.put(assetName + "_tms_id", monetization.getTmsid());
+				params.put(assetName + "_isan", monetization.getIsan());
+				params.put(assetName + "_eidr", monetization.getEidr());
 
 
 				if (Asset.TV != monetization.getAsset()) {
@@ -305,19 +308,12 @@ public class AbstractMetadataService implements IMetadataService {
 							monetization.getTitle() :
 							metadata.getTitle());
 					params.put(assetName + "_description", monetization.getDescription());
-				} else if (Asset.MOVIE == monetization.getAsset()) {
-					params.put("movie_tms_id", monetization.getTmsid());
-					params.put("movie_isan", monetization.getIsan());
-					params.put("movie_eidr", monetization.getEidr());
 				} else {
 					// TV ONLY
-					params.put("tv_tms_id", monetization.getTmsid());
-					params.put("tv_isan", monetization.getIsan());
-					params.put("tv_eidr", monetization.getEidr());
-					params.put("tv_show_title", monetization.getTitle());
-					params.put("tv_episode_title", monetization.getTitleepisode());
-					params.put("tv_season_nb", monetization.getSeasonNb());
-					params.put("tv_episode_nb", monetization.getEpisodeNb());
+					params.put("show_title", monetization.getTitle());
+					params.put("episode_title", monetization.getTitleepisode());
+					params.put("season_nb", monetization.getSeasonNb());
+					params.put("episode_nb", monetization.getEpisodeNb());
 				}
 			}
 		}
