@@ -12,10 +12,11 @@ package de.chaosfisch.uploader.gui;
 
 import dagger.Module;
 import dagger.Provides;
-import de.chaosfisch.data.ObjectDataStore;
+import de.chaosfisch.APIModule;
 import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.account.AccountPresenter;
 import de.chaosfisch.uploader.gui.account.AccountView;
+import de.chaosfisch.uploader.gui.account.add.*;
 import de.chaosfisch.uploader.gui.account.entry.EntryPresenter;
 import de.chaosfisch.uploader.gui.account.entry.EntryView;
 import de.chaosfisch.uploader.gui.edit.EditView;
@@ -27,25 +28,39 @@ import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.project.ProjectPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
-import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.account.AccountService;
 import de.chaosfisch.youtube.account.IAccountService;
-import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
-import de.chaosfisch.youtube.category.YouTubeCategoryService;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
+import de.chaosfisch.youtube.upload.IUploadService;
+import org.sqlite.SQLiteDataSource;
 
 import javax.inject.Singleton;
-import java.io.File;
+import javax.sql.DataSource;
 
 @Module(
-		injects = {MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class}
+		includes = {APIModule.class},
+		staticInjections = {AddModel.class},
+		library = true,
+		injects = {StepPresenter.class, AddPresenter.class, MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class}
 )
 public class GUIModule {
 
 	@Provides
+	@Singleton
+	DataSource provideDataSource() {
+		final SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
+		sqLiteDataSource.setUrl(String.format("jdbc:sqlite:%s/%s/database.db", ApplicationData.DATA_DIR, ApplicationData.VERSION));
+		return sqLiteDataSource;
+	}
+
+	@Provides
+	@Singleton
+	StepPresenter provideStepPresenter() {
+		return new StepPresenter();
+	}
+
+	@Provides
 	AccountView provideAccountView() {
+		provideDataSource();
 		return new AccountView();
 	}
 
@@ -57,6 +72,26 @@ public class GUIModule {
 	@Provides
 	EditView provideEditView() {
 		return new EditView();
+	}
+
+	@Provides
+	Step1View provideStep1View() {
+		return new Step1View();
+	}
+
+	@Provides
+	Step2View provideStep2View() {
+		return new Step2View();
+	}
+
+	@Provides
+	Step3View provideStep3View() {
+		return new Step3View();
+	}
+
+	@Provides
+	LoadingView provideLoadingView() {
+		return new LoadingView();
 	}
 
 	@Provides
@@ -76,32 +111,7 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService) {
-		return new DataModel(iCategoryService, iAccountService);
-	}
-
-	@Provides
-	@Singleton
-	DB provideDB() {
-		final DB db = DBMaker.newFileDB(new File(String.format("%s/%s/database.mapdb",
-															   ApplicationData.DATA_DIR,
-															   ApplicationData.VERSION)))
-				.closeOnJvmShutdown()
-				.compressionEnable()
-				.make();
-		db.compact();
-		return db;
-	}
-
-	@Provides
-	@Singleton
-	ICategoryService provideCategoryService(final DB db) {
-		return new YouTubeCategoryService(new ObjectDataStore<>(db, db.getHashMap("categories"), CategoryModel.class));
-	}
-
-	@Provides
-	@Singleton
-	IAccountService provideAccountService(final DB db) {
-		return new AccountService(new ObjectDataStore<>(db, db.getHashMap("accounts"), AccountModel.class));
+	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService, final IUploadService iUploadService) {
+		return new DataModel(iCategoryService, iAccountService, iUploadService);
 	}
 }

@@ -40,10 +40,9 @@ compileJava {
 
 dependencies {
 	compile 'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+', 'com.google.guava:guava:15.0',
-			'com.squareup.dagger:dagger:+', 'commons-configuration:commons-configuration:+', 'org.slf4j:slf4j-api:+', 'org.mapdb:mapdb:+'
+			'com.squareup.dagger:dagger:+', 'org.slf4j:slf4j-api:+', 'commons-dbutils:commons-dbutils:+', 'org.xerial:sqlite-jdbc:+', 'c3p0:c3p0:+'
 	compile 'com.intellij:annotations:+@jar'
 	provided 'com.squareup.dagger:dagger-compiler:+'
 	apt 'com.squareup.dagger:dagger-compiler:+'
 	testCompile 'junit:junit:4+', 'org.mockito:mockito-core:1.9.5'
 }
-

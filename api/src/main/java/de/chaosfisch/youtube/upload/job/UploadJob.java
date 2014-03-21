@@ -124,7 +124,8 @@ public class UploadJob implements Callable<UploadModel> {
 		try {
 			final InputStreamContent mediaContent = new InputStreamContent("video/*",
 																		   new TokenInputStream(new FileInputStream(
-																				   upload.getFile())));
+																				   upload.getFile()))
+			);
 			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount())
 																	.videos()
 																	.insert("snippet,status", video, mediaContent);
@@ -185,7 +186,7 @@ public class UploadJob implements Callable<UploadModel> {
 
 		private final UploadModel                         upload;
 		private final IUploadService                      uploadService;
-		public        IMetadataService                    metadataService;
+		public final  IMetadataService                    metadataService;
 		private       Collection<UploadJobPreProcessor>   preProcessors;
 		private       Collection<UploadeJobPostProcessor> postProcessors;
 		private       RateLimiter                         rateLimiter;

@@ -275,9 +275,7 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 		arrowIncrement.setRotate(-90);
 		arrowDecrement.setRotate(90);
 
-		getChildren().add(HBoxBuilder.create()
-									 .children(btnDecrement, textField, btnIncrement)
-									 .build());
+		getChildren().add(new HBox(btnDecrement, textField, btnIncrement));
 	}
 
 	/**

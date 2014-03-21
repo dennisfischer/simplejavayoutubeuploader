@@ -58,13 +58,24 @@ public class UploadPresenter {
 		uploads.setCellFactory(new UploadCellFactory());
 		uploads.getSelectionModel()
 			   .setSelectionMode(SelectionMode.MULTIPLE);
-		dataModel.setSelectedUploads(uploads.getSelectionModel()
-											.getSelectedItems());
-		uploads.itemsProperty()
-			   .bindBidirectional(dataModel.uploadsProperty());
 
 		maxUploads.setNumberStringConverter(new NumberStringFormatConverter("%d max Upload(s)", Pattern.compile("[^0-9]+")));
 		maxSpeed.setNumberStringConverter(new NumberStringFormatConverter("%d kByte/s", Pattern.compile("[^0-9]+")));
+
+		dataModel.setSelectedUploads(uploads.getSelectionModel()
+											.getSelectedItems());
+
+		uploads.itemsProperty()
+			   .bindBidirectional(dataModel.uploadsProperty());
+		maxSpeed.valueProperty()
+				.bindBidirectional(dataModel.maxSpeedProperty());
+		maxUploads.valueProperty()
+				  .bindBidirectional(dataModel.maxUploadsProperty());
+		startButton.disableProperty()
+				   .bind(dataModel.runningProperty()
+								  .not());
+		stopButton.disableProperty()
+				  .bind(dataModel.runningProperty());
 	}
 
 	@FXML

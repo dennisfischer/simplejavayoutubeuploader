@@ -10,27 +10,11 @@
 
 package de.chaosfisch.youtube.upload;
 
-import javafx.beans.property.SimpleBooleanProperty;
-
-import java.util.List;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 
 public interface IUploadService {
-
-	List<UploadModel> getAll();
-
-	UploadModel get(String id);
-
-	void store(UploadModel upload);
-
-	void remove(UploadModel upload);
-
-	UploadModel fetchNextUpload();
-
-	int count();
-
-	int countUnprocessed();
-
-	long countReadyStarttime();
 
 	void resetUnfinishedUploads();
 
@@ -42,19 +26,23 @@ public interface IUploadService {
 
 	void stopStarttimeCheck();
 
-	List<UploadModel> fetchByArchived(boolean archived);
-
-	void abort(UploadModel upload);
+	void abort(UploadModel uploadModel);
 
 	long getStarttimeDelay();
 
-	SimpleBooleanProperty runningProperty();
+	SimpleIntegerProperty maxSpeedProperty();
 
-	boolean getRunning();
+	SimpleIntegerProperty maxUploadsProperty();
 
-	void setRunning(boolean running);
+	ReadOnlyBooleanProperty runningProperty();
 
-	void setMaxUploads(int maxUploads);
+	SimpleListProperty<UploadModel> uploadModelsProperty();
 
-	void setMaxSpeed(int maxSpeed);
+	UploadModel fetchNextUpload();
+
+	void store(UploadModel uploadModel);
+
+	int countUnprocessed();
+
+	long countReadyStarttime();
 }

@@ -11,34 +11,12 @@
 package de.chaosfisch.youtube.playlist;
 
 import de.chaosfisch.youtube.account.AccountModel;
-import javafx.beans.property.SimpleListProperty;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface IPlaylistService {
-
-	/**
-	 * Retrieves a single PlaylistModel using it's youtubeId
-	 *
-	 * @param youtubeId of the PlaylistModel
-	 * @return PlaylistModel playlistModel
-	 */
-	PlaylistModel get(String youtubeId);
-
-	/**
-	 * Stores (inserts/updates) a single PlaylistModel
-	 *
-	 * @param playlistModel to store
-	 */
-	void store(PlaylistModel playlistModel);
-
-	/**
-	 * Removes (deletes) a single PlaylistModel
-	 *
-	 * @param playlistModel to remove
-	 */
-	void remove(PlaylistModel playlistModel);
 
 	/**
 	 * Adds the specified video to the playlist.
@@ -47,7 +25,7 @@ public interface IPlaylistService {
 	 * @param playlistModel the playlist used
 	 * @param videoId       for the added video
 	 */
-	void addVideoToPlaylist(PlaylistModel playlistModel, String videoId) throws IOException;
+	void addVideoToPlaylist(PlaylistModel playlistModel, String videoId);
 
 	/**
 	 * Adds this playlist to the account specified inside the playlist object.
@@ -55,7 +33,7 @@ public interface IPlaylistService {
 	 *
 	 * @param playlistModel the playlist to be added
 	 */
-	void addYoutubePlaylist(PlaylistModel playlistModel) throws IOException;
+	void addYoutubePlaylist(PlaylistModel playlistModel);
 
 	/**
 	 * Synchronizes given accounts and playlists with YouTube.
@@ -68,7 +46,9 @@ public interface IPlaylistService {
 	 * Returns a list property of PlaylistModels
 	 *
 	 * @param accountModel owning the PlaylistModels
-	 * @return SimpleListProperty<PlaylistModel> playlistModels
+	 * @return ObservableList<PlaylistModel> playlistModels
 	 */
-	SimpleListProperty<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
+	ObservableList<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
+
+	ObservableList<AccountModel> accountModelsProperty();
 }

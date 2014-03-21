@@ -13,26 +13,24 @@
  */
 package de.chaosfisch.youtube.playlist;
 
-import de.chaosfisch.data.UniqueObject;
-import de.chaosfisch.youtube.account.AccountModel;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class PlaylistModel implements UniqueObject<PlaylistDTO> {
+public class PlaylistModel {
 
-	private final SimpleStringProperty               youtubeId     = new SimpleStringProperty();
-	private final SimpleStringProperty               title         = new SimpleStringProperty();
-	private final SimpleStringProperty               thumbnail     = new SimpleStringProperty();
-	private final SimpleBooleanProperty              privacyStatus = new SimpleBooleanProperty();
-	private final SimpleLongProperty                 itemCount     = new SimpleLongProperty();
-	private final SimpleStringProperty               description   = new SimpleStringProperty();
-	private final SimpleObjectProperty<AccountModel> account       = new SimpleObjectProperty<>();
+	private final SimpleStringProperty  youtubeId     = new SimpleStringProperty();
+	private final SimpleStringProperty  title         = new SimpleStringProperty();
+	private final SimpleStringProperty  thumbnail     = new SimpleStringProperty();
+	private final SimpleBooleanProperty privacyStatus = new SimpleBooleanProperty();
+	private final SimpleLongProperty    itemCount     = new SimpleLongProperty();
+	private final SimpleStringProperty  description   = new SimpleStringProperty();
+	private final SimpleStringProperty  accountId     = new SimpleStringProperty();
 
 	@Override
 	public int hashCode() {
-		return youtubeId.get().hashCode();
+		return youtubeId.get()
+						.hashCode();
 	}
 
 	@Override
@@ -44,7 +42,8 @@ public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 			return false;
 		}
 		final PlaylistModel that = (PlaylistModel) obj;
-		return youtubeId.get().equals(that.youtubeId.get());
+		return youtubeId.get()
+						.equals(that.youtubeId.get());
 	}
 
 	@Override
@@ -61,15 +60,15 @@ public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 	}
 
 	public String getAccountId() {
-		return account.get().getYoutubeId();
+		return accountId.get();
 	}
 
-	public AccountModel getAccount() {
-		return account.get();
+	public void setAccountId(final String accountId) {
+		this.accountId.set(accountId);
 	}
 
-	public void setAccount(final AccountModel account) {
-		this.account.set(account);
+	public SimpleStringProperty accountIdProperty() {
+		return accountId;
 	}
 
 	public String getYoutubeId() {
@@ -134,36 +133,6 @@ public class PlaylistModel implements UniqueObject<PlaylistDTO> {
 
 	public SimpleStringProperty descriptionProperty() {
 		return description;
-	}
-
-	public SimpleObjectProperty<AccountModel> accountProperty() {
-		return account;
-	}
-
-	@Override
-	public String uniqueId() {
-		return youtubeId.get();
-	}
-
-	@Override
-	public PlaylistDTO toDTO() {
-		return new PlaylistDTO(youtubeId.get(),
-							   title.get(),
-							   thumbnail.get(),
-							   privacyStatus.get(),
-							   itemCount.get(),
-							   description.get(),
-							   account.get().getYoutubeId());
-	}
-
-	@Override
-	public void fromDTO(final PlaylistDTO o) {
-		setYoutubeId(o.getYoutubeId());
-		setTitle(o.getTitle());
-		setThumbnail(o.getThumbnail());
-		setPrivacyStatus(o.isPrivacyStatus());
-		setItemCount(o.getItemCount());
-		setDescription(o.getDescription());
 	}
 
 	/*

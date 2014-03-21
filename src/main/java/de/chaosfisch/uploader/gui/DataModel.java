@@ -17,64 +17,103 @@ import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
-import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.permissions.Comment;
 import de.chaosfisch.youtube.upload.permissions.ThreeD;
 import de.chaosfisch.youtube.upload.permissions.Visibility;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class DataModel {
 
-	private final SimpleListProperty<UploadModel>   uploads           = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<ProjectModel>  projects          = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<AccountModel>  accounts          = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<CategoryModel> categories        = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<String>        files             = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<UploadModel>   selectedUploads   = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<PlaylistModel> selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<Visibility>    visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(
-			Visibility
-					.values()));
-	private final SimpleListProperty<Comment>       comments          = new SimpleListProperty<>(FXCollections.observableArrayList(
-			Comment.values()));
-	private final SimpleListProperty<ThreeD>        threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(
-			ThreeD.values()));
-	private final SimpleListProperty<License>       licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(
-			License.values()));
-
-	private final SimpleObjectProperty<AccountModel>  selectedAccount  = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<CategoryModel> selectedCategory = new SimpleObjectProperty<>();
-	private final SimpleStringProperty                selectedFile     = new SimpleStringProperty();
+	private final SimpleListProperty<UploadModel>     uploads           = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<ProjectModel>    projects          = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<AccountModel>    accounts          = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<CategoryModel>   categories        = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<String>          files             = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<UploadModel>     selectedUploads   = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<PlaylistModel>   selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<Visibility>      visibilities      = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility.values()));
+	private final SimpleListProperty<Comment>         comments          = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
+	private final SimpleListProperty<ThreeD>          threeDs           = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
+	private final SimpleListProperty<License>         licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));
+	private final SimpleObjectProperty<AccountModel>  selectedAccount   = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<CategoryModel> selectedCategory  = new SimpleObjectProperty<>();
+	private final SimpleStringProperty                selectedFile      = new SimpleStringProperty();
+	private final SimpleIntegerProperty               maxSpeed          = new SimpleIntegerProperty();
+	private final SimpleIntegerProperty               maxUploads        = new SimpleIntegerProperty();
+	private final SimpleBooleanProperty               running           = new SimpleBooleanProperty();
 	private final ICategoryService categoryService;
 	private final IAccountService  accountService;
+	private final IUploadService   uploadService;
 //	private final IPlaylistService playlistService;
 
 
-	public DataModel(final ICategoryService categoryService, final IAccountService accountService) {
+	public DataModel(final ICategoryService categoryService, final IAccountService accountService, final IUploadService uploadService) {
 		this.categoryService = categoryService;
 		this.accountService = accountService;
-		initSampleData();
+		this.uploadService = uploadService;
 		initBindings();
 		initData();
+	}
+
+	public int getMaxSpeed() {
+		return maxSpeed.get();
+	}
+
+	public void setMaxSpeed(final int maxSpeed) {
+		this.maxSpeed.set(maxSpeed);
+	}
+
+	public SimpleIntegerProperty maxSpeedProperty() {
+		return maxSpeed;
+	}
+
+	public int getMaxUploads() {
+		return maxUploads.get();
+	}
+
+	public void setMaxUploads(final int maxUploads) {
+		this.maxUploads.set(maxUploads);
+	}
+
+	public SimpleIntegerProperty maxUploadsProperty() {
+		return maxUploads;
 	}
 
 	private void initBindings() {
 		categories.bind(categoryService.categoryModelsProperty());
 		accounts.bind(accountService.accountModelsProperty());
+		uploads.bind(uploadService.uploadModelsProperty());
 		//	projects.bind(projectService.projectModelsProperty());
 	}
 
 	private void initData() {
+		initCategoryData();
+		initUploadData();
+	}
+
+	private void initUploadData() {
+		maxUploads.bindBidirectional(uploadService.maxUploadsProperty());
+		maxSpeed.bindBidirectional(uploadService.maxSpeedProperty());
+		running.bind(uploadService.runningProperty());
+	}
+
+	public boolean getRunning() {
+		return running.get();
+	}
+
+	public SimpleBooleanProperty runningProperty() {
+		return running;
+	}
+
+	private void initCategoryData() {
 		final Thread categoryThread = new Thread(() -> {
 			try {
 				categoryService.refresh(YouTubeFactory.getDefault());
@@ -84,54 +123,6 @@ public class DataModel {
 		}, "Category_Loader");
 		categoryThread.setDaemon(true);
 		categoryThread.start();
-	}
-
-	private void initSampleData() {
-		projects.addAll(new ProjectModel("Test 1"), new ProjectModel("Projekt 2"), new ProjectModel("Und 3"));
-
-		final UploadModel uploadModel1 = new UploadModel();
-		uploadModel1.setMetadataTitle("Test");
-		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
-		final float progress = 0.7f;
-		uploadModel1.setProgress(progress);
-		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
-		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
-		uploadModel1.setStopAfter(false);
-		uploadModel1.setStatus(Status.WAITING);
-		final UploadModel uploadModel2 = new UploadModel();
-		uploadModel1.setMetadataTitle("Test");
-		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
-		uploadModel2.setProgress(progress);
-		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
-		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
-		uploadModel2.setStopAfter(false);
-		uploadModel2.setStatus(Status.FAILED);
-		final UploadModel uploadModel3 = new UploadModel();
-		uploadModel1.setMetadataTitle("Test");
-		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
-		uploadModel3.setProgress(progress);
-		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
-		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
-		uploadModel3.setStopAfter(false);
-		uploadModel3.setStatus(Status.RUNNING);
-		final UploadModel uploadModel4 = new UploadModel();
-		uploadModel1.setMetadataTitle("Test");
-		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
-		uploadModel4.setProgress(progress);
-		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
-		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
-		uploadModel4.setStopAfter(false);
-		uploadModel4.setStatus(Status.ABORTED);
-		final UploadModel uploadModel5 = new UploadModel();
-		uploadModel1.setMetadataTitle("Test");
-		uploadModel1.setDateTimeOfEnd(LocalDateTime.now());
-		uploadModel5.setProgress(progress);
-		uploadModel1.setDateTimeOfRelease(LocalDateTime.now());
-		uploadModel1.setDateTimeOfStart(LocalDateTime.now());
-		uploadModel5.setStopAfter(false);
-		uploadModel5.setStatus(Status.FINISHED);
-		uploads.addAll(uploadModel1, uploadModel2, uploadModel3, uploadModel4, uploadModel5);
-
 	}
 
 	public void addUploads(final List<UploadModel> uploads) {

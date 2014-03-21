@@ -8,13 +8,15 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data;
+package de.chaosfisch.data.account.fields;
 
-public interface UniqueObject<T> {
+import de.chaosfisch.data.IGenericDAO;
 
-	String uniqueId();
+import java.util.List;
 
-	T toDTO();
+public interface IFieldDAO extends IGenericDAO<FieldDTO> {
 
-	void fromDTO(T o);
+	List<FieldDTO> getAll(String accountId);
+
+	void clearOld(String accountId);
 }

@@ -12,38 +12,15 @@ package de.chaosfisch.youtube.account;
 
 import javafx.beans.property.SimpleListProperty;
 
-import java.util.List;
+import java.io.IOException;
 
 public interface IAccountService {
 
-	/**
-	 * Returns all accounts in the system
-	 *
-	 * @return Collection<AccountModel> accounts
-	 */
-	List<AccountModel> getAll();
+	SimpleListProperty<AccountModel> accountModelsProperty();
 
-	/**
-	 * Returns a specific account
-	 *
-	 * @param youtubeId of account
-	 * @return AccountModel accountModel
-	 */
-	AccountModel get(String youtubeId);
-
-	/**
-	 * Stores (inserts/updates) a single record
-	 *
-	 * @param accountModel to store
-	 */
-	void store(AccountModel accountModel);
-
-	/**
-	 * Removed (deletes) a single record
-	 *
-	 * @param accountModel to remove
-	 */
 	void remove(AccountModel accountModel);
 
-	SimpleListProperty<AccountModel> accountModelsProperty();
+	String getRefreshToken(String authorizationCode) throws IOException;
+
+	void store(AccountModel accountModel);
 }

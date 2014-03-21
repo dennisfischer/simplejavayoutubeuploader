@@ -14,8 +14,9 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.CredentialRefreshListener;
 import com.google.api.client.auth.oauth2.TokenErrorResponse;
 import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -28,11 +29,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public final class YouTubeFactory {
 
+	public static final  List<String>                   SCOPES        = Arrays.asList("https://www.googleapis.com/auth/youtube",
+																					  "https://www.googleapis.com/auth/youtube.readonly",
+																					  "https://www.googleapis.com/auth/youtube.upload",
+																					  "https://www.googleapis.com/auth/youtubepartner",
+																					  "https://www.googleapis.com/auth/userinfo.profile",
+																					  "https://www.googleapis.com/auth/userinfo.email"
+																					 );
 	private static final JsonFactory                    jsonFactory   = new GsonFactory();
 	private static final HttpTransport                  httpTransport = new NetHttpTransport();
 	private static final Logger                         LOGGER        = LoggerFactory.getLogger(YouTubeFactory.class);
@@ -84,15 +93,22 @@ public final class YouTubeFactory {
 		if (null == youTubeDefault) {
 			youTubeDefault = new YouTube.Builder(httpTransport, jsonFactory, request -> {
 				request.setInterceptor(request1 -> {
-					request1.getUrl().set("key", GDataConfig.ACCESS_KEY);
+					request1.getUrl()
+							.set("key", GDataConfig.ACCESS_KEY);
 				});
-			}).setApplicationName("simple-java-youtube-uploader").build();
+			}).setApplicationName("simple-java-youtube-uploader")
+			  .build();
 		}
 		return youTubeDefault;
 	}
 
 	public static String getRefreshToken(final String code) throws IOException {
-		return new GoogleAuthorizationCodeFlow(httpTransport, jsonFactory, GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET, Collections
-				.emptyList()).newTokenRequest(code).execute().getRefreshToken();
+		final GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(httpTransport,
+																						  jsonFactory,
+																						  GDataConfig.CLIENT_ID,
+																						  GDataConfig.CLIENT_SECRET,
+																						  code,
+																						  GDataConfig.REDIRECT_URI).execute();
+		return tokenResponse.getRefreshToken();
 	}
 }

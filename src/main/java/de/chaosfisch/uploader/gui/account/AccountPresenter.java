@@ -45,10 +45,11 @@ public class AccountPresenter {
 		accountModelSimpleListProperty.addListener((ListChangeListener<AccountModel>) change -> {
 			while (change.next()) {
 				if (change.wasAdded()) {
-					change.getAddedSubList().forEach(this::addPanel);
-					System.out.println("added");
+					change.getAddedSubList()
+						  .forEach(this::addPanel);
 				} else if (change.wasRemoved()) {
-					change.getRemoved().forEach(this::removePanel);
+					change.getRemoved()
+						  .forEach(this::removePanel);
 				}
 			}
 		});
@@ -58,23 +59,28 @@ public class AccountPresenter {
 
 	private void addPanel(final AccountModel accountModel) {
 		if (defaultAdded) {
-			accordion.getPanes().remove(defaultPanel);
+			accordion.getPanes()
+					 .remove(defaultPanel);
 			defaultAdded = false;
 		}
 		final EntryView entryView = entryViewProvider.get();
 		accountPanels.put(accountModel, entryView);
 		((EntryPresenter) entryView.getPresenter()).setAccount(accountModel);
-		accordion.getPanes().add((TitledPane) entryView.getView());
+		accordion.getPanes()
+				 .add((TitledPane) entryView.getView());
 	}
 
 	private void removePanel(final AccountModel accountModel) {
 		if (accountPanels.containsKey(accountModel)) {
 			final EntryView entryView = accountPanels.remove(accountModel);
-			accordion.getPanes().remove(entryView.getView());
+			accordion.getPanes()
+					 .remove(entryView.getView());
 		}
 
-		if (accordion.getPanes().isEmpty()) {
-			accordion.getPanes().add(defaultPanel);
+		if (accordion.getPanes()
+					 .isEmpty()) {
+			accordion.getPanes()
+					 .add(defaultPanel);
 			defaultAdded = true;
 		}
 	}

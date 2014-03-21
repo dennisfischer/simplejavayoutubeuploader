@@ -8,20 +8,18 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data;
+package de.chaosfisch.youtube.upload;
 
-import java.util.Collection;
-import java.util.function.Predicate;
+import de.chaosfisch.data.IGenericDAO;
 
-public interface IDataStore<T extends UniqueObject<E>, E> {
+public interface IUploadDAO extends IGenericDAO<UploadDTO> {
+	UploadDTO fetchNextUpload();
 
-	void store(T o);
+	int count();
 
-	Collection<T> loadAll();
+	int countUnprocessed();
 
-	Collection<T> load(Predicate<? super E> predicate);
+	long countReadyStarttime();
 
-	T loadOne(Predicate<? super E> predicate);
-
-	void remove(T o);
+	UploadDTO get(String id);
 }

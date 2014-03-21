@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--***********************************************************************************************
+  * Copyright (c) 2014 Dennis Fischer.                                                            *
+  * All rights reserved. This program and the accompanying materials                              *
+  * are made available under the terms of the GNU Public License v3.0+                            *
+  * which accompanies this distribution, and is available at                                      *
+  * http://www.gnu.org/licenses/gpl.html                                                          *
+  *                                                                                               *
+  * Contributors: Dennis Fischer                                                                  *
+  ***********************************************************************************************-->
+
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="accountList" id="VBox" alignment="CENTER" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+	  fx:controller="de.chaosfisch.uploader.gui.account.add.StepPresenter"/>

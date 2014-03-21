@@ -10,36 +10,60 @@
 
 package de.chaosfisch.youtube.upload;
 
-public abstract class AbstractUploadService implements IUploadService {
+import de.chaosfisch.data.account.IAccountDAO;
+import de.chaosfisch.data.playlist.IPlaylistDAO;
+import org.apache.commons.dbutils.QueryRunner;
 
-	private final Uploader uploader;
+import java.util.List;
 
-	protected AbstractUploadService(final Uploader uploader) {
-		this.uploader = uploader;
+public class UploadDAO implements IUploadDAO {
+	private final IAccountDAO  accountDAO;
+	private final IPlaylistDAO playlistDAO;
+	private final QueryRunner  queryRunner;
+
+	public UploadDAO(final QueryRunner queryRunner, final IAccountDAO accountDAO, final IPlaylistDAO playlistDAO) {
+		this.queryRunner = queryRunner;
+		this.accountDAO = accountDAO;
+		this.playlistDAO = playlistDAO;
 	}
 
 	@Override
-	public void startUploading() {
-		uploader.run();
+	public UploadDTO fetchNextUpload() {
+		return null;
 	}
 
 	@Override
-	public void stopUploading() {
-		uploader.shutdown();
+	public int count() {
+		return 0;
 	}
 
 	@Override
-	public void startStarttimeCheck() {
-		uploader.runStarttimeChecker();
+	public int countUnprocessed() {
+		return 0;
 	}
 
 	@Override
-	public void stopStarttimeCheck() {
-		uploader.stopStarttimeChecker();
+	public long countReadyStarttime() {
+		return 0;
 	}
 
 	@Override
-	public void abort(final UploadModel upload) {
-		uploader.abort(upload);
+	public List<UploadDTO> getAll() {
+		return null;
+	}
+
+	@Override
+	public UploadDTO get(final String id) {
+		return null;
+	}
+
+	@Override
+	public void store(final UploadDTO object) {
+
+	}
+
+	@Override
+	public void remove(final UploadDTO object) {
+
 	}
 }

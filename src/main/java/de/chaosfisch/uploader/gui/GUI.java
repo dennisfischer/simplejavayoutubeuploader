@@ -51,6 +51,7 @@ public class GUI extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		final ObjectGraph objectGraph = ObjectGraph.create(new GUIModule());
+		objectGraph.injectStatics();
 		FXMLView.setControllerFactory(getControllerFactory(objectGraph));
 
 		final FXMLLoader loader = new FXMLLoader();

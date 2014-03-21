@@ -1,47 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3177146394">
-    <data-source source="LOCAL" name="V3 Old" uuid="5a845a27-af0a-430b-aaad-3712d1edff2b">
-      <driver-ref>h2.embedded</driver-ref>
+  <component name="DataSourceManagerImpl" format="xml" hash="2551361389">
+    <data-source source="LOCAL" name="SQLite - database.db" uuid="81edd196-12b4-4f66-9e9d-134b40125666">
+      <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:~/SimpleJavaYoutubeUploader/youtubeuploader</jdbc-url>
-      <user-name>username</user-name>
-      <schema-pattern>YOUTUBEUPLOADER.PUBLIC</schema-pattern>
-      <default-dialect>H2</default-dialect>
-      <libraries>
-        <library>
-          <url>jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/com.h2database/h2/1.3.170/jar/7200aeef0a3c6889d049f4d8f6f26266721ccc48/h2-1.3.170.jar!/</url>
-        </library>
-      </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="V3 Final" uuid="5e39ac53-97dd-481e-94a2-c7e70ab1ec67">
-      <driver-ref>h2.embedded</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:~/SimpleJavaYoutubeUploader/youtubeuploader-v3</jdbc-url>
-      <user-name>username</user-name>
-      <schema-pattern>YOUTUBEUPLOADER-V3.PUBLIC</schema-pattern>
-      <default-dialect>H2</default-dialect>
-      <libraries>
-        <library>
-          <url>jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/com.h2database/h2/1.3.170/jar/7200aeef0a3c6889d049f4d8f6f26266721ccc48/h2-1.3.170.jar!/</url>
-        </library>
-      </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="V2" uuid="e32aa1d4-0743-442d-b973-8776f11799b2">
-      <driver-ref>hsqldb.embedded</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.hsqldb.jdbc.JDBCDriver</jdbc-driver>
-      <jdbc-url>jdbc:hsqldb:file:~/SimpleJavaYoutubeUploader/db/youtubeuploader.db;encoding=UTF-8;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish;</jdbc-url>
-      <user-name>sa</user-name>
-      <schema-pattern>YOUTUBEUPLOADER.PUBLIC</schema-pattern>
-      <default-dialect>H2</default-dialect>
-      <libraries>
-        <library>
-          <url>jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/org.hsqldb/hsqldb/2.2.9/jar/23365fb055315725a8e69777e3d2e1e8a5d4878f/hsqldb-2.2.9.jar!/</url>
-        </library>
-      </libraries>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/SimpleJavaYoutubeUploader/v3.2.0.6/database.db</jdbc-url>
+      <schema-pattern>*</schema-pattern>
+      <driver-properties>
+        <property name="foreign_keys" value="on" />
+      </driver-properties>
+      <libraries />
     </data-source>
   </component>
 </project>

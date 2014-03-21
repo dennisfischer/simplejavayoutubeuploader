@@ -8,8 +8,10 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.account;
+package de.chaosfisch.data.category;
 
-public enum AccountType {
-	DEFAULT, MONETIZE, PARTNER
+import de.chaosfisch.data.IGenericDAO;
+
+public interface ICategoryDAO extends IGenericDAO<CategoryDTO> {
+	CategoryDTO get(String id);
 }

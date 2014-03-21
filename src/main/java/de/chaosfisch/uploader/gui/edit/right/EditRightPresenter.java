@@ -80,7 +80,9 @@ public class EditRightPresenter {
 		if (null != file) {
 			thumbnailPath.setText(file.getAbsolutePath());
 			try {
-				thumbnailImage.setImage(new Image(file.toURI().toURL().toExternalForm(), true));
+				thumbnailImage.setImage(new Image(file.toURI()
+													  .toURL()
+													  .toExternalForm(), true));
 			} catch (final MalformedURLException e) {
 				LOGGER.warn("Loading thumbnail preview failed", e);
 			}
@@ -88,22 +90,32 @@ public class EditRightPresenter {
 	}
 
 	public void initialize() {
-		mainFrame.getPanes().add((TitledPane) editMonetizationViewLazy.get().getView());
+		mainFrame.getPanes()
+				 .add((TitledPane) editMonetizationViewLazy.get()
+														   .getView());
 		bindData();
 		selectData();
 	}
 
 	private void bindData() {
-		visibility.itemsProperty().bindBidirectional(dataModel.visibilitiesProperty());
-		comments.itemsProperty().bindBidirectional(dataModel.commentsProperty());
-		license.itemsProperty().bindBidirectional(dataModel.licensesProperty());
-		threed.itemsProperty().bindBidirectional(dataModel.threeDsProperty());
+		visibility.itemsProperty()
+				  .bindBidirectional(dataModel.visibilitiesProperty());
+		comments.itemsProperty()
+				.bindBidirectional(dataModel.commentsProperty());
+		license.itemsProperty()
+			   .bindBidirectional(dataModel.licensesProperty());
+		threed.itemsProperty()
+			  .bindBidirectional(dataModel.threeDsProperty());
 	}
 
 	private void selectData() {
-		visibility.getSelectionModel().selectFirst();
-		comments.getSelectionModel().selectFirst();
-		license.getSelectionModel().selectFirst();
-		threed.getSelectionModel().selectFirst();
+		visibility.getSelectionModel()
+				  .selectFirst();
+		comments.getSelectionModel()
+				.selectFirst();
+		license.getSelectionModel()
+			   .selectFirst();
+		threed.getSelectionModel()
+			  .selectFirst();
 	}
 }

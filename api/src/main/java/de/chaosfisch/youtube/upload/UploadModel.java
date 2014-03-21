@@ -13,9 +13,8 @@
  */
 package de.chaosfisch.youtube.upload;
 
-import de.chaosfisch.data.UniqueObject;
+import de.chaosfisch.data.account.cookies.CookieDTO;
 import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.account.PersistentCookieStore;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.metadata.Metadata;
@@ -25,11 +24,12 @@ import de.chaosfisch.youtube.upload.permissions.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
 import java.io.File;
 import java.time.LocalDateTime;
 
-public class UploadModel implements UniqueObject<UploadDTO> {
+public class UploadModel {
 
 	private final SimpleStringProperty                id                = new SimpleStringProperty();
 	private final SimpleListProperty<PlaylistModel>   playlists         = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -56,12 +56,12 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 		return fileSize.get();
 	}
 
-	public SimpleLongProperty fileSizeProperty() {
-		return fileSize;
-	}
-
 	public void setFileSize(final long fileSize) {
 		this.fileSize.set(fileSize);
+	}
+
+	public SimpleLongProperty fileSizeProperty() {
+		return fileSize;
 	}
 
 	public double getProgress() {
@@ -559,9 +559,9 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 					   .getLicenseIdentifier();
 	}
 
-	public ObservableList<PersistentCookieStore.SerializableCookie> getAccountSerializableCookies() {
+	public ObservableSet<CookieDTO> getAccountSerializableCookies() {
 		return account.get()
-					  .getSerializableCookies();
+					  .getCookies();
 	}
 
 	public String getPermissionsVisibilityIdentifier() {
@@ -572,21 +572,6 @@ public class UploadModel implements UniqueObject<UploadDTO> {
 	public String getCategoryId() {
 		return metadata.get()
 					   .getCategoryId();
-	}
-
-	@Override
-	public String uniqueId() {
-		return id.get();
-	}
-
-	@Override
-	public UploadDTO toDTO() {
-		return null;
-	}
-
-	@Override
-	public void fromDTO(final UploadDTO o) {
-
 	}
 
 	public interface Validation {

@@ -8,25 +8,9 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.category;
+package de.chaosfisch.uploader.gui.account.add;
 
-import java.io.Serializable;
+import de.chaosfisch.controls.FXMLView;
 
-public class CategoryDTO implements Serializable {
-	private static final long serialVersionUID = 8676626334279071412L;
-	private final String name;
-	private final int    youtubeId;
-
-	public CategoryDTO(final String name, final int youtubeId) {
-		this.name = name;
-		this.youtubeId = youtubeId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getYoutubeId() {
-		return youtubeId;
-	}
+public class Step3View extends FXMLView {
 }

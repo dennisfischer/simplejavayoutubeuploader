@@ -10,19 +10,17 @@
 
 package de.chaosfisch.youtube.category;
 
-import de.chaosfisch.data.UniqueObject;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.jetbrains.annotations.NotNull;
 
-public class CategoryModel implements UniqueObject<CategoryDTO>, Comparable<CategoryModel> {
+public class CategoryModel implements Comparable<CategoryModel> {
 	private final SimpleIntegerProperty youtubeId = new SimpleIntegerProperty();
 	private final SimpleStringProperty  name      = new SimpleStringProperty();
 
 	public SimpleStringProperty nameProperty() {
 		return name;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -58,22 +56,6 @@ public class CategoryModel implements UniqueObject<CategoryDTO>, Comparable<Cate
 		return youtubeId;
 	}
 
-	@Override
-	public String uniqueId() {
-		return String.valueOf(youtubeId.get());
-	}
-
-	@Override
-	public CategoryDTO toDTO() {
-		return new CategoryDTO(name.get(), youtubeId.get());
-	}
-
-	@Override
-	public void fromDTO(final CategoryDTO o) {
-		setName(o.getName());
-		setYoutubeId(o.getYoutubeId());
-	}
-
 	public int getYoutubeId() {
 		return youtubeId.get();
 	}
@@ -85,9 +67,11 @@ public class CategoryModel implements UniqueObject<CategoryDTO>, Comparable<Cate
 
 	@Override
 	public int compareTo(@NotNull final CategoryModel o) {
-		if (0 > name.get().compareTo(o.name.get())) {
+		if (0 > name.get()
+					.compareTo(o.name.get())) {
 			return -1;
-		} else if (0 < name.get().compareTo(o.name.get())) {
+		} else if (0 < name.get()
+						   .compareTo(o.name.get())) {
 			return 1;
 		}
 		return 0;

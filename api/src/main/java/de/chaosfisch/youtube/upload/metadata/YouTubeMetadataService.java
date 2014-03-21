@@ -15,9 +15,9 @@ import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
+import de.chaosfisch.data.account.cookies.CookieDTO;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
-import de.chaosfisch.youtube.account.PersistentCookieStore;
 import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.permissions.*;
 import org.apache.http.NameValuePair;
@@ -81,25 +81,27 @@ public class YouTubeMetadataService implements IMetadataService {
 	@Override
 	public void updateMetaData(final Video video, final AccountModel account) throws IOException {
 		YouTubeFactory.getYouTube(account)
-				.videos()
-				.update("snippet,status", video)
-				.execute();
+					  .videos()
+					  .update("snippet,status", video)
+					  .execute();
 	}
 
 	@Override
 	public void activateBrowserfeatures(final UploadModel upload) throws IOException {
 		final CookieStore cookieStore = new BasicCookieStore();
-		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccountSerializableCookies()) {
+		for (final CookieDTO serializableCookie : upload.getAccountSerializableCookies()) {
 			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
-																		   .getName(), serializableCookie.getCookie()
-																		   .getValue());
-			cookie.setDomain(serializableCookie.getCookie().getDomain());
+																					 .getName(), serializableCookie.getCookie()
+																												   .getValue());
+			cookie.setDomain(serializableCookie.getCookie()
+											   .getDomain());
 			cookieStore.addCookie(cookie);
 		}
 
 		client.setCookieStore(cookieStore);
 		final HttpGet httpGet = new HttpGet(String.format(VIDEO_EDIT_URL, upload.getVideoid()));
-		final String body = EntityUtils.toString(client.execute(httpGet).getEntity());
+		final String body = EntityUtils.toString(client.execute(httpGet)
+													   .getEntity());
 		changeMetadata(body, upload);
 	}
 
@@ -110,7 +112,10 @@ public class YouTubeMetadataService implements IMetadataService {
 		params.putAll(getMetadataSocial(upload));
 		params.putAll(getMetadataMonetization(content, upload));
 		params.putAll(getMetadataPermissions(upload));
-		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
+		params.put("modified_fields",
+				   Joiner.on(MODIFIED_SEPERATOR)
+						 .skipNulls()
+						 .join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
@@ -124,7 +129,8 @@ public class YouTubeMetadataService implements IMetadataService {
 				.getVideoid()));
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-		final String body = EntityUtils.toString(client.execute(httpPost).getEntity());
+		final String body = EntityUtils.toString(client.execute(httpPost)
+													   .getEntity());
 
 		LOGGER.info(body);
 	}
@@ -133,10 +139,13 @@ public class YouTubeMetadataService implements IMetadataService {
 		final Map<String, String> params = new HashMap<>(4);
 
 		if (null != upload.getDateTimeOfRelease()) {
-			if (upload.getDateTimeOfRelease().isAfter(LocalDateTime.now())) {
+			if (upload.getDateTimeOfRelease()
+					  .isAfter(LocalDateTime.now())) {
 				final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 				dateTimeFormatter.withZone(ZoneOffset.UTC);
-				params.put("publish_time", upload.getDateTimeOfRelease().format(dateTimeFormatter));
+				params.put("publish_time",
+						   upload.getDateTimeOfRelease()
+								 .format(dateTimeFormatter));
 				params.put("publish_timezone", "UTC");
 				params.put("time_published", "0");
 				params.put("privacy", "scheduled");
@@ -149,7 +158,8 @@ public class YouTubeMetadataService implements IMetadataService {
 	private Map<String, String> getMetadataSocial(final UploadModel upload) {
 		final Map<String, String> params = new HashMap<>(3);
 		if (Visibility.PUBLIC == upload.getPermissionsVisibility() || Visibility.SCHEDULED == upload.getPermissionsVisibility()) {
-			if (null != upload.getSocialMessage() && !upload.getSocialMessage().isEmpty()) {
+			if (null != upload.getSocialMessage() && !upload.getSocialMessage()
+															.isEmpty()) {
 				params.put("creator_share_custom_message", upload.getSocialMessage());
 				params.put("creator_share_facebook", boolConverter(upload.isSocialFacebook()));
 				params.put("creator_share_twitter", boolConverter(upload.isSocialTwitter()));
@@ -186,25 +196,32 @@ public class YouTubeMetadataService implements IMetadataService {
 								"Track in all countries" :
 								"Block in all countries";
 
-				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
+				final Pattern pattern = Pattern.compile(
+						"<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);
 
 				String usagePolicy = null;
 				int position = 0;
 				while (matcher.find(position)) {
 					position = matcher.end();
-					if (matcher.group(5).trim().equals(toFind)) {
+					if (matcher.group(5)
+							   .trim()
+							   .equals(toFind)) {
 						usagePolicy = matcher.group(1);
 					}
 				}
 				params.put("usage_policy", usagePolicy);
 
-				final String assetName = upload.getMonetizationAsset().name().toLowerCase(Locale.getDefault());
+				final String assetName = upload.getMonetizationAsset()
+											   .name()
+											   .toLowerCase(Locale.getDefault());
 
 				params.put("asset_type", assetName);
-				params.put(assetName + "_custom_id", upload.getMonetizationCustomId().isEmpty() ?
-						upload.getVideoid() :
-						upload.getMonetizationCustomId());
+				params.put(assetName + "_custom_id",
+						   upload.getMonetizationCustomId()
+								 .isEmpty() ?
+								   upload.getVideoid() :
+								   upload.getMonetizationCustomId());
 
 				params.put(assetName + "_notes", upload.getMonetizationNotes());
 				params.put(assetName + "_tms_id", upload.getMonetizationTmsid());
@@ -213,9 +230,11 @@ public class YouTubeMetadataService implements IMetadataService {
 
 				if (Asset.TV != upload.getMonetizationAsset()) {
 					// WEB + MOVIE ONLY
-					params.put(assetName + "_title", !upload.getMonetizationTitle().isEmpty() ?
-							upload.getMonetizationTitle() :
-							upload.getMetadataTitle());
+					params.put(assetName + "_title",
+							   !upload.getMonetizationTitle()
+									  .isEmpty() ?
+									   upload.getMonetizationTitle() :
+									   upload.getMetadataTitle());
 					params.put(assetName + "_description", upload.getMonetizationDescription());
 				} else {
 					// TV ONLY
@@ -238,7 +257,10 @@ public class YouTubeMetadataService implements IMetadataService {
 		params.put("allow_comment_ratings", boolConverter(upload.isPermissionsCommentvote()));
 		params.put("allow_ratings", boolConverter(upload.isPermissionsRate()));
 		params.put("self_racy", boolConverter(upload.isPermissionsAgeRestricted()));
-		params.put("threed_type", upload.getPermissionsThreedD().name().toLowerCase());
+		params.put("threed_type",
+				   upload.getPermissionsThreedD()
+						 .name()
+						 .toLowerCase());
 		return params;
 	}
 
