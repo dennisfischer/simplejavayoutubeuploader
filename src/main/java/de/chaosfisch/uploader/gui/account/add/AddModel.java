@@ -201,6 +201,7 @@ public class AddModel {
 	public void reset() {
 		email.set("");
 		password.set("");
+		persistentCookieStore.removeAll();
 		step.set(Step.STEP_1);
 	}
 

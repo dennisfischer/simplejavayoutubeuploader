@@ -199,12 +199,17 @@ public class StepPresenter {
 						return false;
 					}
 
-					String accountId = ((String) addModel.getEngine()
-														 .executeScript(
-																 "document.evaluate('//*[@id=\"account-form\"]/div[2]/div[1]/div[2]/p[2]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerText")).substring(
-							18);
-					addModel.createAccount(accountId);
-					getOAuthPermission();
+					Pattern pattern = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
+					final String html = (String) addModel.getEngine()
+														 .executeScript("document.documentElement.outerHTML");
+					System.out.println(html);
+					final Matcher matcher = pattern.matcher(html);
+
+					if (matcher.find(1)) {
+						final String accountId = matcher.group(2);
+						addModel.createAccount(accountId);
+						getOAuthPermission();
+					}
 					return true;
 				});
 				addModel.getEngine()
