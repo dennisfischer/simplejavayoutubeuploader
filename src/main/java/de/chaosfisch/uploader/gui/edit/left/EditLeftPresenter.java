@@ -14,6 +14,7 @@ import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -22,6 +23,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
+import java.util.stream.Collectors;
 
 public class EditLeftPresenter {
 	@Inject
@@ -61,7 +63,11 @@ public class EditLeftPresenter {
 		categories.valueProperty()
 				  .bindBidirectional(dataModel.selectedCategoryProperty());
 		accounts.valueProperty()
-				.addListener((observableValue, oldAccount, newAccount) -> playlists.setItems(dataModel.getPlaylists(newAccount)));
+				.addListener((observableValue, oldAccount, newAccount) -> playlists.setItems(FXCollections.observableArrayList(dataModel.getPlaylists(
+						newAccount)
+																																		.stream()
+																																		.collect(
+																																				Collectors.toList()))));
 
 		playlists.getSelectionModel()
 				 .selectedItemProperty()
@@ -69,9 +75,10 @@ public class EditLeftPresenter {
 					 if (null != newPlaylist) {
 						 selectedPlaylists.getItems()
 										  .add(newPlaylist);
+						 playlists.getSelectionModel()
+								  .clearSelection();
 						 playlists.getItems()
 								  .remove(newPlaylist);
-						 playlists.setValue(null);
 					 }
 				 });
 

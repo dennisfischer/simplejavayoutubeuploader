@@ -11,7 +11,7 @@
 package de.chaosfisch.youtube.playlist;
 
 import de.chaosfisch.youtube.account.AccountModel;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ public interface IPlaylistService {
 	 * @param accountModel owning the PlaylistModels
 	 * @return ObservableList<PlaylistModel> playlistModels
 	 */
-	ObservableList<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
+	ObservableSet<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
 
 	void store(PlaylistModel playlistModel, AccountModel accountModel);
 

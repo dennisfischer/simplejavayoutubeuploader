@@ -44,11 +44,12 @@
     <table name="playlists" schema="" catalog="" type="TABLE">
       <column name="youtubeId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="title" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="thumbnail" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="thumbnail" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
       <column name="privacyStatus" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="itemCount" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="description" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="accountId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="last_modified" sqlType="TIMESTAMP" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="youtubeId"/>
       <foreign-key name="#FAKE_playlists_1" columns="accountId" ref-table="accounts" ref-schema="" ref-catalog="" ref-columns="youtubeId" update-rule="0" delete-rule="0" deferrability="1"/>
     </table>

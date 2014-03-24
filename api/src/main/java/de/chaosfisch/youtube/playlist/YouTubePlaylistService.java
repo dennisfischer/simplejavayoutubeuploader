@@ -20,7 +20,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +31,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class YouTubePlaylistService implements IPlaylistService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubePlaylistService.class);
+	private static final Logger LOGGER            = LoggerFactory.getLogger(YouTubePlaylistService.class);
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
 	private final IPlaylistDAO playlistDAO;
-	private final SimpleMapProperty<AccountModel, ObservableList<PlaylistModel>> playlistModelSimpleMapProperty = new SimpleMapProperty<>(
+	private final SimpleMapProperty<AccountModel, ObservableSet<PlaylistModel>> playlistModelSimpleMapProperty = new SimpleMapProperty<>(
 			FXCollections.observableHashMap());
 
 	@Inject
@@ -67,13 +67,13 @@ public class YouTubePlaylistService implements IPlaylistService {
 					 });
 	}
 
-	private ObservableList<PlaylistModel> initPlaylistList(final AccountModel a) {
+	private ObservableSet<PlaylistModel> initPlaylistList(final AccountModel a) {
 		return playlistModelSimpleMapProperty.putIfAbsent(a,
-														  FXCollections.observableArrayList(playlistDAO.getByAccount(a.getYoutubeId())
-																									   .stream()
-																									   .map(this::fromDTO)
-																									   .collect(
-																											   Collectors.toList()))
+														  FXCollections.observableSet(playlistDAO.getByAccount(a.getYoutubeId())
+																								 .stream()
+																								 .map(this::fromDTO)
+																								 .collect(
+																										 Collectors.toSet()))
 														 );
 	}
 
@@ -194,13 +194,13 @@ public class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	@Override
-	public ObservableList<PlaylistModel> playlistModelsProperty(final AccountModel accountModel) {
+	public ObservableSet<PlaylistModel> playlistModelsProperty(final AccountModel accountModel) {
 		return playlistModelSimpleMapProperty.get(accountModel);
 	}
 
 	@Override
 	public void store(final PlaylistModel playlistModel, final AccountModel accountModel) {
-		final ObservableList<PlaylistModel> playlistModels = playlistModelSimpleMapProperty.get(accountModel);
+		final ObservableSet<PlaylistModel> playlistModels = playlistModelSimpleMapProperty.get(accountModel);
 		if (!playlistModels.contains(accountModel)) {
 			playlistModels.add(playlistModel);
 		}

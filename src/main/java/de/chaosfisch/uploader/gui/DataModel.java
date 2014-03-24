@@ -27,6 +27,7 @@ import de.chaosfisch.youtube.upload.permissions.Visibility;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
 import java.io.IOException;
 import java.util.List;
@@ -324,9 +325,9 @@ public class DataModel {
 		accountService.remove(account);
 	}
 
-	public ObservableList<PlaylistModel> getPlaylists(final AccountModel account) {
+	public ObservableSet<PlaylistModel> getPlaylists(final AccountModel account) {
 		if (null == account) {
-			return FXCollections.observableArrayList();
+			return FXCollections.observableSet();
 		}
 		return playlistService.playlistModelsProperty(account);
 	}

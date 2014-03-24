@@ -26,8 +26,7 @@ import javax.inject.Provider;
 import java.util.HashMap;
 
 public class AccountPresenter {
-	private final SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(
-			FXCollections.observableArrayList());
+	private final SimpleListProperty<AccountModel> accountModelSimpleListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final HashMap<AccountModel, EntryView> accountPanels                  = new HashMap<>(5);
 	@Inject
 	protected DataModel           dataModel;
