@@ -39,13 +39,14 @@ CREATE TABLE IF NOT EXISTS accounts_cookies
 
 CREATE TABLE IF NOT EXISTS playlists
 (
-  youtubeId     TEXT    NOT NULL,
-  title         TEXT    NOT NULL,
-  thumbnail     TEXT    NOT NULL,
-  privacyStatus BOOLEAN NOT NULL,
-  itemCount     INTEGER NOT NULL,
-  description   TEXT    NOT NULL,
-  accountId     TEXT    NOT NULL,
+  youtubeId     TEXT      NOT NULL,
+  title         TEXT      NOT NULL,
+  thumbnail     TEXT,
+  privacyStatus BOOLEAN   NOT NULL,
+  itemCount     INTEGER   NOT NULL,
+  description   TEXT      NOT NULL,
+  accountId     TEXT      NOT NULL,
+  last_modified TIMESTAMP NOT NULL,
   PRIMARY KEY (youtubeId),
   FOREIGN KEY (accountId) REFERENCES accounts (youtubeId) ON DELETE CASCADE ON UPDATE CASCADE
 );

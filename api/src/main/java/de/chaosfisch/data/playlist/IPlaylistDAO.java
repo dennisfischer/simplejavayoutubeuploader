@@ -19,4 +19,6 @@ public interface IPlaylistDAO extends IGenericDAO<PlaylistDTO> {
 	PlaylistDTO get(String id);
 
 	List<PlaylistDTO> getByAccount(String id);
+
+	void clearOld(String accountId);
 }

@@ -10,15 +10,12 @@
 
 package de.chaosfisch.youtube.processors;
 
-import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.job.UploadJobPreProcessor;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlaylistJobPreProcessor implements UploadJobPreProcessor {
 	private final IPlaylistService playlistService;
@@ -30,9 +27,7 @@ public class PlaylistJobPreProcessor implements UploadJobPreProcessor {
 
 	@Override
 	public UploadModel process(final UploadModel upload) throws IOException {
-		final List<AccountModel> accountList = new ArrayList<>(1);
-		accountList.add(upload.getAccount());
-		playlistService.synchronizePlaylists(accountList);
+		playlistService.refresh();
 		return upload;
 	}
 }

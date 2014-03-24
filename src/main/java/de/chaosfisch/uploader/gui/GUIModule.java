@@ -30,6 +30,7 @@ import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
 import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.ICategoryService;
+import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.upload.IUploadService;
 import org.sqlite.SQLiteDataSource;
 
@@ -111,7 +112,7 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService, final IUploadService iUploadService) {
-		return new DataModel(iCategoryService, iAccountService, iUploadService);
+	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService, final IUploadService iUploadService, final IPlaylistService iPlaylistService) {
+		return new DataModel(iCategoryService, iAccountService, iUploadService, iPlaylistService);
 	}
 }

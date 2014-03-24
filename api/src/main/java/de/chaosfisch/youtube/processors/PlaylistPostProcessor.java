@@ -30,7 +30,9 @@ public class PlaylistPostProcessor implements UploadeJobPostProcessor {
 	@Override
 	public UploadModel process(final UploadModel upload) throws IOException {
 		for (final PlaylistModel playlist : upload.getPlaylists()) {
-			playlistService.addVideoToPlaylist(playlist, upload.getVideoid());
+			playlistService.addVideoToPlaylist(playlist,
+											   upload.getAccount(),
+											   upload.getVideoid());
 		}
 		return upload;
 	}

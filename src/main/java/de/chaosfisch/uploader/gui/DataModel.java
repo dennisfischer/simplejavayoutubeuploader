@@ -16,6 +16,7 @@ import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.category.ICategoryService;
+import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.UploadModel;
@@ -52,13 +53,14 @@ public class DataModel {
 	private final ICategoryService categoryService;
 	private final IAccountService  accountService;
 	private final IUploadService   uploadService;
-//	private final IPlaylistService playlistService;
+	private final IPlaylistService playlistService;
 
 
-	public DataModel(final ICategoryService categoryService, final IAccountService accountService, final IUploadService uploadService) {
+	public DataModel(final ICategoryService categoryService, final IAccountService accountService, final IUploadService uploadService, final IPlaylistService playlistService) {
 		this.categoryService = categoryService;
 		this.accountService = accountService;
 		this.uploadService = uploadService;
+		this.playlistService = playlistService;
 		initBindings();
 		initData();
 	}
@@ -97,6 +99,15 @@ public class DataModel {
 	private void initData() {
 		initCategoryData();
 		initUploadData();
+		initPlaylists();
+	}
+
+	private void initPlaylists() {
+		try {
+			playlistService.refresh();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initUploadData() {
@@ -311,5 +322,12 @@ public class DataModel {
 
 	public void remove(final AccountModel account) {
 		accountService.remove(account);
+	}
+
+	public ObservableList<PlaylistModel> getPlaylists(final AccountModel account) {
+		if (null == account) {
+			return FXCollections.observableArrayList();
+		}
+		return playlistService.playlistModelsProperty(account);
 	}
 }

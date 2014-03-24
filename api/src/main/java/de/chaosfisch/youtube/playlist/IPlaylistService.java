@@ -14,7 +14,6 @@ import de.chaosfisch.youtube.account.AccountModel;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface IPlaylistService {
 
@@ -25,7 +24,7 @@ public interface IPlaylistService {
 	 * @param playlistModel the playlist used
 	 * @param videoId       for the added video
 	 */
-	void addVideoToPlaylist(PlaylistModel playlistModel, String videoId);
+	void addVideoToPlaylist(PlaylistModel playlistModel, AccountModel accountModel, String videoId);
 
 	/**
 	 * Adds this playlist to the account specified inside the playlist object.
@@ -33,14 +32,12 @@ public interface IPlaylistService {
 	 *
 	 * @param playlistModel the playlist to be added
 	 */
-	void addYoutubePlaylist(PlaylistModel playlistModel);
+	void addYoutubePlaylist(PlaylistModel playlistModel, AccountModel accountModel);
 
 	/**
-	 * Synchronizes given accounts and playlists with YouTube.
-	 *
-	 * @param accountModels to be synced
+	 * Synchronizes playlists with YouTube.
 	 */
-	void synchronizePlaylists(List<AccountModel> accountModels) throws IOException;
+	void refresh() throws IOException;
 
 	/**
 	 * Returns a list property of PlaylistModels
@@ -50,5 +47,7 @@ public interface IPlaylistService {
 	 */
 	ObservableList<PlaylistModel> playlistModelsProperty(AccountModel accountModel);
 
-	ObservableList<AccountModel> accountModelsProperty();
+	void store(PlaylistModel playlistModel, AccountModel accountModel);
+
+	void remove(PlaylistModel playlistModel, AccountModel accountModel);
 }

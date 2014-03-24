@@ -44,7 +44,7 @@ public class PlaylistDAO extends AbstractDAO<PlaylistDTO> implements IPlaylistDA
 		try {
 			LOGGER.debug("Updating PlaylistDTO: {}", object);
 			final int changed = queryRunner.update(
-					"UPDATE playlists SET title = ?, thumbnail = ?, privacyStatus = ?, itemCount = ?, description = ? WHERE youtubeId = ?",
+					"UPDATE playlists SET title = ?, thumbnail = ?, privacyStatus = ?, itemCount = ?, description = ?, last_modified = current_timestamp WHERE youtubeId = ?",
 					object.getTitle(),
 					object.getThumbnail(),
 					object.isPrivacyStatus(),
@@ -55,7 +55,7 @@ public class PlaylistDAO extends AbstractDAO<PlaylistDTO> implements IPlaylistDA
 			if (0 == changed) {
 				LOGGER.debug("Storing new PlaylistDTO: {}", object);
 				assert 0 != queryRunner.update(
-						"INSERT INTO playlists (youtubeId, title, thumbnail, privacyStatus, itemCount, description, accountId) VALUES (?, ?, ?, ?, ?, ?, ?)",
+						"INSERT INTO playlists (youtubeId, title, thumbnail, privacyStatus, itemCount, description, accountId, last_modified) VALUES (?, ?, ?, ?, ?, ?, ?, current_timestamp)",
 						object.getYoutubeId(),
 						object.getTitle(),
 						object.getThumbnail(),
@@ -83,7 +83,8 @@ public class PlaylistDAO extends AbstractDAO<PlaylistDTO> implements IPlaylistDA
 	@Override
 	public PlaylistDTO get(final String id) {
 		try {
-			return intern(queryRunner.query("SELECT * FROM playlists WHERE youtubeId = ?", singleResultSetHandler, id));
+			final PlaylistDTO result = queryRunner.query("SELECT * FROM playlists WHERE youtubeId = ?", singleResultSetHandler, id);
+			return null == result ? null : intern(result);
 		} catch (final SQLException e) {
 			LOGGER.error("Playlist get exception", e);
 		}
@@ -98,5 +99,15 @@ public class PlaylistDAO extends AbstractDAO<PlaylistDTO> implements IPlaylistDA
 			LOGGER.error("Playlist getByAccount exception", e);
 		}
 		return new ArrayList<>(0);
+	}
+
+	@Override
+	public void clearOld(final String accountId) {
+		LOGGER.debug("Removing old playlists");
+		try {
+			queryRunner.update("DELETE FROM playlists WHERE last_modified < (datetime(current_timestamp,'-1 minute')) AND accountId = ?", accountId);
+		} catch (final SQLException e) {
+			LOGGER.error("Playlists clearOld exception", e);
+		}
 	}
 }

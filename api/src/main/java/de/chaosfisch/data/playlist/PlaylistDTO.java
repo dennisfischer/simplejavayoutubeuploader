@@ -10,6 +10,7 @@
 
 package de.chaosfisch.data.playlist;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class PlaylistDTO {
@@ -17,7 +18,6 @@ public class PlaylistDTO {
 	private String  youtubeId;
 	@NotNull
 	private String  title;
-	@NotNull
 	private String  thumbnail;
 	private boolean privacyStatus;
 	private long    itemCount;
@@ -29,7 +29,7 @@ public class PlaylistDTO {
 	public PlaylistDTO() {
 	}
 
-	public PlaylistDTO(@NotNull final String youtubeId, @NotNull final String title, @NotNull final String thumbnail, final boolean privacyStatus, final long itemCount, @NotNull final String description, @NotNull final String accountId) {
+	public PlaylistDTO(@NotNull final String youtubeId, @NotNull final String title, final String thumbnail, final boolean privacyStatus, final long itemCount, @NotNull final String description, @NotNull final String accountId) {
 		this.youtubeId = youtubeId;
 		this.title = title;
 		this.thumbnail = thumbnail;
@@ -57,12 +57,11 @@ public class PlaylistDTO {
 		this.title = title;
 	}
 
-	@NotNull
 	public String getThumbnail() {
 		return thumbnail;
 	}
 
-	public void setThumbnail(@NotNull final String thumbnail) {
+	public void setThumbnail(final String thumbnail) {
 		this.thumbnail = thumbnail;
 	}
 
@@ -104,7 +103,7 @@ public class PlaylistDTO {
 	public int hashCode() {
 		int result = youtubeId.hashCode();
 		result = 31 * result + title.hashCode();
-		result = 31 * result + thumbnail.hashCode();
+		result = 31 * result + (null != thumbnail ? thumbnail.hashCode() : 0);
 		result = 31 * result + (privacyStatus ? 1 : 0);
 		result = 31 * result + (int) (itemCount ^ itemCount >>> 32);
 		result = 31 * result + description.hashCode();
@@ -123,8 +122,21 @@ public class PlaylistDTO {
 
 		final PlaylistDTO that = (PlaylistDTO) obj;
 
-		return itemCount == that.itemCount && privacyStatus == that.privacyStatus && accountId.equals(that.accountId) && description.equals(that.description) && thumbnail.equals(
-				that.thumbnail) && title.equals(that.title) && youtubeId.equals(that.youtubeId);
+		return itemCount == that.itemCount && privacyStatus == that.privacyStatus && accountId.equals(that.accountId) && description.equals(that.description) && !(null != thumbnail ? !thumbnail.equals(
+				that.thumbnail) : null != that.thumbnail) && title.equals(that.title) && youtubeId.equals(that.youtubeId);
+	}
 
+	@Override
+	@NonNls
+	public String toString() {
+		return "PlaylistDTO{" +
+				"youtubeId='" + youtubeId + '\'' +
+				", title='" + title + '\'' +
+				", thumbnail='" + thumbnail + '\'' +
+				", privacyStatus=" + privacyStatus +
+				", itemCount=" + itemCount +
+				", description='" + description + '\'' +
+				", accountId='" + accountId + '\'' +
+				'}';
 	}
 }

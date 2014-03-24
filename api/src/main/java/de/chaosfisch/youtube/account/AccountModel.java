@@ -15,7 +15,6 @@ package de.chaosfisch.youtube.account;
 
 import de.chaosfisch.data.account.AccountType;
 import de.chaosfisch.data.account.cookies.CookieDTO;
-import de.chaosfisch.youtube.playlist.PlaylistModel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleSetProperty;
@@ -32,7 +31,6 @@ public class AccountModel implements Comparable<AccountModel> {
 	private final SimpleStringProperty              email        = new SimpleStringProperty();
 	private final SimpleStringProperty              refreshToken = new SimpleStringProperty();
 	private final SimpleObjectProperty<AccountType> type         = new SimpleObjectProperty<>();
-	private final SimpleListProperty<PlaylistModel> playlists    = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleSetProperty<CookieDTO>      cookies      = new SimpleSetProperty<>(FXCollections.observableSet());
 	private final SimpleListProperty<String>        fields       = new SimpleListProperty<>(FXCollections.observableArrayList());
 
@@ -98,18 +96,6 @@ public class AccountModel implements Comparable<AccountModel> {
 
 	public SimpleObjectProperty<AccountType> typeProperty() {
 		return type;
-	}
-
-	public ObservableList<PlaylistModel> getPlaylists() {
-		return playlists.get();
-	}
-
-	public void setPlaylists(final ObservableList<PlaylistModel> playlists) {
-		this.playlists.set(playlists);
-	}
-
-	public SimpleListProperty<PlaylistModel> playlistsProperty() {
-		return playlists;
 	}
 
 	public ObservableSet<CookieDTO> getCookies() {

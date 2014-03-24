@@ -87,8 +87,8 @@ public class APIModule {
 
 	@Provides
 	@Singleton
-	IPlaylistService providePlaylistService(final IPlaylistDAO playlistDAO) {
-		return new YouTubePlaylistService(playlistDAO);
+	IPlaylistService providePlaylistService(final IPlaylistDAO playlistDAO, final IAccountService accountService) {
+		return new YouTubePlaylistService(playlistDAO, accountService.accountModelsProperty());
 	}
 
 	@Provides

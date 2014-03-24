@@ -50,36 +50,46 @@ public class EditLeftPresenter {
 	}
 
 	private void bindData() {
-		categories.itemsProperty().bindBidirectional(dataModel.categoriesProperty());
-		accounts.itemsProperty().bindBidirectional(dataModel.accountsProperty());
-		accounts.valueProperty().bindBidirectional(dataModel.selectedAccountProperty());
-		files.valueProperty().bindBidirectional(dataModel.selectedFileProperty());
-		categories.valueProperty().bindBidirectional(dataModel.selectedCategoryProperty());
-		accounts.valueProperty().addListener((observableValue, oldAccount, newAccount) -> {
-			playlists.itemsProperty().unbind();
-			playlists.itemsProperty().bind(newAccount.playlistsProperty());
-		});
+		categories.itemsProperty()
+				  .bindBidirectional(dataModel.categoriesProperty());
+		accounts.itemsProperty()
+				.bindBidirectional(dataModel.accountsProperty());
+		accounts.valueProperty()
+				.bindBidirectional(dataModel.selectedAccountProperty());
+		files.valueProperty()
+			 .bindBidirectional(dataModel.selectedFileProperty());
+		categories.valueProperty()
+				  .bindBidirectional(dataModel.selectedCategoryProperty());
+		accounts.valueProperty()
+				.addListener((observableValue, oldAccount, newAccount) -> playlists.setItems(dataModel.getPlaylists(newAccount)));
 
 		playlists.getSelectionModel()
-				.selectedItemProperty()
-				.addListener((observableValue, oldPlaylist, newPlaylist) -> {
-					if (null != newPlaylist) {
-						selectedPlaylists.getItems().add(newPlaylist);
-						playlists.getItems().remove(newPlaylist);
-						playlists.setValue(null);
-					}
-				});
+				 .selectedItemProperty()
+				 .addListener((observableValue, oldPlaylist, newPlaylist) -> {
+					 if (null != newPlaylist) {
+						 selectedPlaylists.getItems()
+										  .add(newPlaylist);
+						 playlists.getItems()
+								  .remove(newPlaylist);
+						 playlists.setValue(null);
+					 }
+				 });
 
 		selectedPlaylists.setCellFactory(new PlaylistListCellFactory());
-		selectedPlaylists.itemsProperty().bindBidirectional(dataModel.selectedPlaylistsProperty());
-		selectedPlaylists.getItems().addListener((ListChangeListener<PlaylistModel>) change -> {
-			change.next();
-			playlists.getItems().addAll(change.getRemoved());
-		});
+		selectedPlaylists.itemsProperty()
+						 .bindBidirectional(dataModel.selectedPlaylistsProperty());
+		selectedPlaylists.getItems()
+						 .addListener((ListChangeListener<PlaylistModel>) change -> {
+							 change.next();
+							 playlists.getItems()
+									  .addAll(change.getRemoved());
+						 });
 	}
 
 	private void selectData() {
-		categories.getSelectionModel().selectFirst();
-		accounts.getSelectionModel().selectFirst();
+		categories.getSelectionModel()
+				  .selectFirst();
+		accounts.getSelectionModel()
+				.selectFirst();
 	}
 }

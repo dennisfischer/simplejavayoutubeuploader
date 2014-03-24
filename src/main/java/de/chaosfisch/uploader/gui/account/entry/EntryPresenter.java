@@ -30,10 +30,10 @@ import javax.inject.Inject;
 import java.util.HashMap;
 
 public class EntryPresenter {
-	private static final double                            MAX_WIDTH_PANEL                 = 140;
-	private final        HashMap<PlaylistModel, VBox>      playlistPanels                  = new HashMap<>(10);
-	private final        SimpleListProperty<PlaylistModel> playlistModelSimpleListProperty = new SimpleListProperty<>(
-			FXCollections.observableArrayList());
+	private static final double MAX_WIDTH_PANEL = 140;
+
+	private final HashMap<PlaylistModel, VBox>      playlistPanels                  = new HashMap<>(10);
+	private final SimpleListProperty<PlaylistModel> playlistModelSimpleListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 	@Inject
 	protected DataModel    dataModel;
 	@FXML
@@ -48,49 +48,56 @@ public class EntryPresenter {
 
 	public void setAccount(final AccountModel account) {
 		this.account = account;
-		titledpane.textProperty().bind(account.nameProperty());
+		titledpane.textProperty()
+				  .bind(account.nameProperty());
 
 		playlistModelSimpleListProperty.addListener((ListChangeListener<PlaylistModel>) change -> {
 			while (change.next()) {
 				if (change.wasRemoved()) {
-					change.getRemoved().forEach(this::removePlaylistPanel);
+					change.getRemoved()
+						  .forEach(this::removePlaylistPanel);
 				} else if (change.wasAdded()) {
-					change.getAddedSubList().forEach(this::addPlaylistPanel);
+					change.getAddedSubList()
+						  .forEach(this::addPlaylistPanel);
 				}
 			}
 		});
 
-		playlistModelSimpleListProperty.set(account.getPlaylists());
+		playlistModelSimpleListProperty.set(dataModel.getPlaylists(account));
 	}
 
 	private void removePlaylistPanel(final PlaylistModel playlistModel) {
 		if (playlistPanels.containsKey(playlistModel)) {
-			flowpane.getChildren().remove(playlistPanels.get(playlistModel));
+			flowpane.getChildren()
+					.remove(playlistPanels.get(playlistModel));
 		}
 	}
 
 	private void addPlaylistPanel(final PlaylistModel playlistModel) {
 		final ImageView imageView = new ImageView(null != playlistModel.getThumbnail() ? playlistModel.getThumbnail() : getClass()
-				.getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm());
+				.getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png")
+				.toExternalForm());
 		imageView.setPreserveRatio(true);
 		imageView.setFitWidth(MAX_WIDTH_PANEL);
 		final Label label = new Label();
-		label.textProperty().bind(playlistModel.titleProperty());
+		label.textProperty()
+			 .bind(playlistModel.titleProperty());
 		label.setWrapText(true);
 		label.setMaxWidth(MAX_WIDTH_PANEL);
 
 		final VBox vBox = new VBox(imageView, label);
 		playlistPanels.put(playlistModel, vBox);
-		flowpane.getChildren().add(vBox);
+		flowpane.getChildren()
+				.add(vBox);
 	}
 
 	public void deleteAccount() {
 		final Action action = Dialogs.create()
-				.lightweight()
-				.owner(titledpane.getParent())
-				.title(String.format("Delete account %s?", account.getName()))
-				.message(String.format("Do you really want to delete %s?", account.getName()))
-				.showConfirm();
+									 .lightweight()
+									 .owner(titledpane.getParent())
+									 .title(String.format("Delete account %s?", account.getName()))
+									 .message(String.format("Do you really want to delete %s?", account.getName()))
+									 .showConfirm();
 		if (Dialog.Actions.YES == action) {
 			dataModel.remove(account);
 		}

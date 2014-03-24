@@ -12,40 +12,80 @@ package de.chaosfisch.youtube.playlist;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
-import de.chaosfisch.data.MultiMapProperty;
 import de.chaosfisch.data.playlist.IPlaylistDAO;
+import de.chaosfisch.data.playlist.PlaylistDTO;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class YouTubePlaylistService implements IPlaylistService {
-	private static final Logger logger            = LoggerFactory.getLogger(YouTubePlaylistService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(YouTubePlaylistService.class);
 	private static final String DEFAULT_THUMBNAIL = "https://i.ytimg.com/vi/default.jpg";
 	private static final long   MAX_PLAYLISTS     = 50L;
 
-	//TODO initial load map
-	private final MultiMapProperty<AccountModel, PlaylistModel> modelMultiMapProperty = new MultiMapProperty<>();
 	private final IPlaylistDAO playlistDAO;
+	private final SimpleMapProperty<AccountModel, ObservableList<PlaylistModel>> playlistModelSimpleMapProperty = new SimpleMapProperty<>(
+			FXCollections.observableHashMap());
 
-	public YouTubePlaylistService(final IPlaylistDAO playlistDAO) {
+	@Inject
+	public YouTubePlaylistService(final IPlaylistDAO playlistDAO, final SimpleListProperty<AccountModel> accountModels) {
 		this.playlistDAO = playlistDAO;
+
+		accountModels.forEach(this::initPlaylistList);
+		accountModels.get()
+					 .addListener(new ListChangeListener<AccountModel>() {
+						 @Override
+						 public void onChanged(final Change<? extends AccountModel> change) {
+							 while (change.next()) {
+
+								 if (change.wasAdded()) {
+									 change.getAddedSubList()
+										   .forEach(YouTubePlaylistService.this::initPlaylistList);
+									 try {
+										 refresh();
+									 } catch (final IOException e) {
+										 LOGGER.error("Failed playlist refresh", e);
+									 }
+								 } else if (change.wasRemoved()) {
+									 change.getRemoved()
+										   .forEach(a -> playlistModelSimpleMapProperty.remove(a.getYoutubeId()));
+								 }
+							 }
+						 }
+					 });
+	}
+
+	private ObservableList<PlaylistModel> initPlaylistList(final AccountModel a) {
+		return playlistModelSimpleMapProperty.putIfAbsent(a,
+														  FXCollections.observableArrayList(playlistDAO.getByAccount(a.getYoutubeId())
+																									   .stream()
+																									   .map(this::fromDTO)
+																									   .collect(
+																											   Collectors.toList()))
+														 );
 	}
 
 	List<PlaylistModel> parsePlaylistListResponse(final AccountModel account, final PlaylistListResponse response) {
 		final ArrayList<PlaylistModel> list = new ArrayList<>(response.getItems()
 																	  .size());
 		for (final Playlist entry : response.getItems()) {
-			//		final PlaylistModel playlist = playlistDAO.get(entry.getId());
-			final PlaylistModel playlist = null;
-			if (null == playlist) {
+			final PlaylistDTO playlistDTO = playlistDAO.get(entry.getId());
+			if (null == playlistDTO) {
 				list.add(_createNewPlaylist(account, entry));
 			} else {
+				final PlaylistModel playlist = fromDTO(playlistDTO);
 				list.add(_updateExistingPlaylist(account, entry, playlist));
 			}
 		}
@@ -53,16 +93,17 @@ public class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	PlaylistModel _updateExistingPlaylist(final AccountModel accountModel, final Playlist entry, final PlaylistModel playlist) {
-		setPlaylistModelInfos(accountModel, entry, playlist);
-		store(playlist, accountModel);
-		return playlist;
+		return updateAndStorePlaylist(accountModel, entry, playlist);
 	}
 
 	PlaylistModel _createNewPlaylist(final AccountModel accountModel, final Playlist entry) {
 		final PlaylistModel playlist = new PlaylistModel();
 		playlist.setYoutubeId(entry.getId());
+		return updateAndStorePlaylist(accountModel, entry, playlist);
+	}
+
+	private PlaylistModel updateAndStorePlaylist(final AccountModel accountModel, final Playlist entry, final PlaylistModel playlist) {
 		setPlaylistModelInfos(accountModel, entry, playlist);
-		store(playlist, accountModel);
 		return playlist;
 	}
 
@@ -82,7 +123,7 @@ public class YouTubePlaylistService implements IPlaylistService {
 	}
 
 	@Override
-	public void addVideoToPlaylist(final PlaylistModel playlistModel, final String videoId) {
+	public void addVideoToPlaylist(final PlaylistModel playlistModel, final AccountModel accountModel, final String videoId) {
 
 		final ResourceId resourceId = new ResourceId();
 		resourceId.setKind("youtube#video");
@@ -95,17 +136,20 @@ public class YouTubePlaylistService implements IPlaylistService {
 		final PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 
-//		YouTubeFactory.getYouTube(accountDAO.get(playlistModel.getYoutubeId()))
-//					  .playlistItems()
-//					  .insert("snippet,status", playlistItem)
-//					  .execute();
-
-		logger.debug("Video added to playlist!");
+		try {
+			YouTubeFactory.getYouTube(accountModel)
+						  .playlistItems()
+						  .insert("snippet,status", playlistItem)
+						  .execute();
+			LOGGER.debug("Video added to playlist!");
+		} catch (final IOException e) {
+			LOGGER.error("Failed adding video to playlist.");
+		}
 	}
 
 	@Override
-	public void addYoutubePlaylist(final PlaylistModel playlistModel) {
-		logger.debug("Adding playlist {} to youtube.", playlistModel.getTitle());
+	public void addYoutubePlaylist(final PlaylistModel playlistModel, final AccountModel accountModel) {
+		LOGGER.debug("Adding playlist {} to youtube.", playlistModel.getTitle());
 		final PlaylistSnippet playlistSnippet = new PlaylistSnippet();
 		playlistSnippet.setTitle(playlistModel.getTitle());
 		playlistSnippet.setDescription(playlistModel.getDescription());
@@ -117,73 +161,82 @@ public class YouTubePlaylistService implements IPlaylistService {
 		youTubePlaylist.setSnippet(playlistSnippet);
 		youTubePlaylist.setStatus(playlistStatus);
 
-//		YouTubeFactory.getYouTube(accountDAO.get(playlistModel.getYoutubeId()))
-//					  .playlists()
-//					  .insert("snippet,status", youTubePlaylist)
-//					  .execute();
-		logger.info("Added playlist to youtube");
-
+		try {
+			YouTubeFactory.getYouTube(accountModel)
+						  .playlists()
+						  .insert("snippet,status", youTubePlaylist)
+						  .execute();
+			LOGGER.info("Added playlist to youtube");
+		} catch (final IOException e) {
+			LOGGER.error("Failed adding playlist to youtube");
+		}
 	}
 
 	@Override
-	public void synchronizePlaylists(final List<AccountModel> accountModels) throws IOException {
-		logger.info("Synchronizing playlists.");
-		for (final AccountModel accountModel : accountModels) {
+	public void refresh() throws IOException {
+		LOGGER.info("Synchronizing playlists.");
+		for (final AccountModel accountModel : playlistModelSimpleMapProperty.keySet()) {
 			final YouTube.Playlists.List playlistsRequest = YouTubeFactory.getYouTube(accountModel)
 																		  .playlists()
 																		  .list("id,snippet,contentDetails")
 																		  .setMaxResults(MAX_PLAYLISTS)
 																		  .setMine(true);
-
 			String nextPageToken = "";
-			final List<PlaylistModel> playlists = new ArrayList<>((int) MAX_PLAYLISTS);
 			do {
 				playlistsRequest.setPageToken(nextPageToken);
 				final PlaylistListResponse response = playlistsRequest.execute();
-				playlists.addAll(parsePlaylistListResponse(accountModel, response));
+				parsePlaylistListResponse(accountModel, response).forEach(playlistModel -> store(playlistModel, accountModel));
+				playlistDAO.clearOld(accountModel.getYoutubeId());
 				nextPageToken = response.getNextPageToken();
 			} while (null != nextPageToken);
-
-			logger.debug("Playlist synchronize okay.");
-			final List<PlaylistModel> accountPlaylists = accountModel.getPlaylists();
-			accountPlaylists.removeAll(playlists);
-			for (final PlaylistModel playlist : accountPlaylists) {
-				remove(playlist, accountModel);
-			}
-			accountModel.getPlaylists()
-						.addAll(playlists);
-			//		accountDAO.store(accountModel);
 		}
-		logger.info("Playlists synchronized");
+		LOGGER.info("Playlists synchronized");
 	}
 
 	@Override
 	public ObservableList<PlaylistModel> playlistModelsProperty(final AccountModel accountModel) {
-		if (!modelMultiMapProperty.containsKey(accountModel)) {
-			modelMultiMapProperty.put(accountModel, null);
-		}
-
-		return modelMultiMapProperty.get(accountModel);
+		return playlistModelSimpleMapProperty.get(accountModel);
 	}
 
 	@Override
-	public ObservableList<AccountModel> accountModelsProperty() {
-		return modelMultiMapProperty.keys();
+	public void store(final PlaylistModel playlistModel, final AccountModel accountModel) {
+		final ObservableList<PlaylistModel> playlistModels = playlistModelSimpleMapProperty.get(accountModel);
+		if (!playlistModels.contains(accountModel)) {
+			playlistModels.add(playlistModel);
+		}
+		playlistDAO.store(toDTO(playlistModel));
 	}
 
+	@Override
+	public void remove(final PlaylistModel playlistModel, final AccountModel accountModel) {
+		playlistModelSimpleMapProperty.get(accountModel)
+									  .remove(playlistModel);
+		playlistDAO.remove(toDTO(playlistModel));
+	}
 
 	public PlaylistModel get(final String youtubeId) {
-		//	return playlistDAO.get(youtubeId);
-		return null;
+		return fromDTO(playlistDAO.get(youtubeId));
 	}
 
-	public void store(final PlaylistModel playlistModel, final AccountModel accountModel) {
-		modelMultiMapProperty.put(accountModel, playlistModel);
-//		playlistDAO.store(playlistModel, accountModel);
+	private PlaylistModel fromDTO(final PlaylistDTO playlistDTO) {
+		final PlaylistModel playlistModel = new PlaylistModel();
+		playlistModel.setYoutubeId(playlistDTO.getYoutubeId());
+		playlistModel.setTitle(playlistDTO.getTitle());
+		playlistModel.setThumbnail(playlistDTO.getThumbnail());
+		playlistModel.setPrivacyStatus(playlistDTO.isPrivacyStatus());
+		playlistModel.setItemCount(playlistDTO.getItemCount());
+		playlistModel.setDescription(playlistDTO.getDescription());
+		playlistModel.setAccountId(playlistDTO.getAccountId());
+		return playlistModel;
 	}
 
-	public void remove(final PlaylistModel playlistModel, final AccountModel accountModel) {
-		modelMultiMapProperty.remove(accountModel, playlistModel);
-		//	playlistDAO.remove(playlistModel, accountModel);
+	private PlaylistDTO toDTO(final PlaylistModel playlistModel) {
+		return new PlaylistDTO(playlistModel.getYoutubeId(),
+							   playlistModel.getTitle(),
+							   playlistModel.getThumbnail(),
+							   playlistModel.getPrivacyStatus(),
+							   playlistModel.getItemCount(),
+							   playlistModel.getDescription(),
+							   playlistModel.getAccountId());
 	}
 }
