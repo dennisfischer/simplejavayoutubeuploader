@@ -63,11 +63,14 @@ public class EditLeftPresenter {
 		categories.valueProperty()
 				  .bindBidirectional(dataModel.selectedCategoryProperty());
 		accounts.valueProperty()
-				.addListener((observableValue, oldAccount, newAccount) -> playlists.setItems(FXCollections.observableArrayList(dataModel.getPlaylists(
-						newAccount)
-																																		.stream()
-																																		.collect(
-																																				Collectors.toList()))));
+				.addListener((observableValue, oldAccount, newAccount) -> {
+					playlists.setItems(FXCollections.observableArrayList(dataModel.getPlaylists(newAccount)
+																				  .stream()
+																				  .collect(
+																						  Collectors.toList())));
+					selectedPlaylists.getItems()
+									 .clear();
+				});
 
 		playlists.getSelectionModel()
 				 .selectedItemProperty()

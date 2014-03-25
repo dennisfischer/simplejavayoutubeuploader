@@ -40,6 +40,7 @@ public class StepPresenter {
 	private static final int      WAIT_TIME           = 2000;
 	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
 	private static final String   OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
+	private static final Pattern  CHANNEL_ID_PATTERN  = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
 	protected final      AddModel addModel            = AddModel.getInstance();
 	@FXML
 	private VBox          accountList;
@@ -49,7 +50,6 @@ public class StepPresenter {
 	private TextField     username;
 	@FXML
 	private PasswordField password;
-
 
 	public void initialize() {
 		if (null != accountList) {
@@ -199,11 +199,9 @@ public class StepPresenter {
 						return false;
 					}
 
-					Pattern pattern = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
 					final String html = (String) addModel.getEngine()
 														 .executeScript("document.documentElement.outerHTML");
-					System.out.println(html);
-					final Matcher matcher = pattern.matcher(html);
+					final Matcher matcher = CHANNEL_ID_PATTERN.matcher(html);
 
 					if (matcher.find(1)) {
 						final String accountId = matcher.group(2);

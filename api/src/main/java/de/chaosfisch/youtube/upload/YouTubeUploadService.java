@@ -10,6 +10,7 @@
 
 package de.chaosfisch.youtube.upload;
 
+import de.chaosfisch.data.upload.IUploadDAO;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;

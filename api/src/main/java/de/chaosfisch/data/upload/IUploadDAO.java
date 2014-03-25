@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload;
+package de.chaosfisch.data.upload;
 
 import de.chaosfisch.data.IGenericDAO;
 
