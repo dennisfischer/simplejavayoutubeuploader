@@ -93,7 +93,6 @@ public class StepPresenter {
 		if (!location.contains("accounts.google.com/ServiceLoginAuth")) {
 			if (location.contains("accounts.google.com/SecondFactor")) {
 				addModel.setStep(AddModel.Step.STEP_2);
-				//	codeCount.setText(String.format(resources.getString("accountDialog.code.text"), ++count));
 			} else {
 				addModel.setStep(AddModel.Step.STEP_3);
 			}
@@ -205,7 +204,7 @@ public class StepPresenter {
 
 					if (matcher.find(1)) {
 						final String accountId = matcher.group(2);
-						addModel.createAccount(accountId);
+						addModel.createAccount(accountId, name);
 						getOAuthPermission();
 					}
 					return true;

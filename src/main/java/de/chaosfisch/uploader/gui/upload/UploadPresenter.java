@@ -13,7 +13,7 @@ package de.chaosfisch.uploader.gui.upload;
 import de.chaosfisch.controls.NumberStringFormatConverter;
 import de.chaosfisch.controls.spinner.NumberSpinner;
 import de.chaosfisch.uploader.gui.DataModel;
-import de.chaosfisch.youtube.upload.Status;
+import de.chaosfisch.uploader.gui.Tab;
 import de.chaosfisch.youtube.upload.UploadModel;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -89,10 +89,8 @@ public class UploadPresenter {
 			return;
 		}
 		for (final File file : files) {
-			final UploadModel model = new UploadModel();
-			model.setStatus(Status.WAITING);
-			model.setMetadataTitle(file.getName());
-			dataModel.addUpload(model);
+			dataModel.addFile(file);
+			dataModel.setActiveTabProperty(Tab.EDIT);
 		}
 	}
 

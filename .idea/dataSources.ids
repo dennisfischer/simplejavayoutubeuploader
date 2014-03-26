@@ -14,6 +14,7 @@
       <exported-key name="#FAKE_accounts_cookies_1" table="accounts_cookies" schema="" catalog="" columns="accountId"/>
       <exported-key name="#FAKE_accounts_fields_1" table="accounts_fields" schema="" catalog="" columns="accountId"/>
       <exported-key name="#FAKE_playlists_1" table="playlists" schema="" catalog="" columns="accountId"/>
+      <exported-key name="#FAKE_uploads_1" table="uploads" schema="" catalog="" columns="accountId"/>
     </table>
     <table name="accounts_cookies" schema="" catalog="" type="TABLE">
       <column name="accountId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
@@ -52,10 +53,100 @@
       <column name="last_modified" sqlType="TIMESTAMP" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="youtubeId"/>
       <foreign-key name="#FAKE_playlists_1" columns="accountId" ref-table="accounts" ref-schema="" ref-catalog="" ref-columns="youtubeId" update-rule="0" delete-rule="0" deferrability="1"/>
+      <exported-key name="#FAKE_uploads_playlists_1" table="uploads_playlists" schema="" catalog="" columns="playlistId"/>
     </table>
     <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
       <column name="name" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
       <column name="seq" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="uploads" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="uploadurl" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="videoid" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="FILE" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="enddir" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="thumbnail" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="dateTimeOfStart" sqlType="TIMESTAMP" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="dateTimeOfRelease" sqlType="TIMESTAMP" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="dateTimeOfEnd" sqlType="TIMESTAMP" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="ORDER" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="progress" sqlType="REAL" precision="2000000000" scale="10" nullable="false" jdbcType="6"/>
+      <column name="stopAfter" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="fileSize" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="status" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="accountId" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <primary-key columns="id"/>
+      <foreign-key name="#FAKE_uploads_1" columns="accountId" ref-table="accounts" ref-schema="" ref-catalog="" ref-columns="youtubeId" update-rule="0" delete-rule="2" deferrability="1"/>
+      <exported-key name="#FAKE_uploads_metadata_1" table="uploads_metadata" schema="" catalog="" columns="uploadId"/>
+      <exported-key name="#FAKE_uploads_monetization_1" table="uploads_monetization" schema="" catalog="" columns="uploadId"/>
+      <exported-key name="#FAKE_uploads_permission_1" table="uploads_permission" schema="" catalog="" columns="uploadId"/>
+      <exported-key name="#FAKE_uploads_playlists_2" table="uploads_playlists" schema="" catalog="" columns="uploadId"/>
+      <exported-key name="#FAKE_uploads_social_1" table="uploads_social" schema="" catalog="" columns="uploadId"/>
+    </table>
+    <table name="uploads_metadata" schema="" catalog="" type="TABLE">
+      <column name="uploadId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="category" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="license" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="title" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="description" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="tags" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="uploadId"/>
+      <foreign-key name="#FAKE_uploads_metadata_1" columns="uploadId" ref-table="uploads" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+    <table name="uploads_monetization" schema="" catalog="" type="TABLE">
+      <column name="uploadId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="syndication" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="claimType" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="claimOption" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="asset" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="instreamDefaults" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="claim" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="overlay" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="trueview" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="instream" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="product" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="partner" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="title" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="description" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="customId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="notes" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="tmsid" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="isan" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="eidr" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="episodeTitle" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="seasonNumber" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="episodeNumber" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="uploadId"/>
+      <foreign-key name="#FAKE_uploads_monetization_1" columns="uploadId" ref-table="uploads" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+    <table name="uploads_permission" schema="" catalog="" type="TABLE">
+      <column name="uploadId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="visibility" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="threedD" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="comment" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="commentvote" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="embed" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="rate" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="ageRestricted" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="publicStatsViewable" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="uploadId"/>
+      <foreign-key name="#FAKE_uploads_permission_1" columns="uploadId" ref-table="uploads" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+    <table name="uploads_playlists" schema="" catalog="" type="TABLE">
+      <column name="uploadId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="playlistId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="uploadId,playlistId"/>
+      <foreign-key name="#FAKE_uploads_playlists_1" columns="playlistId" ref-table="playlists" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
+      <foreign-key name="#FAKE_uploads_playlists_2" columns="uploadId" ref-table="uploads" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+    <table name="uploads_social" schema="" catalog="" type="TABLE">
+      <column name="uploadId" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="message" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="facebook" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="twitter" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="gplus" sqlType="BOOLEAN" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="uploadId"/>
+      <foreign-key name="#FAKE_uploads_social_1" columns="uploadId" ref-table="uploads" ref-schema="" ref-catalog="" ref-columns="id" update-rule="0" delete-rule="0" deferrability="1"/>
     </table>
   </data-source>
 </component>

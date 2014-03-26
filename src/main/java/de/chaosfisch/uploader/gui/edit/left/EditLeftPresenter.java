@@ -58,6 +58,8 @@ public class EditLeftPresenter {
 				.bindBidirectional(dataModel.accountsProperty());
 		accounts.valueProperty()
 				.bindBidirectional(dataModel.selectedAccountProperty());
+		files.itemsProperty()
+			 .bindBidirectional(dataModel.filesProperty());
 		files.valueProperty()
 			 .bindBidirectional(dataModel.selectedFileProperty());
 		categories.valueProperty()

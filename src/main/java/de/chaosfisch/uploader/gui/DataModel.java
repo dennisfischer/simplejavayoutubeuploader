@@ -29,6 +29,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class DataModel {
 	private final IAccountService  accountService;
 	private final IUploadService   uploadService;
 	private final IPlaylistService playlistService;
+	private final SimpleObjectProperty<Tab> activeTabProperty = new SimpleObjectProperty<>();
 
 
 	public DataModel(final ICategoryService categoryService, final IAccountService accountService, final IUploadService uploadService, final IPlaylistService playlistService) {
@@ -330,5 +332,26 @@ public class DataModel {
 			return FXCollections.observableSet();
 		}
 		return playlistService.playlistModelsProperty(account);
+	}
+
+	public void addFile(final File file) {
+		final String filePath = file.getAbsolutePath();
+		files.add(filePath);
+		if (null == selectedFile.get()) {
+			selectedFile.set(filePath);
+		}
+	}
+
+	public Tab getActiveTabProperty() {
+		return activeTabProperty.get();
+	}
+
+	public SimpleObjectProperty<Tab> activeTabPropertyProperty() {
+		return activeTabProperty;
+	}
+
+	public void setActiveTabProperty(final Tab activeTabProperty) {
+		this.activeTabProperty.set(null);
+		this.activeTabProperty.set(activeTabProperty);
 	}
 }

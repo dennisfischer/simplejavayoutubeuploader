@@ -142,10 +142,10 @@ public class AddModel {
 		this.accountList = accountList;
 	}
 
-	public void createAccount(final String accountId) {
+	public void createAccount(final String accountId, final String name) {
 		accountModel = new AccountModel();
 		accountModel.setYoutubeId(accountId);
-		accountModel.setName(email.get());
+		accountModel.setName(name);
 		accountModel.setType(AccountType.DEFAULT);
 		accountModel.setEmail(email.get());
 		accountModel.setCookies(FXCollections.observableSet(persistentCookieStore.getSerializeableCookies(accountId)

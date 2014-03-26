@@ -24,6 +24,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
 import javax.inject.Inject;
@@ -42,6 +43,20 @@ public class MainPresenter {
 	protected Lazy<UploadView>  uploadsViewLazy;
 	@Inject
 	protected Lazy<AccountView> accountViewLazy;
+	@FXML
+	private   TabPane           tabPane;
+
+
+	@FXML
+	public void initialize() {
+		dataModel.activeTabPropertyProperty()
+				 .addListener((observableValue, tabs, newTab) -> {
+					 if (null != newTab) {
+						 tabPane.getSelectionModel()
+								.select(newTab.ordinal());
+					 }
+				 });
+	}
 
 	@FXML
 	public void initEditTab(final Event event) {
@@ -72,6 +87,7 @@ public class MainPresenter {
 		progressIndicator.setMaxSize(PROGRESS_INDICATOR_MAX_WIDTH, PROGRESS_INDICATOR_MAX_HEIGHT);
 		return progressIndicator;
 	}
+
 
 	@FXML
 	public void initUploadsTab(final Event event) {
