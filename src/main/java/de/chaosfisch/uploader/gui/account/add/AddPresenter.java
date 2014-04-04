@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javax.inject.Inject;
 
 public class AddPresenter {
-	private final AddModel addModel = AddModel.getInstance();
+	private final AccountAddDataModel accountAddDataModel = AccountAddDataModel.getInstance();
 	@Inject
 	protected Step1View   step1View;
 	@Inject
@@ -30,10 +30,10 @@ public class AddPresenter {
 
 	@FXML
 	public void initialize() {
-		addModel.stepProperty()
-				.addListener((observableValue, oldStep, newStep) -> setStepView(newStep));
-		addModel.processingProperty()
-				.addListener((observableValue, oldProcessing, newProcessing) -> setProcessingView(newProcessing));
+		accountAddDataModel.stepProperty()
+						   .addListener((observableValue, oldStep, newStep) -> setStepView(newStep));
+		accountAddDataModel.processingProperty()
+						   .addListener((observableValue, oldProcessing, newProcessing) -> setProcessingView(newProcessing));
 		initStep1();
 	}
 
@@ -43,11 +43,11 @@ public class AddPresenter {
 					.removeAll(step1View, step2View, step3View);
 			gridpane.add(loadingView, 1, 0);
 		} else {
-			setStepView(addModel.getStep());
+			setStepView(accountAddDataModel.getStep());
 		}
 	}
 
-	private void setStepView(final AddModel.Step newStep) {
+	private void setStepView(final AccountAddDataModel.Step newStep) {
 		switch (newStep) {
 			case STEP_1:
 				gridpane.getChildren()

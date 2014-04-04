@@ -27,16 +27,16 @@
     <orderEntry type="library" exported="" name="Gradle: httpcore-4.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-codec-1.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: httpclient-4.0.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: guava-15.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: objenesis-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-dbutils-1.5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: sqlite-jdbc-3.7.15-M1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: c3p0-0.9.0.2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev99-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-gson-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.18.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev100-1.17.0-rc" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: guava-15.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-1.2.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject-1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: yank-2.2.0" level="project" />
   </component>
 </module>
 

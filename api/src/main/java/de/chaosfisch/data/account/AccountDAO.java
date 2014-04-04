@@ -10,62 +10,46 @@
 
 package de.chaosfisch.data.account;
 
+import com.xeiam.yank.DBProxy;
 import de.chaosfisch.data.AbstractDAO;
 import de.chaosfisch.data.account.cookies.ICookieDAO;
 import de.chaosfisch.data.account.fields.IFieldDAO;
-import org.apache.commons.dbutils.QueryRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDAO extends AbstractDAO<AccountDTO> implements IAccountDAO {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountDAO.class);
-	private final QueryRunner queryRunner;
-	private final ICookieDAO  cookieDAO;
-	private final IFieldDAO   fieldDAO;
+	private final ICookieDAO cookieDAO;
+	private final IFieldDAO  fieldDAO;
 
-	public AccountDAO(final QueryRunner queryRunner, final ICookieDAO cookieDAO, final IFieldDAO fieldDAO) {
+	public AccountDAO(final ICookieDAO cookieDAO, final IFieldDAO fieldDAO) {
 		super(AccountDTO.class);
-		this.queryRunner = queryRunner;
 		this.cookieDAO = cookieDAO;
 		this.fieldDAO = fieldDAO;
 	}
 
 	@Override
 	public List<AccountDTO> getAll() {
-		try {
-			return intern(applyRelations(queryRunner.query("SELECT * FROM accounts", listResultSetHandler)));
-		} catch (final SQLException e) {
-			LOGGER.error("Account getAll exception", e);
-		}
-		return new ArrayList<>(0);
+		return intern(applyRelations(DBProxy.queryObjectListSQLKey("pool", "ACCOUNT_GET_ALL", AccountDTO.class, null)));
 	}
 
 	@Override
 	public void store(final AccountDTO object) {
-		try {
-			LOGGER.debug("Updating AccountDTO: {}", object);
-			final int changed = queryRunner.update("UPDATE accounts SET name = ?, email = ?, refreshToken = ?, type = ? WHERE youtubeId = ?",
-												   object.getName(),
-												   object.getEmail(),
-												   object.getRefreshToken(),
-												   object.getType(),
-												   object.getYoutubeId());
-			if (0 == changed) {
-				LOGGER.debug("Storing new AccountDTO: {}", object);
-				assert 0 != queryRunner.update("INSERT INTO accounts (youtubeId, name, email, refreshToken, type) VALUES (?, ?, ?, ?, ?)",
-											   object.getYoutubeId(),
-											   object.getName(),
-											   object.getEmail(),
-											   object.getRefreshToken(),
-											   object.getType());
-				intern(object);
-			}
-		} catch (final SQLException e) {
-			LOGGER.error("Account field store exception", e);
+		LOGGER.debug("Updating AccountDTO: {}", object);
+		final Object[] params = {
+				object.getName(),
+				object.getEmail(),
+				object.getRefreshToken(),
+				object.getType(),
+				object.getYoutubeId()
+		};
+		final int changed = DBProxy.executeSQLKey("pool", "ACCOUNT_UPDATE", params);
+		if (0 == changed) {
+			LOGGER.debug("Storing new AccountDTO: {}", object);
+			assert 0 != DBProxy.executeSQLKey("pool", "ACCOUNT_INSERT", params);
+			intern(object);
 		}
 
 		object.getFields()
@@ -78,11 +62,9 @@ public class AccountDAO extends AbstractDAO<AccountDTO> implements IAccountDAO {
 
 	@Override
 	public void remove(final AccountDTO object) {
-		try {
-			queryRunner.update("DELETE FROM accounts WHERE youtubeId = ?", object.getYoutubeId());
-		} catch (final SQLException e) {
-			LOGGER.error("Account remove exception", e);
-		}
+		DBProxy.executeSQLKey("pool", "ACCOUNT_REMOVE", new Object[]{
+				object.getYoutubeId()
+		});
 	}
 
 	private List<AccountDTO> applyRelations(final List<AccountDTO> accountDTOs) {
@@ -100,11 +82,8 @@ public class AccountDAO extends AbstractDAO<AccountDTO> implements IAccountDAO {
 
 	@Override
 	public AccountDTO get(final String id) {
-		try {
-			return intern(queryRunner.query("SELECT * FROM accounts WHERE youtubeId = ?", singleResultSetHandler, id));
-		} catch (final SQLException e) {
-			LOGGER.error("Account get exception", e);
-		}
-		return null;
+		return intern(DBProxy.querySingleObjectSQLKey("pool", "ACCOUNT_GET", AccountDTO.class, new Object[]{
+				id
+		}));
 	}
 }

@@ -13,12 +13,13 @@ package de.chaosfisch.uploader.gui;
 import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.APIModule;
-import de.chaosfisch.uploader.ApplicationData;
 import de.chaosfisch.uploader.gui.account.AccountPresenter;
 import de.chaosfisch.uploader.gui.account.AccountView;
 import de.chaosfisch.uploader.gui.account.add.*;
 import de.chaosfisch.uploader.gui.account.entry.EntryPresenter;
 import de.chaosfisch.uploader.gui.account.entry.EntryView;
+import de.chaosfisch.uploader.gui.edit.EditDataModel;
+import de.chaosfisch.uploader.gui.edit.EditPresenter;
 import de.chaosfisch.uploader.gui.edit.EditView;
 import de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
@@ -26,33 +27,23 @@ import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.edit.right.EditRightPresenter;
 import de.chaosfisch.uploader.gui.main.MainPresenter;
 import de.chaosfisch.uploader.gui.project.ProjectPresenter;
+import de.chaosfisch.uploader.gui.upload.UploadDataModel;
 import de.chaosfisch.uploader.gui.upload.UploadPresenter;
 import de.chaosfisch.uploader.gui.upload.UploadView;
 import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.playlist.IPlaylistService;
 import de.chaosfisch.youtube.upload.IUploadService;
-import org.sqlite.SQLiteDataSource;
 
 import javax.inject.Singleton;
-import javax.sql.DataSource;
 
 @Module(
 		includes = {APIModule.class},
-		staticInjections = {AddModel.class},
+		staticInjections = {AccountAddDataModel.class},
 		library = true,
-		injects = {StepPresenter.class, AddPresenter.class, MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class}
+		injects = {EditPresenter.class, StepPresenter.class, AddPresenter.class, MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class, UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class}
 )
 public class GUIModule {
-
-	@Provides
-	@Singleton
-	DataSource provideDataSource() {
-		final SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
-		sqLiteDataSource.setUrl(String.format("jdbc:sqlite:%s/%s/database.db", ApplicationData.DATA_DIR, ApplicationData.VERSION));
-		return sqLiteDataSource;
-	}
-
 	@Provides
 	@Singleton
 	StepPresenter provideStepPresenter() {
@@ -61,7 +52,6 @@ public class GUIModule {
 
 	@Provides
 	AccountView provideAccountView() {
-		provideDataSource();
 		return new AccountView();
 	}
 
@@ -112,7 +102,19 @@ public class GUIModule {
 
 	@Provides
 	@Singleton
-	DataModel provideDataModel(final ICategoryService iCategoryService, final IAccountService iAccountService, final IUploadService iUploadService, final IPlaylistService iPlaylistService) {
-		return new DataModel(iCategoryService, iAccountService, iUploadService, iPlaylistService);
+	DataModel provideDataModel(final IAccountService iAccountService, final IPlaylistService iPlaylistService) {
+		return new DataModel(iAccountService, iPlaylistService);
+	}
+
+	@Provides
+	@Singleton
+	UploadDataModel provideUploadModel(final IUploadService iUploadService) {
+		return new UploadDataModel(iUploadService);
+	}
+
+	@Provides
+	@Singleton
+	EditDataModel provideEditDataModel(final ICategoryService iCategoryService, final IUploadService iUploadService) {
+		return new EditDataModel(iCategoryService, iUploadService);
 	}
 }

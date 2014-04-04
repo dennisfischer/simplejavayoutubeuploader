@@ -10,13 +10,15 @@
 
 package de.chaosfisch.data.upload.metadata;
 
+import org.jetbrains.annotations.NonNls;
+
 public class MetadataDTO {
-	private String uploadId;
 	private int    category;
-	private String license;
-	private String title;
 	private String description;
+	private String license;
 	private String tags;
+	private String title;
+	private String uploadId;
 
 	public MetadataDTO() {
 	}
@@ -76,5 +78,18 @@ public class MetadataDTO {
 
 	public void setTags(final String tags) {
 		this.tags = tags;
+	}
+
+	@Override
+	@NonNls
+	public String toString() {
+		return "MetadataDTO{" +
+				"uploadId='" + uploadId + '\'' +
+				", category=" + category +
+				", license='" + license + '\'' +
+				", title='" + title + '\'' +
+				", description='" + description + '\'' +
+				", tags='" + tags + '\'' +
+				'}';
 	}
 }

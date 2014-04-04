@@ -10,12 +10,14 @@
 
 package de.chaosfisch.data.upload.social;
 
+import org.jetbrains.annotations.NonNls;
+
 public class SocialDTO {
-	private String  uploadId;
-	private String  message;
 	private boolean facebook;
-	private boolean twitter;
 	private boolean gplus;
+	private String  message;
+	private boolean twitter;
+	private String  uploadId;
 
 	public SocialDTO() {
 	}
@@ -66,5 +68,17 @@ public class SocialDTO {
 
 	public void setGplus(final boolean gplus) {
 		this.gplus = gplus;
+	}
+
+	@Override
+	@NonNls
+	public String toString() {
+		return "SocialDTO{" +
+				"uploadId='" + uploadId + '\'' +
+				", message='" + message + '\'' +
+				", facebook=" + facebook +
+				", twitter=" + twitter +
+				", gplus=" + gplus +
+				'}';
 	}
 }

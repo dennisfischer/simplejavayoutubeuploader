@@ -11,6 +11,7 @@
 package de.chaosfisch.uploader.gui.edit.left;
 
 import de.chaosfisch.uploader.gui.DataModel;
+import de.chaosfisch.uploader.gui.edit.EditDataModel;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 public class EditLeftPresenter {
 	@Inject
 	protected DataModel               dataModel;
+	@Inject
+	protected EditDataModel           editDataModel;
 	@FXML
 	private   ComboBox<String>        files;
 	@FXML
@@ -53,17 +56,17 @@ public class EditLeftPresenter {
 
 	private void bindData() {
 		categories.itemsProperty()
-				  .bindBidirectional(dataModel.categoriesProperty());
+				  .bindBidirectional(editDataModel.categoriesProperty());
 		accounts.itemsProperty()
 				.bindBidirectional(dataModel.accountsProperty());
 		accounts.valueProperty()
-				.bindBidirectional(dataModel.selectedAccountProperty());
+				.bindBidirectional(editDataModel.selectedAccountProperty());
 		files.itemsProperty()
-			 .bindBidirectional(dataModel.filesProperty());
+			 .bindBidirectional(editDataModel.filesProperty());
 		files.valueProperty()
-			 .bindBidirectional(dataModel.selectedFileProperty());
+			 .bindBidirectional(editDataModel.selectedFileProperty());
 		categories.valueProperty()
-				  .bindBidirectional(dataModel.selectedCategoryProperty());
+				  .bindBidirectional(editDataModel.selectedCategoryProperty());
 		accounts.valueProperty()
 				.addListener((observableValue, oldAccount, newAccount) -> {
 					playlists.setItems(FXCollections.observableArrayList(dataModel.getPlaylists(newAccount)
@@ -89,13 +92,20 @@ public class EditLeftPresenter {
 
 		selectedPlaylists.setCellFactory(new PlaylistListCellFactory());
 		selectedPlaylists.itemsProperty()
-						 .bindBidirectional(dataModel.selectedPlaylistsProperty());
+						 .bindBidirectional(editDataModel.selectedPlaylistsProperty());
 		selectedPlaylists.getItems()
 						 .addListener((ListChangeListener<PlaylistModel>) change -> {
 							 change.next();
 							 playlists.getItems()
 									  .addAll(change.getRemoved());
 						 });
+
+		title.textProperty()
+			 .bindBidirectional(editDataModel.titleProperty());
+		description.textProperty()
+				   .bindBidirectional(editDataModel.descriptionProperty());
+		tags.textProperty()
+			.bindBidirectional(editDataModel.tagsProperty());
 	}
 
 	private void selectData() {

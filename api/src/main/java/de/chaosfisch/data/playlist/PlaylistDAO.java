@@ -10,104 +10,76 @@
 
 package de.chaosfisch.data.playlist;
 
+import com.xeiam.yank.DBProxy;
 import de.chaosfisch.data.AbstractDAO;
-import org.apache.commons.dbutils.QueryRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistDAO extends AbstractDAO<PlaylistDTO> implements IPlaylistDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlaylistDAO.class);
-	private final QueryRunner queryRunner;
 
-	public PlaylistDAO(final QueryRunner queryRunner) {
+	public PlaylistDAO() {
 		super(PlaylistDTO.class);
-		this.queryRunner = queryRunner;
 	}
 
 	@Override
 	public List<PlaylistDTO> getAll() {
-		try {
-			return intern(queryRunner.query("SELECT * FROM playlists", listResultSetHandler));
-		} catch (final SQLException e) {
-			LOGGER.error("Playlist getAll exception", e);
-		}
-		return new ArrayList<>(0);
+		return intern(DBProxy.queryObjectListSQLKey("pool", "PLAYLIST_GET_ALL", PlaylistDTO.class, null));
 	}
 
 	@Override
 	public void store(final PlaylistDTO object) {
-		try {
-			LOGGER.debug("Updating PlaylistDTO: {}", object);
-			final int changed = queryRunner.update(
-					"UPDATE playlists SET title = ?, thumbnail = ?, privacyStatus = ?, itemCount = ?, description = ?, last_modified = current_timestamp WHERE youtubeId = ?",
-					object.getTitle(),
-					object.getThumbnail(),
-					object.isPrivacyStatus(),
-					object.getItemCount(),
-					object.getDescription(),
-					object.getYoutubeId());
+		LOGGER.debug("Updating PlaylistDTO: {}", object);
 
-			if (0 == changed) {
-				LOGGER.debug("Storing new PlaylistDTO: {}", object);
-				assert 0 != queryRunner.update(
-						"INSERT INTO playlists (youtubeId, title, thumbnail, privacyStatus, itemCount, description, accountId, last_modified) VALUES (?, ?, ?, ?, ?, ?, ?, current_timestamp)",
-						object.getYoutubeId(),
-						object.getTitle(),
-						object.getThumbnail(),
-						object.isPrivacyStatus(),
-						object.getItemCount(),
-						object.getDescription(),
-						object.getAccountId());
-				intern(object);
-			}
-		} catch (final SQLException e) {
-			LOGGER.error("Playlist store exception", e);
+		final Object[] params = {
+				object.getTitle(),
+				object.getThumbnail(),
+				object.isPrivacyStatus(),
+				object.getItemCount(),
+				object.getDescription(),
+				object.getAccountId(),
+				object.getYoutubeId()
+		};
+
+		final int changed = DBProxy.executeSQLKey("pool", "PLAYLIST_UPDATE", params);
+
+		if (0 == changed) {
+			LOGGER.debug("Storing new PlaylistDTO: {}", object);
+			assert 0 != DBProxy.executeSQLKey("pool", "PLAYLIST_INSERT", params);
+			intern(object);
 		}
 	}
 
 	@Override
 	public void remove(final PlaylistDTO object) {
 		LOGGER.debug("Removing PlaylistDTO: {}", object);
-		try {
-			queryRunner.update("DELETE FROM playlists WHERE youtubeId = ?", object.getYoutubeId());
-		} catch (final SQLException e) {
-			LOGGER.error("Playlist remove exception", e);
-		}
+		DBProxy.executeSQLKey("pool", "PLAYLIST_REMOVE", new Object[]{
+				object.getYoutubeId()
+		});
 	}
 
 	@Override
 	public PlaylistDTO get(final String id) {
-		try {
-			final PlaylistDTO result = queryRunner.query("SELECT * FROM playlists WHERE youtubeId = ?", singleResultSetHandler, id);
-			return null == result ? null : intern(result);
-		} catch (final SQLException e) {
-			LOGGER.error("Playlist get exception", e);
-		}
-		return null;
+		return intern(DBProxy.querySingleObjectSQLKey("pool", "PLAYLIST_GET", PlaylistDTO.class, new Object[]{
+				id
+		}));
 	}
 
 	@Override
-	public List<PlaylistDTO> getByAccount(final String id) {
-		try {
-			return intern(queryRunner.query("SELECT * FROM playlists WHERE accountId = ?", listResultSetHandler, id));
-		} catch (final SQLException e) {
-			LOGGER.error("Playlist getByAccount exception", e);
-		}
-		return new ArrayList<>(0);
+	public List<PlaylistDTO> getAll(final String accountId) {
+		return intern(DBProxy.queryObjectListSQLKey("pool", "PLAYLIST_GET_ALL_BY_ACCOUNT", PlaylistDTO.class, new Object[]{
+				accountId
+		}));
 	}
 
 	@Override
 	public void clearOld(final String accountId) {
 		LOGGER.debug("Removing old playlists");
-		try {
-			queryRunner.update("DELETE FROM playlists WHERE last_modified < (datetime(current_timestamp,'-1 minute')) AND accountId = ?", accountId);
-		} catch (final SQLException e) {
-			LOGGER.error("Playlists clearOld exception", e);
-		}
+		DBProxy.executeSQLKey("pool", "PLAYLIST_CLEAR_OLD", new Object[]{
+				accountId
+		});
 	}
 }

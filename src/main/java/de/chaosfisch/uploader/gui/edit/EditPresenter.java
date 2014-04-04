@@ -8,17 +8,20 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.playlist;
+package de.chaosfisch.uploader.gui.edit;
 
-import de.chaosfisch.data.IGenericDAO;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 
-import java.util.List;
+import javax.inject.Inject;
 
-public interface IPlaylistDAO extends IGenericDAO<PlaylistDTO> {
+public class EditPresenter {
 
-	PlaylistDTO get(String id);
+	@Inject
+	protected EditDataModel editDataModel;
 
-	List<PlaylistDTO> getAll(String accountId);
-
-	void clearOld(String accountId);
+	@FXML
+	public void addUpload(ActionEvent actionEvent) {
+		editDataModel.createUpload();
+	}
 }

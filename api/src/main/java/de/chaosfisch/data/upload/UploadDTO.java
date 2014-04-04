@@ -14,40 +14,40 @@ import de.chaosfisch.data.upload.metadata.MetadataDTO;
 import de.chaosfisch.data.upload.monetization.MonetizationDTO;
 import de.chaosfisch.data.upload.permission.PermissionDTO;
 import de.chaosfisch.data.upload.social.SocialDTO;
-import de.chaosfisch.youtube.upload.Status;
+import org.jetbrains.annotations.NonNls;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class UploadDTO {
 
+	private String          accountId;
+	private LocalDateTime   dateTimeOfEnd;
+	private LocalDateTime   dateTimeOfRelease;
+	private LocalDateTime   dateTimeOfStart;
+	private String          enddir;
+	private String          file;
+	private long            fileSize;
 	private String          id;
+	private int             me;
+	private MetadataDTO     metadataDTO;
+	private MonetizationDTO monetizationDTO;
+	private int             order;
+	private PermissionDTO   permissionDTO;
+	private List<String>    playlistIds;
+	private double          progress;
+	private SocialDTO       socialDTO;
+	private String          status;
+	private boolean         stopAfter;
+	private String          thumbnail;
 	private String          uploadurl;
 	private String          videoid;
-	private File            file;
-	private File            enddir;
-	private File            thumbnail;
-	private LocalDateTime   dateTimeOfStart;
-	private LocalDateTime   dateTimeOfRelease;
-	private LocalDateTime   dateTimeOfEnd;
-	private int             order;
-	private double          progress;
-	private boolean         stopAfter;
-	private long            fileSize;
-	private Status          status;
-	private String          accountId;
-	private List<String>    playlistIds;
-	private SocialDTO       socialDTO;
-	private MonetizationDTO monetizationDTO;
-	private PermissionDTO   permissionDTO;
-	private MetadataDTO     metadataDTO;
 
 
 	public UploadDTO() {
 	}
 
-	public UploadDTO(final String id, final String uploadurl, final String videoid, final File file, final File enddir, final File thumbnail, final LocalDateTime dateTimeOfStart, final LocalDateTime dateTimeOfRelease, final LocalDateTime dateTimeOfEnd, final int order, final double progress, final boolean stopAfter, final long fileSize, final Status status, final String accountId, final List<String> playlistIds, final SocialDTO socialDTO, final MonetizationDTO monetizationDTO, final PermissionDTO permissionDTO, final MetadataDTO metadataDTO) {
+	public UploadDTO(final String id, final String uploadurl, final String videoid, final String file, final String enddir, final String thumbnail, final LocalDateTime dateTimeOfStart, final LocalDateTime dateTimeOfRelease, final LocalDateTime dateTimeOfEnd, final int order, final double progress, final boolean stopAfter, final long fileSize, final String status, final String accountId, final List<String> playlistIds, final SocialDTO socialDTO, final MonetizationDTO monetizationDTO, final PermissionDTO permissionDTO, final MetadataDTO metadataDTO) {
 		this.id = id;
 		this.uploadurl = uploadurl;
 		this.videoid = videoid;
@@ -94,27 +94,27 @@ public class UploadDTO {
 		this.videoid = videoid;
 	}
 
-	public File getFile() {
+	public String getFile() {
 		return file;
 	}
 
-	public void setFile(final File file) {
+	public void setFile(final String file) {
 		this.file = file;
 	}
 
-	public File getEnddir() {
+	public String getEnddir() {
 		return enddir;
 	}
 
-	public void setEnddir(final File enddir) {
+	public void setEnddir(final String enddir) {
 		this.enddir = enddir;
 	}
 
-	public File getThumbnail() {
+	public String getThumbnail() {
 		return thumbnail;
 	}
 
-	public void setThumbnail(final File thumbnail) {
+	public void setThumbnail(final String thumbnail) {
 		this.thumbnail = thumbnail;
 	}
 
@@ -174,11 +174,11 @@ public class UploadDTO {
 		this.fileSize = fileSize;
 	}
 
-	public Status getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(final Status status) {
+	public void setStatus(final String status) {
 		this.status = status;
 	}
 
@@ -228,5 +228,36 @@ public class UploadDTO {
 
 	public void setMetadataDTO(final MetadataDTO metadataDTO) {
 		this.metadataDTO = metadataDTO;
+	}
+
+	@Override
+	@NonNls
+	public String toString() {
+		return "UploadDTO{" +
+				"id='" + id + '\'' +
+				", uploadurl='" + uploadurl + '\'' +
+				", videoid='" + videoid + '\'' +
+				", file='" + file + '\'' +
+				", enddir='" + enddir + '\'' +
+				", thumbnail='" + thumbnail + '\'' +
+				", dateTimeOfStart=" + dateTimeOfStart +
+				", dateTimeOfRelease=" + dateTimeOfRelease +
+				", dateTimeOfEnd=" + dateTimeOfEnd +
+				", order=" + order +
+				", progress=" + progress +
+				", stopAfter=" + stopAfter +
+				", fileSize=" + fileSize +
+				", status=" + status +
+				", accountId='" + accountId + '\'' +
+				", playlistIds=" + playlistIds +
+				", socialDTO=" + socialDTO +
+				", monetizationDTO=" + monetizationDTO +
+				", permissionDTO=" + permissionDTO +
+				", metadataDTO=" + metadataDTO +
+				'}';
+	}
+
+	public int getMetadataCategory() {
+		return metadataDTO.getCategory();
 	}
 }

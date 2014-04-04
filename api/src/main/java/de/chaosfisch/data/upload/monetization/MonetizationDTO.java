@@ -10,29 +10,31 @@
 
 package de.chaosfisch.data.upload.monetization;
 
+import org.jetbrains.annotations.NonNls;
+
 public class MonetizationDTO {
-	private String  uploadId;
-	private String  syndication;
-	private String  claimType;
-	private String  claimOption;
 	private String  asset;
-	private boolean instreamDefaults;
 	private boolean claim;
-	private boolean overlay;
-	private boolean trueview;
-	private boolean instream;
-	private boolean product;
-	private boolean partner;
-	private String  title;
-	private String  description;
+	private String  claimOption;
+	private String  claimType;
 	private String  customId;
-	private String  notes;
-	private String  tmsid;
-	private String  isan;
+	private String  description;
 	private String  eidr;
-	private String  episodeTitle;
-	private String  seasonNumber;
 	private String  episodeNumber;
+	private String  episodeTitle;
+	private boolean instream;
+	private boolean instreamDefaults;
+	private String  isan;
+	private String  notes;
+	private boolean overlay;
+	private boolean partner;
+	private boolean product;
+	private String  seasonNumber;
+	private String  syndication;
+	private String  title;
+	private String  tmsid;
+	private boolean trueview;
+	private String  uploadId;
 
 	public MonetizationDTO() {
 	}
@@ -236,5 +238,34 @@ public class MonetizationDTO {
 
 	public void setUploadId(final String uploadId) {
 		this.uploadId = uploadId;
+	}
+
+	@Override
+	@NonNls
+	public String toString() {
+		return "MonetizationDTO{" +
+				"uploadId='" + uploadId + '\'' +
+				", syndication='" + syndication + '\'' +
+				", claimType='" + claimType + '\'' +
+				", claimOption='" + claimOption + '\'' +
+				", asset='" + asset + '\'' +
+				", instreamDefaults=" + instreamDefaults +
+				", claim=" + claim +
+				", overlay=" + overlay +
+				", trueview=" + trueview +
+				", instream=" + instream +
+				", product=" + product +
+				", partner=" + partner +
+				", title='" + title + '\'' +
+				", description='" + description + '\'' +
+				", customId='" + customId + '\'' +
+				", notes='" + notes + '\'' +
+				", tmsid='" + tmsid + '\'' +
+				", isan='" + isan + '\'' +
+				", eidr='" + eidr + '\'' +
+				", episodeTitle='" + episodeTitle + '\'' +
+				", seasonNumber='" + seasonNumber + '\'' +
+				", episodeNumber='" + episodeNumber + '\'' +
+				'}';
 	}
 }

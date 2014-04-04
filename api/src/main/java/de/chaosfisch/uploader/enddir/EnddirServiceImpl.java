@@ -27,7 +27,7 @@ public class EnddirServiceImpl implements IEnddirService {
 	@Override
 	public void moveFileByUpload(final File fileToMove, final UploadModel upload) {
 
-		final String fileName = getFileName(fileToMove, upload.getEnddir());
+		final String fileName = getFileName(fileToMove, new File(upload.getEnddir()));
 
 		File endFile = null;
 		for (int i = 0; 100 > i; i++) {
@@ -56,7 +56,8 @@ public class EnddirServiceImpl implements IEnddirService {
 	}
 
 	private String getFileName(final File fileToMove, final File enddir, final String name) {
-		final String normalizedTitle = VALID_FILE_NAMES_PATTERN.matcher(name).replaceAll("_");
+		final String normalizedTitle = VALID_FILE_NAMES_PATTERN.matcher(name)
+															   .replaceAll("_");
 		return String.format("%s/%s.%s", enddir.getAbsolutePath(), normalizedTitle, Files.getFileExtension(fileToMove.getName()));
 	}
 

@@ -16,12 +16,13 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AbstractDAO<T> {
-	protected final ResultSetHandler<T>       singleResultSetHandler;
 	protected final ResultSetHandler<List<T>> listResultSetHandler;
+	protected final ResultSetHandler<T>       singleResultSetHandler;
 	private final   Interner<T>               objectInterner;
 
 	public AbstractDAO(final Class<T> clazz) {
@@ -31,12 +32,15 @@ public class AbstractDAO<T> {
 	}
 
 	protected List<T> intern(final List<T> objects) {
+		if (null == objects) {
+			return Collections.emptyList();
+		}
 		return objects.stream()
 					  .map(objectInterner::intern)
 					  .collect(Collectors.toList());
 	}
 
 	protected T intern(final T object) {
-		return objectInterner.intern(object);
+		return null == object ? null : objectInterner.intern(object);
 	}
 }

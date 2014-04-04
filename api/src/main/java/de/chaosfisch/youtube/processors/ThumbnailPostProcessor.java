@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.File;
 
 class ThumbnailPostProcessor implements UploadeJobPostProcessor {
 
@@ -32,7 +33,7 @@ class ThumbnailPostProcessor implements UploadeJobPostProcessor {
 	public UploadModel process(final UploadModel upload) {
 		if (null != upload.getThumbnail()) {
 			try {
-				thumbnailService.upload(upload.getThumbnail(), upload.getVideoid(), upload.getAccount());
+				thumbnailService.upload(new File(upload.getThumbnail()), upload.getVideoid(), upload.getAccount());
 			} catch (final Exception e) {
 				LOGGER.error("Thumbnail IOException", e);
 			}

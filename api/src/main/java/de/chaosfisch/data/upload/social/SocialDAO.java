@@ -8,7 +8,7 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.category;
+package de.chaosfisch.data.upload.social;
 
 import com.xeiam.yank.DBProxy;
 import de.chaosfisch.data.AbstractDAO;
@@ -17,48 +17,49 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class CategoryDAO extends AbstractDAO<CategoryDTO> implements ICategoryDAO {
+public class SocialDAO extends AbstractDAO<SocialDTO> implements ISocialDAO {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SocialDAO.class);
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDAO.class);
-
-	public CategoryDAO() {
-		super(CategoryDTO.class);
+	public SocialDAO() {
+		super(SocialDTO.class);
 	}
 
 	@Override
-	public List<CategoryDTO> getAll() {
-		return intern(DBProxy.queryObjectListSQLKey("pool", "CATEGORY_GET_ALL", CategoryDTO.class, null));
+	public List<SocialDTO> getAll() {
+		return intern(DBProxy.queryObjectListSQLKey("pool", "SOCIAL_GET_ALL", SocialDTO.class, null));
 	}
 
 	@Override
-	public void store(final CategoryDTO object) {
-		LOGGER.debug("Updating CategoryDTO: {}", object);
-
+	public void store(final SocialDTO object) {
+		LOGGER.debug("Updating SocialDTO: {}", object);
 		final Object[] params = {
-				object.getName(),
-				object.getYoutubeId()
+				object.getMessage(),
+				object.isFacebook(),
+				object.isTwitter(),
+				object.isGplus(),
+				object.getUploadId()
 		};
 
-		final int changed = DBProxy.executeSQLKey("pool", "CATEGORY_UPDATE", params);
+		final int changed = DBProxy.executeSQLKey("pool", "SOCIAL_UPDATE", params);
 		if (0 == changed) {
-			LOGGER.debug("Storing new CategoryDTO: {}", object);
-			assert 0 != DBProxy.executeSQLKey("pool", "CATEGORY_INSERT", params);
+			LOGGER.debug("Storing new SocialDTO: {}", object);
+			assert 0 != DBProxy.executeSQLKey("pool", "SOCIAL_INSERT", params);
 			intern(object);
 		}
 	}
 
 	@Override
-	public void remove(final CategoryDTO object) {
-		LOGGER.debug("Removing CategoryDTO: {}", object);
-		assert 0 != DBProxy.executeSQLKey("pool", "CATEGORY_REMOVE", new Object[]{
-				object.getYoutubeId()
+	public void remove(final SocialDTO object) {
+		LOGGER.debug("Removing SocialDTO: {}", object);
+		assert 0 != DBProxy.executeSQLKey("pool", "SOCIAL_REMOVE", new Object[]{
+				object.getUploadId()
 		});
 	}
 
 	@Override
-	public CategoryDTO get(final int id) {
-		return intern(DBProxy.querySingleObjectSQLKey("pool", "CATEGORY_GET", CategoryDTO.class, new Object[]{
-				id
+	public SocialDTO find(final String uploadId) {
+		return intern(DBProxy.querySingleObjectSQLKey("pool", "SOCIAL_GET", SocialDTO.class, new Object[]{
+				uploadId
 		}));
 	}
 }

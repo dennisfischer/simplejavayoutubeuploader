@@ -39,9 +39,9 @@ import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-public class AddModel {
-	private static final AddModel INSTANCE = new AddModel();
-	private static final Logger   LOGGER   = LoggerFactory.getLogger(AddModel.class);
+public class AccountAddDataModel {
+	private static final AccountAddDataModel INSTANCE = new AccountAddDataModel();
+	private static final Logger              LOGGER   = LoggerFactory.getLogger(AccountAddDataModel.class);
 	@Inject
 	protected static IAccountService accountService;
 	private final PersistentCookieStore      persistentCookieStore = new PersistentCookieStore();
@@ -56,7 +56,7 @@ public class AddModel {
 	private String       selectedOption;
 	private AccountModel accountModel;
 
-	private AddModel() {
+	private AccountAddDataModel() {
 		Platform.runLater(() -> {
 			final CookieManager cookieManager = new CookieManager(persistentCookieStore, null);
 			CookieHandler.setDefault(cookieManager);
@@ -79,7 +79,7 @@ public class AddModel {
 		});
 	}
 
-	public static AddModel getInstance() {
+	public static AccountAddDataModel getInstance() {
 		return INSTANCE;
 	}
 

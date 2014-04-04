@@ -14,7 +14,9 @@
 package de.chaosfisch.youtube.upload;
 
 import de.chaosfisch.data.account.cookies.CookieDTO;
+import de.chaosfisch.data.upload.UploadDTO;
 import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.metadata.Metadata;
@@ -26,31 +28,58 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
-import java.io.File;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class UploadModel {
 
-	private final SimpleStringProperty                id                = new SimpleStringProperty();
+	private final SimpleObjectProperty<AccountModel>  account           = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<LocalDateTime> dateTimeOfEnd     = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<LocalDateTime> dateTimeOfRelease = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<LocalDateTime> dateTimeOfStart   = new SimpleObjectProperty<>();
+	private final SimpleStringProperty                enddir            = new SimpleStringProperty("");
+	private final SimpleStringProperty                file              = new SimpleStringProperty("");
+	private final SimpleLongProperty                  fileSize          = new SimpleLongProperty();
+	private final SimpleStringProperty                id                = new SimpleStringProperty(UUID.randomUUID()
+																									   .toString());
+	private final SimpleObjectProperty<Metadata>      metadata          = new SimpleObjectProperty<>(new Metadata());
+	private final SimpleObjectProperty<Monetization>  monetization      = new SimpleObjectProperty<>(new Monetization());
+	private final SimpleIntegerProperty               order             = new SimpleIntegerProperty();
+	private final SimpleObjectProperty<Permissions>   permissions       = new SimpleObjectProperty<>(new Permissions());
 	private final SimpleListProperty<PlaylistModel>   playlists         = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleDoubleProperty                progress          = new SimpleDoubleProperty();
 	private final SimpleObjectProperty<Social>        social            = new SimpleObjectProperty<>(new Social());
 	private final SimpleObjectProperty<Status>        status            = new SimpleObjectProperty<>(Status.WAITING);
-	private final SimpleObjectProperty<Monetization>  monetization      = new SimpleObjectProperty<>(new Monetization());
-	private final SimpleObjectProperty<Permissions>   permissions       = new SimpleObjectProperty<>(new Permissions());
-	private final SimpleObjectProperty<Metadata>      metadata          = new SimpleObjectProperty<>(new Metadata());
+	private final SimpleBooleanProperty               stopAfter         = new SimpleBooleanProperty();
+	private final SimpleStringProperty                thumbnail         = new SimpleStringProperty("");
 	private final SimpleStringProperty                uploadurl         = new SimpleStringProperty();
 	private final SimpleStringProperty                videoid           = new SimpleStringProperty();
-	private final SimpleObjectProperty<File>          file              = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<File>          enddir            = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<File>          thumbnail         = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfStart   = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfRelease = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfEnd     = new SimpleObjectProperty<>();
-	private final SimpleIntegerProperty               order             = new SimpleIntegerProperty();
-	private final SimpleObjectProperty<AccountModel>  account           = new SimpleObjectProperty<>();
-	private final SimpleDoubleProperty                progress          = new SimpleDoubleProperty();
-	private final SimpleBooleanProperty               stopAfter         = new SimpleBooleanProperty();
-	private final SimpleLongProperty                  fileSize          = new SimpleLongProperty();
+
+	public UploadModel(final UploadDTO uploadDTO, final CategoryModel categoryModel) {
+		//TODO 	account.set();
+		dateTimeOfEnd.set(uploadDTO.getDateTimeOfEnd());
+		dateTimeOfRelease.set(uploadDTO.getDateTimeOfRelease());
+		dateTimeOfStart.set(uploadDTO.getDateTimeOfStart());
+		enddir.set(uploadDTO.getEnddir());
+		file.set(uploadDTO.getFile());
+		fileSize.set(uploadDTO.getFileSize());
+		id.set(uploadDTO.getId());
+		metadata.set(new Metadata(uploadDTO.getMetadataDTO(), categoryModel));
+		monetization.set(new Monetization(uploadDTO.getMonetizationDTO()));
+		order.set(uploadDTO.getOrder());
+		permissions.set(new Permissions(uploadDTO.getPermissionDTO()));
+		//TODO PLAYLISTS
+		progress.set(uploadDTO.getProgress());
+		social.set(new Social(uploadDTO.getSocialDTO()));
+		status.set(Status.valueOf(uploadDTO.getStatus()));
+		stopAfter.set(uploadDTO.isStopAfter());
+		thumbnail.set(uploadDTO.getThumbnail());
+		uploadurl.set(uploadDTO.getUploadurl());
+		videoid.set(uploadDTO.getVideoid());
+	}
+
+	public UploadModel() {
+	}
 
 	public long getFileSize() {
 		return fileSize.get();
@@ -208,39 +237,39 @@ public class UploadModel {
 		return videoid;
 	}
 
-	public File getFile() {
+	public String getFile() {
 		return file.get();
 	}
 
-	public void setFile(final File file) {
+	public void setFile(final String file) {
 		this.file.set(file);
 	}
 
-	public SimpleObjectProperty<File> fileProperty() {
+	public SimpleStringProperty fileProperty() {
 		return file;
 	}
 
-	public File getEnddir() {
+	public String getEnddir() {
 		return enddir.get();
 	}
 
-	public void setEnddir(final File enddir) {
+	public void setEnddir(final String enddir) {
 		this.enddir.set(enddir);
 	}
 
-	public SimpleObjectProperty<File> enddirProperty() {
+	public SimpleStringProperty enddirProperty() {
 		return enddir;
 	}
 
-	public File getThumbnail() {
+	public String getThumbnail() {
 		return thumbnail.get();
 	}
 
-	public void setThumbnail(final File thumbnail) {
+	public void setThumbnail(final String thumbnail) {
 		this.thumbnail.set(thumbnail);
 	}
 
-	public SimpleObjectProperty<File> thumbnailProperty() {
+	public SimpleStringProperty thumbnailProperty() {
 		return thumbnail;
 	}
 
@@ -459,6 +488,12 @@ public class UploadModel {
 					   .getLicense();
 	}
 
+	public void setMetadataLicense(final License metadataLicense) {
+		metadata.get()
+				.licenseProperty()
+				.set(metadataLicense);
+	}
+
 	public boolean isMonetizationPartner() {
 		return monetization.get()
 						   .getPartner();
@@ -569,27 +604,37 @@ public class UploadModel {
 						  .getVisibilityIdentifier();
 	}
 
-	public String getCategoryId() {
+	public int getCategoryId() {
 		return metadata.get()
 					   .getCategoryId();
 	}
 
-	public interface Validation {
-		int MAX_THUMBNAIL_SIZE   = 2097152;
-		int MAX_TITLE_SIZE       = 100;
-		int MAX_DESCRIPTION_SIZE = 5000;
+	public String getAccountYoutubeId() {
+		return account.get()
+					  .getYoutubeId();
+	}
 
+	public void setMetadataCategory(final CategoryModel categoryModel) {
+		metadata.get()
+				.categoryProperty()
+				.set(categoryModel);
+	}
+
+	public interface Validation {
 		String ACCOUNT                = "accountNull";
-		String FILE                   = "fileNullNotExisting";
+		String CATEGORY               = "categoryNull";
+		String DESCRIPTION_CHARACTERS = "descriptionCharacters";
+		String DESCRIPTION_SIZE       = "descriptionNull";
 		String ENDDIR                 = "enddirNotExisting";
+		String FILE                   = "fileNullNotExisting";
+		String KEYWORD                = "keywordIllegal";
+		int    MAX_DESCRIPTION_SIZE   = 5000;
+		int    MAX_THUMBNAIL_SIZE     = 2097152;
+		int    MAX_TITLE_SIZE         = 100;
 		String THUMBNAIL              = "thumbnailNotExsiting";
 		String THUMBNAIL_SIZE         = "thumbnailSize";
 		String TITLE                  = "titleNull";
-		String TITLE_SIZE             = "titleSize";
 		String TITLE_CHARACTERS       = "titleCharacters";
-		String CATEGORY               = "categoryNull";
-		String DESCRIPTION_SIZE       = "descriptionNull";
-		String DESCRIPTION_CHARACTERS = "descriptionCharacters";
-		String KEYWORD                = "keywordIllegal";
+		String TITLE_SIZE             = "titleSize";
 	}
 }

@@ -11,7 +11,7 @@
 package de.chaosfisch.uploader.gui.edit.right;
 
 import dagger.Lazy;
-import de.chaosfisch.uploader.gui.DataModel;
+import de.chaosfisch.uploader.gui.edit.EditDataModel;
 import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.models.TimeModel;
@@ -41,7 +41,7 @@ public class EditRightPresenter {
 	@Inject
 	protected Lazy<EditMonetizationView> editMonetizationViewLazy;
 	@Inject
-	protected DataModel                  dataModel;
+	protected EditDataModel              editDataModel;
 	@FXML
 	private   ComboBox<Visibility>       visibility;
 	@FXML
@@ -64,8 +64,6 @@ public class EditRightPresenter {
 	private   ToggleButton               statistics;
 	@FXML
 	private   ToggleButton               rate;
-	@FXML
-	private   ToggleButton               rateComments;
 	@FXML
 	private   ToggleButton               embed;
 	@FXML
@@ -99,13 +97,32 @@ public class EditRightPresenter {
 
 	private void bindData() {
 		visibility.itemsProperty()
-				  .bindBidirectional(dataModel.visibilitiesProperty());
+				  .bindBidirectional(editDataModel.visibilitiesProperty());
 		comments.itemsProperty()
-				.bindBidirectional(dataModel.commentsProperty());
+				.bindBidirectional(editDataModel.commentsProperty());
 		license.itemsProperty()
-			   .bindBidirectional(dataModel.licensesProperty());
+			   .bindBidirectional(editDataModel.licensesProperty());
 		threed.itemsProperty()
-			  .bindBidirectional(dataModel.threeDsProperty());
+			  .bindBidirectional(editDataModel.threeDsProperty());
+
+		visibility.valueProperty()
+				  .bindBidirectional(editDataModel.selectedVisibilityProperty());
+		comments.valueProperty()
+				.bindBidirectional(editDataModel.selectedCommentProperty());
+		license.valueProperty()
+			   .bindBidirectional(editDataModel.selectedLicenseProperty());
+		threed.valueProperty()
+			  .bindBidirectional(editDataModel.selectedThreeDProperty());
+		ageRestriction.selectedProperty()
+					  .bindBidirectional(editDataModel.ageRestrictionProperty());
+		statistics.selectedProperty()
+				  .bindBidirectional(editDataModel.statisticsProperty());
+		rate.selectedProperty()
+			.bindBidirectional(editDataModel.rateProperty());
+		embed.selectedProperty()
+			 .bindBidirectional(editDataModel.embedProperty());
+		subscribers.selectedProperty()
+				   .bindBidirectional(editDataModel.subscribersProperty());
 	}
 
 	private void selectData() {

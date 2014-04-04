@@ -33,14 +33,14 @@ public class PlaceholderJobPreProcessor implements UploadJobPreProcessor {
 	@Override
 	public UploadModel process(final UploadModel upload) {
 		LOGGER.info("Replacing placeholders");
-		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(upload.getFile(),
+		final ExtendedPlaceholders extendedPlaceholders = new ExtendedPlaceholders(new File(upload.getFile()),
 																				   upload.getPlaylists(),
 																				   resources);
 		upload.setMetadataTitle(extendedPlaceholders.replace(upload.getMetadataTitle()));
 		upload.setMetadataDescription(extendedPlaceholders.replace(upload.getMetadataDescription()));
 		upload.setMetadataTags(extendedPlaceholders.replace(upload.getMetadataTags()));
 
-		extendedPlaceholders.setFile(upload.getFile());
+		extendedPlaceholders.setFile(new File(upload.getFile()));
 		extendedPlaceholders.setPlaylists(upload.getPlaylists());
 		extendedPlaceholders.register("{title}", upload.getMetadataTitle());
 		extendedPlaceholders.register("{description}", upload.getMetadataDescription());
@@ -59,8 +59,7 @@ public class PlaceholderJobPreProcessor implements UploadJobPreProcessor {
 		upload.setMonetizationEpisodeNb(extendedPlaceholders.replace(upload.getMonetizationEpisodeNb()));
 		upload.setThumbnail(null == upload.getThumbnail() ?
 									null :
-									new File(extendedPlaceholders.replace(upload.getThumbnail()
-																				.getAbsolutePath())));
+									extendedPlaceholders.replace(upload.getThumbnail()));
 
 		/*if (config.getBoolean(IEnddirService.RENAME_PROPERTY, false)) {
 			upload.setEnddir(null == upload.getEnddir() ?

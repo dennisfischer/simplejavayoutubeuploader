@@ -8,17 +8,10 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.playlist;
+package de.chaosfisch.data.upload.permission;
 
 import de.chaosfisch.data.IGenericDAO;
+import de.chaosfisch.data.upload.IUploadRelation;
 
-import java.util.List;
-
-public interface IPlaylistDAO extends IGenericDAO<PlaylistDTO> {
-
-	PlaylistDTO get(String id);
-
-	List<PlaylistDTO> getAll(String accountId);
-
-	void clearOld(String accountId);
+public interface IPermissionDAO extends IGenericDAO<PermissionDTO>, IUploadRelation<PermissionDTO> {
 }

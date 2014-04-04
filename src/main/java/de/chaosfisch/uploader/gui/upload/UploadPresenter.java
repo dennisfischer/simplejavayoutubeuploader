@@ -14,6 +14,7 @@ import de.chaosfisch.controls.NumberStringFormatConverter;
 import de.chaosfisch.controls.spinner.NumberSpinner;
 import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.Tab;
+import de.chaosfisch.uploader.gui.edit.EditDataModel;
 import de.chaosfisch.youtube.upload.UploadModel;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -37,7 +38,12 @@ import java.util.regex.Pattern;
 public class UploadPresenter {
 
 	@Inject
-	protected DataModel             dataModel;
+	protected DataModel dataModel;
+
+	@Inject
+	protected EditDataModel         editDataModel;
+	@Inject
+	protected UploadDataModel       uploadDataModel;
 	@FXML
 	private   NumberSpinner         maxUploads;
 	@FXML
@@ -62,20 +68,20 @@ public class UploadPresenter {
 		maxUploads.setNumberStringConverter(new NumberStringFormatConverter("%d max Upload(s)", Pattern.compile("[^0-9]+")));
 		maxSpeed.setNumberStringConverter(new NumberStringFormatConverter("%d kByte/s", Pattern.compile("[^0-9]+")));
 
-		dataModel.setSelectedUploads(uploads.getSelectionModel()
-											.getSelectedItems());
+		uploadDataModel.setSelectedUploads(uploads.getSelectionModel()
+												  .getSelectedItems());
 
 		uploads.itemsProperty()
-			   .bindBidirectional(dataModel.uploadsProperty());
+			   .bindBidirectional(uploadDataModel.uploadsProperty());
 		maxSpeed.valueProperty()
-				.bindBidirectional(dataModel.maxSpeedProperty());
+				.bindBidirectional(uploadDataModel.maxSpeedProperty());
 		maxUploads.valueProperty()
-				  .bindBidirectional(dataModel.maxUploadsProperty());
+				  .bindBidirectional(uploadDataModel.maxUploadsProperty());
 		startButton.disableProperty()
-				   .bind(dataModel.runningProperty()
-								  .not());
+				   .bind(uploadDataModel.runningProperty()
+										.not());
 		stopButton.disableProperty()
-				  .bind(dataModel.runningProperty());
+				  .bind(uploadDataModel.runningProperty());
 	}
 
 	@FXML
@@ -89,7 +95,7 @@ public class UploadPresenter {
 			return;
 		}
 		for (final File file : files) {
-			dataModel.addFile(file);
+			editDataModel.addFile(file);
 			dataModel.setActiveTabProperty(Tab.EDIT);
 		}
 	}
@@ -98,12 +104,12 @@ public class UploadPresenter {
 	public void removeUploads() {
 		// @BUG had to add workaround by converting observable list to array
 		// otherwise only one element is removed and not N selected elements
-		final UploadModel[] uploads = new UploadModel[dataModel.getSelectedUploads()
-															   .size()];
-		dataModel.getSelectedUploads()
-				 .toArray(uploads);
+		final UploadModel[] uploads = new UploadModel[uploadDataModel.getSelectedUploads()
+																	 .size()];
+		uploadDataModel.getSelectedUploads()
+					   .toArray(uploads);
 		for (final UploadModel upload : uploads) {
-			dataModel.removeUpload(upload);
+			uploadDataModel.removeUpload(upload);
 		}
 	}
 

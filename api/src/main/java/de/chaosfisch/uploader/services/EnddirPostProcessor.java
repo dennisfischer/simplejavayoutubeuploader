@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 
 class EnddirPostProcessor implements UploadeJobPostProcessor {
@@ -34,15 +35,16 @@ class EnddirPostProcessor implements UploadeJobPostProcessor {
 	public UploadModel process(final UploadModel upload) {
 		if (null != upload.getEnddir()) {
 			try {
-				if (!upload.getEnddir().exists()) {
-					Files.createParentDirs(upload.getEnddir());
+				final File enddir = new File(upload.getEnddir());
+				if (!enddir.exists()) {
+					Files.createParentDirs(enddir);
 				}
-				if (!upload.getEnddir().isDirectory()) {
+				if (!enddir.isDirectory()) {
 					throw new IOException("Enddir not a directory!");
 				}
 
-				LOGGER.debug("Moving file to {}", upload.getEnddir().toString());
-				enddirService.moveFileByUpload(upload.getFile(), upload);
+				LOGGER.debug("Moving file to {}", upload.getEnddir());
+				enddirService.moveFileByUpload(new File(upload.getFile()), upload);
 			} catch (final IOException e) {
 				LOGGER.error("Enddir IOException", e);
 			}

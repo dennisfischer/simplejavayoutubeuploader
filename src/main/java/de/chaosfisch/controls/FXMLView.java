@@ -124,7 +124,8 @@ public abstract class FXMLView extends Region {
 		return String.format("%s.%s",
 							 getClass().getPackage()
 									   .getName(),
-							 conventionalName);
+							 conventionalName
+							);
 	}
 
 	final String getFXMLName() {

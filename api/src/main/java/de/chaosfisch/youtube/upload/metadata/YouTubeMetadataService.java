@@ -47,10 +47,10 @@ import java.util.regex.Pattern;
 public class YouTubeMetadataService implements IMetadataService {
 
 	private static final Logger            LOGGER               = LoggerFactory.getLogger(YouTubeMetadataService.class);
-	private static final String            VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
-	private static final int               MONETIZE_PARAMS_SIZE = 20;
-	private static final char              MODIFIED_SEPERATOR   = ',';
 	private static final int               METADATA_PARAMS_SIZE = 40;
+	private static final char              MODIFIED_SEPERATOR   = ',';
+	private static final int               MONETIZE_PARAMS_SIZE = 20;
+	private static final String            VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
 	private final        DefaultHttpClient client               = new DefaultHttpClient();
 
 
@@ -65,7 +65,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		snippet.setTitle(upload.getMetadataTitle());
 		snippet.setDescription(upload.getMetadataDescription());
 		snippet.setTags(TagParser.parse(upload.getMetadataTags()));
-		snippet.setCategoryId(upload.getCategoryId());
+		snippet.setCategoryId(String.valueOf(upload.getCategoryId()));
 
 		final VideoStatus status = null != video.getStatus() ? video.getStatus() : new VideoStatus();
 		status.setEmbeddable(upload.isPermissionsEmbed());
@@ -115,7 +115,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		params.put("modified_fields",
 				   Joiner.on(MODIFIED_SEPERATOR)
 						 .skipNulls()
-						 .join(params.keySet()));
+						 .join(params.keySet())
+				  );
 		params.put("creator_share_feeds", "yes");
 		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
 		params.put("action_edit_video", "1");
@@ -145,7 +146,8 @@ public class YouTubeMetadataService implements IMetadataService {
 				dateTimeFormatter.withZone(ZoneOffset.UTC);
 				params.put("publish_time",
 						   upload.getDateTimeOfRelease()
-								 .format(dateTimeFormatter));
+								 .format(dateTimeFormatter)
+						  );
 				params.put("publish_timezone", "UTC");
 				params.put("time_published", "0");
 				params.put("privacy", "scheduled");
@@ -221,7 +223,8 @@ public class YouTubeMetadataService implements IMetadataService {
 						   upload.getMonetizationCustomId()
 								 .isEmpty() ?
 								   upload.getVideoid() :
-								   upload.getMonetizationCustomId());
+								   upload.getMonetizationCustomId()
+						  );
 
 				params.put(assetName + "_notes", upload.getMonetizationNotes());
 				params.put(assetName + "_tms_id", upload.getMonetizationTmsid());
@@ -234,7 +237,8 @@ public class YouTubeMetadataService implements IMetadataService {
 							   !upload.getMonetizationTitle()
 									  .isEmpty() ?
 									   upload.getMonetizationTitle() :
-									   upload.getMetadataTitle());
+									   upload.getMetadataTitle()
+							  );
 					params.put(assetName + "_description", upload.getMonetizationDescription());
 				} else {
 					// TV ONLY
@@ -260,7 +264,8 @@ public class YouTubeMetadataService implements IMetadataService {
 		params.put("threed_type",
 				   upload.getPermissionsThreedD()
 						 .name()
-						 .toLowerCase());
+						 .toLowerCase()
+				  );
 		return params;
 	}
 

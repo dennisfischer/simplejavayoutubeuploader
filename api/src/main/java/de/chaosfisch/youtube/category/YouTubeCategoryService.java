@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class YouTubeCategoryService implements ICategoryService {
+	private final ICategoryDAO categoryDAO;
 	private final SimpleListProperty<CategoryModel> categoryModels = new SimpleListProperty<>(
 			FXCollections.observableArrayList());
-	private final ICategoryDAO categoryDAO;
 
 	@Inject
 	public YouTubeCategoryService(final ICategoryDAO categoryDAO) {
@@ -68,6 +68,14 @@ public class YouTubeCategoryService implements ICategoryService {
 	@Override
 	public SimpleListProperty<CategoryModel> categoryModelsProperty() {
 		return categoryModels;
+	}
+
+	@Override
+	public CategoryModel find(final int categoryId) {
+		return categoryModels.stream()
+							 .filter(categoryModel -> categoryId == categoryModel.getYoutubeId())
+							 .findFirst()
+							 .get();
 	}
 
 	private void addOrUpdateCategory(final String id, final VideoCategorySnippet snippet) {

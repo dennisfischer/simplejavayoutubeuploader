@@ -11,6 +11,12 @@
 package de.chaosfisch.youtube.upload;
 
 import de.chaosfisch.data.upload.IUploadDAO;
+import de.chaosfisch.data.upload.UploadDTO;
+import de.chaosfisch.data.upload.metadata.MetadataDTO;
+import de.chaosfisch.data.upload.monetization.MonetizationDTO;
+import de.chaosfisch.data.upload.permission.PermissionDTO;
+import de.chaosfisch.data.upload.social.SocialDTO;
+import de.chaosfisch.youtube.category.ICategoryService;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,50 +24,37 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class YouTubeUploadService implements IUploadService {
 
+	private final IUploadDAO       uploadDAO;
+	private final ICategoryService categoryService;
 	private final SimpleListProperty<UploadModel> uploadModels = new SimpleListProperty<>(
 			FXCollections.observableArrayList());
-	private final Uploader   uploader;
-	private final IUploadDAO uploadDAO;
+	private final Uploader uploader;
 
-	public YouTubeUploadService(final IUploadDAO uploadDAO, final IMetadataService metadataService) {
+	public YouTubeUploadService(final IUploadDAO uploadDAO, final IMetadataService metadataService, final ICategoryService categoryService) {
 		this.uploadDAO = uploadDAO;
+		this.categoryService = categoryService;
 		uploader = new Uploader(this, metadataService);
+		uploadModels.addAll(getAll());
 	}
 
 	public Collection<UploadModel> getAll() {
-		//return uploadDAO.getAll();
-		return null;
-	}
-
-	@Override
-	public void store(final UploadModel uploadModel) {
-		uploadModels.add(uploadModel);
+		return uploadDAO.getAll()
+						.stream()
+						.map(this::fromDTO)
+						.collect(Collectors.toList());
 	}
 
 	public void remove(final UploadModel uploadModel) {
 		uploadModels.remove(uploadModel);
 	}
 
-	@Override
-	public UploadModel fetchNextUpload() {
-		return null;
-	}
-
 	public int count() {
 		return uploadDAO.count();
-	}
-
-	@Override
-	public int countUnprocessed() {
-		return uploadDAO.countUnprocessed();
-	}
-
-	@Override
-	public long countReadyStarttime() {
-		return uploadDAO.countReadyStarttime();
 	}
 
 	@Override
@@ -118,5 +111,103 @@ public class YouTubeUploadService implements IUploadService {
 	@Override
 	public SimpleListProperty<UploadModel> uploadModelsProperty() {
 		return uploadModels;
+	}
+
+	@Override
+	public UploadModel fetchNextUpload() {
+		return null;
+	}
+
+	@Override
+	public void store(final UploadModel uploadModel) {
+		uploadModels.add(uploadModel);
+		uploadDAO.store(toDTO(uploadModel));
+	}
+
+	@Override
+	public int countUnprocessed() {
+		return uploadDAO.countUnprocessed();
+	}
+
+	@Override
+	public long countReadyStarttime() {
+		return uploadDAO.countReadyStarttime();
+	}
+
+	private UploadModel fromDTO(final UploadDTO uploadDTO) {
+		return new UploadModel(uploadDTO, categoryService.find(uploadDTO.getMetadataCategory()));
+	}
+
+	private UploadDTO toDTO(final UploadModel uploadModel) {
+		return new UploadDTO(uploadModel.getId(),
+							 uploadModel.getUploadurl(),
+							 uploadModel.getVideoid(),
+							 uploadModel.getFile(),
+							 uploadModel.getEnddir(),
+							 uploadModel.getThumbnail(),
+							 uploadModel.getDateTimeOfStart(),
+							 uploadModel.getDateTimeOfRelease(),
+							 uploadModel.getDateTimeOfEnd(),
+							 uploadModel.getOrder(),
+							 uploadModel.getProgress(),
+							 uploadModel.getStopAfter(),
+							 uploadModel.getFileSize(),
+							 uploadModel.getStatus()
+										.name(),
+							 uploadModel.getAccountYoutubeId(),
+							 Collections.emptyList(), //TODO playlists
+							 new SocialDTO(uploadModel.getId(),
+										   uploadModel.getSocialMessage(),
+										   uploadModel.isSocialFacebook(),
+										   uploadModel.isSocialTwitter(),
+										   uploadModel.isSocialGplus()),
+							 new MonetizationDTO(uploadModel.getId(),
+												 uploadModel.getMonetizationSyndication()
+															.name(),
+												 uploadModel.getMonetizationClaimtype()
+															.name(),
+												 uploadModel.getMonetizationClaimoption()
+															.name(),
+												 uploadModel.getMonetizationAsset()
+															.name(),
+												 uploadModel.isMonetizationInstreamDefaults(),
+												 uploadModel.isMonetizationClaim(),
+												 uploadModel.isMonetizationOverlay(),
+												 uploadModel.isMonetizationTrueview(),
+												 uploadModel.isMonetizationInstream(),
+												 uploadModel.isMonetizationProduct(),
+												 uploadModel.isMonetizationPartner(),
+												 uploadModel.getMonetizationTitle(),
+												 uploadModel.getMonetizationDescription(),
+												 uploadModel.getMonetizationCustomId(),
+												 uploadModel.getMonetizationNotes(),
+												 uploadModel.getMonetizationTmsid(),
+												 uploadModel.getMonetizationIsan(),
+												 uploadModel.getMonetizationEidr(),
+												 uploadModel.getMonetizationTitleepisode(),
+												 uploadModel.getMonetizationSeasonNb(),
+												 uploadModel.getMonetizationEpisodeNb()
+							 ),
+							 new PermissionDTO(uploadModel.getId(),
+											   uploadModel.getPermissionsVisibility()
+														  .name(),
+											   uploadModel.getPermissionsThreedD()
+														  .name(),
+											   uploadModel.getPermissionsComment()
+														  .name(),
+											   uploadModel.isPermissionsCommentvote(),
+											   uploadModel.isPermissionsEmbed(),
+											   uploadModel.isPermissionsRate(),
+											   uploadModel.isPermissionsAgeRestricted(),
+											   uploadModel.isPermissionsPublicStatsViewable()
+							 ),
+							 new MetadataDTO(uploadModel.getId(),
+											 uploadModel.getCategoryId(),
+											 uploadModel.getMetadataLicense()
+														.name(),
+											 uploadModel.getMetadataTitle(),
+											 uploadModel.getMetadataDescription(),
+											 uploadModel.getMetadataTags())
+		);
 	}
 }

@@ -10,6 +10,7 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
+import de.chaosfisch.data.upload.monetization.MonetizationDTO;
 import de.chaosfisch.youtube.upload.permissions.Asset;
 import de.chaosfisch.youtube.upload.permissions.ClaimOption;
 import de.chaosfisch.youtube.upload.permissions.ClaimType;
@@ -19,28 +20,54 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Monetization {
-	private final SimpleObjectProperty<Syndication> syndication = new SimpleObjectProperty<>(Syndication.GLOBAL);
-	private final SimpleObjectProperty<ClaimType>   claimType   = new SimpleObjectProperty<>(ClaimType.AUDIO_VISUAL);
-	private final SimpleObjectProperty<ClaimOption> claimOption = new SimpleObjectProperty<>(ClaimOption.MONETIZE);
-	private final SimpleObjectProperty<Asset>       asset       = new SimpleObjectProperty<>(Asset.WEB);
+	private final SimpleObjectProperty<Asset>       asset            = new SimpleObjectProperty<>(Asset.WEB);
+	private final SimpleBooleanProperty             claim            = new SimpleBooleanProperty();
+	private final SimpleObjectProperty<ClaimOption> claimOption      = new SimpleObjectProperty<>(ClaimOption.MONETIZE);
+	private final SimpleObjectProperty<ClaimType>   claimType        = new SimpleObjectProperty<>(ClaimType.AUDIO_VISUAL);
+	private final SimpleStringProperty              customId         = new SimpleStringProperty();
+	private final SimpleStringProperty              description      = new SimpleStringProperty();
+	private final SimpleStringProperty              eidr             = new SimpleStringProperty();
+	private final SimpleStringProperty              episodeNumber    = new SimpleStringProperty();
+	private final SimpleStringProperty              episodeTitle     = new SimpleStringProperty();
+	private final SimpleBooleanProperty             instream         = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty             instreamDefaults = new SimpleBooleanProperty();
+	private final SimpleStringProperty              isan             = new SimpleStringProperty();
+	private final SimpleStringProperty              notes            = new SimpleStringProperty();
+	private final SimpleBooleanProperty             overlay          = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty             partner          = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty             product          = new SimpleBooleanProperty();
+	private final SimpleStringProperty              seasonNumber     = new SimpleStringProperty();
+	private final SimpleObjectProperty<Syndication> syndication      = new SimpleObjectProperty<>(Syndication.GLOBAL);
+	private final SimpleStringProperty              title            = new SimpleStringProperty();
+	private final SimpleStringProperty              tmsid            = new SimpleStringProperty();
+	private final SimpleBooleanProperty             trueview         = new SimpleBooleanProperty();
 
-	private final SimpleBooleanProperty instreamDefaults = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty claim            = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty overlay          = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty trueview         = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty instream         = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty product          = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty partner          = new SimpleBooleanProperty();
-	private final SimpleStringProperty  title            = new SimpleStringProperty();
-	private final SimpleStringProperty  description      = new SimpleStringProperty();
-	private final SimpleStringProperty  customId         = new SimpleStringProperty();
-	private final SimpleStringProperty  notes            = new SimpleStringProperty();
-	private final SimpleStringProperty  tmsid            = new SimpleStringProperty();
-	private final SimpleStringProperty  isan             = new SimpleStringProperty();
-	private final SimpleStringProperty  eidr             = new SimpleStringProperty();
-	private final SimpleStringProperty  episodeTitle     = new SimpleStringProperty();
-	private final SimpleStringProperty  seasonNumber     = new SimpleStringProperty();
-	private final SimpleStringProperty  episodeNumber    = new SimpleStringProperty();
+	public Monetization(final MonetizationDTO monetizationDTO) {
+		asset.set(Asset.valueOf(monetizationDTO.getAsset()));
+		claim.set(monetizationDTO.isClaim());
+		claimOption.set(ClaimOption.valueOf(monetizationDTO.getClaimOption()));
+		claimType.set(ClaimType.valueOf(monetizationDTO.getClaimType()));
+		customId.set(monetizationDTO.getCustomId());
+		description.set(monetizationDTO.getDescription());
+		eidr.set(monetizationDTO.getEidr());
+		episodeNumber.set(monetizationDTO.getEpisodeNumber());
+		episodeTitle.set(monetizationDTO.getEpisodeTitle());
+		instream.set(monetizationDTO.isInstream());
+		instreamDefaults.set(monetizationDTO.isInstreamDefaults());
+		isan.set(monetizationDTO.getIsan());
+		notes.set(monetizationDTO.getNotes());
+		overlay.set(monetizationDTO.isOverlay());
+		partner.set(monetizationDTO.isPartner());
+		product.set(monetizationDTO.isProduct());
+		seasonNumber.set(monetizationDTO.getSeasonNumber());
+		syndication.set(Syndication.valueOf(monetizationDTO.getSyndication()));
+		title.set(monetizationDTO.getTitle());
+		tmsid.set(monetizationDTO.getTmsid());
+		trueview.set(monetizationDTO.isTrueview());
+	}
+
+	public Monetization() {
+	}
 
 	public Syndication getSyndication() {
 		return syndication.get();

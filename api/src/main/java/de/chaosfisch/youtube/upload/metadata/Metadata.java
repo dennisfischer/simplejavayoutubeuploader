@@ -10,6 +10,7 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
+import de.chaosfisch.data.upload.metadata.MetadataDTO;
 import de.chaosfisch.youtube.category.CategoryModel;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,10 +18,21 @@ import javafx.beans.property.SimpleStringProperty;
 public class Metadata {
 
 	private final SimpleObjectProperty<CategoryModel> category    = new SimpleObjectProperty<>(new CategoryModel());
+	private final SimpleStringProperty                description = new SimpleStringProperty("");
 	private final SimpleObjectProperty<License>       license     = new SimpleObjectProperty<>(License.YOUTUBE);
-	private final SimpleStringProperty                title       = new SimpleStringProperty();
-	private final SimpleStringProperty                description = new SimpleStringProperty();
-	private final SimpleStringProperty                tags        = new SimpleStringProperty();
+	private final SimpleStringProperty                tags        = new SimpleStringProperty("");
+	private final SimpleStringProperty                title       = new SimpleStringProperty("");
+
+	public Metadata() {
+	}
+
+	public Metadata(final MetadataDTO metadataDTO, final CategoryModel categoryModel) {
+		category.set(categoryModel);
+		description.set(metadataDTO.getDescription());
+		license.set(License.valueOf(metadataDTO.getLicense()));
+		tags.set(metadataDTO.getTags());
+		title.set(metadataDTO.getTitle());
+	}
 
 	public CategoryModel getCategory() {
 		return category.get();
@@ -83,10 +95,12 @@ public class Metadata {
 	}
 
 	public String getLicenseIdentifier() {
-		return license.get().getIdentifier();
+		return license.get()
+					  .getIdentifier();
 	}
 
-	public String getCategoryId() {
-		return String.valueOf(category.get().getYoutubeId());
+	public int getCategoryId() {
+		return category.get()
+					   .getYoutubeId();
 	}
 }

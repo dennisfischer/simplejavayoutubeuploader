@@ -69,7 +69,7 @@ public class YouTubePlaylistService implements IPlaylistService {
 
 	private ObservableSet<PlaylistModel> initPlaylistList(final AccountModel a) {
 		return playlistModelSimpleMapProperty.putIfAbsent(a,
-														  FXCollections.observableSet(playlistDAO.getByAccount(a.getYoutubeId())
+														  FXCollections.observableSet(playlistDAO.getAll(a.getYoutubeId())
 																								 .stream()
 																								 .map(this::fromDTO)
 																								 .collect(

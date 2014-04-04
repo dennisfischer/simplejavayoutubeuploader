@@ -10,15 +10,26 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
+import de.chaosfisch.data.upload.social.SocialDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Social {
 
-	private final SimpleStringProperty  message  = new SimpleStringProperty();
 	private final SimpleBooleanProperty facebook = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty twitter  = new SimpleBooleanProperty();
 	private final SimpleBooleanProperty gplus    = new SimpleBooleanProperty();
+	private final SimpleStringProperty  message = new SimpleStringProperty();
+	private final SimpleBooleanProperty twitter = new SimpleBooleanProperty();
+
+	public Social(final SocialDTO socialDTO) {
+		message.set(socialDTO.getMessage());
+		facebook.set(socialDTO.isFacebook());
+		twitter.set(socialDTO.isTwitter());
+		gplus.set(socialDTO.isGplus());
+	}
+
+	public Social() {
+	}
 
 	public String getMessage() {
 		return message.get();

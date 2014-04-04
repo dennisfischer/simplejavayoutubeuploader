@@ -10,6 +10,8 @@
 
 package de.chaosfisch.uploader;
 
+import com.xeiam.yank.DBConnectionManager;
+import com.xeiam.yank.PropertiesUtils;
 import de.chaosfisch.uploader.gui.GUI;
 import de.chaosfisch.util.Directories;
 import javafx.application.Application;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Properties;
 
 public final class SimpleJavaYoutubeUploader {
 
@@ -33,14 +36,24 @@ public final class SimpleJavaYoutubeUploader {
 	public static void main(final String[] args) {
 		logVMInfo();
 		updateLauncher();
+		initDB();
 		Application.launch(GUI.class, args);
+	}
+
+	private static void initDB() {
+		final Properties props = PropertiesUtils.getPropertiesFromClasspath("SQLITE_DB.properties");
+		props.put("pool.url", String.format("jdbc:sqlite:%s/%s/database.db", ApplicationData.DATA_DIR, ApplicationData.VERSION));
+		final Properties sqlProps = PropertiesUtils.getPropertiesFromClasspath("SQLITE_SQL.properties");
+		DBConnectionManager.INSTANCE.init(props, sqlProps);
+		Runtime.getRuntime()
+			   .addShutdownHook(new Thread(DBConnectionManager.INSTANCE::release));
 	}
 
 	private static void updateLauncher() {
 		final Path launcherUpdatePath = Paths.get("")
-				.toAbsolutePath()
-				.resolve(ApplicationData.VERSION)
-				.resolve("launcher/");
+											 .toAbsolutePath()
+											 .resolve(ApplicationData.VERSION)
+											 .resolve("launcher/");
 		LOGGER.info("Checking for new launcher version at {}", launcherUpdatePath.toString());
 		if (Files.exists(launcherUpdatePath)) {
 			updateLauncher(launcherUpdatePath);
@@ -53,7 +66,10 @@ public final class SimpleJavaYoutubeUploader {
 			try {
 				Thread.sleep(LAUNCHER_UPDATE_DELAY);
 				LOGGER.info("Copying launcher");
-				Directories.copyDirectory(launcherUpdatePath, Paths.get("").toAbsolutePath());
+				Directories.copyDirectory(launcherUpdatePath,
+										  Paths.get("")
+											   .toAbsolutePath()
+										 );
 				LOGGER.info("Deleting existing launcher update");
 				Directories.delete(launcherUpdatePath);
 			} catch (InterruptedException | IOException e) {
@@ -74,7 +90,8 @@ public final class SimpleJavaYoutubeUploader {
 		LOGGER.info("# User Name: " + System.getProperty("user.name"));
 		LOGGER.info("# User Home: " + System.getProperty("user.home"));
 		LOGGER.info("# Cur dir:   " + System.getProperty("user.dir"));
-		LOGGER.info("# Date:      " + LocalDateTime.now().toString());
+		LOGGER.info("# Date:      " + LocalDateTime.now()
+												   .toString());
 		LOGGER.info("# Data dir:  " + ApplicationData.DATA_DIR);
 		LOGGER.info("# Version:   " + ApplicationData.VERSION);
 		LOGGER.info("####################################################################");

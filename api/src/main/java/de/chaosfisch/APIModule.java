@@ -22,6 +22,14 @@ import de.chaosfisch.data.playlist.IPlaylistDAO;
 import de.chaosfisch.data.playlist.PlaylistDAO;
 import de.chaosfisch.data.upload.IUploadDAO;
 import de.chaosfisch.data.upload.UploadDAO;
+import de.chaosfisch.data.upload.metadata.IMetadataDAO;
+import de.chaosfisch.data.upload.metadata.MetadataDAO;
+import de.chaosfisch.data.upload.monetization.IMonetizationDAO;
+import de.chaosfisch.data.upload.monetization.MonetizationDAO;
+import de.chaosfisch.data.upload.permission.IPermissionDAO;
+import de.chaosfisch.data.upload.permission.PermissionDAO;
+import de.chaosfisch.data.upload.social.ISocialDAO;
+import de.chaosfisch.data.upload.social.SocialDAO;
 import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.account.YouTubeAccountService;
 import de.chaosfisch.youtube.category.ICategoryService;
@@ -32,10 +40,8 @@ import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.YouTubeUploadService;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.youtube.upload.metadata.YouTubeMetadataService;
-import org.apache.commons.dbutils.QueryRunner;
 
 import javax.inject.Singleton;
-import javax.sql.DataSource;
 
 @Module(
 		complete = false,
@@ -45,32 +51,50 @@ public class APIModule {
 
 	@Provides
 	@Singleton
-	QueryRunner proivdeQueryRunner(final DataSource dataSource) {
-		return new QueryRunner(dataSource);
+	IAccountDAO provideAccountDAO() {
+		return new AccountDAO(new CookieDAO(), new FieldDAO());
 	}
 
 	@Provides
 	@Singleton
-	IAccountDAO provideAccountDAO(final QueryRunner queryRunner) {
-		return new AccountDAO(queryRunner, new CookieDAO(queryRunner), new FieldDAO(queryRunner));
+	IPlaylistDAO providePlaylistDAO() {
+		return new PlaylistDAO();
 	}
 
 	@Provides
 	@Singleton
-	IPlaylistDAO providePlaylistDAO(final QueryRunner queryRunner) {
-		return new PlaylistDAO(queryRunner);
+	ISocialDAO provideSocialDAO() {
+		return new SocialDAO();
 	}
 
 	@Provides
 	@Singleton
-	IUploadDAO provideUploadDAO(final QueryRunner queryRunner, final IAccountDAO accountDAO, final IPlaylistDAO playlistDAO) {
-		return new UploadDAO(queryRunner, accountDAO, playlistDAO);
+	IMonetizationDAO provideMonetizationDAO() {
+		return new MonetizationDAO();
 	}
 
 	@Provides
 	@Singleton
-	ICategoryDAO provideCategoryDAO(final QueryRunner queryRunner) {
-		return new CategoryDAO(queryRunner);
+	IMetadataDAO provideMetadataDAO() {
+		return new MetadataDAO();
+	}
+
+	@Provides
+	@Singleton
+	IPermissionDAO providePermissionDAO() {
+		return new PermissionDAO();
+	}
+
+	@Provides
+	@Singleton
+	IUploadDAO provideUploadDAO(final IPlaylistDAO playlistDAO, final ISocialDAO socialDAO, final IPermissionDAO permissionDAO, final IMetadataDAO metadataDAO, final IMonetizationDAO monetizationDAO) {
+		return new UploadDAO(playlistDAO, socialDAO, permissionDAO, metadataDAO, monetizationDAO);
+	}
+
+	@Provides
+	@Singleton
+	ICategoryDAO provideCategoryDAO() {
+		return new CategoryDAO();
 	}
 
 	@Provides
@@ -99,7 +123,7 @@ public class APIModule {
 
 	@Provides
 	@Singleton
-	IUploadService provideUploadService(final IUploadDAO uploadDAO, final IMetadataService iMetadataService) {
-		return new YouTubeUploadService(uploadDAO, iMetadataService);
+	IUploadService provideUploadService(final IUploadDAO uploadDAO, final IMetadataService iMetadataService, final ICategoryService iCategoryService) {
+		return new YouTubeUploadService(uploadDAO, iMetadataService, iCategoryService);
 	}
 }

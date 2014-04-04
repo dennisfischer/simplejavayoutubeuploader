@@ -13,5 +13,5 @@ package de.chaosfisch.data.category;
 import de.chaosfisch.data.IGenericDAO;
 
 public interface ICategoryDAO extends IGenericDAO<CategoryDTO> {
-	CategoryDTO get(String id);
+	CategoryDTO get(int id);
 }

@@ -31,4 +31,6 @@ public interface ICategoryService {
 	 * @return SimpleListProperty<CategoryModel> categoryModels
 	 */
 	SimpleListProperty<CategoryModel> categoryModelsProperty();
+
+	CategoryModel find(int categoryId);
 }
