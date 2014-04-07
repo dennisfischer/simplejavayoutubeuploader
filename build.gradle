@@ -10,10 +10,6 @@
 
 
 
-
-
-
-
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
@@ -40,7 +36,6 @@ dependencies {
 	compile 'ch.qos.logback:logback-classic:+', 'org.slf4j:slf4j-api:+',
 			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.6-SNAPSHOT'
 	compile project(':api')
-	compile 'com.intellij:annotations:+@jar'
 	apt 'com.squareup.dagger:dagger-compiler:+'
 }
 
@@ -63,24 +58,21 @@ jar {
 }
 
 task javaFXPackager(type: Exec) {
-	commandLine = [
-			'C:/Program Files/Java/jdk1.8.0/bin/javafxpackager.exe',
-			'-createjar',
-			'-srcdir',
-			sourceSets.main.output.classesDir,
-			'-outdir',
-			jar.destinationDir,
-			'-outfile',
-			jar.archiveName,
-			'-appclass',
-			mainClassName,
-			'-nocss2bin',
-			'-classpath',
-			configurations.runtime.collect { "lib/" + it.name }.join(' '),
-			'-manifestAttrs',
-			'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
-					'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
-	]
+	commandLine = ['C:/Program Files/Java/jdk1.8.0/bin/javafxpackager.exe',
+				   '-createjar',
+				   '-srcdir',
+				   sourceSets.main.output.classesDir,
+				   '-outdir',
+				   jar.destinationDir,
+				   '-outfile',
+				   jar.archiveName,
+				   '-appclass',
+				   mainClassName,
+				   '-nocss2bin',
+				   '-classpath',
+				   configurations.runtime.collect { "lib/" + it.name }.join(' '),
+				   '-manifestAttrs',
+				   'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' + 'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')]
 }
 
 task copyTask(type: Copy) {

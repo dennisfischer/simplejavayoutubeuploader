@@ -16,6 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
 public class PlaylistListCellFactory implements Callback<ListView<PlaylistModel>, ListCell<PlaylistModel>> {
+
 	@Override
 	public ListCell<PlaylistModel> call(final ListView<PlaylistModel> playlistModelListView) {
 		return new PlaylistListCell();

@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.edit.partner;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class EditPartnerView extends FXMLView {
-}
+public class EditPartnerView extends FXMLView {}

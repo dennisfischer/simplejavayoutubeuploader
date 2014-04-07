@@ -14,7 +14,7 @@
 package de.chaosfisch.youtube.account;
 
 import de.chaosfisch.data.account.AccountType;
-import de.chaosfisch.data.account.cookies.CookieDTO;
+import de.chaosfisch.data.account.CookieDTO;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleSetProperty;
@@ -22,7 +22,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
-import org.jetbrains.annotations.NotNull;
 
 public class AccountModel implements Comparable<AccountModel> {
 
@@ -119,12 +118,10 @@ public class AccountModel implements Comparable<AccountModel> {
 	}
 
 	@Override
-	public int compareTo(@NotNull final AccountModel o) {
-		if (0 > name.get()
-					.compareTo(o.name.get())) {
+	public int compareTo(final AccountModel o) {
+		if (0 > name.get().compareTo(o.name.get())) {
 			return -1;
-		} else if (0 < name.get()
-						   .compareTo(o.name.get())) {
+		} else if (0 < name.get().compareTo(o.name.get())) {
 			return 1;
 		}
 		return 0;
@@ -132,8 +129,7 @@ public class AccountModel implements Comparable<AccountModel> {
 
 	@Override
 	public int hashCode() {
-		return youtubeId.get()
-						.hashCode();
+		return youtubeId.get().hashCode();
 	}
 
 	@Override
@@ -145,8 +141,7 @@ public class AccountModel implements Comparable<AccountModel> {
 			return false;
 		}
 		final AccountModel that = (AccountModel) obj;
-		return youtubeId.get()
-						.equals(that.youtubeId.get());
+		return youtubeId.get().equals(that.youtubeId.get());
 	}
 
 	@Override

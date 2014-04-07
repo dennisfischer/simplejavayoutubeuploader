@@ -50,13 +50,12 @@ public class ClickRepeater {
 
 		pauseTransition.setDuration(interval);
 		pauseTransition.setCycleCount(Animation.INDEFINITE);
-		pauseTransition.currentTimeProperty()
-					   .addListener((observableValue, duration, duration2) -> {
-						   // Every time a new cycle starts, fire the button.
-						   if (duration.greaterThan(duration2)) {
-							   buttonBase.fire();
-						   }
-					   });
+		pauseTransition.currentTimeProperty().addListener((observableValue, duration, duration2) -> {
+			// Every time a new cycle starts, fire the button.
+			if (duration.greaterThan(duration2)) {
+				buttonBase.fire();
+			}
+		});
 		changeListener = (observableValue, aBoolean, aBoolean2) -> {
 			if (aBoolean2) {
 				// If the button gets armed, start the animation.
@@ -66,8 +65,7 @@ public class ClickRepeater {
 				sequentialTransition.stop();
 			}
 		};
-		buttonBase.armedProperty()
-				  .addListener(changeListener);
+		buttonBase.armedProperty().addListener(changeListener);
 	}
 
 	/**
@@ -93,12 +91,10 @@ public class ClickRepeater {
 		uninstall(buttonBase);
 
 		// Initializes a new ClickRepeater
-		if (!buttonBase.getProperties()
-					   .containsKey(ClickRepeater.class)) {
+		if (!buttonBase.getProperties().containsKey(ClickRepeater.class)) {
 			// Store the ClickRepeater in the button's properties.
 			// If the button will get GCed, so will its ClickRepeater.
-			buttonBase.getProperties()
-					  .put(ClickRepeater.class, new ClickRepeater(buttonBase, interval));
+			buttonBase.getProperties().put(ClickRepeater.class, new ClickRepeater(buttonBase, interval));
 		}
 	}
 
@@ -109,13 +105,9 @@ public class ClickRepeater {
 	 * @param buttonBase The button.
 	 */
 	public static void uninstall(final ButtonBase buttonBase) {
-		if (buttonBase.getProperties()
-					  .containsKey(ClickRepeater.class) && buttonBase.getProperties()
-																	 .get(ClickRepeater.class) instanceof ClickRepeater) {
-			final ClickRepeater clickRepeater = (ClickRepeater) buttonBase.getProperties()
-																		  .remove(ClickRepeater.class);
-			buttonBase.armedProperty()
-					  .removeListener(clickRepeater.changeListener);
+		if (buttonBase.getProperties().containsKey(ClickRepeater.class) && buttonBase.getProperties().get(ClickRepeater.class) instanceof ClickRepeater) {
+			final ClickRepeater clickRepeater = (ClickRepeater) buttonBase.getProperties().remove(ClickRepeater.class);
+			buttonBase.armedProperty().removeListener(clickRepeater.changeListener);
 		}
 	}
 }

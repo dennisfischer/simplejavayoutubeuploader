@@ -8,25 +8,18 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.account.cookies;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+package de.chaosfisch.data.account;
 
 import java.net.HttpCookie;
 import java.net.URI;
 
 public class CookieDTO {
-	@NotNull
+
 	private String  accountId;
-	@NotNull
 	private String  name;
-	@NotNull
 	private String  value;
-	@NotNull
 	private String  domain;
 	private boolean discard;
-	@NotNull
 	private String  path;
 	private long    maxAge;
 	private boolean secure;
@@ -36,7 +29,7 @@ public class CookieDTO {
 	}
 
 
-	public CookieDTO(@NotNull final String accountId, @NotNull final HttpCookie cookie) {
+	public CookieDTO(final String accountId, final HttpCookie cookie) {
 		this.accountId = accountId;
 		name = cookie.getName();
 		value = cookie.getValue();
@@ -48,7 +41,8 @@ public class CookieDTO {
 		version = cookie.getVersion();
 	}
 
-	public CookieDTO(@NotNull final String accountId, @NotNull final String name, @NotNull final String value, @NotNull final String domain, final boolean discard, @NotNull final String path, final long maxAge, final boolean secure, final int version) {
+	public CookieDTO(final String accountId, final String name, final String value, final String domain, final boolean discard, final String path,
+					 final long maxAge, final boolean secure, final int version) {
 		this.accountId = accountId;
 		this.name = name;
 		this.value = value;
@@ -75,30 +69,27 @@ public class CookieDTO {
 		return cookie;
 	}
 
-	@NotNull
 	public String getName() {
 		return name;
 	}
 
-	public void setName(@NotNull final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	@NotNull
 	public String getValue() {
 		return value;
 	}
 
-	public void setValue(@NotNull final String value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 
-	@NotNull
 	public String getDomain() {
 		return domain;
 	}
 
-	public void setDomain(@NotNull final String domain) {
+	public void setDomain(final String domain) {
 		this.domain = domain;
 	}
 
@@ -110,12 +101,11 @@ public class CookieDTO {
 		this.discard = discard;
 	}
 
-	@NotNull
 	public String getPath() {
 		return path;
 	}
 
-	public void setPath(@NotNull final String path) {
+	public void setPath(final String path) {
 		this.path = path;
 	}
 
@@ -164,7 +154,6 @@ public class CookieDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "CookieDTO{" +
 				"accountId='" + accountId + '\'' +
@@ -179,12 +168,11 @@ public class CookieDTO {
 				'}';
 	}
 
-	@NotNull
 	public String getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(@NotNull final String accountId) {
+	public void setAccountId(final String accountId) {
 		this.accountId = accountId;
 	}
 }

@@ -13,23 +13,9 @@ package de.chaosfisch;
 import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.data.account.AccountDAO;
-import de.chaosfisch.data.account.IAccountDAO;
-import de.chaosfisch.data.account.cookies.CookieDAO;
-import de.chaosfisch.data.account.fields.FieldDAO;
 import de.chaosfisch.data.category.CategoryDAO;
-import de.chaosfisch.data.category.ICategoryDAO;
-import de.chaosfisch.data.playlist.IPlaylistDAO;
 import de.chaosfisch.data.playlist.PlaylistDAO;
-import de.chaosfisch.data.upload.IUploadDAO;
 import de.chaosfisch.data.upload.UploadDAO;
-import de.chaosfisch.data.upload.metadata.IMetadataDAO;
-import de.chaosfisch.data.upload.metadata.MetadataDAO;
-import de.chaosfisch.data.upload.monetization.IMonetizationDAO;
-import de.chaosfisch.data.upload.monetization.MonetizationDAO;
-import de.chaosfisch.data.upload.permission.IPermissionDAO;
-import de.chaosfisch.data.upload.permission.PermissionDAO;
-import de.chaosfisch.data.upload.social.ISocialDAO;
-import de.chaosfisch.data.upload.social.SocialDAO;
 import de.chaosfisch.youtube.account.IAccountService;
 import de.chaosfisch.youtube.account.YouTubeAccountService;
 import de.chaosfisch.youtube.category.ICategoryService;
@@ -40,78 +26,76 @@ import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.YouTubeUploadService;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
 import de.chaosfisch.youtube.upload.metadata.YouTubeMetadataService;
+import org.sormula.Database;
+import org.sormula.SormulaException;
 
 import javax.inject.Singleton;
 
 @Module(
 		complete = false,
-		library = true
-)
+		library = true)
 public class APIModule {
 
 	@Provides
 	@Singleton
-	IAccountDAO provideAccountDAO() {
-		return new AccountDAO(new CookieDAO(), new FieldDAO());
+	AccountDAO provideAccountDAO(final Database database) {
+		try {
+			return new AccountDAO(database);
+		} catch (SormulaException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Provides
 	@Singleton
-	IPlaylistDAO providePlaylistDAO() {
-		return new PlaylistDAO();
+	PlaylistDAO providePlaylistDAO(final Database database) {
+		try {
+			return new PlaylistDAO(database);
+		} catch (SormulaException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Provides
 	@Singleton
-	ISocialDAO provideSocialDAO() {
-		return new SocialDAO();
+	UploadDAO provideUploadDAO(final Database database) {
+		try {
+			return new UploadDAO(database);
+		} catch (SormulaException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Provides
 	@Singleton
-	IMonetizationDAO provideMonetizationDAO() {
-		return new MonetizationDAO();
+	CategoryDAO provideCategoryDAO(final Database database) {
+		try {
+			return new CategoryDAO(database);
+		} catch (SormulaException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Provides
 	@Singleton
-	IMetadataDAO provideMetadataDAO() {
-		return new MetadataDAO();
-	}
-
-	@Provides
-	@Singleton
-	IPermissionDAO providePermissionDAO() {
-		return new PermissionDAO();
-	}
-
-	@Provides
-	@Singleton
-	IUploadDAO provideUploadDAO(final IPlaylistDAO playlistDAO, final ISocialDAO socialDAO, final IPermissionDAO permissionDAO, final IMetadataDAO metadataDAO, final IMonetizationDAO monetizationDAO) {
-		return new UploadDAO(playlistDAO, socialDAO, permissionDAO, metadataDAO, monetizationDAO);
-	}
-
-	@Provides
-	@Singleton
-	ICategoryDAO provideCategoryDAO() {
-		return new CategoryDAO();
-	}
-
-	@Provides
-	@Singleton
-	ICategoryService provideCategoryService(final ICategoryDAO categoryDAO) {
+	ICategoryService provideCategoryService(final CategoryDAO categoryDAO) {
 		return new YouTubeCategoryService(categoryDAO);
 	}
 
 	@Provides
 	@Singleton
-	IAccountService provideAccountService(final IAccountDAO accountDAO) {
+	IAccountService provideAccountService(final AccountDAO accountDAO) {
 		return new YouTubeAccountService(accountDAO);
 	}
 
 	@Provides
 	@Singleton
-	IPlaylistService providePlaylistService(final IPlaylistDAO playlistDAO, final IAccountService accountService) {
+	IPlaylistService providePlaylistService(final PlaylistDAO playlistDAO, final IAccountService accountService) {
 		return new YouTubePlaylistService(playlistDAO, accountService.accountModelsProperty());
 	}
 
@@ -123,7 +107,7 @@ public class APIModule {
 
 	@Provides
 	@Singleton
-	IUploadService provideUploadService(final IUploadDAO uploadDAO, final IMetadataService iMetadataService, final ICategoryService iCategoryService) {
+	IUploadService provideUploadService(final UploadDAO uploadDAO, final IMetadataService iMetadataService, final ICategoryService iCategoryService) {
 		return new YouTubeUploadService(uploadDAO, iMetadataService, iCategoryService);
 	}
 }

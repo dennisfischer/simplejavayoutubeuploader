@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.edit.monetization;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class EditMonetizationView extends FXMLView {
-}
+public class EditMonetizationView extends FXMLView {}

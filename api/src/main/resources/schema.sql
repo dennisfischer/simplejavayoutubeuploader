@@ -1,27 +1,27 @@
-CREATE TABLE IF NOT EXISTS categories (
-  youtubeId INTEGER NOT NULL PRIMARY KEY,
-  name      TEXT    NOT NULL
+CREATE TABLE IF NOT EXISTS CategoryDTO (
+  categoryId INTEGER NOT NULL PRIMARY KEY,
+  name       TEXT    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS accounts
+CREATE TABLE IF NOT EXISTS AccountDTO
 (
-  youtubeId    TEXT PRIMARY KEY NOT NULL,
+  accountId    TEXT PRIMARY KEY NOT NULL,
   name         TEXT             NOT NULL,
   email        TEXT             NOT NULL,
   refreshToken TEXT,
   type         INTEGER          NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS accounts_fields
+CREATE TABLE IF NOT EXISTS FieldDTO
 (
   accountId     TEXT      NOT NULL,
   name          TEXT      NOT NULL,
-  last_modified TIMESTAMP NOT NULL,
+  last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (accountId, name),
-  FOREIGN KEY (accountId) REFERENCES accounts (youtubeId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (accountId) REFERENCES AccountDTO (accountId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS accounts_cookies
+CREATE TABLE IF NOT EXISTS CookieDTO
 (
   accountId     TEXT      NOT NULL,
   name          TEXT      NOT NULL,
@@ -32,28 +32,28 @@ CREATE TABLE IF NOT EXISTS accounts_cookies
   maxAge        INTEGER   NOT NULL,
   secure        BOOLEAN   NOT NULL,
   version       INTEGER   NOT NULL,
-  last_modified TIMESTAMP NOT NULL,
+  last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (accountId, name),
-  FOREIGN KEY (accountId) REFERENCES accounts (youtubeId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (accountId) REFERENCES AccountDTO (accountId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS playlists
+CREATE TABLE IF NOT EXISTS PlaylistDTO
 (
-  youtubeId     TEXT      NOT NULL,
+  playlistId    TEXT      NOT NULL,
   title         TEXT      NOT NULL,
   thumbnail     TEXT,
   privacyStatus BOOLEAN   NOT NULL,
   itemCount     INTEGER   NOT NULL,
   description   TEXT      NOT NULL,
   accountId     TEXT      NOT NULL,
-  last_modified TIMESTAMP NOT NULL,
-  PRIMARY KEY (youtubeId),
-  FOREIGN KEY (accountId) REFERENCES accounts (youtubeId) ON DELETE CASCADE ON UPDATE CASCADE
+  last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (playlistId),
+  FOREIGN KEY (accountId) REFERENCES AccountDTO (accountId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS uploads
+CREATE TABLE IF NOT EXISTS UploadDTO
 (
-  id                TEXT    NOT NULL,
+  uploadId          TEXT    NOT NULL,
   uploadurl         TEXT,
   videoid           TEXT,
   FILE              TEXT    NOT NULL,
@@ -62,17 +62,17 @@ CREATE TABLE IF NOT EXISTS uploads
   dateTimeOfStart   TIMESTAMP,
   dateTimeOfRelease TIMESTAMP,
   dateTimeOfEnd     TIMESTAMP,
-  "ORDER"           INTEGER NOT NULL,
+  position          INTEGER NOT NULL,
   progress          REAL    NOT NULL,
   stopAfter         BOOLEAN NOT NULL,
   fileSize          INTEGER,
   status            TEXT    NOT NULL,
   accountId         TEXT,
-  PRIMARY KEY (id),
-  FOREIGN KEY (accountId) REFERENCES accounts (youtubeId) ON DELETE SET NULL ON UPDATE CASCADE
+  PRIMARY KEY (uploadId),
+  FOREIGN KEY (accountId) REFERENCES AccountDTO (accountId) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS uploads_social
+CREATE TABLE IF NOT EXISTS SocialDTO
 (
   uploadId TEXT    NOT NULL,
   message  TEXT    NOT NULL,
@@ -80,10 +80,10 @@ CREATE TABLE IF NOT EXISTS uploads_social
   twitter  BOOLEAN NOT NULL,
   gplus    BOOLEAN NOT NULL,
   PRIMARY KEY (uploadId),
-  FOREIGN KEY (uploadId) REFERENCES uploads (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS uploads_permission
+CREATE TABLE IF NOT EXISTS PermissionDTO
 (
   uploadId            TEXT    NOT NULL,
   visibility          TEXT    NOT NULL,
@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS uploads_permission
   ageRestricted       BOOLEAN NOT NULL,
   publicStatsViewable BOOLEAN NOT NULL,
   PRIMARY KEY (uploadId),
-  FOREIGN KEY (uploadId) REFERENCES uploads (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS uploads_metadata
+CREATE TABLE IF NOT EXISTS MetadataDTO
 (
   uploadId    TEXT    NOT NULL,
   category    INTEGER NOT NULL,
@@ -107,10 +107,10 @@ CREATE TABLE IF NOT EXISTS uploads_metadata
   description TEXT    NOT NULL,
   tags        TEXT    NOT NULL,
   PRIMARY KEY (uploadId),
-  FOREIGN KEY (uploadId) REFERENCES uploads (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS uploads_monetization
+CREATE TABLE IF NOT EXISTS MonetizationDTO
 (
   uploadId         TEXT    NOT NULL,
   syndication      TEXT    NOT NULL,
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS uploads_monetization
   seasonNumber     TEXT    NOT NULL,
   episodeNumber    TEXT    NOT NULL,
   PRIMARY KEY (uploadId),
-  FOREIGN KEY (uploadId) REFERENCES uploads (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS uploads_playlists
@@ -144,6 +144,6 @@ CREATE TABLE IF NOT EXISTS uploads_playlists
   playlistId TEXT NOT NULL,
 
   PRIMARY KEY (uploadId, playlistId),
-  FOREIGN KEY (uploadId) REFERENCES uploads (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (playlistId) REFERENCES playlists (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (playlistId) REFERENCES PlaylistDTO (playlistId) ON DELETE CASCADE ON UPDATE CASCADE
 );

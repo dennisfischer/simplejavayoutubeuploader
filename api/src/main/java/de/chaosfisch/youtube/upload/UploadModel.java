@@ -13,11 +13,14 @@
  */
 package de.chaosfisch.youtube.upload;
 
-import de.chaosfisch.data.account.cookies.CookieDTO;
+import com.google.common.eventbus.Subscribe;
+import de.chaosfisch.data.account.CookieDTO;
 import de.chaosfisch.data.upload.UploadDTO;
 import de.chaosfisch.youtube.account.AccountModel;
+import de.chaosfisch.youtube.account.AccountRemovedEvent;
 import de.chaosfisch.youtube.category.CategoryModel;
 import de.chaosfisch.youtube.playlist.PlaylistModel;
+import de.chaosfisch.youtube.playlist.PlaylistRemovedEvent;
 import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.metadata.Metadata;
 import de.chaosfisch.youtube.upload.metadata.Monetization;
@@ -28,20 +31,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class UploadModel {
 
 	private final SimpleObjectProperty<AccountModel>  account           = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfEnd     = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfRelease = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<LocalDateTime> dateTimeOfStart   = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<ZonedDateTime> dateTimeOfEnd     = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<ZonedDateTime> dateTimeOfRelease = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<ZonedDateTime> dateTimeOfStart   = new SimpleObjectProperty<>();
 	private final SimpleStringProperty                enddir            = new SimpleStringProperty("");
 	private final SimpleStringProperty                file              = new SimpleStringProperty("");
 	private final SimpleLongProperty                  fileSize          = new SimpleLongProperty();
-	private final SimpleStringProperty                id                = new SimpleStringProperty(UUID.randomUUID()
-																									   .toString());
+	private final SimpleStringProperty                id                = new SimpleStringProperty(UUID.randomUUID().toString());
 	private final SimpleObjectProperty<Metadata>      metadata          = new SimpleObjectProperty<>(new Metadata());
 	private final SimpleObjectProperty<Monetization>  monetization      = new SimpleObjectProperty<>(new Monetization());
 	private final SimpleIntegerProperty               order             = new SimpleIntegerProperty();
@@ -57,16 +60,16 @@ public class UploadModel {
 
 	public UploadModel(final UploadDTO uploadDTO, final CategoryModel categoryModel) {
 		//TODO 	account.set();
-		dateTimeOfEnd.set(uploadDTO.getDateTimeOfEnd());
-		dateTimeOfRelease.set(uploadDTO.getDateTimeOfRelease());
-		dateTimeOfStart.set(uploadDTO.getDateTimeOfStart());
+		dateTimeOfEnd.set(uploadDTO.getDateTimeOfEnd().atZone(ZoneId.systemDefault()));
+		dateTimeOfRelease.set(uploadDTO.getDateTimeOfRelease().atZone(ZoneId.systemDefault()));
+		dateTimeOfStart.set(uploadDTO.getDateTimeOfStart().atZone(ZoneId.systemDefault()));
 		enddir.set(uploadDTO.getEnddir());
 		file.set(uploadDTO.getFile());
 		fileSize.set(uploadDTO.getFileSize());
-		id.set(uploadDTO.getId());
+		id.set(uploadDTO.getUploadId());
 		metadata.set(new Metadata(uploadDTO.getMetadataDTO(), categoryModel));
 		monetization.set(new Monetization(uploadDTO.getMonetizationDTO()));
-		order.set(uploadDTO.getOrder());
+		order.set(uploadDTO.getPosition());
 		permissions.set(new Permissions(uploadDTO.getPermissionDTO()));
 		//TODO PLAYLISTS
 		progress.set(uploadDTO.getProgress());
@@ -105,15 +108,15 @@ public class UploadModel {
 		return progress;
 	}
 
-	public LocalDateTime getDateTimeOfEnd() {
+	public ZonedDateTime getDateTimeOfEnd() {
 		return dateTimeOfEnd.get();
 	}
 
-	public void setDateTimeOfEnd(final LocalDateTime dateTimeOfEnd) {
+	public void setDateTimeOfEnd(final ZonedDateTime dateTimeOfEnd) {
 		this.dateTimeOfEnd.set(dateTimeOfEnd);
 	}
 
-	public SimpleObjectProperty<LocalDateTime> dateTimeOfEndProperty() {
+	public SimpleObjectProperty<ZonedDateTime> dateTimeOfEndProperty() {
 		return dateTimeOfEnd;
 	}
 
@@ -273,39 +276,38 @@ public class UploadModel {
 		return thumbnail;
 	}
 
-	public LocalDateTime getDateTimeOfStart() {
+	public ZonedDateTime getDateTimeOfStart() {
 		return dateTimeOfStart.get();
 	}
 
-	public void setDateTimeOfStart(final LocalDateTime dateTimeOfStart) {
-		if (null == dateTimeOfStart || dateTimeOfStart.isBefore(LocalDateTime.now())) {
+	public void setDateTimeOfStart(final ZonedDateTime dateTimeOfStart) {
+		if (null == dateTimeOfStart || dateTimeOfStart.isBefore(ZonedDateTime.now())) {
 			this.dateTimeOfStart.set(null);
 		} else {
 			this.dateTimeOfStart.set(dateTimeOfStart);
 		}
 	}
 
-	public SimpleObjectProperty<LocalDateTime> dateTimeOfStartProperty() {
+	public SimpleObjectProperty<ZonedDateTime> dateTimeOfStartProperty() {
 		return dateTimeOfStart;
 	}
 
-	public LocalDateTime getDateTimeOfRelease() {
+	public ZonedDateTime getDateTimeOfRelease() {
 		return dateTimeOfRelease.get();
 	}
 
 	@SuppressWarnings("MagicNumber")
-	public void setDateTimeOfRelease(final LocalDateTime dateTimeOfRelease) {
-		if (null == dateTimeOfRelease || dateTimeOfRelease.isBefore(LocalDateTime.now())) {
+	public void setDateTimeOfRelease(final ZonedDateTime dateTimeOfRelease) {
+		if (null == dateTimeOfRelease || dateTimeOfRelease.isBefore(ZonedDateTime.now())) {
 			this.dateTimeOfRelease.set(null);
 		} else {
 			final int mod = dateTimeOfRelease.getMinute() % 30;
-			dateTimeOfRelease.plusMinutes(16 > mod ? -mod : 30 - mod)
-							 .getMinute();
+			dateTimeOfRelease.plusMinutes(16 > mod ? -mod : 30 - mod).getMinute();
 			this.dateTimeOfRelease.set(dateTimeOfRelease);
 		}
 	}
 
-	public SimpleObjectProperty<LocalDateTime> dateTimeOfReleaseProperty() {
+	public SimpleObjectProperty<ZonedDateTime> dateTimeOfReleaseProperty() {
 		return dateTimeOfRelease;
 	}
 
@@ -334,293 +336,247 @@ public class UploadModel {
 	}
 
 	public String getMetadataTitle() {
-		return metadata.get()
-					   .getTitle();
+		return metadata.get().getTitle();
 	}
 
 	public void setMetadataTitle(final String metadataTitle) {
-		metadata.get()
-				.setTitle(metadataTitle);
+		metadata.get().setTitle(metadataTitle);
 	}
 
 	public String getMetadataDescription() {
-		return metadata.get()
-					   .getDescription();
+		return metadata.get().getDescription();
 	}
 
 	public void setMetadataDescription(final String metadataDescription) {
-		metadata.get()
-				.setDescription(metadataDescription);
+		metadata.get().setDescription(metadataDescription);
 	}
 
 	public String getMetadataTags() {
-		return metadata.get()
-					   .getTags();
+		return metadata.get().getTags();
 	}
 
 	public void setMetadataTags(final String metadataTags) {
-		metadata.get()
-				.setTags(metadataTags);
+		metadata.get().setTags(metadataTags);
 	}
 
 	public String getSocialMessage() {
-		return social.get()
-					 .getMessage();
+		return social.get().getMessage();
 	}
 
 	public void setSocialMessage(final String socialMessage) {
-		social.get()
-			  .setMessage(socialMessage);
+		social.get().setMessage(socialMessage);
 	}
 
 	public String getMonetizationTitle() {
-		return monetization.get()
-						   .getTitle();
+		return monetization.get().getTitle();
 	}
 
 	public void setMonetizationTitle(final String monetizationTitle) {
-		monetization.get()
-					.setTitle(monetizationTitle);
+		monetization.get().setTitle(monetizationTitle);
 	}
 
 	public String getMonetizationDescription() {
-		return monetization.get()
-						   .getDescription();
+		return monetization.get().getDescription();
 	}
 
 	public void setMonetizationDescription(final String monetizationDescription) {
-		monetization.get()
-					.setDescription(monetizationDescription);
+		monetization.get().setDescription(monetizationDescription);
 	}
 
 	public String getMonetizationCustomId() {
-		return monetization.get()
-						   .getCustomId();
+		return monetization.get().getCustomId();
 	}
 
 	public void setMonetizationCustomId(final String monetizationCustomId) {
-		monetization.get()
-					.setCustomId(monetizationCustomId);
+		monetization.get().setCustomId(monetizationCustomId);
 	}
 
 	public String getMonetizationNotes() {
-		return monetization.get()
-						   .getNotes();
+		return monetization.get().getNotes();
 	}
 
 	public void setMonetizationNotes(final String monetizationNotes) {
-		monetization.get()
-					.setNotes(monetizationNotes);
+		monetization.get().setNotes(monetizationNotes);
 	}
 
 	public String getMonetizationTmsid() {
-		return monetization.get()
-						   .getTmsid();
+		return monetization.get().getTmsid();
 	}
 
 	public void setMonetizationTmsid(final String monetizationTmsid) {
-		monetization.get()
-					.setTmsid(monetizationTmsid);
+		monetization.get().setTmsid(monetizationTmsid);
 	}
 
 	public String getMonetizationEidr() {
-		return monetization.get()
-						   .getEidr();
+		return monetization.get().getEidr();
 	}
 
 	public String getMonetizationTitleepisode() {
-		return monetization.get()
-						   .getEpisodeTitle();
+		return monetization.get().getEpisodeTitle();
 	}
 
 	public void setMonetizationTitleepisode(final String monetizationTitleepisode) {
-		monetization.get()
-					.setEpisodeTitle(monetizationTitleepisode);
+		monetization.get().setEpisodeTitle(monetizationTitleepisode);
 	}
 
 	public String getMonetizationSeasonNb() {
-		return monetization.get()
-						   .getSeasonNumber();
+		return monetization.get().getSeasonNumber();
 	}
 
 	public void setMonetizationSeasonNb(final String monetizationSeasonNb) {
-		monetization.get()
-					.setSeasonNumber(monetizationSeasonNb);
+		monetization.get().setSeasonNumber(monetizationSeasonNb);
 	}
 
 	public String getMonetizationEpisodeNb() {
-		return monetization.get()
-						   .getEpisodeNumber();
+		return monetization.get().getEpisodeNumber();
 	}
 
 	public void setMonetizationEpisodeNb(final String monetizationEpisodeNb) {
-		monetization.get()
-					.setEpisodeNumber(monetizationEpisodeNb);
+		monetization.get().setEpisodeNumber(monetizationEpisodeNb);
 	}
 
 	public Visibility getPermissionsVisibility() {
-		return permissions.get()
-						  .getVisibility();
+		return permissions.get().getVisibility();
 	}
 
 	public boolean isSocialFacebook() {
-		return social.get()
-					 .getFacebook();
+		return social.get().getFacebook();
 	}
 
 	public boolean isSocialTwitter() {
-		return social.get()
-					 .getTwitter();
+		return social.get().getTwitter();
 	}
 
 	public boolean isSocialGplus() {
-		return social.get()
-					 .getGplus();
+		return social.get().getGplus();
 	}
 
 	public boolean isMonetizationClaim() {
-		return monetization.get()
-						   .getClaim();
+		return monetization.get().getClaim();
 	}
 
 	public License getMetadataLicense() {
-		return metadata.get()
-					   .getLicense();
+		return metadata.get().getLicense();
 	}
 
 	public void setMetadataLicense(final License metadataLicense) {
-		metadata.get()
-				.licenseProperty()
-				.set(metadataLicense);
+		metadata.get().licenseProperty().set(metadataLicense);
 	}
 
 	public boolean isMonetizationPartner() {
-		return monetization.get()
-						   .getPartner();
+		return monetization.get().getPartner();
 	}
 
 	public ClaimOption getMonetizationClaimoption() {
-		return monetization.get()
-						   .getClaimOption();
+		return monetization.get().getClaimOption();
 	}
 
 	public boolean isMonetizationOverlay() {
-		return monetization.get()
-						   .getOverlay();
+		return monetization.get().getOverlay();
 	}
 
 	public boolean isMonetizationTrueview() {
-		return monetization.get()
-						   .getTrueview();
+		return monetization.get().getTrueview();
 	}
 
 	public boolean isMonetizationInstream() {
-		return monetization.get()
-						   .getInstream();
+		return monetization.get().getInstream();
 	}
 
 	public boolean isMonetizationInstreamDefaults() {
-		return monetization.get()
-						   .getInstreamDefaults();
+		return monetization.get().getInstreamDefaults();
 	}
 
 	public boolean isMonetizationProduct() {
-		return monetization.get()
-						   .getProduct();
+		return monetization.get().getProduct();
 	}
 
 	public Syndication getMonetizationSyndication() {
-		return monetization.get()
-						   .getSyndication();
+		return monetization.get().getSyndication();
 	}
 
 	public ClaimType getMonetizationClaimtype() {
-		return monetization.get()
-						   .getClaimType();
+		return monetization.get().getClaimType();
 	}
 
 	public Asset getMonetizationAsset() {
-		return monetization.get()
-						   .getAsset();
+		return monetization.get().getAsset();
 	}
 
 	public String getMonetizationIsan() {
-		return monetization.get()
-						   .getIsan();
+		return monetization.get().getIsan();
 	}
 
 	public void setMonetizationIsan(final String monetizationIsan) {
-		monetization.get()
-					.setIsan(monetizationIsan);
+		monetization.get().setIsan(monetizationIsan);
 	}
 
 	public boolean isPermissionsEmbed() {
-		return permissions.get()
-						  .getEmbed();
+		return permissions.get().getEmbed();
 	}
 
 	public boolean isPermissionsRate() {
-		return permissions.get()
-						  .getRate();
+		return permissions.get().getRate();
 	}
 
 	public boolean isPermissionsCommentvote() {
-		return permissions.get()
-						  .getCommentvote();
+		return permissions.get().getCommentvote();
 	}
 
 	public Comment getPermissionsComment() {
-		return permissions.get()
-						  .getComment();
+		return permissions.get().getComment();
 	}
 
 	public boolean isPermissionsAgeRestricted() {
-		return permissions.get()
-						  .getAgeRestricted();
+		return permissions.get().getAgeRestricted();
 	}
 
 	public boolean isPermissionsPublicStatsViewable() {
-		return permissions.get()
-						  .getPublicStatsViewable();
+		return permissions.get().getPublicStatsViewable();
 	}
 
 	public ThreeD getPermissionsThreedD() {
-		return permissions.get()
-						  .getThreedD();
+		return permissions.get().getThreedD();
 	}
 
 	public String getMetadataLicenseIdentifier() {
-		return metadata.get()
-					   .getLicenseIdentifier();
+		return metadata.get().getLicenseIdentifier();
 	}
 
 	public ObservableSet<CookieDTO> getAccountSerializableCookies() {
-		return account.get()
-					  .getCookies();
+		return account.get().getCookies();
 	}
 
 	public String getPermissionsVisibilityIdentifier() {
-		return permissions.get()
-						  .getVisibilityIdentifier();
+		return permissions.get().getVisibilityIdentifier();
 	}
 
 	public int getCategoryId() {
-		return metadata.get()
-					   .getCategoryId();
+		return metadata.get().getCategoryId();
 	}
 
 	public String getAccountYoutubeId() {
-		return account.get()
-					  .getYoutubeId();
+		return account.get().getYoutubeId();
 	}
 
 	public void setMetadataCategory(final CategoryModel categoryModel) {
-		metadata.get()
-				.categoryProperty()
-				.set(categoryModel);
+		metadata.get().categoryProperty().set(categoryModel);
+	}
+
+	@Subscribe
+	public void onAccountEvent(final AccountRemovedEvent event) {
+		if (event.getAccountModel().equals(account.get())) {
+			account.set(null);
+		}
+	}
+
+	@Subscribe
+	public void onPlaylistEvent(final PlaylistRemovedEvent event) {
+		playlists.remove(event.getPlaylistModel());
 	}
 
 	public interface Validation {
+
 		String ACCOUNT                = "accountNull";
 		String CATEGORY               = "categoryNull";
 		String DESCRIPTION_CHARACTERS = "descriptionCharacters";

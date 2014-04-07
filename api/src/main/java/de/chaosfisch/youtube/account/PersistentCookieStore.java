@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtube.account;
 
-import de.chaosfisch.data.account.cookies.CookieDTO;
+import de.chaosfisch.data.account.CookieDTO;
 
 import java.net.CookieManager;
 import java.net.CookieStore;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersistentCookieStore implements CookieStore {
+
 	private final CookieStore store;
 
 	public PersistentCookieStore() {
@@ -28,8 +29,7 @@ public class PersistentCookieStore implements CookieStore {
 	}
 
 	public List<CookieDTO> getSerializeableCookies(final String accountId) {
-		final List<CookieDTO> cookies = new ArrayList<>(store.getCookies()
-															 .size());
+		final List<CookieDTO> cookies = new ArrayList<>(store.getCookies().size());
 
 		for (final HttpCookie cookie : store.getCookies()) {
 			final CookieDTO cookieDTO = new CookieDTO(accountId, cookie);
@@ -54,6 +54,12 @@ public class PersistentCookieStore implements CookieStore {
 		return store.getCookies();
 	}
 
+	public void setCookies(final List<CookieDTO> cookies) {
+		for (final CookieDTO cookie : cookies) {
+			add(cookie.getURI(), cookie.getCookie());
+		}
+	}
+
 	@Override
 	public List<URI> getURIs() {
 		return store.getURIs();
@@ -67,11 +73,5 @@ public class PersistentCookieStore implements CookieStore {
 	@Override
 	public boolean removeAll() {
 		return store.removeAll();
-	}
-
-	public void setCookies(final List<CookieDTO> cookies) {
-		for (final CookieDTO cookie : cookies) {
-			add(cookie.getURI(), cookie.getCookie());
-		}
 	}
 }

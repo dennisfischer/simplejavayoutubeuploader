@@ -20,12 +20,12 @@ public class TimeModel {
 		return time.get();
 	}
 
-	public SimpleStringProperty timeProperty() {
-		return time;
-	}
-
 	public void setTime(final String time) {
 		this.time.set(time);
+	}
+
+	public SimpleStringProperty timeProperty() {
+		return time;
 	}
 
 	@Override

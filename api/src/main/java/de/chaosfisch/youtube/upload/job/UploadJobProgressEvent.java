@@ -11,6 +11,7 @@
 package de.chaosfisch.youtube.upload.job;
 
 public class UploadJobProgressEvent {
+
 	private long diffBytes;
 	private long diffTime;
 	private long time;

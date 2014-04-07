@@ -21,15 +21,19 @@ public class TagParserTest {
 
 	@Test
 	public void testAreTagsValid() throws Exception {
-		final String invalidInput = ",,this are so amazing tags we he,<dwdwd>,,this are so amazing tags we hes,,,this are so amazing tags we have to test,,,it,, it,i, or not?, this is awesome,,,,,,";
+		final String invalidInput = ",,this are so amazing tags we he,<dwdwd>,,this are so amazing tags we hes,,,this are so amazing tags we have to test,,," +
+				"" + "it,, it,i, or not?, this is awesome,,,,,,";
 		final List<String> invalidParsed = TagParser.parse(invalidInput);
 		assertFalse(TagParser.areTagsValid(invalidParsed));
 
 		final List<String> validParsed = TagParser.parse(invalidInput, true);
 		assertTrue(TagParser.areTagsValid(validParsed));
 
-		final String inputTooLong = "hello,we,have,here,very,nice,tags,that,we,want,to,test,they,are,far,too,long,but this is the only,way to test this shit,or do you know,any other way,at least it will work," +
-				"as long as,the input,is correct,but no one,can,tell.,let's have a,look at it,500 tags should be easy,to reach,in short time,we will know more,do we?,this should be,possible,easy,really,I don't lie,never," +
+		final String inputTooLong = "hello,we,have,here,very,nice,tags,that,we,want,to,test,they,are,far,too,long,but this is the only," +
+				"way to test this shit," +
+				"or do you know,any other way,at least it will work," +
+				"as long as,the input,is correct,but no one,can,tell.,let's have a,look at it,500 tags should be easy,to reach,in short time," +
+				"we will know more,do we?,this should be,possible,easy,really,I don't lie,never," +
 				"but as you wish,I'll do that for you,C'mon,500 is hard,nearly got it,just some more";
 
 		assertTrue(TagParser.areTagsValid(TagParser.parse(inputTooLong, false)));
@@ -41,12 +45,7 @@ public class TagParserTest {
 		final String tags = ",,,<<,,,,,this are so amazing tags we have to test,,,it,, it,i, or not?, this is awesome,,,,,,";
 
 		final List<String> result = TagParser.parse(tags);
-		final List<String> expected = Arrays.asList("<<",
-													"this are so amazing tags we have to test",
-													"it",
-													"i",
-													"or not?",
-													"this is awesome");
+		final List<String> expected = Arrays.asList("<<", "this are so amazing tags we have to test", "it", "i", "or not?", "this is awesome");
 
 		assertEquals(6, result.size());
 		assertEquals(expected, result);
@@ -54,14 +53,11 @@ public class TagParserTest {
 
 	@Test
 	public void testParseRemoveInvalid() throws Exception {
-		final String tags = ",,this are so amazing tags we he,<dwdwd>,,this are so amazing tags we hes,,,this are so amazing tags we have to test,,,it,, it,i, or not?, this is awesome,ä,,,,,";
+		final String tags = ",,this are so amazing tags we he,<dwdwd>,,this are so amazing tags we hes,,,this are so amazing tags we have to test,,,it,, it,i," +
+				"" + " or not?, this is awesome,ä,,,,,";
 
 		final List<String> result = TagParser.parse(tags, true);
-		final List<String> expected = Arrays.asList("this are so amazing tags we he",
-													"it",
-													"or not?",
-													"this is awesome",
-													"ä");
+		final List<String> expected = Arrays.asList("this are so amazing tags we he", "it", "or not?", "this is awesome", "ä");
 
 		assertEquals(5, result.size());
 		assertEquals(expected, result);
@@ -69,11 +65,7 @@ public class TagParserTest {
 
 	@Test
 	public void testGetLength() throws Exception {
-		final List<String> testArrayOne = Arrays.asList("this are so amazing tags we he",
-														"it",
-														"or not?",
-														"this is awesomeä",
-														"ä");
+		final List<String> testArrayOne = Arrays.asList("this are so amazing tags we he", "it", "or not?", "this is awesomeä", "ä");
 		assertEquals(68, TagParser.getLength(testArrayOne));
 	}
 }

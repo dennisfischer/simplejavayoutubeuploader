@@ -10,27 +10,26 @@
 
 package de.chaosfisch.data.playlist;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-
 public class PlaylistDTO {
-	@NotNull
-	private String  youtubeId;
-	@NotNull
+
+
+	private String playlistId;
+
 	private String  title;
 	private String  thumbnail;
 	private boolean privacyStatus;
 	private long    itemCount;
-	@NotNull
-	private String  description;
-	@NotNull
-	private String  accountId;
+
+	private String description;
+
+	private String accountId;
 
 	public PlaylistDTO() {
 	}
 
-	public PlaylistDTO(@NotNull final String youtubeId, @NotNull final String title, final String thumbnail, final boolean privacyStatus, final long itemCount, @NotNull final String description, @NotNull final String accountId) {
-		this.youtubeId = youtubeId;
+	public PlaylistDTO(final String playlistId, final String title, final String thumbnail, final boolean privacyStatus, final long itemCount,
+					   final String description, final String accountId) {
+		this.playlistId = playlistId;
 		this.title = title;
 		this.thumbnail = thumbnail;
 		this.privacyStatus = privacyStatus;
@@ -39,21 +38,21 @@ public class PlaylistDTO {
 		this.accountId = accountId;
 	}
 
-	@NotNull
-	public String getYoutubeId() {
-		return youtubeId;
+
+	public String getPlaylistId() {
+		return playlistId;
 	}
 
-	public void setYoutubeId(@NotNull final String youtubeId) {
-		this.youtubeId = youtubeId;
+	public void setPlaylistId(final String playlistId) {
+		this.playlistId = playlistId;
 	}
 
-	@NotNull
+
 	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(@NotNull final String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -81,27 +80,27 @@ public class PlaylistDTO {
 		this.itemCount = itemCount;
 	}
 
-	@NotNull
+
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(@NotNull final String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
-	@NotNull
+
 	public String getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(@NotNull final String accountId) {
+	public void setAccountId(final String accountId) {
 		this.accountId = accountId;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = youtubeId.hashCode();
+		int result = playlistId.hashCode();
 		result = 31 * result + title.hashCode();
 		result = 31 * result + (null != thumbnail ? thumbnail.hashCode() : 0);
 		result = 31 * result + (privacyStatus ? 1 : 0);
@@ -122,15 +121,16 @@ public class PlaylistDTO {
 
 		final PlaylistDTO that = (PlaylistDTO) obj;
 
-		return itemCount == that.itemCount && privacyStatus == that.privacyStatus && accountId.equals(that.accountId) && description.equals(that.description) && !(null != thumbnail ? !thumbnail.equals(
-				that.thumbnail) : null != that.thumbnail) && title.equals(that.title) && youtubeId.equals(that.youtubeId);
+		return itemCount == that.itemCount && privacyStatus == that.privacyStatus && accountId.equals(that.accountId) && description.equals(
+				that.description) && !(null != thumbnail ? !thumbnail.equals(that.thumbnail) : null != that.thumbnail) && title.equals(that.title) &&
+				playlistId
+				.equals(that.playlistId);
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "PlaylistDTO{" +
-				"youtubeId='" + youtubeId + '\'' +
+				"playlistId='" + playlistId + '\'' +
 				", title='" + title + '\'' +
 				", thumbnail='" + thumbnail + '\'' +
 				", privacyStatus=" + privacyStatus +

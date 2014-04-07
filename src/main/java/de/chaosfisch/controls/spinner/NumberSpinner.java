@@ -34,14 +34,10 @@ public class NumberSpinner extends TextField {
 		@Override
 		protected void invalidated() {
 			if (!isBound() && null != value.get()) {
-				if (null != maxValue.get() && value.get()
-												   .doubleValue() > maxValue.get()
-																			.doubleValue()) {
+				if (null != maxValue.get() && value.get().doubleValue() > maxValue.get().doubleValue()) {
 					set(maxValue.get());
 				}
-				if (null != minValue.get() && value.get()
-												   .doubleValue() < minValue.get()
-																			.doubleValue()) {
+				if (null != minValue.get() && value.get().doubleValue() < minValue.get().doubleValue()) {
 					set(minValue.get());
 				}
 			}
@@ -55,14 +51,10 @@ public class NumberSpinner extends TextField {
 		@Override
 		protected void invalidated() {
 			if (null != maxValue.get()) {
-				if (null != minValue.get() && maxValue.get()
-													  .doubleValue() < minValue.get()
-																			   .doubleValue()) {
+				if (null != minValue.get() && maxValue.get().doubleValue() < minValue.get().doubleValue()) {
 					throw new IllegalArgumentException("maxValue must not be greater than minValue");
 				}
-				if (null != value.get() && value.get()
-												.doubleValue() > maxValue.get()
-																		 .doubleValue()) {
+				if (null != value.get() && value.get().doubleValue() > maxValue.get().doubleValue()) {
 					value.set(maxValue.get());
 				}
 			}
@@ -76,14 +68,10 @@ public class NumberSpinner extends TextField {
 		@Override
 		protected void invalidated() {
 			if (null != minValue.get()) {
-				if (null != maxValue.get() && maxValue.get()
-													  .doubleValue() < minValue.get()
-																			   .doubleValue()) {
+				if (null != maxValue.get() && maxValue.get().doubleValue() < minValue.get().doubleValue()) {
 					throw new IllegalArgumentException("minValue must not be smaller than maxValue");
 				}
-				if (null != value.get() && value.get()
-												.doubleValue() < minValue.get()
-																		 .doubleValue()) {
+				if (null != value.get() && value.get().doubleValue() < minValue.get().doubleValue()) {
 					value.set(minValue.get());
 				}
 			}
@@ -98,8 +86,7 @@ public class NumberSpinner extends TextField {
 	/**
 	 * The number format.
 	 */
-	private final ObjectProperty<NumberStringConverter> numberStringConverter = new SimpleObjectProperty<>(this,
-																										   "numberFormatter",
+	private final ObjectProperty<NumberStringConverter> numberStringConverter = new SimpleObjectProperty<>(this, "numberFormatter",
 																										   new NumberStringConverter());
 
 	/**
@@ -120,9 +107,7 @@ public class NumberSpinner extends TextField {
 			@Override
 			public void changed(final ObservableValue<? extends Scene> observableValue, final Scene scene, final Scene scene1) {
 				if (null != scene1) {
-					scene1.getStylesheets()
-						  .add(getClass().getResource("NumberSpinner.css")
-										 .toExternalForm());
+					scene1.getStylesheets().add(getClass().getResource("NumberSpinner.css").toExternalForm());
 				}
 			}
 		});
@@ -336,12 +321,10 @@ public class NumberSpinner extends TextField {
 	public void increment() {
 		if (null != getStepWidth() && Double.isFinite(getStepWidth().doubleValue())) {
 			if (null != getValue() && Double.isFinite(getValue().doubleValue())) {
-				setValue(BigDecimal.valueOf(getValue().doubleValue())
-								   .add(BigDecimal.valueOf(getStepWidth().doubleValue())));
+				setValue(BigDecimal.valueOf(getValue().doubleValue()).add(BigDecimal.valueOf(getStepWidth().doubleValue())));
 			} else {
 				if (null != getMinValue() && Double.isFinite(getMinValue().doubleValue())) {
-					setValue(BigDecimal.valueOf(getMinValue().doubleValue())
-									   .add(BigDecimal.valueOf(getStepWidth().doubleValue())));
+					setValue(BigDecimal.valueOf(getMinValue().doubleValue()).add(BigDecimal.valueOf(getStepWidth().doubleValue())));
 				} else {
 					setValue(BigDecimal.valueOf(getStepWidth().doubleValue()));
 				}
@@ -355,15 +338,12 @@ public class NumberSpinner extends TextField {
 	public void decrement() {
 		if (null != getStepWidth() && Double.isFinite(getStepWidth().doubleValue())) {
 			if (null != getValue() && Double.isFinite(getValue().doubleValue())) {
-				setValue(BigDecimal.valueOf(getValue().doubleValue())
-								   .subtract(BigDecimal.valueOf(getStepWidth().doubleValue())));
+				setValue(BigDecimal.valueOf(getValue().doubleValue()).subtract(BigDecimal.valueOf(getStepWidth().doubleValue())));
 			} else {
 				if (null != getMaxValue() && Double.isFinite(getMaxValue().doubleValue())) {
-					setValue(BigDecimal.valueOf(getMaxValue().doubleValue())
-									   .subtract(BigDecimal.valueOf(getStepWidth().doubleValue())));
+					setValue(BigDecimal.valueOf(getMaxValue().doubleValue()).subtract(BigDecimal.valueOf(getStepWidth().doubleValue())));
 				} else {
-					setValue(BigDecimal.valueOf(getStepWidth().doubleValue())
-									   .multiply(new BigDecimal(-1)));
+					setValue(BigDecimal.valueOf(getStepWidth().doubleValue()).multiply(new BigDecimal(-1)));
 				}
 			}
 		}
@@ -371,7 +351,6 @@ public class NumberSpinner extends TextField {
 
 	@Override
 	protected String getUserAgentStylesheet() {
-		return getClass().getResource("NumberSpinner.css")
-						 .toExternalForm();
+		return getClass().getResource("NumberSpinner.css").toExternalForm();
 	}
 }

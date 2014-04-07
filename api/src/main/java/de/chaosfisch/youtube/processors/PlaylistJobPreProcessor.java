@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 public class PlaylistJobPreProcessor implements UploadJobPreProcessor {
+
 	private final IPlaylistService playlistService;
 
 	@Inject

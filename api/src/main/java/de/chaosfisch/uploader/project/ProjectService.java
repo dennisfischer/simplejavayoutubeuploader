@@ -10,5 +10,4 @@
 
 package de.chaosfisch.uploader.project;
 
-public class ProjectService implements IProjectService {
-}
+public class ProjectService implements IProjectService {}

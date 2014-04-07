@@ -13,6 +13,7 @@ package de.chaosfisch.uploader.project;
 import javafx.beans.property.SimpleStringProperty;
 
 public class ProjectModel {
+
 	private final SimpleStringProperty name = new SimpleStringProperty();
 
 	public ProjectModel(final String name) {

@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javax.inject.Inject;
 
 public class AddPresenter {
+
 	private final AccountAddDataModel accountAddDataModel = AccountAddDataModel.getInstance();
 	@Inject
 	protected Step1View   step1View;
@@ -30,17 +31,14 @@ public class AddPresenter {
 
 	@FXML
 	public void initialize() {
-		accountAddDataModel.stepProperty()
-						   .addListener((observableValue, oldStep, newStep) -> setStepView(newStep));
-		accountAddDataModel.processingProperty()
-						   .addListener((observableValue, oldProcessing, newProcessing) -> setProcessingView(newProcessing));
+		accountAddDataModel.stepProperty().addListener((observableValue, oldStep, newStep) -> setStepView(newStep));
+		accountAddDataModel.processingProperty().addListener((observableValue, oldProcessing, newProcessing) -> setProcessingView(newProcessing));
 		initStep1();
 	}
 
 	private void setProcessingView(final Boolean newProcessing) {
 		if (newProcessing) {
-			gridpane.getChildren()
-					.removeAll(step1View, step2View, step3View);
+			gridpane.getChildren().removeAll(step1View, step2View, step3View);
 			gridpane.add(loadingView, 1, 0);
 		} else {
 			setStepView(accountAddDataModel.getStep());
@@ -50,18 +48,15 @@ public class AddPresenter {
 	private void setStepView(final AccountAddDataModel.Step newStep) {
 		switch (newStep) {
 			case STEP_1:
-				gridpane.getChildren()
-						.removeAll(step1View, step2View, step3View, loadingView);
+				gridpane.getChildren().removeAll(step1View, step2View, step3View, loadingView);
 				gridpane.add(step1View, 1, 0);
 				break;
 			case STEP_2:
-				gridpane.getChildren()
-						.removeAll(step1View, step2View, step3View, loadingView);
+				gridpane.getChildren().removeAll(step1View, step2View, step3View, loadingView);
 				gridpane.add(step2View, 1, 0);
 				break;
 			case STEP_3:
-				gridpane.getChildren()
-						.removeAll(step1View, step2View, step3View, loadingView);
+				gridpane.getChildren().removeAll(step1View, step2View, step3View, loadingView);
 				gridpane.add(step3View, 1, 0);
 				break;
 		}

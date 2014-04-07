@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.edit.right;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class EditRightView extends FXMLView {
-}
+public class EditRightView extends FXMLView {}

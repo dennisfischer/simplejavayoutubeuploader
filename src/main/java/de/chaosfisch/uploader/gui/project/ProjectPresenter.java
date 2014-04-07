@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProjectPresenter {
+
 	@Inject
 	protected DataModel              dataModel;
 	@FXML
@@ -40,12 +41,14 @@ public class ProjectPresenter {
 	@FXML
 	public void createProject() {
 
-		final List<Dialogs.CommandLink> links = Arrays.asList(
-				new Dialogs.CommandLink("Neues leeres Projekt erstellen",
-										"Dies erstellt ein neues leeres Projekt in dem alle Informationen noch nicht gesetzt sind."),
-				new Dialogs.CommandLink("Projekt aus bestehenden Daten erstellen",
-										"Dies erstellt ein neues Projekt aus den Informationen die bereits eingegeben wurden.")
-															 );
+		final List<Dialogs.CommandLink> links = Arrays.asList(new Dialogs.CommandLink("Neues leeres Projekt erstellen",
+																					  "Dies erstellt ein neues leeres Projekt in dem alle Informationen noch "
+																							  + "nicht gesetzt sind."
+															  ), new Dialogs.CommandLink("Projekt aus bestehenden Daten erstellen",
+																						 "Dies erstellt ein neues Projekt aus den Informationen die bereits "
+																								 + "eingegeben wurden."
+															  )
+		);
 		final Action response = Dialogs.create()
 									   .owner(null)
 									   .title("Neues Projekt erstellen")
@@ -57,34 +60,25 @@ public class ProjectPresenter {
 			return;
 		}
 
-		final Optional<String> result = Dialogs.create()
-											   .owner(null)
-											   .title("Neues Projekt erstellen")
-											   .message("Projektname")
-											   .showTextInput();
+		final Optional<String> result = Dialogs.create().owner(null).title("Neues Projekt erstellen").message("Projektname").showTextInput();
 
 		result.ifPresent(name -> {
 			final ProjectModel project = new ProjectModel(name);
 			if (1 == code) {
 			}
-			projects.getItems()
-					.add(project);
-			projects.getSelectionModel()
-					.select(project);
+			projects.getItems().add(project);
+			projects.getSelectionModel().select(project);
 		});
 	}
 
 	@FXML
 	public void deleteProject() {
-		projects.getItems()
-				.remove(projects.getSelectionModel()
-								.getSelectedItem());
+		projects.getItems().remove(projects.getSelectionModel().getSelectedItem());
 		projects.setValue(null);
 	}
 
 	@FXML
 	public void initialize() {
-		projects.itemsProperty()
-				.bindBidirectional(dataModel.projectsProperty());
+		projects.itemsProperty().bindBidirectional(dataModel.projectsProperty());
 	}
 }

@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.account;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class AccountView extends FXMLView {
-}
+public class AccountView extends FXMLView {}

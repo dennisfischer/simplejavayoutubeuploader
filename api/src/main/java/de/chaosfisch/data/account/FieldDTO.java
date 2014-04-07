@@ -8,40 +8,38 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.account.fields;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+package de.chaosfisch.data.account;
 
 public class FieldDTO {
-	@NotNull
+
+
 	private String accountId;
-	@NotNull
+
 	private String name;
 
 	public FieldDTO() {
 	}
 
-	public FieldDTO(@NotNull final String accountId, @NotNull final String name) {
+	public FieldDTO(final String accountId, final String name) {
 		this.accountId = accountId;
 		this.name = name;
 	}
 
-	@NotNull
+
 	public String getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(@NotNull final String accountId) {
+	public void setAccountId(final String accountId) {
 		this.accountId = accountId;
 	}
 
-	@NotNull
+
 	public String getName() {
 		return name;
 	}
 
-	public void setName(@NotNull final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -66,7 +64,6 @@ public class FieldDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "FieldDTO{" +
 				"accountId='" + accountId + '\'' +

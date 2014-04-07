@@ -25,10 +25,7 @@ public class YouTubeThumnbailService implements IThumbnailService {
 	@Override
 	public void upload(final File thumbnail, final String videoid, final AccountModel accountModel) throws IOException {
 		try (final BufferedInputStream is = new BufferedInputStream(new FileInputStream(thumbnail))) {
-			YouTubeFactory.getYouTube(accountModel)
-					.thumbnails()
-					.set(videoid, new InputStreamContent("application/octet-stream", is))
-					.execute();
+			YouTubeFactory.getYouTube(accountModel).thumbnails().set(videoid, new InputStreamContent("application/octet-stream", is)).execute();
 		}
 	}
 }

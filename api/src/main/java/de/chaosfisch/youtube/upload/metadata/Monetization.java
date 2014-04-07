@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
-import de.chaosfisch.data.upload.monetization.MonetizationDTO;
+import de.chaosfisch.data.upload.MonetizationDTO;
 import de.chaosfisch.youtube.upload.permissions.Asset;
 import de.chaosfisch.youtube.upload.permissions.ClaimOption;
 import de.chaosfisch.youtube.upload.permissions.ClaimType;
@@ -20,6 +20,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Monetization {
+
 	private final SimpleObjectProperty<Asset>       asset            = new SimpleObjectProperty<>(Asset.WEB);
 	private final SimpleBooleanProperty             claim            = new SimpleBooleanProperty();
 	private final SimpleObjectProperty<ClaimOption> claimOption      = new SimpleObjectProperty<>(ClaimOption.MONETIZE);

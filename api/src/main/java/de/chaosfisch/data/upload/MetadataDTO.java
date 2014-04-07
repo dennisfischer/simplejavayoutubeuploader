@@ -8,17 +8,17 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.upload.metadata;
-
-import org.jetbrains.annotations.NonNls;
+package de.chaosfisch.data.upload;
 
 public class MetadataDTO {
+
+	private String uploadId;
+
 	private int    category;
 	private String description;
 	private String license;
 	private String tags;
 	private String title;
-	private String uploadId;
 
 	public MetadataDTO() {
 	}
@@ -81,7 +81,6 @@ public class MetadataDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "MetadataDTO{" +
 				"uploadId='" + uploadId + '\'' +

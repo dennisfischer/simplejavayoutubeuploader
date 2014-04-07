@@ -14,61 +14,61 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8"
-		  fx:controller="de.chaosfisch.uploader.gui.upload.entry.UploadEntryPresenter"
-		  xmlns:fx="http://javafx.com/fxml"
-		  style="-fx-border-bottom: 1px; -fx-border-color: transparent transparent gainsboro transparent;">
-	<columnConstraints>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"
-						   xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="175.0"
-						   xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
-				/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints hgrow="SOMETIMES" minWidth="150" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
-	</columnConstraints>
-	<rowConstraints>
-		<RowConstraints maxHeight="-Infinity"/>
-		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
-	</rowConstraints>
-	<children>
-		<Label fx:id="title" GridPane.columnSpan="5"/>
-		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
-			<image>
-				<Image url="@public.png"/>
-			</image>
-		</ImageView>
-		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="1">
-			<image>
-				<Image url="@unlisted.png"/>
-			</image>
-		</ImageView>
-		<ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
-			<image>
-				<Image url="@private.png"/>
-			</image>
-		</ImageView>
-		<Label fx:id="release" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
-		<Separator orientation="VERTICAL" GridPane.columnIndex="5" GridPane.rowSpan="2"/>
-		<Label text="Uploadstart:" GridPane.columnIndex="6"/>
-		<Label text="Uploadende:" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
-		<Label fx:id="start" GridPane.columnIndex="7"/>
-		<Label fx:id="end" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
-		<ProgressBar fx:id="progress" maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4"
-					 GridPane.rowIndex="1"/>
-		<Label fx:id="progressLabel" alignment="CENTER" maxWidth="Infinity" GridPane.columnIndex="4"
-			   GridPane.rowIndex="1"/>
-		<Button maxWidth="Infinity" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
-		<ToggleButton mnemonicParsing="false" fx:id="stopAfter" text="Nach diesem Upload stoppen!"
-					  GridPane.columnIndex="8"
-					  GridPane.rowIndex="1"/>
-	</children>
-	<padding>
-		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-	</padding>
+<GridPane xmlns:fx="http://javafx.com/fxml" hgap="5.0" vgap="5.0"
+          xmlns="http://javafx.com/javafx/8"
+          fx:controller="de.chaosfisch.uploader.gui.upload.entry.UploadEntryPresenter"
+          style="-fx-border-bottom: 1px; -fx-border-color: transparent transparent gainsboro transparent;">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0"
+                           xmlns="http://javafx.com/javafx/8"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="175.0"
+                           xmlns="http://javafx.com/javafx/8"/>
+        <ColumnConstraints hgrow="SOMETIMES" xmlns="http://javafx.com/javafx/8"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+                />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="150" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity"/>
+        <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label fx:id="title" GridPane.columnSpan="5"/>
+        <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+            <image>
+                <Image url="@public.png"/>
+            </image>
+        </ImageView>
+        <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <image>
+                <Image url="@unlisted.png"/>
+            </image>
+        </ImageView>
+        <ImageView pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <image>
+                <Image url="@private.png"/>
+            </image>
+        </ImageView>
+        <Label fx:id="release" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <Separator orientation="VERTICAL" GridPane.columnIndex="5" GridPane.rowSpan="2"/>
+        <Label text="Uploadstart:" GridPane.columnIndex="6"/>
+        <Label text="Uploadende:" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+        <Label fx:id="start" GridPane.columnIndex="7"/>
+        <Label fx:id="end" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+        <ProgressBar fx:id="progress" maxWidth="Infinity" progress="0.52" GridPane.columnIndex="4"
+                     GridPane.rowIndex="1"/>
+        <Label fx:id="progressLabel" alignment="CENTER" maxWidth="Infinity" GridPane.columnIndex="4"
+               GridPane.rowIndex="1"/>
+        <Button maxWidth="Infinity" mnemonicParsing="false" text="Bearbeiten" GridPane.columnIndex="8"/>
+        <ToggleButton mnemonicParsing="false" fx:id="stopAfter" text="Nach diesem Upload stoppen!"
+                      GridPane.columnIndex="8"
+                      GridPane.rowIndex="1"/>
+    </children>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
 </GridPane>

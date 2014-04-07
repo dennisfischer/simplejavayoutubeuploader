@@ -49,13 +49,11 @@ public class MainPresenter {
 
 	@FXML
 	public void initialize() {
-		dataModel.activeTabPropertyProperty()
-				 .addListener((observableValue, tabs, newTab) -> {
-					 if (null != newTab) {
-						 tabPane.getSelectionModel()
-								.select(newTab.ordinal());
-					 }
-				 });
+		dataModel.activeTabPropertyProperty().addListener((observableValue, tabs, newTab) -> {
+			if (null != newTab) {
+				tabPane.getSelectionModel().select(newTab.ordinal());
+			}
+		});
 	}
 
 	@FXML
@@ -71,8 +69,7 @@ public class MainPresenter {
 			BorderPane.setAlignment(progressIndicator, Pos.CENTER);
 			tab.setContent(borderPane);
 			final Thread thread = new Thread(() -> {
-				final Node content = lazyView.get()
-											 .getView();
+				final Node content = lazyView.get().getView();
 				Platform.runLater(() -> tab.setContent(content));
 			});
 			thread.setDaemon(true);

@@ -18,6 +18,7 @@ import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
 public class UploadCellFactory implements Callback<ListView<UploadModel>, ListCell<UploadModel>> {
+
 	@Override
 	public ListCell<UploadModel> call(final ListView<UploadModel> uploadListView) {
 		return new ListCell<UploadModel>() {

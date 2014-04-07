@@ -10,5 +10,4 @@
 
 package de.chaosfisch.uploader.project;
 
-public interface IProjectService {
-}
+public interface IProjectService {}

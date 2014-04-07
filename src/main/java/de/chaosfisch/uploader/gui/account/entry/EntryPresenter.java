@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 
 public class EntryPresenter {
+
 	private static final double MAX_WIDTH_PANEL = 140;
 
 	private final HashMap<PlaylistModel, VBox>     playlistPanels                 = new HashMap<>(10);
@@ -48,8 +49,7 @@ public class EntryPresenter {
 
 	public void setAccount(final AccountModel account) {
 		this.account = account;
-		titledpane.textProperty()
-				  .bind(account.nameProperty());
+		titledpane.textProperty().bind(account.nameProperty());
 
 		playlistModelSimpleSetProperty.addListener((SetChangeListener<PlaylistModel>) change -> {
 			if (change.wasRemoved()) {
@@ -64,27 +64,23 @@ public class EntryPresenter {
 
 	private void removePlaylistPanel(final PlaylistModel playlistModel) {
 		if (playlistPanels.containsKey(playlistModel)) {
-			flowpane.getChildren()
-					.remove(playlistPanels.get(playlistModel));
+			flowpane.getChildren().remove(playlistPanels.get(playlistModel));
 		}
 	}
 
 	private void addPlaylistPanel(final PlaylistModel playlistModel) {
-		final ImageView imageView = new ImageView(null != playlistModel.getThumbnail() ? playlistModel.getThumbnail() : getClass()
-				.getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png")
-				.toExternalForm());
+		final ImageView imageView = new ImageView(null != playlistModel.getThumbnail() ? playlistModel.getThumbnail() : getClass().getResource(
+				"/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png").toExternalForm());
 		imageView.setPreserveRatio(true);
 		imageView.setFitWidth(MAX_WIDTH_PANEL);
 		final Label label = new Label();
-		label.textProperty()
-			 .bind(playlistModel.titleProperty());
+		label.textProperty().bind(playlistModel.titleProperty());
 		label.setWrapText(true);
 		label.setMaxWidth(MAX_WIDTH_PANEL);
 
 		final VBox vBox = new VBox(imageView, label);
 		playlistPanels.put(playlistModel, vBox);
-		flowpane.getChildren()
-				.add(vBox);
+		flowpane.getChildren().add(vBox);
 	}
 
 	public void deleteAccount() {

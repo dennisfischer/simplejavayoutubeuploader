@@ -8,10 +8,17 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.upload.metadata;
+package de.chaosfisch.youtube.account;
 
-import de.chaosfisch.data.IGenericDAO;
-import de.chaosfisch.data.upload.IUploadRelation;
+import de.chaosfisch.youtube.Event;
 
-public interface IMetadataDAO extends IGenericDAO<MetadataDTO>, IUploadRelation<MetadataDTO> {
+public class AccountRemovedEvent implements Event {
+
+	private final AccountModel accountModel;
+
+	public AccountRemovedEvent(final AccountModel accountModel) {this.accountModel = accountModel;}
+
+	public AccountModel getAccountModel() {
+		return accountModel;
+	}
 }

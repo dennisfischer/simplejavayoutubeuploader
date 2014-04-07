@@ -8,11 +8,12 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.upload.permission;
-
-import org.jetbrains.annotations.NonNls;
+package de.chaosfisch.data.upload;
 
 public class PermissionDTO {
+
+	private String uploadId;
+
 	private boolean ageRestricted;
 	private String  comment;
 	private boolean commentvote;
@@ -20,10 +21,10 @@ public class PermissionDTO {
 	private boolean publicStatsViewable;
 	private boolean rate;
 	private String  threedD;
-	private String  uploadId;
 	private String  visibility;
 
-	public PermissionDTO(final String uploadId, final String visibility, final String threedD, final String comment, final boolean commentvote, final boolean embed, final boolean rate, final boolean ageRestricted, final boolean publicStatsViewable) {
+	public PermissionDTO(final String uploadId, final String visibility, final String threedD, final String comment, final boolean commentvote,
+						 final boolean embed, final boolean rate, final boolean ageRestricted, final boolean publicStatsViewable) {
 		this.uploadId = uploadId;
 		this.visibility = visibility;
 		this.threedD = threedD;
@@ -111,7 +112,6 @@ public class PermissionDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "PermissionDTO{" +
 				"uploadId='" + uploadId + '\'' +

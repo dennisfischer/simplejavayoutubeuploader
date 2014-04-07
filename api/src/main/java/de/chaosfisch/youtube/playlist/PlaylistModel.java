@@ -29,8 +29,7 @@ public class PlaylistModel {
 
 	@Override
 	public int hashCode() {
-		return youtubeId.get()
-						.hashCode();
+		return youtubeId.get().hashCode();
 	}
 
 	@Override
@@ -42,8 +41,7 @@ public class PlaylistModel {
 			return false;
 		}
 		final PlaylistModel that = (PlaylistModel) obj;
-		return youtubeId.get()
-						.equals(that.youtubeId.get());
+		return youtubeId.get().equals(that.youtubeId.get());
 	}
 
 	@Override

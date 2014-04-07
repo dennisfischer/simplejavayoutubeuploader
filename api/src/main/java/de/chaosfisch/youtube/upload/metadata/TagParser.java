@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class TagParser {
+
 	private static final char TAG_DELIMITER       = ',';
 	private static final int  MAX_TAG_LENGTH      = 30;
 	private static final int  MIN_TAG_LEGNTH      = 2;
@@ -38,14 +39,11 @@ public final class TagParser {
 
 	private static boolean isTagValid(final String tag) {
 		final int byteLength = tag.getBytes(Charsets.UTF_8).length;
-		return MIN_TAG_LEGNTH <= byteLength && MAX_TAG_LENGTH >= byteLength && !(tag.contains("<") || tag.contains(">") || tag
-				.contains("\""));
+		return MIN_TAG_LEGNTH <= byteLength && MAX_TAG_LENGTH >= byteLength && !(tag.contains("<") || tag.contains(">") || tag.contains("\""));
 	}
 
 	public static List<String> parse(final String input) {
-		final List<String> tags = Splitter.on(TAG_DELIMITER)
-										  .omitEmptyStrings()
-										  .splitToList(input);
+		final List<String> tags = Splitter.on(TAG_DELIMITER).omitEmptyStrings().splitToList(input);
 		final List<String> result = new ArrayList<>(tags.size());
 
 		for (final String tag : tags) {

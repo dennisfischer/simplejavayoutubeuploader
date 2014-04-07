@@ -78,9 +78,7 @@ public class EditRightPresenter {
 		if (null != file) {
 			thumbnailPath.setText(file.getAbsolutePath());
 			try {
-				thumbnailImage.setImage(new Image(file.toURI()
-													  .toURL()
-													  .toExternalForm(), true));
+				thumbnailImage.setImage(new Image(file.toURI().toURL().toExternalForm(), true));
 			} catch (final MalformedURLException e) {
 				LOGGER.warn("Loading thumbnail preview failed", e);
 			}
@@ -88,51 +86,32 @@ public class EditRightPresenter {
 	}
 
 	public void initialize() {
-		mainFrame.getPanes()
-				 .add((TitledPane) editMonetizationViewLazy.get()
-														   .getView());
+		mainFrame.getPanes().add((TitledPane) editMonetizationViewLazy.get().getView());
 		bindData();
 		selectData();
 	}
 
 	private void bindData() {
-		visibility.itemsProperty()
-				  .bindBidirectional(editDataModel.visibilitiesProperty());
-		comments.itemsProperty()
-				.bindBidirectional(editDataModel.commentsProperty());
-		license.itemsProperty()
-			   .bindBidirectional(editDataModel.licensesProperty());
-		threed.itemsProperty()
-			  .bindBidirectional(editDataModel.threeDsProperty());
+		visibility.itemsProperty().bindBidirectional(editDataModel.visibilitiesProperty());
+		comments.itemsProperty().bindBidirectional(editDataModel.commentsProperty());
+		license.itemsProperty().bindBidirectional(editDataModel.licensesProperty());
+		threed.itemsProperty().bindBidirectional(editDataModel.threeDsProperty());
 
-		visibility.valueProperty()
-				  .bindBidirectional(editDataModel.selectedVisibilityProperty());
-		comments.valueProperty()
-				.bindBidirectional(editDataModel.selectedCommentProperty());
-		license.valueProperty()
-			   .bindBidirectional(editDataModel.selectedLicenseProperty());
-		threed.valueProperty()
-			  .bindBidirectional(editDataModel.selectedThreeDProperty());
-		ageRestriction.selectedProperty()
-					  .bindBidirectional(editDataModel.ageRestrictionProperty());
-		statistics.selectedProperty()
-				  .bindBidirectional(editDataModel.statisticsProperty());
-		rate.selectedProperty()
-			.bindBidirectional(editDataModel.rateProperty());
-		embed.selectedProperty()
-			 .bindBidirectional(editDataModel.embedProperty());
-		subscribers.selectedProperty()
-				   .bindBidirectional(editDataModel.subscribersProperty());
+		visibility.valueProperty().bindBidirectional(editDataModel.selectedVisibilityProperty());
+		comments.valueProperty().bindBidirectional(editDataModel.selectedCommentProperty());
+		license.valueProperty().bindBidirectional(editDataModel.selectedLicenseProperty());
+		threed.valueProperty().bindBidirectional(editDataModel.selectedThreeDProperty());
+		ageRestriction.selectedProperty().bindBidirectional(editDataModel.ageRestrictionProperty());
+		statistics.selectedProperty().bindBidirectional(editDataModel.statisticsProperty());
+		rate.selectedProperty().bindBidirectional(editDataModel.rateProperty());
+		embed.selectedProperty().bindBidirectional(editDataModel.embedProperty());
+		subscribers.selectedProperty().bindBidirectional(editDataModel.subscribersProperty());
 	}
 
 	private void selectData() {
-		visibility.getSelectionModel()
-				  .selectFirst();
-		comments.getSelectionModel()
-				.selectFirst();
-		license.getSelectionModel()
-			   .selectFirst();
-		threed.getSelectionModel()
-			  .selectFirst();
+		visibility.getSelectionModel().selectFirst();
+		comments.getSelectionModel().selectFirst();
+		license.getSelectionModel().selectFirst();
+		threed.getSelectionModel().selectFirst();
 	}
 }

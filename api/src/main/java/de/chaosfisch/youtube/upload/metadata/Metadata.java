@@ -10,7 +10,7 @@
 
 package de.chaosfisch.youtube.upload.metadata;
 
-import de.chaosfisch.data.upload.metadata.MetadataDTO;
+import de.chaosfisch.data.upload.MetadataDTO;
 import de.chaosfisch.youtube.category.CategoryModel;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -95,12 +95,10 @@ public class Metadata {
 	}
 
 	public String getLicenseIdentifier() {
-		return license.get()
-					  .getIdentifier();
+		return license.get().getIdentifier();
 	}
 
 	public int getCategoryId() {
-		return category.get()
-					   .getYoutubeId();
+		return category.get().getYoutubeId();
 	}
 }

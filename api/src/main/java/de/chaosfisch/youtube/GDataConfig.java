@@ -11,6 +11,7 @@
 package de.chaosfisch.youtube;
 
 public interface GDataConfig {
+
 	String ACCESS_KEY    = "AIzaSyBsxiFsRo347LshGBVRWpD80xvEHH-Kyrk";
 	String GDATA_V3      = "3";
 	String CLIENT_ID     = "203948081743.apps.googleusercontent.com";

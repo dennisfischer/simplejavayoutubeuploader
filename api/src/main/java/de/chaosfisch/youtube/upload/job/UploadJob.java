@@ -23,8 +23,6 @@ import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.Status;
 import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.metadata.IMetadataService;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +30,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Optional;
@@ -108,27 +106,20 @@ public class UploadJob implements Callable<UploadModel> {
 
 	private void upload() {
 		// Set the time uploaded started
-		upload.setDateTimeOfStart(LocalDateTime.now()
-											   .minusSeconds(1));
+		upload.setDateTimeOfStart(ZonedDateTime.now().minusSeconds(1));
 		uploadService.store(upload);
 
 		if (null == uploadProgress) {
 			uploadProgress = new UploadJobProgressEvent();
-			uploadProgress.setTime(Calendar.getInstance()
-										   .getTimeInMillis());
+			uploadProgress.setTime(Calendar.getInstance().getTimeInMillis());
 		}
 
 		// Upload atomData and fetch uploadUrl
 		final Video video = metadataService.buildVideoEntry(upload);
 
 		try {
-			final InputStreamContent mediaContent = new InputStreamContent("video/*",
-																		   new TokenInputStream(new FileInputStream(
-																				   upload.getFile()))
-			);
-			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount())
-																	.videos()
-																	.insert("snippet,status", video, mediaContent);
+			final InputStreamContent mediaContent = new InputStreamContent("video/*", new TokenInputStream(new FileInputStream(upload.getFile())));
+			final YouTube.Videos.Insert videoInsert = YouTubeFactory.getYouTube(upload.getAccount()).videos().insert("snippet,status", video, mediaContent);
 
 			final MediaHttpUploader uploader = videoInsert.getMediaHttpUploader();
 			uploader.setDirectUploadEnabled(false);
@@ -157,17 +148,13 @@ public class UploadJob implements Callable<UploadModel> {
 
 			// Call the API and upload the video.
 			final Video returnedVideo = videoInsert.execute();
-			metadataService.updateMetaData(metadataService.updateVideoEntry(returnedVideo, upload),
-										   upload.getAccount());
+			metadataService.updateMetaData(metadataService.updateVideoEntry(returnedVideo, upload), upload.getAccount());
 
 			upload.setStatus(Status.FINISHED);
 			uploadService.store(upload);
 		} catch (final GoogleJsonResponseException e) {
 			e.printStackTrace();
-			System.err.println("GoogleJsonResponseException code: " + e.getDetails()
-																	   .getCode() + " : "
-									   + e.getDetails()
-										  .getMessage());
+			System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage());
 		} catch (final IOException e) {
 			e.printStackTrace();
 			System.err.println("IOException: " + e.getMessage());
@@ -178,42 +165,42 @@ public class UploadJob implements Callable<UploadModel> {
 
 	}
 
-	public void setRateLimiter(@NotNull final RateLimiter rateLimiter) {
+	public void setRateLimiter(final RateLimiter rateLimiter) {
 		this.rateLimiter = rateLimiter;
 	}
 
 	public static class Builder {
 
+		public final  IMetadataService                    metadataService;
 		private final UploadModel                         upload;
 		private final IUploadService                      uploadService;
-		public final  IMetadataService                    metadataService;
 		private       Collection<UploadJobPreProcessor>   preProcessors;
 		private       Collection<UploadeJobPostProcessor> postProcessors;
 		private       RateLimiter                         rateLimiter;
 		private       EventBus                            eventBus;
 
-		public Builder(@NotNull final UploadModel upload, @NotNull final IUploadService uploadService, @NotNull final IMetadataService metadataService) {
+		public Builder(final UploadModel upload, final IUploadService uploadService, final IMetadataService metadataService) {
 			this.upload = upload;
 			this.uploadService = uploadService;
 			this.metadataService = metadataService;
 		}
 
-		public Builder withPreProcessors(@NotNull final Collection<UploadJobPreProcessor> preProcessors) {
+		public Builder withPreProcessors(final Collection<UploadJobPreProcessor> preProcessors) {
 			this.preProcessors = preProcessors;
 			return this;
 		}
 
-		public Builder withPostProcessors(@NotNull final Collection<UploadeJobPostProcessor> postProcessors) {
+		public Builder withPostProcessors(final Collection<UploadeJobPostProcessor> postProcessors) {
 			this.postProcessors = postProcessors;
 			return this;
 		}
 
-		public Builder withRateLimiter(@NotNull final RateLimiter rateLimiter) {
+		public Builder withRateLimiter(final RateLimiter rateLimiter) {
 			this.rateLimiter = rateLimiter;
 			return this;
 		}
 
-		public Builder withEventBus(@Nullable final EventBus eventBus) {
+		public Builder withEventBus(final EventBus eventBus) {
 			this.eventBus = eventBus;
 			return this;
 		}
@@ -233,11 +220,10 @@ public class UploadJob implements Callable<UploadModel> {
 		}
 
 		@Override
-		public synchronized int read(@NotNull final byte[] b, final int off, final int len) throws IOException {
+		public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
 			rateLimiter.acquire(b.length);
 
-			if (Thread.currentThread()
-					  .isInterrupted()) {
+			if (Thread.currentThread().isInterrupted()) {
 				LOGGER.error("Upload aborted / stopped.");
 				upload.setStatus(Status.ABORTED);
 				throw new CancellationException("Thread cancled");
@@ -249,8 +235,7 @@ public class UploadJob implements Callable<UploadModel> {
 				// Event Upload Progress
 				// Calculate all uploadinformation
 				totalBytesUploaded += b.length;
-				final long diffTime = Calendar.getInstance()
-											  .getTimeInMillis() - uploadProgress.getTime();
+				final long diffTime = Calendar.getInstance().getTimeInMillis() - uploadProgress.getTime();
 				if (1000 < diffTime) {
 					uploadProgress.setBytes(totalBytesUploaded);
 					uploadProgress.setTime(diffTime);

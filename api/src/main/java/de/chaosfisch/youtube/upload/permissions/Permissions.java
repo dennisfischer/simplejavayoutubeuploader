@@ -10,20 +10,20 @@
 
 package de.chaosfisch.youtube.upload.permissions;
 
-import de.chaosfisch.data.upload.permission.PermissionDTO;
+import de.chaosfisch.data.upload.PermissionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class Permissions {
 
-	private final SimpleBooleanProperty            ageRestricted = new SimpleBooleanProperty();
+	private final SimpleBooleanProperty            ageRestricted       = new SimpleBooleanProperty();
 	private final SimpleObjectProperty<Comment>    comment             = new SimpleObjectProperty<>(Comment.ALLOWED);
 	private final SimpleBooleanProperty            commentvote         = new SimpleBooleanProperty(true);
 	private final SimpleBooleanProperty            embed               = new SimpleBooleanProperty(true);
 	private final SimpleBooleanProperty            publicStatsViewable = new SimpleBooleanProperty();
-	private final SimpleBooleanProperty            rate          = new SimpleBooleanProperty(true);
-	private final SimpleObjectProperty<ThreeD>     threedD       = new SimpleObjectProperty<>(ThreeD.DEFAULT);
-	private final SimpleObjectProperty<Visibility> visibility    = new SimpleObjectProperty<>(Visibility.PUBLIC);
+	private final SimpleBooleanProperty            rate                = new SimpleBooleanProperty(true);
+	private final SimpleObjectProperty<ThreeD>     threedD             = new SimpleObjectProperty<>(ThreeD.DEFAULT);
+	private final SimpleObjectProperty<Visibility> visibility          = new SimpleObjectProperty<>(Visibility.PUBLIC);
 
 	public Permissions(final PermissionDTO permissionDTO) {
 		ageRestricted.set(permissionDTO.isAgeRestricted());
@@ -136,7 +136,6 @@ public class Permissions {
 	}
 
 	public String getVisibilityIdentifier() {
-		return visibility.get()
-						 .getIdentifier();
+		return visibility.get().getIdentifier();
 	}
 }

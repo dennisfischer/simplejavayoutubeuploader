@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: sormula-3.1-jdk1.7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/api/libs/sormula-3.1-jdk1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Downloads/sormula-3.1-jdk1.7-src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

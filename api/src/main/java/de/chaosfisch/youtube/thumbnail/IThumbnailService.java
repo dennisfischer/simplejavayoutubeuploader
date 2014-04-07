@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 public interface IThumbnailService {
+
 	/**
 	 * Uploads a thumbnail via the YouTube webpage. This may fail!
 	 *

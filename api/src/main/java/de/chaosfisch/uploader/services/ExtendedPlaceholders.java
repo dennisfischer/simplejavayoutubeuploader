@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExtendedPlaceholders {
+
 	private final ResourceBundle resourceBundle;
 	private final Pattern        numberPattern;
 	private final Pattern        playlistPattern;

@@ -10,41 +10,34 @@
 
 package de.chaosfisch.data.account;
 
-import de.chaosfisch.data.account.cookies.CookieDTO;
-import de.chaosfisch.data.account.fields.FieldDTO;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDTO {
-	@NotNull
-	private final List<FieldDTO>  fields;
-	@NotNull
-	private final List<CookieDTO> cookies;
-	@NotNull
-	private       String          youtubeId;
-	@NotNull
-	private       String          name;
-	@NotNull
-	private       String          email;
-	@NotNull
-	private       String          refreshToken;
-	@NotNull
-	private       String          type;
+
+	private String accountId;
+
+	private List<FieldDTO>  fields;
+	private List<CookieDTO> cookies;
+	private String          name;
+	private String          email;
+
+	private String refreshToken;
+
+	private String type;
 
 	public AccountDTO() {
 		fields = new ArrayList<>(0);
 		cookies = new ArrayList<>(0);
 	}
 
-	public AccountDTO(@NotNull final String youtubeId, @NotNull final String name, @NotNull final String email, @NotNull final String refreshToken, @NotNull final String type) {
-		this(youtubeId, name, email, refreshToken, type, new ArrayList<>(0), new ArrayList<>(0));
+	public AccountDTO(final String accountId, final String name, final String email, final String refreshToken, final String type) {
+		this(accountId, name, email, refreshToken, type, new ArrayList<>(0), new ArrayList<>(0));
 	}
 
-	public AccountDTO(@NotNull final String youtubeId, @NotNull final String name, @NotNull final String email, @NotNull final String refreshToken, @NotNull final String type, @NotNull final List<FieldDTO> fields, @NotNull final List<CookieDTO> cookies) {
-		this.youtubeId = youtubeId;
+	public AccountDTO(final String accountId, final String name, final String email, final String refreshToken, final String type, final List<FieldDTO> fields,
+					  final List<CookieDTO> cookies) {
+		this.accountId = accountId;
 		this.name = name;
 		this.email = email;
 		this.refreshToken = refreshToken;
@@ -53,64 +46,65 @@ public class AccountDTO {
 		this.cookies = cookies;
 	}
 
-	@NotNull
-	public String getYoutubeId() {
-		return youtubeId;
+
+	public String getAccountId() {
+		return accountId;
 	}
 
-	public void setYoutubeId(@NotNull final String youtubeId) {
-		this.youtubeId = youtubeId;
+	public void setAccountId(final String accountId) {
+		this.accountId = accountId;
 	}
 
-	@NotNull
+
 	public String getName() {
 		return name;
 	}
 
-	public void setName(@NotNull final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	@NotNull
+
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(@NotNull final String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
-	@NotNull
+
 	public String getRefreshToken() {
 		return refreshToken;
 	}
 
-	public void setRefreshToken(@NotNull final String refreshToken) {
+	public void setRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
 
-	@NotNull
+
 	public String getType() {
 		return type;
 	}
 
-	public void setType(@NotNull final String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
-	@NotNull
+
 	public List<FieldDTO> getFields() {
 		return fields;
 	}
 
-	@NotNull
+
 	public List<CookieDTO> getCookies() {
 		return cookies;
 	}
 
+
 	@Override
 	public int hashCode() {
-		int result = youtubeId.hashCode();
+		int result = accountId.hashCode();
 		result = 31 * result + name.hashCode();
 		result = 31 * result + email.hashCode();
 		result = 31 * result + refreshToken.hashCode();
@@ -132,15 +126,14 @@ public class AccountDTO {
 		final AccountDTO that = (AccountDTO) obj;
 
 		return cookies.equals(that.cookies) && email.equals(that.email) && fields.equals(that.fields) && name.equals(that.name) && refreshToken.equals(
-				that.refreshToken) && type.equals(that.type) && youtubeId.equals(that.youtubeId);
+				that.refreshToken) && type.equals(that.type) && accountId.equals(that.accountId);
 
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "AccountDTO{" +
-				"youtubeId='" + youtubeId + '\'' +
+				"accountId='" + accountId + '\'' +
 				", name='" + name + '\'' +
 				", email='" + email + '\'' +
 				", refreshToken='" + refreshToken + '\'' +
@@ -148,5 +141,13 @@ public class AccountDTO {
 				", fields=" + fields +
 				", cookies=" + cookies +
 				'}';
+	}
+
+	public void setFields(final List<FieldDTO> fields) {
+		this.fields = fields;
+	}
+
+	public void setCookies(final List<CookieDTO> cookies) {
+		this.cookies = cookies;
 	}
 }

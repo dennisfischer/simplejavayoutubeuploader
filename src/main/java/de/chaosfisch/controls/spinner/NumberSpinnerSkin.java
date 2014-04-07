@@ -80,26 +80,24 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 
 		// The TextField
 		textField = new TextField();
-		textField.focusedProperty()
-				 .addListener((observableValue4, aBoolean, aBoolean1) -> {
-					 if (textField.isEditable() && aBoolean1) {
-						 Platform.runLater(textField::selectAll);
-					 }
+		textField.focusedProperty().addListener((observableValue4, aBoolean, aBoolean1) -> {
+			if (textField.isEditable() && aBoolean1) {
+				Platform.runLater(textField::selectAll);
+			}
 
-					 if (textField.isFocused()) {
-						 getStyleClass().add("number-spinner-focused");
-					 } else {
-						 getStyleClass().remove("number-spinner-focused");
-						 parseText();
-						 setText();
-					 }
-				 });
+			if (textField.isFocused()) {
+				getStyleClass().add("number-spinner-focused");
+			} else {
+				getStyleClass().remove("number-spinner-focused");
+				parseText();
+				setText();
+			}
+		});
 
 		// Mimic bidirectional binding: Whenever the selection changes of either the control or the text field, propagate it to the other.
 		// This ensures that the selectionProperty of both are in sync.
 		changeListenerSelection = (observableValue3, indexRange, indexRange2) -> textField.selectRange(indexRange2.getStart(), indexRange2.getEnd());
-		numberSpinner.selectionProperty()
-					 .addListener(changeListenerSelection);
+		numberSpinner.selectionProperty().addListener(changeListenerSelection);
 
 		textField.selectionProperty()
 				 .addListener((observableValue3, indexRange, indexRange1) -> numberSpinner.selectRange(indexRange1.getStart(), indexRange1.getEnd()));
@@ -107,29 +105,19 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 		// Mimic bidirectional binding: Whenever the caret position changes in either the control or the text field, propagate it to the other.
 		// This ensures that both caretPositions are in sync.
 		changeListenerCaretPosition = (observableValue3, number3, number1) -> textField.positionCaret(number1.intValue());
-		numberSpinner.caretPositionProperty()
-					 .addListener(changeListenerCaretPosition);
+		numberSpinner.caretPositionProperty().addListener(changeListenerCaretPosition);
 
-		textField.caretPositionProperty()
-				 .addListener((observableValue2, number1, number2) -> numberSpinner.positionCaret(number2.intValue()));
+		textField.caretPositionProperty().addListener((observableValue2, number1, number2) -> numberSpinner.positionCaret(number2.intValue()));
 
 		// Bind the control's properties to the text field.
-		textField.minHeightProperty()
-				 .bind(numberSpinner.minHeightProperty());
-		textField.maxHeightProperty()
-				 .bind(numberSpinner.maxHeightProperty());
-		textField.textProperty()
-				 .bindBidirectional(numberSpinner.textProperty());
-		textField.alignmentProperty()
-				 .bind(numberSpinner.alignmentProperty());
-		textField.editableProperty()
-				 .bind(numberSpinner.editableProperty());
-		textField.prefColumnCountProperty()
-				 .bind(numberSpinner.prefColumnCountProperty());
-		textField.promptTextProperty()
-				 .bind(numberSpinner.promptTextProperty());
-		textField.onActionProperty()
-				 .bind(numberSpinner.onActionProperty());
+		textField.minHeightProperty().bind(numberSpinner.minHeightProperty());
+		textField.maxHeightProperty().bind(numberSpinner.maxHeightProperty());
+		textField.textProperty().bindBidirectional(numberSpinner.textProperty());
+		textField.alignmentProperty().bind(numberSpinner.alignmentProperty());
+		textField.editableProperty().bind(numberSpinner.editableProperty());
+		textField.prefColumnCountProperty().bind(numberSpinner.prefColumnCountProperty());
+		textField.promptTextProperty().bind(numberSpinner.promptTextProperty());
+		textField.onActionProperty().bind(numberSpinner.onActionProperty());
 		textField.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
 			if (!keyEvent.isConsumed()) {
 				if (KeyCode.UP == keyEvent.getCode()) {
@@ -145,33 +133,30 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 		setText();
 
 		changeListenerValue = (observableValue1, number, number2) -> setText();
-		numberSpinner.valueProperty()
-					 .addListener(changeListenerValue);
+		numberSpinner.valueProperty().addListener(changeListenerValue);
 		changeListenerHAlignment = (observableValue, hPos, hPos1) -> align(numberSpinner.getHAlignment());
-		numberSpinner.hAlignmentProperty()
-					 .addListener(changeListenerHAlignment);
+		numberSpinner.hAlignmentProperty().addListener(changeListenerHAlignment);
 
 
 		// The increment button.
 		btnIncrement.setFocusTraversable(false);
-		btnIncrement.disableProperty()
-					.bind(new BooleanBinding() {
-						{
-							bind(numberSpinner.valueProperty(), numberSpinner.maxValueProperty());
-						}
+		btnIncrement.disableProperty().bind(new BooleanBinding() {
+			{
+				bind(numberSpinner.valueProperty(), numberSpinner.maxValueProperty());
+			}
 
-						@Override
-						protected boolean computeValue() {
+			@Override
+			protected boolean computeValue() {
 
-							return null != numberSpinner.valueProperty()
-														.get() && null != numberSpinner.maxValueProperty()
-																					   .get() && numberSpinner.valueProperty()
-																											  .get()
-																											  .doubleValue() >= numberSpinner.maxValueProperty()
-																																			 .get()
-																																			 .doubleValue();
-						}
-					});
+				return null != numberSpinner.valueProperty().get() && null != numberSpinner.maxValueProperty().get() && numberSpinner.valueProperty()
+																																	 .get()
+																																	 .doubleValue() >=
+						numberSpinner
+						.maxValueProperty()
+						.get()
+						.doubleValue();
+			}
+		});
 		btnIncrement.setOnAction(actionEvent1 -> {
 			parseText();
 			numberSpinner.increment();
@@ -185,23 +170,22 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 
 		// The decrement button
 		btnDecrement.setFocusTraversable(false);
-		btnDecrement.disableProperty()
-					.bind(new BooleanBinding() {
-						{
-							bind(numberSpinner.valueProperty(), numberSpinner.minValueProperty());
-						}
+		btnDecrement.disableProperty().bind(new BooleanBinding() {
+			{
+				bind(numberSpinner.valueProperty(), numberSpinner.minValueProperty());
+			}
 
-						@Override
-						protected boolean computeValue() {
-							return null != numberSpinner.valueProperty()
-														.get() && null != numberSpinner.minValueProperty()
-																					   .get() && numberSpinner.valueProperty()
-																											  .get()
-																											  .doubleValue() <= numberSpinner.minValueProperty()
-																																			 .get()
-																																			 .doubleValue();
-						}
-					});
+			@Override
+			protected boolean computeValue() {
+				return null != numberSpinner.valueProperty().get() && null != numberSpinner.minValueProperty().get() && numberSpinner.valueProperty()
+																																	 .get()
+																																	 .doubleValue() <=
+						numberSpinner
+						.minValueProperty()
+						.get()
+						.doubleValue();
+			}
+		});
 		btnDecrement.setOnAction(actionEvent -> {
 			parseText();
 			numberSpinner.decrement();
@@ -228,8 +212,7 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	private Region createArrow() {
 		final Region arrow = new Region();
 		arrow.setMaxSize(8, 8);
-		arrow.getStyleClass()
-			 .add("arrow");
+		arrow.getStyleClass().add("arrow");
 		return arrow;
 	}
 
@@ -241,10 +224,8 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	private void align(final HPos hPos) {
 		getChildren().clear();
 		clearStyles();
-		btnIncrement.maxHeightProperty()
-					.unbind();
-		btnDecrement.maxHeightProperty()
-					.unbind();
+		btnIncrement.maxHeightProperty().unbind();
+		btnDecrement.maxHeightProperty().unbind();
 		switch (hPos) {
 			case LEFT:
 			case RIGHT:
@@ -260,17 +241,12 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	 * Aligns the text field in between both buttons.
 	 */
 	private void alignCenter() {
-		btnIncrement.getStyleClass()
-					.add(RIGHT);
-		btnDecrement.getStyleClass()
-					.add(LEFT);
-		textField.getStyleClass()
-				 .add(CENTER);
+		btnIncrement.getStyleClass().add(RIGHT);
+		btnDecrement.getStyleClass().add(LEFT);
+		textField.getStyleClass().add(CENTER);
 
-		btnIncrement.maxHeightProperty()
-					.setValue(Double.MAX_VALUE);
-		btnDecrement.maxHeightProperty()
-					.setValue(Double.MAX_VALUE);
+		btnIncrement.maxHeightProperty().setValue(Double.MAX_VALUE);
+		btnDecrement.maxHeightProperty().setValue(Double.MAX_VALUE);
 
 		arrowIncrement.setRotate(-90);
 		arrowDecrement.setRotate(90);
@@ -289,42 +265,28 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 		final HBox hBox = new HBox();
 		switch (hPos) {
 			case RIGHT:
-				btnIncrement.getStyleClass()
-							.add(TOP_LEFT);
-				btnDecrement.getStyleClass()
-							.add(BOTTOM_LEFT);
-				textField.getStyleClass()
-						 .add(RIGHT);
-				hBox.getChildren()
-					.addAll(buttonBox, textField);
+				btnIncrement.getStyleClass().add(TOP_LEFT);
+				btnDecrement.getStyleClass().add(BOTTOM_LEFT);
+				textField.getStyleClass().add(RIGHT);
+				hBox.getChildren().addAll(buttonBox, textField);
 				break;
 			case LEFT:
-				btnIncrement.getStyleClass()
-							.add(TOP_RIGHT);
-				btnDecrement.getStyleClass()
-							.add(BOTTOM_RIGHT);
-				textField.getStyleClass()
-						 .add(LEFT);
-				hBox.getChildren()
-					.addAll(textField, buttonBox);
+				btnIncrement.getStyleClass().add(TOP_RIGHT);
+				btnDecrement.getStyleClass().add(BOTTOM_RIGHT);
+				textField.getStyleClass().add(LEFT);
+				hBox.getChildren().addAll(textField, buttonBox);
 				break;
 			case CENTER:
 				break;
 		}
 
-		btnIncrement.maxHeightProperty()
-					.bind(textField.heightProperty()
-								   .divide(2.0));
+		btnIncrement.maxHeightProperty().bind(textField.heightProperty().divide(2.0));
 		// Subtract 0.5 to ensure it looks fine if height is odd.
-		btnDecrement.maxHeightProperty()
-					.bind(textField.heightProperty()
-								   .divide(2.0)
-								   .subtract(0.5));
+		btnDecrement.maxHeightProperty().bind(textField.heightProperty().divide(2.0).subtract(0.5));
 		arrowIncrement.setRotate(180);
 		arrowDecrement.setRotate(0);
 
-		buttonBox.getChildren()
-				 .addAll(btnIncrement, btnDecrement);
+		buttonBox.getChildren().addAll(btnIncrement, btnDecrement);
 		getChildren().add(hBox);
 	}
 
@@ -332,12 +294,9 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	 * Clears all styles on all controls.
 	 */
 	private void clearStyles() {
-		btnIncrement.getStyleClass()
-					.removeAll(cssClasses);
-		btnDecrement.getStyleClass()
-					.removeAll(cssClasses);
-		textField.getStyleClass()
-				 .removeAll(cssClasses);
+		btnIncrement.getStyleClass().removeAll(cssClasses);
+		btnDecrement.getStyleClass().removeAll(cssClasses);
+		textField.getStyleClass().removeAll(cssClasses);
 	}
 
 	/**
@@ -347,9 +306,7 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	private void parseText() {
 		if (null != textField.getText()) {
 			try {
-				numberSpinner.setValue(BigDecimal.valueOf(numberSpinner.getNumberStringConverter()
-																	   .fromString(textField.getText())
-																	   .doubleValue()));
+				numberSpinner.setValue(BigDecimal.valueOf(numberSpinner.getNumberStringConverter().fromString(textField.getText()).doubleValue()));
 			} catch (final Exception e) {
 				numberSpinner.setValue(null);
 			}
@@ -363,11 +320,9 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 	 * Sets the formatted value to the text field.
 	 */
 	private void setText() {
-		if (null != numberSpinner.getValue() && !Double.isInfinite(numberSpinner.getValue()
-																				.doubleValue()) && !Double.isNaN(numberSpinner.getValue()
-																															  .doubleValue())) {
-			textField.setText(numberSpinner.getNumberStringConverter()
-										   .toString(numberSpinner.getValue()));
+		if (null != numberSpinner.getValue() && !Double.isInfinite(numberSpinner.getValue().doubleValue()) && !Double.isNaN(
+				numberSpinner.getValue().doubleValue())) {
+			textField.setText(numberSpinner.getNumberStringConverter().toString(numberSpinner.getValue()));
 		} else {
 			textField.setText(null);
 		}
@@ -389,35 +344,21 @@ public class NumberSpinnerSkin extends StackPane implements Skin<NumberSpinner> 
 		// Unbind everything and remove listeners, in order to avoid memory leaks.
 		minHeightProperty().unbind();
 
-		textField.minHeightProperty()
-				 .unbind();
-		textField.maxHeightProperty()
-				 .unbind();
-		textField.textProperty()
-				 .unbindBidirectional(numberSpinner.textProperty());
-		textField.alignmentProperty()
-				 .unbind();
-		textField.editableProperty()
-				 .unbind();
-		textField.prefColumnCountProperty()
-				 .unbind();
-		textField.promptTextProperty()
-				 .unbind();
-		textField.onActionProperty()
-				 .unbind();
+		textField.minHeightProperty().unbind();
+		textField.maxHeightProperty().unbind();
+		textField.textProperty().unbindBidirectional(numberSpinner.textProperty());
+		textField.alignmentProperty().unbind();
+		textField.editableProperty().unbind();
+		textField.prefColumnCountProperty().unbind();
+		textField.promptTextProperty().unbind();
+		textField.onActionProperty().unbind();
 
-		numberSpinner.selectionProperty()
-					 .removeListener(changeListenerSelection);
-		numberSpinner.caretPositionProperty()
-					 .removeListener(changeListenerCaretPosition);
-		numberSpinner.valueProperty()
-					 .removeListener(changeListenerValue);
-		numberSpinner.hAlignmentProperty()
-					 .removeListener(changeListenerHAlignment);
-		btnIncrement.disableProperty()
-					.unbind();
-		btnDecrement.disableProperty()
-					.unbind();
+		numberSpinner.selectionProperty().removeListener(changeListenerSelection);
+		numberSpinner.caretPositionProperty().removeListener(changeListenerCaretPosition);
+		numberSpinner.valueProperty().removeListener(changeListenerValue);
+		numberSpinner.hAlignmentProperty().removeListener(changeListenerHAlignment);
+		btnIncrement.disableProperty().unbind();
+		btnDecrement.disableProperty().unbind();
 
 	}
 }

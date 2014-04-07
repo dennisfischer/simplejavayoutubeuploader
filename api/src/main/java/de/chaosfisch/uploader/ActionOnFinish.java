@@ -10,8 +10,4 @@
 
 package de.chaosfisch.uploader;
 
-public enum ActionOnFinish {
-
-	NOTHING, CLOSE, SHUTDOWN, SLEEP, CLEAR, CUSTOM
-
-}
+public enum ActionOnFinish {NOTHING, CLOSE, SHUTDOWN, SLEEP, CLEAR, CUSTOM}

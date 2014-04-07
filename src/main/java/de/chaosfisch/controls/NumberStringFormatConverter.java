@@ -26,8 +26,7 @@ public class NumberStringFormatConverter extends NumberStringConverter {
 
 	@Override
 	public Number fromString(final String s) {
-		return Integer.parseInt(fromStringFormat.matcher(s)
-												.replaceAll(""));
+		return Integer.parseInt(fromStringFormat.matcher(s).replaceAll(""));
 	}
 
 	@Override

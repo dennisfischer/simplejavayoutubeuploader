@@ -10,42 +10,38 @@
 
 package de.chaosfisch.data.category;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-
 public class CategoryDTO {
-	private int    youtubeId;
-	@NotNull
+
+	private int    categoryId;
 	private String name;
 
 	public CategoryDTO() {
 	}
 
-	public CategoryDTO(final int youtubeId, @NotNull final String name) {
-		this.youtubeId = youtubeId;
+	public CategoryDTO(final int categoryId, final String name) {
+		this.categoryId = categoryId;
 		this.name = name;
 	}
 
-	@NotNull
 	public String getName() {
 		return name;
 	}
 
-	public void setName(@NotNull final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public int getYoutubeId() {
-		return youtubeId;
+	public int getCategoryId() {
+		return categoryId;
 	}
 
-	public void setYoutubeId(final int youtubeId) {
-		this.youtubeId = youtubeId;
+	public void setCategoryId(final int categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = youtubeId;
+		int result = categoryId;
 		result = 31 * result + name.hashCode();
 		return result;
 	}
@@ -61,14 +57,13 @@ public class CategoryDTO {
 
 		final CategoryDTO that = (CategoryDTO) obj;
 
-		return youtubeId == that.youtubeId && name.equals(that.name);
+		return categoryId == that.categoryId && name.equals(that.name);
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "CategoryDTO{" +
-				"youtubeId=" + youtubeId +
+				"categoryId=" + categoryId +
 				", name='" + name + '\'' +
 				'}';
 	}

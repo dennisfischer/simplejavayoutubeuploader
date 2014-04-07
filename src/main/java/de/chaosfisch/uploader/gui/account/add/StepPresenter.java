@@ -37,9 +37,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StepPresenter {
+
 	private static final int                 WAIT_TIME           = 2000;
 	private static final Pattern             OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
-	private static final String              OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
+	private static final String              OAUTH_URL           = "https://accounts.google" + "" +
+			".com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
 	private static final Pattern             CHANNEL_ID_PATTERN  = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
 	protected final      AccountAddDataModel accountAddDataModel = AccountAddDataModel.getInstance();
 	@FXML
@@ -56,25 +58,21 @@ public class StepPresenter {
 			accountAddDataModel.setAccountList(accountList.getChildren());
 		}
 		if (null != username) {
-			accountAddDataModel.emailProperty()
-							   .bindBidirectional(username.textProperty());
+			accountAddDataModel.emailProperty().bindBidirectional(username.textProperty());
 		}
 		if (null != password) {
-			accountAddDataModel.passwordProperty()
-							   .bind(password.textProperty());
+			accountAddDataModel.passwordProperty().bind(password.textProperty());
 		}
 	}
 
 	public void login() {
 		accountAddDataModel.setProcessing(true);
 		accountAddDataModel.onWebviewLoaded(this::handleLogin);
-		accountAddDataModel.getEngine()
-						   .load("http://www.youtube.com/my_videos");
+		accountAddDataModel.getEngine().load("http://www.youtube.com/my_videos");
 	}
 
 	private boolean handleLogin() {
-		final Document document = accountAddDataModel.getEngine()
-													 .getDocument();
+		final Document document = accountAddDataModel.getEngine().getDocument();
 		((HTMLInputElement) document.getElementById("Email")).setValue(username.getText());
 		((HTMLInputElement) document.getElementById("Passwd")).setValue(password.getText());
 		((HTMLInputElement) document.getElementById("signIn")).click();
@@ -84,8 +82,7 @@ public class StepPresenter {
 	}
 
 	private boolean handleLoginStatus() {
-		final String location = accountAddDataModel.getEngine()
-												   .getLocation();
+		final String location = accountAddDataModel.getEngine().getLocation();
 		if (location.contains("accounts.google.com/ServiceLogin")) {
 			return false;
 		}
@@ -104,8 +101,7 @@ public class StepPresenter {
 
 	public void secondFactor() {
 		accountAddDataModel.setProcessing(true);
-		final Document document = accountAddDataModel.getEngine()
-													 .getDocument();
+		final Document document = accountAddDataModel.getEngine().getDocument();
 		final HTMLInputElement persistentCookie = (HTMLInputElement) document.getElementById("PersistentCookie");
 		if (null != persistentCookie) {
 			persistentCookie.setChecked(true);
@@ -117,8 +113,7 @@ public class StepPresenter {
 	}
 
 	private boolean handleSecondFactor() {
-		final String location = accountAddDataModel.getEngine()
-												   .getLocation();
+		final String location = accountAddDataModel.getEngine().getLocation();
 
 		//We're one redirect before target - requeue
 		if (location.contains("accounts.google.com/CheckCookie")) {
@@ -132,8 +127,7 @@ public class StepPresenter {
 
 			//Signal Step3 is reached
 			accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
-			accountAddDataModel.getEngine()
-							   .load("http://www.youtube.com/channel_switcher?next=%2F");
+			accountAddDataModel.getEngine().load("http://www.youtube.com/channel_switcher?next=%2F");
 		}
 
 		accountAddDataModel.setProcessing(false);
@@ -141,9 +135,7 @@ public class StepPresenter {
 	}
 
 	private boolean handleSecondFactorStatus() {
-		if (accountAddDataModel.getEngine()
-							   .getLocation()
-							   .contains("youtube.com/channel_switcher")) {
+		if (accountAddDataModel.getEngine().getLocation().contains("youtube.com/channel_switcher")) {
 			initStep3();
 			return true;
 		}
@@ -154,24 +146,32 @@ public class StepPresenter {
 	private void initStep3() {
 		final int length = (int) accountAddDataModel.getEngine()
 													.executeScript(
-															"document.evaluate('//*[@id=\"ytcc-existing-channels\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().childNodes.length");
+															"document.evaluate('//*[@id=\"ytcc-existing-channels\"]', document, null, XPathResult.ANY_TYPE, " +
+																	"" + "null).iterateNext().childNodes.length"
+													);
 
 		accountAddDataModel.clearAccountList();
 		for (int i = 0; i < length; i++) {
-			final String name = (String) accountAddDataModel.getEngine()
-															.executeScript(
-																	"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
-			final String image = (String) accountAddDataModel.getEngine()
-															 .executeScript(
-																	 "document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
+			final String name = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) +
+																							   "]/div/a/span/div/div[2]/div[1]', document, null, " +
+																							   "XPathResult.ANY_TYPE, " +
+																							   "null).iterateNext().innerHTML.trim()"
+			);
+			final String image = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i +
+																								1) +
+																								"]/div/a/span/div/div[1]/span/span/span/img', document, null," +
+																								" " +
+																								"XPathResult.ANY_TYPE, null).iterateNext().src"
+			);
 			final String url = (String) accountAddDataModel.getEngine()
 														   .executeScript(
-																   "document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+																   "document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', " +
+																		   "document, null, XPathResult.ANY_TYPE, null).iterateNext().href"
+														   );
 
 			final HBox hBox = new HBox();
 			hBox.setAlignment(Pos.CENTER_LEFT);
-			hBox.getChildren()
-				.addAll(new ImageView(new Image(image)), new Label(name));
+			hBox.getChildren().addAll(new ImageView(new Image(image)), new Label(name));
 			hBox.setOnMouseClicked(mouseEvent -> {
 				accountAddDataModel.setProcessing(true);
 				final int pageIdStartIndex = url.indexOf("pageid=") + 7;
@@ -180,26 +180,20 @@ public class StepPresenter {
 
 				accountAddDataModel.onWebviewLoaded(() -> {
 
-					if (!accountAddDataModel.getEngine()
-											.getLocation()
-											.endsWith("youtube.com/")) {
+					if (!accountAddDataModel.getEngine().getLocation().endsWith("youtube.com/")) {
 						return false;
 					}
-					accountAddDataModel.getEngine()
-									   .load("http://www.youtube.com/account_advanced");
+					accountAddDataModel.getEngine().load("http://www.youtube.com/account_advanced");
 					return true;
 				});
 
 				accountAddDataModel.onWebviewLoaded(() -> {
 
-					if (!accountAddDataModel.getEngine()
-											.getLocation()
-											.contains("youtube.com/account_advanced")) {
+					if (!accountAddDataModel.getEngine().getLocation().contains("youtube.com/account_advanced")) {
 						return false;
 					}
 
-					final String html = (String) accountAddDataModel.getEngine()
-																	.executeScript("document.documentElement.outerHTML");
+					final String html = (String) accountAddDataModel.getEngine().executeScript("document.documentElement.outerHTML");
 					final Matcher matcher = CHANNEL_ID_PATTERN.matcher(html);
 
 					if (matcher.find(1)) {
@@ -209,8 +203,7 @@ public class StepPresenter {
 					}
 					return true;
 				});
-				accountAddDataModel.getEngine()
-								   .load(url);
+				accountAddDataModel.getEngine().load(url);
 			});
 			hBox.setOnMouseEntered(mouseEvent -> ((Node) mouseEvent.getSource()).setCursor(Cursor.HAND));
 			hBox.setOnMouseExited(mouseEvent -> ((Node) mouseEvent.getSource()).setCursor(Cursor.DEFAULT));
@@ -220,12 +213,10 @@ public class StepPresenter {
 	}
 
 	private void getOAuthPermission() {
-		final Joiner joiner = Joiner.on(" ")
-									.skipNulls();
+		final Joiner joiner = Joiner.on(" ").skipNulls();
 		try {
 			final String scope = URLEncoder.encode(joiner.join(YouTubeFactory.SCOPES), Charsets.UTF_8.toString());
-			accountAddDataModel.getEngine()
-							   .load(String.format(OAUTH_URL, scope, GDataConfig.REDIRECT_URI, "code", GDataConfig.CLIENT_ID));
+			accountAddDataModel.getEngine().load(String.format(OAUTH_URL, scope, GDataConfig.REDIRECT_URI, "code", GDataConfig.CLIENT_ID));
 
 			accountAddDataModel.onWebviewLoaded(this::loginOAuthFlow);
 		} catch (final UnsupportedEncodingException ignored) {
@@ -233,8 +224,7 @@ public class StepPresenter {
 	}
 
 	private boolean loginOAuthFlow() {
-		final Document document = accountAddDataModel.getEngine()
-													 .getDocument();
+		final Document document = accountAddDataModel.getEngine().getDocument();
 		((HTMLInputElement) document.getElementById("Passwd")).setValue(accountAddDataModel.getPassword());
 		((HTMLInputElement) document.getElementById("signIn")).click();
 
@@ -244,13 +234,14 @@ public class StepPresenter {
 
 	private boolean selectOAuthChannel() {
 		final WebEngine engine = accountAddDataModel.getEngine();
-		if (!engine.getLocation()
-				   .contains("accounts.google.com/b/0/DelegateAccountSelector")) {
+		if (!engine.getLocation().contains("accounts.google.com/b/0/DelegateAccountSelector")) {
 			return false;
 		}
 
 		final int itemCount = (int) engine.executeScript(
-				"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\").length");
+				"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" + "" +
+						".length"
+		);
 		for (int i = 0; i < itemCount; i++) {
 			final String url = (String) engine.executeScript(
 					"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
@@ -266,9 +257,7 @@ public class StepPresenter {
 	}
 
 	private boolean approveOAuth() {
-		if (!accountAddDataModel.getEngine()
-								.getLocation()
-								.contains("accounts.google.com/o/oauth2/auth")) {
+		if (!accountAddDataModel.getEngine().getLocation().contains("accounts.google.com/o/oauth2/auth")) {
 			return false;
 		}
 
@@ -278,14 +267,11 @@ public class StepPresenter {
 			} catch (final InterruptedException ignored) {
 			}
 
-			Platform.runLater(() -> ((HTMLButtonElementImpl) accountAddDataModel.getEngine()
-																				.getDocument()
-																				.getElementById("submit_approve_access")).click());
+			Platform.runLater(() -> ((HTMLButtonElementImpl) accountAddDataModel.getEngine().getDocument().getElementById("submit_approve_access")).click());
 
 			accountAddDataModel.onWebviewLoaded(() -> {
 				final WebEngine engine = accountAddDataModel.getEngine();
-				if (!engine.getLocation()
-						   .contains("accounts.google.com/o/oauth2/approval")) {
+				if (!engine.getLocation().contains("accounts.google.com/o/oauth2/approval")) {
 					return false;
 				}
 

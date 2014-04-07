@@ -15,5 +15,6 @@ import de.chaosfisch.youtube.upload.UploadModel;
 import java.io.IOException;
 
 public interface UploadJobPreProcessor {
+
 	UploadModel process(UploadModel upload) throws IOException;
 }

@@ -17,6 +17,7 @@ import de.chaosfisch.youtube.upload.UploadModel;
 import java.io.IOException;
 
 public interface IMetadataService {
+
 	Video buildVideoEntry(UploadModel upload);
 
 	Video updateVideoEntry(Video video, UploadModel upload);

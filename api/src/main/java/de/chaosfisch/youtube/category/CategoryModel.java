@@ -12,9 +12,9 @@ package de.chaosfisch.youtube.category;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import org.jetbrains.annotations.NotNull;
 
 public class CategoryModel implements Comparable<CategoryModel> {
+
 	private final SimpleIntegerProperty youtubeId = new SimpleIntegerProperty();
 	private final SimpleStringProperty  name      = new SimpleStringProperty();
 
@@ -66,12 +66,10 @@ public class CategoryModel implements Comparable<CategoryModel> {
 
 
 	@Override
-	public int compareTo(@NotNull final CategoryModel o) {
-		if (0 > name.get()
-					.compareTo(o.name.get())) {
+	public int compareTo(final CategoryModel o) {
+		if (0 > name.get().compareTo(o.name.get())) {
 			return -1;
-		} else if (0 < name.get()
-						   .compareTo(o.name.get())) {
+		} else if (0 < name.get().compareTo(o.name.get())) {
 			return 1;
 		}
 		return 0;

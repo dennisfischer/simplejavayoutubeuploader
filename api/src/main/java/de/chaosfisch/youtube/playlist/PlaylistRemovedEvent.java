@@ -8,15 +8,17 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.account.fields;
+package de.chaosfisch.youtube.playlist;
 
-import de.chaosfisch.data.IGenericDAO;
+import de.chaosfisch.youtube.Event;
 
-import java.util.List;
+public class PlaylistRemovedEvent implements Event {
 
-public interface IFieldDAO extends IGenericDAO<FieldDTO> {
+	private final PlaylistModel playlistModel;
 
-	List<FieldDTO> getAll(String accountId);
+	public PlaylistRemovedEvent(final PlaylistModel playlistModel) {this.playlistModel = playlistModel;}
 
-	void clearOld(String accountId);
+	public PlaylistModel getPlaylistModel() {
+		return playlistModel;
+	}
 }

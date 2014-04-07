@@ -72,9 +72,7 @@ public class Uploader {
 			if (null != uploadModel) {
 				createConsumer();
 				markUploadRunning(uploadModel);
-				final UploadJob uploadJob = new UploadJob.Builder(uploadModel, uploadService, metadataService)
-						.withRateLimiter(rateLimitter)
-						.build();
+				final UploadJob uploadJob = new UploadJob.Builder(uploadModel, uploadService, metadataService).withRateLimiter(rateLimitter).build();
 				futures.put(uploadModel, jobCompletionService.submit(uploadJob));
 				runningUploads.incrementAndGet();
 			}
@@ -112,8 +110,7 @@ public class Uploader {
 				try {
 					Thread.sleep(ENQUEUE_WAIT_TIME);
 				} catch (final InterruptedException e) {
-					Thread.currentThread()
-						  .interrupt();
+					Thread.currentThread().interrupt();
 				}
 			}
 		}, "Enqueue-Thread");
@@ -134,16 +131,14 @@ public class Uploader {
 
 		if (force) {
 			for (final Map.Entry<UploadModel, Future<UploadModel>> job : futures.entrySet()) {
-				job.getValue()
-				   .cancel(true);
+				job.getValue().cancel(true);
 				futures.remove(job.getKey());
 			}
 		}
 	}
 
 	public void abort(final UploadModel upload) {
-		futures.get(upload)
-			   .cancel(true);
+		futures.get(upload).cancel(true);
 	}
 
 	public void runStarttimeChecker() {
@@ -223,14 +218,14 @@ public class Uploader {
 	}
 
 	private class UploadFinishProcessor extends Thread {
+
 		public UploadFinishProcessor() {
 			super("Upload Finish Processor-Thread");
 		}
 
 		@Override
 		public void run() {
-			while (!Thread.currentThread()
-						  .isInterrupted()) {
+			while (!Thread.currentThread().isInterrupted()) {
 				final UploadModel upload = getUpload();
 				removeUpload(upload);
 				updateQueueStatus(upload);
@@ -252,8 +247,7 @@ public class Uploader {
 				logger.info("Upload finished: {}", upload);
 				return upload;
 			} catch (ExecutionException | CancellationException | InterruptedException e) {
-				Thread.currentThread()
-					  .interrupt();
+				Thread.currentThread().interrupt();
 				return null;
 			} finally {
 				runningUploads.decrementAndGet();

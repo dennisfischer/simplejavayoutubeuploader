@@ -10,8 +10,6 @@
 
 
 
-
-
 apply plugin: 'java'
 apply plugin: 'apt'
 
@@ -42,8 +40,8 @@ compileJava {
 
 dependencies {
 	compile 'com.google.apis:google-api-services-youtube:+', 'com.google.http-client:google-http-client-gson:+', 'com.google.guava:guava:15.0',
-			'com.squareup.dagger:dagger:+', 'org.slf4j:slf4j-api:+', 'org.xerial:sqlite-jdbc:+', 'com.xeiam:yank:+'
-	compile 'com.intellij:annotations:+@jar'
+			'com.squareup.dagger:dagger:+', 'org.slf4j:slf4j-api:+', 'org.xerial:sqlite-jdbc:+', 'net.engio:mbassador:+'
+	compile files('libs/sormula-3.1-jdk1.7.jar')
 	provided 'com.squareup.dagger:dagger-compiler:+'
 	apt 'com.squareup.dagger:dagger-compiler:+'
 	testCompile 'junit:junit:4+', 'org.mockito:mockito-core:1.9.5'

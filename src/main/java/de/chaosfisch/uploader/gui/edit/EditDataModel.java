@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class EditDataModel {
+
 	private final SimpleBooleanProperty             ageRestriction = new SimpleBooleanProperty(false);
 	private final SimpleListProperty<CategoryModel> categories     = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final ICategoryService categoryService;

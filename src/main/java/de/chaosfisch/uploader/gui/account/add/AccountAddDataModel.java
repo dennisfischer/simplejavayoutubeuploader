@@ -40,6 +40,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AccountAddDataModel {
+
 	private static final AccountAddDataModel INSTANCE = new AccountAddDataModel();
 	private static final Logger              LOGGER   = LoggerFactory.getLogger(AccountAddDataModel.class);
 	@Inject
@@ -65,17 +66,15 @@ public class AccountAddDataModel {
 			Scene scene = new Scene(webView);
 			stage.setScene(scene);
 			stage.show();
-			stage.hide();
+			//stage.hide();
 
 			engine = webView.getEngine();
-			engine.getLoadWorker()
-				  .stateProperty()
-				  .addListener((observableValue, oldState, newState) -> {
-					  if (Worker.State.SUCCEEDED == newState) {
-						  LOGGER.info("Browser at {}", engine.getLocation());
-						  processCompleteTask();
-					  }
-				  });
+			engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {
+				if (Worker.State.SUCCEEDED == newState) {
+					LOGGER.info("Browser at {}", engine.getLocation());
+					processCompleteTask();
+				}
+			});
 		});
 	}
 
@@ -89,8 +88,7 @@ public class AccountAddDataModel {
 
 	private void processCompleteTask() {
 		Callable<Boolean> callable;
-		while (Worker.State.SUCCEEDED == engine.getLoadWorker()
-											   .getState() && null != (callable = onLoadTasks.poll())) {
+		while (Worker.State.SUCCEEDED == engine.getLoadWorker().getState() && null != (callable = onLoadTasks.poll())) {
 			try {
 				if (!callable.call()) {
 					onLoadTasks.add(callable);
@@ -148,16 +146,11 @@ public class AccountAddDataModel {
 		accountModel.setName(name);
 		accountModel.setType(AccountType.DEFAULT);
 		accountModel.setEmail(email.get());
-		accountModel.setCookies(FXCollections.observableSet(persistentCookieStore.getSerializeableCookies(accountId)
-																				 .stream()
-																				 .collect(Collectors.toSet())));
-		accountModel.getCookies()
-					.forEach(System.out::println);
+		accountModel.setCookies(FXCollections.observableSet(persistentCookieStore.getSerializeableCookies(accountId).stream().collect(Collectors.toSet())));
+		accountModel.getCookies().forEach(System.out::println);
 
 		persistentCookieStore.removeAll();
-		persistentCookieStore.setCookies(accountModel.getCookies()
-													 .stream()
-													 .collect(Collectors.toList()));
+		persistentCookieStore.setCookies(accountModel.getCookies().stream().collect(Collectors.toList()));
 	}
 
 	public String getPassword() {

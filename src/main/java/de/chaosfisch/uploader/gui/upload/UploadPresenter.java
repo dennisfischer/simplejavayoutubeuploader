@@ -62,26 +62,18 @@ public class UploadPresenter {
 	@FXML
 	public void initialize() {
 		uploads.setCellFactory(new UploadCellFactory());
-		uploads.getSelectionModel()
-			   .setSelectionMode(SelectionMode.MULTIPLE);
+		uploads.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		maxUploads.setNumberStringConverter(new NumberStringFormatConverter("%d max Upload(s)", Pattern.compile("[^0-9]+")));
 		maxSpeed.setNumberStringConverter(new NumberStringFormatConverter("%d kByte/s", Pattern.compile("[^0-9]+")));
 
-		uploadDataModel.setSelectedUploads(uploads.getSelectionModel()
-												  .getSelectedItems());
+		uploadDataModel.setSelectedUploads(uploads.getSelectionModel().getSelectedItems());
 
-		uploads.itemsProperty()
-			   .bindBidirectional(uploadDataModel.uploadsProperty());
-		maxSpeed.valueProperty()
-				.bindBidirectional(uploadDataModel.maxSpeedProperty());
-		maxUploads.valueProperty()
-				  .bindBidirectional(uploadDataModel.maxUploadsProperty());
-		startButton.disableProperty()
-				   .bind(uploadDataModel.runningProperty()
-										.not());
-		stopButton.disableProperty()
-				  .bind(uploadDataModel.runningProperty());
+		uploads.itemsProperty().bindBidirectional(uploadDataModel.uploadsProperty());
+		maxSpeed.valueProperty().bindBidirectional(uploadDataModel.maxSpeedProperty());
+		maxUploads.valueProperty().bindBidirectional(uploadDataModel.maxUploadsProperty());
+		startButton.disableProperty().bind(uploadDataModel.runningProperty().not());
+		stopButton.disableProperty().bind(uploadDataModel.runningProperty());
 	}
 
 	@FXML
@@ -104,10 +96,8 @@ public class UploadPresenter {
 	public void removeUploads() {
 		// @BUG had to add workaround by converting observable list to array
 		// otherwise only one element is removed and not N selected elements
-		final UploadModel[] uploads = new UploadModel[uploadDataModel.getSelectedUploads()
-																	 .size()];
-		uploadDataModel.getSelectedUploads()
-					   .toArray(uploads);
+		final UploadModel[] uploads = new UploadModel[uploadDataModel.getSelectedUploads().size()];
+		uploadDataModel.getSelectedUploads().toArray(uploads);
 		for (final UploadModel upload : uploads) {
 			uploadDataModel.removeUpload(upload);
 		}

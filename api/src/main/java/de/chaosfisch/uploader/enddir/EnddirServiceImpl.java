@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class EnddirServiceImpl implements IEnddirService {
+
 	private static final Logger  LOGGER                   = LoggerFactory.getLogger(EnddirServiceImpl.class);
 	private static final String  VALID_FILE_NAMES         = "[^a-zA-Z0-9\\._]+";
 	private static final Pattern VALID_FILE_NAMES_PATTERN = Pattern.compile(VALID_FILE_NAMES);
@@ -56,8 +57,7 @@ public class EnddirServiceImpl implements IEnddirService {
 	}
 
 	private String getFileName(final File fileToMove, final File enddir, final String name) {
-		final String normalizedTitle = VALID_FILE_NAMES_PATTERN.matcher(name)
-															   .replaceAll("_");
+		final String normalizedTitle = VALID_FILE_NAMES_PATTERN.matcher(name).replaceAll("_");
 		return String.format("%s/%s.%s", enddir.getAbsolutePath(), normalizedTitle, Files.getFileExtension(fileToMove.getName()));
 	}
 

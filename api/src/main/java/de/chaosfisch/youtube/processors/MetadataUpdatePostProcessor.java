@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 class MetadataUpdatePostProcessor implements UploadeJobPostProcessor {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetadataUpdatePostProcessor.class);
 	private final IMetadataService metadataService;
 

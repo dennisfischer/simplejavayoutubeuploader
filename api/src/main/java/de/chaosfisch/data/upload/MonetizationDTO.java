@@ -8,11 +8,12 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data.upload.monetization;
-
-import org.jetbrains.annotations.NonNls;
+package de.chaosfisch.data.upload;
 
 public class MonetizationDTO {
+
+	private String uploadId;
+
 	private String  asset;
 	private boolean claim;
 	private String  claimOption;
@@ -34,12 +35,15 @@ public class MonetizationDTO {
 	private String  title;
 	private String  tmsid;
 	private boolean trueview;
-	private String  uploadId;
 
 	public MonetizationDTO() {
 	}
 
-	public MonetizationDTO(final String uploadId, final String syndication, final String claimType, final String claimOption, final String asset, final boolean instreamDefaults, final boolean claim, final boolean overlay, final boolean trueview, final boolean instream, final boolean product, final boolean partner, final String title, final String description, final String customId, final String notes, final String tmsid, final String isan, final String eidr, final String episodeTitle, final String seasonNumber, final String episodeNumber) {
+	public MonetizationDTO(final String uploadId, final String syndication, final String claimType, final String claimOption, final String asset,
+						   final boolean instreamDefaults, final boolean claim, final boolean overlay, final boolean trueview, final boolean instream,
+						   final boolean product, final boolean partner, final String title, final String description, final String customId,
+						   final String notes, final String tmsid, final String isan, final String eidr, final String episodeTitle, final String seasonNumber,
+						   final String episodeNumber) {
 		this.uploadId = uploadId;
 		this.syndication = syndication;
 		this.claimType = claimType;
@@ -241,7 +245,6 @@ public class MonetizationDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "MonetizationDTO{" +
 				"uploadId='" + uploadId + '\'' +

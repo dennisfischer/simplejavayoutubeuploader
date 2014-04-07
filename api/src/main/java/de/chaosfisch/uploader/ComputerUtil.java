@@ -41,8 +41,7 @@ public final class ComputerUtil {
 
 	private void execute(final String command) {
 		try {
-			Runtime.getRuntime()
-				   .exec(command);
+			Runtime.getRuntime().exec(command);
 		} catch (final IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}

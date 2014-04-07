@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.account.entry;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class EntryView extends FXMLView {
-}
+public class EntryView extends FXMLView {}

@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import java.util.List;
 
 public class UploadDataModel {
+
 	private final SimpleIntegerProperty           maxSpeed        = new SimpleIntegerProperty();
 	private final SimpleIntegerProperty           maxUploads      = new SimpleIntegerProperty();
 	private final SimpleBooleanProperty           running         = new SimpleBooleanProperty();

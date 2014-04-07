@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class PlaylistListCell extends ListCell<PlaylistModel> {
+
 	private static final int MAX_IMAGE_HEIGHT = 60;
 	private static final int MAX_NODE_HEIGHT  = 100;
 	private VBox node;
@@ -58,7 +59,7 @@ public class PlaylistListCell extends ListCell<PlaylistModel> {
 
 	private String getImageLocation() {
 		return null == getItem().getThumbnail() ? getClass().getResource("/de/chaosfisch/uploader/gui/edit/left/thumbnail-missing.png")
-				.toExternalForm() : getItem().getThumbnail();
+															.toExternalForm() : getItem().getThumbnail();
 	}
 
 	private ImageView getRemoveButton() {

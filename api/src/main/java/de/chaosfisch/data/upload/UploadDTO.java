@@ -10,45 +10,47 @@
 
 package de.chaosfisch.data.upload;
 
-import de.chaosfisch.data.upload.metadata.MetadataDTO;
-import de.chaosfisch.data.upload.monetization.MonetizationDTO;
-import de.chaosfisch.data.upload.permission.PermissionDTO;
-import de.chaosfisch.data.upload.social.SocialDTO;
-import org.jetbrains.annotations.NonNls;
+import de.chaosfisch.data.playlist.PlaylistDTO;
+import org.sormula.annotation.cascade.OneToManyCascade;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public class UploadDTO {
 
-	private String          accountId;
-	private LocalDateTime   dateTimeOfEnd;
-	private LocalDateTime   dateTimeOfRelease;
-	private LocalDateTime   dateTimeOfStart;
-	private String          enddir;
-	private String          file;
-	private long            fileSize;
-	private String          id;
-	private int             me;
-	private MetadataDTO     metadataDTO;
-	private MonetizationDTO monetizationDTO;
-	private int             order;
-	private PermissionDTO   permissionDTO;
-	private List<String>    playlistIds;
-	private double          progress;
-	private SocialDTO       socialDTO;
-	private String          status;
-	private boolean         stopAfter;
-	private String          thumbnail;
-	private String          uploadurl;
-	private String          videoid;
+	private String uploadId;
+
+	private String            accountId;
+	private Instant           dateTimeOfEnd;
+	private Instant           dateTimeOfRelease;
+	private Instant           dateTimeOfStart;
+	private String            enddir;
+	private String            file;
+	private long              fileSize;
+	private MetadataDTO       metadataDTO;
+	private MonetizationDTO   monetizationDTO;
+	private int               position;
+	private PermissionDTO     permissionDTO;
+	@OneToManyCascade(name = "uploads_playlists",
+					  readOnly = true)
+	private List<PlaylistDTO> playlists;
+	private double            progress;
+	private SocialDTO         socialDTO;
+	private String            status;
+	private boolean           stopAfter;
+	private String            thumbnail;
+	private String            uploadurl;
+	private String            videoid;
 
 
 	public UploadDTO() {
 	}
 
-	public UploadDTO(final String id, final String uploadurl, final String videoid, final String file, final String enddir, final String thumbnail, final LocalDateTime dateTimeOfStart, final LocalDateTime dateTimeOfRelease, final LocalDateTime dateTimeOfEnd, final int order, final double progress, final boolean stopAfter, final long fileSize, final String status, final String accountId, final List<String> playlistIds, final SocialDTO socialDTO, final MonetizationDTO monetizationDTO, final PermissionDTO permissionDTO, final MetadataDTO metadataDTO) {
-		this.id = id;
+	public UploadDTO(final String uploadId, final String uploadurl, final String videoid, final String file, final String enddir, final String thumbnail,
+					 final Instant dateTimeOfStart, final Instant dateTimeOfRelease, final Instant dateTimeOfEnd, final int position, final double progress,
+					 final boolean stopAfter, final long fileSize, final String status, final String accountId, final List<PlaylistDTO> playlists,
+					 final SocialDTO socialDTO, final MonetizationDTO monetizationDTO, final PermissionDTO permissionDTO, final MetadataDTO metadataDTO) {
+		this.uploadId = uploadId;
 		this.uploadurl = uploadurl;
 		this.videoid = videoid;
 		this.file = file;
@@ -57,25 +59,25 @@ public class UploadDTO {
 		this.dateTimeOfStart = dateTimeOfStart;
 		this.dateTimeOfRelease = dateTimeOfRelease;
 		this.dateTimeOfEnd = dateTimeOfEnd;
-		this.order = order;
+		this.position = position;
 		this.progress = progress;
 		this.stopAfter = stopAfter;
 		this.fileSize = fileSize;
 		this.status = status;
 		this.accountId = accountId;
-		this.playlistIds = playlistIds;
+		this.playlists = playlists;
 		this.socialDTO = socialDTO;
 		this.monetizationDTO = monetizationDTO;
 		this.permissionDTO = permissionDTO;
 		this.metadataDTO = metadataDTO;
 	}
 
-	public String getId() {
-		return id;
+	public String getUploadId() {
+		return uploadId;
 	}
 
-	public void setId(final String id) {
-		this.id = id;
+	public void setUploadId(final String uploadId) {
+		this.uploadId = uploadId;
 	}
 
 	public String getUploadurl() {
@@ -118,36 +120,36 @@ public class UploadDTO {
 		this.thumbnail = thumbnail;
 	}
 
-	public LocalDateTime getDateTimeOfStart() {
+	public Instant getDateTimeOfStart() {
 		return dateTimeOfStart;
 	}
 
-	public void setDateTimeOfStart(final LocalDateTime dateTimeOfStart) {
+	public void setDateTimeOfStart(final Instant dateTimeOfStart) {
 		this.dateTimeOfStart = dateTimeOfStart;
 	}
 
-	public LocalDateTime getDateTimeOfRelease() {
+	public Instant getDateTimeOfRelease() {
 		return dateTimeOfRelease;
 	}
 
-	public void setDateTimeOfRelease(final LocalDateTime dateTimeOfRelease) {
+	public void setDateTimeOfRelease(final Instant dateTimeOfRelease) {
 		this.dateTimeOfRelease = dateTimeOfRelease;
 	}
 
-	public LocalDateTime getDateTimeOfEnd() {
+	public Instant getDateTimeOfEnd() {
 		return dateTimeOfEnd;
 	}
 
-	public void setDateTimeOfEnd(final LocalDateTime dateTimeOfEnd) {
+	public void setDateTimeOfEnd(final Instant dateTimeOfEnd) {
 		this.dateTimeOfEnd = dateTimeOfEnd;
 	}
 
-	public int getOrder() {
-		return order;
+	public int getPosition() {
+		return position;
 	}
 
-	public void setOrder(final int order) {
-		this.order = order;
+	public void setPosition(final int position) {
+		this.position = position;
 	}
 
 	public double getProgress() {
@@ -190,12 +192,12 @@ public class UploadDTO {
 		this.accountId = accountId;
 	}
 
-	public List<String> getPlaylistIds() {
-		return playlistIds;
+	public List<PlaylistDTO> getPlaylistIds() {
+		return playlists;
 	}
 
-	public void setPlaylistIds(final List<String> playlistIds) {
-		this.playlistIds = playlistIds;
+	public void setPlaylistIds(final List<PlaylistDTO> playlists) {
+		this.playlists = playlists;
 	}
 
 	public SocialDTO getSocialDTO() {
@@ -231,29 +233,28 @@ public class UploadDTO {
 	}
 
 	@Override
-	@NonNls
 	public String toString() {
 		return "UploadDTO{" +
-				"id='" + id + '\'' +
+				"uploadId='" + uploadId + '\'' +
+				", accountId='" + accountId + '\'' +
+				", dateTimeOfEnd=" + dateTimeOfEnd +
+				", dateTimeOfRelease=" + dateTimeOfRelease +
+				", dateTimeOfStart=" + dateTimeOfStart +
+				", enddir='" + enddir + '\'' +
+				", file='" + file + '\'' +
+				", fileSize=" + fileSize +
+				", metadataDTO=" + metadataDTO +
+				", monetizationDTO=" + monetizationDTO +
+				", position=" + position +
+				", permissionDTO=" + permissionDTO +
+				", playlists=" + playlists +
+				", progress=" + progress +
+				", socialDTO=" + socialDTO +
+				", status='" + status + '\'' +
+				", stopAfter=" + stopAfter +
+				", thumbnail='" + thumbnail + '\'' +
 				", uploadurl='" + uploadurl + '\'' +
 				", videoid='" + videoid + '\'' +
-				", file='" + file + '\'' +
-				", enddir='" + enddir + '\'' +
-				", thumbnail='" + thumbnail + '\'' +
-				", dateTimeOfStart=" + dateTimeOfStart +
-				", dateTimeOfRelease=" + dateTimeOfRelease +
-				", dateTimeOfEnd=" + dateTimeOfEnd +
-				", order=" + order +
-				", progress=" + progress +
-				", stopAfter=" + stopAfter +
-				", fileSize=" + fileSize +
-				", status=" + status +
-				", accountId='" + accountId + '\'' +
-				", playlistIds=" + playlistIds +
-				", socialDTO=" + socialDTO +
-				", monetizationDTO=" + monetizationDTO +
-				", permissionDTO=" + permissionDTO +
-				", metadataDTO=" + metadataDTO +
 				'}';
 	}
 

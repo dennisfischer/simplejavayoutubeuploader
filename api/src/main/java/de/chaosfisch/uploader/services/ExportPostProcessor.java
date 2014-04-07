@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExportPostProcessor implements UploadeJobPostProcessor {
+
 	private static final String JSON_LOGFILES = "json_logfiles_export";
 	private static final Logger LOGGER        = LoggerFactory.getLogger(ExportPostProcessor.class);
 
@@ -48,7 +49,8 @@ public class ExportPostProcessor implements UploadeJobPostProcessor {
 
 			try {
 				Files.createDirectories(Paths.get(ApplicationData.DATA_DIR + "/uploads/"));
-				Files.write(Paths.get(String.format("%s/uploads/%s.json", ApplicationData.DATA_DIR, copy.getVideoid())), gson
+				Files.write(Paths.get(String.format("%s/uploads/%s.json", ApplicationData.DATA_DIR,
+				copy.getVideoid())), gson
 						.toJson(copy)
 						.getBytes(Charsets.UTF_8));
 			} catch (final IOException e) {

@@ -19,10 +19,11 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ToggleButton;
 import javafx.util.StringConverter;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class UploadEntryPresenter {
+
 	@FXML
 	private ProgressBar progress;
 
@@ -57,8 +58,7 @@ public class UploadEntryPresenter {
 
 	private void bindModel() {
 		unbindModel();
-		final LocalDateTimeStringConverter dateTimeStringConverter = new LocalDateTimeStringConverter(
-				"EEE, dd.MM.yyyy 'um' HH:mm");
+		final ZonedDateTimeStringConverter dateTimeStringConverter = new ZonedDateTimeStringConverter("EEE, dd.MM.yyyy 'um' HH:mm");
 		release.textProperty().bindBidirectional(uploadModel.dateTimeOfReleaseProperty(), dateTimeStringConverter);
 		start.textProperty().bindBidirectional(uploadModel.dateTimeOfStartProperty(), dateTimeStringConverter);
 		end.textProperty().bindBidirectional(uploadModel.dateTimeOfEndProperty(), dateTimeStringConverter);
@@ -102,22 +102,22 @@ public class UploadEntryPresenter {
 		progress.progressProperty().unbind();
 	}
 
-	private static class LocalDateTimeStringConverter extends StringConverter<LocalDateTime> {
+	private static class ZonedDateTimeStringConverter extends StringConverter<ZonedDateTime> {
 
 		final DateTimeFormatter dateTimeFormatter;
 
-		public LocalDateTimeStringConverter(final String format) {
+		public ZonedDateTimeStringConverter(final String format) {
 			dateTimeFormatter = DateTimeFormatter.ofPattern(format);
 		}
 
 		@Override
-		public String toString(final LocalDateTime localDateTime) {
+		public String toString(final ZonedDateTime localDateTime) {
 			return null == localDateTime ? "" : localDateTime.format(dateTimeFormatter);
 		}
 
 		@Override
-		public LocalDateTime fromString(final String string) {
-			return null != string && string.isEmpty() ? null : LocalDateTime.parse(string, dateTimeFormatter);
+		public ZonedDateTime fromString(final String string) {
+			return null != string && string.isEmpty() ? null : ZonedDateTime.parse(string, dateTimeFormatter);
 		}
 	}
 }

@@ -14,13 +14,13 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.TitledPane?>
 <Accordion xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:id="accordion"
-		   fx:controller="de.chaosfisch.uploader.gui.account.AccountPresenter">
-	<panes>
-		<TitledPane collapsible="false" expanded="false" text="No accounts existing!" fx:id="defaultPanel"/>
-		<TitledPane expanded="true" text="Add account...">
-			<content>
-				<AddView/>
-			</content>
-		</TitledPane>
-	</panes>
+           fx:controller="de.chaosfisch.uploader.gui.account.AccountPresenter">
+    <panes>
+        <TitledPane collapsible="false" expanded="false" text="No accounts existing!" fx:id="defaultPanel"/>
+        <TitledPane expanded="true" text="Add account...">
+            <content>
+                <AddView/>
+            </content>
+        </TitledPane>
+    </panes>
 </Accordion>

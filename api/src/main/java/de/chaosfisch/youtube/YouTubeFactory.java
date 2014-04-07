@@ -40,8 +40,7 @@ public final class YouTubeFactory {
 																					  "https://www.googleapis.com/auth/youtube.upload",
 																					  "https://www.googleapis.com/auth/youtubepartner",
 																					  "https://www.googleapis.com/auth/userinfo.profile",
-																					  "https://www.googleapis.com/auth/userinfo.email"
-																					 );
+																					  "https://www.googleapis.com/auth/userinfo.email");
 	private static final JsonFactory                    jsonFactory   = new GsonFactory();
 	private static final HttpTransport                  httpTransport = new NetHttpTransport();
 	private static final Logger                         LOGGER        = LoggerFactory.getLogger(YouTubeFactory.class);
@@ -62,53 +61,48 @@ public final class YouTubeFactory {
 	}
 
 	private static Credential buildCredential(final AccountModel accountModel) {
-		final Credential credential = new GoogleCredential.Builder()
-				.setJsonFactory(jsonFactory)
-				.setTransport(httpTransport)
-				.setClientSecrets(GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET)
-				.setRequestInitializer(request -> request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(new ExponentialBackOff())))
-				.addRefreshListener(new CredentialRefreshListener() {
-					@Override
-					public void onTokenResponse(final Credential credential, final TokenResponse tokenResponse) throws IOException {
-						LOGGER.info("Token refreshed");
-					}
+		final Credential credential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
+																	.setTransport(httpTransport)
+																	.setClientSecrets(GDataConfig.CLIENT_ID, GDataConfig.CLIENT_SECRET)
+																	.setRequestInitializer(request -> request.setIOExceptionHandler(
+																			new HttpBackOffIOExceptionHandler(new ExponentialBackOff())))
+																	.addRefreshListener(new CredentialRefreshListener() {
+																		@Override
+																		public void onTokenResponse(final Credential credential,
+																									final TokenResponse tokenResponse) throws IOException {
+																			LOGGER.info("Token refreshed");
+																		}
 
-					@Override
-					public void onTokenErrorResponse(final Credential credential, final TokenErrorResponse tokenErrorResponse) throws IOException {
-						LOGGER.error("Token refresh error {}", tokenErrorResponse.toPrettyString());
-					}
-				})
-				.build();
+																		@Override
+																		public void onTokenErrorResponse(final Credential credential,
+																										 final TokenErrorResponse tokenErrorResponse) throws
+																				IOException {
+																			LOGGER.error("Token refresh error {}", tokenErrorResponse.toPrettyString());
+																		}
+																	})
+																	.build();
 		credential.setRefreshToken(accountModel.getRefreshToken());
 		return credential;
 	}
 
 	private static YouTube buildYouTube(final Credential credential) {
-		return new YouTube.Builder(httpTransport, jsonFactory, credential)
-				.setApplicationName("simple-java-youtube-uploader")
-				.build();
+		return new YouTube.Builder(httpTransport, jsonFactory, credential).setApplicationName("simple-java-youtube-uploader").build();
 	}
 
 	public static YouTube getDefault() {
 		if (null == youTubeDefault) {
 			youTubeDefault = new YouTube.Builder(httpTransport, jsonFactory, request -> {
 				request.setInterceptor(request1 -> {
-					request1.getUrl()
-							.set("key", GDataConfig.ACCESS_KEY);
+					request1.getUrl().set("key", GDataConfig.ACCESS_KEY);
 				});
-			}).setApplicationName("simple-java-youtube-uploader")
-			  .build();
+			}).setApplicationName("simple-java-youtube-uploader").build();
 		}
 		return youTubeDefault;
 	}
 
 	public static String getRefreshToken(final String code) throws IOException {
-		final GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(httpTransport,
-																						  jsonFactory,
-																						  GDataConfig.CLIENT_ID,
-																						  GDataConfig.CLIENT_SECRET,
-																						  code,
-																						  GDataConfig.REDIRECT_URI).execute();
+		final GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(httpTransport, jsonFactory, GDataConfig.CLIENT_ID,
+																						  GDataConfig.CLIENT_SECRET, code, GDataConfig.REDIRECT_URI).execute();
 		return tokenResponse.getRefreshToken();
 	}
 }

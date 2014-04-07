@@ -12,5 +12,4 @@ package de.chaosfisch.uploader.gui.account.add;
 
 import de.chaosfisch.controls.FXMLView;
 
-public class Step3View extends FXMLView {
-}
+public class Step3View extends FXMLView {}
