@@ -19,7 +19,6 @@ public class UploadDAO extends Table<UploadDTO> {
 
 	public UploadDAO(final Database database) throws SormulaException {
 		super(database, UploadDTO.class);
-		database.getTable(UploadDTO.class, true);
 	}
 
 	public UploadDTO fetchNextUpload() {

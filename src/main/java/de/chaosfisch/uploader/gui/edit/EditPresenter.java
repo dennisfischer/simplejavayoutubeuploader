@@ -10,7 +10,6 @@
 
 package de.chaosfisch.uploader.gui.edit;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javax.inject.Inject;
@@ -21,7 +20,7 @@ public class EditPresenter {
 	protected EditDataModel editDataModel;
 
 	@FXML
-	public void addUpload(ActionEvent actionEvent) {
+	public void addUpload() {
 		editDataModel.createUpload();
 	}
 }

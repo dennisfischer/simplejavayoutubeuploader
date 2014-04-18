@@ -19,7 +19,7 @@ import de.chaosfisch.data.account.CookieDTO;
 import de.chaosfisch.youtube.YouTubeFactory;
 import de.chaosfisch.youtube.account.AccountModel;
 import de.chaosfisch.youtube.upload.UploadModel;
-import de.chaosfisch.youtube.upload.permissions.*;
+import de.chaosfisch.youtube.upload.permission.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -161,7 +161,7 @@ public class YouTubeMetadataService implements IMetadataService {
 		final Map<String, String> params = Maps.newHashMapWithExpectedSize(MONETIZE_PARAMS_SIZE);
 		if (upload.isMonetizationClaim() && License.YOUTUBE == upload.getMetadataLicense()) {
 			params.put("video_monetization_style", "ads");
-			if (!upload.isMonetizationPartner() || ClaimOption.MONETIZE == upload.getMonetizationClaimoption()) {
+			if (!upload.isMonetizationPartner() || ClaimOption.MONETIZE == upload.getMonetizationClaimOption()) {
 				params.put("enable_overlay_ads", boolConverter(upload.isMonetizationOverlay()));
 				params.put("trueview_instream", boolConverter(upload.isMonetizationTrueview()));
 				params.put("instream", boolConverter(upload.isMonetizationInstream()));
@@ -171,12 +171,12 @@ public class YouTubeMetadataService implements IMetadataService {
 			}
 			if (upload.isMonetizationPartner()) {
 				params.put("claim_type",
-						   ClaimType.AUDIO_VISUAL == upload.getMonetizationClaimtype() ? "B" : ClaimType.VISUAL == upload.getMonetizationClaimtype() ? "V" :
+						   ClaimType.AUDIO_VISUAL == upload.getMonetizationClaimType() ? "B" : ClaimType.VISUAL == upload.getMonetizationClaimType() ? "V" :
 								   "A"
 				);
 
-				final String toFind = ClaimOption.MONETIZE == upload.getMonetizationClaimoption() ? "Monetize in all countries" : ClaimOption.TRACK == upload
-						.getMonetizationClaimoption() ? "Track in all countries" : "Block in all countries";
+				final String toFind = ClaimOption.MONETIZE == upload.getMonetizationClaimOption() ? "Monetize in all countries" : ClaimOption.TRACK == upload
+						.getMonetizationClaimOption() ? "Track in all countries" : "Block in all countries";
 
 				final Pattern pattern = Pattern.compile(
 						"<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\s*class=\"usage_policy-menu-item\"\\s*data-is-monetized-policy=\"(true|false)"

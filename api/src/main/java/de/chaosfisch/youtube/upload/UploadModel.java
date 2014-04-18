@@ -13,7 +13,6 @@
  */
 package de.chaosfisch.youtube.upload;
 
-import com.google.common.eventbus.Subscribe;
 import de.chaosfisch.data.account.CookieDTO;
 import de.chaosfisch.data.upload.UploadDTO;
 import de.chaosfisch.youtube.account.AccountModel;
@@ -25,11 +24,12 @@ import de.chaosfisch.youtube.upload.metadata.License;
 import de.chaosfisch.youtube.upload.metadata.Metadata;
 import de.chaosfisch.youtube.upload.metadata.Monetization;
 import de.chaosfisch.youtube.upload.metadata.Social;
-import de.chaosfisch.youtube.upload.permissions.*;
+import de.chaosfisch.youtube.upload.permission.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import net.engio.mbassy.listener.Handler;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -48,7 +48,7 @@ public class UploadModel {
 	private final SimpleObjectProperty<Metadata>      metadata          = new SimpleObjectProperty<>(new Metadata());
 	private final SimpleObjectProperty<Monetization>  monetization      = new SimpleObjectProperty<>(new Monetization());
 	private final SimpleIntegerProperty               order             = new SimpleIntegerProperty();
-	private final SimpleObjectProperty<Permissions>   permissions       = new SimpleObjectProperty<>(new Permissions());
+	private final SimpleObjectProperty<Permission>    permission        = new SimpleObjectProperty<>(new Permission());
 	private final SimpleListProperty<PlaylistModel>   playlists         = new SimpleListProperty<>(FXCollections.observableArrayList());
 	private final SimpleDoubleProperty                progress          = new SimpleDoubleProperty();
 	private final SimpleObjectProperty<Social>        social            = new SimpleObjectProperty<>(new Social());
@@ -60,9 +60,13 @@ public class UploadModel {
 
 	public UploadModel(final UploadDTO uploadDTO, final CategoryModel categoryModel) {
 		//TODO 	account.set();
-		dateTimeOfEnd.set(uploadDTO.getDateTimeOfEnd().atZone(ZoneId.systemDefault()));
-		dateTimeOfRelease.set(uploadDTO.getDateTimeOfRelease().atZone(ZoneId.systemDefault()));
-		dateTimeOfStart.set(uploadDTO.getDateTimeOfStart().atZone(ZoneId.systemDefault()));
+		final ZonedDateTime dateTimeOfE = null == uploadDTO.getDateTimeOfEnd() ? null : uploadDTO.getDateTimeOfEnd().atZone(ZoneId.systemDefault());
+		final ZonedDateTime dateTimeOfR = null == uploadDTO.getDateTimeOfRelease() ? null : uploadDTO.getDateTimeOfRelease().atZone(ZoneId.systemDefault());
+		final ZonedDateTime dateTimeOfS = null == uploadDTO.getDateTimeOfStart() ? null : uploadDTO.getDateTimeOfStart().atZone(ZoneId.systemDefault());
+
+		dateTimeOfEnd.set(dateTimeOfE);
+		dateTimeOfRelease.set(dateTimeOfR);
+		dateTimeOfStart.set(dateTimeOfS);
 		enddir.set(uploadDTO.getEnddir());
 		file.set(uploadDTO.getFile());
 		fileSize.set(uploadDTO.getFileSize());
@@ -70,7 +74,7 @@ public class UploadModel {
 		metadata.set(new Metadata(uploadDTO.getMetadataDTO(), categoryModel));
 		monetization.set(new Monetization(uploadDTO.getMonetizationDTO()));
 		order.set(uploadDTO.getPosition());
-		permissions.set(new Permissions(uploadDTO.getPermissionDTO()));
+		permission.set(new Permission(uploadDTO.getPermissionDTO()));
 		//TODO PLAYLISTS
 		progress.set(uploadDTO.getProgress());
 		social.set(new Social(uploadDTO.getSocialDTO()));
@@ -192,16 +196,16 @@ public class UploadModel {
 		return monetization;
 	}
 
-	public Permissions getPermissions() {
-		return permissions.get();
+	public Permission getPermission() {
+		return permission.get();
 	}
 
-	public void setPermissions(final Permissions permissions) {
-		this.permissions.set(permissions);
+	public void setPermission(final Permission permission) {
+		this.permission.set(permission);
 	}
 
-	public SimpleObjectProperty<Permissions> permissionsProperty() {
-		return permissions;
+	public SimpleObjectProperty<Permission> permissionProperty() {
+		return permission;
 	}
 
 	public Metadata getMetadata() {
@@ -411,11 +415,15 @@ public class UploadModel {
 		return monetization.get().getEidr();
 	}
 
+	public void setMonetizationEidr(final String monetizationEidr) {
+		monetization.get().setEidr(monetizationEidr);
+	}
+
 	public String getMonetizationTitleepisode() {
 		return monetization.get().getEpisodeTitle();
 	}
 
-	public void setMonetizationTitleepisode(final String monetizationTitleepisode) {
+	public void setMonetizationEpisodeTitle(final String monetizationTitleepisode) {
 		monetization.get().setEpisodeTitle(monetizationTitleepisode);
 	}
 
@@ -436,23 +444,39 @@ public class UploadModel {
 	}
 
 	public Visibility getPermissionsVisibility() {
-		return permissions.get().getVisibility();
+		return permission.get().getVisibility();
 	}
 
 	public boolean isSocialFacebook() {
 		return social.get().getFacebook();
 	}
 
+	public void setSocialFacebook(final boolean socialFacebook) {
+		social.get().setFacebook(socialFacebook);
+	}
+
 	public boolean isSocialTwitter() {
 		return social.get().getTwitter();
+	}
+
+	public void setSocialTwitter(final boolean socialTwitter) {
+		social.get().setTwitter(socialTwitter);
 	}
 
 	public boolean isSocialGplus() {
 		return social.get().getGplus();
 	}
 
+	public void setSocialGplus(final boolean socialGplus) {
+		social.get().setGplus(socialGplus);
+	}
+
 	public boolean isMonetizationClaim() {
 		return monetization.get().getClaim();
+	}
+
+	public void setMonetizationClaim(final boolean monetizationClaim) {
+		monetization.get().setClaim(monetizationClaim);
 	}
 
 	public License getMetadataLicense() {
@@ -467,40 +491,80 @@ public class UploadModel {
 		return monetization.get().getPartner();
 	}
 
-	public ClaimOption getMonetizationClaimoption() {
+	public void setMonetizationPartner(final boolean monetizationPartner) {
+		monetization.get().setPartner(monetizationPartner);
+	}
+
+	public ClaimOption getMonetizationClaimOption() {
 		return monetization.get().getClaimOption();
+	}
+
+	public void setMonetizationClaimOption(final ClaimOption monetizationClaimOption) {
+		monetization.get().setClaimOption(monetizationClaimOption);
 	}
 
 	public boolean isMonetizationOverlay() {
 		return monetization.get().getOverlay();
 	}
 
+	public void setMonetizationOverlay(final boolean monetizationOverlay) {
+		monetization.get().setOverlay(monetizationOverlay);
+	}
+
 	public boolean isMonetizationTrueview() {
 		return monetization.get().getTrueview();
+	}
+
+	public void setMonetizationTrueview(final boolean monetizationTrueview) {
+		monetization.get().setTrueview(monetizationTrueview);
 	}
 
 	public boolean isMonetizationInstream() {
 		return monetization.get().getInstream();
 	}
 
+	public void setMonetizationInstream(final boolean monetizationInstream) {
+		monetization.get().setInstream(monetizationInstream);
+	}
+
 	public boolean isMonetizationInstreamDefaults() {
 		return monetization.get().getInstreamDefaults();
+	}
+
+	public void setMonetizationInstreamDefaults(final boolean monetizationInstreamDefaults) {
+		monetization.get().setInstreamDefaults(monetizationInstreamDefaults);
 	}
 
 	public boolean isMonetizationProduct() {
 		return monetization.get().getProduct();
 	}
 
+	public void setMonetizationProduct(final boolean monetizationProduct) {
+		monetization.get().setProduct(monetizationProduct);
+	}
+
 	public Syndication getMonetizationSyndication() {
 		return monetization.get().getSyndication();
 	}
 
-	public ClaimType getMonetizationClaimtype() {
+	public void setMonetizationSyndication(final Syndication monetizationSyndication) {
+		monetization.get().setSyndication(monetizationSyndication);
+	}
+
+	public ClaimType getMonetizationClaimType() {
 		return monetization.get().getClaimType();
+	}
+
+	public void setMonetizationClaimType(final ClaimType monetizationClaimType) {
+		monetization.get().setClaimType(monetizationClaimType);
 	}
 
 	public Asset getMonetizationAsset() {
 		return monetization.get().getAsset();
+	}
+
+	public void setMonetizationAsset(final Asset monetizationAsset) {
+		monetization.get().setAsset(monetizationAsset);
 	}
 
 	public String getMonetizationIsan() {
@@ -512,31 +576,31 @@ public class UploadModel {
 	}
 
 	public boolean isPermissionsEmbed() {
-		return permissions.get().getEmbed();
+		return permission.get().getEmbed();
 	}
 
 	public boolean isPermissionsRate() {
-		return permissions.get().getRate();
+		return permission.get().getRate();
 	}
 
 	public boolean isPermissionsCommentvote() {
-		return permissions.get().getCommentvote();
+		return permission.get().getCommentvote();
 	}
 
 	public Comment getPermissionsComment() {
-		return permissions.get().getComment();
+		return permission.get().getComment();
 	}
 
 	public boolean isPermissionsAgeRestricted() {
-		return permissions.get().getAgeRestricted();
+		return permission.get().getAgeRestricted();
 	}
 
 	public boolean isPermissionsPublicStatsViewable() {
-		return permissions.get().getPublicStatsViewable();
+		return permission.get().getPublicStatsViewable();
 	}
 
 	public ThreeD getPermissionsThreedD() {
-		return permissions.get().getThreedD();
+		return permission.get().getThreedD();
 	}
 
 	public String getMetadataLicenseIdentifier() {
@@ -548,7 +612,7 @@ public class UploadModel {
 	}
 
 	public String getPermissionsVisibilityIdentifier() {
-		return permissions.get().getVisibilityIdentifier();
+		return permission.get().getVisibilityIdentifier();
 	}
 
 	public int getCategoryId() {
@@ -563,16 +627,56 @@ public class UploadModel {
 		metadata.get().categoryProperty().set(categoryModel);
 	}
 
-	@Subscribe
+	@Handler
 	public void onAccountEvent(final AccountRemovedEvent event) {
 		if (event.getAccountModel().equals(account.get())) {
 			account.set(null);
 		}
 	}
 
-	@Subscribe
+	@Handler
 	public void onPlaylistEvent(final PlaylistRemovedEvent event) {
 		playlists.remove(event.getPlaylistModel());
+	}
+
+	public void setPermissionAgeRestricted(final boolean permissionAgeRestricted) {
+		permission.get().setAgeRestricted(permissionAgeRestricted);
+	}
+
+	public void setPermissionComment(final Comment permissionComment) {
+		permission.get().setComment(permissionComment);
+	}
+
+	public void setPermissionCommentvote(final boolean permissionCommentvote) {
+		permission.get().setCommentvote(permissionCommentvote);
+	}
+
+	public void setPermissionEmbed(final boolean permissionEmbed) {
+		permission.get().setEmbed(permissionEmbed);
+	}
+
+	public void setPermissionPublicStatsViewable(final boolean permissionPublicStatsViewable) {
+		permission.get().setPublicStatsViewable(permissionPublicStatsViewable);
+	}
+
+	public void setPermissionRate(final boolean permissionRate) {
+		permission.get().setRate(permissionRate);
+	}
+
+	public void setPermissionThreeD(final ThreeD permissionThreeD) {
+		permission.get().setThreedD(permissionThreeD);
+	}
+
+	public void setPermissionVisibility(final Visibility permissionVisibility) {
+		permission.get().setVisibility(permissionVisibility);
+	}
+
+	public boolean isPermissionSubscribers() {
+		return permission.get().getSubsribers();
+	}
+
+	public void setPermissionSubcribers(final boolean permissionSubcribers) {
+		permission.get().setSubsribers(permissionSubcribers);
 	}
 
 	public interface Validation {

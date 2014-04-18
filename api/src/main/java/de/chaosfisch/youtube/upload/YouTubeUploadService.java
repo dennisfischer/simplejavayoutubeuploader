@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import org.sormula.SormulaException;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -149,16 +150,20 @@ public class YouTubeUploadService implements IUploadService {
 	}
 
 	private UploadDTO toDTO(final UploadModel uploadModel) {
+		final Instant dateTimeOfStart = null == uploadModel.getDateTimeOfStart() ? null : uploadModel.getDateTimeOfStart().toInstant();
+		final Instant dateTimeOfRelease = null == uploadModel.getDateTimeOfRelease() ? null : uploadModel.getDateTimeOfRelease().toInstant();
+		final Instant dateTimeOfEnd = null == uploadModel.getDateTimeOfEnd() ? null : uploadModel.getDateTimeOfEnd().toInstant();
+
 		return new UploadDTO(uploadModel.getId(), uploadModel.getUploadurl(), uploadModel.getVideoid(), uploadModel.getFile(), uploadModel.getEnddir(),
-							 uploadModel.getThumbnail(), uploadModel.getDateTimeOfStart().toInstant(), uploadModel.getDateTimeOfRelease().toInstant(),
-							 uploadModel.getDateTimeOfEnd().toInstant(), uploadModel.getOrder(), uploadModel.getProgress(), uploadModel.getStopAfter(),
-							 uploadModel.getFileSize(), uploadModel.getStatus().name(), uploadModel.getAccountYoutubeId(), Collections.emptyList(),
+							 uploadModel.getThumbnail(), dateTimeOfStart, dateTimeOfRelease, dateTimeOfEnd, uploadModel.getOrder(), uploadModel.getProgress(),
+							 uploadModel.getStopAfter(), uploadModel.getFileSize(), uploadModel.getStatus().name(), uploadModel.getAccountYoutubeId(),
+							 Collections.emptyList(),
 							 //TODO playlists
 							 new SocialDTO(uploadModel.getId(), uploadModel.getSocialMessage(), uploadModel.isSocialFacebook(), uploadModel.isSocialTwitter(),
 										   uploadModel.isSocialGplus()),
 							 new MonetizationDTO(uploadModel.getId(), uploadModel.getMonetizationSyndication().name(),
-												 uploadModel.getMonetizationClaimtype().name(), uploadModel.getMonetizationClaimoption().name(),
-												 uploadModel.getMonetizationAsset().name(), uploadModel.isMonetizationInstreamDefaults(),
+												 uploadModel.getMonetizationClaimType().name(), uploadModel.getMonetizationClaimOption().name(),
+												 uploadModel.getMonetizationAsset(), uploadModel.isMonetizationInstreamDefaults(),
 												 uploadModel.isMonetizationClaim(), uploadModel.isMonetizationOverlay(), uploadModel.isMonetizationTrueview(),
 												 uploadModel.isMonetizationInstream(), uploadModel.isMonetizationProduct(),
 												 uploadModel.isMonetizationPartner(),
@@ -167,10 +172,11 @@ public class YouTubeUploadService implements IUploadService {
 												 uploadModel.getMonetizationIsan(), uploadModel.getMonetizationEidr(),
 												 uploadModel.getMonetizationTitleepisode(), uploadModel.getMonetizationSeasonNb(),
 												 uploadModel.getMonetizationEpisodeNb()),
-							 new PermissionDTO(uploadModel.getId(), uploadModel.getPermissionsVisibility().name(), uploadModel.getPermissionsThreedD().name(),
-											   uploadModel.getPermissionsComment().name(), uploadModel.isPermissionsCommentvote(),
-											   uploadModel.isPermissionsEmbed(), uploadModel.isPermissionsRate(), uploadModel.isPermissionsAgeRestricted(),
-											   uploadModel.isPermissionsPublicStatsViewable()),
+							 new PermissionDTO(uploadModel.getId(), uploadModel.isPermissionsAgeRestricted(), uploadModel.getPermissionsComment().name(),
+											   uploadModel.isPermissionsCommentvote(), uploadModel.isPermissionsEmbed(),
+											   uploadModel.isPermissionsPublicStatsViewable(), uploadModel.isPermissionsRate(),
+											   uploadModel.isPermissionSubscribers(), uploadModel.getPermissionsThreedD().name(),
+											   uploadModel.getPermissionsVisibility().name()),
 							 new MetadataDTO(uploadModel.getId(), uploadModel.getCategoryId(), uploadModel.getMetadataLicense().name(),
 											 uploadModel.getMetadataTitle(), uploadModel.getMetadataDescription(), uploadModel.getMetadataTags())
 		);

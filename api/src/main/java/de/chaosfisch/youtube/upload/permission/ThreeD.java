@@ -8,8 +8,8 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.permissions;
+package de.chaosfisch.youtube.upload.permission;
 
-public enum ClaimType {
-	AUDIO_VISUAL, VISUAL, AUDIO
+public enum ThreeD {
+	DEFAULT, OFF, CONVERTED, LAYOUT
 }

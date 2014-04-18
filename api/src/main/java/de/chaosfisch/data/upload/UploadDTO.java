@@ -31,8 +31,7 @@ public class UploadDTO {
 	private MonetizationDTO   monetizationDTO;
 	private int               position;
 	private PermissionDTO     permissionDTO;
-	@OneToManyCascade(name = "uploads_playlists",
-					  readOnly = true)
+	@OneToManyCascade(name = "uploads_playlists", readOnly = true)
 	private List<PlaylistDTO> playlists;
 	private double            progress;
 	private SocialDTO         socialDTO;

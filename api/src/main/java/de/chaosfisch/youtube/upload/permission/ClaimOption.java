@@ -8,19 +8,8 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.permissions;
+package de.chaosfisch.youtube.upload.permission;
 
-public enum Visibility {
-	PUBLIC("public"), UNLISTED("unlisted"), PRIVATE("private"), SCHEDULED("private");
-	private final String identifier;
-
-
-	Visibility(final String identifier) {
-		this.identifier = identifier;
-	}
-
-
-	public String getIdentifier() {
-		return identifier;
-	}
+public enum ClaimOption {
+	MONETIZE, TRACK, BLOCK
 }

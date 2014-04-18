@@ -20,23 +20,33 @@ public class PermissionDTO {
 	private boolean embed;
 	private boolean publicStatsViewable;
 	private boolean rate;
+	private boolean subcribers;
 	private String  threedD;
 	private String  visibility;
 
-	public PermissionDTO(final String uploadId, final String visibility, final String threedD, final String comment, final boolean commentvote,
-						 final boolean embed, final boolean rate, final boolean ageRestricted, final boolean publicStatsViewable) {
+	public PermissionDTO(final String uploadId, final boolean ageRestricted, final String comment, final boolean commentvote, final boolean embed,
+						 final boolean publicStatsViewable, final boolean rate, final boolean subcribers, final String threedD, final String visibility) {
 		this.uploadId = uploadId;
-		this.visibility = visibility;
-		this.threedD = threedD;
+		this.ageRestricted = ageRestricted;
 		this.comment = comment;
 		this.commentvote = commentvote;
 		this.embed = embed;
-		this.rate = rate;
-		this.ageRestricted = ageRestricted;
 		this.publicStatsViewable = publicStatsViewable;
+		this.rate = rate;
+		this.subcribers = subcribers;
+		this.threedD = threedD;
+		this.visibility = visibility;
 	}
 
 	public PermissionDTO() {
+	}
+
+	public boolean isSubcribers() {
+		return subcribers;
+	}
+
+	public void setSubcribers(final boolean subcribers) {
+		this.subcribers = subcribers;
 	}
 
 	public String getUploadId() {
@@ -115,14 +125,15 @@ public class PermissionDTO {
 	public String toString() {
 		return "PermissionDTO{" +
 				"uploadId='" + uploadId + '\'' +
-				", visibility='" + visibility + '\'' +
-				", threedD='" + threedD + '\'' +
+				", ageRestricted=" + ageRestricted +
 				", comment='" + comment + '\'' +
 				", commentvote=" + commentvote +
 				", embed=" + embed +
-				", rate=" + rate +
-				", ageRestricted=" + ageRestricted +
 				", publicStatsViewable=" + publicStatsViewable +
+				", rate=" + rate +
+				", subcribers=" + subcribers +
+				", threedD='" + threedD + '\'' +
+				", visibility='" + visibility + '\'' +
 				'}';
 	}
 }

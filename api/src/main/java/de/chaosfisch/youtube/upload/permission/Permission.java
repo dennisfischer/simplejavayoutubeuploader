@@ -8,13 +8,13 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.permissions;
+package de.chaosfisch.youtube.upload.permission;
 
 import de.chaosfisch.data.upload.PermissionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Permissions {
+public class Permission {
 
 	private final SimpleBooleanProperty            ageRestricted       = new SimpleBooleanProperty();
 	private final SimpleObjectProperty<Comment>    comment             = new SimpleObjectProperty<>(Comment.ALLOWED);
@@ -22,21 +22,35 @@ public class Permissions {
 	private final SimpleBooleanProperty            embed               = new SimpleBooleanProperty(true);
 	private final SimpleBooleanProperty            publicStatsViewable = new SimpleBooleanProperty();
 	private final SimpleBooleanProperty            rate                = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            subsribers          = new SimpleBooleanProperty(true);
 	private final SimpleObjectProperty<ThreeD>     threedD             = new SimpleObjectProperty<>(ThreeD.DEFAULT);
 	private final SimpleObjectProperty<Visibility> visibility          = new SimpleObjectProperty<>(Visibility.PUBLIC);
 
-	public Permissions(final PermissionDTO permissionDTO) {
+	public Permission(final PermissionDTO permissionDTO) {
 		ageRestricted.set(permissionDTO.isAgeRestricted());
 		comment.set(Comment.valueOf(permissionDTO.getComment()));
 		commentvote.set(permissionDTO.isCommentvote());
 		embed.set(permissionDTO.isEmbed());
 		publicStatsViewable.set(permissionDTO.isPublicStatsViewable());
+		subsribers.set(permissionDTO.isSubcribers());
 		rate.set(permissionDTO.isRate());
 		threedD.set(ThreeD.valueOf(permissionDTO.getThreedD()));
 		visibility.set(Visibility.valueOf(permissionDTO.getVisibility()));
 	}
 
-	public Permissions() {
+	public Permission() {
+	}
+
+	public boolean getSubsribers() {
+		return subsribers.get();
+	}
+
+	public void setSubsribers(final boolean subsribers) {
+		this.subsribers.set(subsribers);
+	}
+
+	public SimpleBooleanProperty subsribersProperty() {
+		return subsribers;
 	}
 
 	public Visibility getVisibility() {

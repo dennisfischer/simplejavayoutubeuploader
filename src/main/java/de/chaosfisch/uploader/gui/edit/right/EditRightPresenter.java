@@ -16,9 +16,9 @@ import de.chaosfisch.uploader.gui.edit.monetization.EditMonetizationView;
 import de.chaosfisch.uploader.gui.edit.partner.EditPartnerView;
 import de.chaosfisch.uploader.gui.models.TimeModel;
 import de.chaosfisch.youtube.upload.metadata.License;
-import de.chaosfisch.youtube.upload.permissions.Comment;
-import de.chaosfisch.youtube.upload.permissions.ThreeD;
-import de.chaosfisch.youtube.upload.permissions.Visibility;
+import de.chaosfisch.youtube.upload.permission.Comment;
+import de.chaosfisch.youtube.upload.permission.ThreeD;
+import de.chaosfisch.youtube.upload.permission.Visibility;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -51,6 +51,8 @@ public class EditRightPresenter {
 	@FXML
 	private   ComboBox<ThreeD>           threed;
 	@FXML
+	private   ToggleButton               rateComments;
+	@FXML
 	private   ImageView                  thumbnailImage;
 	@FXML
 	private   DatePicker                 releaseDatepicker;
@@ -59,7 +61,7 @@ public class EditRightPresenter {
 	@FXML
 	private   TextField                  thumbnailPath;
 	@FXML
-	private   ToggleButton               ageRestriction;
+	private   ToggleButton               ageRestricted;
 	@FXML
 	private   ToggleButton               statistics;
 	@FXML
@@ -101,10 +103,11 @@ public class EditRightPresenter {
 		comments.valueProperty().bindBidirectional(editDataModel.selectedCommentProperty());
 		license.valueProperty().bindBidirectional(editDataModel.selectedLicenseProperty());
 		threed.valueProperty().bindBidirectional(editDataModel.selectedThreeDProperty());
-		ageRestriction.selectedProperty().bindBidirectional(editDataModel.ageRestrictionProperty());
+		ageRestricted.selectedProperty().bindBidirectional(editDataModel.ageRestrictedProperty());
 		statistics.selectedProperty().bindBidirectional(editDataModel.statisticsProperty());
 		rate.selectedProperty().bindBidirectional(editDataModel.rateProperty());
 		embed.selectedProperty().bindBidirectional(editDataModel.embedProperty());
+		rateComments.selectedProperty().bindBidirectional(editDataModel.commentvoteProperty());
 		subscribers.selectedProperty().bindBidirectional(editDataModel.subscribersProperty());
 	}
 

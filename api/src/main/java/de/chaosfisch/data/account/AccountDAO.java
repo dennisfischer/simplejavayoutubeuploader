@@ -18,6 +18,5 @@ public class AccountDAO extends Table<AccountDTO> {
 
 	public AccountDAO(final Database database) throws SormulaException {
 		super(database, AccountDTO.class);
-		database.getTable(AccountDTO.class, true);
 	}
 }

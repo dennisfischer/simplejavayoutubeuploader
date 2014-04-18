@@ -18,7 +18,6 @@ public class PlaylistDAO extends Table<PlaylistDTO> {
 
 	public PlaylistDAO(final Database database) throws SormulaException {
 		super(database, PlaylistDTO.class);
-		database.getTable(PlaylistDTO.class, true);
 	}
 
 	public void clearOld(final String accountId) {

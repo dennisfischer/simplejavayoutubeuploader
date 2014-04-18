@@ -18,9 +18,10 @@ import de.chaosfisch.youtube.playlist.PlaylistModel;
 import de.chaosfisch.youtube.upload.IUploadService;
 import de.chaosfisch.youtube.upload.UploadModel;
 import de.chaosfisch.youtube.upload.metadata.License;
-import de.chaosfisch.youtube.upload.permissions.Comment;
-import de.chaosfisch.youtube.upload.permissions.ThreeD;
-import de.chaosfisch.youtube.upload.permissions.Visibility;
+import de.chaosfisch.youtube.upload.permission.Asset;
+import de.chaosfisch.youtube.upload.permission.Comment;
+import de.chaosfisch.youtube.upload.permission.ThreeD;
+import de.chaosfisch.youtube.upload.permission.Visibility;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,36 +34,332 @@ import java.io.IOException;
 
 public class EditDataModel {
 
-	private final SimpleBooleanProperty             ageRestriction = new SimpleBooleanProperty(false);
-	private final SimpleListProperty<CategoryModel> categories     = new SimpleListProperty<>(FXCollections.observableArrayList());
+	//Services
 	private final ICategoryService categoryService;
-	private final SimpleListProperty<Comment>         comments           = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
-	private final SimpleStringProperty                description        = new SimpleStringProperty("");
-	private final SimpleBooleanProperty               embed              = new SimpleBooleanProperty(true);
-	private final SimpleListProperty<String>          files              = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleListProperty<License>         licenses           = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));
-	private final SimpleBooleanProperty               rate               = new SimpleBooleanProperty(true);
-	private final SimpleObjectProperty<AccountModel>  selectedAccount    = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<CategoryModel> selectedCategory   = new SimpleObjectProperty<>();
-	private final SimpleObjectProperty<Comment>       selectedComment    = new SimpleObjectProperty<>(Comment.ALLOWED);
-	private final SimpleStringProperty                selectedFile       = new SimpleStringProperty();
-	private final SimpleObjectProperty<License>       selectedLicense    = new SimpleObjectProperty<>(License.YOUTUBE);
-	private final SimpleListProperty<PlaylistModel>   selectedPlaylists  = new SimpleListProperty<>(FXCollections.observableArrayList());
-	private final SimpleObjectProperty<ThreeD>        selectedThreeD     = new SimpleObjectProperty<>(ThreeD.DEFAULT);
-	private final SimpleObjectProperty<Visibility>    selectedVisibility = new SimpleObjectProperty<>(Visibility.PUBLIC);
-	private final SimpleBooleanProperty               statistics         = new SimpleBooleanProperty(true);
-	private final SimpleBooleanProperty               subscribers        = new SimpleBooleanProperty(true);
-	private final SimpleStringProperty                tags               = new SimpleStringProperty("");
-	private final SimpleListProperty<ThreeD>          threeDs            = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
-	private final SimpleStringProperty                title              = new SimpleStringProperty("");
-	private final IUploadService uploadService;
-	private final SimpleListProperty<Visibility> visibilities = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility.values()));
+	private final IUploadService   uploadService;
+
+
+	//Upload fields
+	private final SimpleListProperty<CategoryModel>   categories        = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleStringProperty                description       = new SimpleStringProperty("");
+	private final SimpleListProperty<String>          files             = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleListProperty<License>         licenses          = new SimpleListProperty<>(FXCollections.observableArrayList(License.values()));
+	private final SimpleObjectProperty<AccountModel>  selectedAccount   = new SimpleObjectProperty<>();
+	private final SimpleObjectProperty<CategoryModel> selectedCategory  = new SimpleObjectProperty<>();
+	private final SimpleStringProperty                selectedFile      = new SimpleStringProperty();
+	private final SimpleObjectProperty<License>       selectedLicense   = new SimpleObjectProperty<>(License.YOUTUBE);
+	private final SimpleListProperty<PlaylistModel>   selectedPlaylists = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private final SimpleStringProperty                tags              = new SimpleStringProperty("");
+	private final SimpleStringProperty                title             = new SimpleStringProperty("");
+	private final SimpleBooleanProperty               subscribers       = new SimpleBooleanProperty(true);
+
+	//Permission fields
+	private final SimpleListProperty<Comment>      comments           = new SimpleListProperty<>(FXCollections.observableArrayList(Comment.values()));
+	private final SimpleListProperty<Visibility>   visibilities       = new SimpleListProperty<>(FXCollections.observableArrayList(Visibility.values()));
+	private final SimpleListProperty<ThreeD>       threeDs            = new SimpleListProperty<>(FXCollections.observableArrayList(ThreeD.values()));
+	private final SimpleBooleanProperty            ageRestricted      = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty            commentvote        = new SimpleBooleanProperty(true);
+	private final SimpleObjectProperty<Comment>    selectedComment    = new SimpleObjectProperty<>(Comment.ALLOWED);
+	private final SimpleObjectProperty<ThreeD>     selectedThreeD     = new SimpleObjectProperty<>(ThreeD.DEFAULT);
+	private final SimpleBooleanProperty            statistics         = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            rate               = new SimpleBooleanProperty(true);
+	private final SimpleBooleanProperty            embed              = new SimpleBooleanProperty(true);
+	private final SimpleObjectProperty<Visibility> selectedVisibility = new SimpleObjectProperty<>(Visibility.PUBLIC);
+
+	//Monetization fields
+	private final SimpleBooleanProperty claim                    = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty  customId                 = new SimpleStringProperty("");
+	private final SimpleStringProperty  monetizationDescription  = new SimpleStringProperty("");
+	private final SimpleStringProperty  episodeNb                = new SimpleStringProperty("");
+	private final SimpleStringProperty  monetizationEpisodeTitle = new SimpleStringProperty("");
+	private final SimpleBooleanProperty instream                 = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty instreamDefaults         = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty  isan                     = new SimpleStringProperty("");
+	private final SimpleStringProperty  notes                    = new SimpleStringProperty("");
+	private final SimpleBooleanProperty overlay                  = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty partner                  = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty product                  = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty  seasonNb                 = new SimpleStringProperty("");
+	private final SimpleStringProperty  monetizationTitle        = new SimpleStringProperty("");
+	private final SimpleStringProperty  tmsid                    = new SimpleStringProperty("");
+	private final SimpleBooleanProperty trueview                 = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty  eidr                     = new SimpleStringProperty("");
+
+	//Social fields
+	private final SimpleStringProperty  socialMessage = new SimpleStringProperty("");
+	private final SimpleBooleanProperty facebook      = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty twitter       = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty gplus         = new SimpleBooleanProperty(false);
 
 	public EditDataModel(final ICategoryService categoryService, final IUploadService uploadService) {
 		this.categoryService = categoryService;
 		this.uploadService = uploadService;
 		initCategoryData();
 		categories.bind(categoryService.categoryModelsProperty());
+	}
+
+	public boolean getGplus() {
+		return gplus.get();
+	}
+
+	public void setGplus(final boolean gplus) {
+		this.gplus.set(gplus);
+	}
+
+	public SimpleBooleanProperty gplusProperty() {
+		return gplus;
+	}
+
+	public boolean getCommentvote() {
+		return commentvote.get();
+	}
+
+	public void setCommentvote(final boolean commentvote) {
+		this.commentvote.set(commentvote);
+	}
+
+	public SimpleBooleanProperty commentvoteProperty() {
+		return commentvote;
+	}
+
+	public boolean getClaim() {
+		return claim.get();
+	}
+
+	public void setClaim(final boolean claim) {
+		this.claim.set(claim);
+	}
+
+	public SimpleBooleanProperty claimProperty() {
+		return claim;
+	}
+
+	public String getCustomId() {
+		return customId.get();
+	}
+
+	public void setCustomId(final String customId) {
+		this.customId.set(customId);
+	}
+
+	public SimpleStringProperty customIdProperty() {
+		return customId;
+	}
+
+	public String getMonetizationDescription() {
+		return monetizationDescription.get();
+	}
+
+	public void setMonetizationDescription(final String monetizationDescription) {
+		this.monetizationDescription.set(monetizationDescription);
+	}
+
+	public SimpleStringProperty monetizationDescriptionProperty() {
+		return monetizationDescription;
+	}
+
+	public String getEpisodeNb() {
+		return episodeNb.get();
+	}
+
+	public void setEpisodeNb(final String episodeNb) {
+		this.episodeNb.set(episodeNb);
+	}
+
+	public SimpleStringProperty episodeNbProperty() {
+		return episodeNb;
+	}
+
+	public String getMonetizationEpisodeTitle() {
+		return monetizationEpisodeTitle.get();
+	}
+
+	public void setMonetizationEpisodeTitle(final String monetizationEpisodeTitle) {
+		this.monetizationEpisodeTitle.set(monetizationEpisodeTitle);
+	}
+
+	public SimpleStringProperty monetizationEpisodeTitleProperty() {
+		return monetizationEpisodeTitle;
+	}
+
+	public boolean getInstream() {
+		return instream.get();
+	}
+
+	public void setInstream(final boolean instream) {
+		this.instream.set(instream);
+	}
+
+	public SimpleBooleanProperty instreamProperty() {
+		return instream;
+	}
+
+	public boolean getInstreamDefaults() {
+		return instreamDefaults.get();
+	}
+
+	public void setInstreamDefaults(final boolean instreamDefaults) {
+		this.instreamDefaults.set(instreamDefaults);
+	}
+
+	public SimpleBooleanProperty instreamDefaultsProperty() {
+		return instreamDefaults;
+	}
+
+	public String getIsan() {
+		return isan.get();
+	}
+
+	public void setIsan(final String isan) {
+		this.isan.set(isan);
+	}
+
+	public SimpleStringProperty isanProperty() {
+		return isan;
+	}
+
+	public String getNotes() {
+		return notes.get();
+	}
+
+	public void setNotes(final String notes) {
+		this.notes.set(notes);
+	}
+
+	public SimpleStringProperty notesProperty() {
+		return notes;
+	}
+
+	public boolean getOverlay() {
+		return overlay.get();
+	}
+
+	public void setOverlay(final boolean overlay) {
+		this.overlay.set(overlay);
+	}
+
+	public SimpleBooleanProperty overlayProperty() {
+		return overlay;
+	}
+
+	public boolean getPartner() {
+		return partner.get();
+	}
+
+	public void setPartner(final boolean partner) {
+		this.partner.set(partner);
+	}
+
+	public SimpleBooleanProperty partnerProperty() {
+		return partner;
+	}
+
+	public boolean getProduct() {
+		return product.get();
+	}
+
+	public void setProduct(final boolean product) {
+		this.product.set(product);
+	}
+
+	public SimpleBooleanProperty productProperty() {
+		return product;
+	}
+
+	public String getSeasonNb() {
+		return seasonNb.get();
+	}
+
+	public void setSeasonNb(final String seasonNb) {
+		this.seasonNb.set(seasonNb);
+	}
+
+	public SimpleStringProperty seasonNbProperty() {
+		return seasonNb;
+	}
+
+	public String getMonetizationTitle() {
+		return monetizationTitle.get();
+	}
+
+	public void setMonetizationTitle(final String monetizationTitle) {
+		this.monetizationTitle.set(monetizationTitle);
+	}
+
+	public SimpleStringProperty monetizationTitleProperty() {
+		return monetizationTitle;
+	}
+
+	public String getTmsid() {
+		return tmsid.get();
+	}
+
+	public void setTmsid(final String tmsid) {
+		this.tmsid.set(tmsid);
+	}
+
+	public SimpleStringProperty tmsidProperty() {
+		return tmsid;
+	}
+
+	public boolean getTrueview() {
+		return trueview.get();
+	}
+
+	public void setTrueview(final boolean trueview) {
+		this.trueview.set(trueview);
+	}
+
+	public SimpleBooleanProperty trueviewProperty() {
+		return trueview;
+	}
+
+	public String getEidr() {
+		return eidr.get();
+	}
+
+	public void setEidr(final String eidr) {
+		this.eidr.set(eidr);
+	}
+
+	public SimpleStringProperty eidrProperty() {
+		return eidr;
+	}
+
+	public String getSocialMessage() {
+		return socialMessage.get();
+	}
+
+	public void setSocialMessage(final String socialMessage) {
+		this.socialMessage.set(socialMessage);
+	}
+
+	public SimpleStringProperty socialMessageProperty() {
+		return socialMessage;
+	}
+
+	public boolean getFacebook() {
+		return facebook.get();
+	}
+
+	public void setFacebook(final boolean facebook) {
+		this.facebook.set(facebook);
+	}
+
+	public SimpleBooleanProperty facebookProperty() {
+		return facebook;
+	}
+
+	public boolean getTwitter() {
+		return twitter.get();
+	}
+
+	public void setTwitter(final boolean twitter) {
+		this.twitter.set(twitter);
+	}
+
+	public SimpleBooleanProperty twitterProperty() {
+		return twitter;
 	}
 
 	private void initCategoryData() {
@@ -281,16 +578,16 @@ public class EditDataModel {
 		return selectedLicense;
 	}
 
-	public boolean getAgeRestriction() {
-		return ageRestriction.get();
+	public boolean getAgeRestricted() {
+		return ageRestricted.get();
 	}
 
-	public void setAgeRestriction(final boolean ageRestriction) {
-		this.ageRestriction.set(ageRestriction);
+	public void setAgeRestricted(final boolean ageRestricted) {
+		this.ageRestricted.set(ageRestricted);
 	}
 
-	public SimpleBooleanProperty ageRestrictionProperty() {
-		return ageRestriction;
+	public SimpleBooleanProperty ageRestrictedProperty() {
+		return ageRestricted;
 	}
 
 	public boolean getStatistics() {
@@ -358,11 +655,55 @@ public class EditDataModel {
 		//TODO		uploadModel.setEnddir();
 		uploadModel.setFile(selectedFile.get());
 		uploadModel.setFileSize(new File(selectedFile.get()).length());
+
+		//Metadata
 		uploadModel.setMetadataTitle(title.get());
 		uploadModel.setMetadataDescription(description.get());
 		uploadModel.setMetadataTags(tags.get());
 		uploadModel.setMetadataLicense(selectedLicense.get());
 		uploadModel.setMetadataCategory(selectedCategory.get());
+
+		//Permission
+		uploadModel.setPermissionAgeRestricted(ageRestricted.get());
+		uploadModel.setPermissionComment(selectedComment.get());
+		uploadModel.setPermissionCommentvote(commentvote.get());
+		uploadModel.setPermissionEmbed(embed.get());
+		uploadModel.setPermissionPublicStatsViewable(statistics.get());
+		uploadModel.setPermissionRate(rate.get());
+		uploadModel.setPermissionThreeD(selectedThreeD.get());
+		uploadModel.setPermissionVisibility(selectedVisibility.get());
+		uploadModel.setPermissionSubcribers(subscribers.get());
+
+		//Social
+		uploadModel.setSocialMessage(socialMessage.get());
+		uploadModel.setSocialFacebook(facebook.get());
+		uploadModel.setSocialTwitter(twitter.get());
+		uploadModel.setSocialGplus(gplus.get());
+
+		//Monetization
+		//TODO monetization partner fields connection
+		//	uploadModel.setMonetizationAsset(selectedAsset.get());
+		uploadModel.setMonetizationAsset(Asset.TV);
+		uploadModel.setMonetizationClaim(claim.get());
+		//	uploadModel.setMonetizationClaimOption(selectedClaimOption.get());
+		//	uploadModel.setMonetizationClaimType(selectedClaimType.get());
+		uploadModel.setMonetizationCustomId(customId.get());
+		uploadModel.setMonetizationDescription(monetizationDescription.get());
+		uploadModel.setMonetizationEidr(eidr.get());
+		uploadModel.setMonetizationEpisodeNb(episodeNb.get());
+		uploadModel.setMonetizationEpisodeTitle(monetizationEpisodeTitle.get());
+		uploadModel.setMonetizationInstream(instream.get());
+		uploadModel.setMonetizationInstreamDefaults(instreamDefaults.get());
+		uploadModel.setMonetizationIsan(isan.get());
+		uploadModel.setMonetizationNotes(notes.get());
+		uploadModel.setMonetizationOverlay(overlay.get());
+		uploadModel.setMonetizationPartner(partner.get());
+		uploadModel.setMonetizationProduct(product.get());
+		uploadModel.setMonetizationSeasonNb(seasonNb.get());
+		//	uploadModel.setMonetizationSyndication(selectedSyndication.get());
+		uploadModel.setMonetizationTitle(monetizationTitle.get());
+		uploadModel.setMonetizationTmsid(tmsid.get());
+		uploadModel.setMonetizationTrueview(trueview.get());
 		uploadService.store(uploadModel);
 	}
 }

@@ -47,7 +47,6 @@ public class PlaylistDTO {
 		this.playlistId = playlistId;
 	}
 
-
 	public String getTitle() {
 		return title;
 	}
@@ -80,7 +79,6 @@ public class PlaylistDTO {
 		this.itemCount = itemCount;
 	}
 
-
 	public String getDescription() {
 		return description;
 	}
@@ -88,7 +86,6 @@ public class PlaylistDTO {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-
 
 	public String getAccountId() {
 		return accountId;
@@ -123,8 +120,7 @@ public class PlaylistDTO {
 
 		return itemCount == that.itemCount && privacyStatus == that.privacyStatus && accountId.equals(that.accountId) && description.equals(
 				that.description) && !(null != thumbnail ? !thumbnail.equals(that.thumbnail) : null != that.thumbnail) && title.equals(that.title) &&
-				playlistId
-				.equals(that.playlistId);
+				playlistId.equals(that.playlistId);
 	}
 
 	@Override

@@ -30,12 +30,12 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: guava-15.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-1.2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject-1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev101-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.7" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-oauth-client-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-client-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: mbassador-1.1.10" level="project" />
     <orderEntry type="library" exported="" name="Gradle: sormula-3.1-jdk1.7" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: google-api-services-youtube-v3-rev103-1.18.0-rc" level="project" />
   </component>
 </module>
 

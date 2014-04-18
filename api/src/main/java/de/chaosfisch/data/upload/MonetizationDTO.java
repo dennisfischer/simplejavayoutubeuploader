@@ -10,11 +10,13 @@
 
 package de.chaosfisch.data.upload;
 
+import de.chaosfisch.youtube.upload.permission.Asset;
+
 public class MonetizationDTO {
 
 	private String uploadId;
 
-	private String  asset;
+	private Asset   asset;
 	private boolean claim;
 	private String  claimOption;
 	private String  claimType;
@@ -39,7 +41,7 @@ public class MonetizationDTO {
 	public MonetizationDTO() {
 	}
 
-	public MonetizationDTO(final String uploadId, final String syndication, final String claimType, final String claimOption, final String asset,
+	public MonetizationDTO(final String uploadId, final String syndication, final String claimType, final String claimOption, final Asset asset,
 						   final boolean instreamDefaults, final boolean claim, final boolean overlay, final boolean trueview, final boolean instream,
 						   final boolean product, final boolean partner, final String title, final String description, final String customId,
 						   final String notes, final String tmsid, final String isan, final String eidr, final String episodeTitle, final String seasonNumber,
@@ -92,11 +94,11 @@ public class MonetizationDTO {
 		this.claimOption = claimOption;
 	}
 
-	public String getAsset() {
+	public Asset getAsset() {
 		return asset;
 	}
 
-	public void setAsset(final String asset) {
+	public void setAsset(final Asset asset) {
 		this.asset = asset;
 	}
 

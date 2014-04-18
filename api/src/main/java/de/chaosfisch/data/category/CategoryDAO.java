@@ -18,6 +18,5 @@ public class CategoryDAO extends Table<CategoryDTO> {
 
 	public CategoryDAO(final Database database) throws SormulaException {
 		super(database, CategoryDTO.class);
-		database.getTable(CategoryDTO.class, true);
 	}
 }

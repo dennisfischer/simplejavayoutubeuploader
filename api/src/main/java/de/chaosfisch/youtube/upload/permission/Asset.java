@@ -8,29 +8,8 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.data;
+package de.chaosfisch.youtube.upload.permission;
 
-import java.util.List;
-
-public interface IGenericDAO<T> {
-	/**
-	 * Returns all T's in the system
-	 *
-	 * @return List<T> accounts
-	 */
-	List<T> getAll();
-
-	/**
-	 * Stores (inserts/updates) a single record
-	 *
-	 * @param object to store
-	 */
-	void store(T object);
-
-	/**
-	 * Removed (deletes) a single record
-	 *
-	 * @param object to remove
-	 */
-	void remove(T object);
+public enum Asset {
+	WEB, TV, MOVIE
 }

@@ -11,10 +11,10 @@
 package de.chaosfisch.youtube.upload.metadata;
 
 import de.chaosfisch.data.upload.MonetizationDTO;
-import de.chaosfisch.youtube.upload.permissions.Asset;
-import de.chaosfisch.youtube.upload.permissions.ClaimOption;
-import de.chaosfisch.youtube.upload.permissions.ClaimType;
-import de.chaosfisch.youtube.upload.permissions.Syndication;
+import de.chaosfisch.youtube.upload.permission.Asset;
+import de.chaosfisch.youtube.upload.permission.ClaimOption;
+import de.chaosfisch.youtube.upload.permission.ClaimType;
+import de.chaosfisch.youtube.upload.permission.Syndication;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -44,7 +44,7 @@ public class Monetization {
 	private final SimpleBooleanProperty             trueview         = new SimpleBooleanProperty();
 
 	public Monetization(final MonetizationDTO monetizationDTO) {
-		asset.set(Asset.valueOf(monetizationDTO.getAsset()));
+		asset.set(monetizationDTO.getAsset());
 		claim.set(monetizationDTO.isClaim());
 		claimOption.set(ClaimOption.valueOf(monetizationDTO.getClaimOption()));
 		claimType.set(ClaimType.valueOf(monetizationDTO.getClaimType()));

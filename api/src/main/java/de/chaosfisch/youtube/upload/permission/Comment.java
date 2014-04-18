@@ -8,8 +8,8 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.permissions;
+package de.chaosfisch.youtube.upload.permission;
 
-public enum Asset {
-	WEB, TV, MOVIE
+public enum Comment {
+	ALLOWED, MODERATED, DENIED
 }

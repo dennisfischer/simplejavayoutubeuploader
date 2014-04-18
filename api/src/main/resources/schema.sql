@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS PermissionDTO
   rate                BOOLEAN NOT NULL,
   ageRestricted       BOOLEAN NOT NULL,
   publicStatsViewable BOOLEAN NOT NULL,
+  subscribers         BOOLEAN NOT NULL,
   PRIMARY KEY (uploadId),
   FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );

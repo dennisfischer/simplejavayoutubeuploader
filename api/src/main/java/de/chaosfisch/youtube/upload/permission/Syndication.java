@@ -8,8 +8,8 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-package de.chaosfisch.youtube.upload.permissions;
+package de.chaosfisch.youtube.upload.permission;
 
-public enum ClaimOption {
-	MONETIZE, TRACK, BLOCK
+public enum Syndication {
+	GLOBAL, MONETIZED_ONLY
 }

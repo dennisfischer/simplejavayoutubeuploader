@@ -52,7 +52,7 @@ public class PlaceholderJobPreProcessor implements UploadJobPreProcessor {
 
 		upload.setMonetizationTmsid(extendedPlaceholders.replace(upload.getMonetizationTmsid()));
 		upload.setMonetizationIsan(extendedPlaceholders.replace(upload.getMonetizationEidr()));
-		upload.setMonetizationTitleepisode(extendedPlaceholders.replace(upload.getMonetizationTitleepisode()));
+		upload.setMonetizationEpisodeTitle(extendedPlaceholders.replace(upload.getMonetizationTitleepisode()));
 		upload.setMonetizationSeasonNb(extendedPlaceholders.replace(upload.getMonetizationSeasonNb()));
 		upload.setMonetizationEpisodeNb(extendedPlaceholders.replace(upload.getMonetizationEpisodeNb()));
 		upload.setThumbnail(null == upload.getThumbnail() ? null : extendedPlaceholders.replace(upload.getThumbnail()));

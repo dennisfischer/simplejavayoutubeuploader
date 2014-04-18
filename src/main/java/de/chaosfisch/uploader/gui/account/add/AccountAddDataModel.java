@@ -66,7 +66,7 @@ public class AccountAddDataModel {
 			Scene scene = new Scene(webView);
 			stage.setScene(scene);
 			stage.show();
-			//stage.hide();
+			stage.hide();
 
 			engine = webView.getEngine();
 			engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {

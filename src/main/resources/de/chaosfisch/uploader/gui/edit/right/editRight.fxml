@@ -47,7 +47,7 @@
                         <ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Bewerten"
                                       GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="rate"/>
                         <ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Alters-beschränkt"
-                                      GridPane.columnIndex="2" GridPane.rowIndex="4" fx:id="ageRestriction"/>
+                                      GridPane.columnIndex="2" GridPane.rowIndex="4" fx:id="ageRestricted"/>
                         <ToggleButton maxWidth="Infinity" mnemonicParsing="false" text="Einbetten"
                                       GridPane.columnIndex="3" GridPane.rowIndex="4" fx:id="embed"/>
 
