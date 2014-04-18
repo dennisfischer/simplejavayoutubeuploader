@@ -9,12 +9,8 @@
  **************************************************************************************************/
 
 
-
-
-
-
-
-def javaFxHome = "C:/Program Files/Java/jdk1.7.0_55/";
+def javaFxHome = System.getProperty("java.home");
+System.out.println(javaFxHome);
 apply plugin: 'java'
 apply plugin: 'application'
 version = "v3.2.0.9";
@@ -37,7 +33,7 @@ dependencies {
 
 	testCompile 'junit:junit:4.10'
 
-	providedCompile files("$javaFxHome/jre/lib/jfxrt.jar")
+	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 repositories {
@@ -59,8 +55,7 @@ jar {
 }
 
 task javaFXPackager(type: Exec) {
-	commandLine = [
-			"$javaFxHome/bin/javafxpackager.exe",
+	commandLine = ["$javaFxHome/../bin/javafxpackager",
 			'-createjar',
 			'-srcdir',
 			sourceSets.main.output.classesDir,

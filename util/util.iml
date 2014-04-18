@@ -20,6 +20,7 @@
     <orderEntry type="library" exported="" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.7" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: C__Program_Files_Java_jdk1_7_0_55_jre_jre_lib_jfxrt_jar" level="project" />
   </component>
 </module>
 
