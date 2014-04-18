@@ -44,7 +44,7 @@
     <orderEntry type="library" exported="" name="Gradle: google-http-client-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-oauth-client-1.18.0-rc" level="project" />
     <orderEntry type="library" exported="" name="Gradle: google-api-client-1.18.0-rc" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: C__Program_Files_Java_jdk1_7_0_55_jre_jre_lib_jfxrt_jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: jfxrt" level="project" />
   </component>
 </module>
 
