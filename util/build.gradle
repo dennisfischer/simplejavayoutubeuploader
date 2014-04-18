@@ -7,6 +7,8 @@
  *                                                                                                *
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
+
+
 def javaFxHome = System.getProperty("java.home");
 
 apply plugin: 'java'
@@ -24,7 +26,7 @@ configurations {
 
 dependencies {
 	compile 'com.google.inject:guice:3.0', 'org.slf4j:slf4j-api:+', 'com.google.code.gson:gson:2.2.2', 'joda-time:joda-time:+'
-	providedCompile files("$javaFxHome/jre/lib/jfxrt.jar")
+	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 compileJava {

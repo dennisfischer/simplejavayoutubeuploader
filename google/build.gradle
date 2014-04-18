@@ -7,6 +7,8 @@
  *                                                                                                *
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
+
+
 def javaFxHome = System.getProperty("java.home");
 
 apply plugin: 'java'
@@ -32,7 +34,7 @@ dependencies {
 			'joda-time:joda-time:+'
 	compile project(':util')
 	compile files('/lib/asyncretry.jar')
-	providedCompile files("$javaFxHome/jre/lib/jfxrt.jar")
+	providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 compileJava {
