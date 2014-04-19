@@ -84,7 +84,9 @@ public class UploadJob implements Callable<Upload> {
 	private       Credential             credential;
 
 	@Inject
-	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors, final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService, final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
+	private UploadJob(@Assisted final Upload upload, @Assisted final RateLimiter rateLimiter, final Set<UploadPreProcessor> uploadPreProcessors,
+					  final Set<UploadPostProcessor> uploadPostProcessors, final EventBus eventBus, final IUploadService uploadService,
+					  final YouTubeProvider youTubeProvider, final IMetadataService metadataService) {
 		this.upload = upload;
 		this.rateLimiter = rateLimiter;
 		this.uploadPreProcessors = uploadPreProcessors;
@@ -110,24 +112,23 @@ public class UploadJob implements Callable<Upload> {
 		}
 
 		final ScheduledExecutorService schedueler = Executors.newSingleThreadScheduledExecutor();
-		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS
-																										 .toMillis(3),
-																								 2)
-				.withMaxDelay(TimeUnit.MINUTES.toMillis(1))
-				.withMaxRetries(10)
-				.retryOn(IOException.class)
-				.retryOn(RuntimeException.class)
-				.retryOn(UploadResponseException.class)
-				.retryOn(SocketException.class)
-				.abortIf(new Predicate<Throwable>() {
-					@Override
-					public boolean apply(@Nullable final Throwable input) {
-						return input instanceof UploadResponseException && SC_500 >= ((UploadResponseException) input).getStatus();
-					}
-				})
-				.abortOn(MetaBadRequestException.class)
-				.abortOn(FileNotFoundException.class)
-				.abortOn(UploadFinishedException.class);
+		final RetryExecutor executor = new AsyncRetryExecutor(schedueler).withExponentialBackoff(TimeUnit.SECONDS.toMillis(3), 2)
+																		 .withMaxDelay(TimeUnit.MINUTES.toMillis(1))
+																		 .retryOn(IOException.class)
+																		 .retryOn(RuntimeException.class)
+																		 .retryOn(UploadResponseException.class)
+																		 .retryOn(SocketException.class)
+																		 .abortIf(new Predicate<Throwable>() {
+																			 @Override
+																			 public boolean apply(@Nullable final Throwable input) {
+																				 return input instanceof UploadResponseException && SC_500 >= (
+																						 (UploadResponseException) input)
+																						 .getStatus();
+																			 }
+																		 })
+																		 .abortOn(MetaBadRequestException.class)
+																		 .abortOn(FileNotFoundException.class)
+																		 .abortOn(UploadFinishedException.class);
 
 		try {
 			// Schritt 1: Initialize
@@ -205,13 +206,13 @@ public class UploadJob implements Callable<Upload> {
 		// Upload atomData and fetch uploadUrl
 		final String atomData = metadataService.atomBuilder(upload);
 		final HttpResponse<String> response = Unirest.post(METADATA_CREATE_RESUMEABLE_URL)
-				.header("GData-Version", GDATAConfig.GDATA_V2)
-				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Slug", RAW_FILE_PATTERN.matcher(fileToUpload.getName()).replaceAll(""))
-				.header("Authorization", getAuthHeader())
-				.body(atomData)
-				.asString();
+													 .header("GData-Version", GDATAConfig.GDATA_V2)
+													 .header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
+													 .header("Content-Type", "application/atom+xml; charset=UTF-8;")
+													 .header("Slug", RAW_FILE_PATTERN.matcher(fileToUpload.getName()).replaceAll(""))
+													 .header("Authorization", getAuthHeader())
+													 .body(atomData)
+													 .asString();
 
 		LOGGER.info("fetchUploadUrl response code: {}", response.getCode());
 		LOGGER.info("fetchUploadUrl response headers: {}", response.getHeaders());
@@ -308,8 +309,7 @@ public class UploadJob implements Callable<Upload> {
 							return request.getInputStream();
 						}
 					};
-					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier,
-																							  Charsets.UTF_8)));
+					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
 
 					break;
 				case SC_RESUME_INCOMPLETE:
@@ -327,12 +327,12 @@ public class UploadJob implements Callable<Upload> {
 
 	private void resumeinfo() throws UploadFinishedException, UploadResponseException, UnirestException, IOException {
 		final HttpResponse<String> response = Unirest.put(upload.getUploadurl())
-				.header("GData-Version", GDATAConfig.GDATA_V2)
-				.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-				.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-				.header("Authorization", getAuthHeader())
-				.header("Content-Range", "bytes */*")
-				.asString();
+													 .header("GData-Version", GDATAConfig.GDATA_V2)
+													 .header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
+													 .header("Content-Type", "application/atom+xml; charset=UTF-8;")
+													 .header("Authorization", getAuthHeader())
+													 .header("Content-Range", "bytes */*")
+													 .asString();
 
 		if (SC_OK <= response.getCode() && SC_MULTIPLE_CHOICES > response.getCode()) {
 			handleSuccessfulUpload(response.getBody());
@@ -450,6 +450,7 @@ public class UploadJob implements Callable<Upload> {
 	}
 
 	private static class UploadResponseException extends Exception {
+
 		private static final long serialVersionUID = 9064482080311824304L;
 		private final int status;
 
@@ -464,6 +465,7 @@ public class UploadJob implements Callable<Upload> {
 	}
 
 	private static class UploadFinishedException extends Exception {
+
 		private static final long serialVersionUID = -5907578118391546810L;
 
 		public UploadFinishedException() {
