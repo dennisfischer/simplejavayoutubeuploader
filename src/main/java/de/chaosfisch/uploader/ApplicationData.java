@@ -14,7 +14,7 @@ import com.sun.javafx.PlatformUtil;
 
 public final class ApplicationData {
 
-	public static final String VERSION = "v3.2.0.10";
+	public static final String VERSION = "v3.2.1.0";
 	public static final String DATA_DIR;
 
 	static {

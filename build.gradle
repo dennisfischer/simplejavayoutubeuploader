@@ -11,11 +11,13 @@
 
 
 
+
+
 def javaFxHome = System.getProperty("java.home");
 System.out.println(javaFxHome);
 apply plugin: 'java'
 apply plugin: 'application'
-version = "v3.2.0.10";
+version = "v3.2.1.0";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
