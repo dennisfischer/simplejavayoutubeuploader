@@ -10,7 +10,6 @@
 
 
 
-
 def javaFxHome = System.getProperty("java.home");
 
 apply plugin: 'java'
@@ -37,6 +36,7 @@ dependencies {
 	compile files('./lib/asyncretry.jar')
 	compile project(':util')
 	providedCompile files("$javaFxHome/lib/jfxrt.jar")
+	testCompile 'junit:junit:4+'
 }
 
 compileJava {

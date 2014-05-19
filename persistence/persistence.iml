@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="simplejavayoutubeuploader" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="D:\Development\java_projects\simplejavayoutubeuploader\persistence" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="simplejavayoutubeuploader" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -19,9 +19,9 @@
     <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: kryo-2.23.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: minlog-1.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: objenesis-2.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: kryo-2.24.0" level="project" />
   </component>
 </module>
 

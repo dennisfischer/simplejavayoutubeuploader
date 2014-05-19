@@ -9,11 +9,11 @@
         <option name="gradleHome" value="$PROJECT_DIR$/../gradle/gradle-1.9" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/google" />
-            <option value="$PROJECT_DIR$/persistence" />
-            <option value="$PROJECT_DIR$/template" />
-            <option value="$PROJECT_DIR$/util" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader\google" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader\persistence" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader\template" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader\util" />
           </set>
         </option>
       </GradleProjectSettings>
