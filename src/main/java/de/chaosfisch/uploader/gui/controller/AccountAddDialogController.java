@@ -250,13 +250,11 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	}
 
 	private static final Pattern  OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
-	private static final String[] SCOPES              = {"https://www.googleapis.com/auth/youtube",
-			"https://www.googleapis.com/auth/youtube.readonly",
-			"https://www.googleapis.com/auth/youtube.upload",
-			"https://www.googleapis.com/auth/youtubepartner",
-			"https://www.googleapis.com/auth/userinfo.profile",
-			"https://www.googleapis.com/auth/userinfo.email"};
-	private static final String   OAUTH_URL           = "https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
+	private static final String[] SCOPES    = {"https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/youtube.readonly",
+			"https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtubepartner",
+			"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"};
+	private static final String   OAUTH_URL = "https://accounts.google" + "" +
+			".com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
 	private static final String   USERINFO_URL        = "https://www.googleapis.com/oauth2/v1/userinfo";
 	private static final Logger   LOGGER              = LoggerFactory.getLogger(AccountAddController.class);
 
@@ -290,7 +288,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			step3.setVisible(false);
 			loading.setVisible(true);
 			final int itemCount = (int) engine.executeScript(
-					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\").length");
+					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" +
+							".length"
+			);
 			for (int i = 0; i < itemCount; i++) {
 				final String url = (String) engine.executeScript(
 						"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
@@ -301,8 +301,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			}
 			return;
 		}
-		final int length = (int) engine.executeScript(
-				"document.getElementsByClassName(\"channel-switcher-button\").length");
+		final int length = (int) engine.executeScript("document.getElementsByClassName(\"channel-switcher-button\").length");
 		if (1 < length) {
 			loading.setVisible(false);
 			step3.setVisible(true);
@@ -311,15 +310,19 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		}
 		for (int i = 0; i < length; i++) {
 			final String name = (String) engine.executeScript(
-					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]', document, null, XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]', document, null, " +
+							"XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()"
+			);
 			final String image = (String) engine.executeScript(
-					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img', document, null, XPathResult.ANY_TYPE, null).iterateNext().src");
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img', document, null, " +
+							"XPathResult.ANY_TYPE, null).iterateNext().src"
+			);
 			final String url = (String) engine.executeScript(
-					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, " +
+							"null).iterateNext().href"
+			);
 
-			step3.getChildren()
-					.add(HBoxBuilder.create()
-								 .alignment(Pos.CENTER_LEFT)
+			step3.getChildren().add(HBoxBuilder.create().alignment(Pos.CENTER_LEFT)
 								 .children(new ImageView(new Image(image)), new Label(name))
 								 .onMouseClicked(new EventHandler<MouseEvent>() {
 									 @Override
@@ -327,12 +330,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 										 step3.setVisible(false);
 										 loading.setVisible(true);
 										 final int pageIdStartIndex = url.indexOf("pageid=") + 7;
-										 final int pageIdEndIndex = -1 == url.indexOf("&",
-																					  pageIdStartIndex) ? url.length() : url
-												 .indexOf("&", pageIdStartIndex);
-										 selectedOption = !url.contains("pageid=") ? "none" : url.substring(
-												 pageIdStartIndex,
-												 pageIdEndIndex);
+										 final int pageIdEndIndex = -1 == url.indexOf("&", pageIdStartIndex) ? url.length() : url.indexOf("&",
+																																		  pageIdStartIndex);
+										 selectedOption = !url.contains("pageid=") ? "none" : url.substring(pageIdStartIndex, pageIdEndIndex);
 										 engine.load(url);
 									 }
 								 })
@@ -364,9 +364,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						((HTMLButtonElementImpl) webView.getEngine()
-								.getDocument()
-								.getElementById("submit_approve_access")).click();
+						((HTMLButtonElementImpl) webView.getEngine().getDocument().getElementById("submit_approve_access")).click();
 					}
 				});
 			}

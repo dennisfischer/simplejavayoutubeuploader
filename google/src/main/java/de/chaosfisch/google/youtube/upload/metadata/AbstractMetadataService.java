@@ -53,13 +53,13 @@ import java.util.regex.Pattern;
 
 public class AbstractMetadataService implements IMetadataService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMetadataService.class);
-	private static final String METADATA_UPDATE_URL = "http://gdata.youtube.com/feeds/api/users/default/uploads";
-	private static final String VIDEO_EDIT_URL = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
-	private static final int SC_OK = 200;
-	private static final int MONETIZE_PARAMS_SIZE = 20;
-	private static final char MODIFIED_SEPERATOR = ',';
-	private static final int METADATA_PARAMS_SIZE = 40;
+	private static final Logger LOGGER               = LoggerFactory.getLogger(AbstractMetadataService.class);
+	private static final String METADATA_UPDATE_URL  = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String VIDEO_EDIT_URL       = "http://www.youtube.com/edit?o=U&ns=1&video_id=%s";
+	private static final int    SC_OK                = 200;
+	private static final int    MONETIZE_PARAMS_SIZE = 20;
+	private static final char   MODIFIED_SEPERATOR   = ',';
+	private static final int    METADATA_PARAMS_SIZE = 40;
 
 	private final IAccountService accountService;
 
@@ -80,27 +80,19 @@ public class AbstractMetadataService implements IMetadataService {
 		videoEntry.mediaGroup.license = metadata.getLicense().getMetaIdentifier();
 		videoEntry.mediaGroup.title = metadata.getTitle();
 		videoEntry.mediaGroup.description = metadata.getDescription();
-		videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER)
-				.skipNulls()
-				.join(TagParser.parse(metadata.getKeywords()));
+		videoEntry.mediaGroup.keywords = Joiner.on(TagParser.TAG_DELIMITER).skipNulls().join(TagParser.parse(metadata.getKeywords()));
 		final Permissions permissions = upload.getPermissions();
 
 		if (Visibility.PRIVATE == permissions.getVisibility() || Visibility.SCHEDULED == permissions.getVisibility()) {
 			videoEntry.mediaGroup.ytPrivate = new Object();
 		}
 
-		videoEntry.accessControl
-				.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(permissions.isEmbed())));
-		videoEntry.accessControl
-				.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(permissions.isRate())));
-		videoEntry.accessControl
-				.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
-		videoEntry.accessControl
-				.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(permissions.getComment()
-						.ordinal())));
-		videoEntry.accessControl
-				.add(new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(Visibility.PUBLIC == permissions
-						.getVisibility())));
+		videoEntry.accessControl.add(new YoutubeAccessControl("embed", PermissionStringConverter.convertBoolean(permissions.isEmbed())));
+		videoEntry.accessControl.add(new YoutubeAccessControl("rate", PermissionStringConverter.convertBoolean(permissions.isRate())));
+		videoEntry.accessControl.add(new YoutubeAccessControl("commentVote", PermissionStringConverter.convertBoolean(permissions.isCommentvote())));
+		videoEntry.accessControl.add(new YoutubeAccessControl("comment", PermissionStringConverter.convertInteger(permissions.getComment().ordinal())));
+		videoEntry.accessControl.add(
+				new YoutubeAccessControl("list", PermissionStringConverter.convertBoolean(Visibility.PUBLIC == permissions.getVisibility())));
 
 		// convert metadata with xstream
 		final XStream xStream = new XStream(new DomDriver(Charsets.UTF_8.name()) {
@@ -139,12 +131,12 @@ public class AbstractMetadataService implements IMetadataService {
 	public void updateMetaData(final String atomData, final String videoId, final Account account) throws MetaBadRequestException, MetaIOException {
 		try {
 			final HttpResponse<String> response = Unirest.put(String.format("%s/%s", METADATA_UPDATE_URL, videoId))
-					.header("GData-Version", GDATAConfig.GDATA_V2)
-					.header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
-					.header("Content-Type", "application/atom+xml; charset=UTF-8;")
-					.header("Authorization", accountService.getAuthentication(account).getHeader())
-					.body(atomData)
-					.asString();
+														 .header("GData-Version", GDATAConfig.GDATA_V2)
+														 .header("X-GData-Key", "key=" + GDATAConfig.DEVELOPER_KEY)
+														 .header("Content-Type", "application/atom+xml; charset=UTF-8;")
+														 .header("Authorization", accountService.getAuthentication(account).getHeader())
+														 .body(atomData)
+														 .asString();
 
 			if (SC_OK != response.getCode()) {
 				LOGGER.error("Metadata - invalid", response.getBody());
@@ -163,35 +155,25 @@ public class AbstractMetadataService implements IMetadataService {
 		// Create a local instance of cookie store
 		// Populate cookies if needed
 		final CookieStore cookieStore = new BasicCookieStore();
-		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount()
-				.getSerializeableCookies()) {
-			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie()
-					.getName(), serializableCookie.getCookie().getValue());
+		for (final PersistentCookieStore.SerializableCookie serializableCookie : upload.getAccount().getSerializeableCookies()) {
+			final BasicClientCookie cookie = new BasicClientCookie(serializableCookie.getCookie().getName(), serializableCookie.getCookie().getValue());
 			cookie.setDomain(serializableCookie.getCookie().getDomain());
 			cookieStore.addCookie(cookie);
 		}
 
-		final HttpClient client = HttpClientBuilder.create()
-				.useSystemProperties()
-				.setDefaultCookieStore(cookieStore)
-				.build();
+		final HttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultCookieStore(cookieStore).build();
 		Unirest.setHttpClient(client);
 
-		final HttpResponse<String> response = Unirest.get(String.format(VIDEO_EDIT_URL, upload.getVideoid()))
-				.asString();
+		final HttpResponse<String> response = Unirest.get(String.format(VIDEO_EDIT_URL, upload.getVideoid())).asString();
 
 		changeMetadata(response.getBody(), upload);
 
-		final RequestConfig clientConfig = RequestConfig.custom()
-				.setConnectTimeout(600000)
-				.setSocketTimeout(600000)
-				.build();
+		final RequestConfig clientConfig = RequestConfig.custom().setConnectTimeout(600000).setSocketTimeout(600000).build();
 		Unirest.setHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
 	}
 
 	private String extractor(final String input, final String search, final String end) {
-		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search
-				.length())));
+		return String.format("%s", input.substring(input.indexOf(search) + search.length(), input.indexOf(end, input.indexOf(search) + search.length())));
 	}
 
 	private String boolConverter(final boolean flag) {
@@ -211,14 +193,14 @@ public class AbstractMetadataService implements IMetadataService {
 		System.out.println(Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
-		final String token = extractor(content, "name=\"session_token\" type=\"hidden\" value=\"", "\"");
-		System.out.println(token);
+		final String token = extractor(content, "var session_token = \"", "\"");
 		params.put("session_token", token);
 		params.put("action_edit_video", "1");
 
 		try {
-			final HttpResponse<String> response = Unirest.post(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload
-					.getVideoid())).fields(params).asString();
+			final HttpResponse<String> response = Unirest.post(String.format("https://www.youtube.com/metadata_ajax?video_id=%s", upload.getVideoid()))
+														 .fields(params)
+														 .asString();
 
 			LOGGER.info(response.getBody());
 		} catch (final Exception e) {
@@ -246,9 +228,7 @@ public class AbstractMetadataService implements IMetadataService {
 		final Metadata metadata = upload.getMetadata();
 		params.put("title", metadata.getTitle());
 		params.put("description", Strings.nullToEmpty(metadata.getDescription()));
-		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER)
-				.skipNulls()
-				.join(TagParser.parse(metadata.getKeywords(), true)));
+		params.put("keywords", Joiner.on(TagParser.TAG_DELIMITER).skipNulls().join(TagParser.parse(metadata.getKeywords(), true)));
 		params.put("reuse", License.YOUTUBE == metadata.getLicense() ? "all_rights_reserved" : "creative_commons");
 		return params;
 	}
@@ -269,17 +249,14 @@ public class AbstractMetadataService implements IMetadataService {
 				params.put("allow_syndication", boolConverter(Syndication.GLOBAL == monetization.getSyndication()));
 			}
 			if (monetization.isPartner()) {
-				params.put("claim_type", ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ?
-						"B" :
-						ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
+				params.put("claim_type",
+						   ClaimType.AUDIO_VISUAL == monetization.getClaimtype() ? "B" : ClaimType.VISUAL == monetization.getClaimtype() ? "V" : "A");
 
-				final String toFind = ClaimOption.MONETIZE == monetization.getClaimoption() ?
-						"Monetize in all countries" :
-						ClaimOption.TRACK == monetization.getClaimoption() ?
-								"Track in all countries" :
-								"Block in all countries";
+				final String toFind = ClaimOption.MONETIZE == monetization.getClaimoption() ? "Monetize in all countries" : ClaimOption.TRACK == monetization
+						.getClaimoption() ? "Track in all countries" : "Block in all countries";
 
-				final Pattern pattern = Pattern.compile("<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\sdata-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
+				final Pattern pattern = Pattern.compile(
+						"<option\\s*value=\"([^\"]+?)\"\\s*(selected(=\"\")?)?\\sdata-is-monetized-policy=\"(true|false)\"\\s*>\\s*([^<]+?)\\s*</option>");
 				final Matcher matcher = pattern.matcher(content);
 
 				String usagePolicy = null;
@@ -295,9 +272,7 @@ public class AbstractMetadataService implements IMetadataService {
 				final String assetName = monetization.getAsset().name().toLowerCase(Locale.getDefault());
 
 				params.put("asset_type", assetName);
-				params.put(assetName + "_custom_id", monetization.getCustomId().isEmpty() ?
-						upload.getVideoid() :
-						monetization.getCustomId());
+				params.put(assetName + "_custom_id", monetization.getCustomId().isEmpty() ? upload.getVideoid() : monetization.getCustomId());
 
 				params.put(assetName + "_notes", monetization.getNotes());
 				params.put(assetName + "_tms_id", monetization.getTmsid());
@@ -307,9 +282,7 @@ public class AbstractMetadataService implements IMetadataService {
 
 				if (Asset.TV != monetization.getAsset()) {
 					// WEB + MOVIE ONLY
-					params.put(assetName + "_title", !monetization.getTitle().isEmpty() ?
-							monetization.getTitle() :
-							metadata.getTitle());
+					params.put(assetName + "_title", !monetization.getTitle().isEmpty() ? monetization.getTitle() : metadata.getTitle());
 					params.put(assetName + "_description", monetization.getDescription());
 				} else {
 					// TV ONLY
@@ -345,8 +318,7 @@ public class AbstractMetadataService implements IMetadataService {
 
 		if (null != upload.getDateTimeOfRelease()) {
 			if (upload.getDateTimeOfRelease().isAfterNow()) {
-				final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm")
-						.withZone(DateTimeZone.UTC);
+				final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm").withZone(DateTimeZone.UTC);
 
 				params.put("publish_time", upload.getDateTimeOfRelease().toString(dateTimeFormatter));
 				params.put("publish_timezone", "UTC");
