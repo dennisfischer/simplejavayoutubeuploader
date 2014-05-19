@@ -9,24 +9,8 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Updated upload retry behavior and improved monetization.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__google_api_services_youtube_v3_rev105_1_18_0_rc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__guava_17_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__hamcrest_core_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_4_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__kryo_2_24_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/google/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__google_api_services_youtube_v3_rev103_1_18_0_rc.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__guava_17_0_rc2.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Development\java_projects\simplejavayoutubeuploader\.idea\libraries\Gradle__kryo_2_23_0.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/build.gradle" afterPath="$PROJECT_DIR$/google/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/google.iml" afterPath="$PROJECT_DIR$/google/google.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/persistence/persistence.iml" afterPath="$PROJECT_DIR$/persistence/persistence.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/template.iml" afterPath="$PROJECT_DIR$/template/template.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/util.iml" afterPath="$PROJECT_DIR$/util/util.iml" />
+    <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Cherry picked tagparser">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" afterPath="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
@@ -111,91 +95,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="1785">
-              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ApplicationData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="527" max-vertical-offset="629">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ThumbnailPostProcessor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/processors/ThumbnailPostProcessor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="969" max-vertical-offset="1173">
-              <caret line="57" column="38" selection-start-line="57" selection-start-column="38" selection-end-line="57" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UploadJob.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1972" max-vertical-offset="8177">
-              <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DialogHelper.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/renderer/DialogHelper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3332" max-vertical-offset="3791">
-              <caret line="196" column="0" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AccountAddController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/controller/AccountAddController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="663" max-vertical-offset="816">
-              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractMetadataService.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="AbstractMetadataService.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3247" max-vertical-offset="5321">
-              <caret line="248" column="26" selection-start-line="248" selection-start-column="26" selection-end-line="248" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TagParser.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1793249" vertical-offset="0" max-vertical-offset="1326">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/google/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="714">
-              <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.74188036" vertical-offset="2337" max-vertical-offset="5355">
+              <caret line="214" column="34" selection-start-line="214" selection-start-column="34" selection-end-line="214" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -1346,12 +1250,12 @@
         <option value="$PROJECT_DIR$/settings.gradle" />
         <option value="$PROJECT_DIR$/util/build.gradle" />
         <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/UploadJob.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationData.java" />
-        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java" />
         <option value="$PROJECT_DIR$/google/build.gradle" />
         <option value="$PROJECT_DIR$/google/src/test/java/de/chaosfisch/youtube/upload/metadata/TagParserTest.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java" />
+        <option value="$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java" />
       </list>
     </option>
   </component>
@@ -1755,8 +1659,26 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1778,11 +1700,91 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtube" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="upload" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtube" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="upload" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -1805,6 +1807,22 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="google" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="youtube" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2288,7 +2306,7 @@
       <workItem from="1397898882410" duration="936000" />
       <workItem from="1397901248214" duration="607000" />
       <workItem from="1397932515016" duration="44000" />
-      <workItem from="1400500534211" duration="407000" />
+      <workItem from="1400500534211" duration="912000" />
     </task>
     <task id="LOCAL-00001" summary="Applied intellij inspection results">
       <created>1366097998046</created>
@@ -3004,7 +3022,11 @@
       <created>1397899752411</created>
       <updated>1397899752411</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="Cherry picked tagparser">
+      <created>1400500953870</created>
+      <updated>1400500953870</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers>
       <GitHub shared="false" url="">
@@ -3023,7 +3045,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="34779000" />
+    <option name="totallyTimeSpent" value="35284000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -3050,7 +3072,7 @@
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.45670995" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45670995" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286638" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -3070,7 +3092,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328541" sideWeight="0.6837416" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20842217" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3365801" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3365801" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="7" side_tool="true" content_ui="tabs" />
@@ -3145,7 +3167,6 @@
       <TodoPanelSettings />
     </option>
     <confirmRemoveEmptyChangelist value="2" />
-    <MESSAGE value="Removed redundant character escape" />
     <MESSAGE value="Fixed launcher migration bugs" />
     <MESSAGE value="Fixed template add bug #sf26" />
     <MESSAGE value="Fixed NullpointerExceptions, stopped showing all accounts!" />
@@ -3170,7 +3191,8 @@
     <MESSAGE value="Fixed build file path bugs" />
     <MESSAGE value="Fixed pathing to 3rd party lib" />
     <MESSAGE value="Updated upload retry behavior and improved monetization." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated upload retry behavior and improved monetization." />
+    <MESSAGE value="Cherry picked tagparser" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cherry picked tagparser" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
@@ -3538,18 +3560,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3043" max-vertical-offset="5321">
-          <caret line="248" column="26" selection-start-line="248" selection-start-column="26" selection-end-line="248" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/google/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="714">
-          <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.64508927" vertical-offset="0" max-vertical-offset="896">
+          <caret line="34" column="35" selection-start-line="34" selection-start-column="35" selection-end-line="34" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -3566,8 +3580,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/TagParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1793249" vertical-offset="0" max-vertical-offset="1326">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.15178572" vertical-offset="0" max-vertical-offset="1326">
+          <caret line="22" column="42" selection-start-line="22" selection-start-column="42" selection-end-line="22" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/google/src/main/java/de/chaosfisch/google/youtube/upload/metadata/AbstractMetadataService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.74188036" vertical-offset="2337" max-vertical-offset="5355">
+          <caret line="214" column="34" selection-start-line="214" selection-start-column="34" selection-end-line="214" selection-end-column="34" />
           <folding />
         </state>
       </provider>

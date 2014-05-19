@@ -211,7 +211,9 @@ public class AbstractMetadataService implements IMetadataService {
 		System.out.println(Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("modified_fields", Joiner.on(MODIFIED_SEPERATOR).skipNulls().join(params.keySet()));
 		params.put("creator_share_feeds", "yes");
-		params.put("session_token", extractor(content, "yt.setAjaxToken(\"metadata_ajax\", \"", "\""));
+		final String token = extractor(content, "name=\"session_token\" type=\"hidden\" value=\"", "\"");
+		System.out.println(token);
+		params.put("session_token", token);
 		params.put("action_edit_video", "1");
 
 		try {
