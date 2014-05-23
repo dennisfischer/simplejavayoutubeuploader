@@ -32,7 +32,7 @@ public class Permission {
 		commentvote.set(permissionDTO.isCommentvote());
 		embed.set(permissionDTO.isEmbed());
 		publicStatsViewable.set(permissionDTO.isPublicStatsViewable());
-		subsribers.set(permissionDTO.isSubcribers());
+		subsribers.set(permissionDTO.isSubscribers());
 		rate.set(permissionDTO.isRate());
 		threedD.set(ThreeD.valueOf(permissionDTO.getThreedD()));
 		visibility.set(Visibility.valueOf(permissionDTO.getVisibility()));

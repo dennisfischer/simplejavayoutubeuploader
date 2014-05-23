@@ -60,7 +60,7 @@ public class ProjectPresenter {
 			return;
 		}
 
-		final Optional<String> result = Dialogs.create().owner(null).title("Neues Projekt erstellen").message("Projektname").showTextInput();
+		final Optional<String> result = Dialogs.create().title("Neues Projekt erstellen").message("Projektname").showTextInput();
 
 		result.ifPresent(name -> {
 			final ProjectModel project = new ProjectModel(name);

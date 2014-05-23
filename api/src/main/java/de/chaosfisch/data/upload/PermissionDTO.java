@@ -20,12 +20,12 @@ public class PermissionDTO {
 	private boolean embed;
 	private boolean publicStatsViewable;
 	private boolean rate;
-	private boolean subcribers;
+	private boolean subscribers;
 	private String  threedD;
 	private String  visibility;
 
 	public PermissionDTO(final String uploadId, final boolean ageRestricted, final String comment, final boolean commentvote, final boolean embed,
-						 final boolean publicStatsViewable, final boolean rate, final boolean subcribers, final String threedD, final String visibility) {
+						 final boolean publicStatsViewable, final boolean rate, final boolean subscribers, final String threedD, final String visibility) {
 		this.uploadId = uploadId;
 		this.ageRestricted = ageRestricted;
 		this.comment = comment;
@@ -33,7 +33,7 @@ public class PermissionDTO {
 		this.embed = embed;
 		this.publicStatsViewable = publicStatsViewable;
 		this.rate = rate;
-		this.subcribers = subcribers;
+		this.subscribers = subscribers;
 		this.threedD = threedD;
 		this.visibility = visibility;
 	}
@@ -41,12 +41,12 @@ public class PermissionDTO {
 	public PermissionDTO() {
 	}
 
-	public boolean isSubcribers() {
-		return subcribers;
+	public boolean isSubscribers() {
+		return subscribers;
 	}
 
-	public void setSubcribers(final boolean subcribers) {
-		this.subcribers = subcribers;
+	public void setSubscribers(final boolean subscribers) {
+		this.subscribers = subscribers;
 	}
 
 	public String getUploadId() {
@@ -131,7 +131,7 @@ public class PermissionDTO {
 				", embed=" + embed +
 				", publicStatsViewable=" + publicStatsViewable +
 				", rate=" + rate +
-				", subcribers=" + subcribers +
+				", subscribers=" + subscribers +
 				", threedD='" + threedD + '\'' +
 				", visibility='" + visibility + '\'' +
 				'}';

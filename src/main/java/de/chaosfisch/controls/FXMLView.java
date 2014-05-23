@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 public abstract class FXMLView extends Region {
 
-	private static final String DEFAULT_ENDING = "view";
+	private static final String                  DEFAULT_ENDING  = "view";
+	private static final Pattern PACKAGE_TO_PATH = Pattern.compile("\\.");
 	private static Callback<Class<?>, Object> controllerFactory;
 
 	private FXMLLoader loader;
@@ -55,7 +57,8 @@ public abstract class FXMLView extends Region {
 	}
 
 	private void init(final Class clazz, final String conventionalName) {
-		final URL resource = clazz.getResource(conventionalName);
+		final String pack = PACKAGE_TO_PATH.matcher(clazz.getPackage().getName()).replaceAll("/");
+		final URL resource = getClass().getResource(String.format("/%s/%s", pack, conventionalName));
 		final String bundleName = getBundleName();
 		final ResourceBundle bundle = getResourceBundle(bundleName);
 		loader = loadAsynchronously(resource, bundle);

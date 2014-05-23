@@ -9,8 +9,8 @@
         <option name="gradleHome" value="$PROJECT_DIR$/../gradle/gradle-1.11" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/api" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader" />
+            <option value="D:\Development\java_projects\simplejavayoutubeuploader\api" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

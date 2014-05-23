@@ -41,7 +41,7 @@ public class APIModule {
 	AccountDAO provideAccountDAO(final Database database) {
 		try {
 			return new AccountDAO(database);
-		} catch (SormulaException e) {
+		} catch (final SormulaException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -52,7 +52,7 @@ public class APIModule {
 	PlaylistDAO providePlaylistDAO(final Database database) {
 		try {
 			return new PlaylistDAO(database);
-		} catch (SormulaException e) {
+		} catch (final SormulaException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -63,7 +63,7 @@ public class APIModule {
 	UploadDAO provideUploadDAO(final Database database) {
 		try {
 			return new UploadDAO(database);
-		} catch (SormulaException e) {
+		} catch (final SormulaException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -74,7 +74,7 @@ public class APIModule {
 	CategoryDAO provideCategoryDAO(final Database database) {
 		try {
 			return new CategoryDAO(database);
-		} catch (SormulaException e) {
+		} catch (final SormulaException e) {
 			e.printStackTrace();
 		}
 

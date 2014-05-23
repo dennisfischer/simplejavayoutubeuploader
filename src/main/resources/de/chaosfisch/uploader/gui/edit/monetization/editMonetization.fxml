@@ -42,7 +42,7 @@
                 <Label text="Syndication:" GridPane.rowIndex="3"/>
 
                 <SegmentedButton GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2"
-                                 styleClass="dark">
+                                 styleClass="dark" >
                     <buttons>
                         <ToggleButton mnemonicParsing="false" text="Everywhere"/>
                         <ToggleButton mnemonicParsing="false" text="Monetized Platforms only!"/>

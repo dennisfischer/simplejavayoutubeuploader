@@ -10,6 +10,8 @@
 
 package de.chaosfisch.uploader.gui;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import dagger.Module;
 import dagger.Provides;
 import de.chaosfisch.APIModule;
@@ -40,8 +42,11 @@ import org.sormula.translator.TypeTranslator;
 
 import javax.inject.Singleton;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.time.Instant;
+import java.util.regex.Pattern;
 
 @Module(
 		includes = {APIModule.class},
@@ -50,6 +55,8 @@ import java.time.Instant;
 		injects = {EditPresenter.class, StepPresenter.class, AddPresenter.class, MainPresenter.class, EditRightPresenter.class, ProjectPresenter.class,
 				UploadPresenter.class, EditLeftPresenter.class, AccountPresenter.class, EntryPresenter.class})
 public class GUIModule {
+
+	private static final Pattern STATEMENT_SQL = Pattern.compile(";");
 
 	@Provides
 	@Singleton
@@ -144,6 +151,16 @@ public class GUIModule {
 			}));
 
 			final Database database = new Database(connection);
+			try (final Statement statement = connection.createStatement()) {
+				final String queries = Files.toString(new File(getClass().getResource("/schema.sql").toURI()), Charsets.UTF_8);
+				final String[] statements = STATEMENT_SQL.split(queries);
+				for (final String sql : statements) {
+					statement.addBatch(sql);
+				}
+				statement.executeBatch();
+			} catch (IOException | URISyntaxException e) {
+				e.printStackTrace();
+			}
 			database.putTypeTranslator(Instant.class, new TypeTranslator<Instant>() {
 				@Override
 				public Instant read(final ResultSet resultSet, final int columnIndex) throws Exception {

@@ -9,14 +9,11 @@
  **************************************************************************************************/
 
 
-
-
-
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
 
-version = "v3.3.0.0";
+version = "v3.3.0.0-preview";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 
 buildscript {
@@ -36,7 +33,7 @@ configurations {
 dependencies {
 	providedCompile 'com.squareup.dagger:dagger-compiler:+'
 	compile 'ch.qos.logback:logback-classic:+', 'org.slf4j:slf4j-api:+',
-			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.6-SNAPSHOT'
+			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.6_20-SNAPSHOT'
 	compile project(':api')
 	apt 'com.squareup.dagger:dagger-compiler:+'
 }
@@ -60,7 +57,7 @@ jar {
 }
 
 task javaFXPackager(type: Exec) {
-	commandLine = ['C:/Program Files/Java/jdk1.8.0/bin/javafxpackager.exe',
+	commandLine = ['D:/Applications/Java/jdk1.8.0/bin/javafxpackager.exe',
 				   '-createjar',
 				   '-srcdir',
 				   sourceSets.main.output.classesDir,

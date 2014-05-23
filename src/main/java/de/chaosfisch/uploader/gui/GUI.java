@@ -38,14 +38,17 @@ public class GUI extends Application {
 	public void init() throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
 			LOGGER.error("Uncaught exception occured", e);
-			Platform.runLater(() -> {
-				Dialogs.create().owner(null).title("Exception occured!").masthead("Exception message is shown below").showException(e);
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Dialogs.create().title("Exception occured!").masthead("Exception message is shown below").showException(e);
+				}
 			});
 		});
 	}
 
 	@Override
-	public void start(final Stage stage) throws Exception {
+	public void start(final Stage primaryStage) throws Exception {
 		final ObjectGraph objectGraph = ObjectGraph.create(new GUIModule());
 		objectGraph.injectStatics();
 		FXMLView.setControllerFactory(getControllerFactory(objectGraph));
@@ -57,9 +60,9 @@ public class GUI extends Application {
 		final Parent root = loader.load();
 		final Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
 		scene.getStylesheets().add(getClass().getResource("/de/chaosfisch/uploader/gui/style.css").toExternalForm());
-		stage.setScene(scene);
-		stage.setTitle("Simple Java YouTube Uploader");
-		stage.show();
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Simple Java YouTube Uploader");
+		primaryStage.show();
 	}
 
 	private Callback<Class<?>, Object> getControllerFactory(final ObjectGraph objectGraph) {
