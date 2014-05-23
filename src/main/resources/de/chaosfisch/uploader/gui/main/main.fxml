@@ -12,18 +12,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="de.chaosfisch.uploader.gui.main.MainPresenter">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.chaosfisch.uploader.gui.main.MainPresenter">
     <center>
         <TabPane fx:id="tabPane">
-            <Tab closable="false" text="Queue" onSelectionChanged="#initUploadsTab"/>
-            <Tab closable="false" text="Upload" onSelectionChanged="#initEditTab"/>
-            <Tab closable="false" text="Accounts" onSelectionChanged="#initAccountTab"/>
+            <tabs>
+                <Tab closable="false" onSelectionChanged="#initUploadsTab" text="Queue"/>
+                <Tab closable="false" onSelectionChanged="#initEditTab" text="Upload"/>
+                <Tab closable="false" onSelectionChanged="#initAccountTab" text="Accounts"/>
+            </tabs>
         </TabPane>
     </center>
     <top>
-        <MenuBar xmlns:fx="http://javafx.com/fxml" useSystemMenuBar="true">
+        <MenuBar useSystemMenuBar="true" xmlns:fx="http://javafx.com/fxml">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>

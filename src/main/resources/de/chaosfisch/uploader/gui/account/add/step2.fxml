@@ -15,13 +15,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0"
-          xmlns="http://javafx.com/javafx/8" fx:controller="de.chaosfisch.uploader.gui.account.add.StepPresenter">
-    <Label text="2-Step Authentication" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-    <TextField fx:id="code" prefWidth="-1.0" promptText="Code eingeben..." GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <Button onAction="#secondFactor" text="Weiter" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
+<GridPane alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0" xmlns="http://javafx.com/javafx/8"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.chaosfisch.uploader.gui.account.add.StepPresenter">
+    <children>
+        <Label text="2-Step Authentication" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="code" prefWidth="-1.0" promptText="Code eingeben..." GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Button onAction="#secondFactor" text="Weiter" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
+    </children>
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES"/>
     </columnConstraints>
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

@@ -11,5 +11,5 @@
   ***********************************************************************************************-->
 
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="accountList" id="VBox" alignment="CENTER" spacing="5.0" xmlns="http://javafx.com/javafx/8"
+<VBox id="VBox" fx:id="accountList" alignment="CENTER" spacing="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.chaosfisch.uploader.gui.account.add.StepPresenter"/>

@@ -14,9 +14,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" id="GridPane" gridLinesVisible="false" hgap="5.0" prefHeight="-1.0" prefWidth="-1.0" vgap="5.0"
-          GridPane.columnIndex="0" GridPane.rowIndex="1" fx:controller="de.chaosfisch.uploader.gui.account.add.AddPresenter"
-          fx:id="gridpane" xmlns="http://javafx.com/javafx/8">
+<GridPane id="GridPane" fx:id="gridpane" gridLinesVisible="false" hgap="5.0" prefHeight="-1.0" prefWidth="-1.0" vgap="5.0" GridPane.columnIndex="0"
+          GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="de.chaosfisch.uploader.gui.account.add.AddPresenter">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0"/>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-1.0" minWidth="250.0"/>
@@ -27,8 +27,12 @@
     <rowConstraints>
         <RowConstraints maxHeight="-1.0" minHeight="200.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-    <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.halignment="CENTER"
-               GridPane.rowIndex="0" GridPane.valignment="CENTER">
-        <Image url="@yt_logo.png"/>
-    </ImageView>
+    <children>
+        <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.halignment="CENTER"
+                   GridPane.rowIndex="0" GridPane.valignment="CENTER">
+            <image>
+                <Image url="@yt_logo.png"/>
+            </image>
+        </ImageView>
+    </children>
 </GridPane>

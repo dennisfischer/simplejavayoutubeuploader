@@ -12,6 +12,8 @@
 
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.VBox?>
-<VBox alignment="CENTER">
-    <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" progress="-1.0"/>
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" progress="-1.0"/>
+    </children>
 </VBox>

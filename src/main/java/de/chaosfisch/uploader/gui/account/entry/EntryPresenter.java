@@ -16,6 +16,7 @@ import de.chaosfisch.youtube.playlist.PlaylistModel;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.SetChangeListener;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
@@ -93,5 +94,9 @@ public class EntryPresenter {
 		if (Dialog.Actions.YES == action) {
 			dataModel.remove(account);
 		}
+	}
+
+	public void validateAccount(final ActionEvent actionEvent) {
+		throw new UnsupportedOperationException();
 	}
 }

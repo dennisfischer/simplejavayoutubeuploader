@@ -19,7 +19,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: dagger-compiler-1.2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javawriter-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: controlsfx-8.0.6_20-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: dagger-1.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: dagger-1.2.1" level="project" />
     <orderEntry type="library" name="Gradle: javax.inject-1" level="project" />
     <orderEntry type="library" name="Gradle: guava-15.0" level="project" />
   </component>

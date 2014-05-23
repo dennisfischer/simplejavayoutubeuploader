@@ -13,7 +13,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml" hgap="5.0" minWidth="450.0" vgap="5.0" xmlns="http://javafx.com/javafx/8"
+<GridPane hgap="5.0" minWidth="450.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="de.chaosfisch.uploader.gui.edit.left.EditLeftPresenter">
     <children>
         <Label text="Datei:"/>
@@ -23,26 +23,22 @@
         <Label text="Tags:" GridPane.rowIndex="5"/>
         <Label text="Account:" GridPane.rowIndex="7"/>
         <Label text="Playlist(s):" GridPane.rowIndex="8"/>
-        <ComboBox maxWidth="Infinity" fx:id="files" GridPane.columnIndex="1"/>
-        <TextField GridPane.columnIndex="1" fx:id="title" GridPane.rowIndex="1"/>
-        <ComboBox maxWidth="Infinity" fx:id="categories" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="3"
-                    GridPane.rowSpan="2">
+        <ComboBox fx:id="files" maxWidth="Infinity" GridPane.columnIndex="1"/>
+        <TextField fx:id="title" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="categories" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2">
             <content>
                 <TextArea fx:id="description"/>
             </content>
         </ScrollPane>
-        <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="5"
-                    GridPane.rowSpan="2">
+        <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.rowSpan="2">
             <content>
                 <TextArea fx:id="tags"/>
             </content>
         </ScrollPane>
-        <ComboBox maxWidth="Infinity" fx:id="accounts" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-        <ComboBox maxWidth="Infinity" fx:id="playlists" promptText="Add Playlist..." GridPane.columnIndex="1"
-                  GridPane.rowIndex="8"/>
-        <ListView fx:id="selectedPlaylists" maxHeight="100" orientation="HORIZONTAL" GridPane.rowIndex="9"
-                  GridPane.columnIndex="1"/>
+        <ComboBox fx:id="accounts" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="playlists" maxWidth="Infinity" promptText="Add Playlist..." GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+        <ListView fx:id="selectedPlaylists" maxHeight="100" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
     </children>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
