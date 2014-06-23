@@ -9,6 +9,8 @@
  **************************************************************************************************/
 
 
+
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
@@ -33,7 +35,8 @@ configurations {
 dependencies {
 	providedCompile 'com.squareup.dagger:dagger-compiler:+'
 	compile 'ch.qos.logback:logback-classic:+', 'org.slf4j:slf4j-api:+',
-			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.6_20-SNAPSHOT'
+			'com.squareup.dagger:dagger:+', 'org.controlsfx:controlsfx:8.0.6_20',
+			'net.sourceforge.htmlcleaner:htmlcleaner:+'
 	compile project(':api')
 	apt 'com.squareup.dagger:dagger-compiler:+'
 }

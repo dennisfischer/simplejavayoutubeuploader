@@ -56,6 +56,8 @@ public class AccountAddDataModel {
 	private List<Node>   accountList;
 	private String       selectedOption;
 	private AccountModel accountModel;
+	private String       content;
+	private String       url;
 
 	private AccountAddDataModel() {
 		Platform.runLater(() -> {
@@ -66,7 +68,7 @@ public class AccountAddDataModel {
 			Scene scene = new Scene(webView);
 			stage.setScene(scene);
 			stage.show();
-			stage.hide();
+			//	stage.hide();
 
 			engine = webView.getEngine();
 			engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {
@@ -198,9 +200,24 @@ public class AccountAddDataModel {
 		step.set(Step.STEP_1);
 	}
 
+	public void setContent(final String content) {
+		this.content = content;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setUrl(final String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
 	public enum Step {
 		STEP_1, STEP_2, STEP_3
 	}
-
 
 }

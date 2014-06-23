@@ -10,9 +10,17 @@
 
 package de.chaosfisch.uploader.gui.account.add;
 
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.util.escape.CharEscapers;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Files;
 import com.sun.webkit.dom.HTMLButtonElementImpl;
+import de.chaosfisch.util.HttpClient;
 import de.chaosfisch.youtube.GDataConfig;
 import de.chaosfisch.youtube.YouTubeFactory;
 import javafx.application.Platform;
@@ -28,10 +36,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.html.HTMLInputElement;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +57,7 @@ public class StepPresenter {
 	private static final String              OAUTH_URL           = "https://accounts.google" + "" +
 			".com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
 	private static final Pattern             CHANNEL_ID_PATTERN  = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StepPresenter.class);
 	protected final      AccountAddDataModel accountAddDataModel = AccountAddDataModel.getInstance();
 	@FXML
 	private VBox          accountList;
@@ -67,71 +82,118 @@ public class StepPresenter {
 
 	public void login() {
 		accountAddDataModel.setProcessing(true);
-		accountAddDataModel.onWebviewLoaded(this::handleLogin);
-		accountAddDataModel.getEngine().load("http://www.youtube.com/my_videos");
-	}
 
-	private boolean handleLogin() {
-		final Document document = accountAddDataModel.getEngine().getDocument();
-		((HTMLInputElement) document.getElementById("Email")).setValue(username.getText());
-		((HTMLInputElement) document.getElementById("Passwd")).setValue(password.getText());
-		((HTMLInputElement) document.getElementById("signIn")).click();
+		try {
+			final String content = HttpClient.downloadPage("https://www.youtube.com/channel_switcher?next=%2F");
 
-		accountAddDataModel.onWebviewLoaded(this::handleLoginStatus);
-		return true;
-	}
+			final HttpRequest postRequest = clientLogin(HttpClient.loadDocument(content));
+			final HttpResponse execute = postRequest.execute();
+			final String contentRedirect = execute.parseAsString();
+			final Document document = HttpClient.loadDocument(contentRedirect);
+			final String url = HttpClient.evaluate("/html/body/a/@href", document);
+			accountAddDataModel.setUrl(url);
 
-	private boolean handleLoginStatus() {
-		final String location = accountAddDataModel.getEngine().getLocation();
-		if (location.contains("accounts.google.com/ServiceLogin")) {
-			return false;
-		}
-
-		if (!location.contains("accounts.google.com/ServiceLoginAuth")) {
-			if (location.contains("accounts.google.com/SecondFactor")) {
+			if (url.contains("accounts.google.com/SecondFactor")) {
 				accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_2);
+				accountAddDataModel.setProcessing(false);
 			} else {
-				accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
+				final Document documentRedirect = HttpClient.loadDocument(contentRedirect);
+				final String downloadPage = HttpClient.downloadPage(HttpClient.evaluate("/html/body/a/@href", documentRedirect));
+				CharStreams.write(downloadPage, Files.asCharSink(new File("page_redirect.html"), Charsets.UTF_8));
 			}
+		} catch (final Exception e) {
+			LOGGER.error("Failed post request", e);
 		}
-		accountAddDataModel.setProcessing(false);
-		return true;
 	}
 
+	private HttpRequest clientLogin(final Document doc) {
+		final String formAction = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/@action", doc);
+		final String galx = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@name='GALX']/@value", doc);
+		final String continueUrl = CharEscapers.escapeUri(HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@name='continue']/@value", doc));
+		final String service = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@name='service']/@value", doc);
+		final String hl = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@name='hl']/@value", doc);
+		final String _utf8 = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@id='_utf8']/@value", doc);
+		final String signIn = HttpClient.evaluate("/html/body/div/div[2]/div[2]/form/input[@id='signIn']/@valuee", doc);
+		final String bg_response = "js_disabled";
+		final String persistentCookie = "yes";
+
+		final String[] data = {"GALX=" + galx, "continue=" + continueUrl, "service=" + service, "hl=" + hl, "_utf8=" + _utf8, "bgresponse=" + bg_response,
+				"signIn=" + signIn, "PersistentCookie=" + persistentCookie, "Email=" + username
+				.getText(), "Passwd=" + password.getText()};
+
+		try {
+			final HttpRequest httpRequest = HttpClient.get()
+													  .buildPostRequest(new GenericUrl(formAction), new ByteArrayContent("application/x-www-form-urlencoded",
+																														 Joiner.on("&").join(data).getBytes
+																																 ()));
+			httpRequest.setFollowRedirects(false);
+			httpRequest.setThrowExceptionOnExecuteError(false);
+			return httpRequest;
+		} catch (final IOException e) {
+			LOGGER.error("Failed building post request", e);
+		}
+		return null;
+	}
+
+	private HttpRequest twoStep(final Document doc) {
+
+		final String formAction = accountAddDataModel.getUrl();
+		final String continueUrl = CharEscapers.escapeUri(HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='continue']/@value", doc));
+		final String service = HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='service']/@value", doc);
+		final String timeStmp = HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='timeStmp']/@value", doc);
+		final String secTok = HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='secTok']/@value", doc);
+		final String smsToken = HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='smsToken']/@value", doc);
+		final String hl = HttpClient.evaluate("/html/body/div/div[2]/form/input[@name='hl']/@value", doc);
+		final String smsVerifyPin = HttpClient.evaluate("/html/body/div/div[2]/form/div[1]/input[@name='smsVerifyPin']/@value", doc);
+		final String persistentOptionSelection = HttpClient.evaluate("/html/body/div/div[2]/form/div[1]/input[@name='PersistentOptionSelection']/@value", doc);
+		final String persistentCookie = "yes";
+
+		final String[] data = {"continue=" + continueUrl, "service=" + service, "hl=" + hl, "timeStmp=" + timeStmp, "secTok=" + secTok,
+				"smsToken=" + smsToken, "smsUserPin=" + code
+				.getText(), "smsVerifyPin=" + smsVerifyPin, "PersistentOptionSelection=" + persistentOptionSelection, "PersistentCookie=" + persistentCookie};
+
+		try {
+			final HttpRequest httpRequest = HttpClient.get()
+													  .buildPostRequest(new GenericUrl(formAction), new ByteArrayContent("application/x-www-form-urlencoded",
+																														 Joiner.on("&").join(data).getBytes
+																																 ()));
+			httpRequest.setFollowRedirects(false);
+			httpRequest.setThrowExceptionOnExecuteError(false);
+			return httpRequest;
+		} catch (final IOException e) {
+			LOGGER.error("Failed building post request", e);
+		}
+		return null;
+	}
 
 	public void secondFactor() {
 		accountAddDataModel.setProcessing(true);
-		final Document document = accountAddDataModel.getEngine().getDocument();
-		final HTMLInputElement persistentCookie = (HTMLInputElement) document.getElementById("PersistentCookie");
-		if (null != persistentCookie) {
-			persistentCookie.setChecked(true);
-		}
-		((HTMLInputElement) document.getElementById("smsUserPin")).setValue(code.getText());
-		((HTMLInputElement) document.getElementById("smsVerifyPin")).click();
 
-		accountAddDataModel.onWebviewLoaded(this::handleSecondFactor);
+		try {
+			final String content = HttpClient.downloadPage(accountAddDataModel.getUrl());
+			final HttpRequest twoStepPostRequest = twoStep(HttpClient.loadDocument(content));
+			final HttpResponse httpResponse = twoStepPostRequest.execute();
+			final String contentRedirect = httpResponse.parseAsString();
+			final Document documentRedirect = HttpClient.loadDocument(contentRedirect);
+			final String url = HttpClient.evaluate("/html/body/a/@href", documentRedirect);
+			accountAddDataModel.setUrl(url);
+
+			final String downloadPage = HttpClient.downloadPage(url);
+			CharStreams.write(downloadPage, Files.asCharSink(new File("page.html"), Charsets.UTF_8));
+
+			startStep3();
+
+		/*	final String thirdStep = Http.postPage(twoStepPostRequest.request().url(), twoStepPostRequest);
+			accountAddDataModel.getEngine().loadContent(thirdStep); */
+		} catch (final Exception e) {
+			LOGGER.error("Failed post request", e);
+		}
 	}
 
-	private boolean handleSecondFactor() {
-		final String location = accountAddDataModel.getEngine().getLocation();
-
-		//We're one redirect before target - requeue
-		if (location.contains("accounts.google.com/CheckCookie")) {
-			return false;
-		}
-
-		//We're on the right page? -> Logged in! -> Start with step 3
-		if (location.contains("youtube.com/my_videos")) {
-			//Step 3 needs to be prepared - register task
-			accountAddDataModel.onWebviewLoaded(this::handleSecondFactorStatus);
-
-			//Signal Step3 is reached
-			accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
-			accountAddDataModel.getEngine().load("http://www.youtube.com/channel_switcher?next=%2F");
-		}
+	private void startStep3() {
+		accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
 
 		accountAddDataModel.setProcessing(false);
-		return true;
 	}
 
 	private boolean handleSecondFactorStatus() {
@@ -142,32 +204,27 @@ public class StepPresenter {
 		return false;
 	}
 
-
 	private void initStep3() {
 		final int length = (int) accountAddDataModel.getEngine()
 													.executeScript(
 															"document.evaluate('//*[@id=\"ytcc-existing-channels\"]', document, null, XPathResult.ANY_TYPE, " +
-																	"" + "null).iterateNext().childNodes.length"
-													);
+																	"" + "null).iterateNext().childNodes.length");
 
 		accountAddDataModel.clearAccountList();
 		for (int i = 0; i < length; i++) {
 			final String name = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) +
 																							   "]/div/a/span/div/div[2]/div[1]', document, null, " +
 																							   "XPathResult.ANY_TYPE, " +
-																							   "null).iterateNext().innerHTML.trim()"
-			);
-			final String image = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i +
-																								1) +
-																								"]/div/a/span/div/div[1]/span/span/span/img', document, null," +
+																							   "null).iterateNext().innerHTML.trim()");
+			final String image = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) +
+																								"]/div/a/span/div/div[1]/span/span/span/img', document, " +
+																								"null," +
 																								" " +
-																								"XPathResult.ANY_TYPE, null).iterateNext().src"
-			);
+																								"XPathResult.ANY_TYPE, null).iterateNext().src");
 			final String url = (String) accountAddDataModel.getEngine()
 														   .executeScript(
 																   "document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', " +
-																		   "document, null, XPathResult.ANY_TYPE, null).iterateNext().href"
-														   );
+																		   "document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 
 			final HBox hBox = new HBox();
 			hBox.setAlignment(Pos.CENTER_LEFT);
@@ -218,15 +275,15 @@ public class StepPresenter {
 			final String scope = URLEncoder.encode(joiner.join(YouTubeFactory.SCOPES), Charsets.UTF_8.toString());
 			accountAddDataModel.getEngine().load(String.format(OAUTH_URL, scope, GDataConfig.REDIRECT_URI, "code", GDataConfig.CLIENT_ID));
 
-			accountAddDataModel.onWebviewLoaded(this::loginOAuthFlow);
+			accountAddDataModel.onWebviewLoaded(this::selectOAuthChannel);
 		} catch (final UnsupportedEncodingException ignored) {
 		}
 	}
 
 	private boolean loginOAuthFlow() {
-		final Document document = accountAddDataModel.getEngine().getDocument();
+	/*	final Document document = accountAddDataModel.getEngine().getDocument();
 		((HTMLInputElement) document.getElementById("Passwd")).setValue(accountAddDataModel.getPassword());
-		((HTMLInputElement) document.getElementById("signIn")).click();
+		((HTMLInputElement) document.getElementById("signIn")).click(); */
 
 		accountAddDataModel.onWebviewLoaded(this::selectOAuthChannel);
 		return true;
@@ -240,14 +297,22 @@ public class StepPresenter {
 
 		final int itemCount = (int) engine.executeScript(
 				"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" + "" +
-						".length"
-		);
+						".length");
 		for (int i = 0; i < itemCount; i++) {
 			final String url = (String) engine.executeScript(
 					"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
-			if (url.contains(accountAddDataModel.getSelectedOption())) {
-				engine.load(url);
 
+			if (url.contains(accountAddDataModel.getSelectedOption())) {
+				try {
+					final URL httpURL = new URL(url);
+					final URLConnection urlConnection = httpURL.openConnection();
+					urlConnection.setDoOutput(true);
+					urlConnection.connect();
+					engine.loadContent(CharStreams.toString(new InputStreamReader(urlConnection.getInputStream())));
+					System.out.println("Loaded");
+				} catch (final IOException e) {
+					throw new RuntimeException(e);
+				}
 				accountAddDataModel.onWebviewLoaded(this::approveOAuth);
 				break;
 			}
@@ -257,10 +322,10 @@ public class StepPresenter {
 	}
 
 	private boolean approveOAuth() {
-		if (!accountAddDataModel.getEngine().getLocation().contains("accounts.google.com/o/oauth2/auth")) {
+		final String location = accountAddDataModel.getEngine().getLocation();
+		if (!location.contains("accounts.google.com/o/oauth2/auth") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
 			return false;
 		}
-
 		final Thread thread = new Thread(() -> {
 			try {
 				Thread.sleep(WAIT_TIME);
