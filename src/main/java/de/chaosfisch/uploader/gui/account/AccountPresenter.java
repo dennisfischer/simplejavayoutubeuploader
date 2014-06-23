@@ -14,6 +14,7 @@ import de.chaosfisch.uploader.gui.DataModel;
 import de.chaosfisch.uploader.gui.account.entry.EntryPresenter;
 import de.chaosfisch.uploader.gui.account.entry.EntryView;
 import de.chaosfisch.youtube.account.AccountModel;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -63,7 +64,7 @@ public class AccountPresenter {
 		final EntryView entryView = entryViewProvider.get();
 		accountPanels.put(accountModel, entryView);
 		((EntryPresenter) entryView.getPresenter()).setAccount(accountModel);
-		accordion.getPanes().add((TitledPane) entryView.getView());
+		Platform.runLater(() -> accordion.getPanes().add((TitledPane) entryView.getView()));
 	}
 
 	private void removePanel(final AccountModel accountModel) {

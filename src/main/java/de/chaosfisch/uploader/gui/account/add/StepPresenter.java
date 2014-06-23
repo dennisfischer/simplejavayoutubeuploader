@@ -18,8 +18,6 @@ import com.google.api.client.util.escape.CharEscapers;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.CharStreams;
-import com.google.common.io.Files;
-import com.sun.webkit.dom.HTMLButtonElementImpl;
 import de.chaosfisch.util.HttpClient;
 import de.chaosfisch.youtube.GDataConfig;
 import de.chaosfisch.youtube.YouTubeFactory;
@@ -35,24 +33,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StepPresenter {
 
-	private static final int                 WAIT_TIME           = 2000;
 	private static final Pattern             OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
 	private static final String              OAUTH_URL           = "https://accounts.google" + "" +
 			".com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
@@ -83,27 +80,32 @@ public class StepPresenter {
 	public void login() {
 		accountAddDataModel.setProcessing(true);
 
-		try {
-			final String content = HttpClient.downloadPage("https://www.youtube.com/channel_switcher?next=%2F");
+		final Thread thread = new Thread(() -> {
+			try {
+				final String content = HttpClient.downloadPage("https://www.youtube.com/channel_switcher?next=%2F");
 
-			final HttpRequest postRequest = clientLogin(HttpClient.loadDocument(content));
-			final HttpResponse execute = postRequest.execute();
-			final String contentRedirect = execute.parseAsString();
-			final Document document = HttpClient.loadDocument(contentRedirect);
-			final String url = HttpClient.evaluate("/html/body/a/@href", document);
-			accountAddDataModel.setUrl(url);
+				final HttpRequest postRequest = clientLogin(HttpClient.loadDocument(content));
+				final HttpResponse execute = postRequest.execute();
+				final String contentRedirect = execute.parseAsString();
+				final Document document = HttpClient.loadDocument(contentRedirect);
+				final String url = HttpClient.evaluate("/html/body/a/@href", document);
+				accountAddDataModel.setUrl(url);
 
-			if (url.contains("accounts.google.com/SecondFactor")) {
-				accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_2);
-				accountAddDataModel.setProcessing(false);
-			} else {
-				final Document documentRedirect = HttpClient.loadDocument(contentRedirect);
-				final String downloadPage = HttpClient.downloadPage(HttpClient.evaluate("/html/body/a/@href", documentRedirect));
-				CharStreams.write(downloadPage, Files.asCharSink(new File("page_redirect.html"), Charsets.UTF_8));
+				if (url.contains("accounts.google.com/SecondFactor")) {
+					Platform.runLater(() -> {
+						accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_2);
+						accountAddDataModel.setProcessing(false);
+					});
+				} else {
+					startStep3(contentRedirect);
+				}
+
+			} catch (final Exception e) {
+				LOGGER.error("Failed post request", e);
 			}
-		} catch (final Exception e) {
-			LOGGER.error("Failed post request", e);
-		}
+		}, "Login-1");
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	private HttpRequest clientLogin(final Document doc) {
@@ -169,62 +171,47 @@ public class StepPresenter {
 	public void secondFactor() {
 		accountAddDataModel.setProcessing(true);
 
+		final Thread thread = new Thread(() -> {
+			try {
+				final String content = HttpClient.downloadPage(accountAddDataModel.getUrl());
+				final HttpRequest twoStepPostRequest = twoStep(HttpClient.loadDocument(content));
+				final HttpResponse httpResponse = twoStepPostRequest.execute();
+				startStep3(httpResponse.parseAsString());
+			} catch (final Exception e) {
+				LOGGER.error("Failed post request", e);
+			}
+		}, "2-Step-2");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	private void startStep3(final String contentRedirect) {
+		final Document documentRedirect = HttpClient.loadDocument(contentRedirect);
+		final String url = HttpClient.evaluate("/html/body/a/@href", documentRedirect);
+		accountAddDataModel.setUrl(url);
+
 		try {
-			final String content = HttpClient.downloadPage(accountAddDataModel.getUrl());
-			final HttpRequest twoStepPostRequest = twoStep(HttpClient.loadDocument(content));
-			final HttpResponse httpResponse = twoStepPostRequest.execute();
-			final String contentRedirect = httpResponse.parseAsString();
-			final Document documentRedirect = HttpClient.loadDocument(contentRedirect);
-			final String url = HttpClient.evaluate("/html/body/a/@href", documentRedirect);
-			accountAddDataModel.setUrl(url);
-
 			final String downloadPage = HttpClient.downloadPage(url);
-			CharStreams.write(downloadPage, Files.asCharSink(new File("page.html"), Charsets.UTF_8));
-
-			startStep3();
-
-		/*	final String thirdStep = Http.postPage(twoStepPostRequest.request().url(), twoStepPostRequest);
-			accountAddDataModel.getEngine().loadContent(thirdStep); */
-		} catch (final Exception e) {
-			LOGGER.error("Failed post request", e);
+			loadStep3Content(HttpClient.loadDocument(downloadPage));
+		} catch (final IOException e) {
+			LOGGER.error("Failed downloading redirect page", e);
 		}
+
+		Platform.runLater(() -> {
+			accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
+			accountAddDataModel.setProcessing(false);
+		});
 	}
 
-	private void startStep3() {
-		accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_3);
+	private void loadStep3Content(final Document doc) {
+		final String count = HttpClient.evaluate("count(//*[@id=\"ytcc-existing-channels\"]/li)", doc);
+		final int countFinal = Integer.parseInt(count);
 
-		accountAddDataModel.setProcessing(false);
-	}
-
-	private boolean handleSecondFactorStatus() {
-		if (accountAddDataModel.getEngine().getLocation().contains("youtube.com/channel_switcher")) {
-			initStep3();
-			return true;
-		}
-		return false;
-	}
-
-	private void initStep3() {
-		final int length = (int) accountAddDataModel.getEngine()
-													.executeScript(
-															"document.evaluate('//*[@id=\"ytcc-existing-channels\"]', document, null, XPathResult.ANY_TYPE, " +
-																	"" + "null).iterateNext().childNodes.length");
-
-		accountAddDataModel.clearAccountList();
-		for (int i = 0; i < length; i++) {
-			final String name = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) +
-																							   "]/div/a/span/div/div[2]/div[1]', document, null, " +
-																							   "XPathResult.ANY_TYPE, " +
-																							   "null).iterateNext().innerHTML.trim()");
-			final String image = (String) accountAddDataModel.getEngine().executeScript("document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) +
-																								"]/div/a/span/div/div[1]/span/span/span/img', document, " +
-																								"null," +
-																								" " +
-																								"XPathResult.ANY_TYPE, null).iterateNext().src");
-			final String url = (String) accountAddDataModel.getEngine()
-														   .executeScript(
-																   "document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', " +
-																		   "document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+		for (int i = 0; i < countFinal; i++) {
+			final String name = HttpClient.evaluate("//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]/text()", doc).trim();
+			final String image = HttpClient.evaluate("//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img/@src",
+													 doc);
+			final String url = HttpClient.evaluate("//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/@href", doc);
 
 			final HBox hBox = new HBox();
 			hBox.setAlignment(Pos.CENTER_LEFT);
@@ -235,32 +222,7 @@ public class StepPresenter {
 				final int pageIdEndIndex = -1 == url.indexOf('&', pageIdStartIndex) ? url.length() : url.indexOf('&', pageIdStartIndex);
 				accountAddDataModel.setSelectedOption(!url.contains("pageid=") ? "none" : url.substring(pageIdStartIndex, pageIdEndIndex));
 
-				accountAddDataModel.onWebviewLoaded(() -> {
-
-					if (!accountAddDataModel.getEngine().getLocation().endsWith("youtube.com/")) {
-						return false;
-					}
-					accountAddDataModel.getEngine().load("http://www.youtube.com/account_advanced");
-					return true;
-				});
-
-				accountAddDataModel.onWebviewLoaded(() -> {
-
-					if (!accountAddDataModel.getEngine().getLocation().contains("youtube.com/account_advanced")) {
-						return false;
-					}
-
-					final String html = (String) accountAddDataModel.getEngine().executeScript("document.documentElement.outerHTML");
-					final Matcher matcher = CHANNEL_ID_PATTERN.matcher(html);
-
-					if (matcher.find(1)) {
-						final String accountId = matcher.group(2);
-						accountAddDataModel.createAccount(accountId, name);
-						getOAuthPermission();
-					}
-					return true;
-				});
-				accountAddDataModel.getEngine().load(url);
+				completeChannelSelection(url, name);
 			});
 			hBox.setOnMouseEntered(mouseEvent -> ((Node) mouseEvent.getSource()).setCursor(Cursor.HAND));
 			hBox.setOnMouseExited(mouseEvent -> ((Node) mouseEvent.getSource()).setCursor(Cursor.DEFAULT));
@@ -269,38 +231,41 @@ public class StepPresenter {
 		}
 	}
 
+	private void completeChannelSelection(final String url, final String name) {
+		final Thread thread = new Thread(() -> {
+			try {
+				HttpClient.downloadPage("http://www.youtube.com" + url);
+				final String downloadPage = HttpClient.downloadPage("http://www.youtube.com/account_advanced");
+				final Matcher matcher = CHANNEL_ID_PATTERN.matcher(downloadPage);
+
+				if (matcher.find(1)) {
+					final String accountId = matcher.group(2);
+					accountAddDataModel.createAccount(accountId, name);
+					getOAuthPermission();
+				}
+			} catch (final IOException e) {
+				LOGGER.error("Failed loading channel", e);
+			}
+		}, "Complete-3");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
 	private void getOAuthPermission() {
 		final Joiner joiner = Joiner.on(" ").skipNulls();
 		try {
 			final String scope = URLEncoder.encode(joiner.join(YouTubeFactory.SCOPES), Charsets.UTF_8.toString());
-			accountAddDataModel.getEngine().load(String.format(OAUTH_URL, scope, GDataConfig.REDIRECT_URI, "code", GDataConfig.CLIENT_ID));
-
-			accountAddDataModel.onWebviewLoaded(this::selectOAuthChannel);
-		} catch (final UnsupportedEncodingException ignored) {
+			final String downloadPage = HttpClient.downloadPage(String.format(OAUTH_URL, scope, GDataConfig.REDIRECT_URI, "code", GDataConfig.CLIENT_ID));
+			selectOAuthChannel(HttpClient.loadDocument(downloadPage));
+		} catch (final IOException e) {
+			LOGGER.error("Failed starting oauth request", e);
 		}
 	}
 
-	private boolean loginOAuthFlow() {
-	/*	final Document document = accountAddDataModel.getEngine().getDocument();
-		((HTMLInputElement) document.getElementById("Passwd")).setValue(accountAddDataModel.getPassword());
-		((HTMLInputElement) document.getElementById("signIn")).click(); */
-
-		accountAddDataModel.onWebviewLoaded(this::selectOAuthChannel);
-		return true;
-	}
-
-	private boolean selectOAuthChannel() {
-		final WebEngine engine = accountAddDataModel.getEngine();
-		if (!engine.getLocation().contains("accounts.google.com/b/0/DelegateAccountSelector")) {
-			return false;
-		}
-
-		final int itemCount = (int) engine.executeScript(
-				"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" + "" +
-						".length");
+	private void selectOAuthChannel(final Document doc) {
+		final int itemCount = Integer.parseInt(HttpClient.evaluate("count(//*[@id=\"account-list\"]/li)", doc));
 		for (int i = 0; i < itemCount; i++) {
-			final String url = (String) engine.executeScript(
-					"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
+			final String url = HttpClient.evaluate("//*[@id=\"account-list\"]/li[\" + (i + 1) + \"]/a/@href", doc);
 
 			if (url.contains(accountAddDataModel.getSelectedOption())) {
 				try {
@@ -308,50 +273,28 @@ public class StepPresenter {
 					final URLConnection urlConnection = httpURL.openConnection();
 					urlConnection.setDoOutput(true);
 					urlConnection.connect();
-					engine.loadContent(CharStreams.toString(new InputStreamReader(urlConnection.getInputStream())));
-					System.out.println("Loaded");
+					final String content = CharStreams.toString(new InputStreamReader(urlConnection.getInputStream()));
+					Files.write(Paths.get("./page.html"), content.getBytes(), StandardOpenOption.CREATE);
+					//	approveOAuth(HttpClient.loadDocument(content));
 				} catch (final IOException e) {
-					throw new RuntimeException(e);
+					LOGGER.error("Failed selecting oauth channel", e);
 				}
-				accountAddDataModel.onWebviewLoaded(this::approveOAuth);
 				break;
 			}
 		}
-
-		return true;
 	}
 
-	private boolean approveOAuth() {
-		final String location = accountAddDataModel.getEngine().getLocation();
-		if (!location.contains("accounts.google.com/o/oauth2/auth") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
-			return false;
-		}
-		final Thread thread = new Thread(() -> {
-			try {
-				Thread.sleep(WAIT_TIME);
-			} catch (final InterruptedException ignored) {
+	private void approveOAuth(final Document doc) {
+		try {
+			final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(HttpClient.evaluate("/html/head/title", doc));
+			if (matcher.matches()) {
+				accountAddDataModel.setAccessToken(matcher.group(1));
+
 			}
-
-			Platform.runLater(() -> ((HTMLButtonElementImpl) accountAddDataModel.getEngine().getDocument().getElementById("submit_approve_access")).click());
-
-			accountAddDataModel.onWebviewLoaded(() -> {
-				final WebEngine engine = accountAddDataModel.getEngine();
-				if (!engine.getLocation().contains("accounts.google.com/o/oauth2/approval")) {
-					return false;
-				}
-
-				final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(engine.getTitle());
-				if (matcher.matches()) {
-					accountAddDataModel.setAccessToken(matcher.group(1));
-				}
-				accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_1);
-				accountAddDataModel.setProcessing(false);
-				return true;
-			});
-		}, "Auth-Handle-Step4");
-		thread.setDaemon(true);
-		thread.start();
-
-		return true;
+			accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_1);
+			accountAddDataModel.setProcessing(false);
+		} catch (final IOException e) {
+			LOGGER.error("Failed approving oauth", e);
+		}
 	}
 }

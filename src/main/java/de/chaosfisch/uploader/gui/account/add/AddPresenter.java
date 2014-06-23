@@ -40,7 +40,9 @@ public class AddPresenter {
 		if (newProcessing) {
 			gridpane.getChildren().removeAll(step1View, step2View, step3View);
 			gridpane.add(loadingView, 1, 0);
+			loadingView.setVisible(true);
 		} else {
+			loadingView.setVisible(false);
 			setStepView(accountAddDataModel.getStep());
 		}
 	}
