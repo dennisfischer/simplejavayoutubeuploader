@@ -13,11 +13,13 @@
 
 
 
+
+
 def javaFxHome = System.getProperty("java.home");
 System.out.println(javaFxHome);
 apply plugin: 'java'
 apply plugin: 'application'
-version = "v3.2.1.0";
+version = "v3.2.1.1";
 mainClassName = 'de.chaosfisch.uploader.SimpleJavaYoutubeUploader'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -60,22 +62,20 @@ jar {
 
 task javaFXPackager(type: Exec) {
 	commandLine = ["$javaFxHome/../bin/javafxpackager",
-			'-createjar',
-			'-srcdir',
-			sourceSets.main.output.classesDir,
-			'-outdir',
-			jar.destinationDir,
-			'-outfile',
-			jar.archiveName,
-			'-appclass',
-			mainClassName,
-			'-nocss2bin',
-			'-classpath',
-			configurations.runtime.collect { "lib/" + it.name }.join(' '),
-			'-manifestAttrs',
-			'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
-					'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
-	]
+				   '-createjar',
+				   '-srcdir',
+				   sourceSets.main.output.classesDir,
+				   '-outdir',
+				   jar.destinationDir,
+				   '-outfile',
+				   jar.archiveName,
+				   '-appclass',
+				   mainClassName,
+				   '-nocss2bin',
+				   '-classpath',
+				   configurations.runtime.collect { "lib/" + it.name }.join(' '),
+				   '-manifestAttrs',
+				   'Implementation-Title=Simple Java Youtube Uploader ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' + 'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')]
 }
 
 task copyTask(type: Copy) {

@@ -59,8 +59,7 @@ import java.util.regex.Pattern;
 
 public class AccountAddDialogController extends UndecoratedDialogController {
 
-	@Inject
-	@Named("i18n-resources")
+	@Inject @Named("i18n-resources")
 	private ResourceBundle resources;
 
 	@FXML
@@ -155,13 +154,11 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 						codeCount.setText(String.format(resources.getString("accountDialog.code.text"), ++count));
 					} else if (location.contains("youtube.com/my_videos")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
-					} else if (location.contains("youtube.com/channel_switcher") || location.contains(
-							"accounts.google.com/b/0/DelegateAccountSelector")) {
+					} else if (location.contains("youtube.com/channel_switcher") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
 						handleStep3();
 					} else if (location.contains("accounts.google.com/o/oauth2/auth")) {
 						handleStep4();
-					} else if (location.contains("youtube.com/signin?") && location.contains(
-							"action_prompt_identity=true")) {
+					} else if (location.contains("youtube.com/signin?") && location.contains("action_prompt_identity=true")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
 					} else if (location.endsWith("youtube.com/")) {
 						copyCookies = new ArrayList<>(persistentCookieStore.getSerializeableCookies());
@@ -184,9 +181,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 							modifiedAccount.setSerializeableCookies(copyCookies);
 
 							final HttpResponse<JsonNode> response = Unirest.get(USERINFO_URL)
-									.header("Authorization", accountService.getAuthentication(modifiedAccount)
-											.getHeader())
-									.asJson();
+																		   .header("Authorization",
+																				   accountService.getAuthentication(modifiedAccount).getHeader())
+																		   .asJson();
 
 							modifiedAccount.setName(response.getBody().getObject().getString("email"));
 							if (!accountService.verifyAccount(modifiedAccount)) {
@@ -215,17 +212,28 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 
 	@FXML
 	void initialize() {
-		assert null != code : "fx:id=\"code\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != codeCount : "fx:id=\"codeCount\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != continueButton : "fx:id=\"continueButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != loading : "fx:id=\"loading\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != loginButton : "fx:id=\"loginButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != password : "fx:id=\"password\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step1 : "fx:id=\"step1\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step2 : "fx:id=\"step2\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != step3 : "fx:id=\"step3\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != username : "fx:id=\"username\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
-		assert null != view : "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != code
+				: "fx:id=\"code\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != codeCount
+				: "fx:id=\"codeCount\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != continueButton
+				: "fx:id=\"continueButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != loading
+				: "fx:id=\"loading\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != loginButton
+				: "fx:id=\"loginButton\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != password
+				: "fx:id=\"password\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step1
+				: "fx:id=\"step1\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step2
+				: "fx:id=\"step2\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != step3
+				: "fx:id=\"step3\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != username
+				: "fx:id=\"username\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
+		assert null != view
+				: "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 
 		/* NEEDED FOR DEBUG
 		Stage stage = new Stage();
@@ -288,9 +296,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 			step3.setVisible(false);
 			loading.setVisible(true);
 			final int itemCount = (int) engine.executeScript(
-					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" +
-							".length"
-			);
+					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" + ".length");
 			for (int i = 0; i < itemCount; i++) {
 				final String url = (String) engine.executeScript(
 						"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
@@ -308,19 +314,16 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		} else {
 			webView.getEngine().load("https://www.youtube.com");
 		}
-		for (int i = 0; i < length; i++) {
+		for (int i = 1; i < length; i++) {
 			final String name = (String) engine.executeScript(
 					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[2]/div[1]', document, null, " +
-							"XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()"
-			);
+							"XPathResult.ANY_TYPE, null).iterateNext().innerHTML.trim()");
 			final String image = (String) engine.executeScript(
 					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a/span/div/div[1]/span/span/span/img', document, null, " +
-							"XPathResult.ANY_TYPE, null).iterateNext().src"
-			);
+							"XPathResult.ANY_TYPE, null).iterateNext().src");
 			final String url = (String) engine.executeScript(
 					"document.evaluate('//*[@id=\"ytcc-existing-channels\"]/li[" + (i + 1) + "]/div/a', document, null, XPathResult.ANY_TYPE, " +
-							"null).iterateNext().href"
-			);
+							"null).iterateNext().href");
 
 			step3.getChildren().add(HBoxBuilder.create().alignment(Pos.CENTER_LEFT)
 								 .children(new ImageView(new Image(image)), new Label(name))

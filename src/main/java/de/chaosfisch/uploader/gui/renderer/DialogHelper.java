@@ -206,8 +206,9 @@ public class DialogHelper {
 
 			final Scene scene = SceneBuilder.create().root(parent).build();
 			final Stage stage = StageBuilder.create().scene(scene).build();
-			stage.initStyle(StageStyle.UNDECORATED);
+			stage.initStyle(StageStyle.DECORATED);
 			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setResizable(true);
 			stage.requestFocus();
 			stage.showAndWait();
 		} catch (final Exception e) {
