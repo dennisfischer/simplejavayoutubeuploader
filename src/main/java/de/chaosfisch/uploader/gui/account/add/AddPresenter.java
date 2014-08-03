@@ -10,6 +10,7 @@
 
 package de.chaosfisch.uploader.gui.account.add;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
@@ -37,14 +38,16 @@ public class AddPresenter {
 	}
 
 	private void setProcessingView(final Boolean newProcessing) {
-		if (newProcessing) {
-			gridpane.getChildren().removeAll(step1View, step2View, step3View);
-			gridpane.add(loadingView, 1, 0);
-			loadingView.setVisible(true);
-		} else {
-			loadingView.setVisible(false);
-			setStepView(accountAddDataModel.getStep());
-		}
+		Platform.runLater(() -> {
+			if (newProcessing) {
+				gridpane.getChildren().removeAll(step1View, step2View, step3View);
+				gridpane.add(loadingView, 1, 0);
+				loadingView.setVisible(true);
+			} else {
+				loadingView.setVisible(false);
+				setStepView(accountAddDataModel.getStep());
+			}
+		});
 	}
 
 	private void setStepView(final AccountAddDataModel.Step newStep) {

@@ -65,6 +65,7 @@ public final class HttpClient {
 
 	public static Document loadDocument(final String content) {
 		final TagNode tagNode = new HtmlCleaner().clean(content);
+
 		try {
 			final CleanerProperties cleanerProperties = new CleanerProperties();
 			return new DomSerializer(cleanerProperties).createDOM(tagNode);
@@ -81,5 +82,14 @@ public final class HttpClient {
 			LOGGER.error("Invalid xpath", e);
 		}
 		return "Invalid XPATH";
+	}
+
+	public static boolean isPresent(final String path, final Document doc) {
+		try {
+			return Boolean.parseBoolean(XPATH.evaluate(path, doc));
+		} catch (final XPathExpressionException e) {
+			LOGGER.error("Invalid xpath", e);
+		}
+		return false;
 	}
 }

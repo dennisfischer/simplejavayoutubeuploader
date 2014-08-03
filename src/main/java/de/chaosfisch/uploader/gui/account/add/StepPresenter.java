@@ -17,7 +17,6 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.util.escape.CharEscapers;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.google.common.io.CharStreams;
 import de.chaosfisch.util.HttpClient;
 import de.chaosfisch.youtube.GDataConfig;
 import de.chaosfisch.youtube.YouTubeFactory;
@@ -37,10 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -50,7 +52,6 @@ import java.util.regex.Pattern;
 
 public class StepPresenter {
 
-	private static final Pattern             OAUTH_TITLE_PATTERN = Pattern.compile("Success code=(.*)");
 	private static final String              OAUTH_URL           = "https://accounts.google" + "" +
 			".com/o/oauth2/auth?access_type=offline&scope=%s&redirect_uri=%s&response_type=%s&client_id=%s";
 	private static final Pattern             CHANNEL_ID_PATTERN  = Pattern.compile("<p>\\s+YouTube(.*)ID:\\s+(.*)\\b\\s+</p>", Pattern.DOTALL);
@@ -73,7 +74,7 @@ public class StepPresenter {
 			accountAddDataModel.emailProperty().bindBidirectional(username.textProperty());
 		}
 		if (null != password) {
-			accountAddDataModel.passwordProperty().bind(password.textProperty());
+			accountAddDataModel.passwordProperty().bindBidirectional(password.textProperty());
 		}
 	}
 
@@ -88,6 +89,13 @@ public class StepPresenter {
 				final HttpResponse execute = postRequest.execute();
 				final String contentRedirect = execute.parseAsString();
 				final Document document = HttpClient.loadDocument(contentRedirect);
+
+				boolean failed = HttpClient.isPresent("boolean(/html/body/div/div[2]/div[2]/form/span)", document);
+
+				if (failed) {
+					accountAddDataModel.setProcessing(false);
+					return;
+				}
 				final String url = HttpClient.evaluate("/html/body/a/@href", document);
 				accountAddDataModel.setUrl(url);
 
@@ -176,7 +184,16 @@ public class StepPresenter {
 				final String content = HttpClient.downloadPage(accountAddDataModel.getUrl());
 				final HttpRequest twoStepPostRequest = twoStep(HttpClient.loadDocument(content));
 				final HttpResponse httpResponse = twoStepPostRequest.execute();
-				startStep3(httpResponse.parseAsString());
+
+				final String contentRedirect = httpResponse.parseAsString();
+				final Document doc = HttpClient.loadDocument(contentRedirect);
+				final boolean failed = HttpClient.isPresent("boolean(/html/body/div/div[2]/form/div[1]/span)", doc);
+				if (failed) {
+					accountAddDataModel.setProcessing(false);
+					return;
+				}
+
+				startStep3(contentRedirect);
 			} catch (final Exception e) {
 				LOGGER.error("Failed post request", e);
 			}
@@ -265,34 +282,63 @@ public class StepPresenter {
 	private void selectOAuthChannel(final Document doc) {
 		final int itemCount = Integer.parseInt(HttpClient.evaluate("count(//*[@id=\"account-list\"]/li)", doc));
 		for (int i = 0; i < itemCount; i++) {
-			final String url = HttpClient.evaluate("//*[@id=\"account-list\"]/li[\" + (i + 1) + \"]/a/@href", doc);
+			final String url = HttpClient.evaluate("//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a/@href", doc);
 
 			if (url.contains(accountAddDataModel.getSelectedOption())) {
 				try {
-					final URL httpURL = new URL(url);
-					final URLConnection urlConnection = httpURL.openConnection();
-					urlConnection.setDoOutput(true);
-					urlConnection.connect();
-					final String content = CharStreams.toString(new InputStreamReader(urlConnection.getInputStream()));
-					Files.write(Paths.get("./page.html"), content.getBytes(), StandardOpenOption.CREATE);
-					//	approveOAuth(HttpClient.loadDocument(content));
+					final HttpRequest httpRequest = HttpClient.get().buildGetRequest(new GenericUrl(url));
+					httpRequest.setFollowRedirects(true);
+					httpRequest.setThrowExceptionOnExecuteError(false);
+					approveOAuth(HttpClient.loadDocument(httpRequest.execute().parseAsString()));
 				} catch (final IOException e) {
 					LOGGER.error("Failed selecting oauth channel", e);
 				}
-				break;
+				return;
 			}
 		}
 	}
 
 	private void approveOAuth(final Document doc) {
+		DOMSource domSource = new DOMSource(doc);
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		TransformerFactory tf = TransformerFactory.newInstance();
 		try {
-			final Matcher matcher = OAUTH_TITLE_PATTERN.matcher(HttpClient.evaluate("/html/head/title", doc));
-			if (matcher.matches()) {
-				accountAddDataModel.setAccessToken(matcher.group(1));
+			Transformer transformer = tf.newTransformer();
 
+			transformer.transform(domSource, result);
+			Files.write(Paths.get("./page.html"), writer.toString().getBytes(), StandardOpenOption.CREATE);
+		} catch (TransformerException | IOException e) {
+			e.printStackTrace();
+		}
+
+		final String formAction = HttpClient.evaluate("//*[@id=\"connect-approve\"]/@action", doc);
+		final String _utf8 = HttpClient.evaluate("//*[@id=\"connect-approve\"]/input[@id='_utf8']/@value", doc);
+		final String bgresponse = "";
+		final String state_wrapper = HttpClient.evaluate("//*[@id=\"connect-approve\"]/input[@id='state_wrapper']/@value", doc);
+
+		final String submit_access = "true";
+
+		final String[] data = {"_utf8=" + _utf8, "bgresponse=" + bgresponse, "state_wrapper=" + state_wrapper, "submit_access=" + submit_access};
+		try {
+			final HttpRequest httpRequest = HttpClient.get()
+													  .buildPostRequest(new GenericUrl(formAction), new ByteArrayContent("application/x-www-form-urlencoded",
+																														 Joiner.on("&").join(data).getBytes
+																																 ()));
+			httpRequest.setFollowRedirects(false);
+			httpRequest.setThrowExceptionOnExecuteError(false);
+
+			final Document docComplete = HttpClient.loadDocument(httpRequest.execute().parseAsString());
+
+			if (HttpClient.isPresent("boolean(/HTML/body/input)", docComplete)) {
+				accountAddDataModel.setAccessToken(HttpClient.evaluate("/HTML/body/input/@value", docComplete));
 			}
-			accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_1);
-			accountAddDataModel.setProcessing(false);
+
+			Platform.runLater(() -> {
+				accountAddDataModel.setStep(AccountAddDataModel.Step.STEP_1);
+				accountAddDataModel.setProcessing(false);
+				accountAddDataModel.reset();
+			});
 		} catch (final IOException e) {
 			LOGGER.error("Failed approving oauth", e);
 		}

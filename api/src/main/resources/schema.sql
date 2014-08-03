@@ -85,16 +85,8 @@ CREATE TABLE IF NOT EXISTS SocialDTO
 
 CREATE TABLE IF NOT EXISTS PermissionDTO
 (
-  uploadId            TEXT    NOT NULL,
-  visibility          TEXT    NOT NULL,
-  threedD             TEXT    NOT NULL,
-  comment             TEXT    NOT NULL,
-  commentvote         BOOLEAN NOT NULL,
-  embed               BOOLEAN NOT NULL,
-  rate                BOOLEAN NOT NULL,
-  ageRestricted       BOOLEAN NOT NULL,
-  publicStatsViewable BOOLEAN NOT NULL,
-  subscribers         BOOLEAN NOT NULL,
+  uploadId TEXT NOT NULL,
+
   PRIMARY KEY (uploadId),
   FOREIGN KEY (uploadId) REFERENCES UploadDTO (uploadId) ON DELETE CASCADE ON UPDATE CASCADE
 );

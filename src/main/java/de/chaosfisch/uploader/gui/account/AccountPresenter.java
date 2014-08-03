@@ -58,7 +58,7 @@ public class AccountPresenter {
 
 	private void addPanel(final AccountModel accountModel) {
 		if (defaultAdded) {
-			accordion.getPanes().remove(defaultPanel);
+			Platform.runLater(() -> accordion.getPanes().remove(defaultPanel));
 			defaultAdded = false;
 		}
 		final EntryView entryView = entryViewProvider.get();

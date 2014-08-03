@@ -100,8 +100,6 @@ public class AccountAddDataModel {
 		accountModel.setCookies(FXCollections.observableSet(persistentCookieStore.getSerializeableCookies(accountId).stream().collect(Collectors.toSet())));
 		accountModel.getCookies().forEach(System.out::println);
 
-		accountService.store(accountModel);
-
 		persistentCookieStore.removeAll();
 		persistentCookieStore.setCookies(accountModel.getCookies().stream().collect(Collectors.toList()));
 	}
@@ -145,10 +143,11 @@ public class AccountAddDataModel {
 	}
 
 	public void reset() {
-		email.set("");
-		password.set("");
+		email.setValue("");
+		password.setValue("");
 		persistentCookieStore.removeAll();
-		step.set(Step.STEP_1);
+		accountList.clear();
+		step.setValue(Step.STEP_1);
 	}
 
 	public void setUrl(final String url) {
