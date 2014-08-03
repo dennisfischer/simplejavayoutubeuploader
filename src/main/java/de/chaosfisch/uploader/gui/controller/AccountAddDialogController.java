@@ -33,6 +33,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,6 +43,7 @@ import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -157,6 +159,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 					} else if (location.contains("youtube.com/channel_switcher") || location.contains("accounts.google.com/b/0/DelegateAccountSelector")) {
 						handleStep3();
 					} else if (location.contains("accounts.google.com/o/oauth2/auth")) {
+						System.out.println("Was: " + location);
 						handleStep4();
 					} else if (location.contains("youtube.com/signin?") && location.contains("action_prompt_identity=true")) {
 						webView.getEngine().load("https://www.youtube.com/channel_switcher?next=%2F");
@@ -236,18 +239,19 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 				: "fx:id=\"view\" was not injected: check your FXML file 'AccountAddDialog.fxml'.";
 
 		/* NEEDED FOR DEBUG
+		*/
 		Stage stage = new Stage();
 		Scene scene = new Scene(null);
 		scene.setRoot(webView);
 		stage.setScene(scene);
 		stage.show();
-		*/
+		/**/
 	}
 
 	private final IAccountService accountService;
-	private final        WebView webView        = new WebView();
-	private static final int     WAIT_TIME      = 2000;
-	private              String  selectedOption = null;
+	private final        WebView webView   = new WebView();
+	private static final int     WAIT_TIME = 2000;
+	private String selectedOption;
 	private boolean initialized;
 	private Account account;
 	private int     count;
@@ -293,18 +297,30 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 		final WebEngine engine = webView.getEngine();
 
 		if (null != selectedOption) {
+			System.out.println("Found: " + selectedOption);
+
+
 			step3.setVisible(false);
 			loading.setVisible(true);
 			final int itemCount = (int) engine.executeScript(
-					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" + ".length");
+					"document.evaluate('//*[@id=\"account-list\"]', document, null, XPathResult.ANY_TYPE, null).iterateNext().getElementsByTagName(\"li\")" +
+							".length");
+			String foundUrl = null;
 			for (int i = 0; i < itemCount; i++) {
 				final String url = (String) engine.executeScript(
 						"document.evaluate('//*[@id=\"account-list\"]/li[" + (i + 1) + "]/a', document, null, XPathResult.ANY_TYPE, null).iterateNext().href");
 				if (url.contains(selectedOption)) {
-					engine.load(url);
+					foundUrl = url;
 					break;
 				}
+				if (url.contains("pageId=none")) {
+					foundUrl = url;
+				}
 			}
+			if (null == foundUrl) {
+				throw new RuntimeException("Failed finding correct url.");
+			}
+			engine.load(foundUrl);
 			return;
 		}
 		final int length = (int) engine.executeScript("document.getElementsByClassName(\"channel-switcher-button\").length");
@@ -336,6 +352,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 										 final int pageIdEndIndex = -1 == url.indexOf("&", pageIdStartIndex) ? url.length() : url.indexOf("&",
 																																		  pageIdStartIndex);
 										 selectedOption = !url.contains("pageid=") ? "none" : url.substring(pageIdStartIndex, pageIdEndIndex);
+										 System.out.println(selectedOption);
 										 engine.load(url);
 									 }
 								 })
