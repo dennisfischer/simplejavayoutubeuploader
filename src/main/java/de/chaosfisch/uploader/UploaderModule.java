@@ -1,12 +1,12 @@
-/*
- * Copyright (c) 2014 Dennis Fischer.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0+
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- *
- * Contributors: Dennis Fischer
- */
+/**************************************************************************************************
+ * Copyright (c) 2014 Dennis Fischer.                                                             *
+ * All rights reserved. This program and the accompanying materials                               *
+ * are made available under the terms of the GNU Public License v3.0+                             *
+ * which accompanies this distribution, and is available at                                       *
+ * http://www.gnu.org/licenses/gpl.html                                                           *
+ *                                                                                                *
+ * Contributors: Dennis Fischer                                                                   *
+ **************************************************************************************************/
 
 package de.chaosfisch.uploader;
 
@@ -23,6 +23,8 @@ import com.google.inject.spi.TypeListener;
 import de.chaosfisch.google.GoogleModule;
 import de.chaosfisch.google.enddir.EnddirServiceImpl;
 import de.chaosfisch.google.enddir.IEnddirService;
+import de.chaosfisch.google.youtube.schedule.IScheduleService;
+import de.chaosfisch.google.youtube.schedule.ScheduleServiceImpl;
 import de.chaosfisch.google.youtube.thumbnail.IThumbnailService;
 import de.chaosfisch.google.youtube.thumbnail.ThumbnailServiceImpl;
 import de.chaosfisch.google.youtube.upload.UploadPostProcessor;
@@ -49,7 +51,7 @@ public class UploaderModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(String.class).annotatedWith(Names.named(IPersistenceService.PERSISTENCE_FOLDER))
-				.toInstance(String.format("%s/%s", ApplicationData.DATA_DIR, ApplicationData.VERSION));
+						  .toInstance(String.format("%s/%s", ApplicationData.DATA_DIR, ApplicationData.VERSION));
 
 		try {
 			final String configFile = ApplicationData.DATA_DIR + "/config.properties";
@@ -72,7 +74,7 @@ public class UploaderModule extends AbstractModule {
 		uploadPostProcessorMultibinder.addBinding().to(ExportPostProcessor.class);
 
 		bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
-				.toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));
+								  .toInstance(ResourceBundle.getBundle("de.chaosfisch.uploader.resources.application"));
 
 		mapServices();
 		mapUtil();
@@ -100,6 +102,7 @@ public class UploaderModule extends AbstractModule {
 		bind(IMetadataService.class).to(AbstractMetadataService.class).in(Singleton.class);
 		bind(IEnddirService.class).to(EnddirServiceImpl.class).in(Singleton.class);
 		bind(IThumbnailService.class).to(ThumbnailServiceImpl.class).in(Singleton.class);
+		bind(IScheduleService.class).to(ScheduleServiceImpl.class).in(Singleton.class);
 		bind(Uploader.class).in(Singleton.class);
 	}
 }

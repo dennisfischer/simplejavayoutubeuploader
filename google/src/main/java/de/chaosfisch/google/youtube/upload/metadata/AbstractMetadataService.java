@@ -37,9 +37,6 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,7 +181,6 @@ public class AbstractMetadataService implements IMetadataService {
 
 		final Map<String, Object> params = new HashMap<>(METADATA_PARAMS_SIZE);
 
-		params.putAll(getMetadataDateOfRelease(upload));
 		params.putAll(getMetadataSocial(upload));
 		params.putAll(getMetadataMonetization(content, upload));
 		params.putAll(getMetadataMetadata(upload));
@@ -279,7 +275,6 @@ public class AbstractMetadataService implements IMetadataService {
 				params.put(assetName + "_isan", monetization.getIsan());
 				params.put(assetName + "_eidr", monetization.getEidr());
 
-
 				if (Asset.TV != monetization.getAsset()) {
 					// WEB + MOVIE ONLY
 					params.put(assetName + "_title", !monetization.getTitle().isEmpty() ? monetization.getTitle() : metadata.getTitle());
@@ -310,23 +305,6 @@ public class AbstractMetadataService implements IMetadataService {
 				params.put("creator_share_gplus", boolConverter(social.isGplus()));
 			}
 		}
-		return params;
-	}
-
-	private Map<String, Object> getMetadataDateOfRelease(final Upload upload) {
-		final Map<String, Object> params = new HashMap<>(4);
-
-		if (null != upload.getDateTimeOfRelease()) {
-			if (upload.getDateTimeOfRelease().isAfterNow()) {
-				final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm").withZone(DateTimeZone.UTC);
-
-				params.put("publish_time", upload.getDateTimeOfRelease().toString(dateTimeFormatter));
-				params.put("publish_timezone", "UTC");
-				params.put("time_published", "0");
-				params.put("privacy", "scheduled");
-			}
-		}
-
 		return params;
 	}
 }
