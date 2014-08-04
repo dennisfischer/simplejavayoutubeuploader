@@ -20,7 +20,7 @@ public final class ApplicationData {
 	static {
 		String userHome = System.getProperty("user.home");
 		if (PlatformUtil.isMac()) {
-			userHome += "/Library/Application Support/";
+			userHome += "/Library";
 		}
 		System.setProperty("user.home", userHome);
 		DATA_DIR = System.getProperty("user.home") + "/SimpleJavaYoutubeUploader";
