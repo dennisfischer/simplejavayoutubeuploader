@@ -9,19 +9,79 @@
       <artifact name="converter:jar" />
     </artifacts-to-build>
   </component>
+  <component name="BuildServerSettings">
+    <option name="LOGIN" value="" />
+    <option name="SERVER_URL" value="http://buildserver" />
+    <option name="PASSWORD" />
+    <option name="REMEMBER_ME" value="true" />
+    <option name="USE_IDEA_PROXY_SETTINGS" value="true" />
+    <option name="INSPECTIONS_BUILD_TYPE_IDS" />
+    <option name="DUPLICATES_BUILD_TYPE_IDS" />
+    <option name="COVERAGE_SETTINGS" />
+    <option name="TEST_STATUS_ENABLED" value="true" />
+    <option name="TEST_STATUS_SHOW_SUCCESSFUL" value="false" />
+    <option name="ARTIFACTS_BUILD_TYPE_IDS" />
+    <option name="PERFORM_COMMIT_IF_SUCCESSFUL" value="true" />
+    <option name="PERFORM_COMMIT_IF_NO_NEW_FAILED_TESTS" value="false" />
+    <option name="REQUEST_CONFIRMATON" value="false" />
+    <option name="PRE_TESTED_COMMIT" value="true" />
+    <option name="PROJECT_STATUS_DIALOG_SPLITTER_DIVIDER_LOCATION" value="500" />
+    <option name="CHANGES_STATUS_DIALOG_SPLITTER_DIVIDER_LOCATION" value="500" />
+    <option name="FILTER_BY_STATUS" value="false" />
+    <option name="FILTER_MARKED_AS_FIXED" value="false" />
+    <option name="SHOW_CLOSE_PROMPT" value="true" />
+    <option name="TOOL_WINDOW_SELECTED_CONTENT_INDEX" value="0" />
+    <option name="FILTER_BY_CURRENT_PROJECT" value="true" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="Completed basic authentication without error checks (oauth missing) and fixed UI bugs.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AccountAddDataModel.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AccountAddDataModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/AccountPresenter.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/AccountPresenter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AddPresenter.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AddPresenter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/util/HttpClient.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/util/HttpClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java" afterPath="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/resources/schema.sql" afterPath="$PROJECT_DIR$/api/src/main/resources/schema.sql" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__ch_qos_logback_logback_classic_1_1_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__ch_qos_logback_logback_core_1_1_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fasterxml_jackson_core_jackson_core_2_1_3.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_api_client_google_api_client_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_apis_google_api_services_youtube_v3_rev125_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_code_findbugs_jsr305_1_3_9.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_code_gson_gson_2_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_guava_guava_15_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_guava_guava_jdk5_13_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_http_client_google_http_client_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_http_client_google_http_client_gson_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_http_client_google_http_client_jackson2_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_oauth_client_google_oauth_client_1_19_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_dagger_dagger_1_2_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_dagger_dagger_1_2_3_SNAPSHOT.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_dagger_dagger_compiler_1_2_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_javawriter_2_5_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_codec_commons_codec_1_3.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__commons_logging_commons_logging_1_1_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_el_el_api_2_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_inject_javax_inject_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_junit_4_12.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__net_engio_mbassador_1_2_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__net_sourceforge_htmlcleaner_htmlcleaner_2_10.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_apache_httpcomponents_httpclient_4_0_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_apache_httpcomponents_httpcore_4_0_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_controlsfx_controlsfx_8_0_6_20.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_hamcrest_hamcrest_core_1_3.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jdom_jdom2_2_0_5.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_mockito_mockito_core_1_9_5.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_objenesis_objenesis_1_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_slf4j_slf4j_api_1_7_9.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_xerial_sqlite_jdbc_3_8_7.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/api.iml" afterPath="$PROJECT_DIR$/api/api.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" afterPath="$PROJECT_DIR$/simplejavayoutubeuploader.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-java-youtube-uploader.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path="$PROJECT_DIR$/api/.gradle/" />
+    <ignored path="$PROJECT_DIR$/api/build/" />
+    <ignored path="$PROJECT_DIR$/.gradle/" />
+    <ignored path="$PROJECT_DIR$/build/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +112,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties converted="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -88,7 +149,6 @@
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties converted="true" />
     <breakpoint_rules converted="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
@@ -97,15 +157,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="StepPresenter.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java">
+      <file leaf-file-name="SimpleJavaYoutubeUploader.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.9843924" vertical-offset="5138" max-vertical-offset="6035">
-              <caret line="92" column="4" selection-start-line="92" selection-start-column="4" selection-end-line="92" selection-end-column="4" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.25" vertical-offset="0" max-vertical-offset="1139">
+              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -125,7 +182,6 @@
       </list>
     </option>
     <option name="PUSH_AUTO_UPDATE" value="true" />
-    <option name="SYNC_SETTING" value="DONT" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -157,13 +213,11 @@
             <ExternalSystemSettings>
               <option name="externalProjectPath" value="$PROJECT_DIR$" />
               <option name="externalSystemIdString" value="GRADLE" />
-              <option name="scriptParameters" value="" />
               <option name="taskNames">
                 <list>
-                  <option value="distribute" />
+                  <option value="build" />
                 </list>
               </option>
-              <option name="vmOptions" value="" />
             </ExternalSystemSettings>
           </option>
         </ExternalTaskExecutionInfo>
@@ -189,9 +243,39 @@
               <option name="externalSystemIdString" value="GRADLE" />
               <option name="taskNames">
                 <list>
+                  <option value="wrapper" />
+                </list>
+              </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="D:\Development\java_projects\simplejavayoutubeuploader\api" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="taskNames">
+                <list>
                   <option value="build" />
                 </list>
               </option>
+            </ExternalSystemSettings>
+          </option>
+        </ExternalTaskExecutionInfo>
+        <ExternalTaskExecutionInfo>
+          <option name="executorId" value="Run" />
+          <option name="settings">
+            <ExternalSystemSettings>
+              <option name="externalProjectPath" value="$PROJECT_DIR$" />
+              <option name="externalSystemIdString" value="GRADLE" />
+              <option name="scriptParameters" value="" />
+              <option name="taskNames">
+                <list>
+                  <option value="distribute" />
+                </list>
+              </option>
+              <option name="vmOptions" value="" />
             </ExternalSystemSettings>
           </option>
         </ExternalTaskExecutionInfo>
@@ -257,14 +341,9 @@
           <value>
             <list>
               <ExternalTaskPojo>
-                <option name="description" value="Assembles and tests this project and all projects it depends on." />
+                <option name="description" value="Generates Javadoc API documentation for the main source code." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="buildNeeded" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Assembles classes 'test'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="testClasses" />
+                <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Runs the unit tests." />
@@ -272,48 +351,19 @@
                 <option name="name" value="test" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Bundles the project as a JVM application with libs and OS specific scripts." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="distTar" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Runs all checks." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="check" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'test:java'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="compileTestJava" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Assembles the outputs of this project." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="assemble" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
                 <option name="description" value="Deletes the build directory." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="description" value="Installs the project as a JVM application along with libs and OS specific scripts." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="compileJava" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Generates Javadoc API documentation for the main source code." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="javadoc" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="javaFXPackager" />
+                <option name="name" value="installApp" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Bundles the project as a JVM application with libs and OS specific scripts." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="distZip" />
+                <option name="name" value="distTar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles a jar archive containing the main classes." />
@@ -321,8 +371,9 @@
                 <option name="name" value="jar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+                <option name="description" value="Creates OS specific scripts to run the project as a JVM application." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="addAptCompilerArgs" />
+                <option name="name" value="startScripts" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles and tests this project." />
@@ -335,9 +386,18 @@
                 <option name="name" value="buildDependents" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Installs the project as a JVM application along with libs and OS specific scripts." />
+                <option name="description" value="Compiles Java source 'main:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="installApp" />
+                <option name="name" value="compileJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="wrapper" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles the outputs of this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="assemble" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles classes 'main'." />
@@ -345,23 +405,34 @@
                 <option name="name" value="classes" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="processTestResources" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes JVM resources 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Creates OS specific scripts to run the project as a JVM application." />
+                <option name="description" value="Runs this project as a JVM application" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="startScripts" />
+                <option name="name" value="run" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+                <option name="description" value="Compiles Java source 'test:java'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="wrapper" />
+                <option name="name" value="compileTestJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes JVM resources 'test:resources'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="processTestResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects it depends on." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="buildNeeded" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Bundles the project as a JVM application with libs and OS specific scripts." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="distZip" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
@@ -369,12 +440,25 @@
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="copyTask" />
+                <option name="name" value="addAptCompilerArgs" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Runs this project as a JVM application" />
+                <option name="description" value="Assembles classes 'test'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="run" />
+                <option name="name" value="testClasses" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs all checks." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="check" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="javaFXPackager" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="copyTask" />
               </ExternalTaskPojo>
             </list>
           </value>
@@ -442,12 +526,12 @@
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="description" value="Processes JVM resources 'main:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/api" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="description" value="Processes JVM resources 'test:resources'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/api" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
@@ -468,7 +552,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4205069616627" />
+        <entry key="$PROJECT_DIR$" value="4258088293802" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -483,6 +567,22 @@
                       <ExternalModuleBuildClasspathPojo>
                         <option name="entries">
                           <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.2/decd76e2c461157804473468bbdc6b8eb6d6121b/logback-classic-1.1.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.2/b316e9737eea25e9ddd6d88eaeee76878045c6b2/logback-classic-1.1.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/c2b49a585e2f433c95cec359a75e0ee4366a1e35/slf4j-api-1.7.9-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/872ec63b41181e29ad5a3723f1417356e2d2c0f2/slf4j-api-1.7.9.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.3-SNAPSHOT/c413870ff0b1fa1cd40263b7375ca1df2d65b132/dagger-1.2.3-SNAPSHOT-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.3-SNAPSHOT/ab1fa030e131c33bbc60e67aaf8eb338732a169b/dagger-1.2.3-SNAPSHOT.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.controlsfx/controlsfx/8.0.6_20/da66d445d0fcc071c64d4bb58e45fcf61883f757/controlsfx-8.0.6_20-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.controlsfx/controlsfx/8.0.6_20/5a4ca2765419fe12af0f0c7c5a8129c53bb661d9/controlsfx-8.0.6_20.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.10/4e9d3042b0fc82c2f2400d5d77e97fb08d0b9775/htmlcleaner-2.10-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.10/70d073025a51703ba8f41db3d4e6af5dd0f1ed47/htmlcleaner-2.10.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.2/502e1c764542fe747896c1dc04f023acfe0e5cbc/logback-core-1.1.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.2/2d23694879c2c12f125dac5076bdfd5d771cc4cb/logback-core-1.1.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/a00123f261762a7c5e0ec916a2c7c8298d29c400/javax.inject-1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jdom/jdom2/2.0.5/769f3cca4ce92088288be3d0238ef96ef787e82f/jdom2-2.0.5-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jdom/jdom2/2.0.5/2001db51c131e555bafdb77fc52af6a9408c505e/jdom2-2.0.5.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jimdo.gradle/gradle-apt-plugin/0.3-SNAPSHOT/9f80a5d21a7cc937211cbf500373392588679dba/gradle-apt-plugin-0.3-SNAPSHOT.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/1.8.6/2ac423ad404db3e3d9053c626d4c15a84cd18b73/groovy-all-1.8.6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/1.8.6/96a26bfa6e5aea2e3c46df44a19de93a2acd2366/groovy-all-1.8.6.jar" />
@@ -497,9 +597,64 @@
                       <ExternalModuleBuildClasspathPojo>
                         <option name="entries">
                           <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.2/decd76e2c461157804473468bbdc6b8eb6d6121b/logback-classic-1.1.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.2/b316e9737eea25e9ddd6d88eaeee76878045c6b2/logback-classic-1.1.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/c2b49a585e2f433c95cec359a75e0ee4366a1e35/slf4j-api-1.7.9-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/872ec63b41181e29ad5a3723f1417356e2d2c0f2/slf4j-api-1.7.9.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.3-SNAPSHOT/c413870ff0b1fa1cd40263b7375ca1df2d65b132/dagger-1.2.3-SNAPSHOT-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.3-SNAPSHOT/ab1fa030e131c33bbc60e67aaf8eb338732a169b/dagger-1.2.3-SNAPSHOT.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.controlsfx/controlsfx/8.0.6_20/da66d445d0fcc071c64d4bb58e45fcf61883f757/controlsfx-8.0.6_20-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.controlsfx/controlsfx/8.0.6_20/5a4ca2765419fe12af0f0c7c5a8129c53bb661d9/controlsfx-8.0.6_20.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.10/4e9d3042b0fc82c2f2400d5d77e97fb08d0b9775/htmlcleaner-2.10-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.10/70d073025a51703ba8f41db3d4e6af5dd0f1ed47/htmlcleaner-2.10.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.2/502e1c764542fe747896c1dc04f023acfe0e5cbc/logback-core-1.1.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.2/2d23694879c2c12f125dac5076bdfd5d771cc4cb/logback-core-1.1.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/a00123f261762a7c5e0ec916a2c7c8298d29c400/javax.inject-1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jdom/jdom2/2.0.5/769f3cca4ce92088288be3d0238ef96ef787e82f/jdom2-2.0.5-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jdom/jdom2/2.0.5/2001db51c131e555bafdb77fc52af6a9408c505e/jdom2-2.0.5.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jimdo.gradle/gradle-apt-plugin/0.3-SNAPSHOT/9f80a5d21a7cc937211cbf500373392588679dba/gradle-apt-plugin-0.3-SNAPSHOT.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/1.8.6/2ac423ad404db3e3d9053c626d4c15a84cd18b73/groovy-all-1.8.6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/1.8.6/96a26bfa6e5aea2e3c46df44a19de93a2acd2366/groovy-all-1.8.6.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.apis/google-api-services-youtube/v3-rev125-1.19.0/a393c156fc3f23ef69ab58e50e55e88839f53a2a/google-api-services-youtube-v3-rev125-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.apis/google-api-services-youtube/v3-rev125-1.19.0/c0d9d5b1c56f6163518ebc7ad90aad0d4209f419/google-api-services-youtube-v3-rev125-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-gson/1.19.0/e5be6aa9f0ec91975f336236c67e5d7df4e82482/google-http-client-gson-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-gson/1.19.0/b3cdefb990d5212bb2a130525b20e2c44aeffc4c/google-http-client-gson-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/36b6a585c0f0c63bd85fb04db0dcb7b217298956/guava-15.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/ed727a8d9f247e2050281cb083f1c77b09dcb5cd/guava-15.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.2/fa37978a975da5ca71034b2a8d3818961c5c8399/dagger-1.2.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.dagger/dagger/1.2.2/e8f912ee19ad84958510883ea191135276b091f8/dagger-1.2.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xerial/sqlite-jdbc/3.8.7/983375acc502e010fe3cebb48cdcc703a48076f9/sqlite-jdbc-3.8.7-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xerial/sqlite-jdbc/3.8.7/b50c89d50e9b9079fff5cd93e5d027d0a8b68aa6/sqlite-jdbc-3.8.7.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.engio/mbassador/1.2.0/d10cdaf71bfcb2002ab904a9d475e60c70c9b6bf/mbassador-1.2.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.engio/mbassador/1.2.0/7aa2c6f172cc8c59983c5255faa45a16a41e173b/mbassador-1.2.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.19.0/5187b30c7daa5062151fcb2a7b320ec71a6af6ef/google-api-client-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.19.0/6a21277d9bebe267b7ddee028b241eebc756c040/google-api-client-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.19.0/ab66853851c2c9a2075ca52bc649205f41102c76/google-http-client-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.19.0/cdca49ad0977c040f603478aa2e16b2775c8fec6/google-http-client-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.1/5c2e6207e9abf9a18bde012371a821196dd18e13/gson-2.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.1/2e66da15851f9f5b5079228f856c2f090ba98c38/gson-2.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.el/el-api/2.2/710821a592290f5cc1e500f7514cb2fa3557e175/el-api-2.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.el/el-api/2.2/42971279cc8ba864462580c7fc2199fd5715ee7f/el-api-2.2.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.oauth-client/google-oauth-client/1.19.0/1bc8688ce92f50dfa0c3b0b0d90fd3298ba2f006/google-oauth-client-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.oauth-client/google-oauth-client/1.19.0/d473a8962e14a707a3716637e4898bb2dd9643f2/google-oauth-client-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson2/1.19.0/6f1c4d557b8a50e3592691e2ae98fd89c3c896e/google-http-client-jackson2-1.19.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson2/1.19.0/81dbf9795d387d5e80e55346582d5f2fb81a42eb/google-http-client-jackson2-1.19.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava-jdk5/13.0/8634176744134a352acf6dc5f3dc2b741e691262/guava-jdk5-13.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava-jdk5/13.0/381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7/guava-jdk5-13.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/1.3.9/40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf/jsr305-1.3.9.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.0.1/2480b1ac944ebdd15f5f7b6730e9a151d39f4d88/httpclient-4.0.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.0.1/1d7d28fa738bdbfe4fbd895d9486308999bdf440/httpclient-4.0.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.3/d313b1839906da7422387b180a124c81e13e65a2/jackson-core-2.1.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.3/f6c3aed1cdfa21b5c1737c915186ea93a95a58bd/jackson-core-2.1.3.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.0.1/69febd50593a006a4593ef64a697b14208a55b7b/httpcore-4.0.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.0.1/e813b8722c387b22e1adccf7914729db09bcb4a9/httpcore-4.0.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.1/f3f156cbff0e0fb0d64bfce31a352cce4a33bc19/commons-logging-1.1.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.1/5043bfebc3db072ed80fbd362e7caf00e885d8ae/commons-logging-1.1.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.3/ee264b5d7a0f939d5999398c7f1ade031db3fcec/commons-codec-1.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.3/fd32786786e2adb664d5ecc965da47629dca14ba/commons-codec-1.3.jar" />
+                            <option value="$MODULE_DIR$/libs/sormula-3.1-jdk1.7.jar" />
+                            <option value="$PROJECT_DIR$/unresolved dependency - com.jimdo.gradle gradle-apt-plugin 0.3-SNAPSHOT" />
                           </list>
                         </option>
                         <option name="path" value="$PROJECT_DIR$/api" />
@@ -552,86 +707,108 @@
               <option name="name" value="simplejavayoutubeuploader" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/announce" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/antlr" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/base-services" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/base-services-groovy" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/build-comparison" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/build-init" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/cli" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/code-quality" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/core" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/core-impl" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/cpp" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/diagnostics" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/ear" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/ide" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/internal-integ-testing" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/internal-testing" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/ivy" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/jacoco" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/javascript" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/jetty" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/language-base" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/language-jvm" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/launcher" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/maven" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/messaging" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/native" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/open-api" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/osgi" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/plugins" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/publish" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/reporting" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/resources" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/scala" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/signing" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/sonar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/tooling-api" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/ui" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/src/wrapper" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/ant-1.9.2.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/ant-launcher-1.9.2.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-base-services-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-base-services-groovy-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-cli-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-core-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-docs-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-launcher-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-messaging-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-native-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-open-api-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-resources-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-tooling-api-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-ui-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/gradle-wrapper-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/groovy-all-1.8.6.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/ivy-2.2.0.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/ant-antlr-1.9.2.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-announce-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-antlr-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-build-comparison-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-build-init-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-code-quality-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-core-impl-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-cpp-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-diagnostics-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-ear-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-ide-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-ivy-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-jacoco-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-javascript-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-jetty-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-language-base-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-language-jvm-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-maven-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-osgi-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-plugins-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-publish-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-reporting-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-scala-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-signing-1.11.jar" />
-                  <option value="$PROJECT_DIR$/../gradle/gradle-1.11/lib/plugins/gradle-sonar-1.11.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/announce" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/antlr" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/base-services" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/base-services-groovy" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/build-comparison" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/build-init" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/cli" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/code-quality" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/core" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/cunit" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/dependency-management" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/diagnostics" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/ear" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/ide" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/ide-native" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/internal-integ-testing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/internal-testing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/ivy" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/jacoco" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/javascript" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/jetty" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/language-groovy" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/language-java" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/language-jvm" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/language-native" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/launcher" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/maven" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/messaging" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/model-core" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/model-groovy" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/native" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/open-api" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/osgi" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/platform-base" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/platform-jvm" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/platform-native" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/plugin-development" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/plugin-use" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/plugins" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/publish" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/reporting" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/resources" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/resources-http" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/scala" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/signing" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/sonar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/tooling-api" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/ui" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/src/wrapper" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/ant-1.9.3.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/ant-launcher-1.9.3.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-base-services-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-base-services-groovy-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-cli-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-core-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-docs-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-launcher-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-messaging-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-model-core-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-model-groovy-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-native-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-open-api-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-resources-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-tooling-api-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-ui-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/gradle-wrapper-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/groovy-all-2.3.6.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/ant-antlr-1.9.3.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-announce-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-antlr-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-build-comparison-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-build-init-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-code-quality-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-cunit-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-dependency-management-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-diagnostics-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-ear-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-ide-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-ide-native-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-ivy-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-jacoco-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-javascript-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-jetty-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-language-groovy-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-language-java-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-language-jvm-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-language-native-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-maven-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-osgi-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-platform-base-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-platform-jvm-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-platform-native-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-plugin-development-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-plugin-use-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-plugins-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-publish-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-reporting-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-resources-http-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-scala-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-signing-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/gradle-sonar-2.2.1.jar" />
+                  <option value="$PROJECT_DIR$/../gradle/gradle-2.2.1/lib/plugins/ivy-2.2.0.jar" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -643,61 +820,14 @@
     </option>
   </component>
   <component name="IdeDocumentHistory">
-    <option name="changedFiles">
+    <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/edit/right/EditRightPresenter.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/permissions/Permissions.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/permissions/Permission.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/UploadModel.java" />
-        <option value="$PROJECT_DIR$/api/src/main/resources/schema.sql" />
-        <option value="db-console:/b3842171/81edd196-12b4-4f66-9e9d-134b40125666/" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/edit/EditPresenter.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/permission/Permission.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/data/upload/MonetizationDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/metadata/Monetization.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/upload/YouTubeUploadService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/edit/EditDataModel.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/data/upload/UploadDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/data/upload/PermissionDTO.java" />
-        <option value="dbtable:/b3842171/81edd196-12b4-4f66-9e9d-134b40125666/..UploadDTO" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/project/ProjectPresenter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/ApplicationData.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/monetization/editMonetization.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/controls/FXMLView.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/de/chaosfisch/APIModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/GUIModule.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/main/main.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/account.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/entry/entry.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/entry/EntryPresenter.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/add.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/loading.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/step1.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/step2.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/upload/upload.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/upload/entry/uploadentry.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/edit.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/left/editleft.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/monetization/editmonetization.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/partner/editpartner.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/edit/right/editright.fxml" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/project/project.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/GUI.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/util/Http.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/step3.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/AccountPresenter.java" />
-        <option value="dbtable:/b3842171/81edd196-12b4-4f66-9e9d-134b40125666/..PlaylistDTO" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AddPresenter.java" />
-        <option value="$PROJECT_DIR$/page0.html" />
-        <option value="$PROJECT_DIR$/page1.html" />
-        <option value="$PROJECT_DIR$/page2.html" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AccountAddDataModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/util/HttpClient.java" />
-        <option value="$PROJECT_DIR$/page.html" />
-        <option value="$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java" />
       </list>
     </option>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
   </component>
   <component name="MavenProjectNavigator">
     <treeState />
@@ -865,6 +995,8 @@
     <OptionsSetting value="true" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
+    <OptionsSetting value="true" id="Undo Check Out" />
+    <OptionsSetting value="true" id="Get Latest Version" />
     <ConfirmationsSetting value="2" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
@@ -953,36 +1085,107 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simplejavayoutubeuploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chaosfisch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="uploader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope">
-        <subPane subId="Problems" />
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="simple-java-youtube-uploader">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="simple-java-youtube-uploader">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="src">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
         <subPane subId="All">
           <PATH>
             <PATH_ELEMENT USER_OBJECT="Root">
@@ -1027,6 +1230,33 @@
             </PATH_ELEMENT>
           </PATH>
         </subPane>
+        <subPane subId="Problems" />
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="simple-java-youtube-uploader">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="simple-java-youtube-uploader">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
     </panes>
   </component>
@@ -1039,11 +1269,11 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="options.lastSelected" value="reference.settingsdialog.project.gant" />
+    <property name="options.lastSelected" value="reference.settingsdialog.project.gradle" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -1140,99 +1370,38 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.SimpleJavaYoutubeUploader">
-    <configuration default="false" name="simplejavayoutubeuploader [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="false" name="simplejavayoutubeuploader [distribute]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="distribute" />
-          </list>
-        </option>
-        <option name="vmOptions" value="" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="simplejavayoutubeuploader:api [clean] (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="D:\Development\java_projects\simplejavayoutubeuploader\api" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="simplejavayoutubeuploader:api [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="D:\Development\java_projects\simplejavayoutubeuploader\api" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="simplejavayoutubeuploader [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <RunnerSettings RunnerId="ExternalSystemTaskRunner" />
-      <ConfigurationWrapper RunnerId="ExternalSystemTaskRunner" />
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
@@ -1242,79 +1411,6 @@
       <setting name="params" value="" />
       <setting name="workDir" value="file://$PROJECT_DIR$" />
       <setting name="debug" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <option name="name" value="Go application" />
-      <option name="saveOutputToFile" value="false" />
-      <option name="showConsoleOnStdErr" value="false" />
-      <option name="showConsoleOnStdOut" value="false" />
-      <option name="scriptName" value="" />
-      <option name="scriptArguments" value="" />
-      <option name="builderArguments" value="" />
-      <option name="goBuildBeforeRun" value="false" />
-      <option name="goOutputDir" value="" />
-      <option name="workingDir" value="" />
-      <option name="envVars" value="" />
-      <option name="goVetEnabled" value="false" />
-      <module name="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
-      <module name="" />
-      <option name="TESTING_TYPE" value="0" />
-      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
-      <ExternalSystemSettings>
-        <option name="externalProjectPath" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list />
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="GoTestConfiguration" factoryName="Go Test">
@@ -1353,54 +1449,98 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
+    <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
       <option name="PACKAGE_NAME" />
       <option name="MAIN_CLASS_NAME" />
       <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
+        <value defaultName="singleModule" />
       </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
       <envs />
-      <patterns />
+      <properties />
+      <listeners />
       <method />
     </configuration>
-    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <method />
+    </configuration>
+    <configuration default="true" type="executeSpecs" factoryName="Gauge Execution">
+      <setting name="environment" value="" />
+      <setting name="specsToExecute" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <option name="name" value="Go application" />
+      <option name="saveOutputToFile" value="false" />
+      <option name="showConsoleOnStdErr" value="false" />
+      <option name="showConsoleOnStdOut" value="false" />
+      <option name="GDB_PATH" value="gdb" />
+      <option name="STARTUP_COMMANDS" value="" />
+      <option name="autoStartGdb" value="true" />
+      <option name="debugBuilderArguments" value="" />
+      <option name="scriptName" value="" />
+      <option name="packageDir" value="" />
+      <option name="runPackage" value="false" />
+      <option name="runDebugger" value="false" />
+      <option name="scriptArguments" value="" />
+      <option name="runBuilderArguments" value="" />
+      <option name="runExecutableName" value="" />
+      <option name="goBuildBeforeRun" value="false" />
+      <option name="goOutputDir" value="" />
+      <option name="workingDir" value="" />
+      <option name="envVars" value="" />
       <module name="" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
-    <configuration default="true" type="com.intellij.persistence.run.ConsoleRunConfigurationType" factoryName="Query Language Console">
-      <option name="VM_PARAMETERS" value="" />
-      <option name="USER_CFG_CLASS" />
-      <option name="CONTEXT_PROVIDER" />
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
-    <configuration default="false" name="SimpleJavaYoutubeUploader" type="Application" factoryName="Application" singleton="true" nameIsGenerated="true">
+    <configuration default="false" name="SimpleJavaYoutubeUploader" type="Application" factoryName="Application" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="de.chaosfisch.uploader.*" />
@@ -1408,49 +1548,23 @@
         </pattern>
       </extension>
       <option name="MAIN_CLASS_NAME" value="de.chaosfisch.uploader.SimpleJavaYoutubeUploader" />
-      <option name="VM_PARAMETERS" value="-Djava.net.useSystemProxies=true -ea -DproxySet=true -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=8888 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=8888" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/Java/jre1.8.0_20" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="simplejavayoutubeuploader" />
       <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="6">
+    <list size="1">
       <item index="0" class="java.lang.String" itemvalue="Application.SimpleJavaYoutubeUploader" />
-      <item index="1" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [clean]" />
-      <item index="2" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [distribute]" />
-      <item index="3" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader:api [clean] (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader:api [build]" />
-      <item index="5" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [build]" />
     </list>
-    <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [distribute]" />
-        <item index="1" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [clean]" />
-        <item index="2" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader [build]" />
-        <item index="3" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader:api [build]" />
-        <item index="4" class="java.lang.String" itemvalue="Gradle.simplejavayoutubeuploader:api [clean] (1)" />
-      </list>
-    </recent_temporary>
-    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    </configuration>
     <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
     </configuration>
@@ -1472,6 +1586,7 @@
     <task active="true" id="Default" summary="Default task">
       <changelist id="32272cc2-7972-418e-9daa-476f4bc2ce9f" name="Default" comment="" />
       <created>1366049836836</created>
+      <option name="number" value="Default" />
       <updated>1381434571106</updated>
       <workItem from="1386170198671" duration="38000" />
       <workItem from="1386170295242" duration="337000" />
@@ -1759,855 +1874,300 @@
       <workItem from="1405185253584" duration="629000" />
       <workItem from="1405186063868" duration="736000" />
       <workItem from="1407051679907" duration="18000" />
-    </task>
-    <task id="LOCAL-00001" summary="Applied intellij inspection results">
-      <created>1366097998046</created>
-      <updated>1366097998046</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Applied code formatting and fxml &quot;fixes&quot;">
-      <created>1366105387316</created>
-      <updated>1366105387316</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Splitted Upload.fxml monetization part into 2 new Files.">
-      <created>1366223814785</created>
-      <updated>1366223814785</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Improved general views - added css and i18n options for existing TODOs - fixed / optimized general code behavior / style.">
-      <created>1366399970241</created>
-      <updated>1366399970241</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Verified working of LicenseChangeListener and added css disabled option">
-      <created>1366400635112</created>
-      <updated>1366400635112</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Did 4 TODOs - toUpload, toTemplate, fromUpload, fromTemplate in UploadPartnerController.java">
-      <created>1366405523069</created>
-      <updated>1366405523069</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Fixed compile errors after changing ApplicationData.java from interface to class">
-      <created>1366405747243</created>
-      <updated>1366405747243</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Minor code changes on PlaylistGridCell.java - extracted default Thumb to method">
-      <created>1366405953902</created>
-      <updated>1366405953902</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Fixed properties file for consistency and applied several code analyze optimizations">
-      <created>1366461612202</created>
-      <updated>1366461612202</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Done issue 73 - feature request for upload json logfile">
-      <created>1366488202095</created>
-      <updated>1366488202095</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Updated database and triggers which now are fully fixed. Changed database scheme to use default values. Removed code internal validation of these fields.">
-      <created>1366536928080</created>
-      <updated>1366536928080</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Done issue 86 - verified visibility change on facebook +twitter message">
-      <created>1366557457800</created>
-      <updated>1366557457800</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Done issue 72 - videos may now be edited while uploading">
-      <created>1366564741349</created>
-      <updated>1366564741349</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Added error messages for all ErrorCode.java  implementations. This should make translation easier. Added status field for upload to provide some translatable error code. Added display for this in the QueueUploadCellRenderer.java">
-      <created>1366577321305</created>
-      <updated>1366577321305</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Fixed upload edit and insert behavior - needs additional testing">
-      <created>1366637021119</created>
-      <updated>1366637021119</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Fixed release time and release visibility disable setting.">
-      <created>1366646413079</created>
-      <updated>1366646413079</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Fixed a display bug of playlist cells - including failed db check (field mismatch) - old known javafx observable list refresh bug. Added playlist error dialog. Reviewed some ToDos and removed them.">
-      <created>1367091686386</created>
-      <updated>1367091686386</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Made validation more visible">
-      <created>1367653908376</created>
-      <updated>1367653908376</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Added tooltip and fixed minor validation error.">
-      <created>1367658339720</created>
-      <updated>1367658339720</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Fixed message (yt) setting">
-      <created>1367659417511</created>
-      <updated>1367659417511</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Added a database converter. Implemented {number} and {playlist} placeholders. Removed number database column. Fixed Metadata postprocessBrowser. Added Playlist refresh before Upload. Adjusted ExtendedPlaceholders.java">
-      <created>1369078527438</created>
-      <updated>1369078527438</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Changed ApplicationUpdater - it has still a bug in the 3rd party lib though.">
-      <created>1369078577029</created>
-      <updated>1369078577029</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Added idea files">
-      <created>1369122639909</created>
-      <updated>1369122639909</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Updated build file to v 3.0.0.7">
-      <created>1369470110214</created>
-      <updated>1369470110214</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Bugfixes for v3.0.0.8 - jupdator bugs.">
-      <created>1369481118088</created>
-      <updated>1369481118088</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Did code analyze cleanups.">
-      <created>1369557674966</created>
-      <updated>1369557674966</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Added translation for italian.">
-      <created>1369565947119</created>
-      <updated>1369565947119</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Added improvments to database converter and enddir handling">
-      <created>1369578300042</created>
-      <updated>1369578300042</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Fixed issue 99  and issue 101 , implemented some small modifications to the dbconverter. Added version in title. Removed auto-reset after upload added to queue.">
-      <created>1369776080928</created>
-      <updated>1369776080928</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Removed mobile option and updated database accordingly. YouTube options should now be represented more clearly and less erroneous. Needs further testing.">
-      <created>1369841566167</created>
-      <updated>1369841566167</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Did some refactoring: Structure and field modifiers. Started adding tests.">
-      <created>1370031124770</created>
-      <updated>1370031124770</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Fixed refactoring mistake with launch4j paths and added splashscreen.">
-      <created>1370034910253</created>
-      <updated>1370034910253</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Added icons to menuItems, menuItems, refactored desktop.browse">
-      <created>1370095992651</created>
-      <updated>1370095992651</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Refactored properties file (sort) and did code inspections.">
-      <created>1370096693417</created>
-      <updated>1370096693417</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Added clear queue button and fixed template default dir path error.">
-      <created>1370101474839</created>
-      <updated>1370101474839</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Added vmoptions usage to store and load custom java options. Added data dir setting.">
-      <created>1370106050049</created>
-      <updated>1370106050049</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Added custom command option.">
-      <created>1370269321991</created>
-      <updated>1370269321991</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Improved SystemException to show properties in logfile. Fixed DBConverter, extended exception logging in ClientLogin.">
-      <created>1370459851227</created>
-      <updated>1370459851227</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Version 3.0.1.1">
-      <created>1370541723534</created>
-      <updated>1370541723534</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Implemented an alternate progressbar-display. The display can be toggled for &quot;more&quot; information and the default display can be changed in the settings.">
-      <created>1370634356450</created>
-      <updated>1370634356450</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Fixed issue #102. Changed/Improved SystemException.java">
-      <created>1370697896398</created>
-      <updated>1370697896398</updated>
-    </task>
-    <task id="LOCAL-00042" summary="Changed byteCount-factor from 1000 to 1024">
-      <created>1370700322586</created>
-      <updated>1370700322586</updated>
-    </task>
-    <task id="LOCAL-00043" summary="Added errorCode display to SystemException getMessage()">
-      <created>1370766515131</created>
-      <updated>1370766515131</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Did refactorings and code style improvements.">
-      <created>1371051645914</created>
-      <updated>1371051645914</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Refactored HttpModule - this is now fully self-contained.">
-      <created>1371302563854</created>
-      <updated>1371302563854</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Did further refactoring to use guava more efficiently.">
-      <created>1371316631367</created>
-      <updated>1371316631367</updated>
-    </task>
-    <task id="LOCAL-00047" summary="Fixed refactoring bug. Improved tag handling to remove tagparse-saving.">
-      <created>1371370529447</created>
-      <updated>1371370529447</updated>
-    </task>
-    <task id="LOCAL-00048" summary="Refactored Request (http) package.">
-      <created>1371480498447</created>
-      <updated>1371480498447</updated>
-    </task>
-    <task id="LOCAL-00049" summary="Refactoring - moved classes to more suitable packages.">
-      <created>1371499751628</created>
-      <updated>1371499751628</updated>
-    </task>
-    <task id="LOCAL-00050" summary="Further refactoring and duplicate removal.">
-      <created>1371587400413</created>
-      <updated>1371587400413</updated>
-    </task>
-    <task id="LOCAL-00051" summary="Removed duplicate files for db conversion. Added commenting and better DI usage to YouTube services.">
-      <created>1371933556239</created>
-      <updated>1371933556239</updated>
-    </task>
-    <task id="LOCAL-00052" summary="Initial seperation into more maintainable self contained models. Does not compile.">
-      <created>1372011861432</created>
-      <updated>1372011861432</updated>
-    </task>
-    <task id="LOCAL-00053" summary="Extended HTTP module functionality - continued modularization - does not compile.">
-      <created>1372062959881</created>
-      <updated>1372062959881</updated>
-    </task>
-    <task id="LOCAL-00054" summary="Moved files to new packages in module google to behave better.">
-      <created>1372082310630</created>
-      <updated>1372082310630</updated>
-    </task>
-    <task id="LOCAL-00055" summary="Did some code analysis improvements.">
-      <created>1372082725013</created>
-      <updated>1372082725013</updated>
-    </task>
-    <task id="LOCAL-00056" summary="Removed SystemException. Replaced with custom exceptions.">
-      <created>1375470995263</created>
-      <updated>1375470995263</updated>
-    </task>
-    <task id="LOCAL-00057" summary="Removed more errors and renamed youtubeuploader package to uploader.">
-      <created>1375535830621</created>
-      <updated>1375535830621</updated>
-    </task>
-    <task id="LOCAL-00058" summary="Removed or commented all errors. Persistence module missing!">
-      <created>1375552945154</created>
-      <updated>1375552945154</updated>
-    </task>
-    <task id="LOCAL-00059" summary="Removed all errors and added persistence. Verification missing.">
-      <created>1375648696128</created>
-      <updated>1375648696128</updated>
-    </task>
-    <task id="LOCAL-00060" summary="Improved orm mappings. Started cleaning application. Entity listeneres probably wanted;">
-      <created>1375996835992</created>
-      <updated>1375996835992</updated>
-    </task>
-    <task id="LOCAL-00061" summary="Added equals() and hashCode() and renewed setters/getters.">
-      <created>1376140124554</created>
-      <updated>1376140124554</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Added full persistence layer.">
-      <created>1376207425472</created>
-      <updated>1376207425472</updated>
-    </task>
-    <task id="LOCAL-00063" summary="Moved validation to beans. Fixed minor persistence bugs.">
-      <created>1376217496433</created>
-      <updated>1376217496433</updated>
-    </task>
-    <task id="LOCAL-00064" summary="working entitymanager&#10;">
-      <created>1376556063775</created>
-      <updated>1376556063775</updated>
-    </task>
-    <task id="LOCAL-00065" summary="removed jpa - it's not manageable with it.">
-      <created>1376572590194</created>
-      <updated>1376572590194</updated>
-    </task>
-    <task id="LOCAL-00066" summary="Changed persistence to xml file based persistence.">
-      <created>1376583911633</created>
-      <updated>1376583911633</updated>
-    </task>
-    <task id="LOCAL-00067" summary="Prepared for OAuth 2.0  - gui actions missing">
-      <created>1376591213050</created>
-      <updated>1376591213050</updated>
-    </task>
-    <task id="LOCAL-00068" summary="changed persistence to simpler object serialization. optimized gui.">
-      <created>1376683217314</created>
-      <updated>1376683217314</updated>
-    </task>
-    <task id="LOCAL-00069" summary="Changed design to undecorated and modified all dialogs.">
-      <created>1376761135503</created>
-      <updated>1376761135503</updated>
-    </task>
-    <task id="LOCAL-00070" summary="performed code analyze inspections">
-      <created>1376761413658</created>
-      <updated>1376761413658</updated>
-    </task>
-    <task id="LOCAL-00071" summary="Bound running status">
-      <created>1376773629320</created>
-      <updated>1376773629320</updated>
-    </task>
-    <task id="LOCAL-00072" summary="Added dialogs, added masterpassword, moved validation template+playlist to pojos.">
-      <created>1377032854751</created>
-      <updated>1377032854751</updated>
-    </task>
-    <task id="LOCAL-00073" summary="added validation to gui display, code inspection done,">
-      <created>1377117934970</created>
-      <updated>1377117934971</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Did several gui speed improvements. Using Google API java client.">
-      <created>1377460562279</created>
-      <updated>1377460562279</updated>
-    </task>
-    <task id="LOCAL-00075" summary="Started changing upload mechanism to v3 google api. TokenBucket -&gt; RateLimiter google guava.">
-      <created>1377532838948</created>
-      <updated>1377532838948</updated>
-    </task>
-    <task id="LOCAL-00076" summary="Uploader uploads now. Further testing required.">
-      <created>1377551415769</created>
-      <updated>1377551415769</updated>
-    </task>
-    <task id="LOCAL-00077" summary="Added TagTextArea and repaired uploading.">
-      <created>1377629554577</created>
-      <updated>1377629554577</updated>
-    </task>
-    <task id="LOCAL-00078" summary="Added Pre&amp;Post-Processor functionaility. Moved configuration to apache commons-configuration.">
-      <created>1377708423060</created>
-      <updated>1377708423060</updated>
-    </task>
-    <task id="LOCAL-00079" summary="Added text highlighting to upload controller. Shows if text lengths valid.">
-      <created>1377807768103</created>
-      <updated>1377807768103</updated>
-    </task>
-    <task id="LOCAL-00080" summary="Added all pre and post processors. Removed unnecessary code. Did full code inspection analysis.">
-      <created>1377846097903</created>
-      <updated>1377846097903</updated>
-    </task>
-    <task id="LOCAL-00081" summary="Updated build files for upcoming versions">
-      <created>1377847040069</created>
-      <updated>1377847040069</updated>
-    </task>
-    <task id="LOCAL-00082" summary="Monetization, scheduled uploading functionality added.">
-      <created>1378152751455</created>
-      <updated>1378152751455</updated>
-    </task>
-    <task id="LOCAL-00083" summary="added unirest fix">
-      <created>1378222294759</created>
-      <updated>1378222294759</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Adjusted db converter">
-      <created>1378225274056</created>
-      <updated>1378225274056</updated>
-    </task>
-    <task id="LOCAL-00085" summary="Tag bugfix, InputDialog default button. Removed unnecessary id's">
-      <created>1378229027289</created>
-      <updated>1378229027289</updated>
-    </task>
-    <task id="LOCAL-00086" summary="Bugfix  enddir service.">
-      <created>1378230113221</created>
-      <updated>1378230113221</updated>
-    </task>
-    <task id="LOCAL-00087" summary="Bugfixed tags - removed tags containing &quot;. Did code analyze. Translated application">
-      <created>1378313286525</created>
-      <updated>1378313286525</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Manual merged workspace.xml&#10;">
-      <created>1378326426237</created>
-      <updated>1378391923246</updated>
-    </task>
-    <task id="simplejavayoutubeuploader-1" summary="Max 5 playlists displayed">
-      <created>1378320955000</created>
-      <option name="issue" value="true" />
-      <option name="type" value="BUG" />
-      <updated>1378361947654</updated>
-    </task>
-    <task id="LOCAL-00089" summary="simplejavayoutubeuploader-1 Max 5 playlists displayed fixed. Now shows 50.">
-      <created>1378361900520</created>
-      <updated>1378361900520</updated>
-    </task>
-    <task id="LOCAL-00091" summary="fixed #2 Database conversion templates exception on required null fields.">
-      <created>1378392151552</created>
-      <updated>1378392151552</updated>
-    </task>
-    <task id="LOCAL-00092" summary="Found some code that still used Preferences. Changed to configuration.">
-      <created>1378399394761</created>
-      <updated>1378399394761</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Changed upload to v3 api upload">
-      <created>1378401700374</created>
-      <updated>1378401700374</updated>
-    </task>
-    <task id="LOCAL-00094" summary="v3.1.0.1 release information">
-      <created>1378402149156</created>
-      <updated>1378402149157</updated>
-    </task>
-    <task id="simplejavayoutubeuploader-3" summary="Implement option to use old TagTextArea">
-      <created>1378441909000</created>
-      <option name="issue" value="true" />
-      <option name="type" value="BUG" />
-      <updated>1378449304667</updated>
-    </task>
-    <task id="LOCAL-00095" summary="fixed #3 Implement option to use old TagTextArea">
-      <created>1378449266404</created>
-      <updated>1378449266404</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Added logging option for tokenResponse">
-      <created>1378449331912</created>
-      <updated>1378449331912</updated>
-    </task>
-    <task id="simplejavayoutubeuploader-4" summary="Resumeable uploads stop after 1h">
-      <created>1378441973000</created>
-      <option name="issue" value="true" />
-      <option name="type" value="BUG" />
-      <updated>1378463465364</updated>
-    </task>
-    <task id="LOCAL-00097" summary="Fixed textual display (speedlimiter)">
-      <created>1378459406554</created>
-      <updated>1378459406554</updated>
-    </task>
-    <task id="LOCAL-00098" summary="fixed #4 Resumeable uploads stop after 1h">
-      <created>1378463414449</created>
-      <updated>1378463414449</updated>
-    </task>
-    <task id="LOCAL-00100" summary="Code reformatted">
-      <created>1378463489907</created>
-      <updated>1378463489908</updated>
-    </task>
-    <task id="LOCAL-00101" summary="v3.1.0.2 release information">
-      <created>1378464159843</created>
-      <updated>1378464159844</updated>
-    </task>
-    <task id="LOCAL-00102" summary="Template input validation was missing">
-      <created>1378470351662</created>
-      <updated>1378470351662</updated>
-    </task>
-    <task id="LOCAL-00103" summary="Added improvment to database converter. Added tag parsing">
-      <created>1378470444028</created>
-      <updated>1378470444029</updated>
-    </task>
-    <task id="LOCAL-00104" summary="v3.1.0.3 release information.">
-      <created>1378470546671</created>
-      <updated>1378470546671</updated>
-    </task>
-    <task id="simplejavayoutubeuploader-2" summary="Database conversion templates exception on required null fields.">
-      <created>1378384082000</created>
-      <option name="issue" value="true" />
-      <option name="type" value="BUG" />
-      <updated>1378537653779</updated>
-    </task>
-    <task id="LOCAL-00105" summary="fixed #2 Tag parsing missed parameter">
-      <created>1378537641491</created>
-      <updated>1378537641491</updated>
-    </task>
-    <task id="LOCAL-00106" summary="v3.1.0.4 release information and code analyze done.">
-      <created>1378538865761</created>
-      <updated>1378538865761</updated>
-    </task>
-    <task id="LOCAL-00107" summary="Fixed postprocessing">
-      <created>1378628900646</created>
-      <updated>1378628900646</updated>
-    </task>
-    <task id="LOCAL-00108" summary="Added functionality to create and load backup files + automatic backup generation.">
-      <created>1378633366276</created>
-      <updated>1378633366276</updated>
-    </task>
-    <task id="LOCAL-00109" summary="Updated copyright + license">
-      <created>1378633616968</created>
-      <updated>1378633616968</updated>
-    </task>
-    <task id="LOCAL-00110" summary="v3.1.0.5 release information">
-      <created>1378660392929</created>
-      <updated>1378660392929</updated>
-    </task>
-    <task id="LOCAL-00111" summary="Fixed backup not created on menu usage, add placeholder support to social message, added startup logging information">
-      <created>1379055220505</created>
-      <updated>1379055220505</updated>
-    </task>
-    <task id="LOCAL-00112" summary="Removed video response feature as of YouTube removal. Added retry handler to thumbnails.">
-      <created>1379141794886</created>
-      <updated>1379141794886</updated>
-    </task>
-    <task id="LOCAL-00113" summary="Optimized styling and removed unnecessary gui elements.">
-      <created>1379145175040</created>
-      <updated>1379145175040</updated>
-    </task>
-    <task id="LOCAL-00114" summary="Added YouTube authentication bug workarounds. Added more save persisting, cleanup references in build files, fixed master password.">
-      <created>1379963789995</created>
-      <updated>1379963789995</updated>
-    </task>
-    <task id="LOCAL-00115" summary="Fixed exception at startup.">
-      <created>1379963908872</created>
-      <updated>1379963908872</updated>
-    </task>
-    <task id="LOCAL-00116" summary="Refactored fxmls and added account name edit option">
-      <created>1380130375944</created>
-      <updated>1380130375944</updated>
-    </task>
-    <task id="LOCAL-00117" summary="Bugfix serialization failing with references">
-      <created>1380207969406</created>
-      <updated>1380207969406</updated>
-    </task>
-    <task id="LOCAL-00118" summary="v3.1.0.7 release information&#10;">
-      <created>1380208124583</created>
-      <updated>1380208124583</updated>
-    </task>
-    <task id="LOCAL-00119" summary="Added option to set a custom name in enddir rename.">
-      <created>1381071486985</created>
-      <updated>1381071486985</updated>
-    </task>
-    <task id="LOCAL-00120" summary="Added display-convert {file} in queue upload cell.">
-      <created>1381071894683</created>
-      <updated>1381071894683</updated>
-    </task>
-    <task id="simplejavayoutubeuploader-6" summary="geplante uploads funktionieren nicht mehr wie in 3.0.1.1">
-      <created>1381166437000</created>
-      <option name="issue" value="true" />
-      <option name="type" value="BUG" />
-      <updated>1382256446000</updated>
-    </task>
-    <task id="LOCAL-00121" summary="fixed #6 geplante uploads funktionieren nicht mehr wie in 3.0.1.1 using JodaTime">
-      <created>1381429010702</created>
-      <updated>1381429010702</updated>
-    </task>
-    <task id="LOCAL-00122" summary="Added options to upload as of #sf4 and #sf5 and basic CLI input.">
-      <created>1381569721861</created>
-      <updated>1381569721861</updated>
-    </task>
-    <task id="LOCAL-00123" summary="Added gplus option as of #sf6">
-      <created>1381573499041</created>
-      <updated>1381573499041</updated>
-    </task>
-    <task id="LOCAL-00124" summary="Added time display option as of #sf3">
-      <created>1381581482921</created>
-      <updated>1381581482921</updated>
-    </task>
-    <task id="LOCAL-00125" summary="v3.1.0.8 release info and quick fixes">
-      <created>1381774936694</created>
-      <updated>1381774936694</updated>
-    </task>
-    <task id="LOCAL-00126" summary="Added drag&amp;drop ordering of uploads, fixed date format bug.">
-      <created>1381941527515</created>
-      <updated>1381941527515</updated>
-    </task>
-    <task id="LOCAL-00127" summary="fixing persistence service utf8 problems and persistent failures. fixing authentication dialog.">
-      <created>1382262392885</created>
-      <updated>1382262392886</updated>
-    </task>
-    <task id="LOCAL-00128" summary="Version v3.1.0.9">
-      <created>1382263137134</created>
-      <updated>1382263137134</updated>
-    </task>
-    <task id="LOCAL-00129" summary="Fixed starttime and saving bug and converted colors to hex values">
-      <created>1382283095274</created>
-      <updated>1382283095274</updated>
-    </task>
-    <task id="LOCAL-00130" summary="Added 3D options, without LAYOUT option.">
-      <created>1382338945582</created>
-      <updated>1382338945582</updated>
-    </task>
-    <task id="LOCAL-00131" summary="v3.1.0.10 version infos">
-      <created>1382339234616</created>
-      <updated>1382339234616</updated>
-    </task>
-    <task id="LOCAL-00132" summary="Optimized persistence. Fixed template display bug on playlist refresh.">
-      <created>1382549504405</created>
-      <updated>1382549504405</updated>
-    </task>
-    <task id="LOCAL-00133" summary="Renamed GUIUploader">
-      <created>1382549538274</created>
-      <updated>1382549538274</updated>
-    </task>
-    <task id="LOCAL-00134" summary="Added backup auto generation and fallback load.">
-      <created>1382550812179</created>
-      <updated>1382550812179</updated>
-    </task>
-    <task id="LOCAL-00135" summary="Fixed async retry bug - used correct command order.">
-      <created>1382637435539</created>
-      <updated>1382637435539</updated>
-    </task>
-    <task id="LOCAL-00136" summary="Removed version fields from POJOs, removed DBConverter, changed persistence version field to atomic integer.">
-      <created>1382713486037</created>
-      <updated>1382713486037</updated>
-    </task>
-    <task id="LOCAL-00137" summary="Removed version fields from POJOs, removed DBConverter, changed persistence version field to atomic integer.">
-      <created>1382714970889</created>
-      <updated>1382714970889</updated>
-    </task>
-    <task id="LOCAL-00138" summary="Updated unirest version">
-      <created>1382769979019</created>
-      <updated>1382769979019</updated>
-    </task>
-    <task id="LOCAL-00139" summary="Removed unirest &lt; 1.2.8 bug workaround">
-      <created>1382873932959</created>
-      <updated>1382873932959</updated>
-    </task>
-    <task id="LOCAL-00140" summary="Updated to match new Updater">
-      <created>1383827414889</created>
-      <updated>1383827414889</updated>
-    </task>
-    <task id="LOCAL-00141" summary="Increased playlist title limit to 150 and added clear queue option on upload finish">
-      <created>1383894900488</created>
-      <updated>1383894900488</updated>
-    </task>
-    <task id="LOCAL-00142" summary="Removed old database conversion">
-      <created>1384047271984</created>
-      <updated>1384047271984</updated>
-    </task>
-    <task id="LOCAL-00143" summary="Changed to unirest 1_3_0">
-      <created>1384049332039</created>
-      <updated>1384049332039</updated>
-    </task>
-    <task id="LOCAL-00144" summary="Removed Serializable interface from persistence classes.">
-      <created>1384293663589</created>
-      <updated>1384293663589</updated>
-    </task>
-    <task id="LOCAL-00145" summary="Added option to update launcher and removed old updater.">
-      <created>1384428908069</created>
-      <updated>1384428908069</updated>
-    </task>
-    <task id="LOCAL-00146" summary="Removed redundant character escape">
-      <created>1384428979913</created>
-      <updated>1384428979913</updated>
-    </task>
-    <task id="LOCAL-00147" summary="Fixed launcher migration bugs">
-      <created>1384431296578</created>
-      <updated>1384431296578</updated>
-    </task>
-    <task id="LOCAL-00148" summary="Fixed template add bug #sf26">
-      <created>1384466757787</created>
-      <updated>1384466757787</updated>
-    </task>
-    <task id="LOCAL-00149" summary="Fixed NullpointerExceptions, stopped showing all accounts!">
-      <created>1385643618834</created>
-      <updated>1385643618834</updated>
-    </task>
-    <task id="LOCAL-00150" summary="Added some HTML modifications to accountAddDialog">
-      <created>1385719558908</created>
-      <updated>1385719558908</updated>
-    </task>
-    <task id="LOCAL-00151" summary="Rewritten authentication dialog. 50% finished.">
-      <created>1386020025732</created>
-      <updated>1386020025732</updated>
-    </task>
-    <task id="LOCAL-00152" summary="Rewritten authentication dialog. 100% finished. Needs polishing!">
-      <created>1386096888756</created>
-      <updated>1386096888756</updated>
-    </task>
-    <task id="LOCAL-00153" summary="Polished authentication dialog">
-      <created>1386143174797</created>
-      <updated>1386143174797</updated>
-    </task>
-    <task id="LOCAL-00154" summary="Added upload to Json export again.">
-      <created>1386163894892</created>
-      <updated>1386163894892</updated>
-    </task>
-    <task id="LOCAL-00155" summary="Added upload to Json export again.">
-      <created>1386163959630</created>
-      <updated>1386163959630</updated>
-    </task>
-    <task id="LOCAL-00156" summary="Added upload to Json export again.">
-      <created>1386164000494</created>
-      <updated>1386164000494</updated>
-    </task>
-    <task id="LOCAL-00157" summary="Idea v13 + Added option to toggle json file creation, cleanup.">
-      <created>1386489800707</created>
-      <updated>1386489800707</updated>
-    </task>
-    <task id="LOCAL-00158" summary="Fixed build pipeline">
-      <created>1386495376536</created>
-      <updated>1386495376536</updated>
+      <workItem from="1419362328559" duration="1056000" />
     </task>
     <task id="LOCAL-00159" summary="Added yt logo">
       <created>1386495405816</created>
+      <option name="number" value="00159" />
+      <option name="project" value="LOCAL" />
       <updated>1386495405816</updated>
     </task>
     <task id="LOCAL-00160" summary="Fixed upload visibility scheduling bug #33 sf">
       <created>1386496436617</created>
+      <option name="number" value="00160" />
+      <option name="project" value="LOCAL" />
       <updated>1386496436617</updated>
     </task>
     <task id="LOCAL-00161" summary="Fixed authentication - hangs on account selection. #34 sf">
       <created>1386609226042</created>
+      <option name="number" value="00161" />
+      <option name="project" value="LOCAL" />
       <updated>1386609226042</updated>
     </task>
     <task id="LOCAL-00162" summary="Added gradle wrapper and updated readme">
       <created>1387020037934</created>
+      <option name="number" value="00162" />
+      <option name="project" value="LOCAL" />
       <updated>1387020037934</updated>
     </task>
     <task id="LOCAL-00163" summary="Added missing gradle wrapper and idea files.">
       <created>1390485253440</created>
+      <option name="number" value="00163" />
+      <option name="project" value="LOCAL" />
       <updated>1390485253440</updated>
     </task>
     <task id="LOCAL-00164" summary="Cleaned down application for v3.3 javafx8/java8 releases">
       <created>1390491676988</created>
+      <option name="number" value="00164" />
+      <option name="project" value="LOCAL" />
       <updated>1390491676988</updated>
     </task>
     <task id="LOCAL-00165" summary="Removed old gui and upgraded libraries">
       <created>1390769345787</created>
+      <option name="number" value="00165" />
+      <option name="project" value="LOCAL" />
       <updated>1390769345787</updated>
     </task>
     <task id="LOCAL-00166" summary="Integrated Dagger DI and Afterburnerfx modified example.">
       <created>1390922772429</created>
+      <option name="number" value="00166" />
+      <option name="project" value="LOCAL" />
       <updated>1390922772429</updated>
     </task>
     <task id="LOCAL-00167" summary="Wrote working ControllerFactory for Dagger and integrated Views to match afterburner style.">
       <created>1390944775209</created>
+      <option name="number" value="00167" />
+      <option name="project" value="LOCAL" />
       <updated>1390944775209</updated>
     </task>
     <task id="LOCAL-00168" summary="Integrated upload entires into uploads list">
       <created>1391072300804</created>
+      <option name="number" value="00168" />
+      <option name="project" value="LOCAL" />
       <updated>1391072300804</updated>
     </task>
     <task id="LOCAL-00169" summary="Added LocalDateTime to String conversion. Fixed controller factory.">
       <created>1391118010386</created>
+      <option name="number" value="00169" />
+      <option name="project" value="LOCAL" />
       <updated>1391118010386</updated>
     </task>
     <task id="LOCAL-00170" summary="Refactored status codes - integrated different handling">
       <created>1391160362106</created>
+      <option name="number" value="00170" />
+      <option name="project" value="LOCAL" />
       <updated>1391160362106</updated>
     </task>
     <task id="LOCAL-00171" summary="Removed status locked&#10;">
       <created>1391160566457</created>
+      <option name="number" value="00171" />
+      <option name="project" value="LOCAL" />
       <updated>1391160566457</updated>
     </task>
     <task id="LOCAL-00172" summary="Added bottom border and status depending label to uploadEntry">
       <created>1391185323454</created>
+      <option name="number" value="00172" />
+      <option name="project" value="LOCAL" />
       <updated>1391185323454</updated>
     </task>
     <task id="LOCAL-00173" summary="Added Playlist Control Features">
       <created>1392625105839</created>
+      <option name="number" value="00173" />
+      <option name="project" value="LOCAL" />
       <updated>1392625105839</updated>
     </task>
     <task id="LOCAL-00174" summary="Fixed image loading thumbnails and fixed min width of edit views">
       <created>1392625537703</created>
+      <option name="number" value="00174" />
+      <option name="project" value="LOCAL" />
       <updated>1392625537703</updated>
     </task>
     <task id="LOCAL-00175" summary="Set thumbnail preview width and min width/height of application">
       <created>1392627208191</created>
+      <option name="number" value="00175" />
+      <option name="project" value="LOCAL" />
       <updated>1392627208191</updated>
     </task>
     <task id="LOCAL-00176" summary="Added TimeModel releaseTimePicker elements">
       <created>1392630817951</created>
+      <option name="number" value="00176" />
+      <option name="project" value="LOCAL" />
       <updated>1392630817951</updated>
     </task>
     <task id="LOCAL-00177" summary="Refactored Google Lib - removed legacy event code from account, upload, playlist">
       <created>1392669667144</created>
+      <option name="number" value="00177" />
+      <option name="project" value="LOCAL" />
       <updated>1392669667144</updated>
     </task>
     <task id="LOCAL-00178" summary="Added ETag file caching for categories.">
       <created>1392912133300</created>
+      <option name="number" value="00178" />
+      <option name="project" value="LOCAL" />
       <updated>1392912133300</updated>
     </task>
     <task id="LOCAL-00179" summary="Optimized thumbnail upload&#10;(cherry picked from commit 19d3e01)">
       <created>1392989202163</created>
+      <option name="number" value="00179" />
+      <option name="project" value="LOCAL" />
       <updated>1392989202163</updated>
     </task>
     <task id="LOCAL-00180" summary="Removed code cluttering and fixed code formatting settings">
       <created>1393066908511</created>
+      <option name="number" value="00180" />
+      <option name="project" value="LOCAL" />
       <updated>1393066908511</updated>
     </task>
     <task id="LOCAL-00181" summary="Applied code changes to match LoD&#10;">
       <created>1393311525440</created>
+      <option name="number" value="00181" />
+      <option name="project" value="LOCAL" />
       <updated>1393311525440</updated>
     </task>
     <task id="LOCAL-00182" summary="Removed old unneeded feed representation classes">
       <created>1393312505517</created>
+      <option name="number" value="00182" />
+      <option name="project" value="LOCAL" />
       <updated>1393312505518</updated>
     </task>
     <task id="LOCAL-00183" summary="Flattened packages, refactored all LoD violations">
       <created>1393425446209</created>
+      <option name="number" value="00183" />
+      <option name="project" value="LOCAL" />
       <updated>1393425446209</updated>
     </task>
     <task id="LOCAL-00184" summary="Restructured modules to better abstraction">
       <created>1393580028406</created>
+      <option name="number" value="00184" />
+      <option name="project" value="LOCAL" />
       <updated>1393580028406</updated>
     </task>
     <task id="LOCAL-00185" summary="Added object based data store. Removed legacy v2.0 api files.">
       <created>1393684863708</created>
+      <option name="number" value="00185" />
+      <option name="project" value="LOCAL" />
       <updated>1393684863708</updated>
     </task>
     <task id="LOCAL-00186" summary="Integrated YouTube service">
       <created>1393706985827</created>
+      <option name="number" value="00186" />
+      <option name="project" value="LOCAL" />
       <updated>1393706985828</updated>
     </task>
     <task id="LOCAL-00187" summary="Playlists are now fully loaded and not just 50">
       <created>1393710386570</created>
+      <option name="number" value="00187" />
+      <option name="project" value="LOCAL" />
       <updated>1393710386570</updated>
     </task>
     <task id="LOCAL-00188" summary="Added update functionality to youtube video">
       <created>1393710882059</created>
+      <option name="number" value="00188" />
+      <option name="project" value="LOCAL" />
       <updated>1393710882059</updated>
     </task>
     <task id="LOCAL-00189" summary="Removed legacy auth code and exception classes">
       <created>1393759666935</created>
+      <option name="number" value="00189" />
+      <option name="project" value="LOCAL" />
       <updated>1393759666935</updated>
     </task>
     <task id="LOCAL-00190" summary="Removed Unirest library refactoring. Did code analyze fixes.">
       <created>1393796498345</created>
+      <option name="number" value="00190" />
+      <option name="project" value="LOCAL" />
       <updated>1393796498346</updated>
     </task>
     <task id="LOCAL-00191" summary="Refactored Upload Pojo to UploadModel">
       <created>1393883902101</created>
+      <option name="number" value="00191" />
+      <option name="project" value="LOCAL" />
       <updated>1393883902101</updated>
     </task>
     <task id="LOCAL-00192" summary="Added AccountDTO and PlaylistDTO and updated methods and javadoc of relating services.">
       <created>1394208216349</created>
+      <option name="number" value="00192" />
+      <option name="project" value="LOCAL" />
       <updated>1394208216349</updated>
     </task>
     <task id="LOCAL-00193" summary="Added AccountService and linked data to database and gui.">
       <created>1394221144341</created>
+      <option name="number" value="00193" />
+      <option name="project" value="LOCAL" />
       <updated>1394221144341</updated>
     </task>
     <task id="LOCAL-00194" summary="Fixed equals bug in models, fixed array index out of bounds exception on 0 titledpanes accounts">
       <created>1394227950914</created>
+      <option name="number" value="00194" />
+      <option name="project" value="LOCAL" />
       <updated>1394227950914</updated>
     </task>
     <task id="LOCAL-00195" summary="Added testcase for TagParser.">
       <created>1394311494640</created>
+      <option name="number" value="00195" />
+      <option name="project" value="LOCAL" />
       <updated>1394311494640</updated>
     </task>
     <task id="LOCAL-00196" summary="Added Spinner, Refactored UploadJob structure">
       <created>1394474705144</created>
+      <option name="number" value="00196" />
+      <option name="project" value="LOCAL" />
       <updated>1394474705144</updated>
     </task>
     <task id="LOCAL-00197" summary="Changed to sqlite from mapdb - splitted services and daos - added account add functionality">
       <created>1395434617770</created>
+      <option name="number" value="00197" />
+      <option name="project" value="LOCAL" />
       <updated>1395434617770</updated>
     </task>
     <task id="LOCAL-00198" summary="Added playlists to database processing.">
       <created>1395657998272</created>
+      <option name="number" value="00198" />
+      <option name="project" value="LOCAL" />
       <updated>1395657998272</updated>
     </task>
     <task id="LOCAL-00199" summary="Fixed playlist selection bug.">
       <created>1395660737272</created>
+      <option name="number" value="00199" />
+      <option name="project" value="LOCAL" />
       <updated>1395660737272</updated>
     </task>
     <task id="LOCAL-00200" summary="Fixed account add channel id matching">
       <created>1395663664387</created>
+      <option name="number" value="00200" />
+      <option name="project" value="LOCAL" />
       <updated>1395663664387</updated>
     </task>
     <task id="LOCAL-00201" summary="Added missing upload dtos">
       <created>1395740499369</created>
+      <option name="number" value="00201" />
+      <option name="project" value="LOCAL" />
       <updated>1395740499369</updated>
     </task>
     <task id="LOCAL-00202" summary="Bound selectedFile properties and connected fileinput upload display to upload tab.">
       <created>1395846375969</created>
+      <option name="number" value="00202" />
+      <option name="project" value="LOCAL" />
       <updated>1395846375969</updated>
     </task>
     <task id="LOCAL-00203" summary="Simplified sql">
       <created>1396596006203</created>
+      <option name="number" value="00203" />
+      <option name="project" value="LOCAL" />
       <updated>1396596006203</updated>
     </task>
     <task id="LOCAL-00204" summary="Changed to working ORM Sormula">
       <created>1396888211141</created>
+      <option name="number" value="00204" />
+      <option name="project" value="LOCAL" />
       <updated>1396888211141</updated>
     </task>
     <task id="LOCAL-00205" summary="Added gradle wrapper">
       <created>1397818760803</created>
+      <option name="number" value="00205" />
+      <option name="project" value="LOCAL" />
       <updated>1397818760803</updated>
     </task>
     <task id="LOCAL-00206" summary="Changed first two methods of authentication&#10;">
       <created>1403507963412</created>
+      <option name="number" value="00206" />
+      <option name="project" value="LOCAL" />
       <updated>1403507963412</updated>
     </task>
     <task id="LOCAL-00207" summary="Completed basic authentication without error checks (oauth missing) and fixed UI bugs.">
       <created>1403512723977</created>
+      <option name="number" value="00207" />
+      <option name="project" value="LOCAL" />
       <updated>1403512723977</updated>
     </task>
     <option name="localTasksCounter" value="208" />
@@ -2629,7 +2189,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="385878000" />
+    <option name="totallyTimeSpent" value="386934000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -2655,82 +2215,85 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45454547" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.45454547" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32829374" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14232409" sideWeight="0.6948775" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919957" sideWeight="0.5477778" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39718616" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32683983" sideWeight="0.4914712" order="11" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32289416" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23347548" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3145946" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24920128" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.6837416" order="8" side_tool="false" content_ui="tabs" x="651" y="57" width="617" height="926" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2228145" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32599118" sideWeight="0.5079957" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="11" side_tool="true" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2489339" sideWeight="0.6959911" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5064935" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="JPA Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17769477" sideWeight="0.701559" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7056277" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30054054" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32683983" sideWeight="0.4914712" order="11" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.6837416" order="8" side_tool="false" content_ui="tabs" x="651" y="57" width="617" height="926" />
+      <window_info id="Go" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3225108" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32575756" sideWeight="0.5079957" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32756758" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2228145" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23347548" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24920128" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919957" sideWeight="0.5477778" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39718616" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7354212" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2489339" sideWeight="0.6959911" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32756758" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="JPA Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14232409" sideWeight="0.6948775" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3708108" sideWeight="0.5042598" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17769477" sideWeight="0.701559" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5064935" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7056277" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45454547" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919957" sideWeight="0.5477778" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14232409" sideWeight="0.6948775" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32683983" sideWeight="0.4914712" order="11" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32289416" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23347548" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3145946" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2238806" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2489339" sideWeight="0.6959911" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33225107" sideWeight="0.5079957" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5064935" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="JPA Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17769477" sideWeight="0.701559" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32829374" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7056277" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39718616" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30054054" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24920128" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32683983" sideWeight="0.4914712" order="11" side_tool="true" content_ui="tabs" x="364" y="729" width="930" height="279" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32937366" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.6837416" order="8" side_tool="false" content_ui="tabs" x="651" y="57" width="617" height="926" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7354212" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3708108" sideWeight="0.5042598" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2489339" sideWeight="0.6959911" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32756758" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="JPA Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14232409" sideWeight="0.6948775" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24920128" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919957" sideWeight="0.5477778" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39718616" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45454547" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3145946" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30054054" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3708108" sideWeight="0.5042598" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32289416" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6948775" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33225107" sideWeight="0.5079957" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17769477" sideWeight="0.701559" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32829374" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14602003" sideWeight="0.42761692" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5064935" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2238806" sideWeight="0.5400891" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7056277" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23347548" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1696905" sideWeight="0.2895323" order="4" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="UpdateCopyrightCheckinHandler">
@@ -2791,6 +2354,7 @@
       </breakpoints-dialog>
       <option name="time" value="4" />
     </breakpoint-manager>
+    <watches-manager />
   </component>
   <component name="XPathView.XPathProjectComponent">
     <history>
@@ -2828,17 +2392,14 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.18.0-rc/784df1a0704478d6cc29c0003d8d7e70a55cfbe/google-api-client-1.18.0-rc-sources.jar!/com/google/api/client/googleapis/javanet/GoogleNetHttpTransport.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22767857" vertical-offset="0" max-vertical-offset="896">
-          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/apache/ApacheHttpTransport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.071429" vertical-offset="5003" max-vertical-offset="5899">
-          <caret line="84" column="19" selection-start-line="84" selection-start-column="19" selection-end-line="84" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5984">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2849,150 +2410,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/HttpTransport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0189732" vertical-offset="685" max-vertical-offset="2448">
-          <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/javanet/NetHttpTransport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.5669644" vertical-offset="3422" max-vertical-offset="4318">
-          <caret line="99" column="9" selection-start-line="99" selection-start-column="9" selection-end-line="99" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/util/StreamingContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30357143" vertical-offset="0" max-vertical-offset="896">
-          <caret line="29" column="17" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/HttpEncodingStreamingContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.53125" vertical-offset="0" max-vertical-offset="896">
-          <caret line="44" column="44" selection-start-line="44" selection-start-column="44" selection-end-line="44" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/AbstractHttpContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.7455357" vertical-offset="0" max-vertical-offset="2040">
-          <caret line="130" column="76" selection-start-line="130" selection-start-column="76" selection-end-line="130" selection-end-column="76" />
-          <caret line="129" column="32" selection-start-line="129" selection-start-column="32" selection-end-line="129" selection-end-column="32" />
-          <caret line="128" column="4" selection-start-line="128" selection-start-column="4" selection-end-line="128" selection-end-column="4" />
-          <caret line="127" column="35" selection-start-line="127" selection-start-column="35" selection-end-line="127" selection-end-column="35" />
-          <caret line="126" column="95" selection-start-line="126" selection-start-column="95" selection-end-line="126" selection-end-column="95" />
-          <caret line="125" column="98" selection-start-line="125" selection-start-column="98" selection-end-line="125" selection-end-column="98" />
-          <caret line="124" column="5" selection-start-line="124" selection-start-column="5" selection-end-line="124" selection-end-column="5" />
-          <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-          <caret line="122" column="3" selection-start-line="122" selection-start-column="3" selection-end-line="122" selection-end-column="3" />
-          <caret line="121" column="16" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="16" />
-          <caret line="120" column="35" selection-start-line="120" selection-start-column="35" selection-end-line="120" selection-end-column="35" />
-          <caret line="119" column="82" selection-start-line="119" selection-start-column="82" selection-end-line="119" selection-end-column="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.18.0-rc/784df1a0704478d6cc29c0003d8d7e70a55cfbe/google-api-client-1.18.0-rc-sources.jar!/com/google/api/client/googleapis/batch/HttpRequestContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0703125" vertical-offset="124" max-vertical-offset="1020">
-          <caret line="31" column="42" selection-start-line="31" selection-start-column="42" selection-end-line="31" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/javax/xml/parsers/ParserConfigurationException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2852349" vertical-offset="0" max-vertical-offset="596">
-          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.8/85dce04bdd262a0a8760c3bb5aa2b56ce8b8dd6f/htmlcleaner-2.8-sources.jar!/org/htmlcleaner/DomSerializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33221477" vertical-offset="482" max-vertical-offset="2754">
-          <caret line="84" column="20" selection-start-line="84" selection-start-column="20" selection-end-line="84" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/javax/xml/xpath/XPathConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33221477" vertical-offset="363" max-vertical-offset="1139">
-          <caret line="56" column="30" selection-start-line="56" selection-start-column="30" selection-end-line="56" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/javax/xml/xpath/XPath.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.07550336" vertical-offset="3474" max-vertical-offset="5100">
-          <caret line="232" column="18" selection-start-line="232" selection-start-column="18" selection-end-line="232" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/GenericUrl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0757575" vertical-offset="4426" max-vertical-offset="9894">
-          <caret line="112" column="9" selection-start-line="112" selection-start-column="9" selection-end-line="112" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/HttpRequestFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5050505" vertical-offset="1587" max-vertical-offset="2465">
-          <caret line="131" column="21" selection-start-line="131" selection-start-column="21" selection-end-line="131" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/ByteArrayContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3989899" vertical-offset="1242" max-vertical-offset="1870">
-          <caret line="105" column="33" selection-start-line="105" selection-start-column="33" selection-end-line="105" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/util/DataMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="227" max-vertical-offset="3740">
-          <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/util/Data.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7626263" vertical-offset="2182" max-vertical-offset="8891">
-          <caret line="184" column="42" selection-start-line="184" selection-start-column="42" selection-end-line="184" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/36b6a585c0f0c63bd85fb04db0dcb7b217298956/guava-15.0-sources.jar!/com/google/common/escape/Escaper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.54208755" vertical-offset="868" max-vertical-offset="1462">
-          <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/36b6a585c0f0c63bd85fb04db0dcb7b217298956/guava-15.0-sources.jar!/com/google/common/html/HtmlEscapers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6588629" vertical-offset="174" max-vertical-offset="1105">
-          <caret line="62" column="24" selection-start-line="62" selection-start-column="24" selection-end-line="62" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/UrlEncodedContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63656634" vertical-offset="228" max-vertical-offset="2346">
-          <caret line="71" column="34" selection-start-line="71" selection-start-column="22" selection-end-line="71" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.8/85dce04bdd262a0a8760c3bb5aa2b56ce8b8dd6f/htmlcleaner-2.8-sources.jar!/org/htmlcleaner/CleanerProperties.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9241918" vertical-offset="3098" max-vertical-offset="6494">
-          <caret line="378" column="3" selection-start-line="378" selection-start-column="3" selection-end-line="378" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.41513762" vertical-offset="29" max-vertical-offset="901">
@@ -3000,38 +2417,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5739232" vertical-offset="0" max-vertical-offset="1632">
-          <caret line="37" column="27" selection-start-line="37" selection-start-column="27" selection-end-line="37" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/java/lang/Integer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7657046" vertical-offset="9409" max-vertical-offset="25806">
-          <caret line="613" column="22" selection-start-line="613" selection-start-column="22" selection-end-line="613" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/de/chaosfisch/uploader/gui/account/add/step3.fxml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/9b26b4855ee271ed552242824565529606804e39/google-http-client-1.18.0-rc-sources.jar!/com/google/api/client/http/HttpRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327674" vertical-offset="16719" max-vertical-offset="18326">
-          <caret line="1070" column="30" selection-start-line="1070" selection-start-column="30" selection-end-line="1070" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/java/nio/file/StandardOpenOption.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327674" vertical-offset="552" max-vertical-offset="1836">
-          <caret line="67" column="4" selection-start-line="67" selection-start-column="4" selection-end-line="67" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -3046,13 +2435,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="128" max-vertical-offset="731">
           <caret line="22" column="31" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/javafx-src.zip!/javafx/beans/property/BooleanPropertyBase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327674" vertical-offset="586" max-vertical-offset="3553">
-          <caret line="83" column="16" selection-start-line="83" selection-start-column="16" selection-end-line="83" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -3091,27 +2473,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.18.0-rc/784df1a0704478d6cc29c0003d8d7e70a55cfbe/google-api-client-1.18.0-rc-sources.jar!/com/google/api/client/googleapis/services/AbstractGoogleClientRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6434" max-vertical-offset="9010">
-          <caret line="459" column="0" selection-start-line="459" selection-start-column="0" selection-end-line="459" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/src/main/java/de/chaosfisch/youtube/playlist/YouTubePlaylistService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2439" max-vertical-offset="3825">
           <caret line="182" column="0" selection-start-line="182" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="dbDummy://dbtable:/b3842171/81edd196-12b4-4f66-9e9d-134b40125666/..PlaylistDTO">
-      <provider selected="true" editor-type-id="com.intellij.persistence.database.editor.DatabaseTableFileEditorProvider">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3143,13 +2508,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlcleaner/htmlcleaner/2.8/85dce04bdd262a0a8760c3bb5aa2b56ce8b8dd6f/htmlcleaner-2.8-sources.jar!/org/htmlcleaner/TagNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.828571" vertical-offset="11441" max-vertical-offset="12393">
-          <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gradlew">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2890">
@@ -3164,13 +2522,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="27625" max-vertical-offset="29716">
-          <caret line="1625" column="49" selection-start-line="1625" selection-start-column="41" selection-end-line="1625" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/AccountAddDataModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.1181717" vertical-offset="459" max-vertical-offset="1785">
@@ -3180,9 +2531,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitattributes">
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="854">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -3196,14 +2544,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/simplejavayoutubeuploader.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43889844" vertical-offset="0" max-vertical-offset="581">
+          <caret line="15" column="55" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/gui/account/add/StepPresenter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.9843924" vertical-offset="5138" max-vertical-offset="6035">
-          <caret line="92" column="4" selection-start-line="92" selection-start-column="4" selection-end-line="92" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.77272725" vertical-offset="1564" max-vertical-offset="5984">
+          <caret line="119" column="104" selection-start-line="119" selection-start-column="104" selection-end-line="119" selection-end-column="104" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="595">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.2199314" vertical-offset="0" max-vertical-offset="1666">
+          <caret line="84" column="28" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/de/chaosfisch/uploader/SimpleJavaYoutubeUploader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25" vertical-offset="0" max-vertical-offset="1139">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3278,6 +2660,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
@@ -3296,7 +2679,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>Gradle: commons-codec-1.3</last-edited>
+          <last-edited>Gradle: ch.qos.logback:logback-classic:1.1.2</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -3320,4 +2703,3 @@
     </states>
   </component>
 </project>
-

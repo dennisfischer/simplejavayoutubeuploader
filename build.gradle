@@ -11,6 +11,8 @@
 
 
 
+
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'apt'
@@ -93,7 +95,7 @@ task distribute(type: Zip) {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.11'
+	gradleVersion = '2.2.1'
 }
 
 distribute.dependsOn javaFXPackager
