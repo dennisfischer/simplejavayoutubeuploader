@@ -8,4 +8,4 @@
  * Contributors: Dennis Fischer                                                                   *
  **************************************************************************************************/
 
-include 'persistence', 'google', 'util', 'template'
+include  'google', 'util'
