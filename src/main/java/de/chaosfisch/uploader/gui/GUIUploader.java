@@ -10,197 +10,137 @@
 
 package de.chaosfisch.uploader.gui;
 
-import com.cathive.fx.guice.GuiceApplication;
-import com.cathive.fx.guice.GuiceFXMLLoader;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.name.Named;
-import com.sun.javafx.css.StyleManager;
-import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
 import de.chaosfisch.google.youtube.upload.IUploadService;
-import de.chaosfisch.uploader.UploaderModule;
-import de.chaosfisch.uploader.gui.controller.ConfirmDialogController;
-import de.chaosfisch.uploader.gui.controller.InputDialogController;
-import de.chaosfisch.uploader.gui.renderer.Callback;
-import de.chaosfisch.uploader.gui.renderer.DialogHelper;
 import de.chaosfisch.uploader.persistence.dao.IPersistenceService;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.stage.*;
+import de.chaosfisch.util.NanoHTTPD;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-@SuppressWarnings("WeakerAccess")
-public class GUIUploader extends GuiceApplication {
+public class GUIUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GUIUploader.class);
 
-	private static final int MIN_HEIGHT = 640;
-	private static final int MIN_WIDTH = 1000;
-	private static final Logger LOGGER = LoggerFactory.getLogger(GUIUploader.class);
+    @Inject
+    private IPersistenceService persistenceService;
+    @Inject
+    private IUploadService uploadService;
+    @Inject
+    private IAccountService accountService;
+    @Inject
+    private Configuration configuration;
+    @Inject
+    @Named("i18n-resources")
+    private ResourceBundle resources;
 
-	@Inject
-	private GuiceFXMLLoader fxmlLoader;
-	@Inject
-	private DialogHelper dialogHelper;
-	@Inject
-	private IPersistenceService persistenceService;
-	@Inject
-	private IUploadService uploadService;
-	@Inject
-	private IAccountService accountService;
-	@Inject
-	private Configuration configuration;
-	@Inject
-	@Named("i18n-resources")
-	private ResourceBundle resources;
-	private double initX;
-	private double initY;
+    public void start() {
 
-	@Override
-	public void start(final Stage primaryStage) {
-		StyleManager.getInstance()
-				.addUserAgentStylesheet(getClass().getResource("/de/chaosfisch/uploader/resources/style.css")
-						.toExternalForm());
+        if (!persistenceService.loadFromStorage()) {
+            LOGGER.error("Closing...Unknown error occured during storage startup.");
+        } else {
+            persistenceService.cleanStorage();
 
-		final boolean useMasterPassword = configuration.getBoolean(IPersistenceService.MASTER_PASSWORD, false);
-		if (useMasterPassword) {
-			dialogHelper.showInputDialog("Masterpasswort", "Masterpasswort:", new Callback() {
-				@Override
-				public void onInput(final InputDialogController controller, final String input) {
-					if (Strings.isNullOrEmpty(input)) {
-						controller.input.getStyleClass().add("input-invalid");
-					} else {
-						persistenceService.generateBackup();
-						persistenceService.setMasterPassword(input);
-						controller.closeDialog(null);
-					}
-				}
-			}, true);
-		}
-		if (!persistenceService.loadFromStorage()) {
-			if (useMasterPassword) {
-				dialogHelper.showErrorDialog("Closing..", "Invalid password.");
-			} else {
-				dialogHelper.showErrorDialog("Closing..", "Unknown error occured.");
-			}
-			Platform.exit();
-		} else {
-			persistenceService.cleanStorage();
-			Platform.setImplicitExit(false);
-			initApplication(primaryStage);
+            uploadService.resetUnfinishedUploads();
+            uploadService.startStarttimeCheck();
 
-			uploadService.resetUnfinishedUploads();
-			uploadService.startStarttimeCheck();
+            LOGGER.info("Verifying accounts");
+//            final List<Account> accounts = accountService.getAll();
+//            for (final Account account : accounts) {
+//                if (!accountService.verifyAccount(account)) {
+//                    LOGGER.warn("Account is invalid: {}", account.getName());
+//                    dialogHelper.showAccountPermissionsDialog(account);
+//                }
+//            }
+        }
 
-			LOGGER.info("Verifying accounts");
-			final List<Account> accounts = accountService.getAll();
-			for (final Account account : accounts) {
-				if (!accountService.verifyAccount(account)) {
-					LOGGER.warn("Account is invalid: {}", account.getName());
-					dialogHelper.showAccountPermissionsDialog(account);
-				}
-			}
-		}
-	}
+        final Server server = new Server();
+        try {
+            server.start();
+            server.myThread.join();
+        } catch (final IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
-	@Override
-	public void init(final List<Module> modules) throws Exception {
-		modules.addAll(Arrays.asList(new UploaderModule(), new GUIModule()));
-	}
 
-	private void initApplication(final Stage primaryStage) {
+        uploadService.stopStarttimeCheck();
 
-		try {
+    }
 
-			final Parent parent = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/SimpleJavaYoutubeUploader.fxml"), resources)
-					.getRoot();
 
-			final Scene scene = SceneBuilder.create().root(parent).fill(Color.TRANSPARENT).build();
+    static class Server extends NanoHTTPD {
+        public Server() {
+            super(80);
+        }
 
-			try (InputStream iconInputStream = getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/film.png")) {
-				StageBuilder.create()
-						.icons(new Image(iconInputStream))
-						.minHeight(MIN_HEIGHT)
-						.height(MIN_HEIGHT)
-						.minWidth(MIN_WIDTH)
-						.width(MIN_WIDTH)
-						.scene(scene)
-						.resizable(true)
-						.onCloseRequest(new ApplicationClosePromptDialog())
-						.applyTo(primaryStage);
-			}
-			parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
-				@Override
-				public void handle(final MouseEvent me) {
-					primaryStage.setX(me.getScreenX() - initX);
-					primaryStage.setY(me.getScreenY() - initY);
-				}
-			});
+        @Override
+        public Response serve(final IHTTPSession session) {
+            final Map<String, List<String>> decodedQueryParameters =
+                    decodeParameters(session.getQueryParameterString());
 
-			parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(final MouseEvent me) {
-					initX = me.getScreenX() - primaryStage.getX();
-					initY = me.getScreenY() - primaryStage.getY();
-				}
-			});
+            final StringBuilder sb = new StringBuilder();
+            sb.append("<html>");
+            sb.append("<head><title>Debug Server</title></head>");
+            sb.append("<body>");
+            sb.append("<h1>Debug Server</h1>");
 
-			primaryStage.initStyle(StageStyle.TRANSPARENT);
-			primaryStage.show();
-		} catch (final IOException e) {
-			LOGGER.error("FXML Load error", e);
-			throw new RuntimeException(e);
-		}
-	}
+            sb.append("<p><blockquote><b>URI</b> = ").append(
+                    session.getUri()).append("<br />");
 
-	@Override
-	public void stop() throws Exception {
-		uploadService.stopStarttimeCheck();
-	}
+            sb.append("<b>Method</b> = ").append(
+                    session.getMethod()).append("</blockquote></p>");
 
-	public static void initialize(final String[] args) {
-		launch(args);
-	}
+            sb.append("<h3>Headers</h3><p><blockquote>").
+                    append(toString(session.getHeaders())).append("</blockquote></p>");
 
-	private final class ApplicationClosePromptDialog implements EventHandler<WindowEvent> {
-		@Override
-		public void handle(final WindowEvent event) {
-			try {
-				final GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/de/chaosfisch/uploader/view/ConfirmDialog.fxml"), resources);
-				final ConfirmDialogController controller = result.getController();
-				controller.setTitle(resources.getString("dialog.exitapplication.title"));
-				controller.setMessage(resources.getString("dialog.exitapplication.message"));
+            sb.append("<h3>Parms</h3><p><blockquote>").
+                    append(toString(session.getParms())).append("</blockquote></p>");
 
-				final Parent parent = result.getRoot();
-				final Scene scene = SceneBuilder.create().root(parent).build();
-				final Stage stage = StageBuilder.create().scene(scene).build();
-				stage.initStyle(StageStyle.UNDECORATED);
-				stage.initModality(Modality.APPLICATION_MODAL);
-				stage.showAndWait();
-				stage.requestFocus();
-				if (!controller.ask()) {
-					event.consume();
-				} else {
-					Platform.exit();
-				}
-			} catch (final IOException e) {
-				LOGGER.error("Couldn't load ConfirmDialog", e);
-			}
-		}
-	}
+            sb.append("<h3>Parms (multi values?)</h3><p><blockquote>").
+                    append(toString(decodedQueryParameters)).append("</blockquote></p>");
+
+            try {
+                final Map<String, String> files = new HashMap<>();
+                session.parseBody(files);
+                sb.append("<h3>Files</h3><p><blockquote>").
+                        append(toString(files)).append("</blockquote></p>");
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+
+            sb.append("</body>");
+            sb.append("</html>");
+            return new Response(sb.toString());
+        }
+
+        private String toString(final Map<String, ?> map) {
+            if (map.isEmpty()) {
+                return "";
+            }
+            return unsortedList(map);
+        }
+
+        private String unsortedList(final Map<String, ?> map) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("<ul>");
+            for (final Map.Entry entry : map.entrySet()) {
+                listItem(sb, entry);
+            }
+            sb.append("</ul>");
+            return sb.toString();
+        }
+
+        private void listItem(final StringBuilder sb, final Map.Entry entry) {
+            sb.append("<li><code><b>").append(entry.getKey()).
+                    append("</b> = ").append(entry.getValue()).append("</code></li>");
+        }
+    }
 }
