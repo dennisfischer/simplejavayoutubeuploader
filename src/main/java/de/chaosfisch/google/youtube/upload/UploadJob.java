@@ -18,6 +18,8 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Charsets;
 import com.google.common.base.Predicate;
 import com.google.common.eventbus.EventBus;
+import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.common.util.concurrent.RateLimiter;
@@ -303,13 +305,7 @@ public class UploadJob implements Callable<Upload> {
 				case SC_OK:
 				case SC_CREATED:
 					//FILE UPLOADED
-					final InputSupplier<InputStream> supplier = new InputSupplier<InputStream>() {
-						@Override
-						public InputStream getInput() throws IOException {
-							return request.getInputStream();
-						}
-					};
-					handleSuccessfulUpload(CharStreams.toString(CharStreams.newReaderSupplier(supplier, Charsets.UTF_8)));
+					handleSuccessfulUpload(CharStreams.toString(new InputStreamReader(request.getInputStream(), Charsets.UTF_8)));
 
 					break;
 				case SC_RESUME_INCOMPLETE:

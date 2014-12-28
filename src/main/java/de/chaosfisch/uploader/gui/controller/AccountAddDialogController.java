@@ -17,8 +17,6 @@ import com.google.inject.name.Named;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.sun.webpane.webkit.dom.HTMLButtonElementImpl;
-import com.sun.webpane.webkit.dom.HTMLInputElementImpl;
 import de.chaosfisch.google.GDATAConfig;
 import de.chaosfisch.google.account.Account;
 import de.chaosfisch.google.account.IAccountService;
@@ -47,6 +45,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.html.HTMLInputElement;
 
 import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
@@ -107,12 +106,12 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 	@FXML
 	void continueSecondFactor(final ActionEvent event) {
 		final Document document = webView.getEngine().getDocument();
-		final HTMLInputElementImpl persistentCookie = (HTMLInputElementImpl) document.getElementById("PersistentCookie");
+		final HTMLInputElement persistentCookie = (HTMLInputElement) document.getElementById("PersistentCookie");
 		if (null != persistentCookie) {
 			persistentCookie.setChecked(true);
 		}
-		((HTMLInputElementImpl) document.getElementById("smsUserPin")).setValue(code.getText());
-		((HTMLInputElementImpl) document.getElementById("smsVerifyPin")).click();
+		((HTMLInputElement) document.getElementById("smsUserPin")).setValue(code.getText());
+		((HTMLInputElement) document.getElementById("smsVerifyPin")).click();
 		step2.setVisible(false);
 		loading.setVisible(true);
 	}
@@ -287,9 +286,9 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 
 	private void handleStep1() {
 		final Document document = webView.getEngine().getDocument();
-		((HTMLInputElementImpl) document.getElementById("Email")).setValue(username.getText());
-		((HTMLInputElementImpl) document.getElementById("Passwd")).setValue(password.getText());
-		((HTMLInputElementImpl) document.getElementById("signIn")).click();
+		((HTMLInputElement) document.getElementById("Email")).setValue(username.getText());
+		((HTMLInputElement) document.getElementById("Passwd")).setValue(password.getText());
+		((HTMLInputElement) document.getElementById("signIn")).click();
 	}
 
 	private void handleStep3() {
@@ -384,7 +383,7 @@ public class AccountAddDialogController extends UndecoratedDialogController {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						((HTMLButtonElementImpl) webView.getEngine().getDocument().getElementById("submit_approve_access")).click();
+						((HTMLInputElement) webView.getEngine().getDocument().getElementById("submit_approve_access")).click();
 					}
 				});
 			}

@@ -10,14 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/google" />
-            <option value="$PROJECT_DIR$/persistence" />
-            <option value="$PROJECT_DIR$/template" />
-            <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
       </GradleProjectSettings>
     </option>
   </component>
 </project>
-
